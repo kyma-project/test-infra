@@ -1,0 +1,69 @@
+---
+triggers:
+- repos:
+  - kyma-project/test-infra
+  - kyma-incubator/varkes
+  trusted_org: kyma-project
+  only_org_members: true
+
+approve:
+- repos:
+  - kyma-project/test-infra
+  - kyma-incubator/varkes
+  implicit_self_approve: true
+  lgtm_acts_as_approve: true
+
+blunderbuss:
+  max_request_count: 2
+
+config_updater:
+  maps:
+    prow-configurations/config.yaml:
+      name: config
+    prow-configurations/plugins.yaml:
+      name: plugins
+
+lgtm:
+- repos:
+  - kyma-project/test-infra
+  - kyma-incubator/varkes
+  review_acts_as_lgtm: true
+
+# Lower bounds in number of lines changed; XS is assumed to be zero.
+size:
+  s:   10
+  m:   30
+  l:   100
+  xl:  500
+  xxl: 1000
+
+plugins:
+  kyma-project/test-infra:
+  - approve
+  - assign
+  - blunderbuss
+  - config-updater
+  - docs-no-retest
+  - help
+  - hold
+  - label
+  - lgtm
+  - owners-label
+  - size
+  - trigger
+  - verify-owners
+  - wip
+  kyma-incubator/varkes:
+  - approve
+  - assign
+  - blunderbuss
+  - docs-no-retest
+  - help
+  - hold
+  - label
+  - lgtm
+  - owners-label
+  - size
+  - trigger
+  - verify-owners
+  - wip
