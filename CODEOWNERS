@@ -5,7 +5,7 @@
 # For more details, read the following article on GitHub: https://help.github.com/articles/about-codeowners/.
 
 # These are the default owners for the whole content of the `kyma` repository. The default owners are automatically added as reviewers when you open a pull request, unless different owners are specified in the file.
-* @clebs @a-thaler @suleymanakbas91 @lilitgh @aszecowka @strekm @crabtree @derberg @pbochynski @Tomasz-Smelcerz-SAP @michal-hudy @pkosiec @mwieczorek @piotrmsc
+* @clebs @a-thaler @lilitgh @kyma-project/wg-prow
 
 # All .md files
 *.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc
