@@ -29,7 +29,6 @@ Installation script will accomplish the following steps to install Prow:
 - Create secrets for HMAC and OAuth2 to be used by Prow.
 - Deploy Prow components with revision `a202e595a33ac92ab503f913f2d710efabd3de21`.
 - Add annotations for Prow Ingress to make it work with NGINX Ingress Controller.
-- Change the type of Deck Service to LoadBalancer to access Prow UI (Deck).
 - Upload the set of configurations for plugins.
 
 ## Cleanup

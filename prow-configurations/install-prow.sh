@@ -6,8 +6,8 @@ kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user $(gcloud config get-value account)
 
 # Deploy NGINX Ingress Controller
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/mandatory.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/provider/cloud-generic.yaml
 
 # Follow the installation steps in https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#how-to-turn-up-a-new-cluster
 
@@ -29,11 +29,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e59
 
 # Add annotations to Prow Ingress 
 kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
+kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
 
-# Change Deck Service type to LoadBalancer
-kubectl patch service deck -p '{"spec": {"type": "LoadBalancer"}}'
-
-# Deploy the plugin configurations
-kubectl create configmap plugins \
-  --from-file=plugins.yaml=$(pwd)/plugins.yaml --dry-run -o yaml \
-  | kubectl replace configmap plugins -f -
+# # Deploy the plugin configurations
+# kubectl create configmap plugins \
+#   --from-file=plugins.yaml=$(pwd)/plugins.yaml --dry-run -o yaml \
+#   | kubectl replace configmap plugins -f -
