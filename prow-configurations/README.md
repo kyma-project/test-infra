@@ -25,7 +25,7 @@ gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --pr
 2. Set an OAuth2 token that has the read and write access to the bot account. You can set it either as an environment variable named `OAUTH` or interactively during the installation. 
 To generate a new token, go to the **Settings** tab of a given GitHub account and click **Developer Settings**. Choose **Personal Access Token** and **Generate New Token**.
 In the new window, select all scopes and click **Generate token**. 
-> **Note:** It is recommended to create a separate account instead of using your personal one. 
+>**NOTE:** It is recommended to create a separate account instead of using your personal one. 
 
 3. Run the following script to start the installation process: 
 
@@ -46,10 +46,10 @@ TODO not implemented yet:
 - Upload the set of configurations for plugins.
 -->
 
-To check if the installation was successful, perform the following steps:
-1. check if all pods are up and running:
+To check if the installation is successful, perform the following steps:
+1. Check if all Pods are up and running:
 ```kubeclt get pods```
-2. check if the Deck is accessible from outside of the cluster
+2. Check if the Deck is accessible from outside of the cluster:
 ```kubectl get ingress ing```
 Copy the address of the ingress `ing` and open it in a browser to display the Prow status on the dashboard.
 
