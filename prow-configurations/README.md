@@ -17,7 +17,7 @@ Install the following tools:
 Follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster) Prow documentation steps to provision a new cluster on GKE.
 
 ## Installation
-1. Ensure that kubectl points to the correct cluster. For GKE execute following command:
+1. Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
 ```
 gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --project={PROJECT_NAME}
 ```
