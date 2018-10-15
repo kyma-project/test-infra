@@ -2,6 +2,25 @@
 
 set -o errexit
 
+## Create an HMAC token
+hmac_token="$(openssl rand -hex 20)"
+echo $hmac_token > hmac_token.txt
+echo "Token hmac stored in hmac_token.txt file"
+
+if [ "$OAUTH" == "" ]; then
+    echo -n "Enter OAuth2 token that has read and write access to the bot account, followed by [ENTER]: (input will not be printed)"
+    read -s oauth_token
+else
+    oauth_token="$OAUTH"
+fi
+
+echo
+
+if [ ${#oauth_token} -lt 1 ]; then
+  echo "OAuth2 token not provided";
+  exit -1;
+fi
+
 kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user $(gcloud config get-value account)
 
@@ -10,17 +29,6 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/provider/cloud-generic.yaml
 
 # Follow the installation steps in https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#how-to-turn-up-a-new-cluster
-
-## Create an HMAC token
-hmac_token="$(openssl rand -hex 20)"
-echo "hmac-token: $hmac_token"
-
-if [ "$OAUTH" == "" ]; then
-    echo -n "Enter OAuth2 token that has read and write access to the bot account, followed by [ENTER]: "
-    read oauth_token
-else
-    oauth_token="$OAUTH"
-fi
 
 kubectl create secret generic hmac-token --from-literal=hmac=$hmac_token
 kubectl create secret generic oauth-token --from-literal=oauth=$oauth_token
