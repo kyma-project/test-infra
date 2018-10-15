@@ -17,5 +17,7 @@ No installation instructions at the moment.
 No usage instructions at the moment.
 
 ## Development
-
-No development instructions at the moment.
+- There is no possibility to test Prow configuration locally, on minikube. All tests needs to be done on clusters. 
+- Avoid provisioning long-running clusters.
+- Test Prow configuration against your kyma fork repository.
+- Disable build on internal CI only if all CI functionality are provided by Prow, not only for master branch, but also for releases branches.
