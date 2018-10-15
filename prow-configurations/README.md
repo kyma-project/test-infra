@@ -13,21 +13,21 @@ Install the following tools:
 - [gcloud](https://cloud.google.com/sdk/gcloud/)
 - OpenSSL
 
-### Provision cluster
-Follow k8s/prow documentation steps to provision cluster on GKE (https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster).
+### Provision a cluster
+Follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster) Prow documentation steps to provision a new cluster on GKE.
 
 ## Installation
-Ensure that kubectl is pointing to correct cluster. For GKE execute following command:
+1. Ensure that kubectl points to the correct cluster. For GKE execute following command:
 ```
 gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --project={PROJECT_NAME}
 ```
 
-Set an OAuth2 token that has read and write access to the bot account. You can set it either as an environment variable named `OAUTH` or interactively during the installation. 
-To generate new token, on Github page select given account --> Settings --> Developer Settings --> Personal Access Token --> Generate New Token. 
-In the new window select all scopes and click `Generate token`. 
-> Note: We recommend to create separate account instead of using your personal account. 
+2. Set an OAuth2 token that has the read and write access to the bot account. You can set it either as an environment variable named `OAUTH` or interactively during the installation. 
+To generate a new token, go to the **Settings** tab of a given GitHub account and click **Developer Settings**. Choose **Personal Access Token** and **Generate New Token**.
+In the new window, select all scopes and click **Generate token**. 
+> **Note:** It is recommended to create a separate account instead of using your personal one. 
 
-Run the following script to start the installation process: 
+3. Run the following script to start the installation process: 
 
 ```bash
 ./install-prow.sh
@@ -46,12 +46,12 @@ TODO not implemented yet:
 - Upload the set of configurations for plugins.
 -->
 
-To check if installation was successful, perform following steps:
-- check if all pods are up and running:
+To check if the installation was successful, perform the following steps:
+1. check if all pods are up and running:
 ```kubeclt get pods```
-- check if deck is accessible from outside of the cluster
-```kubectl get ing ing```
-Copy address and open it in a browser. Dashboard with Prow status should be displayed.
+2. check if the Deck is accessible from outside of the cluster
+```kubectl get ingress ing```
+Copy the address of the ingress `ing` and open it in a browser to display the Prow status on the dashboard.
 
 ### Cleanup
 
