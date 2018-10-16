@@ -14,7 +14,7 @@ Install the following tools:
 - OpenSSL
 
 ### Provision a cluster
-Use `provision-cluster.sh` script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster) Prow documentation steps to provision a new cluster on GKE.
+Use the `provision-cluster.sh` script or follow [these](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster) instructions to provision a new cluster on GKE.
 
 ## Installation
 1. Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
