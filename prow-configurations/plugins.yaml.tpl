@@ -1,0 +1,3 @@
+plugins:
+  {{ .OrganizationOrUser }}/kyma:
+  - cat

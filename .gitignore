@@ -1,2 +1,3 @@
 /prow-configurations/hmac_token.txt
-/prow-configurations/checker/vendor
+/prow-configurations/development/checker/vendor
+/prow-configurations/plugins.yaml

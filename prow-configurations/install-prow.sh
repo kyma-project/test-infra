@@ -38,8 +38,3 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e59
 # Add annotations to Prow Ingress 
 kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
-
-# # Deploy the plugin configurations
-# kubectl create configmap plugins \
-#   --from-file=plugins.yaml=$(pwd)/plugins.yaml --dry-run -o yaml \
-#   | kubectl replace configmap plugins -f -
