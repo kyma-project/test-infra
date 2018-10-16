@@ -1,51 +1,72 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
-	"fmt"
+	"io/ioutil"
 	"os"
 	"text/template"
 )
 
 func main() {
 	templateName := flag.String("template", "", "path to template file")
-	outputFile := flag.String("out", "", "path to output plugins.yaml")
-	orgUser := flag.String("orgUser", "", "github organization or user name where kyma was forked")
+	outputName := flag.String("out", "", "path to output plugins.yaml")
+	inputName := flag.String("input", "", "path to JSON file to parametrize plugins template")
 
 	flag.Parse()
 	if templateName == nil || *templateName == "" {
-		fmt.Println("TemplateName cannot be empty")
-		flag.Usage()
-		os.Exit(1)
+		panic("template param cannot be empty")
 	}
-	if outputFile == nil || *outputFile == "" {
-		flag.Usage()
-		os.Exit(1)
+	if outputName == nil || *outputName == "" {
+		panic("out param cannot be empty")
 	}
 
-	if orgUser == nil || *orgUser == "" {
-		flag.Usage()
-		os.Exit(1)
+	if inputName == nil || *inputName == "" {
+		panic("input param cannot be empty")
 	}
 
-	tpl, err := template.ParseFiles(*templateName)
+	if err := generate(*inputName,*templateName,*outputName); err != nil {
+		panic(err)
+	}
+
+}
+
+func generate(inputName, templateName, outputName string) error {
+	tpl, err := template.ParseFiles(templateName)
 	if err != nil {
 		panic(err)
 	}
 
-	fOut, err := os.Create(*outputFile)
+	fOut, err := os.Create(outputName)
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	defer fOut.Close()
 
-	err = tpl.Execute(fOut, PluginsConfigInput{OrganizationOrUser: *orgUser})
+	fIn, err := os.Open(inputName)
+	if err != nil {
+		return err
+	}
+	defer fIn.Close()
+	bytes, err := ioutil.ReadAll(fIn)
+	if err != nil {
+		return err
+	}
+	var pluginsConfig PluginsConfigInput
+	if err := json.Unmarshal(bytes, &pluginsConfig); err != nil {
+		return err
+	}
+
+	if err = tpl.Execute(fOut, pluginsConfig); err != nil {
+		return err
+	}
 	if err != nil {
 		panic(err)
 	}
 
+	return nil
 }
 
 type PluginsConfigInput struct {

@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 
-if [ "$ORG_USER" == "" ]; then
-    echo -n "Enter github organization or github account where Kyma is forked:"
-    read orgUser
+set -o errexit
+
+if [ "$INPUT_JSON" == "" ]; then
+    echo -n "Provide path to JSON file with values for plugins template: "
+    read parametrizedJson
 else
-    orgUser="$ORG_USER"
+    parametrizedJson="$INPUT_JSON"
 fi
 
-if [ -z "$orgUser" ]
+if [ -z "$parametrizedJson" ]
 then
-    echo "ERROR: Github organization or github account is required"
+    echo "ERROR: Path to JSON file is required"
     exit 1
 fi
 
-go run ./generator/main.go -template=./../plugins.yaml.tpl -out=./../plugins.yaml -orgUser=${orgUser}
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+go run ${SCRIPT_DIR}/generator/main.go -template=${SCRIPT_DIR}/../plugins.yaml.tpl -out=${SCRIPT_DIR}/../plugins.yaml -input=${parametrizedJson}
 
 echo "Content of generated file, plugins.yaml:"
-cat  ./../plugins.yaml
+cat ${SCRIPT_DIR}/../plugins.yaml
