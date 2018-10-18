@@ -2,6 +2,9 @@
 
 set -o errexit
 
+# This script combines template file (plugins.yaml.tpl) with actual values provided as a JSON file (environment variable INPUT_JSON or read from command line)
+# and generates output to plugins.yaml
+
 if [ "$INPUT_JSON" == "" ]; then
     echo -n "Provide path to JSON file with values for plugins template: "
     read parametrizedJson

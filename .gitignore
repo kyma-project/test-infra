@@ -1,3 +1,5 @@
 /prow-configurations/hmac_token.txt
 /prow-configurations/development/checker/vendor
 /prow-configurations/plugins.yaml
+/prow-configurations/development/generator/vendor
+/prow-configurations/development/generator/gen
