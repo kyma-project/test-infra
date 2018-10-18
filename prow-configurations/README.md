@@ -44,9 +44,9 @@ The installation script performs the following steps to install Prow:
 
 To check if the installation is successful, perform the following steps:
 1. Check if all Pods are up and running:
-```kubeclt get pods```
+`kubeclt get pods`
 2. Check if the Deck is accessible from outside of the cluster:
-```kubectl get ingress ing```
+`kubectl get ingress ing`
 Copy the address of the ingress `ing` and open it in a browser to display the Prow status on the dashboard.
 
 ## Configuration
@@ -54,7 +54,7 @@ To allow sending events from Github repository to Prow, configure Webhook as des
 Prow can be configured by specifying plugins. To generate the `plugins.yaml` file, use `./development/generate.sh`. 
 `Generate.sh` combines template file (`plugins.yaml.tpl`) with actual values provided as a JSON file (environment variable `INPUT_JSON`) 
 and generates output to `plugins.yaml` file. 
-To check if configuration files `plugins.yaml` and `confg.yaml` are correct, execute the `development/check.sh` script.
+To check if configuration files `plugins.yaml` and `config.yaml` are correct, execute the `development/check.sh` script.
 In case of no errors, use the `update-plugins.sh` script to update plugins configuration on cluster. 
 
 
