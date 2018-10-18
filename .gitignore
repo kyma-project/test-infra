@@ -3,3 +3,6 @@
 /prow-configurations/plugins.yaml
 /prow-configurations/development/generator/vendor
 /prow-configurations/development/generator/gen
+
+.idea/
+*.iml
