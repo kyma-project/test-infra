@@ -41,17 +41,22 @@ The installation script performs the following steps to install Prow:
 - Create secrets for HMAC and OAuth2 to be used by Prow.
 - Deploy Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
 - Add annotations for the Prow Ingress to make it work with the NGINX Ingress Controller.
-<!--- 
-TODO not implemented yet:
-- Upload the set of configurations for plugins.
--->
 
 To check if the installation is successful, perform the following steps:
 1. Check if all Pods are up and running:
-```kubeclt get pods```
+`kubeclt get pods`
 2. Check if the Deck is accessible from outside of the cluster:
-```kubectl get ingress ing```
+`kubectl get ingress ing`
 Copy the address of the ingress `ing` and open it in a browser to display the Prow status on the dashboard.
+
+## Configuration
+To allow sending events from Github repository to Prow, configure Webhook as described [here](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#add-the-webhook-to-github). 
+Prow can be configured by specifying plugins. To generate the `plugins.yaml` file, use `./development/generate.sh`. 
+`Generate.sh` combines template file (`plugins.yaml.tpl`) with actual values provided as a JSON file (environment variable `INPUT_JSON`) 
+and generates output to `plugins.yaml` file. 
+To check if configuration files `plugins.yaml` and `config.yaml` are correct, execute the `development/check.sh` script.
+In case of no errors, use the `update-plugins.sh` script to update plugins configuration on cluster. 
+
 
 ### Cleanup
 
