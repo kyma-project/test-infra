@@ -1,9 +1,9 @@
 triggers:
 - repos:
-  - aszecowka/kyma
+  - {{ .OrganizationOrUser }}/kyma
 
 presubmits: # runs on PRs
-  aszecowka/kyma:
+  {{ .OrganizationOrUser }}/kyma:
   - name: prow/components/ui-api-layer
     run_if_changed: "components/ui-api-layer"
     context: prow/components/ui-api-layer
