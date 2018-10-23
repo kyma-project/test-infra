@@ -6,7 +6,6 @@
 set -o errexit
 readonly INPUT_JSON
 
-
 if [ "$INPUT_JSON" == "" ]; then
     echo -n "Provide path to JSON file with actual values for templates: "
     read  parametrizedJson
@@ -23,13 +22,13 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-go run ${SCRIPT_DIR}/generator/main.go -template=${SCRIPT_DIR}/../plugins.yaml.tpl -out=${SCRIPT_DIR}/../plugins.yaml -input=${parametrizedJson}
+go run "${SCRIPT_DIR}/generator/main.go" -template="${SCRIPT_DIR}/../plugins.yaml.tpl" -out="${SCRIPT_DIR}/../plugins.yaml" -input="${parametrizedJson}"
 
 echo "Content of generated file, plugins.yaml:"
-cat ${SCRIPT_DIR}/../plugins.yaml
+cat "${SCRIPT_DIR}/../plugins.yaml"
 
 echo
 
-go run ${SCRIPT_DIR}/generator/main.go -template=${SCRIPT_DIR}/../config.yaml.tpl -out=${SCRIPT_DIR}/../config.yaml -input=${parametrizedJson}
+go run "${SCRIPT_DIR}/generator/main.go" -template="${SCRIPT_DIR}/../config.yaml.tpl" -out="${SCRIPT_DIR}/../config.yaml" -input="${parametrizedJson}"
 echo "Content of generated file, config.yaml:"
-cat ${SCRIPT_DIR}/../config.yaml
+cat "${SCRIPT_DIR}/../config.yaml"
