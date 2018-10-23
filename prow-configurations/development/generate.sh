@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
+#
+# This script generates plugins.yaml and config.yaml from template files (plugins.yaml.tpl and config.yaml.tpl respectively)
+# by applying actual values from file defined by $INPUT_JSON or provided via command line.
 
 set -o errexit
-
-# This script combines template file (plugins.yaml.tpl) with actual values provided as a JSON file (environment variable INPUT_JSON or read from command line)
-# and generates output to plugins.yaml
+readonly INPUT_JSON
 
 if [ "$INPUT_JSON" == "" ]; then
-    echo -n "Provide path to JSON file with values for plugins template: "
-    read parametrizedJson
+    echo -n "Provide path to JSON file with actual values for templates: "
+    read  parametrizedJson
 else
     parametrizedJson="$INPUT_JSON"
 fi
@@ -21,7 +22,13 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-go run ${SCRIPT_DIR}/generator/main.go -template=${SCRIPT_DIR}/../plugins.yaml.tpl -out=${SCRIPT_DIR}/../plugins.yaml -input=${parametrizedJson}
+go run "${SCRIPT_DIR}/generator/main.go" -template="${SCRIPT_DIR}/../plugins.yaml.tpl" -out="${SCRIPT_DIR}/../plugins.yaml" -input="${parametrizedJson}"
 
 echo "Content of generated file, plugins.yaml:"
-cat ${SCRIPT_DIR}/../plugins.yaml
+cat "${SCRIPT_DIR}/../plugins.yaml"
+
+echo
+
+go run "${SCRIPT_DIR}/generator/main.go" -template="${SCRIPT_DIR}/../config.yaml.tpl" -out="${SCRIPT_DIR}/../config.yaml" -input="${parametrizedJson}"
+echo "Content of generated file, config.yaml:"
+cat "${SCRIPT_DIR}/../config.yaml"
