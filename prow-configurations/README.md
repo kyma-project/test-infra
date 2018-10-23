@@ -51,13 +51,13 @@ Copy the address of the ingress `ing` and open it in a browser to display the Pr
 
 ## Configuration
 To allow sending events from Github repository to Prow, configure Webhook as described [here](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#add-the-webhook-to-github). 
-You can configure Prow by specifying two files: `plugins.yaml` and `config.yaml`. To generate them, use `./development/generate.sh`. 
+You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files. To generate them, use `./development/generate.sh`. 
 `generate.sh` combines the `plugins.yaml.tpl` and `config.yaml.tpl` template files with actual values provided as a JSON file  
 and generates output to the `plugins.yaml` and `config.yaml` files. 
 
 >**NOTE:** You can provide a path to the JSON file from the console input or by specifying the `INPUT_JSON` environment variable.
 
-To check if configuration files `plugins.yaml` and `config.yaml` are correct, execute the `development/check.sh` script.
+To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `development/check.sh` script.
 In case of changes in the plugins configuration, use the `update-plugins.sh` to apply changes on a cluster. 
 In case of changes in the jobs configuration, use the `update-config.sh` to apply changes on a cluster.
 
