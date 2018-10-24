@@ -70,4 +70,5 @@ func generate(inputName, templateName, outputName string) error {
 // PluginsConfigInput provided configuration options for Prow plugins template.
 type PluginsConfigInput struct {
 	OrganizationOrUser string
+	Bucket             string
 }
