@@ -25,5 +25,5 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     gcloud components install alpha beta && \
     gcloud info 
 
-COPY ["integration.sh", "install.sh", "/"]
-ENTRYPOINT [ "/integration.sh" ]
+COPY ["provision_vm_and_start_kyma.sh", "vm/install_deps_and_run_kyma.sh", "/"]
+ENTRYPOINT [ "/provision_vm_and_start_kyma.sh" ]
