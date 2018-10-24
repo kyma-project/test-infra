@@ -12,3 +12,6 @@ presubmits: # runs on PRs
       containers:
       - image: alpine
         command: ["/bin/printenv"]
+
+plank:
+  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
