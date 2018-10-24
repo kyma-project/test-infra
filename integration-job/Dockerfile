@@ -1,13 +1,14 @@
 FROM debian:stretch
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		ca-certificates \
-		curl \
-		netbase \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        netbase \
         openssh-client \
-		wget \
-        python \
-	&& rm -rf /var/lib/apt/lists/*
+        wget \
+        python && \
+    rm -rf /var/lib/apt/lists/*
 
 ## GCLOUD
 ENV CLOUD_SDK_VERSION=219.0.1

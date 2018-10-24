@@ -6,11 +6,11 @@ presets:
 - labels:
     preset-service-account: "true"
   volumes:
-  - name: service
+  - name: "service-account"
     secret:
       secretName: gc-service-account
   volumeMounts:
-  - name: service
+  - name: "service-account"
     mountPath: /var/run/secret/cloud.google.com
     readOnly: true
 
