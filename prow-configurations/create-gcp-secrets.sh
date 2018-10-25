@@ -10,7 +10,7 @@ usage () {
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SECRET_NAME="gcp-sensitive-data"
 FILES=("secret")
-EXTENSTION="txt.encrypted"
+EXTENSTION="encrypted"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]

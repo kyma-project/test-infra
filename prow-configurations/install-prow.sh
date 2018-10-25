@@ -4,6 +4,18 @@ set -o errexit
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if [ -z "${BUCKET}" ]; then
+    BUCKET="test-kyma-prow"
+fi
+
+if [ -z "${KEYRING}" ]; then
+    KEYRING="default"
+fi
+
+if [ -z "${KEY}" ]; then
+    KEY="test-kyma-prow"
+fi
+
 ## Create an HMAC token
 hmac_token="$(openssl rand -hex 20)"
 echo $hmac_token > hmac_token.txt
@@ -42,4 +54,4 @@ kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kub
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
 
 # Create GCP secrets
-bash ${CURRENT_DIR}/create-gcp-secret.sh
+bash ${CURRENT_DIR}/create-gcp-secret.sh --bucket "${BUCKET}" --keyring "${KEYRING}" --key "${KEY}"
