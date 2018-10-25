@@ -39,7 +39,7 @@ Before running following commands, export:
  - SECRET_FILE - the path where the private key will be written
  - ROLE - the role binded to the $SA_NAME
 
-Create service account:
+Create a service account:
 ```
 gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
 ```
