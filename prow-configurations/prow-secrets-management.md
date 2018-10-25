@@ -6,7 +6,7 @@ This document explains secrets management for Prow. Some jobs require using sens
 
 ## Prerequisities
 
- - [gcloud](https://cloud.google.com/sdk/gcloud/) installed. 
+ - [gcloud](https://cloud.google.com/sdk/gcloud/) 
  - basic knowledge about [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys).
 
 For your convenience, export the following data:
