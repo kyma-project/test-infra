@@ -33,14 +33,14 @@ gcloud projects add-iam-policy-binding {PROJECT-ID} --member serviceAccount:{SA-
 gcloud projects add-iam-policy-binding {PROJECT-ID} --member serviceAccount:{SA-NAME}@{PROJECT-ID}.iam.gserviceaccount.com --role roles/compute.osAdminLogin
 ```
 
-2. Generate `key.json` for the Service Account:
+2. Generate `service-account.json` for the Service Account keys:
 
 ```
-gcloud iam service-accounts keys create ~/key.json --iam-account {SA-NAME}@{PROJECT-ID}.iam.gserviceaccount.com
+gcloud iam service-accounts keys create ~/service-account.json --iam-account {SA-NAME}@{PROJECT-ID}.iam.gserviceaccount.com
 ```
 
-3. Create a Secret on the Prow cluster based on this `key.json`:
+3. Create a Secret on the Prow cluster based on this `service-account.json`:
 
 ```
-kubectl create secret generic gc-service-account --from-file=key.json={path-to-your-file}.json
+kubectl create secret generic compute-service-account --from-file=compute-service-account.json={path-to-your-file}.json
 ```

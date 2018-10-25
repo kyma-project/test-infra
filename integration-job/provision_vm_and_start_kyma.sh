@@ -13,7 +13,7 @@ echo "Authenticating to Google Cloud..."
 export CLOUDSDK_COMPUTE_ZONE="europe-west3-a"
 export CLOUDSDK_COMPUTE_REGION="europe-west3"
 gcloud config set project kyma-project
-gcloud auth activate-service-account --key-file /var/run/secret/cloud.google.com/key.json
+gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
 
