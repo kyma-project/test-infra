@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document explains secrets management for Prow. Some jobs require using sensitive data. You need to encrypt data using KMS and store them in GCS. The following instructions assume that you are logged-in to the Google Cloud project with administrative rights.
+Some jobs require using sensitive data. You need to encrypt data using KMS and store them in GCS.
+This document shows the commands necessary to create a service account and store its encrypted key in GCS bucket. The following instructions assume that you are logged in to the Google Cloud project with administrative rights.
 
 ## Prerequisities
 
@@ -58,8 +59,6 @@ gcloud iam service-accounts add-iam-policy-binding $SA_NAME --member=serviceAcco
 ### Encrypt the secret
 
 Export following:
- - KEYRING_NAME - KMS key ring name
- - ENCRYPTION_KEY_NAME - KMS key name
  - SECRET_FILE - path to the file containing secret
 
 Encrypt the secret:
