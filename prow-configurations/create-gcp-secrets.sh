@@ -8,7 +8,7 @@ usage () {
 }
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-SECRET_NAME="gcp-sensitive-data"
+SECRET_NAME="gcp-prow"
 FILES=("secret")
 EXTENSTION="encrypted"
 
