@@ -2,6 +2,8 @@
 
 set -o errexit
 
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 ## Create an HMAC token
 hmac_token="$(openssl rand -hex 20)"
 echo $hmac_token > hmac_token.txt
@@ -38,3 +40,6 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e59
 # Add annotations to Prow Ingress 
 kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
+
+# Create GCP secrets
+bash ${CURRENT_DIR}/create-gcp-secret.sh
