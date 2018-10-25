@@ -3,14 +3,14 @@
 ## Overview
 
 Some jobs require using sensitive data. You need to encrypt data using KMS and store them in GCS.
-This document shows the commands necessary to create a service account and store its encrypted key in GCS bucket. The following instructions assume that you are logged in to the Google Cloud project with administrative rights.
+This document shows the commands necessary to create a service account and store its encrypted key in GCS bucket. This document assumes that you are logged in to the Google Cloud project with administrative rights.
 
-## Prerequisities
+## Prerequisites
 
  - [gcloud](https://cloud.google.com/sdk/gcloud/) 
  - basic knowledge about [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys).
 
-For your convenience, export the following data:
+For your convenience, export these data:
  - PROJECT_NAME - Google Cloud Project
  - BUCKET_NAME - GCS bucket in the $PROJECT_NAME where Prow secrets are stored
  - KEYRING_NAME - KMS key ring
@@ -18,7 +18,7 @@ For your convenience, export the following data:
 
 ## Secrets management
 
-->**NOTE:** Before following this guide check Prow secrets setup for the $PROJECT_NAME.
+>**NOTE:** Before following this guide, check Prow secrets setup for the $PROJECT_NAME.
 
 Set context to the $PROJECT_NAME executing:
 ```
@@ -28,18 +28,18 @@ gcloud config set project $PROJECT_NAME
 ### Create GCS bucket
 
 The purpose of the bucket is to store encrypted credentials necessary for prow jobs like provisioning clusters/vms etc.
-Run the following command:
+Run this command:
 ```
 gsutil mb -p $PROJECT_NAME gs://$BUCKET_NAME/
 ```
 
 ### Create Google Service Account
 
-Before running following commands, export:
+Export these variables:
  - SA_NAME - Service Account name
  - SA_DISPLAY_NAME - Service Account display name
  - SECRET_FILE - the path where the private key will be written
- - ROLE - the role binded to the $SA_NAME
+ - ROLE - the role bound to the $SA_NAME
 
 Create a service account:
 ```
@@ -58,7 +58,7 @@ gcloud iam service-accounts add-iam-policy-binding $SA_NAME --member=serviceAcco
 
 ### Encrypt the secret
 
-Export following:
+Export the following:
  - SECRET_FILE - path to the file containing secret
 
 Encrypt the secret:
