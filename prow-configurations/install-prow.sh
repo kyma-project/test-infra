@@ -16,6 +16,10 @@ if [ -z "${ENCRYPTION_KEY_NAME}" ]; then
     ENCRYPTION_KEY_NAME="test-kyma-prow"
 fi
 
+if [ -z "${LOCATION}" ]; then
+    LOCATION="europe"
+fi
+
 ## Create an HMAC token
 hmac_token="$(openssl rand -hex 20)"
 echo $hmac_token > hmac_token.txt
@@ -54,4 +58,4 @@ kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kub
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
 
 # Create GCP secrets
-bash ${CURRENT_DIR}/create-gcp-secret.sh --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
+bash ${CURRENT_DIR}/create-gcp-secret.sh --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"

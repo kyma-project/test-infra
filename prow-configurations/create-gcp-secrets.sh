@@ -33,6 +33,11 @@ do
             shift # past argument
             shift # past value
         ;;
+        --location)
+            LOCATION=$2
+            shift # past argument
+            shift # past value
+        ;;
         *)    # unknown option
             POSITIONAL+=("$1") # save it in an array for later
             shift # past argument
@@ -41,7 +46,7 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [[ -z "${BUCKET}" ]] || [[ -z "${KEYRING}" ]] || [[ -z "${KEY}" ]]; then
+if [[ -z "${BUCKET}" ]] || [[ -z "${KEYRING}" ]] || [[ -z "${KEY}" ]] || [[ -z "${LOCATION}" ]]; then
     usage
 fi
 
@@ -58,7 +63,7 @@ for FILE in "${FILES[@]}"
 do
     ENCRYPTED_FILE="${FILE}.${EXTENSTION}"
     gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${ENCRYPTED_FILE}
-    gcloud kms decrypt --location "global" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${ENCRYPTED_FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
+    gcloud kms decrypt --location "${LOCATION}" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${ENCRYPTED_FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
     rm ${TMP_DIR}/${ENCRYPTED_FILE}
 done
 
