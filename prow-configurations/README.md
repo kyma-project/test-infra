@@ -4,6 +4,8 @@
 
 This folder contains the installation script and the set of configurations for Prow. 
 
+>**NOTE:** The following instructions assume that you are logged-in to the gcloud {PROJECT_NAME} with administrative rights.
+
 ## Prerequisites
 
 Install the following tools:
@@ -19,54 +21,6 @@ Use the `provision-cluster.sh` script or follow [these](https://github.com/kuber
 ```
 gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --project={PROJECT_NAME}
 ```
-
-## Secrets management
-
-Some jobs require using sensitive data. You need to encrypt data using KMS and store them in GCP. 
-
->**NOTE:** Check wether below setup was already done for the {PROJECT_NAME}.
-
-1. Create service account for provisioning GKE cluster for kyma integration tests:
-```
-gcloud iam service-accounts create {SA_NAME} --display-name {SA_DISPLAY_NAME}
-```
-
-2. Create a private key for the {SA_NAME} service account:
-```
-gcloud iam service-accounts keys create sa-gke-kyma-integration.json --iam-account={SA_NAME}
-```
-
-3. Add policy binding for the {SA_NAME} service account:
-```
-gcloud iam service-accounts add-iam-policy-binding {SA_NAME} --member=serviceAccount:{SA_NAME}@{PROJECT_NAME}.iam.gserviceaccount.com --role={ROLE}
-```
-
-4. Create a bucket for storing sensitive data:
-```
-gsutil mb -p {PROJECT_NAME} gs://{BUCKET_NAME}/
-```
-
-5. Create a key ring:
-```
-gcloud kms keyrings create prow-keyring --location global
-```
-
-6. Create a key:
-```
-gcloud kms keys create prow-encryption-key --location global --keyring prow-keyring --purpose encryption
-```
-
-7. Encrypt the secret:
-```
-gcloud kms encrypt --location global --keyring prow-keyring --key prow-encryption-key --plaintext-file sa-gke-kyma-integration.json --ciphertext-file sa-gke-kyma-integration.json.encrypted
-```
-
-8. Upload encrypted secret to GCP:
-```
-gsutil cp sa-gke-kyma-integration.json.encrypted gs://mst-prow-bucket/
-```
-
-9. Delete the `sa-gke-kyma-integration.json` file.
 
 ## Installation
 
