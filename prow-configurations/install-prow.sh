@@ -5,15 +5,15 @@ set -o errexit
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [ -z "${BUCKET_NAME}" ]; then
-    BUCKET_NAME="prow-sensitive-data"
+    BUCKET_NAME="kyma-prow"
 fi
 
 if [ -z "${KEYRING_NAME}" ]; then
-    KEYRING_NAME="mst-keyring"
+    KEYRING_NAME="kyma-prow"
 fi
 
 if [ -z "${ENCRYPTION_KEY_NAME}" ]; then
-    ENCRYPTION_KEY_NAME="mst-key"
+    ENCRYPTION_KEY_NAME="kyma-prow-encryption"
 fi
 
 if [ -z "${LOCATION}" ]; then
