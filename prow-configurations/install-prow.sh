@@ -2,6 +2,24 @@
 
 set -o errexit
 
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ -z "${BUCKET_NAME}" ]; then
+    BUCKET_NAME="prow-sensitive-data"
+fi
+
+if [ -z "${KEYRING_NAME}" ]; then
+    KEYRING_NAME="mst-keyring"
+fi
+
+if [ -z "${ENCRYPTION_KEY_NAME}" ]; then
+    ENCRYPTION_KEY_NAME="mst-key"
+fi
+
+if [ -z "${LOCATION}" ]; then
+    LOCATION="global"
+fi
+
 ## Create an HMAC token
 hmac_token="$(openssl rand -hex 20)"
 echo $hmac_token > hmac_token.txt
@@ -38,3 +56,6 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e59
 # Add annotations to Prow Ingress 
 kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
+
+# Create GCP secrets
+bash ${CURRENT_DIR}/create-gcp-secrets.sh --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
