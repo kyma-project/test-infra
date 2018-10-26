@@ -58,7 +58,7 @@ trap "rm -rf ${TMP_DIR}" EXIT
 for FILE in "${FILES[@]}"
 do
     ENCRYPTED_FILE="${FILE}.${EXTENSTION}"
-    gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${FILE} > /dev/null
+    gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${FILE}
     gcloud kms decrypt --location "${LOCATION}" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
     kubectl create secret generic "${FILE}" --from-file="${TMP_DIR}/${FILE}"
 done
