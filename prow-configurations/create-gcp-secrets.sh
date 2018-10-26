@@ -8,7 +8,6 @@ usage () {
 }
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-SECRET_NAME="gcp-prow"
 FILES=("sa-gke-kyma-integration")
 EXTENSTION="encrypted"
 
