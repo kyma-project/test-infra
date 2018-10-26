@@ -5,19 +5,19 @@ set -o errexit
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [ -z "${BUCKET_NAME}" ]; then
-    BUCKET_NAME="test-kyma-prow"
+    BUCKET_NAME="prow-sensitive-data"
 fi
 
 if [ -z "${KEYRING_NAME}" ]; then
-    KEYRING_NAME="default"
+    KEYRING_NAME="mst-keyring"
 fi
 
 if [ -z "${ENCRYPTION_KEY_NAME}" ]; then
-    ENCRYPTION_KEY_NAME="test-kyma-prow"
+    ENCRYPTION_KEY_NAME="mst-key"
 fi
 
 if [ -z "${LOCATION}" ]; then
-    LOCATION="europe"
+    LOCATION="global"
 fi
 
 ## Create an HMAC token
