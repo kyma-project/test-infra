@@ -39,7 +39,7 @@ gcloud projects add-iam-policy-binding {PROJECT-ID} --member serviceAccount:{SA-
 gcloud iam service-accounts keys create ~/service-account.json --iam-account {SA-NAME}@{PROJECT-ID}.iam.gserviceaccount.com
 ```
 
-3. Create a secret on the Prow cluster based on this `service-account.json`:
+3. Create a Secret on the Prow cluster based on this `service-account.json`:
 
 ```
 kubectl create secret generic compute-service-account --from-file=compute-service-account.json={path-to-your-file}.json
