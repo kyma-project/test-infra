@@ -1,0 +1,7 @@
+plugins:
+  kyma-project/kyma:
+  - cat
+  - trigger
+
+  kyma-project/test-infra:
+  - config-updater
