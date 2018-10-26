@@ -4,7 +4,7 @@
 
 This folder contains details for the Kyma integration job. First, it creates a virtual machine (VM) instance on Google Cloud and installs dependencies such as Docker and Minikube. Then, it deploys Kyma on Minikube and runs the integration tests.
 
-## Prerequisite
+## Prerequisites
 
 Install the following tools:
 
@@ -13,11 +13,11 @@ Install the following tools:
 
 Make sure you [authenticate gcloud](https://cloud.google.com/sdk/docs/authorizing) and [configure kubectl](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl) to work with your Prow cluster.
 
-### Create a Google Cloud Service Account
+### Create a Google Cloud service account
 
-To be able to create and interact with a VM, authenticate the Kyma integration jobs using a Google Cloud Service Account. Follow these steps:
+To be able to create and interact with a VM, authenticate the Kyma integration jobs using a Google Cloud service account. Follow these steps:
 
-1. Create a Service Account and grant the following roles:
+1. Create a service account and grant the following roles:
 
 - Service Account User
 - Compute Admin
@@ -33,7 +33,7 @@ gcloud projects add-iam-policy-binding {PROJECT-ID} --member serviceAccount:{SA-
 gcloud projects add-iam-policy-binding {PROJECT-ID} --member serviceAccount:{SA-NAME}@{PROJECT-ID}.iam.gserviceaccount.com --role roles/compute.osAdminLogin
 ```
 
-2. Generate `service-account.json` for the Service Account keys:
+2. Generate `service-account.json` for the service account keys:
 
 ```
 gcloud iam service-accounts keys create ~/service-account.json --iam-account {SA-NAME}@{PROJECT-ID}.iam.gserviceaccount.com
