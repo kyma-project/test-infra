@@ -3,7 +3,7 @@
 set -o errexit
 
 usage () {
-    echo "Provide correct GCP bucket name, keyring and encryption key!"
+    echo "Provide correct GCP bucket name, keyring, encryption key and location!"
     exit 1
 }
 
@@ -50,11 +50,7 @@ if [[ -z "${BUCKET}" ]] || [[ -z "${KEYRING}" ]] || [[ -z "${KEY}" ]] || [[ -z "
     usage
 fi
 
-##########
-
 gsutil acl get gs://${BUCKET} > /dev/null
-
-##########
 
 TMP_DIR=`mktemp -d "${CURRENT_DIR}/temp-XXXXXXXXXX"`
 trap "rm -rf ${TMP_DIR}" EXIT
@@ -62,13 +58,7 @@ trap "rm -rf ${TMP_DIR}" EXIT
 for FILE in "${FILES[@]}"
 do
     ENCRYPTED_FILE="${FILE}.${EXTENSTION}"
-    gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${ENCRYPTED_FILE}
-    gcloud kms decrypt --location "${LOCATION}" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${ENCRYPTED_FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
-    rm ${TMP_DIR}/${ENCRYPTED_FILE}
+    gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${FILE} > /dev/null
+    gcloud kms decrypt --location "${LOCATION}" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
+    kubectl create secret generic "${FILE}" --from-file="${TMP_DIR}/${FILE}"
 done
-
-##########
-
-if [ "$(ls -A ${TMP_DIR})" ]; then
-    kubectl create secret generic ${SECRET_NAME} --from-file=${TMP_DIR}
-fi

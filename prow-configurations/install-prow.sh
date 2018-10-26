@@ -58,4 +58,4 @@ kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kub
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
 
 # Create GCP secrets
-bash ${CURRENT_DIR}/create-gcp-secret.sh --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
+bash ${CURRENT_DIR}/create-gcp-secrets.sh --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
