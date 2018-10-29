@@ -4,6 +4,8 @@
 
 This folder contains the installation script and the set of configurations for Prow. 
 
+>**NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights.
+
 ## Prerequisites
 
 Install the following tools:
@@ -14,20 +16,20 @@ Install the following tools:
 - OpenSSL
 
 ### Provision a cluster
-Use the `provision-cluster.sh` script or follow [these](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster) instructions to provision a new cluster on GKE.
+Use the `provision-cluster.sh` script or follow [these](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#create-the-cluster) instructions to provision a new cluster on GKE. Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
 
-## Installation
-1. Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
 ```
 gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --project={PROJECT_NAME}
 ```
 
-2. Set an OAuth2 token that has the read and write access to the bot account. You can set it either as an environment variable named `OAUTH` or interactively during the installation. 
+## Installation
+
+1. Set an OAuth2 token that has the read and write access to the bot account. You can set it either as an environment variable named `OAUTH` or interactively during the installation. 
 To generate a new token, go to the **Settings** tab of a given GitHub account and click **Developer Settings**. Choose **Personal Access Token** and **Generate New Token**.
 In the new window, select all scopes and click **Generate token**. 
 >**NOTE:** It is recommended to create a separate account instead of using your personal one. 
 
-3. Run the following script to start the installation process: 
+2. Run the following script to start the installation process: 
 
 ```bash
 ./install-prow.sh
@@ -51,9 +53,13 @@ Copy the address of the ingress `ing` and open it in a browser to display the Pr
 
 ## Configuration
 To allow sending events from Github repository to Prow, configure Webhook as described [here](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#add-the-webhook-to-github). 
-You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files. To generate them, use `./development/generate.sh`. 
-`generate.sh` combines the `plugins.yaml.tpl` and `config.yaml.tpl` template files with actual values provided as a JSON file  
-and generates output to the `plugins.yaml` and `config.yaml` files. 
+You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files. To generate them, use `./development/generate.sh`. The `generate.sh` script combines the `plugins.yaml.tpl` and `config.yaml.tpl` template files with actual values provided as a JSON file and generates output to the `plugins.yaml` and `config.yaml` files. The following snippet is an exmample of the JSON file:
+
+```
+{
+  "OrganizationOrUser":"yourgithubuser"
+}
+```
 
 >**NOTE:** You can provide a path to the JSON file from the console input or by specifying the `INPUT_JSON` environment variable.
 
