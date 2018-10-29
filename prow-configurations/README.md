@@ -52,7 +52,7 @@ To check if the installation is successful, perform the following steps:
 Copy the address of the ingress `ing` and open it in a browser to display the Prow status on the dashboard.
 
 ## Configuration
-To allow sending events from Github repository to Prow, configure Webhook as described [here](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#add-the-webhook-to-github).
+[Configure Webhook](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#add-the-webhook-to-github) to enable sending Events from a GitHub repository to Prow.
 You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files. To generate them, use `./development/generate.sh`. The `generate.sh` script combines the `plugins.yaml.tpl` and `config.yaml.tpl` template files with actual values provided as a JSON file and generates output to the `plugins.yaml` and `config.yaml` files. The following snippet is an exmample of the JSON file:
 
 ```
