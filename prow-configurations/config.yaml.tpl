@@ -12,48 +12,12 @@ plank:
     gcs_configuration:
       bucket: {{ .Bucket }}
       path_strategy: "explicit"
-    gcs_credentials_secret: "service-account"
+    gcs_credentials_secret: "plank-gcs-service-account"
 
 triggers:
 - repos:
   - {{ .OrganizationOrUser }}/kyma
   - {{ .OrganizationOrUser }}/console
-
-presets:
-  - labels:
-      preset-service-account: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/service-account/service-account.json
-    volumes:
-      - name: service
-        secret:
-          secretName: service-account
-    volumeMounts:
-      - name: service
-        mountPath: /etc/service-account
-        readOnly: true
-  - labels:
-      preset-dind-enabled: "true"
-    env:
-      - name: DOCKER_IN_DOCKER_ENABLED
-        value: "true"
-    volumes:
-      - name: docker-graph
-        emptyDir: {}
-    volumeMounts:
-      - name: docker-graph
-        mountPath: /docker-graph
-  - labels:
-      preset-docker-push-repository: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/prow/test"
-  - labels:
-      preset-docker-pr-directory: "true"
-    env:
-      - name: DOCKER_PUSH_DIRECTORY
-        value: "pr"
 
 presets:
 - labels:
@@ -70,14 +34,14 @@ presets:
     mountPath: /etc/service-account
     readOnly: true
   - labels:
-      preset-service-account: "true"
+      preset-gcr-push-service-account: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/service-account/service-account.json
+        value: /etc/service-account/gcr-push-service-account.json
     volumes:
       - name: service
         secret:
-          secretName: service-account
+          secretName: gcr-push-service-account
     volumeMounts:
       - name: service
         mountPath: /etc/service-account
@@ -117,13 +81,13 @@ presubmits: # runs on PRs
     spec:
       containers:
       - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.1 # created by running `docker build -t <image> .` in the integration-job directory.
-  - name: prow/components/ui-api-layer
+  - name: prow/kyma/components/ui-api-layer
     run_if_changed: "components/ui-api-layer/"
     context: prow/components/ui-api-layer
     skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
     labels:
         preset-dind-enabled: "true"
-        preset-service-account: "true"
+        preset-gcr-push-service-account: "true"
         preset-docker-push-repository: "true"
         preset-docker-pr-directory: "true"
     decorate: true
@@ -146,13 +110,13 @@ presubmits: # runs on PRs
           - "--build-image-tests"
           - "--push-image-tests"
   {{ .OrganizationOrUser }}/console:
-  - name: prow/content
+  - name: prow/console/content
     run_if_changed: "content/"
     context: prow/content
     skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
     labels:
         preset-dind-enabled: "true"
-        preset-service-account: "true"
+        preset-gcr-push-service-account: "true"
         preset-docker-push-repository: "true"
         preset-docker-pr-directory: "true"
     decorate: true
@@ -176,13 +140,13 @@ presubmits: # runs on PRs
           - "--unit-tests"
           - "--build-image-tests"
           - "--push-image-tests"
-  - name: prow/catalog
+  - name: prow/console/catalog
     run_if_changed: "catalog/"
     context: prow/catalog
     skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
     labels:
         preset-dind-enabled: "true"
-        preset-service-account: "true"
+        preset-gcr-push-service-account: "true"
         preset-docker-push-repository: "true"
         preset-docker-pr-directory: "true"
     decorate: true
@@ -206,13 +170,13 @@ presubmits: # runs on PRs
           - "--unit-tests"
           - "--build-image-tests"
           - "--push-image-tests"
-  - name: prow/instances
+  - name: prow/console/instances
     run_if_changed: "instances/"
     context: prow/instances
     skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
     labels:
         preset-dind-enabled: "true"
-        preset-service-account: "true"
+        preset-gcr-push-service-account: "true"
         preset-docker-push-repository: "true"
         preset-docker-pr-directory: "true"
     decorate: true
