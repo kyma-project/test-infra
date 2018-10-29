@@ -39,7 +39,7 @@ The installation script performs the following steps to install Prow:
 - Create a ClusterRoleBinding.
 - Create a HMAC token to be used for GitHub Webhooks.
 - Create secrets for HMAC and OAuth2 to be used by Prow.
-- Deploy Prow components with the `starter.yaml` file from `prow/cluster` directory.
+- Deploy Prow components using the `starter.yaml` file from the `prow/cluster` directory.
 - Add annotations for the Prow Ingress to make it work with the NGINX Ingress Controller.
 
 To check if the installation is successful, perform the following steps:
