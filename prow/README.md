@@ -45,7 +45,7 @@ The installation script performs the following steps to install Prow:
 - Deploy Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
 - Deploy Cert Manager.
 - Deploy Secure Ingress.
-- Removes Insecure Ingress
+- Removes Insecure Ingress.
 
 To check if the installation is successful, perform the following steps:
 
