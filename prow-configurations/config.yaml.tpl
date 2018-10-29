@@ -3,11 +3,11 @@ presets:
     preset-compute-service-account: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/service-account/compute-service-account.json
+      value: /etc/service-account/sa-gke-vm-integration
   volumes:
   - name: compute-service-account
     secret:
-      secretName: compute-service-account
+      secretName: sa-gke-vm-integration
   volumeMounts:
   - name: compute-service-account
     mountPath: /etc/service-account
