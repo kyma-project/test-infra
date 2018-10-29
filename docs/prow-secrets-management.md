@@ -58,15 +58,14 @@ gcloud iam service-accounts add-iam-policy-binding $SA_NAME --member=serviceAcco
 
 ### Encrypt the Secret
 
-Export the following:
- - SECRET_FILE - path to the file containing secret
+Export the **SECRET_FILE** variable which is the path to the file containing the Secret.
 
 Encrypt the Secret:
 ```
 gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
 ```
 
-### Upload the secret
+### Upload the Secret
 
 Upload the encrypted Secret to GCP:
 ```
