@@ -55,7 +55,7 @@ You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files.
 `generate.sh` combines the `plugins.yaml.tpl` and `config.yaml.tpl` template files with actual values provided as a JSON file  
 and generates output to the `plugins.yaml` and `config.yaml` files. 
 
-Actual generated `plugins.yaml` and `config.yaml` files, which should be available for a cluster, should be stored under `prow` directory.
+Store the updated `plugins.yaml` and `config.yaml` files, which are available for a cluster, in the `prow` directory.
 
 >**NOTE:** You can provide a path to the JSON file from the console input or by specifying the `INPUT_JSON` environment variable.
 
