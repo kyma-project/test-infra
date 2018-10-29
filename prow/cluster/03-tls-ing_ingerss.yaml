@@ -1,3 +1,6 @@
+# Source: kubernetes/test-infra/prow/cluster/tls-ing_ingress.yaml
+# Modified host and removed metrics path
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

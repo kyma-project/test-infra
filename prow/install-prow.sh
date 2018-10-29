@@ -1,4 +1,8 @@
 #!/bin/bash
+# Source prow-configurations/install-prow.sh
+# Changes:
+#  - Removed secret creation
+#  - Remove default ingress `ing` after installation
 
 set -o errexit
 

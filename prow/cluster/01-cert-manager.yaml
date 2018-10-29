@@ -1,4 +1,4 @@
-# Source: test-infra/prow/cluster/cert-manager.yaml
+# Source: kubernetes/test-infra/prow/cluster/cert-manager.yaml
 
 apiVersion: v1
 kind: Namespace

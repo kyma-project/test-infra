@@ -1,10 +1,5 @@
 plugins:
   {{ .OrganizationOrUser }}/kyma:
-  - cat
-  - trigger
-
-  {{ .OrganizationOrUser }}/test-infra:
-  - config-updater
     - cat
     - trigger
   {{ .OrganizationOrUser }}/console:
@@ -14,6 +9,7 @@ plugins:
     - cat
     - trigger
   {{ .OrganizationOrUser }}/test-infra:
+    - config-updater
     - cat
     - trigger
   {{ .OrganizationOrUser }}/bundles:
