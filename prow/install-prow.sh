@@ -14,7 +14,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/provider/cloud-generic.yaml
 
 # Deploy Prow
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e595a33ac92ab503f913f2d710efabd3de21/prow/cluster/starter.yaml
+kubectl apply -f cluster/starter.yaml
 
 # Install cert-manager
 kubectl apply -f cluster/01-cert-manager.yaml
