@@ -26,7 +26,7 @@ presubmits: # runs on PRs
         command: ["/bin/printenv"]
   - name: kyma-integration
     optional: true
-    run_if_changed: "^(resources|installation|cluster)"
+    run_if_changed: "^(resources|installation)"
     trigger: "(?m)^/test kyma-integration"
     rerun_command: "/test kyma-integration"
     context: kyma-integration
