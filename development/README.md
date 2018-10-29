@@ -51,23 +51,46 @@ To check if the installation is successful, perform the following steps:
 `kubectl get ingress ing`
 Copy the address of the ingress `ing` and open it in a browser to display the Prow status on the dashboard.
 
-## Configuration
+## Development
 [Configure Webhook](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#add-the-webhook-to-github) to enable sending Events from a GitHub repository to Prow.
-You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files. To generate them, use `./development/generate.sh`. The `generate.sh` script combines the `plugins.yaml.tpl` and `config.yaml.tpl` template files with actual values provided as a JSON file and generates output to the `plugins.yaml` and `config.yaml` files. The following snippet is an exmample of the JSON file:
+You can configure Prow by specifying the `plugins.yaml` and `config.yaml` files. 
 
-```
-{
-  "OrganizationOrUser":"yourgithubuser"
-}
-```
-
-Store the updated `plugins.yaml` and `config.yaml` files, which are available for a cluster, in the `prow` directory.
-
->**NOTE:** You can provide a path to the JSON file from the console input or by specifying the `INPUT_JSON` environment variable.
-
-To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `development/check.sh` script.
+To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `check.sh` script.
 In case of changes in the plugins configuration, use the `update-plugins.sh` to apply changes on a cluster.
 In case of changes in the jobs configuration, use the `update-config.sh` to apply changes on a cluster.
+
+### Strategy for organising jobs
+
+The `test-infra` repository has defined configurations for the Prow cluster in the `prow` subdirectory. This directory has the following structure:
+- `cluster` directory, which contains all `yaml` files for `prow` cluster provisioning
+- `jobs/{repository_name}` directory, which contains all files with jobs definitions
+- `config.yaml` file, which contains Prow configuration without job definitions
+- `plugins.yaml` file, which contains Prow plugins configuration
+
+`jobs/{repository_name}` directories have subdirectories which represent each component and contain job definitions. Job definitions not connected to a particular component are defined directly under the `jobs/{repository_name}` directory.
+
+This is a convention of naming job files:
+- presubmitjobs -> `presubmit.yaml`
+- postsubmitjobs -> `postsubmit.yaml`
+
+For example:
+```
+...
+prow
+|- cluster
+| |- starter.yaml
+|- jobs
+| |- kyma
+| | |- components
+| | | |- environments
+| | | | |- postsubmit.yaml
+| | | | |- presubmit.yaml
+| | |- periodics.yaml
+| | |- integration.yaml
+|- config.yaml
+|- plugins.yaml
+...
+```
 
 ### Cleanup
 
