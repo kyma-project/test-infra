@@ -12,7 +12,7 @@ Install the following tools:
 
 ### Google Cloud Platform configuration
 
-- Global static IP Address with name `prow-production`
+- A global static IP address with the `prow-production` name.
 - DNS registry for domain `status.build.kyma-project.io` that points to `prow-production` address
 
 ### Secrets:
