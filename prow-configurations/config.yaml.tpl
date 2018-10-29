@@ -25,11 +25,8 @@ presubmits: # runs on PRs
       - image: alpine
         command: ["/bin/printenv"]
   - name: kyma-integration
-<<<<<<< HEAD
     optional: true
-=======
     run_if_changed: "^(resources|installation|cluster)"
->>>>>>> Added initial config
     trigger: "(?m)^/test kyma-integration"
     rerun_command: "/test kyma-integration"
     context: kyma-integration
