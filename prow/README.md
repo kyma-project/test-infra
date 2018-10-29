@@ -3,7 +3,6 @@
 This project contains a set of configuration files for the Prow production cluster.
 ## Prerequisites
 
-### Tools
 
 Install the following tools:
 
