@@ -72,4 +72,4 @@ Upload the encrypted Secret to GCP:
 gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
 ```
 
-Delete the file exported under the $SECRET_FILE variable.
+Delete the file exported under the **SECRET_FILE** variable.
