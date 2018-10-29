@@ -1,3 +1,10 @@
+###
+# Source file: https://github.com/kubernetes/test-infra/blob/master/prow/cluster/starter.yaml
+# Source commit: 0bf3b91c5bb19672ce931cfab0c8a496464aa571
+#
+# Changes:
+# - add get verb for configmaps resource in hook role
+###
 ---
 apiVersion: v1
 kind: ConfigMap

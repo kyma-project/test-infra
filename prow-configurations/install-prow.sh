@@ -3,6 +3,7 @@
 set -o errexit
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/../prow/cluster" && pwd )"
 
 if [ -z "${BUCKET_NAME}" ]; then
     BUCKET_NAME="prow-sensitive-data"
@@ -51,7 +52,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 kubectl create secret generic hmac-token --from-literal=hmac=$hmac_token
 kubectl create secret generic oauth-token --from-literal=oauth=$oauth_token
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e595a33ac92ab503f913f2d710efabd3de21/prow/cluster/starter.yaml
+kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
 # Add annotations to Prow Ingress 
 kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
