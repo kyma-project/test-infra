@@ -27,7 +27,7 @@ gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --pr
 1. Set an OAuth2 token that has the read and write access to the bot account. You can set it either as an environment variable named `OAUTH` or interactively during the installation.
 To generate a new token, go to the **Settings** tab of a given GitHub account and click **Developer Settings**. Choose **Personal Access Token** and **Generate New Token**.
 In the new window, select all scopes and click **Generate token**.
->**NOTE:** Create a separate bot account instead of using your personal one. If the prow bot account is the same as account that creates a job-triggering comment, the job is not triggered!
+>**NOTE:** Create a separate bot account instead of using your personal one. If the Prow bot account is the same as account that creates a job-triggering comment, the job is not triggered!
 
 2. Run the following script to start the installation process:
 
