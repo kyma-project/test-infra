@@ -54,4 +54,4 @@ To check if the installation is successful, perform the following steps:
    `kubeclt get pods`
 2. Check if the Deck is accessible from outside of the cluster:
    `kubectl get ingress tls-ing`
-   Copy the address of the ingress `tls-ing` and open it in a browser to display the Prow status on the dashboard.
+   Copy the address of the `tls-ing` Ingress and open it in a browser to display the Prow status on the dashboard.
