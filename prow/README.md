@@ -19,7 +19,7 @@ Install the following tools:
 ### Secrets
 The obligatory Secrets include:
 - `hmac-token` which is a Prow HMAC token used for GitHub Webhooks.
-- oauth-token - GitHub token with read/write access to `kyma-bot` account
+- `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account.
 - compute-service-account - Google Cloud Service Account with roles:
   - Service Account User
   - Compute Admin
