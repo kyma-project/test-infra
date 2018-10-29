@@ -4,7 +4,7 @@
 
 This folder contains the installation script and the set of configurations for Prow. 
 
->**NOTE:** The following instructions assume that you are logged-in to the gcloud {PROJECT_NAME} with administrative rights.
+>**NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights.
 
 ## Prerequisites
 
