@@ -24,3 +24,8 @@ plugins:
   {{ .OrganizationOrUser }}/luigi:
     - cat
     - trigger
+
+config_updater:
+  maps:
+    prow/jobs/**/*.yaml:
+      name: job-config
