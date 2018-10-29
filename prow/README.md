@@ -15,7 +15,7 @@ Install the following tools:
 - A global static IP address with the `prow-production` name.
 - A DNS registry for the `status.build.kyma-project.io` domain that points to the `prow-production` address.
 
-### Secrets:
+### Secrets
 
 - hmac-token - Prow HMAC token used for GitHub Webhooks
 - oauth-token - GitHub token with read/write access to `kyma-bot` account
