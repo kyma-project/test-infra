@@ -69,6 +69,8 @@ To check if the `plugins.yaml` and `config.yaml` configuration files are correct
 In case of changes in the plugins configuration, use the `update-plugins.sh` to apply changes on a cluster.
 In case of changes in the jobs configuration, use the `update-config.sh` to apply changes on a cluster.
 
+Before commiting, make sure `config.yaml` and `config.yaml.tpl` files are synchronized.
+
 ### Cleanup
 
 To clean up everything created by the installation script, run the removal script:
