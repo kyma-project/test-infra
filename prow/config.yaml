@@ -36,7 +36,7 @@ presubmits: # runs on PRs
       preset-compute-service-account: "true"
     spec:
       containers:
-      - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.1 # created by running `docker build -t <image> .` in the integration-job directory.
+      - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
   - name: kyma-gke-integration
     run_if_changed: "^(resources|installation)"
     trigger: "(?m)^/test kyma-gke-integration"
@@ -63,7 +63,7 @@ postsubmits:
       preset-compute-service-account: "true"
     spec:
       containers:
-      - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.1 # created by running `docker build -t <image> .` in the integration-job directory.
+      - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
 
 plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
