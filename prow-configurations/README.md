@@ -29,6 +29,12 @@ To generate a new token, go to the **Settings** tab of a given GitHub account an
 In the new window, select all scopes and click **Generate token**.
 >**NOTE:** Create a separate bot account instead of using your personal one. If the Prow bot account is the same as the account that creates a job-triggering comment, the job is not triggered.
 
+2. To run jobs properly, Prow requires two sets of credentials:
+
+- 
+
+
+
 2. Run the following script to start the installation process:
 
 ```bash
