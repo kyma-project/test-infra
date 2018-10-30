@@ -43,7 +43,7 @@ presubmits: # runs on PRs
     rerun_command: "/test kyma-gke-integration"
     context: kyma-gke-integration
     optional: true
-    skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
+    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
     max_concurrency: 10
     labels:
       preset-compute-service-account: "true"
