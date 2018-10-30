@@ -33,7 +33,7 @@ presubmits: # runs on PRs
     skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
     max_concurrency: 10
     labels:
-      preset-compute-service-account: "true"
+      preset-sa-vm-kyma-integration: "true"
     spec:
       containers:
       - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.1 # created by running `docker build -t <image> .` in the integration-job directory.
@@ -46,7 +46,7 @@ presubmits: # runs on PRs
     skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
     max_concurrency: 10
     labels:
-      preset-compute-service-account: "true"
+      preset-sa-vm-kyma-integration: "true"
     spec:
       containers:
       - image: alpine
