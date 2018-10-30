@@ -4,5 +4,7 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/test-infra/a202e5
 kubectl delete pods -l created-by-prow=true
 kubectl delete secret hmac-token
 kubectl delete secret oauth-token
+kubectl delete secret sa-vm-kyma-integration
+kubectl delete secret sa-gke-kyma-integration
 kubectl delete clusterrolebinding cluster-admin-binding
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
