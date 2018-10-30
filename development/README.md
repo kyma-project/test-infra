@@ -29,7 +29,17 @@ To generate a new token, go to the **Settings** tab of a given GitHub account an
 In the new window, select all scopes and click **Generate token**.
 >**NOTE:** Create a separate bot account instead of using your personal one. If the Prow bot account is the same as the account that creates a job-triggering comment, the job is not triggered.
 
-2. Run the following script to start the installation process:
+2. Export the variables, where:
+ - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
+ - **KEYRING_NAME** is the KMS key ring.
+ - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
+
+ >**NOTE:** For more details on setting up Google Cloud Project refer to [Prow Secrets management](https://github.com/kyma-project/test-infra/blob/master/docs/prow-secrets-management.md)
+
+ The Prow installation script assumes the following set of credentials, encrypted with the **ENCRYPTION_KEY_NAME** from **KEYRING_NAME**, is present in **BUCKET_NAME**
+ - **sa-gke-kyma-integration** service account key.
+
+3. Run the following script to start the installation process:
 
 ```bash
 ./install-prow.sh

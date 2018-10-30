@@ -5,16 +5,19 @@ set -o errexit
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/../prow/cluster" && pwd )"
 
-if [ -z "${BUCKET_NAME}" ]; then
-    BUCKET_NAME="kyma-prow"
+if [ -z "$BUCKET_NAME" ]; then
+      echo "\$BUCKET_NAME is empty"
+      exit 1
 fi
 
-if [ -z "${KEYRING_NAME}" ]; then
-    KEYRING_NAME="kyma-prow"
+if [ -z "$KEYRING_NAME" ]; then
+      echo "\$KEYRING_NAME is empty"
+      exit 1
 fi
 
-if [ -z "${ENCRYPTION_KEY_NAME}" ]; then
-    ENCRYPTION_KEY_NAME="kyma-prow-encryption"
+if [ -z "$ENCRYPTION_KEY_NAME" ]; then
+      echo "\$ENCRYPTION_KEY_NAME is empty"
+      exit 1
 fi
 
 if [ -z "${LOCATION}" ]; then
