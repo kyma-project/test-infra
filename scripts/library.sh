@@ -34,8 +34,12 @@ function authenticate() {
 function export_variables() {
     if [[ "${JOB_TYPE}" == "presubmit" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
-    else
+    elif [[ "${JOB_TYPE}" == "postsubmit" ]]; then
+        # TODO: Add support for release pipeline
         DOCKER_TAG="$(git describe --tags --always)"
+    else
+        echo "Not supported job type - ${JOB_TYPE}"
+        exit 1
     fi
     readonly DOCKER_TAG
     export DOCKER_TAG
