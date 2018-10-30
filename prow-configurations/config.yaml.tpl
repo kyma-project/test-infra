@@ -1,15 +1,15 @@
 presets:
 - labels:
-    preset-compute-service-account: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
+    preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/service-account/compute-service-account.json
+      value: /etc/service-account/sa-vm-kyma-integration
   volumes:
-  - name: compute-service-account
+  - name: sa-vm-kyma-integration
     secret:
-      secretName: compute-service-account
+      secretName: sa-vm-kyma-integration
   volumeMounts:
-  - name: compute-service-account
+  - name: sa-vm-kyma-integration
     mountPath: /etc/service-account
     readOnly: true
 
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
     skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
     max_concurrency: 10
     labels:
-      preset-compute-service-account: "true"
+      preset-sa-vm-kyma-integration: "true"
     spec:
       containers:
       - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
@@ -46,7 +46,7 @@ presubmits: # runs on PRs
     skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
     max_concurrency: 10
     labels:
-      preset-compute-service-account: "true"
+      preset-sa-vm-kyma-integration: "true"
     spec:
       containers:
       - image: alpine
@@ -60,7 +60,7 @@ postsubmits:
     - master
     max_concurrency: 10
     labels:
-      preset-compute-service-account: "true"
+      preset-sa-vm-kyma-integration: "true"
     spec:
       containers:
       - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.

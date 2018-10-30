@@ -8,7 +8,7 @@ usage () {
 }
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-FILES=("sa-gke-kyma-integration")
+FILES=("sa-gke-kyma-integration" "sa-vm-kyma-integration")
 EXTENSTION="encrypted"
 
 POSITIONAL=()
