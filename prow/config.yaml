@@ -40,10 +40,9 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-  - name: kyma-integration
+  - name: kyma-integration-master
     branches:
     - master
-    context: kyma-integration
     max_concurrency: 10
     labels:
       preset-compute-service-account: "true"
