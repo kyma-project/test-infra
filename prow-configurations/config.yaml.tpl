@@ -49,17 +49,17 @@ postsubmits:
     spec:
       containers:
       - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.1 # created by running `docker build -t <image> .` in the integration-job directory.
-  - name: kyma-cluster-integration
-    trigger: "(?m)^/test kyma-cluster-integration"
-    rerun_command: "/test kyma-cluster-integration"
-    context: kyma-cluster-integration
+  - name: kyma-gke-integration
+    trigger: "(?m)^/test kyma-gke-integration"
+    rerun_command: "/test kyma-gke-integration"
+    context: kyma-gke-integration
     skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
     max_concurrency: 10
     spec:
       containers:
       - image: alpine
         command: ["/bin/echo"]
-        args: ["placeholder"]
+        args: ["starting fake gke test integration job"]
 
 plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
