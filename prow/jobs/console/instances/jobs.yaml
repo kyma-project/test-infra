@@ -1,8 +1,8 @@
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: prow/kyma/components/ui-api-layer
-      run_if_changed: "components/ui-api-layer/"
-      context: prow/kyma/components/ui-api-layer
+  kyma-project/console:
+    - name: prow/console/instances
+      run_if_changed: "instances/"
+      context: prow/console/instances
       optional: true
       skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
       max_concurrency: 10
@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository: "true"
         preset-build-pr: "true"
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/console
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -20,11 +20,11 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+          - image: eu.gcr.io/kyma-project/prow/buildpack-node:0.0.1
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
             env:
               - name: SOURCES_DIR
-                value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+                value: "/home/prow/go/src/github.com/kyma-project/console/instances"
