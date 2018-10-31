@@ -85,7 +85,7 @@ In case of changes in the jobs configuration, use the `update-config.sh` to appl
 The `test-infra` repository has defined configurations for the Prow cluster in the `prow` subdirectory. This directory has the following structure:
 
 - `cluster` directory, which contains all `yaml` files for Prow cluster provisioning
-- `jobs/{repository_name}` directory, which contains all files with jobs definitions
+- `jobs/{repository_name}` directory, which contains all files with jobs definitions. Each file must have a unique name.
 - `config.yaml` file, which contains Prow configuration without job definitions
 - `plugins.yaml` file, which contains Prow plugins configuration
 
@@ -102,8 +102,8 @@ prow
 | |- kyma
 | | |- components
 | | | |- environments
-| | | | |- jobs.yaml
-| | |- integration.yaml
+| | | | |- environments.jobs.yaml
+| | |- kyma.integration.yaml
 |- config.yaml
 |- plugins.yaml
 ...
