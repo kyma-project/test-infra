@@ -44,7 +44,7 @@ The Prow installation script assumes that the following service accounts exist:
 - **sa-gke-kyma-integration** with a role that allows the account to create Kubernetes clusters.
 - **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines.
 - **sa-gcs-plank** with roles that allow the account to store objects in a Bucket.
-- **sa-gcr-push** with roles allowing to push to Google Container Repository
+- **sa-gcr-push** with roles that allow the account to push images to Google Container Repository.
 
 with their keys, encrypted using the **ENCRYPTION_KEY_NAME** from **KEYRING_NAME**, being present in \*\*BUCKET_NAME\*\*
 
