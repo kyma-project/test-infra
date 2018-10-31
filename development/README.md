@@ -86,6 +86,14 @@ prow
 ...
 ```
 
+### Convention for naming jobs
+
+When you define jobs for Prow the `name` and `context` of the job should meet one of following patterns:
+- `prow/{repository_name}/{component_name}/{job_name}` for components
+- `prow/{repository_name}/{job_name}` for jobs not connected to a particular component
+
+In both cases `{job_name}` should reflect job responsibility.
+
 ### Cleanup
 
 To clean up everything created by the installation script, run the removal script:
