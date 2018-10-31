@@ -1,4 +1,5 @@
 presets:
+<<<<<<< HEAD
   - labels:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
@@ -60,6 +61,21 @@ presets:
     env:
       - name: BUILD_TYPE
         value: release
+=======
+- labels:
+    preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /etc/service-account/service-account.json
+  volumes:
+  - name: sa-vm-kyma-integration
+    secret:
+      secretName: sa-vm-kyma-integration
+  volumeMounts:
+  - name: sa-vm-kyma-integration
+    mountPath: /etc/service-account
+    readOnly: true
+>>>>>>> Checkout kyma sources
 
 plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
@@ -73,6 +89,10 @@ plank:
       entrypoint: "gcr.io/k8s-prow/entrypoint:v20181019-08e9d55c9"
       sidecar: "gcr.io/k8s-prow/sidecar:v20181019-08e9d55c9"
     gcs_configuration:
+<<<<<<< HEAD
       bucket: prow-production
+=======
+      bucket: "kyma-prow-jobs"
+>>>>>>> Checkout kyma sources
       path_strategy: "explicit"
     gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
