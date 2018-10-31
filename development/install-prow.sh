@@ -55,11 +55,11 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 kubectl create secret generic hmac-token --from-literal=hmac=$hmac_token
 kubectl create secret generic oauth-token --from-literal=oauth=$oauth_token
 
+# Create GCP secrets
+bash ${CURRENT_DIR}/create-gcp-secrets.sh --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
+
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
 # Add annotations to Prow Ingress 
 kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
 kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
-
-# Create GCP secrets
-bash ${CURRENT_DIR}/create-gcp-secrets.sh --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
