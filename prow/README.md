@@ -32,7 +32,7 @@ The obligatory Secrets include:
 gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --project={PROJECT_NAME}
 ```
 
-2. Export the variables, where:
+2. Export the environment variables:
  - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
  - **KEYRING_NAME** is the KMS key ring.
  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
