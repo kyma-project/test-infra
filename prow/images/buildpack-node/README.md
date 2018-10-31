@@ -14,7 +14,7 @@ This image contains:
 
 ## Build
 
-To build Docker image, run this command:
+To build the Docker image, run this command:
 
 ```bash
 docker build buildpack-node .
