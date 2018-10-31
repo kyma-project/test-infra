@@ -1,0 +1,11 @@
+presubmits: # runs on PRs
+  kyma-project/kyma:
+  - name: prow/kyma/components/ui-api-layer/tests
+    optional: true
+    run_if_changed: "components/ui-api-layer/"
+    context: prow/kyma/components/ui-api-layer/tests
+    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+    spec:
+      containers:
+      - image: alpine
+        command: ["/bin/printenv"]
