@@ -46,7 +46,7 @@ The Prow installation script assumes that the following service accounts exist:
 - **sa-gcs-plank** with roles that allow the account to store objects in a Bucket.
 - **sa-gcr-push** with roles that allow the account to push images to Google Container Repository.
 
-with their keys, encrypted using the **ENCRYPTION_KEY_NAME** from **KEYRING_NAME**, being present in \*\*BUCKET_NAME\*\*
+The account files are encrypted with the **ENCRYPTION_KEY_NAME** key from **KEYRING_NAME** and are stored in **BUCKET_NAME**.
 
 3. Run the following script to start the installation process:
 
