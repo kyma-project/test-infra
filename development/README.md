@@ -40,7 +40,6 @@ In the new window, select all scopes and click **Generate token**.
  - **sa-gke-kyma-integration** with a role allowing to create Kubernetes clusters
  - **sa-vm-kyma-integration** with roles allowing to provision Virtual Machines
 with their keys, encrypted using the **ENCRYPTION_KEY_NAME** from **KEYRING_NAME**, being present in **BUCKET_NAME**
- - **sa-gke-kyma-integration** with a role allowing to create kubernetes clusters.
 
 3. Run the following script to start the installation process:
 
