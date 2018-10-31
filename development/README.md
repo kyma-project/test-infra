@@ -36,7 +36,10 @@ In the new window, select all scopes and click **Generate token**.
 
  >**NOTE:** For more details on setting up Google Cloud Project refer to [Prow Secrets management](https://github.com/kyma-project/test-infra/blob/master/docs/prow-secrets-management.md)
 
- The Prow installation script assumes the following service account keys, encrypted with the **ENCRYPTION_KEY_NAME** from **KEYRING_NAME**, is present in **BUCKET_NAME**
+ The Prow installation script assumes that the following service accounts exist:
+ - **sa-gke-kyma-integration** with a role allowing to create Kubernetes clusters
+ - **sa-vm-kyma-integration** with roles allowing to provision Virtual Machines
+with their keys, encrypted using the **ENCRYPTION_KEY_NAME** from **KEYRING_NAME**, being present in **BUCKET_NAME**
  - **sa-gke-kyma-integration** with a role allowing to create kubernetes clusters.
 
 3. Run the following script to start the installation process:
