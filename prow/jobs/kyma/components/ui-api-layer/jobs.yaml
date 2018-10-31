@@ -14,7 +14,7 @@ presubmits: # runs on PRs
       decorate: true
       path_alias: github.com/kyma-project/kyma
       extra_refs:
-        - org: { { .OrganizationOrUser } }
+        - org: kyma-project
           repo: test-infra
           base_ref: master
           path_alias: github.com/kyma-project/test-infra

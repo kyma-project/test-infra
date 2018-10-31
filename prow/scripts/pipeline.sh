@@ -22,6 +22,6 @@ elif [[ "${BUILD_TYPE}" == "master" ]]; then
     # TODO: Add support for release pipeline
     make ci-master
 else
-    echo "Not supported job type - ${JOB_TYPE}"
+    echo "Not supported build type - ${BUILD_TYPE}"
     exit 1
 fi

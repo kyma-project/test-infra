@@ -38,7 +38,7 @@ function export_variables() {
         # TODO: Add support for release pipeline
         DOCKER_TAG="$(git describe --tags --always)"
     else
-        echo "Not supported job type - ${JOB_TYPE}"
+        echo "Not supported build type - ${BUILD_TYPE}"
         exit 1
     fi
     readonly DOCKER_TAG
