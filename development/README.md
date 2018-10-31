@@ -41,7 +41,7 @@ gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --pr
 
 The Prow installation script assumes that the following service accounts exist:
 
-- **sa-gke-kyma-integration** with a role allowing to create Kubernetes clusters
+- **sa-gke-kyma-integration** with a role that allows the account to create Kubernetes clusters.
 - **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines.
 - **sa-gcs-plank** with roles that allow the account to store objects in a Bucket.
 - **sa-gcr-push** with roles allowing to push to Google Container Repository
