@@ -92,7 +92,7 @@ When you define jobs for Prow, both **name** and **context** of the job must fol
 - `prow/{repository_name}/{component_name}/{job_name}` for components
 - `prow/{repository_name}/{job_name}` for jobs not connected to a particular component
 
-In both cases `{job_name}` should reflect job responsibility.
+In both cases, `{job_name}` must reflect the job's responsibility.
 
 ### Cleanup
 
