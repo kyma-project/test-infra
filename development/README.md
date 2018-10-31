@@ -29,7 +29,7 @@ To generate a new token, go to the **Settings** tab of a given GitHub account an
 In the new window, select all scopes and click **Generate token**.
 >**NOTE:** Create a separate bot account instead of using your personal one. If the Prow bot account is the same as the account that creates a job-triggering comment, the job is not triggered.
 
-2. Export the variables, where:
+2. Export the environment variables:
  - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
  - **KEYRING_NAME** is the KMS key ring.
  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
