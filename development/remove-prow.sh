@@ -9,5 +9,7 @@ kubectl delete secret hmac-token
 kubectl delete secret oauth-token
 kubectl delete secret sa-vm-kyma-integration
 kubectl delete secret sa-gke-kyma-integration
+kubectl delete secret sa-gcs-plank
+kubectl delete secret sa-gcr-push
 kubectl delete clusterrolebinding cluster-admin-binding
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
