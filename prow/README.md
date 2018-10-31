@@ -32,7 +32,18 @@ The obligatory Secrets include:
 gcloud container clusters get-credentials {CLUSTER_NAME} --zone={ZONE_NAME} --project={PROJECT_NAME}
 ```
 
-2. Run the following script to start the installation process:
+2. Export the environment variables:
+ - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
+ - **KEYRING_NAME** is the KMS key ring.
+ - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
+
+ ```
+ export BUCKET_NAME=kyma-prow
+ export KEYRING_NAME=kyma-prow
+ export ENCRYPTION_KEY_NAME=kyma-prow-encryption
+ ```
+ 
+3. Run the following script to start the installation process:
 
 ```bash
 ./install-prow.sh
