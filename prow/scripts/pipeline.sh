@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+trap popd EXIT
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
@@ -13,7 +14,7 @@ fi
 
 init
 
-cd "${SOURCES_DIR}"
+pushd "${SOURCES_DIR}"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     make ci-pr
