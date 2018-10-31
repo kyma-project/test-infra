@@ -32,9 +32,9 @@ function authenticate() {
 }
 
 function export_variables() {
-    if [[ "${JOB_TYPE}" == "presubmit" ]]; then
+    if [[ "${BUILD_TYPE}" == "pr" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
-    elif [[ "${JOB_TYPE}" == "postsubmit" ]]; then
+    elif [[ "${BUILD_TYPE}" == "master" ]]; then
         # TODO: Add support for release pipeline
         DOCKER_TAG="$(git describe --tags --always)"
     else

@@ -15,9 +15,9 @@ init
 
 cd "${SOURCES_DIR}"
 
-if [[ "${JOB_TYPE}" == "presubmit" ]]; then
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
     make ci-pr
-elif [[ "${JOB_TYPE}" == "postsubmit" ]]; then
+elif [[ "${BUILD_TYPE}" == "master" ]]; then
     # TODO: Add support for release pipeline
     make ci-master
 else

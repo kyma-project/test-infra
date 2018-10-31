@@ -1,248 +1,42 @@
-plank:
-  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
-  pod_pending_timeout: 60m
-  default_decoration_config:
-    timeout: 7200000000000 # 2h
-    grace_period: 15000000000 # 15s
-    utility_images:
-      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181019-08e9d55c9"
-      initupload: "gcr.io/k8s-prow/initupload:v20181019-08e9d55c9"
-      entrypoint: "gcr.io/k8s-prow/entrypoint:v20181019-08e9d55c9"
-      sidecar: "gcr.io/k8s-prow/sidecar:v20181019-08e9d55c9"
-    gcs_configuration:
-      bucket: {{ .Plank.Bucket }}
-      path_strategy: "explicit"
-    gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
-
-presets:
-- labels:
-    preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
-  env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/service-account/sa-vm-kyma-integration
-  volumes:
-  - name: sa-vm-kyma-integration
-    secret:
-      secretName: sa-vm-kyma-integration
-  volumeMounts:
-  - name: sa-vm-kyma-integration
-    mountPath: /etc/service-account
-    readOnly: true
-- labels:
-    preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
-  env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/service-account/sa-gcr-push
-  volumes:
-    - name: sa-gcr-push
-      secret:
-        secretName: sa-gcr-push
-  volumeMounts:
-    - name: sa-gcr-push
-      mountPath: /etc/service-account
-      readOnly: true
-- labels:
-    preset-dind-enabled: "true"
-  env:
-    - name: DOCKER_IN_DOCKER_ENABLED
-      value: "true"
-  volumes:
-    - name: docker-graph
-      emptyDir: {}
-  volumeMounts:
-    - name: docker-graph
-      mountPath: /docker-graph
-- labels:
-    preset-docker-push-repository: "true"
-  env:
-    - name: DOCKER_PUSH_REPOSITORY
-      value: "eu.gcr.io/kyma-project/prow/test" # TODO: change to eu.gcr.io/kyma-project
-- labels:
-    preset-docker-pr-directory: "true"
-  env:
-    - name: DOCKER_PUSH_DIRECTORY
-      value: "/pr"
-
 presubmits: # runs on PRs
-  {{ .OrganizationOrUser }}/kyma:
-  - name: prow/kyma/integration
-    optional: true
-    run_if_changed: "^(resources|installation)"
-    trigger: "(?m)^/test kyma-integration"
-    rerun_command: "/test kyma-integration"
-    context: prow/kyma/integration
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-      preset-sa-vm-kyma-integration: "true"
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
-  - name: prow/kyma/kyma-gke-integration
-    run_if_changed: "^(resources|installation)"
-    trigger: "(?m)^/test kyma-gke-integration"
-    rerun_command: "/test kyma-gke-integration"
-    context: prow/kyma/kyma-gke-integration
-    optional: true
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-      preset-sa-vm-kyma-integration: "true"
-    spec:
-      containers:
-      - image: alpine
-        command: ["/bin/echo"]
-        args: ["starting fake gke test integration job"]
-  - name: prow/kyma/components/ui-api-layer
-    run_if_changed: "components/ui-api-layer/"
-    context: prow/kyma/components/ui-api-layer
-    optional: true
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
-        preset-docker-pr-directory: "true"
-    decorate: true
-    path_alias: github.com/kyma-project/kyma
-    extra_refs:
-        - org: {{ .OrganizationOrUser }}
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/scripts/pipeline.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
-  {{ .OrganizationOrUser }}/console:
-  - name: prow/console/content
-    run_if_changed: "content/"
-    context: prow/console/content
-    optional: true
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
-        preset-docker-pr-directory: "true"
-    decorate: true
-    path_alias: github.com/kyma-project/console
-    extra_refs:
-        - org: {{ .OrganizationOrUser }}
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/prow/buildpack-node:0.0.1
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/scripts/pipeline.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/console/content"
-  - name: prow/console/catalog
-    run_if_changed: "catalog/"
-    context: prow/console/catalog
-    optional: true
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
-        preset-docker-pr-directory: "true"
-    decorate: true
-    path_alias: github.com/kyma-project/console
-    extra_refs:
-        - org: {{ .OrganizationOrUser }}
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/prow/buildpack-node:0.0.1
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/scripts/pipeline.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/console/catalog"
-  - name: prow/console/instances
-    run_if_changed: "instances/"
-    context: prow/console/instances
-    optional: true
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
-        preset-docker-pr-directory: "true"
-    decorate: true
-    path_alias: github.com/kyma-project/console
-    extra_refs:
-        - org: {{ .OrganizationOrUser }}
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/prow/buildpack-node:0.0.1
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/scripts/pipeline.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/console/instances"
-  - name: prow/console/brokers
-    run_if_changed: "brokers/"
-    context: prow/console/brokers
-    optional: true
-    skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-    max_concurrency: 10
-    labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
-        preset-docker-pr-directory: "true"
-    decorate: true
-    path_alias: github.com/kyma-project/console
-    extra_refs:
-        - org: {{ .OrganizationOrUser }}
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/prow/buildpack-node:0.0.1
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/scripts/pipeline.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/console/brokers"
+  kyma-project/kyma:
+    - name: prow/kyma/kyma-integration
+      optional: true
+      run_if_changed: "^(resources|installation)"
+      trigger: "(?m)^/test kyma-integration"
+      rerun_command: "/test kyma-integration"
+      context: prow/kyma/kyma-integration
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-sa-vm-kyma-integration: "true"
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
+    - name: prow/kyma/kyma-gke-integration
+      run_if_changed: "^(resources|installation)"
+      trigger: "(?m)^/test kyma-gke-integration"
+      rerun_command: "/test kyma-gke-integration"
+      context: prow/kyma/kyma-gke-integration
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-sa-vm-kyma-integration: "true"
+      spec:
+        containers:
+          - image: alpine
+            command: ["/bin/echo"]
+            args: ["starting fake gke test integration job"]
 
 postsubmits:
-  {{ .OrganizationOrUser }}/kyma:
-  - name: prow/kyma/integration
-    branches:
-    - master
-    max_concurrency: 10
-    labels:
-      preset-sa-vm-kyma-integration: "true"
-    spec:
-      containers:
-      - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
+  kyma-project/kyma:
+    - name: prow/kyma/kyma-integration-master
+      branches:
+        - master
+      max_concurrency: 10
+      labels:
+        preset-sa-vm-kyma-integration: "true"
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
