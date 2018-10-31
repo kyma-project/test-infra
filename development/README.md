@@ -86,7 +86,7 @@ prow
 ...
 ```
 
-### Convention for naming jobs
+### Convention of naming jobs
 
 When you define jobs for Prow, both **name** and **context** of the job must follow one of these patterns:
 - `prow/{repository_name}/{component_name}/{job_name}` for components
