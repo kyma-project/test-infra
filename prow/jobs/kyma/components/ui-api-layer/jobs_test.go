@@ -1,19 +1,18 @@
 package ui_api_layer_test
 
 import (
-	"fmt"
 	"github.com/ghodss/yaml"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"k8s.io/test-infra/prow/config"
 	"os"
+	"regexp"
 	"testing"
 )
 
 func TestJobs(t *testing.T) {
 	// GIVEN
-	fmt.Println(os.Getwd())
 	f, err := os.Open("jobs.yaml")
 	require.NoError(t, err)
 
@@ -69,4 +68,13 @@ func TestJobs(t *testing.T) {
 	}, release.Labels)
 
 
+}
+
+func TestRegexp(t *testing.T) {
+	runIfChanged := "components/ui-api-layer/"
+	fileChanged := "components/ui-api-layer/README.md"
+
+	rx, err := regexp.Compile(runIfChanged)
+	require.NoError(t,err)
+	assert.True(t,rx.MatchString(fileChanged))
 }

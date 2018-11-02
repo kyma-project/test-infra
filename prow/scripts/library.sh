@@ -37,6 +37,24 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         # TODO: Add support for release pipeline
         DOCKER_TAG="$(git describe --tags --always)"
+
+     elif [[ "${BUILD_TYPE}" == "release" ]]; then
+        echo "Build type is release"
+        echo "pull base ref is $PULL_BASE_REF"
+        branchVersion=${PULL_BASE_REF:8}
+        echo "Branch ver $branchVersion"
+        #
+        last=$(git tag --list "0.4.*" --sort "-version:refname" | head -1)
+        echo "Last $last"
+        list=$(echo $last | tr '.' ' ')
+        vMajor=list[0]
+        vMinor=list[1]
+        vPatch=list[2]
+        vPatch=$((vPatch + 1))
+
+        newVersion="$vMajor.$vMinor.$vPatch"
+        echo "new version is $newVersion "
+        DOCKER_TAG=$newVersion
     else
         echo "Not supported build type - ${BUILD_TYPE}"
         exit 1

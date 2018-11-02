@@ -21,6 +21,10 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 elif [[ "${BUILD_TYPE}" == "master" ]]; then
     # TODO: Add support for release pipeline
     make ci-master
+
+elif [[ "${BUILD_TYPE}" == "release" ]]; then
+    # TODO: Add support for release pipeline
+    make ci-release
 else
     echo "Not supported build type - ${BUILD_TYPE}"
     exit 1
