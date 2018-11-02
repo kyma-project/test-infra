@@ -47,9 +47,9 @@ function export_variables() {
         last=$(git tag --list "0.4.*" --sort "-version:refname" | head -1)
         echo "Last $last"
         list=$(echo $last | tr '.' ' ')
-        vMajor=list[0]
-        vMinor=list[1]
-        vPatch=list[2]
+        vMajor=$list[0]
+        vMinor=$list[1]
+        vPatch=$list[2]
         vPatch=$((vPatch + 1))
 
         newVersion="$vMajor.$vMinor.$vPatch"
