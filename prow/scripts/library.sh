@@ -43,13 +43,13 @@ function export_variables() {
         echo "pull base ref is $PULL_BASE_REF"
         branchVersion=${PULL_BASE_REF:8}
         echo "Branch ver $branchVersion"
-        #
+        # TODO hardcoded 0.4
         last=$(git tag --list "0.4.*" --sort "-version:refname" | head -1)
         echo "Last $last"
-        list=$(echo $last | tr '.' ' ')
-        vMajor=$list[0]
-        vMinor=$list[1]
-        vPatch=$list[2]
+        list=(`echo $last | tr '.' ' '`)
+        vMajor=${list[0]}
+        vMinor=${list[1]}
+        vPatch=${list[2]}
         vPatch=$((vPatch + 1))
 
         newVersion="$vMajor.$vMinor.$vPatch"
