@@ -1,30 +1,47 @@
+job_template: &job_template
+  optional: true
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  extra_refs:
+  - org: kyma-project
+    repo: test-infra
+    base_ref: master
+    path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+      env:
+      - name: SOURCES_DIR
+        value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+
+
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository: "true"
+
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: prow/kyma/components/ui-api-layer
-      run_if_changed: "components/ui-api-layer/"
-      context: prow/kyma/components/ui-api-layer
-      optional: true
-      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-      max_concurrency: 10
-      labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
-        preset-build-pr: "true"
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
-            env:
-              - name: SOURCES_DIR
-                value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+  - name: &name prow/kyma/components/ui-api-layer
+    context: *name
+    branches:
+    - master
+    labels:
+      preset-build-pr: "true"
+      <<: *job_labels_template
+    <<: *job_template
+  - name: &name prow/kyma/components/ui-api-layer/release
+    context: *name
+    branches:
+    - '^release-\d+\.\d+$'
+    labels:
+      preset-build-release: "true"
+      <<: *job_labels_template
+    <<: *job_template
+
