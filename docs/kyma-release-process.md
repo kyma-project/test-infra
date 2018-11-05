@@ -25,14 +25,13 @@ The merging strategy needs to be disabled for time of running release pipeline).
 1.   Create release branch in kyma repository - only done when creating new release, not bugfix release.
     a. Name of this branch should follow pattern release-x.y (example release-0.4)
 2. Create PR. Bump versions and dirs parameters in values.yaml files in root charts, setting those to desired version which will be released.
-For every component, we have defined Presubmit jobs:
+For every component, we have defined Presubmit jobs, that are responsible for publishing docker images with release tag (eg. 0.4.3). 
 ```
     name: prow/kyma/components/ui-api-layer/release
     branches:
       - release-X.Y
     run_if_changed: ...values.yaml,components-ui-api-layer
 ```
-These jobs are responsible for publishing docker images with release tag (eg. 0.4.3).  
 Calculation of proper Docker image tag is described in section "Calcuclation proper image tag"
 These jobs in most cases will be the same as presubmit jobs that handles PR for master branch, except:
 - branch name
@@ -42,6 +41,8 @@ These jobs in most cases will be the same as presubmit jobs that handles PR for 
 
 After successful modification of all values.yaml files we will have all images published. Merge PR to release branch.
 To discuss: we can define additional Presubmit job which checks if all components have specified proper version. 
+
+TODO: For releaae branch, we require that all compoenent will be rebuilt - so we can define branch protection that specifies all checks.
 
 3. When merging to release branch, Postsubmit job with integration test will be triggered:
 ```

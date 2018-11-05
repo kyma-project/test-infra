@@ -1,12 +1,93 @@
+# general
+presets:
+- labels:
+    preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
+  env:
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: /etc/credentials/sa-vm-kyma-integration/service-account.json
+  volumes:
+  - name: sa-vm-kyma-integration
+    secret:
+      secretName: sa-vm-kyma-integration
+  volumeMounts:
+  - name: sa-vm-kyma-integration
+    mountPath: /etc/credentials/sa-vm-kyma-integration
+    readOnly: true
+- labels:
+    preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
+  env:
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: /etc/credentials/sa-gcr-push/service-account.json
+  volumes:
+  - name: sa-gcr-push
+    secret:
+      secretName: sa-gcr-push
+  volumeMounts:
+  - name: sa-gcr-push
+    mountPath: /etc/credentials/sa-gcr-push
+    readOnly: true
+- labels:
+    preset-dind-enabled: "true"
+  env:
+  - name: DOCKER_IN_DOCKER_ENABLED
+    value: "true"
+  volumes:
+  - name: docker-graph
+    emptyDir: {}
+  volumeMounts:
+  - name: docker-graph
+    mountPath: /docker-graph
+- labels:
+    preset-docker-push-repository: "true"
+  env:
+  - name: DOCKER_PUSH_REPOSITORY
+    value: "eu.gcr.io/kyma-project/prow/test-asz" # TODO: change to eu.gcr.io/kyma-project
+- labels:
+    preset-build-pr: "true"
+  env:
+  - name: BUILD_TYPE
+    value: pr
+  - name: DOCKER_PUSH_DIRECTORY
+    value: "/pr"
+- labels:
+    preset-build-master: "true"
+  env:
+  - name: BUILD_TYPE
+    value: master
+  - name: DOCKER_PUSH_DIRECTORY
+    value: "/develop"
+- labels:
+    preset-build-release: "true"
+  env:
+  - name: BUILD_TYPE
+    value: release
+
+plank:
+  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
+  pod_pending_timeout: 60m
+  default_decoration_config:
+    timeout: 7200000000000 # 2h
+    grace_period: 15000000000 # 15s
+    utility_images:
+      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181019-08e9d55c9"
+      initupload: "gcr.io/k8s-prow/initupload:v20181019-08e9d55c9"
+      entrypoint: "gcr.io/k8s-prow/entrypoint:v20181019-08e9d55c9"
+      sidecar: "gcr.io/k8s-prow/sidecar:v20181019-08e9d55c9"
+    gcs_configuration:
+      bucket: prow-aszecowka
+      path_strategy: "explicit"
+    gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
+
+# others
 job_template: &job_template
-  optional: true
-  skip_report: true
+  optional: false #TODO
+  skip_report: false #TODO
   decorate: true
   path_alias: github.com/kyma-project/kyma
   extra_refs:
-  - org: kyma-project
+  - org: aszecowka #TODO
     repo: test-infra
-    base_ref: master
+    base_ref: release-process-proposal #TODO
     path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
@@ -27,21 +108,50 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
+  aszecowka/kyma: #TODO
+  - name:  prow/kyma/release/integration
+    context: prow/kyma/release/integration
+    branches:
+    - '^release-\d+\.\d+$'
+    skip_report: false
+    optional: false
+    trigger: "/do-it"
+    rerun_command: "/do-it"
+    spec:
+      containers:
+      - image: alpine:latest
+        command:
+        - "ls"
+  - name:  prow/kyma/release/other
+    context: prow/kyma/release/other
+    branches:
+    - '^release-\d+\.\d+$'
+    skip_report: false
+    optional: false
+    run_if_changed: "components/remote-environment-broker"
+    spec:
+      containers:
+      - image: alpine:latest
+        command:
+        - "ls"
   - name: &name prow/kyma/components/ui-api-layer
     context: *name
     branches:
     - master
+    run_if_changed: "components/ui-api-layer/"
     labels:
       preset-build-pr: "true"
       <<: *job_labels_template
     <<: *job_template
-  - name: &name prow/kyma/components/ui-api-layer/release
+  - name: &name prow/release/kyma/components/ui-api-layer
     context: *name
+    run_if_changed: "(components/ui-api-layer/|resources/core/values.yaml)"
     branches:
     - '^release-\d+\.\d+$'
     labels:
       preset-build-release: "true"
       <<: *job_labels_template
     <<: *job_template
+
+
 
