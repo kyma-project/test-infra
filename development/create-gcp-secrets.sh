@@ -8,7 +8,6 @@ usage () {
 }
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 FILES=("sa-gke-kyma-integration" "sa-vm-kyma-integration" "sa-gcs-plank" "sa-gcr-push")
 EXTENSTION="encrypted"
 
@@ -60,5 +59,5 @@ do
     ENCRYPTED_FILE="${FILE}.${EXTENSTION}"
     gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${FILE}
     gcloud kms decrypt --location "${LOCATION}" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
-    kubectl create secret generic "${FILE}" --from-file=service-account.json="${TMP_DIR}/${FILE}"
+    kubectl create secret generic "${FILE}" --from-file=service-account.json="${TMP_DIR}/${FILE}" --dry-run -o yaml | kubectl apply -f -
 done
