@@ -14,8 +14,8 @@ if [ -z "$PROJECT" ]; then
     exit 1
 fi
 
-if [ -z "$ZONE" ]; then
-    echo "\$ZONE is empty"
+if [ -z "$DNS_ZONE" ]; then
+    echo "\$DNS_ZONE is empty"
     exit 1
 fi
 
@@ -27,11 +27,11 @@ fi
 RANDOM_STRING=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-z0-9 | head -c 16; echo)
 DNS_NAME="pull-${RANDOM_STRING}.${DOMAIN}"
 
-gcloud dns --project=${PROJECT} record-sets transaction start --zone=${ZONE}
+gcloud dns --project=${PROJECT} record-sets transaction start --zone=${DNS_ZONE}
 
-gcloud dns --project=${PROJECT} record-sets transaction add ${IP_ADDRESS} --name=${DNS_NAME} --ttl=300 --type=A --zone=${ZONE}
+gcloud dns --project=${PROJECT} record-sets transaction add ${IP_ADDRESS} --name=${DNS_NAME} --ttl=300 --type=A --zone=${DNS_ZONE}
 
-gcloud dns --project=${PROJECT} record-sets transaction execute --zone=${ZONE}
+gcloud dns --project=${PROJECT} record-sets transaction execute --zone=${DNS_ZONE}
 
 SECONDS=0
 END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
