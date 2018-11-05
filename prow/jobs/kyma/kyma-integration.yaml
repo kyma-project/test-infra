@@ -23,11 +23,15 @@ presubmits: # runs on PRs
       max_concurrency: 10
       labels:
         preset-sa-vm-kyma-integration: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
       spec:
         containers:
-          - image: alpine
-            command: ["/bin/echo"]
-            args: ["starting fake gke test integration job"]
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+          securityContext:
+            privileged: true
+          command: ["ls"]
+          args: ["-la"]
 
 postsubmits:
   kyma-project/kyma:
