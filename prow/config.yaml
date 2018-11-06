@@ -3,7 +3,7 @@ presets:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-vm-kyma-integration/service-account.json
+        value: /etc/credentials/sa-vm-kyma-integration/service-account.json 
     volumes:
       - name: sa-vm-kyma-integration
         secret:
@@ -11,6 +11,25 @@ presets:
     volumeMounts:
       - name: sa-vm-kyma-integration
         mountPath: /etc/credentials/sa-vm-kyma-integration
+        readOnly: true
+  - labels:
+      preset-sa-gke-kyma-integration: "true"
+    env:
+      - name: GCLOUD_SERVICE_KEY_PATH
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: GCLOUD_PROJECT_NAME
+        value: kyma-project
+      - name: CLUSTER_NAME
+        value: 
+      - name: GCLOUD_COMPUTE_ZONE
+        value:
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
   - labels:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role

@@ -22,12 +22,13 @@ presubmits: # runs on PRs
       skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
       max_concurrency: 10
       labels:
+        preset-sa-gke-kyma-integration: "true"
         preset-sa-vm-kyma-integration: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+          - image: eu.gcr.io/kyma-project/snapshot/test/gke-integration:0.0.1 # created by running `docker build -t <image> .` in the gke-integration-job directory.
             securityContext:
               privileged: true
             command: ["ls"]
