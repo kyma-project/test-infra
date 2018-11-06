@@ -8,7 +8,7 @@ if [ -z "$GCLOUD_PROJECT_NAME" ]; then
 fi
 
 if [ -z "$GCLOUD_REGION" ]; then
-    echo "\$GCLOUD_IP_ADDRESS_NAME is empty"
+    echo "\$GCLOUD_REGION is empty"
     exit 1
 fi
 
