@@ -20,6 +20,8 @@ set -o errexit
 
 set -o errexit
 
+ROOT_PATH="/home/prow/go/src/github.com/kyma-project/kyma"
+
 discoverUnsetVar=false
 
 for var in GCLOUD_SERVICE_KEY_PATH GCLOUD_PROJECT_NAME CLUSTER_NAME GCLOUD_COMPUTE_ZONE; do
@@ -38,4 +40,4 @@ echo "
 ################################################################################
 "
 
-bash ./prow/scripts/provision-gke-cluster.sh
+bash ${ROOT_PATH}/prow/scripts/provision-gke-cluster.sh

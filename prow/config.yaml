@@ -3,7 +3,7 @@ presets:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-vm-kyma-integration/service-account.json 
+        value: /etc/credentials/sa-vm-kyma-integration/service-account.json
     volumes:
       - name: sa-vm-kyma-integration
         secret:
