@@ -19,8 +19,6 @@ presets:
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
       - name: GCLOUD_PROJECT_NAME
         value: kyma-project
-      - name: CLUSTER_NAME
-        value: test-jka
       - name: GCLOUD_COMPUTE_ZONE
         value: europe-west3-a
     volumes:
