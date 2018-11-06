@@ -14,4 +14,4 @@ echo "
 ################################################################################
 "
 
-CLUSTER_NAME=${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER} bash ${ROOT_PATH}/prow/scripts/provision-gke-cluster.sh
+CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}" bash ${ROOT_PATH}/prow/scripts/provision-gke-cluster.sh
