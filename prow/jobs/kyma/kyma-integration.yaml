@@ -23,7 +23,6 @@ presubmits: # runs on PRs
       max_concurrency: 10
       labels:
         preset-sa-gke-kyma-integration: "true"
-        preset-sa-vm-kyma-integration: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma
       spec:
