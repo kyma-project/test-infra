@@ -20,9 +20,9 @@ presets:
       - name: GCLOUD_PROJECT_NAME
         value: kyma-project
       - name: CLUSTER_NAME
-        value: 
+        value: test-jka
       - name: GCLOUD_COMPUTE_ZONE
-        value:
+        value: europe-west3-a
     volumes:
       - name: sa-gke-kyma-integration
         secret:

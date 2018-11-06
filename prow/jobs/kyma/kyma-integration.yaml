@@ -31,8 +31,8 @@ presubmits: # runs on PRs
           - image: eu.gcr.io/kyma-project/snapshot/test/gke-integration:0.0.1 # created by running `docker build -t <image> .` in the gke-integration-job directory.
             securityContext:
               privileged: true
-            command: ["ls"]
-            args: ["-la"]
+            command: ["bash"]
+            args: ["/pr-gke-integration.sh"]
 
 postsubmits:
   kyma-project/kyma:
