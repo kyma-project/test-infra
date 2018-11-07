@@ -25,13 +25,19 @@ presubmits: # runs on PRs
         preset-sa-gke-kyma-integration: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/snapshot/test/gke-integration:0.0.3 # created by running `docker build -t <image> .` in the gke-integration-job directory.
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            imagePullPolicy: Always
             securityContext:
               privileged: true
-            command: ["bash"]
-            args: ["/pr-gke-integration.sh"]
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
 
 postsubmits:
   kyma-project/kyma:
