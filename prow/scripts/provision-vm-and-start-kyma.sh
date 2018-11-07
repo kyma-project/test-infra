@@ -14,10 +14,6 @@ cleanup() {
     exit $ARG
 }
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
-
 RANDOM_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
 
 LABELS=""
@@ -57,4 +53,4 @@ echo "
 ################################################################################
 "
 
-gcloud compute ssh --quiet kyma-integration-test-${RANDOM_ID} -- ./kyma/prow/scripts/deploy_and_test_kyma.sh
+gcloud compute ssh --quiet kyma-integration-test-${RANDOM_ID} -- ./kyma/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
