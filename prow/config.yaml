@@ -14,7 +14,7 @@ presets:
         readOnly: true
   - labels:
       preset-sa-gke-kyma-integration: "true"
-    env:
+    env: #TODO: unify/re-use values from other presets.
       - name: GCLOUD_SERVICE_KEY_PATH
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
       - name: GCLOUD_PROJECT_NAME
