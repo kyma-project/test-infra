@@ -21,7 +21,7 @@ fi
 SOURCES_DIR="/home/prow/go/src/github.com/kyma-project"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 
-CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
 
 echo "
 ################################################################################
