@@ -33,7 +33,6 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
-            imagePullPolicy: Always
             securityContext:
               privileged: true
             command:
