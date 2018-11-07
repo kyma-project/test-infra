@@ -21,27 +21,26 @@ fi
 
 trap cleanup EXIT
 
-#Put cleanup code in this function
+#!Put cleanup code in this function!
 cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
     echo "
-    ################################################################################
-    # Deprovisioning cluster: \"${CLUSTER_NAME}\"
-    ################################################################################
-    "
+################################################################################
+# Deprovisioning cluster: \"${CLUSTER_NAME}\"
+################################################################################
+"
     ${KYMA_SOURCES_DIR}/prow/scripts/deprovision-gke-cluster.sh
 
 
     #TODO: Add more deprovisioning steps here
 
-
     echo "
-    ################################################################################
-    # Job is finished
-    ################################################################################
-    "
+################################################################################
+# Job is finished
+################################################################################
+"
     set -e
 }
 
