@@ -27,7 +27,7 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/kyma
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/snapshot/test/gke-integration:0.0.2
+          - image: eu.gcr.io/kyma-project/snapshot/test/gke-integration:0.0.3 # created by running `docker build -t <image> .` in the gke-integration-job directory.
             securityContext:
               privileged: true
             command: ["bash"]
