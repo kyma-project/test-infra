@@ -7,9 +7,9 @@ usage () {
     exit 1
 }
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-FILES=("sa-gke-kyma-integration" "sa-vm-kyma-integration" "sa-gcs-plank" "sa-gcr-push")
-EXTENSTION="encrypted"
+readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly FILES=("sa-gke-kyma-integration" "sa-vm-kyma-integration" "sa-gcs-plank" "sa-gcr-push")
+readonly EXTENSTION="encrypted"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -49,15 +49,15 @@ if [[ -z "${BUCKET}" ]] || [[ -z "${KEYRING}" ]] || [[ -z "${KEY}" ]] || [[ -z "
     usage
 fi
 
-gsutil acl get gs://${BUCKET} > /dev/null
+gsutil acl get "gs://${BUCKET}" > /dev/null
 
-TMP_DIR=`mktemp -d "${CURRENT_DIR}/temp-XXXXXXXXXX"`
-trap "rm -rf ${TMP_DIR}" EXIT
+readonly TMP_DIR=$(mktemp -d "${CURRENT_DIR}/temp-XXXXXXXXXX")
+trap 'rm -rf "${TMP_DIR}"' EXIT
 
 for FILE in "${FILES[@]}"
 do
     ENCRYPTED_FILE="${FILE}.${EXTENSTION}"
-    gsutil cp gs://${BUCKET}/${ENCRYPTED_FILE} ${TMP_DIR}/${FILE}
+    gsutil cp "gs://${BUCKET}/${ENCRYPTED_FILE}" "${TMP_DIR}/${FILE}"
     gcloud kms decrypt --location "${LOCATION}" --keyring "${KEYRING}" --key "${KEY}" --ciphertext-file "${TMP_DIR}/${FILE}" --plaintext-file "${TMP_DIR}/${FILE}"
     kubectl create secret generic "${FILE}" --from-file=service-account.json="${TMP_DIR}/${FILE}" --dry-run -o yaml | kubectl apply -f -
 done

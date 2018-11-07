@@ -31,7 +31,7 @@ cleanup() {
 # Deprovisioning cluster: \"${CLUSTER_NAME}\"
 ################################################################################
 "
-    ${KYMA_SOURCES_DIR}/prow/scripts/deprovision-gke-cluster.sh
+    bash "${KYMA_SOURCES_DIR}/prow/scripts/deprovision-gke-cluster.sh"
 
 
     #TODO: Add more deprovisioning steps here

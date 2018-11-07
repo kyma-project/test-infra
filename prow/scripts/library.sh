@@ -6,8 +6,8 @@ function start_docker() {
     # If we have opted in to docker in docker, start the docker daemon,
     service docker start
     # the service can be started but the docker socket not ready, wait for ready
-    WAIT_N=0
-    MAX_WAIT=20
+    local WAIT_N=0
+    local MAX_WAIT=20
     while true; do
         # docker ps -q should only work if the daemon is ready
         docker ps -q > /dev/null 2>&1 && break
@@ -38,8 +38,8 @@ function export_variables() {
         DOCKER_TAG="$(git describe --tags --always)"
      elif [[ "${BUILD_TYPE}" == "release" ]]; then
         echo "Calculating DOCKER_TAG variable for release..."
-        branchPattern="^release-[0-9]+\.[0-9]+$"
-        echo ${PULL_BASE_REF} | grep -E -q ${branchPattern}
+        branchPattern='^release-[0-9]+\.[0-9]+$'
+        echo "${PULL_BASE_REF}" | grep -E -q "${branchPattern}"
         branchMatchesPattern=$?
         if [ ${branchMatchesPattern} -ne 0 ]
         then
@@ -55,8 +55,8 @@ function export_variables() {
         then
             newVersion="${version}.0"
         else
-            tagPattern="^[0-9]+.[0-9]+.[0-9]+$"
-            echo ${last} | grep -E -q ${tagPattern}
+            tagPattern='^[0-9]+.[0-9]+.[0-9]+$'
+            echo "${last}" | grep -E -q "${tagPattern}"
             lastTagMatches=$?
             if [ ${lastTagMatches} -ne 0 ]
             then
@@ -64,7 +64,7 @@ function export_variables() {
                 exit 1
             fi
 
-            list=(`echo ${last} | tr '.' ' '`)
+            list=$(echo "${last}" | tr '.' ' ')
             vMajor=${list[0]}
             vMinor=${list[1]}
             vPatch=${list[2]}

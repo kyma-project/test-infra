@@ -24,11 +24,11 @@ if [ -z "$DNS_NAME" ]; then
     exit 1
 fi
 
-gcloud dns --project=${PROJECT} record-sets transaction start --zone=${DNS_ZONE}
+gcloud dns --project="${PROJECT}" record-sets transaction start --zone="${DNS_ZONE}"
 
-gcloud dns --project=${PROJECT} record-sets transaction add ${IP_ADDRESS} --name=${DNS_NAME} --ttl=300 --type=A --zone=${DNS_ZONE}
+gcloud dns --project="${PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_NAME}" --ttl=300 --type=A --zone="${DNS_ZONE}"
 
-gcloud dns --project=${PROJECT} record-sets transaction execute --zone=${DNS_ZONE}
+gcloud dns --project="${PROJECT}" record-sets transaction execute --zone="${DNS_ZONE}"
 
 SECONDS=0
 END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
@@ -37,7 +37,7 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
     echo "Trying to resolve ${DNS_NAME}"
     sleep 10
 
-    RESOLVED_IP_ADDRESS=$(dig +short ${DNS_NAME})
+    RESOLVED_IP_ADDRESS=$(dig +short "${DNS_NAME}")
 
     if [ "${RESOLVED_IP_ADDRESS}" = "${IP_ADDRESS}" ]; then
         echo "Successfully resolved ${DNS_NAME} to ${RESOLVED_IP_ADDRESS}"
