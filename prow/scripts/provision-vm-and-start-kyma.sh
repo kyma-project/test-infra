@@ -14,6 +14,10 @@ cleanup() {
     exit $ARG
 }
 
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${SCRIPT_DIR}/library.sh"
+authenticate
+
 RANDOM_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
 
 LABELS=""
