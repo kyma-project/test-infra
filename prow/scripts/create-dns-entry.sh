@@ -19,13 +19,10 @@ if [ -z "$DNS_ZONE" ]; then
     exit 1
 fi
 
-if [ -z "$DOMAIN" ]; then
-    echo "\$DOMAIN is empty"
+if [ -z "$DNS_NAME" ]; then
+    echo "\$DNS_NAME is empty"
     exit 1
 fi
-
-RANDOM_STRING=$(cat /dev/urandom | env LC_CTYPE=C tr -dc a-z0-9 | head -c 16; echo)
-DNS_NAME="pull-${RANDOM_STRING}.${DOMAIN}"
 
 gcloud dns --project=${PROJECT} record-sets transaction start --zone=${DNS_ZONE}
 
