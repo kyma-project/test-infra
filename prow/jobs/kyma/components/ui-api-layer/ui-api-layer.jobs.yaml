@@ -79,6 +79,9 @@ plank:
     gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
 
 # others
+
+
+###
 job_template: &job_template
   optional: false #TODO
   skip_report: false #TODO
@@ -95,7 +98,7 @@ job_template: &job_template
       securityContext:
         privileged: true
       command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/xxx.sh"
       env:
       - name: SOURCES_DIR
         value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
@@ -109,31 +112,6 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   aszecowka/kyma: #TODO
-  - name:  prow/kyma/release/integration
-    context: prow/kyma/release/integration
-    branches:
-    - '^release-\d+\.\d+$'
-    skip_report: false
-    optional: false
-    trigger: "/do-it"
-    rerun_command: "/do-it"
-    spec:
-      containers:
-      - image: alpine:latest
-        command:
-        - "ls"
-  - name:  prow/kyma/release/other
-    context: prow/kyma/release/other
-    branches:
-    - '^release-\d+\.\d+$'
-    skip_report: false
-    optional: false
-    run_if_changed: "components/remote-environment-broker"
-    spec:
-      containers:
-      - image: alpine:latest
-        command:
-        - "ls"
   - name: &name prow/kyma/components/ui-api-layer
     context: *name
     branches:

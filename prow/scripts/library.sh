@@ -35,25 +35,38 @@ function export_variables() {
     if [[ "${BUILD_TYPE}" == "pr" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
-        # TODO: Add support for release pipeline
         DOCKER_TAG="$(git describe --tags --always)"
-
      elif [[ "${BUILD_TYPE}" == "release" ]]; then
-        echo "Build type is release"
-        echo "pull base ref is $PULL_BASE_REF"
-        branchVersion=${PULL_BASE_REF:8}
-        echo "Branch ver $branchVersion"
-        # TODO hardcoded 0.4
-        last=$(git tag --list "0.4.*" --sort "-version:refname" | head -1)
-        echo "Last $last"
-        list=(`echo $last | tr '.' ' '`)
+        echo "Calculating DOCKER_TAG variable for release..."
+        branchPattern="^release-[0-9]+\.[0-9]+$"
+        echo ${PULL_BASE_REF} | grep -E -q ${branchPattern}
+        branchMatchesPattern=$?
+        if [ ${branchMatchesPattern} -ne 0 ]
+        then
+            echo "Branch name does not match pattern: ${branchPattern}"
+            exit 1
+        fi
+
+        version=${PULL_BASE_REF:8}
+        # Getting last tag that matches version
+        last=$(git tag --list "${version}.*" --sort "-version:refname" | head -1)
+        tagPattern="[0-9]+.[0-9]+.[0-9]+"
+        echo ${last} | grep -E -q ${tagPattern}
+        lastTagMatches=$?
+        if [ ${lastTagMatches} -ne 0 ]
+        then
+            echo "Last tag does not match pattern: ${tagPattern}"
+            exit 1
+        fi
+
+        list=(`echo ${last} | tr '.' ' '`)
         vMajor=${list[0]}
         vMinor=${list[1]}
         vPatch=${list[2]}
         vPatch=$((vPatch + 1))
 
         newVersion="$vMajor.$vMinor.$vPatch"
-        echo "new version is $newVersion "
+        echo "New version is $newVersion"
         DOCKER_TAG=$newVersion
     else
         echo "Not supported build type - ${BUILD_TYPE}"
