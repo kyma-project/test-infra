@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script is meant to output key and cert to stdout.
+# Key and certificate are being stored in files and later on removed because openssl doesn't have option to put them directly into variables
+
 set -o errexit
 
 if [ -z "$DOMAIN" ]; then
