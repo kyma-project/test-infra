@@ -39,10 +39,11 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 
     RESOLVED_IP_ADDRESS=$(dig +short ${DNS_NAME})
 
-    if [ ! -z "${RESOLVED_IP_ADDRESS}" ]; then
+    if [ "${RESOLVED_IP_ADDRESS}" = "${IP_ADDRESS}" ]; then
         echo "Successfully resolved ${DNS_NAME} to ${RESOLVED_IP_ADDRESS}"
         break
     fi
+
 done
 
 if [ -z ${RESOLVED_IP_ADDRESS} ]; then
