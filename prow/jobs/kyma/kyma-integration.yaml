@@ -10,9 +10,20 @@ presubmits: # runs on PRs
       max_concurrency: 10
       labels:
         preset-sa-vm-kyma-integration: "true"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            command: 
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
     - name: prow/kyma/kyma-gke-integration
       run_if_changed: "^(resources|installation)"
       trigger: "(?m)^/test kyma-gke-integration"
@@ -41,6 +52,17 @@ postsubmits:
       max_concurrency: 10
       labels:
         preset-sa-vm-kyma-integration: "true"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/snapshot/test/integration:0.0.2 # created by running `docker build -t <image> .` in the integration-job directory.
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            command: 
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
