@@ -44,14 +44,14 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         break
     fi
 
+    if [ "${RESOLVED_IP_ADDRESS}" != "${IP_ADDRESS}" ] && [ ! -z "${RESOLVED_IP_ADDRESS}" ]; then
+        echo "Error. Resolved hostname (${RESOLVED_IP_ADDRESS}) doesn't match input IP address (${IP_ADDRESS})."
+        exit 1
+    fi
+
 done
 
 if [ -z ${RESOLVED_IP_ADDRESS} ]; then
     echo "Can't resolve ${DNS_NAME}"
-    exit 1
-fi
-
-if [ "${RESOLVED_IP_ADDRESS}" != "${IP_ADDRESS}" ]; then
-    echo "Error. Resolved hostname (${RESOLVED_IP_ADDRESS}) doesn't match input IP address (${IP_ADDRESS})."
     exit 1
 fi
