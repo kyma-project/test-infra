@@ -41,7 +41,7 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 
     if [ "${RESOLVED_IP_ADDRESS}" = "${IP_ADDRESS}" ]; then
         echo "Successfully resolved ${DNS_NAME} to ${RESOLVED_IP_ADDRESS}"
-        break
+        exit 0
     fi
 
 done
