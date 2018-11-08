@@ -14,7 +14,7 @@ SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 KEY_PATH="${SCRIPTS_DIR}/key.pem"
 CERT_PATH="${SCRIPTS_DIR}/cert.pem"
 
-openssl req -x509 -newkey rsa:4096 -keyout ${KEY_PATH} -out ${CERT_PATH} -days 365 -subj "/CN=${DOMAIN}" -nodes
+openssl req -x509 -newkey rsa:4096 -keyout ${KEY_PATH} -out ${CERT_PATH} -days 5 -subj "/CN=${DOMAIN}" -nodes
 TLS_CERT=$(cat /cert.pem | base64 | tr -d '\n')
 TLS_KEY=$(cat /key.pem | base64 | tr -d '\n')
 
