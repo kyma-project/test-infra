@@ -44,7 +44,7 @@ cleanup() {
     set -e
 }
 
-
+#TODO: Externalize this path somewhere (Job Config?)
 SOURCES_DIR="/home/prow/go/src/github.com/kyma-project"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 
