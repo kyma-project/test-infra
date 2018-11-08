@@ -50,24 +50,30 @@ function export_variables() {
         version=${PULL_BASE_REF:8}
         # Getting last tag that matches version
         last=$(git tag --list "${version}.*" --sort "-version:refname" | head -1)
-        tagPattern="[0-9]+.[0-9]+.[0-9]+"
-        echo ${last} | grep -E -q ${tagPattern}
-        lastTagMatches=$?
-        if [ ${lastTagMatches} -ne 0 ]
+
+        if [ -z "$last" ]
         then
-            echo "Last tag does not match pattern: ${tagPattern}"
-            exit 1
+            newVersion="${version}.0"
+        else
+            tagPattern="[0-9]+.[0-9]+.[0-9]+"
+            echo ${last} | grep -E -q ${tagPattern}
+            lastTagMatches=$?
+            if [ ${lastTagMatches} -ne 0 ]
+            then
+                echo "Last tag does not match pattern: ${tagPattern}"
+                exit 1
+            fi
+
+            list=(`echo ${last} | tr '.' ' '`)
+            vMajor=${list[0]}
+            vMinor=${list[1]}
+            vPatch=${list[2]}
+            vPatch=$((vPatch + 1))
+            newVersion="$vMajor.$vMinor.$vPatch"
         fi
+         echo "New version is $newVersion"
+         DOCKER_TAG=$newVersion
 
-        list=(`echo ${last} | tr '.' ' '`)
-        vMajor=${list[0]}
-        vMinor=${list[1]}
-        vPatch=${list[2]}
-        vPatch=$((vPatch + 1))
-
-        newVersion="$vMajor.$vMinor.$vPatch"
-        echo "New version is $newVersion"
-        DOCKER_TAG=$newVersion
     else
         echo "Not supported build type - ${BUILD_TYPE}"
         exit 1
