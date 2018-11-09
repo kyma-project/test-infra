@@ -8,7 +8,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER PROJECT GCLOUD_REGION GCLOUD_IP_ADDRESS_NAME DNS_NAME DNS_ZONE; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -17,7 +17,6 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
-
 
 trap cleanup EXIT
 
@@ -28,25 +27,23 @@ cleanup() {
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
       echo "################################################################################"
-      echo "# Deprovisioning cluster: \"${CLUSTER_NAME}\""
+      echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
       echo "################################################################################"
       "${KYMA_SOURCES_DIR}/prow/scripts/deprovision-gke-cluster.sh"
     fi
 
     if [ -n "${CLEANUP_DNS_ENTRY}" ]; then
       echo "################################################################################"
-      echo "# Remove DNS Entry"
+      echo "# Delete DNS Entry"
       echo "################################################################################"
-      #TODO: script!
-      ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/remove-dns-entry.sh
+      ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/delete-dns-record.sh
     fi
 
     if [ -n "${CLEANUP_IP_ADDRESS}" ]; then
       echo "################################################################################"
-      echo "# Remove IP Address"
+      echo "# Release IP Address"
       echo "################################################################################"
-      #TODO: script!
-      ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/remove-ip-address.sh
+      ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/release-ip-address.sh
     fi
 
     echo "################################################################################"
@@ -63,21 +60,19 @@ KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 echo "################################################################################"
 echo "# Reserve IP Address"
 echo "################################################################################"
-#TODO: script!
-${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh
+IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
 CLEANUP_IP_ADDRESS="true"
 
 
 echo "################################################################################"
-echo "# Add DNS Entry"
+echo "# Create DNS Entry"
 echo "################################################################################"
-#TODO: script!
-${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/setup-dns-entry.sh
+${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/create-dns-entry.sh
 CLEANUP_DNS_ENTRY="true"
 
 
 echo "################################################################################"
-echo "# Provisioning cluster: \"${CLUSTER_NAME}\""
+echo "# Provision cluster: \"${CLUSTER_NAME}\""
 echo "################################################################################"
 export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
 ${KYMA_SOURCES_DIR}/prow/scripts/provision-gke-cluster.sh
