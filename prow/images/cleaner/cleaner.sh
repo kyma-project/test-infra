@@ -3,9 +3,7 @@ set -e
 set -o pipefail
 
 echo "Authenticating to Google Cloud..."
-export CLOUDSDK_COMPUTE_ZONE="europe-west3-a"
-export CLOUDSDK_COMPUTE_REGION="europe-west3"
-gcloud config set project kyma-project
+gcloud config set project ${CLOUDSDK_CORE_PROJECT}
 gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 # Get list of ssh-keys, remove header line and print only first column which is key
