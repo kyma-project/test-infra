@@ -12,16 +12,6 @@ if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
     exit 1
 fi
 
-if [ -z "$CLOUDSDK_COMPUTE_ZONE" ]; then
-    echo "Environment variable CLOUDSDK_COMPUTE_ZONE is empty"
-    exit 1
-fi
-
-if [ -z "$CLOUDSDK_COMPUTE_REGION" ]; then
-    echo "Environment variable CLOUDSDK_COMPUTE_REGION is empty"
-    exit 1
-fi
-
 echo "Authenticating to Google Cloud..."
 gcloud config set project ${CLOUDSDK_CORE_PROJECT}
 gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"

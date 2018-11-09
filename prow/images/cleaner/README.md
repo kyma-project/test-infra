@@ -2,7 +2,9 @@
 
 ## Overview
 This image contains the script which performs a cleanup of the service account profile in the `kyma-project` project. 
-Script requires environment variable `GOOGLE_APPLICATION_CREDENTIALS` which is a path to service account key.
+The Script requires following environment variables:
+- **GOOGLE_APPLICATION_CREDENTIALS** which is a path to the service account key.
+- **CLOUDSDK_CORE_PROJECT** which is a Gcloud project name.
 
 ## Installation
 
