@@ -12,4 +12,4 @@ if [ -z "$GCLOUD_REGION" ]; then
     exit 1
 fi
 
-gcloud compute addresses delete ${GCLOUD_IP_ADDRESS_NAME} --region ${GCLOUD_REGION} --quiet
+gcloud compute addresses delete "${GCLOUD_IP_ADDRESS_NAME}" --region "${GCLOUD_REGION}" --quiet
