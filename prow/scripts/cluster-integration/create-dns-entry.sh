@@ -47,3 +47,4 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 done
 
 echo "Cannot resolve ${DNS_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."
+exit 1

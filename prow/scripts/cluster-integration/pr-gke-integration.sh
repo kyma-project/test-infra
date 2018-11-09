@@ -8,7 +8,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER PROJECT GCLOUD_REGION GCLOUD_IP_ADDRESS_NAME DNS_NAME DNS_ZONE; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER PROJECT GCLOUD_REGION  DNS_ZONE; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -60,13 +60,14 @@ KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 echo "################################################################################"
 echo "# Reserve IP Address"
 echo "################################################################################"
-IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
+export GCLOUD_IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+export IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
 CLEANUP_IP_ADDRESS="true"
-
 
 echo "################################################################################"
 echo "# Create DNS Entry"
 echo "################################################################################"
+export DNS_NAME="${GCLOUD_IP_ADDRESS_NAME}"
 ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/create-dns-entry.sh
 CLEANUP_DNS_ENTRY="true"
 
@@ -74,6 +75,7 @@ CLEANUP_DNS_ENTRY="true"
 echo "################################################################################"
 echo "# Provision cluster: \"${CLUSTER_NAME}\""
 echo "################################################################################"
+GCLOUD_IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
 ${KYMA_SOURCES_DIR}/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
