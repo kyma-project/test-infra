@@ -22,7 +22,7 @@ if [ -z "$DNS_NAME" ]; then
     exit 1
 fi
 
-gcloud dns --project=${PROJECT} record-sets transaction start --zone=${DNS_ZONE}
+gcloud dns --project="${PROJECT}" record-sets transaction start --zone="${DNS_ZONE}"
 
 gcloud dns record-sets transaction remove ${IP_ADDRESS} --zone=${DNS_ZONE} --name=${DNS_NAME} --type=A --ttl=300
 
