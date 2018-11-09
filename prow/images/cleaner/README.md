@@ -8,7 +8,7 @@ The Script requires following environment variables:
 
 ## Installation
 
-To build Docker image, run this command:
+To build the Docker image, run this command:
 
 ```bash
 docker build -t cleaner:<version> .
