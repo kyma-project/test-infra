@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestJobs(t *testing.T) {
+func TestUiApiLayerJobs(t *testing.T) {
 	// GIVEN
 	f, err := os.Open("ui-api-layer.jobs.yaml")
 	require.NoError(t, err)

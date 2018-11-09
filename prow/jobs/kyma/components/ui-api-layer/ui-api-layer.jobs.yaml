@@ -1,13 +1,12 @@
-###
 job_template: &job_template
-  optional: true #TODO
-  skip_report: true #TODO
+  optional: true
+  skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   extra_refs:
-  - org: kyma-project #TODO
+  - org: kyma-project
     repo: test-infra
-    base_ref: master #TODO
+    base_ref: master
     path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
@@ -28,7 +27,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma: 
+  kyma-project/kyma:
   - name: &name prow/kyma/components/ui-api-layer
     context: *name
     branches:
@@ -47,6 +46,3 @@ presubmits: # runs on PRs
       preset-build-release: "true"
       <<: *job_labels_template
     <<: *job_template
-
-
-
