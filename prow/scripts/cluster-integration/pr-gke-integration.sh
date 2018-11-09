@@ -10,7 +10,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -24,50 +24,67 @@ trap cleanup EXIT
 
 #!Put cleanup code in this function!
 cleanup() {
+    #Try to preserve exit status unless a new error occurs
+    EXIT_STATUS=$?
+
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-      echo "################################################################################"
-      echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
-      echo "################################################################################"
-      date
-      "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
+        echo "################################################################################"
+        echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
+        echo "################################################################################"
+        date
+        "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_DNS_RECORD}" ]; then
-      echo "################################################################################"
-      echo "# Delete DNS Record"
-      echo "################################################################################"
-      date
-      "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+        echo "################################################################################"
+        echo "# Delete DNS Record"
+        echo "################################################################################"
+        date
+        "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_IP_ADDRESS}" ]; then
-      echo "################################################################################"
-      echo "# Release IP Address"
-      echo "################################################################################"
-      date
-      "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
+        echo "################################################################################"
+        echo "# Release IP Address"
+        echo "################################################################################"
+        date
+        "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        echo "################################################################################"
+        echo "# Delete temporary Kyma-Installer Docker image"
+        echo "################################################################################"
+        date
+        "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    fi
+
+
+    MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     echo "################################################################################"
-    echo "# Job is finished "
+    echo "# Job is finished ${MSG}"
     echo "################################################################################"
     date
     set -e
+
+    exit "${EXIT_STATUS}"
 }
 
-TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-
-INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
 #Setup variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
@@ -76,17 +93,25 @@ export IP_ADDRESS="will_be_generated"
 
 #For provision-gke-cluster.sh
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-#For provision-gke-cluster.sh
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 echo "################################################################################"
 echo "# Authenticate"
 echo "################################################################################"
 date
-export BUILD_TYPE="pr"
 # shellcheck source=/dev/null
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
+
+
+echo "################################################################################"
+echo "# Build Kyma-Installer Docker image"
+echo "################################################################################"
+date
+#DOCKER_TAG is created by library.sh script
+export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:${DOCKER_TAG}"
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
+CLEANUP_DOCKER_IMAGE="true"
 
 
 echo "################################################################################"
