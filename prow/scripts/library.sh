@@ -55,7 +55,7 @@ function export_variables() {
         then
             newVersion="${version}.0"
         else
-            tagPattern="[0-9]+.[0-9]+.[0-9]+"
+            tagPattern="^[0-9]+.[0-9]+.[0-9]+$"
             echo ${last} | grep -E -q ${tagPattern}
             lastTagMatches=$?
             if [ ${lastTagMatches} -ne 0 ]
