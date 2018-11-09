@@ -2,6 +2,26 @@
 set -e
 set -o pipefail
 
+if [ -z "$CLOUDSDK_CORE_PROJECT" ]; then
+    echo "Environment variable CLOUDSDK_CORE_PROJECT is empty"
+    exit 1
+fi
+
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+    echo "Environment variable GOOGLE_APPLICATION_CREDENTIALS is empty"
+    exit 1
+fi
+
+if [ -z "$CLOUDSDK_COMPUTE_ZONE" ]; then
+    echo "Environment variable CLOUDSDK_COMPUTE_ZONE is empty"
+    exit 1
+fi
+
+if [ -z "$CLOUDSDK_COMPUTE_REGION" ]; then
+    echo "Environment variable CLOUDSDK_COMPUTE_REGION is empty"
+    exit 1
+fi
+
 echo "Authenticating to Google Cloud..."
 gcloud config set project ${CLOUDSDK_CORE_PROJECT}
 gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
