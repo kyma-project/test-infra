@@ -2,13 +2,16 @@
 
 set -o errexit
 
-if [ -z "$GCLOUD_IP_ADDRESS_NAME" ]; then
-    echo "\$GCLOUD_IP_ADDRESS_NAME is empty"
-    exit 1
-fi
+discoverUnsetVar=false
 
-if [ -z "$GCLOUD_REGION" ]; then
-    echo "\$GCLOUD_REGION is empty"
+for var in GCLOUD_REGION GCLOUD_IP_ADDRESS_NAME; do
+    if [ -z "${!var}" ] ; then
+        echo "ERROR: $var is not set"
+        discoverUnsetVar=true
+    fi
+done
+
+if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 

@@ -8,7 +8,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER PROJECT GCLOUD_REGION  DNS_ZONE; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -17,6 +17,17 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+#For reserve-ip-address.sh
+export GCLOUD_REGION="${CLOUDSDK_COMPUTE_REGION}"
+
+export DNS_ZONE_NAME="${CLOUDSDK_DNS_ZONE_NAME}"
+
+#For provision-gke-cluster.sh
+export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+
+#For provision-gke-cluster.sh
+export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 trap cleanup EXIT
 
