@@ -22,8 +22,8 @@ openssl req -x509 -nodes -days 5 -newkey rsa:4069 \
                  -keyout "${KEY_PATH}" \
                  -out "${CERT_PATH}"
 
-TLS_CERT=$(< /cert.pem base64 | tr -d '\n')
-TLS_KEY=$(< /key.pem base64 | tr -d '\n')
+TLS_CERT=$(cat "${SCRIPTS_DIR}"/cert.pem | base64 | tr -d '\n')
+TLS_KEY=$(cat "${SCRIPTS_DIR}"/key.pem | base64 | tr -d '\n')
 
 echo "TLS_CERT=${TLS_CERT}"
 echo "TLS_KEY=${TLS_KEY}"

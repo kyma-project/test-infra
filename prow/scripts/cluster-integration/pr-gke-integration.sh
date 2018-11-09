@@ -80,6 +80,15 @@ export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
 ${KYMA_SOURCES_DIR}/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
 
+DOMAIN_NAME=
+echo "################################################################################"
+echo "# Generate certificate for the domain: \"${DOMAIN_NAME}\""
+echo "################################################################################"
+GCLOUD_IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+${KYMA_SOURCES_DIR}/prow/scripts/provision-gke-cluster.sh
+CLEANUP_CLUSTER="true"
+
 
 echo "################################################################################"
 echo "# MOCK: Installing Kyma, testing, etc..."
