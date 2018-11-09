@@ -1,96 +1,13 @@
-# general
-presets:
-- labels:
-    preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
-  env:
-  - name: GOOGLE_APPLICATION_CREDENTIALS
-    value: /etc/credentials/sa-vm-kyma-integration/service-account.json
-  volumes:
-  - name: sa-vm-kyma-integration
-    secret:
-      secretName: sa-vm-kyma-integration
-  volumeMounts:
-  - name: sa-vm-kyma-integration
-    mountPath: /etc/credentials/sa-vm-kyma-integration
-    readOnly: true
-- labels:
-    preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
-  env:
-  - name: GOOGLE_APPLICATION_CREDENTIALS
-    value: /etc/credentials/sa-gcr-push/service-account.json
-  volumes:
-  - name: sa-gcr-push
-    secret:
-      secretName: sa-gcr-push
-  volumeMounts:
-  - name: sa-gcr-push
-    mountPath: /etc/credentials/sa-gcr-push
-    readOnly: true
-- labels:
-    preset-dind-enabled: "true"
-  env:
-  - name: DOCKER_IN_DOCKER_ENABLED
-    value: "true"
-  volumes:
-  - name: docker-graph
-    emptyDir: {}
-  volumeMounts:
-  - name: docker-graph
-    mountPath: /docker-graph
-- labels:
-    preset-docker-push-repository: "true"
-  env:
-  - name: DOCKER_PUSH_REPOSITORY
-    value: "eu.gcr.io/kyma-project/prow/test-asz" # TODO: change to eu.gcr.io/kyma-project
-- labels:
-    preset-build-pr: "true"
-  env:
-  - name: BUILD_TYPE
-    value: pr
-  - name: DOCKER_PUSH_DIRECTORY
-    value: "/pr"
-- labels:
-    preset-build-master: "true"
-  env:
-  - name: BUILD_TYPE
-    value: master
-  - name: DOCKER_PUSH_DIRECTORY
-    value: "/develop"
-- labels:
-    preset-build-release: "true"
-  env:
-  - name: BUILD_TYPE
-    value: release
-
-plank:
-  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
-  pod_pending_timeout: 60m
-  default_decoration_config:
-    timeout: 7200000000000 # 2h
-    grace_period: 15000000000 # 15s
-    utility_images:
-      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181019-08e9d55c9"
-      initupload: "gcr.io/k8s-prow/initupload:v20181019-08e9d55c9"
-      entrypoint: "gcr.io/k8s-prow/entrypoint:v20181019-08e9d55c9"
-      sidecar: "gcr.io/k8s-prow/sidecar:v20181019-08e9d55c9"
-    gcs_configuration:
-      bucket: prow-aszecowka
-      path_strategy: "explicit"
-    gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
-
-# others
-
-
 ###
 job_template: &job_template
-  optional: false #TODO
-  skip_report: false #TODO
+  optional: true #TODO
+  skip_report: true #TODO
   decorate: true
   path_alias: github.com/kyma-project/kyma
   extra_refs:
-  - org: aszecowka #TODO
+  - org: kyma-project #TODO
     repo: test-infra
-    base_ref: release-process-proposal #TODO
+    base_ref: master #TODO
     path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
@@ -98,7 +15,7 @@ job_template: &job_template
       securityContext:
         privileged: true
       command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/xxx.sh"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
       env:
       - name: SOURCES_DIR
         value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
@@ -111,7 +28,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  aszecowka/kyma: #TODO
+  kyma-project/kyma: 
   - name: &name prow/kyma/components/ui-api-layer
     context: *name
     branches:

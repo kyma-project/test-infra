@@ -40,7 +40,7 @@ presets:
       preset-docker-push-repository: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/prow/test-asz" # TODO: change to eu.gcr.io/kyma-project
+        value: "eu.gcr.io/kyma-project/prow/test" # TODO: change to eu.gcr.io/kyma-project
   - labels:
       preset-build-pr: "true"
     env:
