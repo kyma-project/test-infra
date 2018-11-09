@@ -24,6 +24,6 @@ fi
 
 gcloud dns --project="${PROJECT}" record-sets transaction start --zone="${DNS_ZONE}"
 
-gcloud dns record-sets transaction remove ${IP_ADDRESS} --zone=${DNS_ZONE} --name=${DNS_NAME} --type=A --ttl=300
+gcloud dns record-sets transaction remove "${IP_ADDRESS}" --zone="${DNS_ZONE}" --name="${DNS_NAME}" --type=A --ttl=300
 
 gcloud dns --project=${PROJECT} record-sets transaction execute --zone=${DNS_ZONE}
