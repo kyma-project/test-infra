@@ -75,7 +75,6 @@ periodics:
   labels:
     preset-sa-vm-kyma-integration: "true"
     preset-gc-project-env: "true"
-    preset-gc-compute-envs: "true"
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
