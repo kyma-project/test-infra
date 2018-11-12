@@ -1,23 +1,27 @@
-# test-infra
+# Test Infra
 
 ## Overview
 
-Test infrastructure for the Kyma project.
+The purpose of the `test-infra` repository is to store configuration and scripts for the test infrastructure used in the `kyma-project` organization.
 
-## Prerequisites
+### Project structure
 
-No prerequisites at the moment.
+<!-- Update the repository structure each time you modify it. -->
 
-## Installation
+The `test-infra` repository has the following structure:
 
-No installation instructions at the moment.
+```
+  ├── .github                     # Pull request and issue templates.             
+  ├── development                 # Scripts used for the development of the "test-infra" repository.
+  ├── docs                        # Documentation for the test infrastructure, such as Prow installation guides.
+  └── prow                        # Installation scripts for the production Prow.    
 
-## Usage
+```
 
-No usage instructions at the moment.
+### Prow
 
-## Development
-- You cannot test Prow configuration locally on Minikube. Perform all the tests on the cluster. 
-- Avoid provisioning long-running clusters.
-- Test Prow configuration against your `kyma` fork repository.
-- Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only for the `master` branch but also for release branches.
+The `test-infra` repository contains the whole configuration of Prow, the purpose of which is to replace the internal Continuous Integration (CI) tool in the `kyma-project` organization.
+
+If you want to find out what Prow is, how you can test it, or contribute to it, read the main [`README.md`](./prow/README.md) document in the `prow` folder.
+
+For more detailed documentation, such as installation guides, see the [`docs/prow`](./docs/prow) subfolder.

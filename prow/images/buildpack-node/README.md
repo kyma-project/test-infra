@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project includes Buildpack Node image that is based on Bootstrap image. It can be used for building node components.
+This project includes the Buildpack Node image that is based on the Bootstrap image. Use it to build node components.
 
 This image contains:
 
@@ -12,7 +12,7 @@ This image contains:
 - prettier
 - whitesource
 
-## Build
+## Installation
 
 To build the Docker image, run this command:
 

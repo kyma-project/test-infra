@@ -1,14 +1,16 @@
-# Prow Secrets management
+# Prow Secrets Management
 
 ## Overview
 
 Some jobs require using sensitive data. You need to encrypt data using Key Management Service (KMS) and store them in Google Cloud Storage (GCS).
-This document shows the commands necessary to create a service account and store its encrypted key in a GCS bucket. This document assumes that you are logged in to the Google Cloud project with administrative rights.
+This document shows the commands necessary to create a service account and store its encrypted key in a GCS bucket.
+
+>**NOTE:** This document assumes that you are logged in to the Google Cloud project with administrative rights.
 
 ## Prerequisites
 
- - [gcloud](https://cloud.google.com/sdk/gcloud/) 
- - Basic knowledge about [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys).
+ - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform.
+ - Basic knowledge of [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys).
 
 Use the `export {VARIABLE}={value}` command to set up these variables, where:
  - **PROJECT_NAME** is a Google Cloud project.
@@ -20,7 +22,7 @@ Use the `export {VARIABLE}={value}` command to set up these variables, where:
 
 >**NOTE:** Before you follow this guide, check Prow Secrets setup for the Google Cloud project.
 
-Execute this command to set the context to the Google Cloud project:
+When you communicate for the first time with the Google Cloud, set the context to your Google Cloud project. Execute this command:
 ```
 gcloud config set project $PROJECT_NAME
 ```
@@ -35,32 +37,34 @@ gsutil mb -p $PROJECT_NAME gs://$BUCKET_NAME/
 
 ### Create a Google service account
 
-Export the variables, where:
+Follow these steps:
+
+1. Export the variables, where:
  - **SA_NAME** is the name of the service account.
  - **SA_DISPLAY_NAME** is the display name of the service account.
  - **SECRET_FILE** is the path for the private key.
  - **ROLE** is the role bound to the service account.
 
-Create a service account:
+2. Create a service account:
 ```
 gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
 ```
 
-Create a private key for the service account:
+3. Create a private key for the service account:
 ```
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=SA_NAME
+gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT_NAME.iam.gserviceaccount.com
 ```
 
-Add a policy binding for the service account:
+4. Add a policy binding to the service account:
 ```
-gcloud iam service-accounts add-iam-policy-binding $SA_NAME --member=serviceAccount:$SA_NAME@$PROJECT_NAME.iam.gserviceaccount.com --role=$ROLE
+gcloud projects add-iam-policy-binding $PROJECT_NAME --member=serviceAccount:$SA_NAME@$PROJECT_NAME.iam.gserviceaccount.com --role=$ROLE
 ```
 
 ### Encrypt the Secret
 
-Export the **SECRET_FILE** variable which is the path to the file containing the Secret.
+1. Export the **SECRET_FILE** variable which is the path to the file containing the Secret.
 
-Encrypt the Secret:
+2. Encrypt the Secret:
 ```
 gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
 ```
@@ -72,4 +76,11 @@ Upload the encrypted Secret to GCP:
 gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
 ```
 
-Delete the file exported under the **SECRET_FILE** variable.
+### Delete the Secret
+
+Delete the private key files:
+
+```
+rm {file-name}
+rm {file-name}.encrypted
+```
