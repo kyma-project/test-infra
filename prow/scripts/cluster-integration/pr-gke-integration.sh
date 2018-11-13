@@ -8,7 +8,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -78,12 +78,12 @@ TEST_INFRA_SOURCES_DIR="${SOURCES_DIR}/test-infra"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 
 
-
 echo "################################################################################"
 echo "# Authenticate"
 echo "################################################################################"
 date
 export GOOGLE_APPLICATION_CREDENTIALS="${GCLOUD_SERVICE_KEY_PATH}"
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 export BUILD_TYPE="pr"
 
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"

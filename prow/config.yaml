@@ -27,7 +27,7 @@ presets:
   - labels:
       preset-sa-gke-kyma-integration: "true"
     env:
-      - name: GCLOUD_SERVICE_KEY_PATH
+      - name: GOOGLE_APPLICATION_CREDENTIALS
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
       - name: CLOUDSDK_DNS_ZONE_NAME
         value: "build-kyma" #GCloud DNS Zone Name (NOT it's DNS name!)
