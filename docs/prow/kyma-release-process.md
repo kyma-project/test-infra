@@ -5,21 +5,20 @@ The first Prow implementation aims to support the same functionalities as those 
 ## Release process in the internal CI
 The internal release process is documented as a comment in [this](https://github.com/kyma-project/community/issues/105) issue and looks as follows:
 
-1. Create a release branch in the `kyma` repository. Do it only for a new release, not for bugfix release.
+1. Create a release branch in the `kyma` repository. Do it only for a new release, not for a bugfix release.
 The name of this branch should follow the `release-x.y` pattern, such as `release-0.4`.
-2. Set the **version** and **dirs** parameters in `values.yaml` files in root charts to those of the release version. 
+2. Set the **version** and **dir** parameters in `values.yaml` files in root charts to those of the release version. 
 Commit and push this file to the release branch.
 3. Run the release pipeline on Jenkins (`release.Jenkinsfile`).The pipeline runs plans for every component with the `-release` suffix. 
-  The difference between the release plan and the non-release plan for a component is that in the release plan, the merging strategy is disabled.  
-The merging strategy needs to be disabled for the time when the release pipeline is running. 
-4. Run the pipeline for to release the Kyma-Installer component from the release branch and set **version** to the release version.
+  The difference between the release plan and the non-release plan for a component is that in the release plan, the merging strategy is disabled. The merging strategy needs to be disabled for the time when the release pipeline is running. 
+4. Run the pipeline to release the Kyma-Installer component from the release branch and set **version** to the release version.
 5. Produce combined local and cluster `yaml` files:
 
-   a. ./installation/scripts/generate-kyma-installer.sh ./installation/resources/installer-config-local.yaml.tpl > kyma-config-local.yaml
+   a. `./installation/scripts/generate-kyma-installer.sh ./installation/resources/installer-config-local.yaml.tpl > kyma-config-local.yaml`
 
-   b. ./installation/scripts/generate-kyma-installer.sh ./installation/resources/installer-config-cluster.yaml.tpl > kyma-config-cluster.yaml
+   b. `./installation/scripts/generate-kyma-installer.sh ./installation/resources/installer-config-cluster.yaml.tpl > kyma-config-cluster.yaml`
 6. Set an appropriate Kyma-Installer image in the combined `yaml` files.
-7. Attach artifacts and a `README.md` document to the release on Github. 
+7. Attach artifacts and a `README.md` document to the release on GitHub. 
 
 ## Release process in Prow
 The proposed release process looks as follows in Prow:
@@ -35,15 +34,15 @@ For every component, there is a presubmit job for release branches, that is resp
 ```
 For details on how to calculate the proper image tag, see the **Calculate the release image tag** [section](#calculate-the-release-image-tag).
 
-Such a configuration ensures that after modifying of all `values.yaml` files successfully, all images are published.
+Such a configuration ensures that after modifying all `values.yaml` files successfully, all images are published.
 There can be an additional job that checks if all components in all `values.yaml` files use exactly the same version, such as `0.4.3`.
 You must define branch protection rules  for release branches and the `master` branch. These rules mark all checks as a required. 
 Without them, the **Squash and merge** button is enabled even if some checks failed or are in progress.
 
 
-3. Execute the integration jobs. Use one of these options how to configure them:
+3. Execute the integration jobs. Use one of these options to configure them:
 - Run it on every change on a PR. This is a very simple solution from Prow's perspective. Unfortunately, there is a high possibility that this job fails at the beginning. 
- This job should be executed only after all all 
+ This job should be executed only after all
 components are already built and images are already published. Unfortunately, there is no option to configure Prow jobs in that way. 
 You need to retrigger failed integration tests by adding a `retest` comment on a PR. 
 - Run integration tests on demand. A comment on a PR, instead of a change in a source code, triggers the job. 
@@ -51,7 +50,7 @@ The Release Manager is responsible for adding such a comment.
 - Run integration tests after merging to the release branch. This is a very simple solution, but it can happen that on a release branch we have changes
 that do not pass integration tests.
 
-4. Publish artifacts and create the release. Use one of the options how to configure them:
+4. Publish artifacts and create the release. Use one of the options to configure them:
 - Run jobs after integrations jobs:
 ```
     name: prow/kyma/integration
@@ -63,8 +62,8 @@ that do not pass integration tests.
       - publish artifacts
       - create release
 ```
- You can be configure it either as a presubmit job that runs on a PR or a postsubmit job that runs after you merge a PR. 
- With a presubmit job, it is easy tr retrigger such an action by adding a proper command to a PR. Such an option is not available for
+ You can configure it either as a presubmit job that runs on a PR or a postsubmit job that runs after you merge a PR. 
+ With a presubmit job, it is easy to retrigger such an action by adding a proper command to a PR. Such an option is not available for
  a postsubmit job.  
  - Trigger jobs by specifying comments on a PR. This can be an option, if there are some manual steps required before publishing artifacts. 
 
@@ -130,7 +129,7 @@ presubmits: # runs on PRs
 ### Calculate the release image tag
 In the internal CI (Jenkins), used for the release process, it is easy to specify which version to publish by adding it as a job parameter.
 In Prow, such an option is not available. Instead, you need to calculate this version. This proposal describes how to do it be reading Git tags. 
-See the proposal for **export_variables** function in `prow/scripts/library.sh`, which shows how to calculate a new tag:
+See the proposal for the **export_variables** function in `prow/scripts/library.sh`, which shows how to calculate a new tag:
 ```bash
 function export_variables() {
     if [[ "${BUILD_TYPE}" == "pr" ]]; then
