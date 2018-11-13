@@ -84,6 +84,7 @@ export BUILD_TYPE="pr"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
 
+
 echo "################################################################################"
 echo "# Reserve IP Address"
 echo "################################################################################"
@@ -92,17 +93,12 @@ export IP_ADDRESS
 CLEANUP_IP_ADDRESS="true"
 echo "IP Address: ${IP_ADDRESS} created"
 
+
 echo "################################################################################"
 echo "# Create DNS Record"
 echo "################################################################################"
 ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/create-dns-record.sh
 CLEANUP_DNS_RECORD="true"
-
-
-#echo "################################################################################"
-#echo "# Generate certificate for the domain: \"${DOMAIN_NAME}\""
-#echo "################################################################################"
-#${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/generate-self-signed-cert.sh
 
 
 echo "################################################################################"
@@ -115,6 +111,11 @@ CLEANUP_CLUSTER="true"
 echo "################################################################################"
 echo "# MOCK: Installing Kyma, testing, etc..."
 echo "################################################################################"
+
+echo "I'm pretending I'm doing something for the next 60 seconds..."
+
+#TODO: Temporary call, just to verify visually if everything works
+kubectl get pods --all-namespaces
 
 sleep 60
 
