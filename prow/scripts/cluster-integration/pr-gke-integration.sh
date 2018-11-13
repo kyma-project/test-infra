@@ -20,14 +20,11 @@ fi
 
 #For provision-gke-cluster.sh
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-
-export DNS_ZONE_NAME="${CLOUDSDK_DNS_ZONE_NAME}"
-
 #For provision-gke-cluster.sh
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
-export GCLOUD_IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
-export DNS_SUBDOMAIN="${GCLOUD_IP_ADDRESS_NAME}"
+export IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
 export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
 export IP_ADDRESS="will_be_generated"
 
