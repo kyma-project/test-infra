@@ -128,6 +128,8 @@ echo "I'm pretending I'm doing something for the next 60 seconds..."
 #TODO: Temporary call, just to verify visually if everything works
 echo "test1"
 gcloud container clusters get-credentials "${CLUSTER_NAME}"
+echo "test1.1"
+gcloud container clusters describe "${CLUSTER_NAME}" --zone "${CLOUDSDK_COMPUTE_ZONE}"
 echo "test2"
 kubectl cluster-info
 echo "test3"
