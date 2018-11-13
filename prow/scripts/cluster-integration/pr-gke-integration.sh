@@ -134,8 +134,8 @@ echo "test1.1"
 #gcloud container clusters describe "${CLUSTER_NAME}" --zone "${CLOUDSDK_COMPUTE_ZONE}"
 echo "test2.1"
 kubectl cluster-info
-echo "test3"
-kubectl config get-contexts
+#echo "test3"
+#kubectl config get-contexts
 echo "test4"
 kubectl get pods --all-namespaces
 echo "test5"
