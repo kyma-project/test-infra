@@ -6,18 +6,19 @@ set -o pipefail
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 usage () {
-    echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/plugins.yaml /path/to/config.yaml"
+    echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/plugins.yaml /path/to/config.yaml /path/to/jobs/dir"
     exit 1
 }
 
 readonly PLUGINS_PATH=$1
 readonly CONFIG_PATH=$2
+readonly JOBS_CONFIG_PATH=$3
 
-if [[ -z "${PLUGINS_PATH}" ]] || [[ -z "${CONFIG_PATH}" ]]; then
+if [[ -z "${PLUGINS_PATH}" ]] || [[ -z "${CONFIG_PATH}" ]] || [[ -z "${JOBS_CONFIG_PATH}" ]]; then
     usage
 fi
 
-echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH}'"
+echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
 
 vendoredChecker="${DEVELOPMENT_DIR}/checker/vendor/k8s.io/test-infra/prow/cmd/checkconfig/main.go"
 if [ ! -f "${vendoredChecker}" ]; then
@@ -26,7 +27,7 @@ if [ ! -f "${vendoredChecker}" ]; then
     dep ensure -v -vendor-only
 fi
 
-go run "${vendoredChecker}" --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}"
+go run "${vendoredChecker}" --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]

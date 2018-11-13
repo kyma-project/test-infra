@@ -7,9 +7,16 @@ usage () {
     exit 1
 }
 
-PLUGINS_PATH=$1
+readonly PLUGINS_PATH=$1
 if [[ -z "${PLUGINS_PATH}" ]]; then
     usage
 fi
 
-kubectl create configmap plugins --from-file=plugins.yaml="${PLUGINS_PATH}" --dry-run -o yaml | kubectl replace configmap plugins -f -
+readonly UPLOADER="${DEVELOPMENT_DIR}/tools/cmd/configuploader/main.go"
+if [[ ! -d "${DEVELOPMENT_DIR}/tools/vendor/github.com" ]]; then
+    (cd "${DEVELOPMENT_DIR}/tools" && dep ensure -v -vendor-only)
+fi
+
+readonly CONFIG="${HOME}/.kube/config"
+
+go run "${UPLOADER}" --kubeconfig "${CONFIG}" --plugin-config-path "${PLUGINS_PATH}"

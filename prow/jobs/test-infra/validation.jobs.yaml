@@ -1,23 +1,24 @@
 presubmits:
   kyma-project/test-infra:
-  - name: prow/test-infra/validate-scripts
-    run_if_changed: "/*.sh$"
-    decorate: true
-    skip_report: false
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/develop/bootstrap:v20181115-af8fb73
-          command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
-  - name: prow/test-infra/validate-configs
-    run_if_changed: "prow/(plugins|config).yaml"
-    decorate: true
-    skip_report: false
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
-          command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/development/check.sh"
-          args:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
+    - name: prow/test-infra/validate-scripts
+      run_if_changed: "/*.sh$"
+      decorate: true
+      skip_report: false
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/develop/bootstrap:v20181115-af8fb73
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
+    - name: prow/test-infra/validate-configs
+      run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
+      decorate: true
+      skip_report: false
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/develop/buildpack-golang:v20181115-cb79cb1
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-config.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
