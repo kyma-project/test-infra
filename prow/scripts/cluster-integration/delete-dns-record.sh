@@ -3,7 +3,7 @@
 #Description: Removes DNS record with given subdomain from the DNS Zone.
 #
 #Expected vars:
-# - GCLOUD_PROJECT_NAME: name of a GCP project containing the Zone with the record.
+# - CLOUDSDK_CORE_PROJECT: name of a GCP project containing the Zone with the record.
 # - CLOUDSDK_DNS_ZONE_NAME: Name of the existing DNS zone in the project (NOT it's DNS name!)
 # - DNS_SUBDOMAIN: a subdomain in the Zone.
 # - IP_ADDRESS: v4 IP Address of the DNS record.
@@ -13,7 +13,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in GCLOUD_PROJECT_NAME CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN IP_ADDRESS; do
+for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN IP_ADDRESS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -27,10 +27,10 @@ fi
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
-gcloud dns --project="${GCLOUD_PROJECT_NAME}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
 gcloud dns record-sets transaction remove "${IP_ADDRESS}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${DNS_FULL_NAME}" --type=A --ttl=300
 
-gcloud dns --project="${GCLOUD_PROJECT_NAME}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
 echo "DNS Record deleted, but it can be visible for some time due to DNS caches"

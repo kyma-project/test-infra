@@ -3,7 +3,7 @@
 #Description: Adds new type "A" DNS entry for given subdomain and IP Address
 #
 #Expected vars:
-# - GCLOUD_PROJECT_NAME: name of a GCP project where new DNS record is created.
+# - CLOUDSDK_CORE_PROJECT: name of a GCP project where new DNS record is created.
 # - CLOUDSDK_DNS_ZONE_NAME: Name of an existing DNS zone in the project (NOT it's DNS name!)
 # - DNS_SUBDOMAIN: a subdomain to create entry for. Example: If CLOUDSDK_DNS_ZONE_NAME referrs to a DNS Zone that controls "cool.dot.com" domain, use DNS_SUBDOMAIN="how" to create an entry: how.cool.dot.com
 # - IP_ADDRESS: v4 IP Address for the DNS record.
@@ -14,7 +14,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in GCLOUD_PROJECT_NAME CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN IP_ADDRESS; do
+for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN IP_ADDRESS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -28,11 +28,11 @@ fi
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
-gcloud dns --project="${GCLOUD_PROJECT_NAME}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
-gcloud dns --project="${GCLOUD_PROJECT_NAME}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
-gcloud dns --project="${GCLOUD_PROJECT_NAME}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
 SECONDS=0
 END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes

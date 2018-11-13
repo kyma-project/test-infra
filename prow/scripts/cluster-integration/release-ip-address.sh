@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+#Description: Releases an IP Address
+#
+#Expected vars:
+# - CLOUDSDK_COMPUTE_REGION: Region of the IP Address (e.g. europe-west3)
+# - IP_ADDRESS_NAME: Name for the IP Address object (NOT an actual IP Address)
+#
+#Permissions: In order to run this script you need to use a service account with "Compute Network Admin" role
+
 set -o errexit
 
 discoverUnsetVar=false
