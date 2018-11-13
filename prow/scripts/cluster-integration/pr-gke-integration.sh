@@ -127,9 +127,9 @@ sleep 60
 echo "I'm pretending I'm doing something for the next 60 seconds..."
 
 #TODO: Temporary call, just to verify visually if everything works
+gcloud container clusters get-credentials "${CLUSTER_NAME}"
 kubectl cluster-info
 kubectl config get-contexts
-kubectl create clusterrolebinding sa-gke-kyma-integration-cluster-admin-binding --clusterrole=cluster-admin --user="sa-gke-kyma-integration@kyma-project.iam.gserviceaccount.com"
 kubectl get pods --all-namespaces
 
 #TODO: Does not work...
