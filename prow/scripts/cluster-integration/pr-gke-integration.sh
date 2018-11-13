@@ -18,9 +18,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-#For reserve-ip-address.sh
-export GCLOUD_REGION="${CLOUDSDK_COMPUTE_REGION}"
-
 #For provision-gke-cluster.sh
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 
@@ -82,8 +79,6 @@ echo "##########################################################################
 echo "# Authenticate"
 echo "################################################################################"
 date
-export GOOGLE_APPLICATION_CREDENTIALS="${GCLOUD_SERVICE_KEY_PATH}"
-export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 export BUILD_TYPE="pr"
 
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -112,6 +107,7 @@ echo "##########################################################################
 echo "# Provision cluster: \"${CLUSTER_NAME}\""
 echo "################################################################################"
 date
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 ${KYMA_SOURCES_DIR}/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
 
@@ -120,7 +116,7 @@ echo "##########################################################################
 echo "# MOCK: Installing Kyma, testing, etc..."
 echo "################################################################################"
 date
-kubectl cluster-info
-kubectl get pods --all-namespaces
 echo "I'm pretending I'm doing something for the next 60 seconds..."
 sleep 60
+kubectl cluster-info
+kubectl get pods --all-namespaces
