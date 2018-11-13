@@ -12,4 +12,4 @@ Read the documents to learn how you to:
 
 <!-- Update the list each time you modify the document structure in this folder. -->
 
- Read also the proposal for the new [release process](./kyma-release-process.md) in Kyma that uses Prow, and how it differs from the release process with the internal CI.
+ Read also the proposal for the new [release process](./kyma-release-process.md) in Kyma that uses Prow, and see how it differs from the release process with the internal CI.
