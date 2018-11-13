@@ -84,7 +84,7 @@ export BUILD_TYPE="pr"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
 gcloud auth list
-kubectl create clusterrolebinding sa-gke-kyma-integration-cluster-admin-binding --clusterrole=cluster-admin --user=sa-gke-kyma-integration@kyma-project.iam.gserviceaccount.com
+
 
 echo "################################################################################"
 echo "# Reserve IP Address"
@@ -116,6 +116,10 @@ echo "##########################################################################
 echo "I'm pretending I'm doing something for the next 60 seconds..."
 
 #TODO: Temporary call, just to verify visually if everything works
+
+kubectl config get-contexts
+echo "echo kubectl config use-context ${CLUSTER_NAME}"
+#kubectl create clusterrolebinding sa-gke-kyma-integration-cluster-admin-binding --clusterrole=cluster-admin --user=sa-gke-kyma-integration@kyma-project.iam.gserviceaccount.com
 kubectl get pods --all-namespaces
 
 sleep 60
