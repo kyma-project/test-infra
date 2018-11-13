@@ -83,7 +83,8 @@ export BUILD_TYPE="pr"
 
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
-
+gcloud auth list
+kubectl create clusterrolebinding sa-gke-kyma-integration-cluster-admin-binding --clusterrole=cluster-admin --user=sa-gke-kyma-integration@kyma-project.iam.gserviceaccount.com
 
 echo "################################################################################"
 echo "# Reserve IP Address"

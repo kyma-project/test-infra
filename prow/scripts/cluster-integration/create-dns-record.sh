@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-#In order to run this script you need to use a service account with DNS Administrator role
-
-#IP_ADDRESS="8.8.8.8" GCLOUD_PROJECT_NAME="kyma-project" DNS_ZONE_NAME="build-kyma" DNS_SUBDOMAIN="ts-test" ./create-dns-record.sh
-
-#GCLOUD_PROJECT_NAME: name of a GCP project where new entry is created.
-#DNS_ZONE_NAME: Name of the DNS zone in GCP (NOT it's DNS name!)
-#DNS_SUBDOMAIN: a subdomain to create entry for. If DNS_ZONE_NAME referrs to a DNS Zone that controls "cool.dot.com" domain, use DNS_SUBDOMAIN="how" to create an entry: how.cool.dot.com
+#Description: Adds new type "A" DNS entry for given subdomain and IP Address
+#
+#Expected vars:
+# - GCLOUD_PROJECT_NAME: name of a GCP project where new DNS record is created.
+# - DNS_ZONE_NAME: Name of an existing DNS zone in the project (NOT it's DNS name!)
+# - DNS_SUBDOMAIN: a subdomain to create entry for. Example: If DNS_ZONE_NAME referrs to a DNS Zone that controls "cool.dot.com" domain, use DNS_SUBDOMAIN="how" to create an entry: how.cool.dot.com
+# - IP_ADDRESS: v4 IP Address for the DNS record.
+#
+#Permissions: In order to run this script you need to use a service account with "DNS Administrator" role
 
 set -o errexit
 
