@@ -74,6 +74,15 @@ TEST_INFRA_SOURCES_DIR="${SOURCES_DIR}/test-infra"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 
 
+
+echo "################################################################################"
+echo "# Authenticate"
+echo "################################################################################"
+export GOOGLE_APPLICATION_CREDENTIALS="${GCLOUD_SERVICE_KEY_PATH}"
+export BUILD_TYPE="pr"
+
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+init
 gcloud auth list
 
 echo "################################################################################"
