@@ -90,6 +90,7 @@ echo "##########################################################################
 IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
 export IP_ADDRESS
 CLEANUP_IP_ADDRESS="true"
+echo "IP Address: ${IP_ADDRESS} created"
 
 echo "################################################################################"
 echo "# Create DNS Record"
