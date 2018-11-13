@@ -83,12 +83,12 @@ export BUILD_TYPE="pr"
 
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
-gcloud auth list
 
 echo "################################################################################"
 echo "# Reserve IP Address"
 echo "################################################################################"
-export IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
+IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
+export IP_ADDRESS
 CLEANUP_IP_ADDRESS="true"
 
 echo "################################################################################"
