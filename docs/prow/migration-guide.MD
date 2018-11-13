@@ -94,19 +94,19 @@ Fields description:
 |Field                  | Value | Description|
 |-----------------------|-------------|---------------| 
 |name                   |             | Job name. Should unambigously identifies job. See [TODO]() requirements for job name.
-|run_if_changed         |             | Regular expression. Define to run this build only if this files were changed. In case of other files changed, this job will send a notification to GitHub that it is skipped.
+|run_if_changed         |             | Regular expression. Define to run this build only if this files were changed. In case of PR that does not modify your component, this job  send a notification to GitHub that it is skipped.
 |context                |             | GitHub status context for the job. Should be the same as job name.
-|branches               | master      | Run it only for PR's for that branches
+|branches               | master      | Run it only for PR's pointing to that branches
 |skip_report            | true        | If true, job's status will not be send to GitHub. 
-|decorate               | true        | Decorated jobs clones automatically repository, and store logs from the execution in a buckets
+|decorate               | true        | Decorated jobs clones automatically repository, and store logs from its execution in a buckets
 |path_alias             | -           | Where the repository under test is cloned.
 |extra_ref              | -           | Auxiliary repositories that need to be also cloned, in addition main repository. 
 |spec.containers.image  |             | Docker image. Currently provided images are buildpack-golang and buildpack-node. For more details see `prow/images`. Both of them required privileged mode.  
-|spec.containers.command|             | Buildpacks have a `pipeline.sh` script that allows easily trigger build for your component. Pipeline script populate all required environment variables, and then execute one of the makefile rules (depending on the environment variable **BUILD_TYPE**)
-|spec.containers.env    |             | **SOURCE_DIR** is requred by `pipeline.sh` script and points to the directory where Makefile for your component is placed
-|labels                 |             | Regular k8s labels. In this case we use it to enable podpresets. Available presets can be fonund in `/prow/config.yaml` file and are described in section Available Presets.
+|spec.containers.command|             | Buildpacks have a `pipeline.sh` script that allows easily trigger build for your component. Pipeline script populate all required environment variables, and then execute one of the makefile rules depending on the environment variable **BUILD_TYPE**. This environment variable can be injected by build preset (preset-build-pr,preset-build-release or preset-build-master).
+|spec.containers.env    |             | **SOURCE_DIR** is required by the `pipeline.sh` script and points to the directory where Makefile for your component is placed
+|labels                 |             | Regular k8s labels. In this case we use it to enable podpresets. Available presets can be fonund in `/prow/config.yaml` file and are described below.
 
-## Available presets
+#### Available presets
 | name                       | description
 |----------------------------|------------
 | preset-gc-compute-envs        | Provide environment variables with gcloud compute zone and gclod compute region
@@ -120,23 +120,22 @@ Fields description:
 | preset-build-master           | As above, but **BUILD_TYPE** is set to **master**
 | preset-build-release          | As above, but **BUILD_TYPE** is set to **release**.
 
-
-
-
-
 >**NOTE:** Yaml file needs to have unique name in the whole `jobs` structure.
 
-### Review and merge your PR. 
+#### Check your configuration locally
+Use `development/check.sh` script.
+ 
+
+#### Review and merge your PR. 
 After merging, job configuration is automatically applied on a Prow production cluster 
 and comment is added to the PR:
 ![msg](./assets/msg-updated-config.png)
 
-## Testing
-There are following options to tirgger your job:
+There are following options to trigger your job:
 - create a new PR
 - request executing all tests for already created PR by adding comment: `/test all`
 
-## Define postsubmit job and presubmit job for release
+### Define postsubmit job and presubmit job for release
 Postsubmit job and presubmit job for releases are almost the same as already defined job for master,
 except for the differences in:
 - Branch name.
@@ -197,4 +196,10 @@ presubmits: # runs on PRs
 ```
 
 To check if your configuration is proper, you can write a Go test, for a reference see `prow/jobs/kyma/components/ui-api-layer/jobs_test.go`.
-## Flow
+
+## Full story 
+1. Create PR that modifies your component
+2. GitHub sends a event to Prow
+3. ProwJob is created and appears on `http://status.build.kyma-project.io` page.
+4. Pod according to `Spec` is created. Additionally, decorator clones your repository and mount it to `/home/prow/go/src/{path_alias}`
+5. `pipeline.sh` script is excuted. It injects required environment variables, then go to directory defined by **SOURCES_DIR** variable, and execute `make-ci`, `make-master` or `make-release` depending on the value of **BUILD_TYPE** environment variable.
