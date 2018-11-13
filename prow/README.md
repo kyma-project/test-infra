@@ -4,7 +4,7 @@
 
 Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of PRs, applying and removing labels, or opening and closing issues.
 
-You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://prow.k8s.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in GCP. Each Prow component is a small Go service that has its own function in the management of these one-off single-pod ProwJobs.
+You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://prow.k8s.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in GCP. Each Prow component is a small Go service that has its own function in the management of these one-off single-pod Prow jobs.
 
 In the content of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
@@ -40,7 +40,7 @@ Its structure looks as follows:
 ```
 
   ├── cluster               # All "yaml" files for Prow cluster provisioning.           
-  ├── images                # Images for component jobs that you can also use for generic builds.                                             
+  ├── images                # Images for Prow jobs that you can also use for generic builds.                                             
   ├── jobs                  # All files with jobs definitions.
   ├── scripts               # Scripts used by the test jobs.
   ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.

@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project includes the Buildpack Node image that is based on the Bootstrap image. Use it to build node components.
+This folder contains the Buildpack Node image that is based on the Bootstrap image. Use it to build node components.
 
-This image contains:
+The image consists of:
 
 - nodejs
 - eslint

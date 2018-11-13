@@ -10,4 +10,6 @@ Read the documents to learn how you to:
 - [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Create a service account](./prow-secrets-management.md) and store its encrypted key in a GCS bucket.
 
-<!-- Update the list each time you modify a document in this folder. -->
+<!-- Update the list each time you modify the document structure in this folder. -->
+
+ Read also the proposal for the new [release process](./kyma-release-process.md) in Kyma that uses Prow, and how it differs from the release process with the internal CI.

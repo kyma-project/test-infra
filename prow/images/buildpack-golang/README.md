@@ -2,9 +2,9 @@
 
 ## Overview
 
-This project includes the Buildpack Golang image that is based on the Bootstrap image. Use it to build node components.
+This folder contains the Buildpack Golang image that is based on the Bootstrap image. Use it to build node components.
 
-This image contains:
+The image consists of:
 
 - golang
 - dep
