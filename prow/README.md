@@ -9,13 +9,13 @@ You interact with Prow using slash (/) commands, such as `/test all`. You add th
 In the content of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
 Prow configuration replies on this basic set of configurations:
-- Kubernetes cluster deployed in Google Container Engine (GKE)
-- GitHub bot account
+- Kubernetes cluster deployed in Google Container Engine (GKE).
+- GitHub bot account.
 - GitHub tokens:
-    - `hmac-token` as a Prow HMAC token used for validating GitHub webhooks.
-    - `oauth-token` as a GitHub token with read and write access to the bot account.
-- Service accounts and their Secret files for sensitive jobs that are encrypted using Key Management Service (KMS) and stored in Google Cloud Storage (GCS)
-- The `starter.yaml` file with a basic configuration of Prow components
+    - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks.
+    - `oauth-token` which is a GitHub token with read and write access to the bot account.
+- Service accounts and their Secret files for sensitive jobs that are encrypted using Key Management Service (KMS) and stored in Google Cloud Storage (GCS).
+- The `starter.yaml` file with a basic configuration of Prow components.
 - Webhooks configured for the GitHub repository to enable sending Events from a GitHub repository to Prow.
 - Plugins enabled by creating and modifying the `plugins.yaml` file.
 - Jobs enabled by creating and configuring the basic `config.yaml` file and additional `yaml` files for specific Kyma components.
@@ -39,11 +39,11 @@ Its structure looks as follows:
 
 ```
 
-  ├── cluster               # The folder with all "yaml" files for Prow cluster provisioning.           
-  ├── images                # The folder with images for component jobs that you can also use for generic builds.                                             
-  ├── jobs                  # The folder with all files with jobs definitions.
-  ├── scripts               # The folder with scripts used by the test jobs.
-  ├── config.yaml           # The file with the main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
+  ├── cluster               # All "yaml" files for Prow cluster provisioning.           
+  ├── images                # Images for component jobs that you can also use for generic builds.                                             
+  ├── jobs                  # All files with jobs definitions.
+  ├── scripts               # Scripts used by the test jobs.
+  ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
   ├── install-prow.sh       # The script for the production cluster installation.
   └── plugins.yaml          # The file with Prow plugins configuration.
 ```

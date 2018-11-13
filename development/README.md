@@ -10,8 +10,8 @@ The `development` folder has the following structure:
 <!-- Update the project structure each time you modify it. -->
 
 ```
-  ├── checker                  # The folder that contains code sources of a simple Go application that verifies the configuration of the "config.yaml" and "plugins.yaml" files.          
-  ├── check.sh                 # The script that runs the "Checker" application. application                                             
+  ├── checker                  # Code sources of a simple Go application that verifies the configuration of the "config.yaml" and "plugins.yaml" files.          
+  ├── check.sh                 # The script that runs the "Checker" application.                                              
   ├── create-gcp-secrets.sh    # The script that downloads the Secrets from the GSP storage bucket to your Prow installation.
   ├── install-prow.sh          # The script that installs Prow on your cluster.
   ├── provision-cluster.sh     # The script that creates a Kubernetes cluster.

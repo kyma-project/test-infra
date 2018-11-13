@@ -2,7 +2,7 @@
 
 ## Overview
 
-This instruction provides the steps required to deploy the production cluster for Prow.
+This instruction provides the steps required to deploy a production cluster for Prow.
 
 ## Prerequisites
 
