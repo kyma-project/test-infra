@@ -127,9 +127,9 @@ sleep 60
 echo "I'm pretending I'm doing something for the next 60 seconds..."
 #TODO: Temporary call, just to verify visually if everything works
 echo "test1"
-gcloud container clusters get-credentials "${CLUSTER_NAME}" --zone "${CLOUDSDK_COMPUTE_ZONE}" --project "${CLOUDSDK_CORE_PROJECT}"
+#gcloud container clusters get-credentials "${CLUSTER_NAME}" --zone "${CLOUDSDK_COMPUTE_ZONE}" --project "${CLOUDSDK_CORE_PROJECT}"
 #gcloud container clusters get-credentials $CLUSTER_NAME --zone europe-west1-b --project $PROJECT
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+#kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
 echo "test1.1"
 #gcloud container clusters describe "${CLUSTER_NAME}" --zone "${CLOUDSDK_COMPUTE_ZONE}"
 echo "test2.1"
