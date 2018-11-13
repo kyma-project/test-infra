@@ -19,8 +19,9 @@ pushd "${SOURCES_DIR}"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     make ci-pr
 elif [[ "${BUILD_TYPE}" == "master" ]]; then
-    # TODO: Add support for release pipeline
     make ci-master
+elif [[ "${BUILD_TYPE}" == "release" ]]; then
+    make ci-release
 else
     echo "Not supported build type - ${BUILD_TYPE}"
     exit 1
