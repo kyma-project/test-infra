@@ -128,9 +128,13 @@ echo "I'm pretending I'm doing something for the next 60 seconds..."
 
 #TODO: Temporary call, just to verify visually if everything works
 gcloud container clusters get-credentials "${CLUSTER_NAME}"
+echo "test1"
 kubectl cluster-info
+echo "test2"
 kubectl config get-contexts
+echo "test3"
 kubectl get pods --all-namespaces
+echo "test4"
 
 #TODO: Does not work...
 #echo "echo kubectl config use-context ${CLUSTER_NAME}"

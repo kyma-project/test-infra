@@ -25,7 +25,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-DNS_DOMAIN="$(gcloud dns managed-zones describe ${DNS_ZONE_NAME} --format="value(dnsName)")"
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
 gcloud dns --project="${GCLOUD_PROJECT_NAME}" record-sets transaction start --zone="${DNS_ZONE_NAME}"
