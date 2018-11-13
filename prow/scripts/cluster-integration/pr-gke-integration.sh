@@ -74,6 +74,8 @@ TEST_INFRA_SOURCES_DIR="${SOURCES_DIR}/test-infra"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 
 
+gcloud auth list
+
 echo "################################################################################"
 echo "# Reserve IP Address"
 echo "################################################################################"
