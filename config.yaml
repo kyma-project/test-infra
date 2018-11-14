@@ -34,7 +34,8 @@ presubmits:
       containers:
         - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
           command:
-            - "/home/prow/go/src/github.com/Demonsthere/test-infra/development/check.sh /home/prow/go/src/github.com/Demonsthere/test-infra/plugins.yaml /home/prow/go/src/github.com/Demonsthere/test-infra/config.yaml"
+            - "tail -f /dev/null"
+            #- "/home/prow/go/src/github.com/Demonsthere/test-infra/development/check.sh /home/prow/go/src/github.com/Demonsthere/test-infra/plugins.yaml /home/prow/go/src/github.com/Demonsthere/test-infra/config.yaml"
 
 plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
