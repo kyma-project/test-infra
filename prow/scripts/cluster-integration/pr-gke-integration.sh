@@ -8,7 +8,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER SOURCES_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -56,8 +56,8 @@ cleanup() {
     set -e
 }
 
-TEST_INFRA_SOURCES_DIR="${SOURCES_DIR}/test-infra"
-KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
+TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 #Setup variables
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")

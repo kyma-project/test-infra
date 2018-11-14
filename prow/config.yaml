@@ -31,7 +31,7 @@ presets:
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
       - name: CLOUDSDK_DNS_ZONE_NAME
         value: "build-kyma" #GCloud DNS Zone Name (NOT it's DNS name!)
-      - name: SOURCES_DIR
+      - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
     volumes:
       - name: sa-gke-kyma-integration

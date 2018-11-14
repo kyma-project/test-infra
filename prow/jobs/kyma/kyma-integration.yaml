@@ -52,7 +52,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${SOURCES_DIR}/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
 
 postsubmits:
   kyma-project/kyma:
