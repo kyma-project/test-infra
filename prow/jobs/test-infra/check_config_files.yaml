@@ -1,10 +1,11 @@
 presubmits:
   kyma-project/test-infra:
-  - name: Check yamls
+  - name: prow/test-infra/check_config
     trigger: "(?m)^/yamllint"
     rerun_command: "/yamllint"
+    run_if_changed: "prow/*.yaml"
     decorate: true
-    always_run: true
+    optional: true
     skip_report: true
     spec:
       containers:
