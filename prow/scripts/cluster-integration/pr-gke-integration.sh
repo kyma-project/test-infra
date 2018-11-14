@@ -86,7 +86,7 @@ echo "##########################################################################
 echo "# Reserve IP Address"
 echo "################################################################################"
 date
-IP_ADDRESS=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reserve-ip-address.sh)
+IP_ADDRESS=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
 export IP_ADDRESS
 CLEANUP_IP_ADDRESS="true"
 echo "IP Address: ${IP_ADDRESS} created"
@@ -96,7 +96,7 @@ echo "##########################################################################
 echo "# Create DNS Record"
 echo "################################################################################"
 date
-${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/create-dns-record.sh
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
 CLEANUP_DNS_RECORD="true"
 
 
@@ -105,7 +105,7 @@ echo "# Provision cluster: \"${CLUSTER_NAME}\""
 echo "################################################################################"
 date
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-${KYMA_SOURCES_DIR}/prow/scripts/provision-gke-cluster.sh
+"${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
 
 
