@@ -58,6 +58,12 @@ cleanup() {
 
 TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
+INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Setup variables
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
@@ -70,7 +76,6 @@ export IP_ADDRESS="will_be_generated"
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 #For provision-gke-cluster.sh
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-
 
 echo "################################################################################"
 echo "# Authenticate"
@@ -96,7 +101,8 @@ echo "##########################################################################
 echo "# Create DNS Record"
 echo "################################################################################"
 date
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
+export DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/create-dns-record.sh
 CLEANUP_DNS_RECORD="true"
 
 
@@ -105,15 +111,47 @@ echo "# Provision cluster: \"${CLUSTER_NAME}\""
 echo "################################################################################"
 date
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+export MACHINE_TYPE="n1-standard-2"
 "${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
 
 
 echo "################################################################################"
-echo "# MOCK: Installing Kyma, testing, etc..."
+echo "Install Tiller"
 echo "################################################################################"
 date
-echo "I'm pretending I'm doing something for the next 60 seconds..."
-sleep 60
-kubectl cluster-info
-kubectl get pods --all-namespaces
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+${KYMA_SCRIPTS_DIR}/install-tiller.sh
+
+
+echo "################################################################################"
+echo "Generate self-signed certificate"
+echo "################################################################################"
+date
+export DOMAIN=${DNS_DOMAIN%?}
+CERT_KEY=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
+TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+
+echo "################################################################################"
+echo "Apply Kyma config"
+echo "################################################################################"
+date
+${KYMA_SCRIPTS_DIR}/concat-yamls.sh ${INSTALLER_YAML} ${INSTALLER_CONFIG} ${INSTALLER_CR} \
+    | sed -E ";s;develop\/installer:.+;rc/kyma-installer:0.5-rc;" \
+    | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
+    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
+    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+    | sed -e "s/__EXTERNAL_PUBLIC_IP__/${IP_ADDRESS}/g" \
+    | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+    | sed -e "s/__VERSION__/0.0.1/g" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+
+
+echo "################################################################################"
+echo "Trigger installation"
+echo "################################################################################"
+date
+kubectl label installation/kyma-installation action=install
+${KYMA_SCRIPTS_DIR}/is-installed.sh
