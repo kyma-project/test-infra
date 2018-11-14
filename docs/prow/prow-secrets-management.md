@@ -13,10 +13,11 @@ This document shows the commands necessary to create a service account and store
  - Basic knowledge of [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys).
 
 Use the `export {VARIABLE}={value}` command to set up these variables, where:
- - **PROJECT_NAME** is a Google Cloud project.
+ - **PROJECT** is a Google Cloud project.
  - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
  - **KEYRING_NAME** is the KMS key ring.
  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
+ - **LOCATION** is the geographical data center location where requests to Cloud KMS regarding a given resource are handled, and where the corresponding cryptographic keys are stored. When set to `global`, your Cloud KMS resources are available from multiple data centres.
 
 ## Secrets management
 
@@ -24,7 +25,7 @@ Use the `export {VARIABLE}={value}` command to set up these variables, where:
 
 When you communicate for the first time with the Google Cloud, set the context to your Google Cloud project. Execute this command:
 ```
-gcloud config set project $PROJECT_NAME
+gcloud config set project $PROJECT
 ```
 
 ### Create a GCS bucket
@@ -32,7 +33,15 @@ gcloud config set project $PROJECT_NAME
 The purpose of the bucket is to store encrypted credentials necessary for Prow jobs like provisioning clusters or virtual machines.
 Run this command to create a bucket:
 ```
-gsutil mb -p $PROJECT_NAME gs://$BUCKET_NAME/
+gsutil mb -p $PROJECT gs://$BUCKET_NAME/
+```
+
+### Create a keyring
+
+Use this command to create a keyring for the private keys:
+
+```
+gcloud kms keyrings create $KEYRING_NAME --location $LOCATION
 ```
 
 ### Create a Google service account
@@ -52,12 +61,12 @@ gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
 
 3. Create a private key for the service account:
 ```
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT_NAME.iam.gserviceaccount.com
+gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
 ```
 
 4. Add a policy binding to the service account:
 ```
-gcloud projects add-iam-policy-binding $PROJECT_NAME --member=serviceAccount:$SA_NAME@$PROJECT_NAME.iam.gserviceaccount.com --role=$ROLE
+gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 ```
 
 ### Encrypt the Secret
