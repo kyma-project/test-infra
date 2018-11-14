@@ -1,0 +1,16 @@
+presubmits:
+  kyma-project/test-infra:
+  - name: Check yamls
+    trigger: "(?m)^/yamllint"
+    rerun_command: "/yamllint"
+    decorate: true
+    always_run: true
+    skip_report: true
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/development/check.sh"
+          args:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
