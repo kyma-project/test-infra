@@ -56,8 +56,6 @@ cleanup() {
     set -e
 }
 
-#TODO: Externalize this path somewhere (Job Config?)
-#SOURCES_DIR="/home/prow/go/src/github.com/kyma-project"
 TEST_INFRA_SOURCES_DIR="${SOURCES_DIR}/test-infra"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
 
