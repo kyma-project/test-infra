@@ -8,7 +8,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME PULL_NUMBER SOURCES_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -17,16 +17,6 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
-
-#For provision-gke-cluster.sh
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-#For provision-gke-cluster.sh
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-
-export IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
-export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
-export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
-export IP_ADDRESS="will_be_generated"
 
 trap cleanup EXIT
 
@@ -40,7 +30,7 @@ cleanup() {
       echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
       echo "################################################################################"
       date
-      "${KYMA_SOURCES_DIR}/prow/scripts/deprovision-gke-cluster.sh"
+      "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
     fi
 
     if [ -n "${CLEANUP_DNS_RECORD}" ]; then
@@ -48,7 +38,7 @@ cleanup() {
       echo "# Delete DNS Record"
       echo "################################################################################"
       date
-      ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/delete-dns-record.sh
+      "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
     fi
 
     if [ -n "${CLEANUP_IP_ADDRESS}" ]; then
@@ -56,7 +46,7 @@ cleanup() {
       echo "# Release IP Address"
       echo "################################################################################"
       date
-      ${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/release-ip-address.sh
+      "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
     fi
 
     echo "################################################################################"
@@ -67,9 +57,21 @@ cleanup() {
 }
 
 #TODO: Externalize this path somewhere (Job Config?)
-SOURCES_DIR="/home/prow/go/src/github.com/kyma-project"
+#SOURCES_DIR="/home/prow/go/src/github.com/kyma-project"
 TEST_INFRA_SOURCES_DIR="${SOURCES_DIR}/test-infra"
 KYMA_SOURCES_DIR="${SOURCES_DIR}/kyma"
+
+#Setup variables
+IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+export IP_ADDRESS_NAME
+export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
+export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+export IP_ADDRESS="will_be_generated"
+
+#For provision-gke-cluster.sh
+export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+#For provision-gke-cluster.sh
+export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 
 echo "################################################################################"
@@ -77,7 +79,7 @@ echo "# Authenticate"
 echo "################################################################################"
 date
 export BUILD_TYPE="pr"
-
+# shellcheck source=/dev/null
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
 
