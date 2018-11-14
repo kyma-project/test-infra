@@ -34,6 +34,8 @@ presubmits: # runs on PRs
       max_concurrency: 10
       labels:
         preset-sa-gke-kyma-integration: "true"
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma
       extra_refs:
@@ -47,7 +49,10 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
 
 postsubmits:
   kyma-project/kyma:
