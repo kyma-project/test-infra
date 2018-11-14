@@ -14,5 +14,5 @@ The structure of the folder looks as follows:
   ├── bootstrap             # A generic image that contains Docker and gcloud.            
   ├── buildpack-golang      # An image for building Golang components.
   ├── buildpack-node        # An image for building Node.js components.
-  └── cleaner               # A script for cleaning SSH keys on service accounts in Google Cloud Storage.  
+  └── cleaner               # An image with a script for cleaning SSH keys on service accounts in Google Cloud Storage.  
 ```

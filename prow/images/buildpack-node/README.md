@@ -1,8 +1,8 @@
-# Buildpack Node Docker Image
+# Buildpack Node.js Docker Image
 
 ## Overview
 
-This folder contains the Buildpack Node image that is based on the Bootstrap image. Use it to build node components.
+This folder contains the Buildpack Node.js image that is based on the Bootstrap image. Use it to build Node.js components.
 
 The image consists of:
 

@@ -4,12 +4,12 @@
 
 Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of PRs, applying and removing labels, or opening and closing issues.
 
-You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://prow.k8s.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in GCP. Each Prow component is a small Go service that has its own function in the management of these one-off single-pod Prow jobs.
+You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in GCP. Each Prow component is a small Go service that has its own function in the management of these one-off single-pod Prow jobs.
 
 In the content of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
 Prow configuration replies on this basic set of configurations:
-- Kubernetes cluster deployed in Google Container Engine (GKE).
+- Kubernetes cluster deployed in Google Kubernetes Engine (GKE).
 - GitHub bot account.
 - GitHub tokens:
     - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks.
@@ -40,7 +40,7 @@ Its structure looks as follows:
 ```
 
   ├── cluster               # All "yaml" files for Prow cluster provisioning.           
-  ├── images                # Images for Prow jobs that you can also use for generic builds.                                             
+  ├── images                # Images for Prow jobs.                                             
   ├── jobs                  # All files with jobs definitions.
   ├── scripts               # Scripts used by the test jobs.
   ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
@@ -56,7 +56,7 @@ Read the [`docs`](../docs/prow/README.md) to lean how to configure the productio
 
 Read about the conventions for organizing and naming jobs in the `prow` subdirectories.
 
-### Strategy for organising jobs
+### Strategy for organizing jobs
 
 The `jobs/{repository_name}` directories have subdirectories which represent each component and contain job definitions. Each file must have a unique name. Job definitions not connected to a particular component, like integration jobs, are defined directly under the `jobs/{repository_name}` directory.
 

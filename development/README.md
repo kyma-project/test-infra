@@ -12,11 +12,12 @@ The `development` folder has the following structure:
 ```
   ├── checker                  # Code sources of a simple Go application that verifies the configuration of the "config.yaml" and "plugins.yaml" files.          
   ├── check.sh                 # The script that runs the "Checker" application.                                              
-  ├── create-gcp-secrets.sh    # The script that downloads the Secrets from the GSP storage bucket to your Prow installation.
+  ├── create-gcp-secrets.sh    # The script that downloads the Secrets from the GCP storage bucket to your Prow installation.
   ├── install-prow.sh          # The script that installs Prow on your cluster.
   ├── provision-cluster.sh     # The script that creates a Kubernetes cluster.
   ├── remove-prow.sh           # The script that removes Prow from your Kubernetes cluster.
   ├── update-config.sh         # The script that updates the new configuration of the "config.yaml" file on a cluster.
-  └── update-plugins.sh        # The script that updates the new configuration of the "plugins.yaml" file on a cluster.
+  ├── update-plugins.sh        # The script that updates the new configuration of the "plugins.yaml" file on a cluster.
+  └── validate-scripts.sh      # The script that performs a static analysis of bash scripts in the "test-infra" repository.
 
 ```

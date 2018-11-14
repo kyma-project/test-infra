@@ -54,6 +54,16 @@ Follow these steps:
  - **SECRET_FILE** is the path for the private key.
  - **ROLE** is the role bound to the service account.
 
+ See an example of variables you need to export for each account:
+
+ ```
+ export SA_NAME=sa-gcs-plank
+ export SA_DISPLAY_NAME=sa-gcs-plank
+ export SECRET_FILE=sa-gcs-plank
+ export ROLE=roles/storage.objectAdmin
+
+ ```
+
 2. Create a service account:
 ```
 gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME

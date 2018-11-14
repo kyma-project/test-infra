@@ -16,24 +16,49 @@ Use the following tools and configuration:
 - Two Secrets in the Kubernetes cluster:
     - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks.
     - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account.
+- Two buckets on GCS, one for storing Secrets and the second for storing logs.
 - Google Cloud Platform configuration that includes:
     - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-production` name.
     - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-production` address.
 
 ## Installation
 
+1. When you communicate for the first time with the Google Cloud, set the context to your Google Cloud project.
+
+Export the **PROJECT** variable and execute this command:
+
+```
+gcloud config set project $PROJECT
+```
+
+2. Ensure that kubectl points to the correct cluster.
+
+Export these variables:  
+
+```
+export CLUSTER_NAME=prow-production
+export ZONE=europe-west3-b
+export PROJECT=kyma-project
+```
+
+For GKE, execute the following command:
+
+```
+gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+```
 1. Export these environment variables, where:
-      - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
-      - **KEYRING_NAME** is the KMS key ring.
-      - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
+  - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
+  - **KEYRING_NAME** is the KMS key ring.
+  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
-      ```
-      export BUCKET_NAME=kyma-prow
-      export KEYRING_NAME=kyma-prow
-      export ENCRYPTION_KEY_NAME=kyma-prow-encryption
-      ```
+```
+export BUCKET_NAME=kyma-prow
+export KEYRING_NAME=kyma-prow
+export ENCRYPTION_KEY_NAME=kyma-prow-encryption
+```
 
-2. Run the following script to start the installation process:
+
+3. Run the following script to start the installation process:
 
 ```bash
 ./install-prow.sh

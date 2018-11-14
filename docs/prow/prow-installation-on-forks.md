@@ -41,7 +41,7 @@ gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$
 
 Create a separate GitHub account which serves as a bot account that triggers the Prow comments that you enter in the pull request. If the Prow bot account is the same as the account that creates a job-triggering comment, the job is not triggered.
 
-Add the bot account to the [collaborators](https://help.github.com/articles/adding-outside-collaborators-to-repositories-in-your-organization/) on your personal GitHub account.
+Add the bot account to the [collaborators](https://help.github.com/articles/adding-outside-collaborators-to-repositories-in-your-organization/) on your forked repository and set it with push access rights. The bot account needs to accept your invitation.
 
 ## Set an access token
 
@@ -58,7 +58,7 @@ For the purpose of the installation, you require to have a set of service accoun
 
 > **NOTE:** For details, see the [prow-secrets-management.md](./prow-secrets-management.md) document that explains step by step how to create all required GSC resources.
 
-1. Create two buckets on GCS, one for storing secrets and the second for storing logs.
+1. Create two buckets on GCS, one for storing Secrets and the second for storing logs.
 
 >**NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file.
 
@@ -75,16 +75,6 @@ For the purpose of the installation, you require to have a set of service accoun
     - Storage Object Admin (`roles/storage.objectAdmin`)
 - **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
     - Storage Admin `roles/storage.admin`
-
-See an example of variables you need to export for each account:
-
-```
-export SA_NAME=sa-gcs-plank
-export SA_DISPLAY_NAME=sa-gcs-plank
-export SECRET_FILE=sa-gcs-plank
-export ROLE=roles/storage.objectAdmin
-
-```
 
 ## Install Prow
 
@@ -135,10 +125,8 @@ Verify if Prow installed successfully.
 
 ## Configure the webhook
 
-After Prow installs successfully, you need to:
+After Prow installs successfully, you need to [Configure a webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable sending Events from a GitHub repository to Prow.
 
-1. [Configure a webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable sending Events from a GitHub repository to Prow.
-2. Add the bot account to [collaborators](https://help.github.com/articles/adding-outside-collaborators-to-repositories-in-your-organization/) on your forked repository and set it with push access rights. The bot account needs to accept your invitation.
 
 ## Configure Prow
 
@@ -146,19 +134,19 @@ When you use the [`install-prow.sh`](../../development/provision-cluster.sh) scr
 
 ### The config.yaml file
 
-The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Pod Preset definitions from this file. See the example of such a file [here](../../development/config.yaml).
+The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Pod Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
 
 ### The plugins.yaml file
 
- The `plugins.yaml` file contains the list of [plugins](https://prow.k8s.io/plugins) you enable on a given repository. See the example of such a file [here](../../development/plugins.yaml).
+ The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#enable-some-plugins-by-modifying-pluginsyaml).
 
 ### Verify the configuration
 
-To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `check.sh {file_path}` script. For example, run:
+To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `check.sh {plugins_file_path} {config_file_path}` script. For example, run:
 
 ```
 ./check.sh ../prow/plugins.yaml ../prow/config.yaml
