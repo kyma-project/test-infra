@@ -49,6 +49,9 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
+              - "bash"
+            args:
+              - "-c"
               - "${SOURCES_DIR}/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
 
 postsubmits:
