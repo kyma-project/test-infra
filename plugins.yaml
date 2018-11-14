@@ -1,0 +1,6 @@
+plugins:
+  Demonsthere/test-infra:
+    - cat
+    - size
+    - trigger
+
