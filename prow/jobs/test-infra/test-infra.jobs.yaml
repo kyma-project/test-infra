@@ -1,0 +1,188 @@
+presubmits: # runs on PRs
+  kyma-project/test-infra:
+    - name: prow/test-infra/bootstrap
+      run_if_changed: "images/bootstrap/"
+      context: prow/test-infra/bootstrap
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-pr: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+    - name: prow/test-infra/buildpack-golang
+      run_if_changed: "images/buildpack-golang/"
+      context: prow/test-infra/buildpack-golang
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-pr: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+    - name: prow/test-infra/buildpack-node
+      run_if_changed: "images/buildpack-node/"
+      context: prow/test-infra/buildpack-node
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-pr: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+    - name: prow/test-infra/cleaner
+      run_if_changed: "images/cleaner/"
+      context: prow/test-infra/cleaner
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-pr: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
+postsubmits: # runs on master
+  kyma-project/test-infra:
+    - name: prow/test-infra/bootstrap
+      run_if_changed: "images/bootstrap/"
+      context: prow/test-infra/bootstrap
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-master: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+    - name: prow/test-infra/buildpack-golang
+      run_if_changed: "images/buildpack-golang/"
+      context: prow/test-infra/buildpack-golang
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-master: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+    - name: prow/test-infra/buildpack-node
+      run_if_changed: "images/buildpack-node/"
+      context: prow/test-infra/buildpack-node
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-master: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+    - name: prow/test-infra/cleaner
+      run_if_changed: "images/cleaner/"
+      context: prow/test-infra/cleaner
+      optional: true
+      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+      max_concurrency: 10
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-master: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
+            env:
+              - name: SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
