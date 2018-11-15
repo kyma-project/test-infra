@@ -1,12 +1,12 @@
 # Define standard jobs for Kyma components
 
 This document describes procedure for defining Prow jobs for `kyma` component. In this document we assume that 
-you are using standard mechanism provided by `test-infra` respository for defining prowjobs, that is to say you are using
+you are using standard mechanism provided by `test-infra` repository for defining prowjobs, that is to say you are using
 provided buildpack for Go or node application.
-
 
 ## Steps
 
+# TODO change order 
 ### Create or adjust the `Makefile` for your component.
 Both of the buildpacks require a `Makefile` defined in your component directory.   
 The `Makefile` has to define 3 rules:
@@ -142,15 +142,12 @@ and comment is added to the PR:
 ![msg](./assets/msg-updated-config.png)
 
 There are following options to trigger your job:
-- create a new PR
+- create a new PR on `kyma` repository.
 - request executing all tests for already created PR by adding comment: `/test all`
 
-### Define postsubmit job and presubmit job for release
-Postsubmit job and presubmit job for releases are almost the same as already defined job for master,
-except for the differences in:
-- Branch name.
-- **run_if_changed** parameters.
-- Labels, since you use `preset-build-release` instead of `preset-build-pr`.
+### Define postsubmit job 
+Postsubmit job is almost the same as already defined presubmit job for the `master`, except for the differences in:
+- Labels, since you use `preset-build-master` instead of `preset-build-pr`.
 To reduce boilerplate code and code repetition, use `yaml` features, such as extending objects.
 See example:
 ```yaml
@@ -174,7 +171,7 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh" 
       env:
       - name: SOURCES_DIR
-        value: "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+        value: "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
 
 
 
@@ -185,24 +182,16 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: &name prow/kyma/components/ui-api-layer
-    context: *name #name and context is the same
+  - name: &name prow/kyma/components/binding-usage-controller
+    context: *name 
     branches:
     - master
-    run_if_changed: "components/ui-api-layer/"  
+    run_if_changed: "components/binding-usage-controller/"  
     labels:
       preset-build-pr: "true"
       <<: *job_labels_template
     <<: *job_template
-  - name: &name prow/release/kyma/components/ui-api-layer
-    context: *name
-    run_if_changed: "(components/ui-api-layer/|resources/core/values.yaml)"
-    branches:
-    - '^release-\d+\.\d+$'
-    labels:
-      preset-build-release: "true"
-      <<: *job_labels_template
-    <<: *job_template
+
 ```
 
 To check if your configuration is proper, you can write a Go test, for a reference see `prow/jobs/kyma/components/ui-api-layer/jobs_test.go`.
