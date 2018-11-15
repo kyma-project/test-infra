@@ -15,7 +15,7 @@ cleanup() {
 
 authenticate
 
-RANDOM_ID=$(< /dev/urandom tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+RANDOM_ID=$(LC_CTYPE=C < /dev/urandom tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
