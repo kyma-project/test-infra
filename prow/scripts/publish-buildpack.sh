@@ -31,4 +31,3 @@ else
     echo "Not supported build type - ${BUILD_TYPE}"
     exit 1
 fi
-
