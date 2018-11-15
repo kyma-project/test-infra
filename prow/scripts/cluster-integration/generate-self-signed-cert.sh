@@ -11,22 +11,22 @@ if [ -z "$DOMAIN" ]; then
 fi
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-KEY_PATH="${SCRIPTS_DIR}/key.pem"
 CERT_PATH="${SCRIPTS_DIR}/cert.pem"
+KEY_PATH="${SCRIPTS_DIR}/key.pem"
 
 openssl req -x509 -nodes -days 5 -newkey rsa:4069 \
                  -subj "/CN=${DOMAIN}" \
                  -reqexts SAN -extensions SAN \
                  -config <(cat /etc/ssl/openssl.cnf \
-        <(printf "\n[SAN]\nsubjectAltName=DNS:*.${DOMAIN}")) \
-                 -keyout ${KEY_PATH} \
-                 -out ${CERT_PATH}
+        <(printf "\\n[SAN]\\nsubjectAltName=DNS:*.%s" "${DOMAIN}")) \
+                 -keyout "${KEY_PATH}" \
+                 -out "${CERT_PATH}"
 
-TLS_CERT=$(cat /cert.pem | base64 | tr -d '\n')
-TLS_KEY=$(cat /key.pem | base64 | tr -d '\n')
+TLS_CERT=$(base64 "${CERT_PATH}" | tr -d '\n')
+TLS_KEY=$(base64 "${KEY_PATH}" | tr -d '\n')
 
 echo "TLS_CERT=${TLS_CERT}"
 echo "TLS_KEY=${TLS_KEY}"
 
-rm ${KEY_PATH}
-rm ${CERT_PATH}
+rm "${KEY_PATH}"
+rm "${CERT_PATH}"

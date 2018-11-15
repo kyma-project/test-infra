@@ -26,13 +26,13 @@ presets:
         readOnly: true
   - labels:
       preset-sa-gke-kyma-integration: "true"
-    env: #TODO: unify/re-use values from other presets.
-      - name: GCLOUD_SERVICE_KEY_PATH
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
-      - name: GCLOUD_PROJECT_NAME
-        value: kyma-project
-      - name: GCLOUD_COMPUTE_ZONE
-        value: europe-west3-a
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
     volumes:
       - name: sa-gke-kyma-integration
         secret:
@@ -70,6 +70,11 @@ presets:
     env:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/prow/test" # TODO: change to eu.gcr.io/kyma-project
+  - labels:
+      preset-docker-push-repository-test-infra: "true"
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "eu.gcr.io/kyma-project/prow/test-infra" # TODO: change to eu.gcr.io/kyma-project/test-infra
   - labels:
       preset-build-pr: "true"
     env:
