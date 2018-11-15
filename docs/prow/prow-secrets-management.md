@@ -43,6 +43,14 @@ Use this command to create a keyring for the private keys:
 ```
 gcloud kms keyrings create $KEYRING_NAME --location $LOCATION
 ```
+### Create a key in the keyring
+
+Create a key for encrypting your private key.
+
+```
+gcloud kms keys create $ENCRYPTION_KEY_NAME --location $LOCATION \
+  --keyring $KEYRING_NAME --purpose encryption
+  ```
 
 ### Create a Google service account
 

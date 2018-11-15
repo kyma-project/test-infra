@@ -9,17 +9,17 @@ This instruction provides the steps required to deploy a production cluster for 
 Use the following tools and configuration:
 
 - Kubernetes 1.10+ on GKE
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes.
-- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform.
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
+- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform
 - The `kyma-bot` GitHub account
 - [Kubernetes cluster](./prow-installation-on-forks.md/#provision-a-cluster)
 - Two Secrets in the Kubernetes cluster:
-    - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks.
-    - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account.
-- Two buckets on GCS, one for storing Secrets and the second for storing logs.
+    - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks
+    - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
+- Two buckets on GCS, one for storing Secrets and the second for storing logs
 - Google Cloud Platform configuration that includes:
-    - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-production` name.
-    - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-production` address.
+    - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-production` name
+    - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-production` address
 
 ## Installation
 
