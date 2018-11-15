@@ -8,7 +8,7 @@ The folder contains documents that provide an insight into Prow configuration, d
 
 Read the documents to learn how to:
 
-- [Configure a production Prow](./production-cluster-configuration.md) based on the preconfigured Google Cloud Storage (GCS) resources.
+- [Configure Prow on a production cluster](./production-cluster-configuration.md) based on the preconfigured Google Cloud Storage (GCS) resources.
 - [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Create a service account](./prow-secrets-management.md) and store its encrypted key in a GCS bucket.
 

@@ -8,16 +8,16 @@ This instruction provides the steps required to deploy a production cluster for 
 
 Use the following tools and configuration:
 
-- Kubernetes 1.10+ on GKE
+- Kubernetes 1.10+ on Google Kubernetes Engine (GKE)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
-- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform
+- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
 - [Kubernetes cluster](./prow-installation-on-forks.md/#provision-a-cluster)
 - Two Secrets in the Kubernetes cluster:
-    - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks
+    - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
     - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
-- Two buckets on GCS, one for storing Secrets and the second for storing logs
-- Google Cloud Platform configuration that includes:
+- Two buckets on Google Cloud Storage (GCS), one for storing Secrets and the second for storing logs
+- GCP configuration that includes:
     - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-production` name
     - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-production` address
 
@@ -25,13 +25,13 @@ Use the following tools and configuration:
 
 1. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project.
 
-Export the **PROJECT** variable and execute this command:
+Export the **PROJECT** variable and run this command:
 
 ```
 gcloud config set project $PROJECT
 ```
 
-2. Ensure that kubectl points to the correct cluster.
+2. Make sure that kubectl points to the correct cluster.
 
 Export these variables:  
 
@@ -41,13 +41,13 @@ export ZONE=europe-west3-b
 export PROJECT=kyma-project
 ```
 
-For GKE, execute the following command:
+For GKE, run the following command:
 
 ```
 gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
 ```
 3. Export these environment variables, where:
-  - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
+  - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
   - **KEYRING_NAME** is the KMS key ring.
   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
@@ -68,9 +68,9 @@ The installation script performs the following steps to install Prow:
 - Deploy the NGINX Ingress Controller.
 - Create a ClusterRoleBinding.
 - Deploy Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
-- Deploy Cert Manager.
-- Deploy Secure Ingress.
-- Remove Insecure Ingress.
+- Deploy the Cert Manager.
+- Deploy secure Ingress.
+- Remove insecure Ingress.
 
 5. Verify the installation.
 
@@ -80,4 +80,4 @@ To check if the installation is successful, perform the following steps:
    `kubeclt get pods`
 - Check if the Deck is accessible from outside of the cluster:
    `kubectl get ingress tls-ing`
-   Copy the address of the `tls-ing` Ingress and open it in a browser to display the Prow status on the dashboard.
+- Copy the address of the `tls-ing` Ingress and open it in a browser to display the Prow status on the dashboard.

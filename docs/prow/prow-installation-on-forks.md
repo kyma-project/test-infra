@@ -1,4 +1,4 @@
-# Prow Installation
+# Prow Installation on Forks
 
 This instruction provides the steps required to deploy your own Prow on a forked repository for test and development purposes.
 
@@ -8,9 +8,9 @@ This instruction provides the steps required to deploy your own Prow on a forked
 
 Install the following tools:
 
-- Kubernetes 1.10+ on GKE
+- Kubernetes 1.10+ on Google Kubernetes Engine (GKE)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
-- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform
+- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - OpenSSL
 
 ## Provision a cluster
@@ -25,13 +25,13 @@ export ZONE={zone-name}
 
 ```
 
-2. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project. Execute this command:
+2. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project. Run this command:
 
 ```
 gcloud config set project $PROJECT
 ```
 
-3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on Google Kubernetes Engine (GKE). Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
+3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on GKE. Make sure that kubectl points to the correct cluster. For GKE, run the following command:
 
 ```
 gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
@@ -41,7 +41,7 @@ gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$
 
 Create a separate GitHub account which serves as a bot account that triggers the Prow comments that you enter in the pull request. If the Prow bot account is the same as the account that creates a job-triggering comment, the job is not triggered.
 
-Add the bot account to the [collaborators](https://help.github.com/articles/adding-outside-collaborators-to-repositories-in-your-organization/) on your forked repository and set it with push access rights. The bot account needs to accept your invitation.
+Add the bot account to the [collaborators](https://help.github.com/articles/adding-outside-collaborators-to-repositories-in-your-organization/) on your forked repository and set it with push access rights. The bot account must accept your invitation.
 
 ## Set an access token
 
@@ -54,15 +54,15 @@ You can set the token either as an environment variable named `OAUTH` or provide
 
 ## Create Secrets
 
-For the purpose of the installation, you require to have a set of service accounts and secret files created on Google Cloud Storage (GCS).
+For the purpose of the installation, you must have a set of service accounts and secret files created on Google Cloud Storage (GCS).
 
-> **NOTE:** For details, see the [prow-secrets-management.md](./prow-secrets-management.md) document that explains step by step how to create all required GCS resources.
+> **NOTE:** For details, see the [Prow Secrets Management](./prow-secrets-management.md) document that explains step by step how to create all required GCS resources.
 
 1. Create two buckets on GCS, one for storing Secrets and the second for storing logs.
 
 >**NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file.
 
-2. Create the following service accounts, role bindings, and private keys, encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
+2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
 - **sa-gke-kyma-integration** with roles that allow the account to create Kubernetes clusters:
     - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
@@ -82,7 +82,7 @@ Follow these steps to install Prow:
 
 1. Export these environment variables:
 
-- **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
+- **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
 - **KEYRING_NAME** is the KMS key ring.
 - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
@@ -100,14 +100,14 @@ This script performs the following steps to install Prow:
 
 - Deploy the NGINX Ingress Controller.
 - Create a ClusterRoleBinding.
-- Create a HMAC token to be used for GitHub Webhooks.
-- Create secrets for HMAC and OAuth2 to be used by Prow.
+- Create a HMAC token used for GitHub webhooks.
+- Create Secrets for HMAC and OAuth2 used by Prow.
 - Deploy Prow components using the `starter.yaml` file from the `prow/cluster` directory.
 - Add annotations for the Prow Ingress to make it work with the NGINX Ingress Controller.
 
 ## Verify the Installation
 
-Verify if Prow installed successfully.
+Verify if the Prow installation was successful.
 
 1. Check if all Pods are up and running:
 
@@ -125,7 +125,7 @@ Verify if Prow installed successfully.
 
 ## Configure the webhook
 
-After Prow installs successfully, you need to [configure the webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable the GitHub repository to send Events to Prow.
+After Prow installs successfully, you must [configure the webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable the GitHub repository to send Events to Prow.
 
 
 ## Configure Prow
@@ -134,7 +134,7 @@ When you use the [`install-prow.sh`](../../development/provision-cluster.sh) scr
 
 ### The config.yaml file
 
-The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Pod Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
+The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
 
@@ -168,7 +168,7 @@ If the files are configured correctly, upload the files on a cluster.
 ./update-config.sh ../prow/config.yaml
 ```
 
-After you complete the required configuration, you can already start testing the uploaded plugins and configuration. You can also create your own job pipeline and test it against the forked repository.
+After you complete the required configuration, you can test the uploaded plugins and configuration. You can also create your own job pipeline and test it against the forked repository.
 
 ### Cleanup
 

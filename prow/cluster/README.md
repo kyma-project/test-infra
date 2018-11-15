@@ -12,7 +12,7 @@ The structure of the folder looks as follows:
 
 ```
   ├── 01-cert-manager.yaml        # Definition of the Cert Manager and related resources, required to manage the SSL certificates that ensure the trusted website connection.
-  ├── 02-cluster-issuer.yaml      # Definition of the resource responsible for creating new certificates.
+  ├── 02-cluster-issuer.yaml      # Definition of the resource which creates new certificates.
   ├── 03-tls-ing_ingress.yaml     # Definition of the encrypted Ingress that accesses the Prow cluster.
-  └── starter.yaml                # Basic definition of Prow, including ConfigMaps, deployments, and Custom Resource definitions.
+  └── starter.yaml                # Basic definition of Prow, including ConfigMaps, Deployments, and CustomResourceDefinitions.
 ```
