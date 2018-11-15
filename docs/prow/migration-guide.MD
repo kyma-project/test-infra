@@ -21,13 +21,13 @@ jobs
 |-- <repository1>
 |---- components
 |------ <component1>
-|-------- <component1.jobs.yaml>
+|-------- <component1.yaml>
 |------ <component2>
 
 ```
 
 For example, if you define jobs for `binding-usage-controller` component from `kyma` repository,
-you create one file called: `jobs/kyma/components/binding-usage-controller/binding-usage-controller.jobs.yaml`
+you create one file called: `jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml`
 >**NOTE:** Yaml file needs to have unique name in the whole `jobs` structure.
 
 In your job, you should call `pipeline.sh` script from provided buildpack image. This script execute makefile's rule defined for your component.
@@ -108,7 +108,8 @@ Use `development/check.sh` script.
 ### Review and merge your PR on test-infra
 After merging, job configuration is automatically applied on a Prow production cluster 
 and comment is added to the PR:
-![msg](./assets/msg-updated-config.png)
+![msg](./assets/msg-updated-config.png).
+This is done by `config_updater` configured in `prow/plugins.yaml` file.
 
  
 ### Create or adjust the `Makefile` for your component.
