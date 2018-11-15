@@ -8,3 +8,5 @@ set -o pipefail
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 find "${DEVELOPMENT_DIR}/.." -type f -name "*.sh" -exec "shellcheck" {} +
+
+echo "No issues detected!"

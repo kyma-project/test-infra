@@ -1,6 +1,5 @@
 common_job_template: &common_job_template
-  optional: true
-  skip_report: true
+  skip_report: false
   max_concurrency: 10
   decorate: true
   path_alias: github.com/kyma-project/test-infra
