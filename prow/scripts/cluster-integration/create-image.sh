@@ -5,12 +5,13 @@
 #Expected vars:
 # - KYMA_SOURCES_DIR: directory with Kyma sources to build Kyma-Installer image
 # - KYMA_INSTALLER_IMAGE: Full image name (with tag)
+# - CLOUDSDK_CORE_PROJECT: GCloud Project name, used for KYMA_INSTALLER_IMAGE validation
 #
 #Permissions: In order to run this script you need to use a service account with "Storage Admin" role
 
 set -o errexit
 
-for var in KYMA_SOURCES_DIR TEST_INFRA_SOURCES_DIR KYMA_INSTALLER_IMAGE; do
+for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -20,7 +21,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/validate-image-name.sh
+CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+"${CURRENT_DIR}"/validate-image-name.sh
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
