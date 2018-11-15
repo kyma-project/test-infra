@@ -28,8 +28,8 @@ fi
 trap cleanup EXIT
 
 cleanup() {
-    if [ ${CLEANUP_DNS_TRANSACTION} = true ]; then
-        gcloud dns record-sets transaction abort --zone=$(echo $CLOUDSDK_DNS_ZONE_NAME) --verbosity none
+    if [ "${CLEANUP_DNS_TRANSACTION}" == true ]; then
+        gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
     fi
 }
 
