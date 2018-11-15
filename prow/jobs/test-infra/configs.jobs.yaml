@@ -5,7 +5,7 @@ presubmits:
     rerun_command: "/check config"
     run_if_changed: "prow/(plugins|config).yaml"
     decorate: true
-    skip_report: true
+    skip_report: false
     spec:
       containers:
         - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
