@@ -1,10 +1,10 @@
-# Buildpack Node Docker Image
+# Buildpack Node.js Docker Image
 
 ## Overview
 
-This project includes Buildpack Node image that is based on Bootstrap image. It can be used for building node components.
+This folder contains the Buildpack Node.js image that is based on the Bootstrap image. Use it to build Node.js components.
 
-This image contains:
+The image consists of:
 
 - nodejs
 - eslint
@@ -12,7 +12,7 @@ This image contains:
 - prettier
 - whitesource
 
-## Build
+## Installation
 
 To build the Docker image, run this command:
 
