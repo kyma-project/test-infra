@@ -22,15 +22,15 @@ for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN IP_ADDRESS
 done
 
 if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
+    exit 2
 fi
 
 trap cleanup EXIT
 
 cleanup() {
-    set +e
-    gcloud dns record-sets transaction abort --zone=$(echo $DNS_ZONE) --verbosity none
-    set -e
+    if [ $(echo $?) -eq 1 ]; then
+        gcloud dns record-sets transaction abort --zone=$(echo $CLOUDSDK_DNS_ZONE_NAME) --verbosity none
+    fi
 }
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
@@ -59,4 +59,4 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 done
 
 echo "Cannot resolve ${DNS_FULL_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."
-exit 1
+exit 2
