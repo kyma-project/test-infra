@@ -2,16 +2,16 @@
 
 ## Overview
 
-This project includes Buildpack Golang image that is based on Bootstrap image. It can be used for building node components
+This folder contains the Buildpack Golang image that is based on the Bootstrap image. Use it to build Golang components.
 
-This image contains:
+The image consists of:
 
 - golang
 - dep
 
-## Build
+## Installation
 
-To build Docker image, run this command:
+To build the Docker image, run this command:
 
 ```bash
 docker build buildpack-golang .
