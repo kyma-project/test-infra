@@ -25,6 +25,14 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+trap cleanup EXIT
+
+cleanup() {
+    set +e
+    gcloud dns record-sets transaction abort --zone=$(echo $DNS_ZONE) --verbosity none
+    set -e
+}
+
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
