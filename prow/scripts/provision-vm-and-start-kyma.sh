@@ -34,7 +34,7 @@ for ZONE in ${EU_ZONES}; do
         --image debian-9-stretch-v20181011 \
         --image-project debian-cloud \
         --machine-type n1-standard-4 \
-        --zone ${ZONE} \
+        --zone "${ZONE}" \
         --boot-disk-size 20 "${LABELS[@]}" && break;
     trap cleanup exit
 done || exit 1
