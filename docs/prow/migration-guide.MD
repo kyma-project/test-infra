@@ -4,47 +4,14 @@ This document describes procedure for defining Prow jobs for `kyma` component. I
 you are using standard mechanism provided by `test-infra` repository for defining prowjobs, that is to say you are using
 provided buildpack for Go or node application.
 
+## Migration plan
+In the first phase, we aim to have duplicated jobs for components - in the internal CI and in the Prow. 
+This is temporary state, until we ensure that our Prow server is production-ready. Hence:
+- Prow jobs should be configured to push a Docker images to a different directory than internal CI is pushing. 
+This is achieved by a preset `preset-docker-push-repository`.
+- Prow jobs should not sent events to GitHub (`skip_report` set to `true`).
+
 ## Steps
-
-# TODO change order 
-### Create or adjust the `Makefile` for your component.
-Both of the buildpacks require a `Makefile` defined in your component directory.   
-The `Makefile` has to define 3 rules:
-- **ci-pr** - is executed for a Pull Request(PR) that base branch is the `master`.
-- **ci-master** - is executed after merging a PR to the `master` branch.
-- **ci-release** - is executed for a PR to the release branch.
-
-Example Makefile for `ui-api-layer` component:
-```Makefile
-IMG_NAME = ui-api-layer
-IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
-TAG = $(DOCKER_TAG)
-
-ci-pr: resolve build-and-test build-image push-image
-ci-master: resolve build-and-test build-image push-image
-ci-release: resolve build-and-test build-image push-image
-
-resolve:
-	dep ensure -v -vendor-only
-build-and-test:
-	./before-commit.sh ci
-build-image:
-	docker build -t $(IMG_NAME) .
-push-image:
-	docker tag $(IMG_NAME) $(IMG):$(TAG)
-	docker push $(IMG):$(TAG) 
-```
->**NOTE** Tab before each command is required.
-
-It is highly likely, that as a result of your job, new Docker image will be pushed. 
-In the above example, you can see that image name is deduced on the  basis of the following environment variables:
-- **DOCKER_TAG** - Docker tag. (set by `pipeline.sh` script)
-- **DOCKER_PUSH_DIRECTORY** directory in Docker repository where image is pushed. (set by `pipeline.sh` script)
-- **DOCKER_PUSH_REPOSITORY** - Docker repository where image is be pushed. (set in job definition by preset: `preset-docker-push-repository`)
-
-### Create a PR for your component
-ProwJobs usually are triggered by GitHub events. Events are sent, for example when a PR is created, or 
-new changes were added to a PR. To test your changes, create a new PR for your component. 
 
 ### Create presubmit job
 Presubmit job runs on a Pull Request (PR). All jobs needs to be stored in `test-infra` repository, in `prow/jobs` directory.
@@ -62,6 +29,8 @@ jobs
 For example, if you define jobs for `binding-usage-controller` component from `kyma` repository,
 you create one file called: `jobs/kyma/components/binding-usage-controller/binding-usage-controller.jobs.yaml`
 >**NOTE:** Yaml file needs to have unique name in the whole `jobs` structure.
+
+In your job, you should call `pipeline.sh` script from provided buildpack image. This script execute makefile's rule defined for your component.
 
 Content of this file should be following:
 ```yaml
@@ -97,35 +66,36 @@ presubmits: # runs on PRs
 
 ```
 
-As you can see, we defined one job, for `kyma-project/kyma` repository. 
+As you can see, we defined one job, for `kyma-project/kyma` repository.
+ 
 Fields description:
 
-|Field                  | Value | Description|
-|-----------------------|-------------|---------------| 
-|name                   |             | Job name. Should unambigously identifies job. See [TODO]() requirements for job name.
-|run_if_changed         |             | Regular expression. Define to run this build only if this files were changed. In case of PR that does not modify your component, this job  send a notification to GitHub that it is skipped.
-|context                |             | GitHub status context for the job. Should be the same as job name.
-|branches               | master      | Run it only for PR's that base branch appears on this list
-|skip_report            | true        | If true, job's status will not be send to GitHub. Set it to `true`.
-|decorate               | true        | Decorated jobs clones automatically repository, and store logs from its execution in a buckets.
-|path_alias             |             | Where the repository under test is cloned.
-|extra_ref              |             | Auxiliary repositories that need to be also cloned, in addition to the main repository. 
-|spec.containers.image  |             | Docker image. Currently provided images are buildpack-golang and buildpack-node. For more details see `prow/images`. If you build docker image in your job, privileged mode is required. 
-|spec.containers.command|             | Buildpacks have a `pipeline.sh` script that allows easily trigger build for your component. `pipeline.sh` script populate some environment variables(**DOCKER_TAG), inits dokcer, and then execute one of the makefile rule depending on the environment variable **BUILD_TYPE**. This environment variable can be injected by build preset (preset-build-pr,preset-build-release or preset-build-master).
-|spec.containers.env    |             | **SOURCE_DIR** is required by the `pipeline.sh` script and points to the directory where Makefile for your component is placed.
-|labels                 |             | Regular k8s labels. In this case we use it to enable podpresets. Available presets can be fonund in `/prow/config.yaml` file and are described below.
+|Field                  | Description|
+|-----------------------|-------------|
+|name                   | Job name. Should unambigously identifies job. See [TODO]() requirements for job name.
+|run_if_changed         | Regular expression. Define to run this build only if this files were changed. In case of PR that does not modify your component, this job send a notification to GitHub that it is skipped.
+|context                | GitHub status context for the job - how it be displayed on the GitHub. Should be the same as job name.
+|branches               | Run it only for PR's that base branch appears on this list
+|skip_report            | If true, job's status will not be send to GitHub. Set it to `true`.
+|decorate               | Decorated jobs clones automatically repository, and store logs from its execution in a buckets.
+|path_alias             | Where the repository under test is cloned.
+|extra_ref              | Auxiliary repositories that need to be also cloned, in addition to the main repository. 
+|spec.containers.image  | Docker image. Currently provided images are buildpack-golang and buildpack-node. For more details see `prow/images`. If you build docker image in your job, privileged mode is required. 
+|spec.containers.command| Buildpacks have a `pipeline.sh` script that allows easily trigger build for your component. `pipeline.sh` script populates some environment variables(**DOCKER_TAG), initializes Dokcer, and then execute one of the makefile rule depending on the environment variable **BUILD_TYPE**. This environment variable can be injected by one of the build presets (preset-build-pr,preset-build-release or preset-build-master).
+|spec.containers.env    | **SOURCE_DIR** is required by the `pipeline.sh` script and points to the directory where Makefile for your component is placed.
+|labels                 | Regular k8s labels. In this case we use it to enable podpresets. Available presets can be fonund in `/prow/config.yaml` file and are described below.
 
 #### Available presets
 | name                       | description
 |----------------------------|------------
-| preset-dind-enabled           | Allows to run docker in your docker container
+| preset-dind-enabled           | Allows to run Docker in your job
 | preset-sa-gcr-push            | Injects credentials for pushing images to Google Cloud Registry
 | preset-docker-push-repository | Provide environment variable with address of Docker repository
 | preset-build-pr               | Provide environment variable with directory in Docker repository to store images and variable **BUILD_TYPE** set to **pr** 
 | preset-build-master           | As above, but **BUILD_TYPE** is set to **master**
 | preset-build-release          | As above, but **BUILD_TYPE** is set to **release**.
 | preset-gc-project-env         | Provide environment variable with gcloud project name
-| preset-gc-compute-envs        | Provide environment variables with gcloud compute zone and gclod compute region
+| preset-gc-compute-envs        | Provide environment variables with gcloud compute zone and gcloud compute region
 | preset-sa-vm-kyma-integration | Injects credentials for Service Account for running integration tests on VM
 | preset-sa-gke-kyma-integration| Injects credentials for Service Account for running integration tests on GKE cluster
 
@@ -135,15 +105,55 @@ Fields description:
 Use `development/check.sh` script. 
 #TODO adjust this section after merging #87
  
-
 ### Review and merge your PR on test-infra
 After merging, job configuration is automatically applied on a Prow production cluster 
 and comment is added to the PR:
 ![msg](./assets/msg-updated-config.png)
 
-There are following options to trigger your job:
-- create a new PR on `kyma` repository.
-- request executing all tests for already created PR by adding comment: `/test all`
+ 
+### Create or adjust the `Makefile` for your component.
+Both of the buildpacks require a `Makefile` defined in your component directory.   
+The `Makefile` has to define 3 rules:
+- **ci-pr** - is executed for a Pull Request(PR) that base branch is the `master`.
+- **ci-master** - is executed after merging a PR to the `master` branch.
+- **ci-release** - is executed for a PR to the release branch.
+
+Example Makefile for `binding-usage-controller` component:
+```Makefile
+IMG_NAME = ui-api-layer
+IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
+TAG = $(DOCKER_TAG)
+
+ci-pr: resolve build-and-test build-image push-image
+ci-master: resolve build-and-test build-image push-image
+ci-release: resolve build-and-test build-image push-image
+
+resolve:
+	dep ensure -v -vendor-only
+build-and-test:
+	./before-commit.sh ci
+build-image:
+	docker build -t $(IMG_NAME) .
+push-image:
+	docker tag $(IMG_NAME) $(IMG):$(TAG)
+	docker push $(IMG):$(TAG) 
+```
+>**NOTE** Tab before each command is required.
+
+It is highly likely, that as a result of your job, new Docker image will be pushed. 
+In the above example, you can see that image name is deduced on the  basis of the following environment variables:
+- **DOCKER_TAG** - Docker tag. (set by `pipeline.sh` script)
+- **DOCKER_PUSH_DIRECTORY** directory in Docker repository where image is pushed. (set in job definition by one of the preset `preset-build-pr`, `preset-build-master`,`preset-build-release`)
+- **DOCKER_PUSH_REPOSITORY** - Docker repository where image is be pushed. (set in job definition by the preset: `preset-docker-push-repository`)
+
+### Create a PR for your component
+ProwJobs usually are triggered by GitHub events. Events are sent, for example when a PR is created, or 
+new changes were added to a PR. To test your changes, create a new PR for your component. 
+If you want to trigger your job again, add a comment on PR for your component:
+- `/test all` - to run all tests
+- `/restest` - to run again only failed tests 
+- `/test {your test name}`, for example `/test prow/kyma/components/binding-usage-controller` to run only a specific test
+Then your job should appear on `http://status.build.kyma-project.io/`.
 
 ### Define postsubmit job 
 Postsubmit job is almost the same as already defined presubmit job for the `master`, except for the differences in:
