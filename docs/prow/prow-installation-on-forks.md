@@ -9,8 +9,8 @@ This instruction provides the steps required to deploy your own Prow on a forked
 Install the following tools:
 
 - Kubernetes 1.10+ on GKE
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes.
-- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform.
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
+- [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform
 - OpenSSL
 
 ## Provision a cluster
@@ -25,13 +25,13 @@ export ZONE={zone-name}
 
 ```
 
-2. When you communicate for the first time with the Google Cloud, set the context to your Google Cloud project. Execute this command:
+2. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project. Execute this command:
 
 ```
 gcloud config set project $PROJECT
 ```
 
-3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on GKE. Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
+3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on Google Kubernetes Engine (GKE). Ensure that kubectl points to the correct cluster. For GKE, execute the following command:
 
 ```
 gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
@@ -56,7 +56,7 @@ You can set the token either as an environment variable named `OAUTH` or provide
 
 For the purpose of the installation, you require to have a set of service accounts and secret files created on Google Cloud Storage (GCS).
 
-> **NOTE:** For details, see the [prow-secrets-management.md](./prow-secrets-management.md) document that explains step by step how to create all required GSC resources.
+> **NOTE:** For details, see the [prow-secrets-management.md](./prow-secrets-management.md) document that explains step by step how to create all required GCS resources.
 
 1. Create two buckets on GCS, one for storing Secrets and the second for storing logs.
 
@@ -71,14 +71,14 @@ For the purpose of the installation, you require to have a set of service accoun
     - Compute Instance Admin (beta) (`roles/compute.instanceAdmin`)
     - Compute OS Admin Login (`roles/compute.osAdminLogin`)
     - Service Account User (`roles/iam.serviceAccountUser`)
-- **sa-gcs-plank** with the role that allows the account to store objects in a Bucket:
+- **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
     - Storage Object Admin (`roles/storage.objectAdmin`)
 - **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
     - Storage Admin `roles/storage.admin`
 
 ## Install Prow
 
-Follow these steps:
+Follow these steps to install Prow:
 
 1. Export these environment variables:
 
@@ -125,7 +125,7 @@ Verify if Prow installed successfully.
 
 ## Configure the webhook
 
-After Prow installs successfully, you need to [Configure a webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable sending Events from a GitHub repository to Prow.
+After Prow installs successfully, you need to [configure the webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable the GitHub repository to send Events to Prow.
 
 
 ## Configure Prow
@@ -174,6 +174,6 @@ After you complete the required configuration, you can already start testing the
 
 To clean up everything created by the installation script, run the removal script:
 
-```bash
+```
 ./remove-prow.sh
 ```

@@ -9,15 +9,15 @@ This document shows the commands necessary to create a service account and store
 
 ## Prerequisites
 
- - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform.
- - Basic knowledge of [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys).
+ - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform
+ - Basic knowledge of [GCP key rings and keys](https://cloud.google.com/kms/docs/creating-keys)
 
 Use the `export {VARIABLE}={value}` command to set up these variables, where:
  - **PROJECT** is a Google Cloud project.
- - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
+ - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets
  - **KEYRING_NAME** is the KMS key ring.
  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
- - **LOCATION** is the geographical data center location where requests to Cloud KMS regarding a given resource are handled, and where the corresponding cryptographic keys are stored. When set to `global`, your Cloud KMS resources are available from multiple data centres.
+ - **LOCATION** is the geographical location of the data center that handles requests for Cloud KMS regarding a given resource and stores the corresponding cryptographic keys. When set to `global`, your Cloud KMS resources are available from multiple data centres.
 
 ## Secrets management
 
@@ -36,14 +36,14 @@ Run this command to create a bucket:
 gsutil mb -p $PROJECT gs://$BUCKET_NAME/
 ```
 
-### Create a keyring
+### Create a key ring
 
-Use this command to create a keyring for the private keys:
+Use this command to create a key ring for the private keys:
 
 ```
 gcloud kms keyrings create $KEYRING_NAME --location $LOCATION
 ```
-### Create a key in the keyring
+### Create a key in the key ring
 
 Create a key for encrypting your private key.
 
@@ -62,7 +62,7 @@ Follow these steps:
  - **SECRET_FILE** is the path for the private key.
  - **ROLE** is the role bound to the service account.
 
- See an example of variables you need to export for each account:
+ See an example of variables you need to export for such an account:
 
  ```
  export SA_NAME=sa-gcs-plank

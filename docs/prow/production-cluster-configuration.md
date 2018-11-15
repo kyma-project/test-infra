@@ -23,7 +23,7 @@ Use the following tools and configuration:
 
 ## Installation
 
-1. When you communicate for the first time with the Google Cloud, set the context to your Google Cloud project.
+1. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project.
 
 Export the **PROJECT** variable and execute this command:
 
@@ -46,7 +46,7 @@ For GKE, execute the following command:
 ```
 gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
 ```
-1. Export these environment variables, where:
+3. Export these environment variables, where:
   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that is used to store Prow Secrets.
   - **KEYRING_NAME** is the KMS key ring.
   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
@@ -57,8 +57,7 @@ export KEYRING_NAME=kyma-prow
 export ENCRYPTION_KEY_NAME=kyma-prow-encryption
 ```
 
-
-3. Run the following script to start the installation process:
+4. Run the following script to start the installation process:
 
 ```bash
 ./install-prow.sh
@@ -71,9 +70,9 @@ The installation script performs the following steps to install Prow:
 - Deploy Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
 - Deploy Cert Manager.
 - Deploy Secure Ingress.
-- Removes Insecure Ingress.
+- Remove Insecure Ingress.
 
-3. Verify the installation.
+5. Verify the installation.
 
 To check if the installation is successful, perform the following steps:
 

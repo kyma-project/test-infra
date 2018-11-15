@@ -6,28 +6,28 @@ Prow is a Kubernetes-developed system that you can use as a Continuous Integrati
 
 You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in GCP. Each Prow component is a small Go service that has its own function in the management of these one-off single-pod Prow jobs.
 
-In the content of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
+In the context of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
-Prow configuration replies on this basic set of configurations:
-- Kubernetes cluster deployed in Google Kubernetes Engine (GKE).
-- GitHub bot account.
+Prow replies on this basic set of configurations:
+- Kubernetes cluster deployed in Google Kubernetes Engine (GKE)
+- GitHub bot account
 - GitHub tokens:
-    - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks.
-    - `oauth-token` which is a GitHub token with read and write access to the bot account.
-- Service accounts and their Secret files for sensitive jobs that are encrypted using Key Management Service (KMS) and stored in Google Cloud Storage (GCS).
-- The `starter.yaml` file with a basic configuration of Prow components.
+    - `hmac-token` which is a Prow HMAC token used for validating GitHub webhooks
+    - `oauth-token` which is a GitHub token with read and write access to the bot account
+- Service accounts and their Secret files for sensitive jobs that are encrypted using Key Management Service (KMS) and stored in Google Cloud Storage (GCS)
+- The `starter.yaml` file with a basic configuration of Prow components
 - Webhooks configured for the GitHub repository to enable sending Events from a GitHub repository to Prow.
-- Plugins enabled by creating and modifying the `plugins.yaml` file.
-- Jobs enabled by creating and configuring the basic `config.yaml` file and additional `yaml` files for specific Kyma components.
+- Plugins enabled by creating and modifying the `plugins.yaml` file
+- Jobs enabled by creating and configuring the basic `config.yaml` file and an additional `Makefile` for a specific Kyma component
 
 ### Basic rules
 
 Follow these basic rules when working with Prow in the `kyma-project` organization:
 
-- You cannot test Prow configuration locally on Minikube. Perform all the tests on the cluster.
+- You cannot test Prow configuration locally on Minikube. Perform all tests on the cluster.
 - Avoid provisioning long-running clusters.
 - Test Prow configuration against your `kyma` fork repository.
-- Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only for the `master` branch but also for release branches.
+- Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only to the `master` branch but also to release branches.
 
 ### Project structure
 
@@ -72,7 +72,7 @@ For example:
    | |- kyma
    | | |- components
    | | | |- environments
-   | | | | |- environments.jobs.yaml
+   | | | | |- environments.yaml
    | | |- kyma.integration.yaml
    |- scripts
    |- config.yaml
