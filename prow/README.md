@@ -39,13 +39,13 @@ Its structure looks as follows:
 
 ```
 
-  ├── cluster               # All "yaml" files for Prow cluster provisioning.           
-  ├── images                # Images for Prow jobs.                                             
-  ├── jobs                  # All files with jobs definitions.
-  ├── scripts               # Scripts used by the test jobs.
+  ├── cluster               # Files for Prow cluster provisioning           
+  ├── images                # Images for Prow jobs                                             
+  ├── jobs                  # Files with job definitions
+  ├── scripts               # Scripts used by the test jobs
   ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
-  ├── install-prow.sh       # The script for the production cluster installation.
-  └── plugins.yaml          # The file with Prow plugins configuration.
+  ├── install-prow.sh       # The script for the production cluster installation
+  └── plugins.yaml          # The file with Prow plugins configuration
 ```
 
 ## Installation

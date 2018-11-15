@@ -11,10 +11,10 @@ The purpose of the `test-infra` repository is to store configuration and scripts
 The `test-infra` repository has the following structure:
 
 ```
-  ├── .github                     # Pull request and issue templates.             
-  ├── development                 # Scripts used for the development of the "test-infra" repository.
-  ├── docs                        # Documentation for the test infrastructure, such as Prow installation guides.
-  └── prow                        # Installation scripts for Prow on the production cluster.    
+  ├── .github                     # Pull request and issue templates             
+  ├── development                 # Scripts used for the development of the "test-infra" repository
+  ├── docs                        # Documentation for the test infrastructure, such as Prow installation guides
+  └── prow                        # Installation scripts for Prow on the production cluster    
 
 ```
 
