@@ -25,14 +25,26 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+trap cleanup EXIT
+
+cleanup() {
+    if [ "${CLEANUP_DNS_TRANSACTION}" == true ]; then
+        gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
+    fi
+}
+
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+
+CLEANUP_DNS_TRANSACTION=true
 
 gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
 gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
 gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+
+CLEANUP_DNS_TRANSACTION=false
 
 SECONDS=0
 END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
