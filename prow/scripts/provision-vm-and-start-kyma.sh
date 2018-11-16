@@ -15,7 +15,7 @@ cleanup() {
 
 authenticate
 
-RADNOM_ID=$(openssl rand -hex 4)
+RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
