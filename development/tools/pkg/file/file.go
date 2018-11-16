@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-func FindAllRec(rootPath, extension string) ([]string, error) {
+func FindAllRecursively(rootPath, extension string) ([]string, error) {
 	var paths []string
 	err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() || filepath.Ext(path) != extension {

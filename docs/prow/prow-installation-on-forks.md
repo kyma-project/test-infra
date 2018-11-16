@@ -2,7 +2,7 @@
 
 This instruction provides the steps required to deploy your own Prow on a forked repository for test and development purposes.
 
-> **NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights and that you have the \$GOPATH already set.
+> **NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights and that you have the `$GOPATH` already set.
 
 ## Prerequisites
 
@@ -129,7 +129,7 @@ After Prow installs successfully, you must [configure the webhook](https://suppo
 
 ## Configure Prow
 
-When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files.
+When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files and `jobs` directory.
 
 ### The config.yaml file
 
@@ -143,9 +143,15 @@ The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#enable-some-plugins-by-modifying-pluginsyaml).
 
+### The jobs directory
+
+The `jobs` directory contains the Prow Jobs configuration. See the example of such a file [here](../../prow/jobs).
+
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
+
 ### Verify the configuration
 
-To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `validate-config.sh {plugins_file_path} {config_file_path} {jobs_dir_path}` script. For example, run:
+To check if the `plugins.yaml`, `config.yaml`, and jobs configuration files are correct, run the `validate-config.sh {plugins_file_path} {config_file_path} {jobs_dir_path}` script. For example, run:
 
 ```
 ./validate-config.sh ../prow/plugins.yaml ../prow/config.yaml ../prow/jobs
@@ -161,7 +167,7 @@ If the files are configured correctly, upload the files on a cluster.
 ./update-plugins.sh ../prow/plugins.yaml
 ```
 
-2. Use the `update-config.sh {file_path}` script to apply prow configuration on a cluster.
+2. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
 
 ```
 ./update-config.sh ../prow/config.yaml

@@ -19,4 +19,4 @@ fi
 
 readonly CONFIG="${HOME}/.kube/config"
 
-go run "${UPLOADER}" --kubeconfig "${CONFIG}" --plugin-config-path "${PLUGINS_PATH}"
+go run "${UPLOADER}" --kubeconfig "${CONFIG}" --plugins-config-path "${PLUGINS_PATH}"

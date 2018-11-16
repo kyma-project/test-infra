@@ -2,21 +2,25 @@
 
 ## Overview
 
-This command is responsible for uploading Prow configuration.
+This command uploads Prow plugins, configuration, and jobs to a Prow cluster. Use it for a newly created Prow cluster and to update changes in the configuration on a cluster from a forked repository.
 
 ## Usage
 
-To run, use:
+To run it, use:
 
 ```bash
 go run cmd/configuploader/main.go --kubeconfig $HOME/.kube/config --plugin-config-path {pathToPluginsYaml}
 ```
 
-## Parameters
+> **NOTE:** Config Uploader expects that the `config`, `plugins`, and `job-config` ConfigMaps are present on the cluster.
 
-| Name                 | Required | Description                                                                                         |
-| :------------------- | :------: | :-------------------------------------------------------------------------------------------------- |
-| --kubeconfig         |   Yes    | The path to the kubeconfig file, needed for connecting to the cluster.                              |
-| --config-path        |    No    | The path to the `config.yaml` file. If set, the configuration will be uploaded.                     |
-| --jobs-config-path   |    No    | The path to the directory with job configurations. If set, the job configurations will be uploaded. |
-| --plugin-config-path |    No    | The path to the `plugins.yaml` file. If set, the plugins configuration will be uploaded.            |
+### Flags
+
+See the list of available flags:
+
+| Name                      | Required | Description                                                                                          |
+| :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
+| **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file, needed to connect to a cluster.                                   |
+| **--config-path**         |    No    | The path to the `config.yaml` file. Set it to upload the Prow configuration to a cluster.            |
+| **--jobs-config-path**    |    No    | The path to the directory with job configurations. Set it to upload job configurations to a cluster. |
+| **--plugins-config-path** |    No    | he path to the `plugins.yaml` file. Set it to upload plugin configurations to a cluster.             |

@@ -20,9 +20,9 @@ const (
 
 var files = [...]string{"where/fileA.yaml", "where/is/fileB.yaml", "where/is/my/fileC.yaml"}
 
-func TestUploadFromFile(t *testing.T) {
+func TestReplaceConfigMapFromFile(t *testing.T) {
 	//given
-	tmpDir, err := ioutil.TempDir("", "TestFindAllRec")
+	tmpDir, err := ioutil.TempDir("", "TestReplaceConfigMapFromFile")
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpDir)
 
@@ -50,7 +50,7 @@ func TestUploadFromFile(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			err := uploadFromFile("test", testCase.path, client.CoreV1().ConfigMaps("default"))
+			err := replaceConfigMapFromFile("test", testCase.path, client.CoreV1().ConfigMaps("default"))
 
 			//then
 			if testCase.shouldFail {
@@ -68,9 +68,9 @@ func TestUploadFromFile(t *testing.T) {
 	}
 }
 
-func TestUploadFromFiles(t *testing.T) {
+func TestReplaceConfigMapFromDirectory(t *testing.T) {
 	//given
-	tmpDir, err := ioutil.TempDir("", "TestFindAllRec")
+	tmpDir, err := ioutil.TempDir("", "TestReplaceConfigMapFromDirectory")
 	require.NoError(t, err)
 	defer os.RemoveAll(tmpDir)
 
@@ -98,7 +98,7 @@ func TestUploadFromFiles(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			err := uploadFromFiles("test", testCase.path, client.CoreV1().ConfigMaps("default"))
+			err := replaceConfigMapFromDirectory("test", testCase.path, client.CoreV1().ConfigMaps("default"))
 
 			//then
 			if testCase.shouldFail {

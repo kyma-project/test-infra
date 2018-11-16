@@ -31,7 +31,7 @@ func gatherOptions() options {
 	o := options{}
 	flag.StringVar(&o.configPath, "config-path", "", "Path to config file.")
 	flag.StringVar(&o.jobConfigPath, "jobs-config-path", "", "Path to prow job configs.")
-	flag.StringVar(&o.pluginConfig, "plugin-config-path", "", "Path to plugin config file.")
+	flag.StringVar(&o.pluginConfig, "plugins-config-path", "", "Path to plugins config file.")
 	flag.StringVar(&o.kubeconfig, "kubeconfig", "", "Path to kubeconfig file.")
 	flag.Parse()
 	return o
@@ -50,21 +50,21 @@ func main() {
 
 	if o.pluginConfig != "" {
 		logrus.Info("Updating plugins")
-		err = uploadFromFile("plugins", o.pluginConfig, configMapClient)
+		err = replaceConfigMapFromFile("plugins", o.pluginConfig, configMapClient)
 		exitOnError(err, "while updating plugins")
 		logrus.Info("Updating plugins finished")
 	}
 
 	if o.configPath != "" {
 		logrus.Info("Updating config")
-		err = uploadFromFile("config", o.configPath, configMapClient)
+		err = replaceConfigMapFromFile("config", o.configPath, configMapClient)
 		exitOnError(err, "while updating config")
 		logrus.Info("Updating config finished")
 	}
 
 	if o.jobConfigPath != "" {
 		logrus.Info("Updating jobs")
-		err = uploadFromFiles("job-config", o.jobConfigPath, configMapClient)
+		err = replaceConfigMapFromDirectory("job-config", o.jobConfigPath, configMapClient)
 		exitOnError(err, "while updating jobs")
 		logrus.Info("Updating jobs finished")
 	}
@@ -80,7 +80,7 @@ type configMapSetter interface {
 	Update(*v1.ConfigMap) (*v1.ConfigMap, error)
 }
 
-func uploadFromFile(name, path string, client configMapSetter) error {
+func replaceConfigMapFromFile(name, path string, client configMapSetter) error {
 	config, err := configMapFromFile(name, path)
 	if err != nil {
 		return err
@@ -90,8 +90,8 @@ func uploadFromFile(name, path string, client configMapSetter) error {
 	return err
 }
 
-func uploadFromFiles(name, path string, client configMapSetter) error {
-	config, err := configMapFromFiles(name, path)
+func replaceConfigMapFromDirectory(name, path string, client configMapSetter) error {
+	config, err := configMapFromYamlsInDirectory(name, path)
 	if err != nil {
 		return err
 	}
@@ -120,8 +120,8 @@ func configMapFromFile(name, path string) (*v1.ConfigMap, error) {
 	return &result, nil
 }
 
-func configMapFromFiles(name, rootPath string) (*v1.ConfigMap, error) {
-	paths, err := file.FindAllRec(rootPath, ".yaml")
+func configMapFromYamlsInDirectory(name, rootPath string) (*v1.ConfigMap, error) {
+	paths, err := file.FindAllRecursively(rootPath, ".yaml")
 	if err != nil {
 		return nil, err
 	}

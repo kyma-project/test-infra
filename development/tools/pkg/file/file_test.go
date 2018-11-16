@@ -16,14 +16,14 @@ const (
 
 var files = []string{"it/fileA.yaml", "it/is/fileB.yaml", "it/is/a/fileC.yaml"}
 
-func TestFindAllRec(t *testing.T) {
+func TestFindAllRecursively(t *testing.T) {
 	//given
-	tmpDir, err := ioutil.TempDir("", "TestFindAllRec")
+	tmpDir, err := ioutil.TempDir("", "TestFindAllRecursively")
 	require.NoError(t, err)
 
 	defer os.RemoveAll(tmpDir)
 
-	err = createFiles(tmpDir)
+	expectedPaths, err := createFiles(tmpDir)
 	require.NoError(t, err)
 
 	var testCases = []struct {
@@ -33,7 +33,7 @@ func TestFindAllRec(t *testing.T) {
 		result     []string
 		shouldFail bool
 	}{
-		{"Valid path", tmpDir, ".yaml", files, false},
+		{"Valid path", tmpDir, ".yaml", expectedPaths, false},
 		{"No files", tmpDir, ".nope", []string{}, false},
 		{"Invalid root path", fmt.Sprintf("%s/%s/trap", tmpDir, dirStructure), "", nil, true},
 	}
@@ -41,7 +41,7 @@ func TestFindAllRec(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			result, err := FindAllRec(testCase.rootPath, testCase.extension)
+			result, err := FindAllRecursively(testCase.rootPath, testCase.extension)
 
 			//then
 			if testCase.shouldFail {
@@ -55,20 +55,24 @@ func TestFindAllRec(t *testing.T) {
 	}
 }
 
-func createFiles(root string) error {
+func createFiles(root string) ([]string, error) {
 	err := os.MkdirAll(fmt.Sprintf("%s/%s", root, dirStructure), os.ModePerm)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
+	var filePaths []string
 	for _, path := range files {
-		err := createFile(fmt.Sprintf("%s/%s", root, path))
+		filePath := fmt.Sprintf("%s/%s", root, path)
+		err := createFile(filePath)
 		if err != nil {
-			return err
+			return nil, err
 		}
+
+		filePaths = append(filePaths, filePath)
 	}
 
-	return nil
+	return filePaths, nil
 }
 
 func createFile(path string) error {
