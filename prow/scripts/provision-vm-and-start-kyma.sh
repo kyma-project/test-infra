@@ -9,7 +9,7 @@ source "${SCRIPT_DIR}/library.sh"
 cleanup() {
     ARG=$?
     shout "Removing instance kyma-integration-test-${RANDOM_ID}"
-    gcloud compute instances delete "kyma-integration-test-${RANDOM_ID}"
+    gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
     exit $ARG
 }
 
