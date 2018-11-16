@@ -101,8 +101,9 @@ echo "##########################################################################
 echo "# Create DNS Record"
 echo "################################################################################"
 date
-export DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/create-dns-record.sh
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+export DNS_DOMAIN
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
 CLEANUP_DNS_RECORD="true"
 
 
@@ -120,8 +121,8 @@ echo "##########################################################################
 echo "Install Tiller"
 echo "################################################################################"
 date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
-${KYMA_SCRIPTS_DIR}/install-tiller.sh
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
 
 echo "################################################################################"
@@ -129,7 +130,7 @@ echo "Generate self-signed certificate"
 echo "################################################################################"
 date
 export DOMAIN=${DNS_DOMAIN%?}
-CERT_KEY=$(${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
+CERT_KEY=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
@@ -137,7 +138,7 @@ echo "##########################################################################
 echo "Apply Kyma config"
 echo "################################################################################"
 date
-${KYMA_SCRIPTS_DIR}/concat-yamls.sh ${INSTALLER_YAML} ${INSTALLER_CONFIG} ${INSTALLER_CR} \
+"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
     | sed -E ";s;develop\/installer:.+;rc/kyma-installer:0.5-rc;" \
     | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
     | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
@@ -154,4 +155,4 @@ echo "Trigger installation"
 echo "################################################################################"
 date
 kubectl label installation/kyma-installation action=install
-${KYMA_SCRIPTS_DIR}/is-installed.sh
+"${KYMA_SCRIPTS_DIR}"/is-installed.sh
