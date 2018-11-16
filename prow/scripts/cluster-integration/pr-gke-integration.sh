@@ -22,7 +22,7 @@
 # - Kubernetes Engine Cluster Admin
 # - DNS Administrator
 # - Service Account User
-# - Storage Admin`
+# - Storage Admin
 
 set -o errexit
 
@@ -199,7 +199,7 @@ echo "Apply Kyma config"
 echo "################################################################################"
 date
 "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
-    | sed -E ";s;develop\/installer:.+;rc/kyma-installer:0.5-rc;" \
+    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
     | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
     | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
     | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
