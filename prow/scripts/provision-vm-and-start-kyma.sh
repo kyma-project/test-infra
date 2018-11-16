@@ -15,6 +15,10 @@ cleanup() {
 
 authenticate
 
+# Create random id by reading some values from /dev/urandom, and extracting a 8 bit string of a-z 0-9 characters.
+# LC_CTYPE=C is required for tr to read the character with proper locale setting. Required on MacOS, won't hurt on Debian
+# We can achieve similar result, but simpler using: 
+# RADNOM_ID=$(openssl rand -hex 4)
 RANDOM_ID=$(LC_CTYPE=C < /dev/urandom tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
 
 LABELS=""
