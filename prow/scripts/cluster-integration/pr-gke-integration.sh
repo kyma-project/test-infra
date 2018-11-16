@@ -15,6 +15,8 @@
 # - CLOUDSDK_COMPUTE_REGION - GCP compute region
 # - CLOUDSDK_DNS_ZONE_NAME - GCP zone name (not its DNS name!)
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
+# - MACHINE_TYPE (optional): GKE machine type
+# - CLUSTER_VERSION (optional): GKE cluster version
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Network Admin
@@ -25,12 +27,6 @@
 # - Storage Admin
 
 set -o errexit
-
-############################################################
-# REPO_OWNER, REPO_NAME and PULL_NUMBER are set by ProwJob #
-############################################################
-# MACHINE_TYPE (optional): GKE machine type                #
-############################################################
 
 discoverUnsetVar=false
 
@@ -107,13 +103,13 @@ cleanup() {
 }
 
 #Exported variables
-export CLUSTER_VERSION="1.10.6-gke.11"
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
-export CLUSTER_NAME="${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+
 export IP_ADDRESS="will_be_generated"
 
 #For provision-gke-cluster.sh
@@ -121,6 +117,9 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
+DEFAULT_CLUSTER_VERSION="1.10.6-gke.11"
+DEFAULT_MACHINE_TYPE="n1-standard-2"
+
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
@@ -172,7 +171,10 @@ echo "##########################################################################
 date
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="n1-standard-2"
+      export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
+fi
+if [ -z "${CLUSTER_VERSION}" ]; then
+      export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 "${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
