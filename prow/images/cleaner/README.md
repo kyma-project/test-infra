@@ -14,5 +14,4 @@ To build the Docker image, run this command:
 docker build -t cleaner:{version} .
 ```
 
-changed
 
