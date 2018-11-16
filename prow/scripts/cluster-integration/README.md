@@ -3,7 +3,7 @@
 ## Overview
 
 The folder contains code for integration job that installs and tests Kyma on a temporary cluster provisioned with Google Kubernetes Engine (GKE).
-For now it's only executed for Pull Requests as a pre-submit job.
+For now, it's only executed for Pull Requests as a pre-submit job.
 
 ### Pipeline logic
 
@@ -19,7 +19,7 @@ The integration job is a pipeline that consists of multiple steps (order is not 
 
 ### Project structure
 
-The main entry point of the entire pipeline is `pr-gke-integration.sh` script that invokes other helper scripts / cli tools.
+The main entry point of the entire pipeline is `pr-gke-integration.sh` script that invokes other helper scripts / CLI tools.
 The Pipeline uses a toolset from `Bootstrap` image as defined in this repository.
 
 ### Required environment variables
@@ -27,10 +27,10 @@ The Pipeline uses a toolset from `Bootstrap` image as defined in this repository
 This script takes its input configuration from environment variables.
 The following environment variables are required:
 
-- `REPO_OWNER` - Set up by prow, repository owner/org
+- `REPO_OWNER` - Set up by prow, repository owner/organization
 - `REPO_NAME` - Set up by prow, repository name
 - `PULL_NUMBER` - Set up by prow, Pull request number
-- `DOCKER_PUSH_REPOSITORY` - Docker repository host name
+- `DOCKER_PUSH_REPOSITORY` - Docker repository hostname
 - `DOCKER_PUSH_DIRECTORY` - Docker "top-level" directory (with leading "/")
 - `KYMA_PROJECT_DIR` - directory path with Kyma sources to use for installation
 - `CLOUDSDK_CORE_PROJECT` - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
