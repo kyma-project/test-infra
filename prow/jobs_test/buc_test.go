@@ -9,8 +9,9 @@ import (
 )
 
 func TestBucJobsPresubmit(t *testing.T) {
-	// GIVEN
+	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+	// THEN
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.Presubmits, 1)
@@ -36,8 +37,9 @@ func TestBucJobsPresubmit(t *testing.T) {
 }
 
 func TestBucJobPostsubmit(t *testing.T) {
-	// GIVEN
+	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+	// THEN
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.Postsubmits, 1)

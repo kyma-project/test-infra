@@ -35,7 +35,6 @@ func  ReadJobConfig(fileName string) (config.JobConfig, error) {
 		return config.JobConfig{}, errors.Wrapf(err, "while reading file [%s]", fileName)
 	}
 	jobConfig := config.JobConfig{}
-	// WHEN
 	if err = yaml.Unmarshal(b, &jobConfig); err != nil {
 		return config.JobConfig{}, errors.Wrapf(err, "while unmarshalling file [%s]", fileName)
 	}
@@ -51,11 +50,7 @@ func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
 			return
 		}
 	}
-	assert.FailNow(t, "mow")
-}
-
-func AssertJobConfiguredForBranches(t *testing.T, in config.Brancher) {
-
+	assert.FailNow(t,"Job has not configured test-infra as a extra ref")
 }
 
 func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ... Preset) {
