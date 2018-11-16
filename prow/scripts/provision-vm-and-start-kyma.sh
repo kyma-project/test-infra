@@ -25,7 +25,7 @@ else
 fi
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
-EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit=${ZONE_LIMIT} | tail -n +2 | awk '{print $1}')
+EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 
 for ZONE in ${EU_ZONES}; do
     shout "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE}"
