@@ -1,5 +1,29 @@
 #!/usr/bin/env bash
 
+#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
+#
+#
+#Expected vars:
+#
+# - REPO_OWNER - Set up by prow, repository owner/organization
+# - REPO_NAME - Set up by prow, repository name
+# - PULL_NUMBER - Set up by prow, Pull request number
+# - DOCKER_PUSH_REPOSITORY - Docker repository hostname
+# - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
+# - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
+# - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
+# - CLOUDSDK_COMPUTE_REGION - GCP compute region
+# - CLOUDSDK_DNS_ZONE_NAME - GCP zone name (not its DNS name!)
+# - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
+#
+#Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
+# - Compute Network Admin
+# - Kubernetes Engine Admin
+# - Kubernetes Engine Cluster Admin
+# - DNS Administrator
+# - Service Account User
+# - Storage Admin`
+
 set -o errexit
 
 ############################################################
@@ -82,7 +106,7 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
-#Setup variables
+#Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
@@ -94,6 +118,14 @@ export IP_ADDRESS="will_be_generated"
 #For provision-gke-cluster.sh
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+
+#Local variables
+KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
+INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 echo "################################################################################"
 echo "# Authenticate"
