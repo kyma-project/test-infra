@@ -30,6 +30,12 @@
   revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/bwmarrin/snowflake"
+  packages = ["."]
+  revision = "68117e6bbede4dd72d70c7a58d73348ead068509"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
@@ -443,6 +449,8 @@
     "prow/config/org",
     "prow/entrypoint",
     "prow/errorutil",
+    "prow/external-plugins/needs-rebase/plugin",
+    "prow/flagutil",
     "prow/gcsupload",
     "prow/genfiles",
     "prow/git",
@@ -450,6 +458,7 @@
     "prow/hook",
     "prow/initupload",
     "prow/kube",
+    "prow/labels",
     "prow/logrusutil",
     "prow/pjutil",
     "prow/pluginhelp",
@@ -501,11 +510,11 @@
     "prow/slack",
     "testgrid/util/gcs"
   ]
-  revision = "a202e595a33ac92ab503f913f2d710efabd3de21"
+  revision = "8f00a6cd63411d912e723fb0b33e1cf7b7ee5785"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "aca200a1af859d7cfbf7fb8e65232ebd5d9fad9f9ffc91598fcf34df58837d33"
+  inputs-digest = "ff4c1fa908a0990a392426c7cb8a6cd822b52518a51aec96d297e35b31bd9999"
   solver-name = "gps-cdcl"
   solver-version = 1

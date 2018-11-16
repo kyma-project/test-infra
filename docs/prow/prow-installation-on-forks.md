@@ -2,7 +2,7 @@
 
 This instruction provides the steps required to deploy your own Prow on a forked repository for test and development purposes.
 
-> **NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights and that you have the $GOPATH already set.
+> **NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights and that you have the `$GOPATH` already set.
 
 ## Prerequisites
 
@@ -60,21 +60,21 @@ For the purpose of the installation, you must have a set of service accounts and
 
 1. Create two buckets on GCS, one for storing Secrets and the second for storing logs.
 
->**NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file.
+> **NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file.
 
 2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
 - **sa-gke-kyma-integration** with roles that allow the account to create Kubernetes clusters:
-    - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
-    - Service Account User (`roles/iam.serviceAccountUser`)
+  - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
+  - Service Account User (`roles/iam.serviceAccountUser`)
 - **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines:
-    - Compute Instance Admin (beta) (`roles/compute.instanceAdmin`)
-    - Compute OS Admin Login (`roles/compute.osAdminLogin`)
-    - Service Account User (`roles/iam.serviceAccountUser`)
+  - Compute Instance Admin (beta) (`roles/compute.instanceAdmin`)
+  - Compute OS Admin Login (`roles/compute.osAdminLogin`)
+  - Service Account User (`roles/iam.serviceAccountUser`)
 - **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
-    - Storage Object Admin (`roles/storage.objectAdmin`)
+  - Storage Object Admin (`roles/storage.objectAdmin`)
 - **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
-    - Storage Admin `roles/storage.admin`
+  - Storage Admin `roles/storage.admin`
 
 ## Install Prow
 
@@ -127,10 +127,9 @@ Verify if the Prow installation was successful.
 
 After Prow installs successfully, you must [configure the webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable the GitHub repository to send Events to Prow.
 
-
 ## Configure Prow
 
-When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files.
+When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files, and adding job definitions to the `jobs` directory.
 
 ### The config.yaml file
 
@@ -140,16 +139,22 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 ### The plugins.yaml file
 
- The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
+The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#enable-some-plugins-by-modifying-pluginsyaml).
 
+### The jobs directory
+
+The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
+
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
+
 ### Verify the configuration
 
-To check if the `plugins.yaml` and `config.yaml` configuration files are correct, run the `check.sh {plugins_file_path} {config_file_path}` script. For example, run:
+To check if the `plugins.yaml`, `config.yaml`, and jobs configuration files are correct, run the `validate-config.sh {plugins_file_path} {config_file_path} {jobs_dir_path}` script. For example, run:
 
 ```
-./check.sh ../prow/plugins.yaml ../prow/config.yaml
+./validate-config.sh ../prow/plugins.yaml ../prow/config.yaml ../prow/jobs
 ```
 
 ### Upload the configuration on a cluster
@@ -162,10 +167,16 @@ If the files are configured correctly, upload the files on a cluster.
 ./update-plugins.sh ../prow/plugins.yaml
 ```
 
-2. Use the `update-config.sh {file_path}` script to apply jobs configuration on a cluster.
+2. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
 
 ```
 ./update-config.sh ../prow/config.yaml
+```
+
+3. Use the `update-jobs.sh {jobs_dir_path}` script to apply jobs configuration on a cluster.
+
+```
+./update-jobs.sh ../prow/jobs
 ```
 
 After you complete the required configuration, you can test the uploaded plugins and configuration. You can also create your own job pipeline and test it against the forked repository.
