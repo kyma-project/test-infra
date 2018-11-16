@@ -92,21 +92,21 @@ postsubmits: # runs on master
   kyma-project/test-infra:
     - name: *bootstrap_name
       labels:
-        preset-build-master: "true"
+        preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
     - name: *buildpack_golang_name
       labels:
-        preset-build-master: "true"
+        preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
     - name: *buildpack_node_name
       labels:
-        preset-build-master: "true"
+        preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
     - name: *cleaner_name
       labels:
-        preset-build-master: "true"
+        preset-build-release: "true"
         <<: *job_labels_template
       <<: *cleaner_job_template

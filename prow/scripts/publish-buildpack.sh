@@ -23,8 +23,6 @@ pushd "${SOURCES_DIR}"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     make ci-pr
-elif [[ "${BUILD_TYPE}" == "master" ]]; then
-    make ci-master
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
     make ci-release
 else
