@@ -129,7 +129,7 @@ After Prow installs successfully, you must [configure the webhook](https://suppo
 
 ## Configure Prow
 
-When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files and `jobs` directory.
+When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files, and adding job definitions to the `jobs` directory.
 
 ### The config.yaml file
 
@@ -145,7 +145,7 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 ### The jobs directory
 
-The `jobs` directory contains the Prow Jobs configuration. See the example of such a file [here](../../prow/jobs).
+The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
 
