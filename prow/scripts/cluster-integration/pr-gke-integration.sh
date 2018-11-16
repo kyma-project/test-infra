@@ -99,7 +99,7 @@ echo "##########################################################################
 echo "# Authenticate"
 echo "################################################################################"
 date
-# shellcheck source=/dev/null
+# shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 init
 
@@ -108,8 +108,7 @@ echo "##########################################################################
 echo "# Build Kyma-Installer Docker image"
 echo "################################################################################"
 date
-#DOCKER_TAG is created by library.sh script
-export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:${DOCKER_TAG}"
+export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 CLEANUP_DOCKER_IMAGE="true"
 
