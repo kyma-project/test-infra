@@ -5,6 +5,9 @@ TAG = $(DOCKER_TAG)
 ci-pr: build-image push-image
 ci-release: build-image push-image
 
+do-something:
+	echo "aaa"
+
 build-image:
 	docker build -t $(IMG_NAME) .
 push-image:
