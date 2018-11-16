@@ -18,7 +18,7 @@ Prow replies on this basic set of configurations:
 - The `starter.yaml` file with a basic configuration of Prow components
 - Webhooks configured for the GitHub repository to enable sending Events from a GitHub repository to Prow.
 - Plugins enabled by creating and modifying the `plugins.yaml` file
-- Jobs enabled by creating and configuring the basic `config.yaml` file, an additional `yaml` file for a specific Kyma component in the `jobs` subfolder, and a related `Makefile` in the `kyma` repository. 
+- Jobs enabled by creating and configuring the basic `config.yaml` file, and specific job definitions in the `jobs` subfolder. 
 
 ### Basic rules
 
