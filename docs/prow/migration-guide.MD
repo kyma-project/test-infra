@@ -73,7 +73,7 @@ Fields description:
 
 |Field                  | Description|
 |-----------------------|-------------|
-|name                   | Job name. Should unambiguously identify the job. See [TODO]() requirements for job name.
+|name                   | Job name. Should unambiguously identify the job. See [convention](./../../prow/README.md#convention-for-naming-jobs) for job name.
 |run_if_changed         | Regular expression. Define to run this build only if these files were changed. In case of PR that does not modify your component, this job sends a notification to GitHub that it is skipped.
 |context                | GitHub status context for the job - how it be displayed on the GitHub. Should be the same as the job name.
 |branches               | Run it only for PR's that base branch appears on this list
