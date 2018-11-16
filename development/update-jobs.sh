@@ -3,12 +3,12 @@
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 usage () {
-    echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/config.yaml"
+    echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/jobs/directory"
     exit 1
 }
 
-readonly CONFIG_PATH="${1}"
-if [[ -z "${CONFIG_PATH}" ]]; then
+readonly JOBS_PATH="${1}"
+if [[ -z "${JOBS_PATH}" ]]; then
     usage
 fi
 
@@ -19,4 +19,4 @@ fi
 
 readonly CONFIG="${HOME}/.kube/config"
 
-go run "${UPLOADER}" --kubeconfig "${CONFIG}" --config-path "${CONFIG_PATH}"
+go run "${UPLOADER}" --kubeconfig "${CONFIG}" --jobs-config-path "${JOBS_PATH}"
