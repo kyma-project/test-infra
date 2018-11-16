@@ -11,8 +11,9 @@ This folder contains files related to the configuration of the Prow production c
 The structure of the folder looks as follows:
 
 ```
-  ├── 01-cert-manager.yaml        # The definition of the Cert Manager and related resources, required to manage the SSL certificates that ensure the trusted website connection
-  ├── 02-cluster-issuer.yaml      # The definition of the resource which creates new certificates
-  ├── 03-tls-ing_ingress.yaml     # The definition of the encrypted Ingress that accesses the Prow cluster
-  └── starter.yaml                # The basic definition of Prow, including ConfigMaps, Deployments, and CustomResourceDefinitions
+  ├── 01-cert-manager.yaml              # The definition of the Cert Manager and related resources, required to manage the SSL certificates that ensure the trusted website connection
+  ├── 02-cluster-issuer.yaml            # The definition of the resource which creates new certificates
+  ├── 03-tls-ing_ingress.yaml           # The definition of the encrypted Ingress that accesses the Prow cluster
+  ├── 04-branchprotector_cronjob.yaml   # The definition of the Branch Protector CronJob that configures protection on branches
+  └── starter.yaml                      # The basic definition of Prow, including ConfigMaps, Deployments, and CustomResourceDefinitions
 ```
