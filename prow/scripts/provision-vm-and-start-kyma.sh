@@ -24,7 +24,7 @@ else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=kyma-integration")
 fi
 
-ZONE_LIMIT=5
+ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit=${ZONE_LIMIT} | tail -n +2 | awk '{print $1}')
 
 for ZONE in ${EU_ZONES}; do
@@ -35,9 +35,11 @@ for ZONE in ${EU_ZONES}; do
         --image-project debian-cloud \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
-        --boot-disk-size 20 "${LABELS[@]}" && break;
-    trap cleanup exit
+        --boot-disk-size 20 "${LABELS[@]}" &&\
+    shout "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
 done || exit 1
+
+trap cleanup exit
 
 shout "Copying Kyma to the instance"
 
