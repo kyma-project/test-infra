@@ -5,6 +5,8 @@ set -o errexit
 ############################################################
 # REPO_OWNER, REPO_NAME and PULL_NUMBER are set by ProwJob #
 ############################################################
+# MACHINE_TYPE (optional): GKE machine type                #
+############################################################
 
 discoverUnsetVar=false
 
@@ -112,7 +114,9 @@ echo "# Provision cluster: \"${CLUSTER_NAME}\""
 echo "################################################################################"
 date
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-export MACHINE_TYPE="n1-standard-2"
+if [ -z "$MACHINE_TYPE" ]; then
+      export MACHINE_TYPE="n1-standard-2"
+fi
 "${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
 
