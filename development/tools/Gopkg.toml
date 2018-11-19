@@ -4,7 +4,7 @@
   non-go = true
 
 [[constraint]]
-  version = "v9.0.0"
+  version = "v8.0.0"
   name = "k8s.io/client-go"
 
 [[constraint]]
@@ -14,3 +14,32 @@
 [[constraint]]
   name = "github.com/stretchr/testify"
   version = "1.2.2"
+
+[[constraint]]
+  name = "github.com/ghodss/yaml"
+  version = "1.0.0"
+
+[[constraint]]
+  name = "github.com/pkg/errors"
+  version = "0.8.0"
+
+[[constraint]]
+  branch = "master"
+  name = "k8s.io/test-infra"
+
+# Need override because release-1.11 and kubernetes-1.11.0 are not semver compliant
+[[override]]
+  name = "k8s.io/api"
+  branch = "release-1.11"
+
+[[override]]
+  name = "k8s.io/apiserver"
+  branch = "release-1.11"
+
+[[override]]
+  name = "k8s.io/apimachinery"
+  branch = "release-1.11"
+
+[[override]]
+  name = "k8s.io/code-generator"
+  branch = "release-1.11"
