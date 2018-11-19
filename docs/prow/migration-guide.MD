@@ -239,7 +239,7 @@ postsubmits:
 
 ```
 
-To check if your configuration is proper, you can write a Go test, for a reference see `prow/jobs/kyma/components/ui-api-layer/jobs_test.go`.
+To check if your configuration is proper, you can write a Go test, for a reference see `development/tools/jobs/buc_test.go`.
 
 ## Full story 
 1. Create PR that modifies your component
