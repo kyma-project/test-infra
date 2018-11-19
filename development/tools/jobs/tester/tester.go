@@ -20,8 +20,8 @@ const (
 	PresetBuildMaster    Preset = "preset-build-master"
 	PresetBuildRelease   Preset = "preset-build-release"
 
-	ImageGolangBuildpack = "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1"
-	EnvSourcesDir        = "SOURCES_DIR"
+	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
+	EnvSourcesDir              = "SOURCES_DIR"
 )
 
 func  ReadJobConfig(fileName string) (config.JobConfig, error) {
