@@ -38,7 +38,7 @@ The following environment variables are required:
 - `CLOUDSDK_DNS_ZONE_NAME` -GCP zone name (not its DNS name!)
 - `GOOGLE_APPLICATION_CREDENTIALS` - GCP Service Account key file path
 
-### Required Permissions
+### Required permissions
 
 The pipeline authorizes to GCP as a service account configured with `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
 This service account must have GCP permissions equivalent to the following GCP roles:
