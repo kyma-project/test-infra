@@ -79,8 +79,6 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 #For provision-gke-cluster.sh
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
-helm --help # TEST ONLY
-
 echo "################################################################################"
 echo "# Authenticate"
 echo "################################################################################"
