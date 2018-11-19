@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the GKE Instegration image that is based on the Bootstrap image.
+This folder contains the GKE Integration image that is based on the Bootstrap image.
 
 The image consists of:
 
