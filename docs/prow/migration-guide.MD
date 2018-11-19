@@ -40,7 +40,8 @@ presubmits: # runs on PRs
     - name: prow/kyma/components/binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
       context: prow/kyma/components/binding-usage-controller
-      branch: master
+      branches: 
+      - master
       skip_report: true
       decorate: true
       path_alias: github.com/kyma-project/kyma
