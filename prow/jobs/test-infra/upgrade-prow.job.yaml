@@ -1,0 +1,11 @@
+---
+periodics:
+  # At 00:00 on day-of-month 7 and 21.
+  - cron: '0 0 7,21 * *'
+    name: prow/test-infra/upgrade-prow
+    decorate: true
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/test-infra/develop/bootstrap:v20181115-af8fb73
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/upgrade-prow.sh"
