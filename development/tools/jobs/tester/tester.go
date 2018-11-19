@@ -60,7 +60,7 @@ func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ... Preset) 
 	}
 }
 
-func AssertThatRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
+func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
 	sl := []config.Presubmit{p}
 	require.NoError(t, config.SetPresubmitRegexes(sl))
 	assert.True(t, sl[0].RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)

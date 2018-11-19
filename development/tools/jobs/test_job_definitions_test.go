@@ -16,10 +16,11 @@ func TestJobDefinitionsPresubmitJob(t *testing.T) {
 	assert.Len(t, testInfraPresubmits, 1)
 	sut := testInfraPresubmits[0]
 
-	tester.AssertThatRunIfChanged(t, sut, "prow/jobs/kyma/components/ui-api-layer/ui-api-layer.yaml")
-	tester.AssertThatRunIfChanged(t, sut, "development/tools/jobs/ui-api-layer_test.go")
+	tester.AssertThatJobRunIfChanged(t, sut, "prow/jobs/kyma/components/ui-api-layer/ui-api-layer.yaml")
+	tester.AssertThatJobRunIfChanged(t, sut, "development/tools/jobs/ui-api-layer_test.go")
 
 	assert.Equal(t,[]string{"master"}, sut.Branches)
+	assert.False(t, sut.SkipReport)
 
 
 }
