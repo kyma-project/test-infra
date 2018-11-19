@@ -18,4 +18,3 @@ presubmits: # runs on PRs
         - "make"
         args:
         - "jobs-tests"
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/jobs/..."
