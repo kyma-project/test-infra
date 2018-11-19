@@ -30,7 +30,7 @@ For example, if you define jobs for `binding-usage-controller` component from `k
 you create one file called: `jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml`
 >**NOTE:** YAML file needs to have a unique name in the whole `jobs` structure.
 
-In your job, you should call a `pipeline.sh` script from provided buildpack image. This script executes makefile's rule defined for your component.
+In your job, you should call a `pipeline.sh` script from provided buildpack image. This script executes makefile's target defined for your component.
 Script `pipeline.sh` requires the environment variable `SORUCES_DIR` which is a path to a directory where a `Makefile` for your component is defined. 
 
 The content of the job file should be the following:
@@ -38,7 +38,7 @@ The content of the job file should be the following:
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: prow/kyma/components/binding-usage-controller
-      run_if_changed: "components/binding-usage-controller/"
+      run_if_changed: "^components/binding-usage-controller/"
       context: prow/kyma/components/binding-usage-controller
       branch: master
       skip_report: true
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             securityContext:
               privileged: true
             command:
@@ -83,7 +83,7 @@ Fields description:
 |extra_ref              | Auxiliary repositories that need to be also cloned, in addition to the main repository. 
 |extra_ref              | Auxiliary repositories that need to be also cloned, in addition to the main repository. 
 |spec.containers.image  | Docker image. Currently provided images are buildpack-golang and buildpack-node. For more details see `prow/images`. If you build docker image in your job, the privileged mode is required. 
-|spec.containers.command| Buildpacks have a `pipeline.sh` script that allows easily trigger build for your component. `pipeline.sh` script populates some environment variables(**DOCKER_TAG), initializes Docker, and then execute one of the makefile rules depending on the environment variable **BUILD_TYPE**. This environment variable can be injected by one of the build's presets (preset-build-pr,preset-build-release or preset-build-master).
+|spec.containers.command| Buildpacks have a `pipeline.sh` script that allows easily trigger build for your component. `pipeline.sh` script populates some environment variables(**DOCKER_TAG), initializes Docker, and then execute one of the makefile targets depending on the environment variable **BUILD_TYPE**. This environment variable can be injected by one of the build's presets (preset-build-pr,preset-build-release or preset-build-master).
 |spec.containers.env    | **SOURCE_DIR** is required by the `pipeline.sh` script and points to the directory where Makefile for your component is placed.
 |labels                 | Regular k8s labels. In this case, we use it to enable podpresets. Available presets can be found in `/prow/config.yaml` file and are described below.
 
@@ -104,7 +104,11 @@ Fields description:
 
 
 ### Check your configuration locally
-Use `development/validate-config.sh` script. 
+Use `development/validate-config.sh` script to validate Prow configuration. The script accepts 3 arguments:
+- path to plugins configuration file
+- path to generic configuration file
+- path to directory with job definitions
+
 ```bash
 cd $GOPATH/src/github.com/kyma-project/test-infra
 ./development/validate-config.sh prow/plugins.yaml prow/config.yaml prow/jobs/
@@ -120,7 +124,7 @@ This is done by `config_updater` configured in `prow/plugins.yaml` file.
  
 ### Create or adjust the `Makefile` for your component.
 Both of the buildpacks require a `Makefile` defined in your component directory.   
-The `Makefile` has to define 3 rules:
+The `Makefile` has to define 3 targets:
 - **ci-pr** - is executed for a Pull Request(PR) that base branch is the `master`.
 - **ci-master** - is executed after merging a PR to the `master` branch.
 - **ci-release** - is executed for a PR to the release branch.
@@ -213,7 +217,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: &name prow/kyma/components/binding-usage-controller
-    run_if_changed: "components/binding-usage-controller/"
+    run_if_changed: "^components/binding-usage-controller/"
     context: *name
     branches:
       - master
