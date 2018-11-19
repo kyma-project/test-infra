@@ -240,6 +240,7 @@ postsubmits:
 ```
 
 To check if your configuration is proper, you can write a Go test, for a reference see `development/tools/jobs/buc_test.go`.
+Your new test should be placed in `development/tools/jobs` to be executed by the presubmit job `prow/test-infra/test-jobs-yaml-definitions`. 
 
 ## Full story 
 1. Create PR that modifies your component
