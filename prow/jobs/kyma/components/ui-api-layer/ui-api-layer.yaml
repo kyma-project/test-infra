@@ -3,6 +3,7 @@ job_template: &job_template
   skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
   extra_refs:
   - org: kyma-project
     repo: test-infra
