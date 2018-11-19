@@ -1,7 +1,7 @@
 package jobs_test
 
 import (
-	"github.com/kyma-project/test-infra/prow/jobs_test/tester"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
@@ -10,7 +10,7 @@ import (
 
 func TestUiApiLayerJobs(t *testing.T) {
 	// GIVEN
-	jobConfig, err := tester.ReadJobConfig("./../jobs/kyma/components/ui-api-layer/ui-api-layer.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/ui-api-layer/ui-api-layer.yaml")
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.Presubmits, 1)

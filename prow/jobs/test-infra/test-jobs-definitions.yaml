@@ -1,0 +1,21 @@
+presubmits: # runs on PRs
+  kyma-project/kyma:
+  - name: &name prow/test-infra/test-job-yaml-definitions
+    run_if_changed: "(/prow/jobs)|(/development/tools/jobs)"
+    context: *name
+    branch: master
+    skip_report: false
+    decorate: true
+    path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+      - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/jobs/"
+        env:
+        - name: GOPATH
+          value: /home/prow/go
+        command:
+        - "make"
+        args:
+        - "jobs-tests"
+        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/jobs/..."

@@ -1,7 +1,7 @@
 package jobs_test
 
 import (
-	"github.com/kyma-project/test-infra/prow/jobs_test/tester"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/kube"
@@ -10,7 +10,7 @@ import (
 
 func TestBucJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -38,7 +38,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 
 func TestBucJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
 	// THEN
 	require.NoError(t, err)
 
