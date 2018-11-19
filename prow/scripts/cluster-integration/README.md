@@ -7,7 +7,7 @@ For now, it's only executed for Pull Requests as a pre-submit job.
 
 ### Pipeline logic
 
-The integration job is a pipeline that consists of multiple steps (order is not strict, some may run in parallel):
+The integration job is a pipeline that consists of multiple steps. Their order is not strict and some can run in parallel:
 - Build Kyma-Installer Image
 - Provision GKE cluster
 - Reserve IP Address
