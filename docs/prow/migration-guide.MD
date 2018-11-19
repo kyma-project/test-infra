@@ -104,8 +104,12 @@ Fields description:
 
 
 ### Check your configuration locally
-Use `development/check.sh` script. 
-#TODO adjust this section after merging #87
+Use `development/validate-config.sh` script. 
+```bash
+cd $GOPATH/src/github.com/kyma-project/test-infra
+./development/validate-config.sh prow/plugins.yaml prow/config.yaml prow/jobs/
+Checking plugin configuration from 'prow/plugins.yaml' and prow configuration from 'prow/config.yaml and jobs configuration from 'prow/jobs/'
+```
  
 ### Review and merge your PR on test-infra
 After merging, job configuration is automatically applied on a Prow production cluster 
@@ -123,23 +127,38 @@ The `Makefile` has to define 3 rules:
 
 Example Makefile for `binding-usage-controller` component:
 ```Makefile
-IMG_NAME = ui-api-layer
-IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
+APP_NAME = "binding-usage-controller"
+IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
 TAG = $(DOCKER_TAG)
+binary=$(APP_NAME)
 
-ci-pr: resolve build-and-test build-image push-image
-ci-master: resolve build-and-test build-image push-image
-ci-release: resolve build-and-test build-image push-image
-
-resolve:
-	dep ensure -v -vendor-only
-build-and-test:
+.PHONY: build
+build:
 	./before-commit.sh ci
+
+.PHONY: build-image
 build-image:
-	docker build -t $(IMG_NAME) .
+	cp $(binary) deploy/controller/$(binary)
+	docker build -t $(APP_NAME):latest deploy/controller
+
+.PHONY: push-image
 push-image:
-	docker tag $(IMG_NAME) $(IMG):$(TAG)
-	docker push $(IMG):$(TAG) 
+	docker tag $(APP_NAME) $(IMG):$(TAG)
+	docker push $(IMG):$(TAG)
+
+.PHONY: ci-pr
+ci-pr: build build-image push-image
+
+.PHONY: ci-master
+ci-master: build build-image push-image
+
+.PHONY: ci-release
+ci-release: build build-image push-image
+
+.PHONY: clean
+clean:
+	rm -f $(binary)
+
 ```
 >**NOTE** Tab before each command is required.
 
@@ -156,7 +175,7 @@ If you want to trigger your job again, add a comment on PR for your component:
 - `/test all` - to run all tests
 - `/restest` - to run again only failed tests 
 - `/test {your test name}`, for example `/test prow/kyma/components/binding-usage-controller` to run only a specific test
-Then your job should appear on `http://status.build.kyma-project.io/`.
+Then your job should appear on `https://status.build.kyma-project.io/`.
 
 ### Define postsubmit job 
 The postsubmit job is almost the same as the already defined presubmit job for the `master`, except for the differences in:
@@ -165,28 +184,26 @@ To reduce boilerplate code and code repetition, use YAML features, such as exten
 See example:
 ```yaml
 job_template: &job_template
-  optional: true 
+  optional: true
   skip_report: true
-  decorate: true 
+  decorate: true
   path_alias: github.com/kyma-project/kyma
-  extra_refs: 
+  max_concurrency: 10
+  extra_refs:
   - org: kyma-project
     repo: test-infra
     base_ref: master
     path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1 
+    - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
       securityContext:
         privileged: true
       command:
-
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh" 
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
       env:
       - name: SOURCES_DIR
         value: "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
-
-
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -196,14 +213,25 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: &name prow/kyma/components/binding-usage-controller
-    context: *name 
+    run_if_changed: "components/binding-usage-controller/"
+    context: *name
     branches:
-    - master
-    run_if_changed: "components/binding-usage-controller/"  
-    labels:
-      preset-build-pr: "true"
-      <<: *job_labels_template
+      - master
     <<: *job_template
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+
+postsubmits:
+  kyma-project/kyma:
+    - name: &name prow/kyma/components/binding-usage-controller
+      context: *name
+      branches:
+        - master
+      <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-master: "true"
 
 ```
 
