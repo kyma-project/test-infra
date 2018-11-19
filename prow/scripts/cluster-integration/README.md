@@ -2,7 +2,7 @@
 
 ## Overview
 
-The folder contains code for integration job that installs and tests Kyma on a temporary cluster provisioned with Google Kubernetes Engine (GKE).
+The folder contains the source code for the integration job that installs and tests Kyma on a temporary cluster provisioned on Google Kubernetes Engine (GKE).
 For now, it's only executed for Pull Requests as a pre-submit job.
 
 ### Pipeline logic
