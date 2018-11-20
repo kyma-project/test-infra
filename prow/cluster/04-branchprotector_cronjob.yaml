@@ -1,5 +1,5 @@
 # Source https://raw.githubusercontent.com/kubernetes/test-infra/master/prow/cluster/branchprotector_cronjob.yaml
-# Changed: schedule, image and removed github-endpoint's (we don't have gh proxy)
+# Changed: schedule and removed github-endpoint's (we don't have gh proxy)
 
 apiVersion: batch/v1beta1
 kind: CronJob
