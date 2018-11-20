@@ -2,6 +2,8 @@ plugins:
   kyma-project:
     - cat
     - trigger
+  kyma-project/test-infra:
+    - config-updater
 
 config_updater:
   config_file: prow/config.yaml
