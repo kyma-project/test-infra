@@ -4,7 +4,6 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"k8s.io/test-infra/prow/config"
 	"os"
@@ -25,7 +24,7 @@ const (
 	EnvSourcesDir              = "SOURCES_DIR"
 )
 
-func ReadJobConfig(fileName string) (config.JobConfig, error) {
+func  ReadJobConfig(fileName string) (config.JobConfig, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
 		return config.JobConfig{}, errors.Wrapf(err, "while opening file [%s]", fileName)
@@ -51,18 +50,11 @@ func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
 			return
 		}
 	}
-	assert.FailNow(t, "Job has not configured test-infra as a extra ref")
+	assert.FailNow(t,"Job has not configured test-infra as a extra ref")
 }
 
 func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ... Preset) {
 	for _, p := range expected {
-		assert.Equal(t, "true", in.Labels[string(p)], "missing preset [%s]", p)
+		assert.Equal(t, "true", in.Labels[string(p)],"missing preset [%s]", p)
 	}
-}
-
-func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
-	sl := []config.Presubmit{p}
-	require.NoError(t, config.SetPresubmitRegexes(sl))
-	assert.True(t, sl[0].RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
-
 }
