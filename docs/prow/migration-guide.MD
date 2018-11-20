@@ -46,7 +46,6 @@ presubmits:
   kyma-project/kyma:
     - name: prow/kyma/components/binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
-      context: prow/kyma/components/binding-usage-controller
       branches: 
       - master
       skip_report: true
@@ -81,7 +80,6 @@ The table contains the list of all fields in the `yaml` file with their descript
 |-----------------------|-------------|
 |**name**                   | The job name. It should clearly identify the job. For reference, see the [convention](./../../prow/README.md#convention-for-naming-jobs) for naming jobs.
 |**run_if_changed**         | A regular expression. Define the component for which changes in a PR must trigger the job. If a PR does not modify the component, this job sends a notification to GitHub with the information that it is skipped.
-|**context**                | The GitHub status context for the job. It defines how GitHub displays the job on the PR. It should be the same as the job name.
 |**branches**               | A list of base branches against which you want the job to run in the PR.
 |**skip_report**            | A parameter that defines if a job status appears in the PR on GitHub. If you set it to `true`, Prow does not send the job's status to GitHub. Set it to `true` for the purpose of migration.
 |**decorate**               | Decorated jobs automatically clone the repository and store logs from the job execution in Google Cloud Storage (GCS) buckets.
@@ -210,9 +208,8 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: &name prow/kyma/components/binding-usage-controller
+  - name: prow/kyma/components/binding-usage-controller
     run_if_changed: "^components/binding-usage-controller/"
-    context: *name
     branches:
       - master
     <<: *job_template
@@ -222,8 +219,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: &name prow/kyma/components/binding-usage-controller
-      context: *name
+    - name: prow/kyma/components/binding-usage-controller
       branches:
         - master
       <<: *job_template
@@ -234,7 +230,9 @@ postsubmits:
 ```
 
 To check if your configuration is correct, write a Go test. See the `development/tools/jobs/binding_usage_controller_test.go` file for reference.
-Your new test should be placed in `development/tools/jobs` to be executed by the presubmit job `prow/test-infra/test-jobs-yaml-definitions`. 
+Your new test should be placed in `development/tools/jobs` to be executed by the presubmit job `prow/test-infra/test-jobs-yaml-definitions`.
+In case you have access to the Prow cluster, there is an option to test prowjob on it. For a details, see [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob)
+ 
 
 ## References
 
