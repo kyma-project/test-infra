@@ -230,8 +230,8 @@ postsubmits:
 ```
 
 To check if your configuration is correct, write a Go test. See the `development/tools/jobs/binding_usage_controller_test.go` file for reference.
-Your new test should be placed in `development/tools/jobs` to be executed by the presubmit job `prow/test-infra/test-jobs-yaml-definitions`.
-In case you have access to the Prow cluster, there is an option to test prowjob on it. For a details, see [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob)
+Place your new test under `development/tools/jobs` for the `prow/test-infra/test-jobs-yaml-definitions` presubmit job to execute it.
+If you have access to the Prow cluster, there is an option to test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
  
 
 ## References
