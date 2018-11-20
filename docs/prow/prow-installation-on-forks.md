@@ -145,7 +145,7 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 ### The job configuration file
 
-You can define a test presubmit job for a component. However, remember to adjust its definition in the `yaml` file to point to your forked repository instead of the origin repository.
+You can define a test presubmit job for a component. However, remember to adjust its definition in the `yaml` file to point to your forked repository instead of the original repository.
 
 For details on how to define a presubmit job, see the [Migration Guide](./migration-guide.md#create-a-presubmit-job).
 
