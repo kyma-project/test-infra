@@ -117,6 +117,7 @@ branch-protection:
               - prow/test-infra/buildpack-golang
               - prow/test-infra/buildpack-node
               - prow/test-infra/cleaner
+              - prow/test-infra/development/tools
               - prow/test-infra/test-jobs-yaml-definitions
 
 plank:
