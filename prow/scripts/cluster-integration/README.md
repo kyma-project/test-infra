@@ -28,7 +28,7 @@ This script takes its input configuration from environment variables.
 The following environment variables are required:
 
 - **REPO_OWNER** is the repository owner or organization. This variable is set up by Prow. 
-- `REPO_NAME` - Set up by prow, repository name
+- **REPO_NAME** is the repository name. This variable is set up by Prow. 
 - `PULL_NUMBER` - Set up by prow, Pull request number
 - `DOCKER_PUSH_REPOSITORY` - Docker repository hostname
 - `DOCKER_PUSH_DIRECTORY` - Docker "top-level" directory (with leading "/")
