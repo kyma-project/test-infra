@@ -9,7 +9,7 @@ This job runs as a pre-submit job for pull requests.
 
 The integration job is a pipeline that consists of multiple steps:
 - Build a Kyma-Installer image.
-- Provision GKE cluster
+- Provision a GKE cluster.
 - Reserve IP Address
 - Create DNS Entry for reserved IP Address
 - Generate TLS Certificate
