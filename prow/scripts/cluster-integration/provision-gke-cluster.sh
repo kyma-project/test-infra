@@ -32,8 +32,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-CLUSTER_VERSION_PARAM="--cluster-version=1.10.7-gke.11"
-MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
+CLUSTER_VERSION_PARAM=""
+MACHINE_TYPE_PARAM=""
 NUM_NODES_PARAM="--num-nodes=3"
 
 if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
