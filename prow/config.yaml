@@ -95,6 +95,32 @@ presets:
       - name: BUILD_TYPE
         value: release
 
+branch-protection:
+  orgs:
+    kyma-project:
+      repos:
+        test-infra:
+          #TODO: move to default config for organization
+          enforce_admins: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: true
+            required_approving_review_count: 1
+          protect: true
+          #TODO: end move
+          required_status_checks:
+            contexts:
+              - license/cla #TODO: move to default config for organization
+              - prow/test-infra/bootstrap
+              - prow/test-infra/bootstrap-helm
+              - prow/test-infra/buildpack-golang
+              - prow/test-infra/buildpack-node
+              - prow/test-infra/cleaner
+              - prow/test-infra/development/tools
+              - prow/test-infra/test-jobs-yaml-definitions
+              - prow/test-infra/validate-scripts
+              - prow/test-infra/validate-configs
+
 plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   pod_pending_timeout: 60m

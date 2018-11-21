@@ -1,29 +1,9 @@
 plugins:
-  kyma-project/kyma:
-    - cat
-    - trigger
-  kyma-project/console:
-    - cat
-    - trigger
-  kyma-project/examples:
+  kyma-project:
     - cat
     - trigger
   kyma-project/test-infra:
     - config-updater
-    - cat
-    - trigger
-  kyma-project/bundles:
-    - cat
-    - trigger
-  kyma-project/community:
-    - cat
-    - trigger
-  kyma-project/website:
-    - cat
-    - trigger
-  kyma-project/luigi:
-    - cat
-    - trigger
 
 config_updater:
   config_file: prow/config.yaml
