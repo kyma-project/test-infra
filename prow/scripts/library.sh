@@ -21,7 +21,7 @@ function start_docker() {
         fi
     done
     printf '=%.0s' {1..80}; echo
-    
+
     docker-credential-gcr configure-docker
     echo "Done setting up docker in docker."
 }
