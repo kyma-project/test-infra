@@ -57,8 +57,8 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	return jobConfig, nil
 }
 
-// ExtractPresubmitJobByName extracts presubmit job by name from jobs list
-func ExtractPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+// FindPresubmitJobByName finds presubmit job by name from provided jobs list
+func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
 	for _, job := range jobs {
 		if job.Name == name {
 			return &job
@@ -68,8 +68,8 @@ func ExtractPresubmitJobByName(jobs []config.Presubmit, name string) *config.Pre
 	return nil
 }
 
-// ExtractPostsubmitJobByName extracts postsubmit job by name from jobs list
-func ExtractPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
+// FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
 	for _, job := range jobs {
 		if job.Name == name {
 			return &job

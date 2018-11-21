@@ -19,7 +19,7 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/bootstrap"
-	actualPresubmit := tester.ExtractPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -47,7 +47,7 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/bootstrap"
-	actualPost := tester.ExtractPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -71,7 +71,7 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/bootstrap-helm"
-	actualPresubmit := tester.ExtractPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -99,7 +99,7 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/bootstrap-helm"
-	actualPost := tester.ExtractPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -123,7 +123,7 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/buildpack-golang"
-	actualPresubmit := tester.ExtractPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -151,7 +151,7 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/buildpack-golang"
-	actualPost := tester.ExtractPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -175,7 +175,7 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/buildpack-node"
-	actualPresubmit := tester.ExtractPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -203,7 +203,7 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/buildpack-node"
-	actualPost := tester.ExtractPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -227,7 +227,7 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/cleaner"
-	actualPresubmit := tester.ExtractPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -255,7 +255,7 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "prow/test-infra/cleaner"
-	actualPost := tester.ExtractPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
