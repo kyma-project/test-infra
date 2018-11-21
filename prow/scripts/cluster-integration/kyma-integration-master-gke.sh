@@ -40,6 +40,7 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
 trap cleanup EXIT
 
 # !Put cleanup code in this function!
