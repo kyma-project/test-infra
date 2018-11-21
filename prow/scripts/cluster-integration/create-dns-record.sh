@@ -5,8 +5,8 @@
 #Expected vars:
 # - CLOUDSDK_CORE_PROJECT: name of a GCP project where new DNS record is created.
 # - CLOUDSDK_DNS_ZONE_NAME: Name of an existing DNS zone in the project (NOT its DNS name!)
-# - DNS_SUBDOMAIN: a subdomain to create entry for. Example: If CLOUDSDK_DNS_ZONE_NAME referrs to a DNS Zone that controls "cool.dot.com" domain, use DNS_SUBDOMAIN="how" to create an entry: how.cool.dot.com
-# - DNS_DOMAIN
+# - DNS_DOMAIN: Name of DNS domain controlled by DNS zone CLOUDSDK_DNS_ZONE_NAME
+# - DNS_SUBDOMAIN: a subdomain to create entry for. Example: If DNS_DOMAIN referrs to "cool.dot.com." domain, use DNS_SUBDOMAIN="how" to create an entry: "how.cool.dot.com."
 # - IP_ADDRESS: v4 IP Address for the DNS record.
 #
 #Permissions: In order to run this script you need to use a service account with "DNS Administrator" role
