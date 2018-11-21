@@ -46,7 +46,7 @@ presubmits:
   kyma-project/kyma:
     - name: prow/kyma/components/binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
-      branches: 
+      branches:
       - master
       skip_report: true
       decorate: true
@@ -106,7 +106,7 @@ cd $GOPATH/src/github.com/kyma-project/test-infra
 
 ### Review and merge your PR
 
-After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied on the Prow production cluster. `config_updater` configured in the `prow/plugins.yaml` file adds a comment to the PR:
+After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied on the Prow production cluster. The `config_updater` plugin configured in the `prow/plugins.yaml` file adds a comment to the PR:
 
 ![msg](./assets/msg-updated-config.png).
 
@@ -232,7 +232,7 @@ postsubmits:
 To check if your configuration is correct, write a Go test. See the `development/tools/jobs/binding_usage_controller_test.go` file for reference.
 Place your new test under `development/tools/jobs` for the `prow/test-infra/test-jobs-yaml-definitions` presubmit job to execute it.
 If you have access to the Prow cluster, there is an option to test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
- 
+
 
 ## References
 
@@ -262,7 +262,7 @@ To have a better understanding of the role your Prow job plays in the general Pr
 1. Create a PR that modifies your component.
 2. GitHub sends an Event to Prow.
 3. The `trigger` plugin creates a Prow job which appears on the `https://status.build.kyma-project.io` page.
-4. A Pod is created according to **Spec** defined in the presubmit job. Additionally, the decorator clones your repository and mounts it under `/home/prow/go/src/{path_alias}`.
+4. A Pod is created according to **spec** defined in the presubmit job. Additionally, the decorator clones your repository and mounts it under `/home/prow/go/src/{path_alias}`.
 5. The `pipeline.sh` script is executed. It injects the required environment variables and points to the directory defined by the **SOURCES_DIR** variable. It also executes **make-ci**, **make-master**, or **make-release**, depending on the value of the **BUILD_TYPE** variable.
 
 For further reference, read a more technical insight into a Kubernetes Prow job flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow_job.md) document.
