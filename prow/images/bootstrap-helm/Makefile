@@ -1,4 +1,4 @@
-IMG_NAME = buildpack-helm
+IMG_NAME = bootstrap-helm
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 TAG = $(DOCKER_TAG)
 
