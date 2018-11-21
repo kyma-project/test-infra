@@ -32,6 +32,9 @@ presubmits: # runs on PRs
         preset-sa-gke-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
+        preset-build-pr: "true"
+        preset-docker-push-repository: "true"
+        preset-dind-enabled: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma
       extra_refs:
@@ -41,7 +44,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
             securityContext:
               privileged: true
             command:
