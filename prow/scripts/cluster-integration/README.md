@@ -20,7 +20,7 @@ The integration job is a pipeline that consists of multiple steps:
 ### Project structure
 
 The main entry point for the entire pipeline is the `pr-gke-integration.sh` script that invokes other helper scripts and CLI tools.
-The Pipeline uses a toolset from `Bootstrap` image as defined in this repository.
+The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
 
 ### Required environment variables
 
