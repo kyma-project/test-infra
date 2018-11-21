@@ -1,11 +1,12 @@
 package jobs_test
 
 import (
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
-	"testing"
 )
 
 func TestUiApiLayerJobs(t *testing.T) {

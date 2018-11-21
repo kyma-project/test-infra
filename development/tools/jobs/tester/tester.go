@@ -1,30 +1,41 @@
 package tester
 
 import (
+	"io/ioutil"
+	"os"
+	"testing"
+
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
 	"k8s.io/test-infra/prow/config"
-	"os"
-	"testing"
 )
 
+// Preset represents a existing presets
 type Preset string
 
 const (
-	PresetDindEnabled    Preset = "preset-dind-enabled"
-	PresetGcrPush        Preset = "preset-sa-gcr-push"
+	// PresetDindEnabled means docker-in-docker preset
+	PresetDindEnabled Preset = "preset-dind-enabled"
+	// PresetGcrPush means GCR push service account
+	PresetGcrPush Preset = "preset-sa-gcr-push"
+	// PresetDockerPushRepo means Docker repository
 	PresetDockerPushRepo Preset = "preset-docker-push-repository"
-	PresetBuildPr        Preset = "preset-build-pr"
-	PresetBuildMaster    Preset = "preset-build-master"
-	PresetBuildRelease   Preset = "preset-build-release"
+	// PresetBuildPr means PR environment
+	PresetBuildPr Preset = "preset-build-pr"
+	// PresetBuildMaster means master environment
+	PresetBuildMaster Preset = "preset-build-master"
+	// PresetBuildRelease means release environment
+	PresetBuildRelease Preset = "preset-build-release"
 
+	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
-	EnvSourcesDir              = "SOURCES_DIR"
+	// EnvSourcesDir means directory with component to build
+	EnvSourcesDir = "SOURCES_DIR"
 )
 
+// ReadJobConfig reads job configuration from file
 func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
@@ -42,6 +53,7 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	return jobConfig, nil
 }
 
+// AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
 func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
 	for _, curr := range in.ExtraRefs {
 		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
@@ -54,12 +66,14 @@ func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
 	assert.FailNow(t, "Job has not configured test-infra as a extra ref")
 }
 
-func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ... Preset) {
+// AssertThatHasPresets checks if JobBase has expected labels
+func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
 	for _, p := range expected {
 		assert.Equal(t, "true", in.Labels[string(p)], "missing preset [%s]", p)
 	}
 }
 
+// AssertThatJobRunIfChanged checks if Presubmit has run_if_changed parameter
 func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
 	sl := []config.Presubmit{p}
 	require.NoError(t, config.SetPresubmitRegexes(sl))
