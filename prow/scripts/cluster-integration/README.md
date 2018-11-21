@@ -35,7 +35,7 @@ The following environment variables are required:
 - `KYMA_PROJECT_DIR` - directory path with Kyma sources to use for installation
 - `CLOUDSDK_CORE_PROJECT` - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 - **CLOUDSDK_COMPUTE_REGION** is a GCP compute region.
-- `CLOUDSDK_DNS_ZONE_NAME` -GCP zone name (not its DNS name!)
+- **CLOUDSDK_DNS_ZONE_NAME** is a GCP zone name which is different from the DNS name.
 - `GOOGLE_APPLICATION_CREDENTIALS` - GCP Service Account key file path
 
 ### Required permissions
