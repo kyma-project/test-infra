@@ -8,6 +8,8 @@ You interact with Prow using slash (/) commands, such as `/test all`. You add th
 
 In the context of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
+### Basic configuration
+
 Prow replies on this basic set of configurations:
 - Kubernetes cluster deployed in Google Kubernetes Engine (GKE)
 - GitHub bot account
