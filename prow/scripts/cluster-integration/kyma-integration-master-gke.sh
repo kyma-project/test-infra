@@ -132,7 +132,7 @@ shout "Authenticate"
 init
 
 shout "Build Kyma-Installer Docker image"
-export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+export KYMA_INSTALLER_IMAGE="$(echo "${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}" | tr '[:upper:]' '[:lower:]')"
 CLEANUP_DOCKER_IMAGE="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 
