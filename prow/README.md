@@ -92,13 +92,13 @@ In both cases, `{job_name}` must reflect the job's responsibility.
 
 ### Upload configuration to the production Prow cluster
 
-Prow configuration is automatically uploaded to the production cluster from the `master` branch. It is handled by the **Config Updater** plugin.
+Prow configuration is automatically uploaded to the production cluster from the `master` branch by the **Config Updater** plugin.
 
 ### Configure branch protection
 
 Prow is responsible for setting branch protection on repositories. The configuration of branch protection is defined in `config.yaml`.
 
-After you create a new job, define it as a required job for pull request. Add job the context to the `required_status_checks.contexts` list in the proper repository.
+After you create a new job, define it as required for pull requests. Add the job context to the `required_status_checks.contexts` list in the proper repository.
 
 See the sample configuration for the `test-infra` repository:
 
