@@ -44,15 +44,15 @@ trap cleanup EXIT
 
 #!Put cleanup code in this function!
 cleanup() {
+    #!!! Must be at the beginning of this function !!!
+    EXIT_STATUS=$?
+
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         echo "################################################################################"
         echo "# AN ERROR OCCURED! Take a look at preceding log entries."
         echo "################################################################################"
         echo
     fi
-
-    #Try to preserve exit status unless a new error occurs
-    EXIT_STATUS=$?
 
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
@@ -62,7 +62,8 @@ cleanup() {
         echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
         echo "################################################################################"
         date
-        "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
+        #TODO: Debug
+        #"${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
@@ -189,6 +190,9 @@ fi
 CLEANUP_CLUSTER="true"
 "${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 
+#TODO: Debug
+echo "TEST ERROR"
+exit 1
 
 echo "################################################################################"
 echo "Install Tiller"
@@ -229,6 +233,6 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
 
-#Ensure this is the last statement in this script
+#!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
 
