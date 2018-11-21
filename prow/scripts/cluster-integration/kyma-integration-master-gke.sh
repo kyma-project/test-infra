@@ -43,9 +43,9 @@ fi
 
 trap cleanup EXIT
 
-#!Put cleanup code in this function!
+# !Put cleanup code in this function!
 cleanup() {
-    #!!! Must be at the beginning of this function !!!
+    # !!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
@@ -53,7 +53,7 @@ cleanup() {
         echo
     fi
 
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    # Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
@@ -92,24 +92,27 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
-#Exported variables
+# Enforce lowercase
+readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+export REPO_OWNER
+readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+export REPO_NAME
+# Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 IP_ADDRESS_NAME=$(echo "commit-${COMMIT_ID}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
-export REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-export REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${COMMIT_ID}"
 
 export IP_ADDRESS="will_be_generated"
 
-#For provision-gke-cluster.sh
+# For provision-gke-cluster.sh
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
-#Local variables
+# Local variables
 DEFAULT_CLUSTER_VERSION="1.10.6-gke.11"
 DEFAULT_MACHINE_TYPE="n1-standard-2"
 
@@ -120,7 +123,7 @@ INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
-#Used to detect errors for logging purposes
+# Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
 # shellcheck disable=SC1090
@@ -182,5 +185,5 @@ shout "Trigger installation"
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
 
-#!!! Must be at the end of the script !!!
+# !!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
