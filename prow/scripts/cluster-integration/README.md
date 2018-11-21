@@ -32,7 +32,7 @@ The following environment variables are required:
 - **PULL_NUMBER** is the pull request number. This variable is set up by Prow. 
 - **DOCKER_PUSH_REPOSITORY** is the Docker repository hostname.
 - **DOCKER_PUSH_DIRECTORY** - the Docker top-level directory, preceded by a slash (/).
-- `KYMA_PROJECT_DIR` - directory path with Kyma sources to use for installation
+- **KYMA_PROJECT_DIR** is a directory path with Kyma sources to use for the installation.
 - `CLOUDSDK_CORE_PROJECT` - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 - **CLOUDSDK_COMPUTE_REGION** is a GCP compute region.
 - **CLOUDSDK_DNS_ZONE_NAME** is a GCP zone name which is different from the DNS name.
