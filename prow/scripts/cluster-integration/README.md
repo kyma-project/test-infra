@@ -27,7 +27,7 @@ The pipeline uses a toolset from the `Bootstrap` image defined in this repositor
 This script takes its input configuration from environment variables.
 The following environment variables are required:
 
-- `REPO_OWNER` - Set up by prow, repository owner/organization
+- **REPO_OWNER** is the repository owner or organization. This variable is set up by Prow. 
 - `REPO_NAME` - Set up by prow, repository name
 - `PULL_NUMBER` - Set up by prow, Pull request number
 - `DOCKER_PUSH_REPOSITORY` - Docker repository hostname
