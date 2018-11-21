@@ -180,7 +180,6 @@ To reduce boilerplate code and code repetition, use `yaml` features, such as ext
 See an example of the postsubmit job:
 ```yaml
 job_template: &job_template
-  optional: true
   skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/kyma

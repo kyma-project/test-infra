@@ -17,7 +17,7 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
       env:
       - name: SOURCES_DIR
-        value: "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
+        value: "/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-broker"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -26,8 +26,8 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: &name prow/kyma/components/binding-usage-controller
-    run_if_changed: "^components/binding-usage-controller/"
+  - name: &name prow/kyma/components/remote-environment-broker
+    run_if_changed: "^components/remote-environment-broker/"
     branches:
       - master
     <<: *job_template
@@ -37,7 +37,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: &name prow/kyma/components/binding-usage-controller
+    - name: &name prow/kyma/components/remote-environment-broker
       branches:
         - master
       <<: *job_template
