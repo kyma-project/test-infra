@@ -11,7 +11,7 @@ The integration job is a pipeline that consists of multiple steps:
 - Build a Kyma-Installer image.
 - Provision a GKE cluster.
 - Reserve an IP address.
-- Create DNS Entry for reserved IP Address
+- Create a DNS entry for the reserved IP address.
 - Generate TLS Certificate
 - Install Kyma on the GKE cluster
 - Test Kyma installation
