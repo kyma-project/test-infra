@@ -48,9 +48,7 @@ cleanup() {
     EXIT_STATUS=$?
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        echo "################################################################################"
-        echo "# AN ERROR OCCURED! Take a look at preceding log entries."
-        echo "################################################################################"
+        shout "AN ERROR OCCURED! Take a look at preceding log entries."
         echo
     fi
 
@@ -58,9 +56,7 @@ cleanup() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        echo "################################################################################"
-        echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
-        echo "################################################################################"
+        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
         #TODO: Debug
         #"${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
@@ -69,9 +65,7 @@ cleanup() {
     fi
 
     if [ -n "${CLEANUP_DNS_RECORD}" ]; then
-        echo "################################################################################"
-        echo "# Delete DNS Record"
-        echo "################################################################################"
+        shout "Delete DNS Record"
         date
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
         TMP_STATUS=$?
@@ -79,9 +73,7 @@ cleanup() {
     fi
 
     if [ -n "${CLEANUP_IP_ADDRESS}" ]; then
-        echo "################################################################################"
-        echo "# Release IP Address"
-        echo "################################################################################"
+        shout "Release IP Address"
         date
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
         TMP_STATUS=$?
@@ -89,9 +81,7 @@ cleanup() {
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        echo "################################################################################"
-        echo "# Delete temporary Kyma-Installer Docker image"
-        echo "################################################################################"
+        shout "Delete temporary Kyma-Installer Docker image"
         date
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
         TMP_STATUS=$?
@@ -101,9 +91,7 @@ cleanup() {
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    echo "################################################################################"
-    echo "# Job is finished ${MSG}"
-    echo "################################################################################"
+    shout "Job is finished ${MSG}"
     date
     set -e
 
@@ -138,27 +126,21 @@ INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-echo "################################################################################"
-echo "# Authenticate"
-echo "################################################################################"
-date
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+shout "Authenticate"
+date
 init
 
 
-echo "################################################################################"
-echo "# Build Kyma-Installer Docker image"
-echo "################################################################################"
+shout "Build Kyma-Installer Docker image"
 date
 export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
 CLEANUP_DOCKER_IMAGE="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 
 
-echo "################################################################################"
-echo "# Reserve IP Address"
-echo "################################################################################"
+shout "Reserve IP Address"
 date
 IP_ADDRESS=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
 export IP_ADDRESS
@@ -166,9 +148,7 @@ CLEANUP_IP_ADDRESS="true"
 echo "IP Address: ${IP_ADDRESS} created"
 
 
-echo "################################################################################"
-echo "# Create DNS Record"
-echo "################################################################################"
+shout "Create DNS Record"
 date
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
@@ -176,9 +156,7 @@ CLEANUP_DNS_RECORD="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
 
 
-echo "################################################################################"
-echo "# Provision cluster: \"${CLUSTER_NAME}\""
-echo "################################################################################"
+shout "Provision cluster: \"${CLUSTER_NAME}\""
 date
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 if [ -z "$MACHINE_TYPE" ]; then
@@ -194,26 +172,20 @@ CLEANUP_CLUSTER="true"
 echo "TEST ERROR"
 exit 1
 
-echo "################################################################################"
-echo "Install Tiller"
-echo "################################################################################"
+shout "Install Tiller"
 date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
 
-echo "################################################################################"
-echo "Generate self-signed certificate"
-echo "################################################################################"
+shout "Generate self-signed certificate"
 date
 export DOMAIN=${DNS_DOMAIN%?}
 CERT_KEY=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
-echo "################################################################################"
-echo "Apply Kyma config"
-echo "################################################################################"
+shout "Apply Kyma config"
 date
 "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
@@ -226,9 +198,7 @@ date
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 
-echo "################################################################################"
-echo "Trigger installation"
-echo "################################################################################"
+shout "Trigger installation"
 date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
