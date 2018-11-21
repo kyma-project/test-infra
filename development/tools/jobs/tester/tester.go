@@ -22,6 +22,8 @@ const (
 	PresetGcrPush Preset = "preset-sa-gcr-push"
 	// PresetDockerPushRepo means Docker repository
 	PresetDockerPushRepo Preset = "preset-docker-push-repository"
+	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
+	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
@@ -31,8 +33,10 @@ const (
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
-	// EnvSourcesDir means directory with component to build
-	EnvSourcesDir = "SOURCES_DIR"
+	// ImageNodeBuildpackLatest means Node.js buildpack image
+	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181119-afd3fbd"
+	// ImageBootstrapLatest means Bootstrap image
+	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 )
 
 // ReadJobConfig reads job configuration from file
@@ -51,6 +55,28 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 		return config.JobConfig{}, errors.Wrapf(err, "while unmarshalling file [%s]", fileName)
 	}
 	return jobConfig, nil
+}
+
+// ExtractPresubmitJobByName extracts presubmit job by name from jobs list
+func ExtractPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// ExtractPostsubmitJobByName extracts postsubmit job by name from jobs list
+func ExtractPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
+
+	return nil
 }
 
 // AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
