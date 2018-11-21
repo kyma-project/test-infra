@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 
 ENV HELM_VERSION="v2.10.0"
 

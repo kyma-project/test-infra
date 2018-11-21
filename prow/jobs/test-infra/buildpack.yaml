@@ -23,6 +23,20 @@ bootstrap_job_template: &bootstrap_job_template
           - name: SOURCES_DIR
             value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
 
+bootstrap_helm_template: &bootstrap_helm_template
+  run_if_changed: "images/bootstrap-helm/"
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1 
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        env:
+          - name: SOURCES_DIR
+            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-helm"
+
 buildpack_golang_job_template: &buildpack_golang_job_template
   run_if_changed: "images/buildpack-golang/"
   <<: *common_job_template
