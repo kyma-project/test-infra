@@ -143,11 +143,11 @@ The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#enable-some-plugins-by-modifying-pluginsyaml).
 
-### The jobs directory
+### The job configuration file
 
-The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
+You can define a test presubmit job for a component. However, remember to adjust its definition in the `yaml` file to point to your forked repository instead of the original repository.
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
+For details on how to define a presubmit job, see the [Migration Guide](./migration-guide.md#create-a-presubmit-job).
 
 ### Verify the configuration
 
