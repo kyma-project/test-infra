@@ -29,7 +29,7 @@ The following environment variables are required:
 
 - **REPO_OWNER** is the repository owner or organization. This variable is set up by Prow. 
 - **REPO_NAME** is the repository name. This variable is set up by Prow. 
-- `PULL_NUMBER` - Set up by prow, Pull request number
+- **PULL_NUMBER** is the pull request number. This variable is set up by Prow. 
 - `DOCKER_PUSH_REPOSITORY` - Docker repository hostname
 - `DOCKER_PUSH_DIRECTORY` - Docker "top-level" directory (with leading "/")
 - `KYMA_PROJECT_DIR` - directory path with Kyma sources to use for installation
