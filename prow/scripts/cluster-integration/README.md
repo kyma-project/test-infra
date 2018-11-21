@@ -7,7 +7,7 @@ This job runs as a pre-submit job for pull requests.
 
 ### Pipeline logic
 
-The integration job is a pipeline that consists of multiple steps. Their order is not strict and some can run in parallel:
+The integration job is a pipeline that consists of multiple steps:
 - Build Kyma-Installer Image
 - Provision GKE cluster
 - Reserve IP Address
@@ -40,7 +40,7 @@ The following environment variables are required:
 
 ### Required permissions
 
-The pipeline authorizes to GCP as a service account configured with `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
+The pipeline accesses GCP using a service account configured with the **GOOGLE_APPLICATION_CREDENTIALS** environment variable.
 This service account must have GCP permissions equivalent to the following GCP roles:
 
 - Compute Network Admin (`roles/compute.networkAdmin`)
