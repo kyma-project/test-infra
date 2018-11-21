@@ -58,8 +58,7 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
-        #TODO: Debug
-        #"${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
+        "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
@@ -168,9 +167,6 @@ fi
 CLEANUP_CLUSTER="true"
 "${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 
-#TODO: Debug
-echo "TEST ERROR"
-exit 1
 
 shout "Install Tiller"
 date
