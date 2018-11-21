@@ -9,9 +9,9 @@ import (
 	"k8s.io/test-infra/prow/kube"
 )
 
-func TestBucJobsPresubmit(t *testing.T) {
+func TestRebJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/remote-environment-broker/remote-environment-broker.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -21,7 +21,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "prow/kyma/components/binding-usage-controller"
+	expName := "prow/kyma/components/remote-environment-broker"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -30,14 +30,14 @@ func TestBucJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/binding-usage-controller/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^components/remote-environment-broker/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, kube.EnvVar{Name: tester.EnvSourcesDir, Value: "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"}, actualPresubmit.Spec.Containers[0].Env[0])
+	assert.Equal(t, kube.EnvVar{Name: tester.EnvSourcesDir, Value: "/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-broker"}, actualPresubmit.Spec.Containers[0].Env[0])
 }
 
-func TestBucJobPostsubmit(t *testing.T) {
+func TestRebJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/kyma/components/remote-environment-broker/remote-environment-broker.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -47,7 +47,7 @@ func TestBucJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "prow/kyma/components/binding-usage-controller"
+	expName := "prow/kyma/components/remote-environment-broker"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
@@ -57,6 +57,6 @@ func TestBucJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, kube.EnvVar{Name: tester.EnvSourcesDir, Value: "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"}, actualPost.Spec.Containers[0].Env[0])
+	assert.Equal(t, kube.EnvVar{Name: tester.EnvSourcesDir, Value: "/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-broker"}, actualPost.Spec.Containers[0].Env[0])
 
 }
