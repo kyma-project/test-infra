@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 )
 
+// FindAllRecursively finds files with defined extension recursively
 func FindAllRecursively(rootPath, extension string) ([]string, error) {
 	var paths []string
 	err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {

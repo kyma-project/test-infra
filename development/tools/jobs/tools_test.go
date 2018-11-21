@@ -8,16 +8,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestJobDefinitionsPresubmitJob(t *testing.T) {
+func TestToolsPresubmitJob(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/test-infra/test-job-definitions.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/test-infra/development/tools/tools.yaml")
 	// THEN
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
 	assert.Len(t, testInfraPresubmits, 1)
 	sut := testInfraPresubmits[0]
 
-	tester.AssertThatJobRunIfChanged(t, sut, "prow/jobs/kyma/components/ui-api-layer/ui-api-layer.yaml")
+	tester.AssertThatJobRunIfChanged(t, sut, "development/tools/cmd/configuploader/main.go")
 	tester.AssertThatJobRunIfChanged(t, sut, "development/tools/jobs/ui-api-layer_test.go")
 
 	assert.Equal(t, []string{"master"}, sut.Branches)
@@ -27,6 +27,6 @@ func TestJobDefinitionsPresubmitJob(t *testing.T) {
 	cont := sut.Spec.Containers[0]
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, cont.Image)
 	assert.Equal(t, []string{"make"}, cont.Command)
-	assert.Equal(t, []string{"-C", "development/tools", "jobs-tests"}, cont.Args)
+	assert.Equal(t, []string{"-C", "development/tools", "validate"}, cont.Args)
 
 }
