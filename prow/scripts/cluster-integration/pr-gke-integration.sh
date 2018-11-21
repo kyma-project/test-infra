@@ -151,8 +151,8 @@ echo "# Build Kyma-Installer Docker image"
 echo "################################################################################"
 date
 export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 CLEANUP_DOCKER_IMAGE="true"
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 
 
 echo "################################################################################"
@@ -171,8 +171,8 @@ echo "##########################################################################
 date
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
 CLEANUP_DNS_RECORD="true"
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
 
 
 echo "################################################################################"
@@ -186,8 +186,8 @@ fi
 if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
-"${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 CLEANUP_CLUSTER="true"
+"${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 
 
 echo "################################################################################"
