@@ -56,19 +56,11 @@ cleanup() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-<<<<<<< HEAD
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
         "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-=======
-      echo "################################################################################"
-      echo "# Deprovision cluster: \"${CLUSTER_NAME}\""
-      echo "################################################################################"
-      date
-      "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
->>>>>>> add provision and deprovision gke cluster scripts
     fi
 
     if [ -n "${CLEANUP_DNS_RECORD}" ]; then
@@ -172,10 +164,6 @@ fi
 if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
-<<<<<<< HEAD
-=======
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/provision-gke-cluster.sh
->>>>>>> add provision and deprovision gke cluster scripts
 CLEANUP_CLUSTER="true"
 "${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
 
