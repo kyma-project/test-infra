@@ -44,6 +44,13 @@ trap cleanup EXIT
 
 #!Put cleanup code in this function!
 cleanup() {
+    if [ "${ERROR_GUARD}" = "true" ]; then
+        echo "################################################################################"
+        echo "# AN ERROR OCCURED! Take a look at preceding log entries."
+        echo "################################################################################"
+        echo
+    fi
+
     #Try to preserve exit status unless a new error occurs
     EXIT_STATUS=$?
 
@@ -126,6 +133,8 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+ERROR_GUARD="true"
 
 echo "################################################################################"
 echo "# Authenticate"
@@ -212,6 +221,8 @@ date
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 
+echo "Test error!"
+exit 1
 
 echo "################################################################################"
 echo "Trigger installation"
@@ -219,3 +230,6 @@ echo "##########################################################################
 date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
+
+ERROR_GUARD="false"
+
