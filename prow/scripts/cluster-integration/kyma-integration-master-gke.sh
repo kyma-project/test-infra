@@ -104,8 +104,6 @@ readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 IP_ADDRESS_NAME=$(echo "commit-${COMMIT_ID}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
-export REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-export REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${COMMIT_ID}"
 
 export IP_ADDRESS="will_be_generated"
