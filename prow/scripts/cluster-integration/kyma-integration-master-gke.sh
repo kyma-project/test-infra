@@ -45,3 +45,56 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 shout "Authenticate"
 init
 
+shout "Reserve IP Address"
+IP_ADDRESS=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
+export IP_ADDRESS
+CLEANUP_IP_ADDRESS="true"
+shout "IP Address: ${IP_ADDRESS} created"
+
+
+shout "Create DNS Record"
+date
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+export DNS_DOMAIN
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
+CLEANUP_DNS_RECORD="true"
+
+shout "Provision cluster: \"${CLUSTER_NAME}\""
+date
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+if [ -z "$MACHINE_TYPE" ]; then
+      export MACHINE_TYPE="n1-standard-2"
+fi
+
+"${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
+CLEANUP_CLUSTER="true"
+
+shout "Install Tiller"
+date
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
+
+shout "Generate self-signed certificate"
+date
+export DOMAIN=${DNS_DOMAIN%?}
+CERT_KEY=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
+TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+
+shout "Apply Kyma config"
+date
+"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+    | sed -E ";s;develop\/installer:.+;rc/kyma-installer:0.5-rc;" \
+    | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
+    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
+    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+    | sed -e "s/__EXTERNAL_PUBLIC_IP__/${IP_ADDRESS}/g" \
+    | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+    | sed -e "s/__VERSION__/0.0.1/g" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+
+shout "Trigger installation"
+date
+kubectl label installation/kyma-installation action=install
+"${KYMA_SCRIPTS_DIR}"/is-installed.sh
