@@ -1,8 +1,10 @@
 #!/bin/bash
-# Source prow-configurations/install-prow.sh
+# Source development/install-prow.sh
 # Changes:
 #  - Removed secret creation
-#  - Remove default ingress `ing` after installation
+#  - Removed default ingress `ing` after installation
+#  - Added TLS configuration
+#  - Added Branch Protector deployment
 
 set -o errexit
 
@@ -22,6 +24,9 @@ kubectl apply -f cluster/02-cluster-issuer.yaml
 
 # Install secure ingress
 kubectl apply -f cluster/03-tls-ing_ingress.yaml
+
+# Install branch protector
+kubectl apply -f cluster/04-branchprotector_cronjob.yaml
 
 # Remove Insecure ingress 
 kubectl delete ingress ing
