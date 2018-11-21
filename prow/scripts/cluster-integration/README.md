@@ -15,7 +15,7 @@ The integration job is a pipeline that consists of multiple steps:
 - Generate a TLS certificate.
 - Install Kyma on the GKE cluster.
 - Test the Kyma installation.
-- Ensure to clean up all provisioned resources, also in case of an error.
+- Clean up all provisioned resources, also if you get an error.
 
 ### Project structure
 
