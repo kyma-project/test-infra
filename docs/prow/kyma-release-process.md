@@ -33,7 +33,7 @@ The proposed release process looks as follows in Prow:
     For every component, there is a presubmit job for release branches, that is responsible for publishing Docker images with a release tag, such as `0.4.3`.
 
 ```
-    name: prow/kyma/components/ui-api-layer/release
+    name: kyma-components-ui-api-layer-release
     branches:
       - release-X.Y
     run_if_changed: ...values.yaml,components-ui-api-layer
@@ -62,7 +62,7 @@ Without them, the **Squash and merge** button is enabled even if some checks fai
 - Run jobs after integrations jobs:
 
 ```
-    name: prow/kyma/integration
+    name: kyma-integration
     branches:
       - release-X.Y
     // run integration tests
@@ -116,7 +116,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: prow/kyma/components/ui-api-layer
+    - name: kyma-components-ui-api-layer
       branches:
         - master
       run_if_changed: "components/ui-api-layer/"
@@ -124,7 +124,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *job_template
-    - name: prow/release/kyma/components/ui-api-layer
+    - name: kyma-components-ui-api-layer-release
       run_if_changed: "(components/ui-api-layer/|resources/core/values.yaml)"
       branches:
         - '^release-\d+\.\d+$'

@@ -25,7 +25,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: prow/kyma/components/ui-api-layer
+    - name: kyma-components-ui-api-layer
       branches:
         - master
       run_if_changed: "^components/ui-api-layer/"
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *job_template
-    - name: prow/release/kyma/components/ui-api-layer
+    - name: kyma-components-ui-api-layer-release
       run_if_changed: "(^components/ui-api-layer/|^resources/core/values.yaml)"
       branches:
         - '^release-\d+\.\d+$'
@@ -44,7 +44,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: prow/kyma/components/ui-api-layer
+    - name: kyma-components-ui-api-layer
       branches:
         - master
       <<: *job_template

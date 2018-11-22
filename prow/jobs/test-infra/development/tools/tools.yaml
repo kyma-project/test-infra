@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: prow/test-infra/development/tools
+    - name: test-infra-development-tools
       run_if_changed: "^development/tools"
       branches:
         - master
