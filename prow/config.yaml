@@ -122,6 +122,7 @@ branch-protection:
               - test-infra-validate-configs
 
 plank:
+  job_url_template: 'https://kyma-project.appspot.com/build/prow-production/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   pod_pending_timeout: 60m
   default_decoration_config:
@@ -136,3 +137,11 @@ plank:
       bucket: prow-production
       path_strategy: "explicit"
     gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
+
+deck:
+  spyglass:
+    size_limit: 500e6
+    viewers:
+      "started.json|finished.json": ["metadata-viewer"]
+      "build-log.txt": ["build-log-viewer"]
+      "artifacts/junit.*\\.xml": ["junit-viewer"]
