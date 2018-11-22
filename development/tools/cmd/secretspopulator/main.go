@@ -56,7 +56,7 @@ func main() {
 		storageClient: storageClient,
 		kmsClient:     kmsService,
 	}
-	panicOnError(p.PopulateSecrets(ctx, []string{"sa-gke-kyma-integration", "sa-vm-kyma-integration", "sa-gcs-plank", "sa-gcr-push"},
+	panicOnError(p.PopulateSecrets(ctx, []string{"sa-gke-kyma-integration", "sa-vm-kyma-integration", "sa-gcs-plank", "sa-gcr-push", "kyma-bot-npm-token"},
 		*argBucket, *argKeyring, *argKey, *argLocation))
 
 }
