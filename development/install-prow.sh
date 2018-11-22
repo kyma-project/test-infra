@@ -24,6 +24,17 @@ if [ -z "${LOCATION}" ]; then
     LOCATION="global"
 fi
 
+if [ -z "$KUBECONFIG" ]; then
+      echo "\$KUBECONFIG is empty"
+      exit 1
+fi
+
+# requried by secretspopulator
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+      echo "\$GOOGLE_APPLICATION_CREDENTIALS is empty"
+      exit 1
+fi
+
 ## Create an HMAC token
 hmac_token="$(openssl rand -hex 20)"
 echo "$hmac_token" > hmac_token.txt
@@ -56,7 +67,7 @@ kubectl create secret generic hmac-token --from-literal=hmac="$hmac_token"
 kubectl create secret generic oauth-token --from-literal=oauth="$oauth_token"
 
 # Create GCP secrets
-bash "${CURRENT_DIR}/create-gcp-secrets.sh" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
+env go run ./tools/cmd/secretspopulator/main.go --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig=${KUBECONFIG}
 
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
