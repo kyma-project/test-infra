@@ -1,4 +1,4 @@
-package jobs_test
+package testinfra_test
 
 import (
 	"testing"
@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestToolsPresubmitJob(t *testing.T) {
+func TestToolsJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/test-infra/development/tools/tools.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/development/tools/tools.yaml")
 	// THEN
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]

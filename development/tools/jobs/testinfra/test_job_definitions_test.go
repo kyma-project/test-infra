@@ -1,4 +1,4 @@
-package jobs_test
+package testinfra_test
 
 import (
 	"testing"
@@ -10,7 +10,7 @@ import (
 
 func TestJobDefinitionsPresubmitJob(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/test-infra/test-job-definitions.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/test-job-definitions.yaml")
 	// THEN
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
