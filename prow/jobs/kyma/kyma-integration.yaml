@@ -44,7 +44,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
             securityContext:
               privileged: true
             command:
