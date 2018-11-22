@@ -262,6 +262,7 @@ spec:
         - --tide-url=http://tide/
         - --hook-url=http://hook:8888/plugin-help
         - --job-config-path=/etc/job-config
+        - --spyglass
         ports:
           - name: http
             containerPort: 8080
