@@ -43,7 +43,7 @@ For details on how to calculate the proper image tag, see the **Calculate the re
 
 Such a configuration ensures that after modifying all `values.yaml` files successfully, all images are published.
 There can be an additional job that checks if all components in all `values.yaml` files use exactly the same version, such as `0.4.3`.
-You must define branch protection rules for release branches and the `master` branch. These rules mark all checks as a required.
+You must define branch protection rules for release branches and the `master` branch. These rules mark all checks as required.
 Without them, the **Squash and merge** button is enabled even if some checks failed or are in progress.
 
 3. Run the integration jobs. Use one of these options to configure them:
