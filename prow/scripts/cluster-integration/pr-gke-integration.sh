@@ -58,7 +58,7 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
-        "${KYMA_SOURCES_DIR}"/prow/scripts/deprovision-gke-cluster.sh
+        "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
@@ -112,9 +112,6 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
-DEFAULT_CLUSTER_VERSION="1.10.6-gke.11"
-DEFAULT_MACHINE_TYPE="n1-standard-2"
-
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
@@ -165,7 +162,7 @@ if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 CLEANUP_CLUSTER="true"
-"${KYMA_SOURCES_DIR}"/prow/scripts/provision-gke-cluster.sh
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/provision-gke-cluster.sh
 
 
 shout "Install Tiller"
