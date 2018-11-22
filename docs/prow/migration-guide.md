@@ -40,7 +40,7 @@ For example, to define a job for the `binding-usage-controller` component from t
 > **NOTE:** All `yaml` files in the whole `jobs` structure need to have unique names.
 
 In your job, call a `build.sh` script from the buildpack image provided in the `test-infra` repository. This script executes the `Makefile` target defined for your component.
-The `build.sh` script requires the path to the directory where the `Makefile` for your component as argument.
+The `build.sh` script requires an argument which is the local path to the directory where the `Makefile` for your component is located. 
 
 See an example of such a job for the `kyma-project/kyma` repository.
 
