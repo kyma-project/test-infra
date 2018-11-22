@@ -116,8 +116,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: &name prow/kyma/components/ui-api-layer
-      context: *name
+    - name: prow/kyma/components/ui-api-layer
       branches:
         - master
       run_if_changed: "components/ui-api-layer/"
@@ -125,8 +124,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *job_template
-    - name: &name prow/release/kyma/components/ui-api-layer
-      context: *name
+    - name: prow/release/kyma/components/ui-api-layer
       run_if_changed: "(components/ui-api-layer/|resources/core/values.yaml)"
       branches:
         - '^release-\d+\.\d+$'
