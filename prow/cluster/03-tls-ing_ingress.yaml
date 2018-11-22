@@ -1,6 +1,6 @@
 # Source: kubernetes/test-infra/prow/cluster/tls-ing_ingress.yaml
 # Modified host and removed metrics path
-
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -10,7 +10,8 @@ metadata:
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     certmanager.k8s.io/acme-http01-edit-in-place: "true"
-    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
     - secretName: prow-tls
