@@ -18,7 +18,7 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/bootstrap"
+	expName := "test-infra-bootstrap"
 	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -46,7 +46,7 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/bootstrap"
+	expName := "test-infra-bootstrap"
 	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -70,7 +70,7 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/bootstrap-helm"
+	expName := "test-infra-bootstrap-helm"
 	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -98,7 +98,7 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/bootstrap-helm"
+	expName := "test-infra-bootstrap-helm"
 	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -122,7 +122,7 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/buildpack-golang"
+	expName := "test-infra-buildpack-golang"
 	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -150,7 +150,7 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/buildpack-golang"
+	expName := "test-infra-buildpack-golang"
 	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -174,7 +174,7 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/buildpack-node"
+	expName := "test-infra-buildpack-node"
 	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -202,7 +202,7 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/buildpack-node"
+	expName := "test-infra-buildpack-node"
 	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -226,7 +226,7 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/cleaner"
+	expName := "test-infra-cleaner"
 	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -254,7 +254,7 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
 	assert.True(t, ex)
 
-	expName := "prow/test-infra/cleaner"
+	expName := "test-infra-cleaner"
 	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

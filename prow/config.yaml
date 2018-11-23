@@ -111,15 +111,15 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
-              - prow/test-infra/bootstrap
-              - prow/test-infra/bootstrap-helm
-              - prow/test-infra/buildpack-golang
-              - prow/test-infra/buildpack-node
-              - prow/test-infra/cleaner
-              - prow/test-infra/development/tools
-              - prow/test-infra/test-jobs-yaml-definitions
-              - prow/test-infra/validate-scripts
-              - prow/test-infra/validate-configs
+              - test-infra-bootstrap
+              - test-infra-bootstrap-helm
+              - test-infra-buildpack-golang
+              - test-infra-buildpack-node
+              - test-infra-cleaner
+              - test-infra-development/tools
+              - test-infra-test-jobs-yaml-definitions
+              - test-infra-validate-scripts
+              - test-infra-validate-configs
 
 plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.

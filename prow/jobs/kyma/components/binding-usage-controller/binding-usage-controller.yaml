@@ -25,7 +25,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: prow/kyma/components/binding-usage-controller
+    - name: kyma-components-binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
       branches:
         - master
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: prow/kyma/components/binding-usage-controller
+    - name: kyma-components-binding-usage-controller
       branches:
         - master
       <<: *job_template

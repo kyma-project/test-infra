@@ -47,7 +47,7 @@ See an example of such a job for the `kyma-project/kyma` repository.
 ```yaml
 presubmits:
   kyma-project/kyma:
-    - name: prow/kyma/components/binding-usage-controller
+    - name: kyma-components-binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
       branches:
         - master
@@ -175,7 +175,7 @@ If you want to trigger your job again, add a comment on the PR for your componen
 
 - `/test all` to run all tests
 - `/retest` to only rerun failed tests
-- `/test {your test name}`, such as `/test prow/kyma/components/binding-usage-controller`, to only run a specific test
+- `/test {your test name}`, such as `/test kyma-components-binding-usage-controller`, to only run a specific test
 
 After you trigger the job, it appears on `https://status.build.kyma-project.io/`.
 
@@ -214,7 +214,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: prow/kyma/components/binding-usage-controller
+    - name: kyma-components-binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
       branches:
         - master
@@ -225,7 +225,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: prow/kyma/components/binding-usage-controller
+    - name: kyma-components-binding-usage-controller
       branches:
         - master
       <<: *job_template
@@ -235,7 +235,7 @@ postsubmits:
 ```
 
 To check if your configuration is correct, write a Go test. See the `development/tools/jobs/binding_usage_controller_test.go` file for reference.
-Place your new test under `development/tools/jobs` for the `prow/test-infra/test-jobs-yaml-definitions` presubmit job to execute it.
+Place your new test under `development/tools/jobs` for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 If you have access to the Prow cluster, there is an option to test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
 ## References
