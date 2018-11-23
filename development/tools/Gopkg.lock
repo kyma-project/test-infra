@@ -379,6 +379,7 @@
   branch = "master"
   name = "google.golang.org/api"
   packages = [
+    "cloudkms/v1",
     "gensupport",
     "googleapi",
     "googleapi/internal/uritemplates",
@@ -680,6 +681,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "749ded584de8f9f51d88b679bfa3aae34c3a191407ae85afffd165e4ce555cdc"
+  inputs-digest = "613d409a9565af4b7767be6692f24da3bb361b231e1a11d45097186d4cec85e3"
   solver-name = "gps-cdcl"
   solver-version = 1
