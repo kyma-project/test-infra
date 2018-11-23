@@ -28,5 +28,12 @@ kubectl apply -f cluster/03-tls-ing_ingress.yaml
 # Install branch protector
 kubectl apply -f cluster/04-branchprotector_cronjob.yaml
 
+# Deploy gcsweb
+kubectl apply -f cluster/05-gcsweb.yaml
+
+# Deploy Gubernator
+make -C gubernator deploy
+make -C gubernator migrate
+
 # Remove Insecure ingress 
 kubectl delete ingress ing

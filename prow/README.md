@@ -43,6 +43,7 @@ Its structure looks as follows:
 ```
 
   ├── cluster               # Files for Prow cluster provisioning
+  ├── gubernator            # Files for Gubernator which is a frontend used to enable users to access job results directly from GitHub.
   ├── images                # Images for ProwJobs
   ├── jobs                  # Files with job definitions
   ├── scripts               # Scripts used by the test jobs
