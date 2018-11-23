@@ -140,7 +140,7 @@ plank:
 
 deck:
   spyglass:
-    size_limit: 500e6
+    size_limit: 500000000 # 500MB
     viewers:
       "started.json|finished.json": ["metadata-viewer"]
       "build-log.txt": ["build-log-viewer"]
