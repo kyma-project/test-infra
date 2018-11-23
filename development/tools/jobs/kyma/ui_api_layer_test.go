@@ -19,7 +19,7 @@ func TestUiApiLayerJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 2)
 
-	expName := "prow/kyma/components/ui-api-layer"
+	expName := "kyma-components-ui-api-layer"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -49,7 +49,7 @@ func TestUiApiLayerReleaseJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 2)
 
-	expName := "prow/release/kyma/components/ui-api-layer"
+	expName := "kyma-components-ui-api-layer-release"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -80,7 +80,7 @@ func TestUiApiLayerJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "prow/kyma/components/ui-api-layer"
+	expName := "kyma-components-ui-api-layer"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

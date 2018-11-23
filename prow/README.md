@@ -85,10 +85,10 @@ prow
 
 ### Convention for naming jobs
 
-When you define jobs for Prow, both **name** and **context** of the job must follow one of these patterns:
+When you define jobs for Prow, **name** of the job must follow one of these patterns:
 
-- `prow/{repository_name}/{component_name}/{job_name}` for components
-- `prow/{repository_name}/{job_name}` for jobs not connected to a particular component
+- `{repository_name}-{component_name}-{job_name}` for components
+- `{repository_name}-{job_name}` for jobs not connected to a particular component
 
 In both cases, `{job_name}` must reflect the job's responsibility.
 
@@ -119,14 +119,14 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla
-              - prow/test-infra/validate-scripts
-              - prow/test-infra/validate-configs
-              - prow/test-infra/bootstrap
-              - prow/test-infra/buildpack-golang
-              - prow/test-infra/buildpack-node
-              - prow/test-infra/cleaner
-              - prow/test-infra/development/tools
-              - prow/test-infra/test-jobs-yaml-definitions
+              - test-infra-validate-scripts
+              - test-infra-validate-configs
+              - test-infra-bootstrap
+              - test-infra-buildpack-golang
+              - test-infra-buildpack-node
+              - test-infra-cleaner
+              - test-infra-development/tools
+              - test-infra-test-jobs-yaml-definitions
 ```
 
 The Branch Protector component updates the configuration every 30 minutes.

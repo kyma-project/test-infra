@@ -19,7 +19,7 @@ func TestCatalogJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "prow/console/catalog"
+	expName := "console-catalog"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -49,7 +49,7 @@ func TestCatalogJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "prow/console/catalog"
+	expName := "console-catalog"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

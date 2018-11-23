@@ -25,7 +25,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: prow/console/catalog
+    - name: console-catalog
       branches:
         - master
       run_if_changed: "^catalog/"
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/console:
-    - name: prow/console/catalog
+    - name: console-catalog
       branches:
         - master
       <<: *job_template

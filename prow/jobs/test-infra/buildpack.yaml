@@ -78,27 +78,27 @@ cleaner_job_template: &cleaner_job_template
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: &bootstrap_name prow/test-infra/bootstrap
+    - name: &bootstrap_name test-infra-bootstrap
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
-    - name: &bootstrap_helm_name prow/test-infra/bootstrap-helm
+    - name: &bootstrap_helm_name test-infra-bootstrap-helm
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_helm_template
-    - name: &buildpack_golang_name prow/test-infra/buildpack-golang
+    - name: &buildpack_golang_name test-infra-buildpack-golang
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
-    - name: &buildpack_node_name prow/test-infra/buildpack-node
+    - name: &buildpack_node_name test-infra-buildpack-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
-    - name: &cleaner_name prow/test-infra/cleaner
+    - name: &cleaner_name test-infra-cleaner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
