@@ -2,8 +2,12 @@ plugins:
   kyma-project:
     - cat
     - trigger
+    - size
+    - welcome
+    - lgtm
   kyma-project/test-infra:
     - config-updater
+    - blunderbuss
 
 config_updater:
   config_file: prow/config.yaml
