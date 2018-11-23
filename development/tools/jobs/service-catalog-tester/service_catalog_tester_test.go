@@ -1,4 +1,4 @@
-package jobs_test
+package service_catalog_tester_test
 
 import (
 	"testing"
@@ -6,12 +6,11 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"k8s.io/test-infra/prow/kube"
 )
 
 func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/service-catalog-tester/service-catalog-tester.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/service-catalog-tester/service-catalog-tester.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -21,23 +20,25 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "prow/service-catalog-tester"
+	expName := "service-catalog-tester"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.True(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/service-catalog-tester", actualPresubmit.PathAlias)
+	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "internal/runner/runner_worker.go")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^service-catalog-tester/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, kube.EnvVar{Name: tester.EnvSourcesDir, Value: "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPresubmit.Spec.Containers[0].Env[0])
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../prow/jobs/service-catalog-tester/service-catalog-tester.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/service-catalog-tester/service-catalog-tester.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -47,7 +48,7 @@ func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "prow/service-catalog-tester"
+	expName := "service-catalog-tester"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
@@ -57,5 +58,6 @@ func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, kube.EnvVar{Name: tester.EnvSourcesDir, Value: "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPost.Spec.Containers[0].Env[0])
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPost.Spec.Containers[0].Args)
 }
