@@ -27,6 +27,7 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/service-catalog-tester", actualPresubmit.PathAlias)
+	assert.Equal(t, "^internal/runner/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "internal/runner/runner_worker.go")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
