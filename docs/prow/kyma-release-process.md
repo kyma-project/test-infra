@@ -50,7 +50,7 @@ Without them, the **Squash and merge** button is enabled even if some checks fai
 
 - Run it on every change on a PR. This is a very simple solution from Prow's perspective. Unfortunately, there is a high possibility that this job fails at the beginning.
   This job should be run only after all
-  components are already built and images are already published. Unfortunately, there is no option to configure Prow jobs in that way.
+  components are already built and images are already published. Unfortunately, there is no option to configure ProwJobs in that way.
   You need to retrigger failed integration tests by adding a `retest` comment on a PR.
 - Run integration tests on demand. A comment on a PR, instead of a change in a source code, triggers the job.
   The Release Manager is responsible for adding such a comment.

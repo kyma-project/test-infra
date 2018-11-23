@@ -1,8 +1,8 @@
 # Migration Guide
 
-This document describes the procedure for defining standard Prow jobs for `kyma` components. Its purpose is to provide steps required to prepare a component for the migration from the internal CI to Prow.
+This document describes the procedure for defining standard ProwJobs for `kyma` components. Its purpose is to provide steps required to prepare a component for the migration from the internal CI to Prow.
 
-> **NOTE:** Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs.
+> **NOTE:** Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining ProwJobs.
 
 ## Migration plan
 
@@ -10,8 +10,8 @@ In the first phase of the migration, jobs for components are duplicated. It mean
 
 That is why, when you configure a job for your component, make sure that:
 
-- Your Prow job is configured to push Docker images to a different directory than the one used by the internal CI. To set it, add a `preset-docker-push-repository` Preset to your Prow job definition.
-- Your Prow job does not send Events to GitHub. To configure it, set the **skip_report** parameter to `true`.
+- Your ProwJob is configured to push Docker images to a different directory than the one used by the internal CI. To set it, add a `preset-docker-push-repository` Preset to your ProwJob definition.
+- Your ProwJob does not send events to GitHub. To configure it, set the **skip_report** parameter to `true`.
 
 ## Steps
 
@@ -40,7 +40,7 @@ For example, to define a job for the `binding-usage-controller` component from t
 > **NOTE:** All `yaml` files in the whole `jobs` structure need to have unique names.
 
 In your job, call a `build.sh` script from the buildpack image provided in the `test-infra` repository. This script executes the `Makefile` target defined for your component.
-The `build.sh` script requires an argument which is the local path to the directory where the `Makefile` for your component is located. 
+The `build.sh` script requires an argument which is the local path to the directory where the `Makefile` for your component is located.
 
 See an example of such a job for the `kyma-project/kyma` repository.
 
@@ -168,7 +168,7 @@ If your job involves pushing a Docker image, its name is based on the following 
 
 ### Create a PR for your component
 
-The trigger for Prow jobs are GitHub Events. For example, GitHub sends Events to Prow when you create a PR or add new changes to it.
+The trigger for ProwJobs are GitHub events. For example, GitHub sends events to Prow when you create a PR or add new changes to it.
 
 To test your changes, create a new PR for your component.
 If you want to trigger your job again, add a comment on the PR for your component:
@@ -244,7 +244,7 @@ See the list of available Presets to use in your job definition and an overview 
 
 ### Available Presets
 
-Use these Presets to define a Prow job for your component:
+Use these Presets to define a ProwJob for your component:
 
 | Name                               | Description                                                                                                                                                     |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -261,12 +261,12 @@ Use these Presets to define a Prow job for your component:
 
 ### Pipeline overview
 
-To have a better understanding of the role your Prow job plays in the general Prow pipeline, see this flow description:
+To have a better understanding of the role your ProwJob plays in the general Prow pipeline, see this flow description:
 
 1. Create a PR that modifies your component.
-2. GitHub sends an Event to Prow.
-3. The `trigger` plugin creates a Prow job which appears on the `https://status.build.kyma-project.io` page.
+2. GitHub sends an event to Prow.
+3. The `trigger` plugin creates a ProwJob which appears on the `https://status.build.kyma-project.io` page.
 4. A Pod is created according to **spec** defined in the presubmit job. Additionally, the decorator clones your repository and mounts it under `/home/prow/go/src/{path_alias}`.
 5. The `build.sh` script is executed. It injects the required environment variables and points to the directory passed as an argument. It also executes **make-ci**, **make-master**, or **make-release**, depending on the value of the **BUILD_TYPE** variable.
 
-For further reference, read a more technical insight into a Kubernetes Prow job flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow_job.md) document.
+For further reference, read a more technical insight into a Kubernetes ProwJob flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow_job.md) document.
