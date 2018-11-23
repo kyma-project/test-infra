@@ -25,7 +25,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/service-catalog-tester:
-    - name: prow/service-catalog-tester
+    - name: service-catalog-tester
       run_if_changed: "^service-catalog-tester/"
       branches:
         - master
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/service-catalog-tester:
-    - name: prow/service-catalog-tester
+    - name: service-catalog-tester
       branches:
         - master
       <<: *job_template
