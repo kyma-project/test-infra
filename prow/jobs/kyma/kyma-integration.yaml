@@ -51,7 +51,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/pr-gke-integration.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
 
 postsubmits:
   kyma-project/kyma:
@@ -74,7 +74,7 @@ postsubmits:
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-    - name: prow/kyma/kyma-integration-master-gke
+    - name: kyma-gke-integration-master
       branches:
         - master
       max_concurrency: 10
@@ -101,7 +101,7 @@ postsubmits:
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-master-gke.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
 
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
