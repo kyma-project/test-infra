@@ -59,7 +59,7 @@ if [ ${#oauth_token} -lt 1 ]; then
   exit -1;
 fi
 
-kubectl create   \
+kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user "$(gcloud config get-value account)"
 
 # Deploy NGINX Ingress Controller
