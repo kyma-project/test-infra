@@ -7,7 +7,7 @@
 #
 # - REPO_OWNER - Set up by prow, repository owner/organization
 # - REPO_NAME - Set up by prow, repository name
-# - PULL_NUMBER - Set up by prow, Pull request number
+# - BUILD_TYPE - Set up by prow, pr/master/release
 # - DOCKER_PUSH_REPOSITORY - Docker repository hostname
 # - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
@@ -30,7 +30,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME PULL_NUMBER DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -97,13 +97,31 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
+# Enforce lowercase
+readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+export REPO_OWNER
+readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+export REPO_NAME
+
+if [[ "$BUILD_TYPE" == "pr" ]]; then
+    # In case of PR, operate on PR number
+    IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+    CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+else 
+    # Otherwise (master, or release), operate on triggering commit id
+    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    IP_ADDRESS_NAME=$(echo "commit-${COMMIT_ID}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+    CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${COMMIT_ID}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+fi
+
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
-export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+export CLUSTER_NAME
 
 export IP_ADDRESS="will_be_generated"
 
@@ -131,7 +149,7 @@ init
 
 shout "Build Kyma-Installer Docker image"
 date
-export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+export KYMA_INSTALLER_IMAGE
 CLEANUP_DOCKER_IMAGE="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 
