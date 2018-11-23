@@ -239,7 +239,7 @@ def do_select(seq, pred):
 def do_gcs_browse_url(gcs_path):
     if not gcs_path.endswith('/'):
         gcs_path += '/'
-    return 'http://gcsweb.kyma-project.io/gcs' + gcs_path
+    return 'http://gcsweb.build.kyma-project.io/gcs' + gcs_path
 
 
 static_hashes = {}
