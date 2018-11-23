@@ -17,6 +17,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	typedv1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/tools/clientcmd"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
 const fileNameExtension = "encrypted"
@@ -29,16 +30,19 @@ func main() {
 	argKey := flag.String("key", "", "")
 	argLocation := flag.String("location", "", "")
 	argKubeconfigPath := flag.String("kubeconfig", "", "")
+	argProject := flag.String("project", "", "")
 	flag.Parse()
 	panicOnMissingArg("bucket", argBucket)
 	panicOnMissingArg("keyring", argKeyring)
 	panicOnMissingArg("key", argKey)
 	panicOnMissingArg("location", argLocation)
 	panicOnMissingArg("kubeconfig", argKubeconfigPath)
+	panicOnMissingArg("project", argProject)
 
 	k8sConfig, err := clientcmd.BuildConfigFromFlags("", *argKubeconfigPath)
 	panicOnError(err)
 	k8sCli, err := kubernetes.NewForConfig(k8sConfig)
+	panicOnError(err)
 
 	secretInterface := k8sCli.CoreV1().Secrets(metav1.NamespaceDefault)
 
@@ -56,7 +60,7 @@ func main() {
 		storageClient: storageClient,
 		kmsClient:     kmsService,
 	}
-	panicOnError(p.PopulateSecrets(ctx, []string{"sa-gke-kyma-integration", "sa-vm-kyma-integration", "sa-gcs-plank", "sa-gcr-push", "kyma-bot-npm-token"},
+	panicOnError(p.PopulateSecrets(ctx, *argProject, []string{"sa-gke-kyma-integration", "sa-vm-kyma-integration", "sa-gcs-plank", "sa-gcr-push", "kyma-bot-npm-token"},
 		*argBucket, *argKeyring, *argKey, *argLocation))
 
 }
@@ -67,9 +71,9 @@ type SecretsPopulator struct {
 	kmsClient     *cloudkms.Service
 }
 
-func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, fileNamePrefixes []string, bucket, keyring, key, location string) error {
+func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, fileNamePrefixes []string, bucket, keyring, key, location string) error {
 	parentName := fmt.Sprintf("projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s",
-		"kyma-project", location, keyring, key)
+		project, location, keyring, key)
 
 	for _, prefix := range fileNamePrefixes {
 		name := fmt.Sprintf("%s.%s", prefix, fileNameExtension)

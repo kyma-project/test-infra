@@ -35,6 +35,11 @@ if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
       exit 1
 fi
 
+if [ -z "$PROJECT" ]; then
+      echo "\$PROJECT is empty"
+      exit 1
+fi
+
 ## Create an HMAC token
 hmac_token="$(openssl rand -hex 20)"
 echo "$hmac_token" > hmac_token.txt
@@ -54,7 +59,7 @@ if [ ${#oauth_token} -lt 1 ]; then
   exit -1;
 fi
 
-kubectl create clusterrolebinding cluster-admin-binding \
+kubectl create   \
   --clusterrole cluster-admin --user "$(gcloud config get-value account)"
 
 # Deploy NGINX Ingress Controller
@@ -67,7 +72,7 @@ kubectl create secret generic hmac-token --from-literal=hmac="$hmac_token"
 kubectl create secret generic oauth-token --from-literal=oauth="$oauth_token"
 
 # Create GCP secrets
-env go run ./tools/cmd/secretspopulator/main.go --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig=${KUBECONFIG}
+go run ./tools/cmd/secretspopulator/main.go --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig=${KUBECONFIG}
 
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
