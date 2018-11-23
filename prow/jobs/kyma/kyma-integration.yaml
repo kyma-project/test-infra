@@ -1,7 +1,7 @@
 ---
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: prow/kyma/kyma-integration
+    - name: kyma-integration
       optional: true
       run_if_changed: "^(resources|installation)"
       skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -21,7 +21,7 @@ presubmits: # runs on PRs
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-    - name: prow/kyma/kyma-gke-integration
+    - name: kyma-gke-integration
       run_if_changed: "^(resources|installation)"
       trigger: "(?m)^/test kyma-gke-integration"
       rerun_command: "/test kyma-gke-integration"
@@ -44,7 +44,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
             securityContext:
               privileged: true
             command:
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: prow/kyma/kyma-integration-master
+    - name: kyma-integration-master
       branches:
         - master
       max_concurrency: 10
@@ -106,7 +106,7 @@ postsubmits:
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
-- name: prow/utilities/kyma/kyma-integration-cleaner
+- name: utilities-kyma-integration-cleaner
   cron: "0 7 * * 1-5" # “At 07:00 on every day-of-week from Monday through Friday.”
   labels:
     preset-sa-vm-kyma-integration: "true"

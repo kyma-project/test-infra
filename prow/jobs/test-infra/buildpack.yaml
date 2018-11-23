@@ -3,6 +3,8 @@ common_job_template: &common_job_template
   max_concurrency: 10
   decorate: true
   path_alias: github.com/kyma-project/test-infra
+  branches:
+    - master
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -10,79 +12,93 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository-test-infra: "true"
 
 bootstrap_job_template: &bootstrap_job_template
-  run_if_changed: "images/bootstrap/"
+  run_if_changed: "^prow/images/bootstrap/"
   <<: *common_job_template
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+
+bootstrap_helm_template: &bootstrap_helm_template
+  run_if_changed: "^prow/images/bootstrap-helm/"
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
 
 buildpack_golang_job_template: &buildpack_golang_job_template
-  run_if_changed: "images/buildpack-golang/"
+  run_if_changed: "^prow/images/buildpack-golang/"
   <<: *common_job_template
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
 
 buildpack_node_job_template: &buildpack_node_job_template
-  run_if_changed: "images/buildpack-node/"
+  run_if_changed: "^prow/images/buildpack-node/"
   <<: *common_job_template
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
 
 cleaner_job_template: &cleaner_job_template
-  run_if_changed: "images/cleaner/"
+  run_if_changed: "^prow/images/cleaner/"
   <<: *common_job_template
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        env:
-          - name: SOURCES_DIR
-            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: &bootstrap_name prow/test-infra/bootstrap
+    - name: &bootstrap_name test-infra-bootstrap
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
-    - name: &buildpack_golang_name prow/test-infra/buildpack-golang
+    - name: &bootstrap_helm_name test-infra-bootstrap-helm
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      <<: *bootstrap_helm_template
+    - name: &buildpack_golang_name test-infra-buildpack-golang
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
-    - name: &buildpack_node_name prow/test-infra/buildpack-node
+    - name: &buildpack_node_name test-infra-buildpack-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
-    - name: &cleaner_name prow/test-infra/cleaner
+    - name: &cleaner_name test-infra-cleaner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
@@ -91,25 +107,26 @@ presubmits: # runs on PRs
 postsubmits: # runs on master
   kyma-project/test-infra:
     - name: *bootstrap_name
-      branch: master
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
+    - name: *bootstrap_helm_name
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *bootstrap_helm_template
     - name: *buildpack_golang_name
-      branch: master
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
     - name: *buildpack_node_name
-      branch: master
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
     - name: *cleaner_name
-      branch: master
       labels:
         preset-build-release: "true"
         <<: *job_labels_template

@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/content"
+          - "/home/prow/go/src/github.com/kyma-project/console/instances"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -25,10 +25,10 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: console-content
+    - name: console-instances
       branches:
         - master
-      run_if_changed: "^content/"
+      run_if_changed: "^instances/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/console:
-    - name: console-content
+    - name: console-instances
       branches:
         - master
       <<: *job_template

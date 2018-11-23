@@ -11,11 +11,12 @@ In the context of the `kyma-project` organization, the main purpose of Prow is t
 ### Basic configuration
 
 Prow replies on this basic set of configurations:
+
 - Kubernetes cluster deployed in Google Kubernetes Engine (GKE)
 - GitHub bot account
 - GitHub tokens:
-    - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
-    - `oauth-token` which is a GitHub token with read and write access to the bot account
+  - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
+  - `oauth-token` which is a GitHub token with read and write access to the bot account
 - Service accounts and their Secret files for sensitive jobs that are encrypted using Key Management Service (KMS) and stored in Google Cloud Storage (GCS)
 - The `starter.yaml` file with a basic configuration of Prow components
 - Webhooks configured for the GitHub repository to enable sending Events from a GitHub repository to Prow.
@@ -41,8 +42,8 @@ Its structure looks as follows:
 
 ```
 
-  ├── cluster               # Files for Prow cluster provisioning           
-  ├── images                # Images for Prow jobs                                             
+  ├── cluster               # Files for Prow cluster provisioning
+  ├── images                # Images for Prow jobs
   ├── jobs                  # Files with job definitions
   ├── scripts               # Scripts used by the test jobs
   ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
@@ -64,29 +65,68 @@ The `jobs/{repository_name}` directories have subdirectories which represent eac
 
 For example:
 
-   ```
-   ...
-   prow
-   |- cluster
-   | |- starter.yaml
-   |- images
-   |- jobs
-   | |- kyma
-   | | |- components
-   | | | |- environments
-   | | | | |- environments.yaml
-   | | |- kyma.integration.yaml
-   |- scripts
-   |- config.yaml
-   |- plugins.yaml
-   ...
-   ```
+```
+...
+prow
+|- cluster
+| |- starter.yaml
+|- images
+|- jobs
+| |- kyma
+| | |- components
+| | | |- environments
+| | | | |- environments.yaml
+| | |- kyma.integration.yaml
+|- scripts
+|- config.yaml
+|- plugins.yaml
+...
+```
 
 ### Convention for naming jobs
 
-When you define jobs for Prow, both **name** and **context** of the job must follow one of these patterns:
+When you define jobs for Prow, **name** of the job must follow one of these patterns:
 
-- `prow/{repository_name}/{component_name}/{job_name}` for components
-- `prow/{repository_name}/{job_name}` for jobs not connected to a particular component
+- `{repository_name}-{component_name}-{job_name}` for components
+- `{repository_name}-{job_name}` for jobs not connected to a particular component
 
 In both cases, `{job_name}` must reflect the job's responsibility.
+
+### Upload configuration to the production Prow cluster
+
+Prow configuration is automatically uploaded to the production cluster from the `master` branch by the **Config Updater** plugin.
+
+### Configure branch protection
+
+Prow is responsible for setting branch protection on repositories. The configuration of branch protection is defined in `config.yaml`.
+
+After you create a new job, define it as required for pull requests. Add the job context to the `required_status_checks.contexts` list in the proper repository.
+
+See the sample configuration for the `test-infra` repository:
+
+```yaml
+branch-protection:
+  orgs:
+    kyma-project:
+      repos:
+        test-infra:
+          enforce_admins: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: true
+            required_approving_review_count: 1
+          protect: true
+          required_status_checks:
+            contexts:
+              - license/cla
+              - test-infra-validate-scripts
+              - test-infra-validate-configs
+              - test-infra-bootstrap
+              - test-infra-buildpack-golang
+              - test-infra-buildpack-node
+              - test-infra-cleaner
+              - test-infra-development/tools
+              - test-infra-test-jobs-yaml-definitions
+```
+
+The Branch Protector component updates the configuration every 30 minutes.

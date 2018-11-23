@@ -1,23 +1,28 @@
 #!/usr/bin/env bash
 
 set -e
-trap popd EXIT
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
 
-if [[ -z "${SOURCES_DIR}" ]]; then
-    echo "Missing SOURCES_DIR variable"
+usage () {
+    echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component"
     exit 1
+}
+
+readonly SOURCES_DIR=$1
+
+if [[ -z "${SOURCES_DIR}" ]]; then
+    usage
 fi
 
 function export_variables() {
     if [[ "${BUILD_TYPE}" == "pr" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
-        DOCKER_TAG="$(git describe --tags --always)"
-     elif [[ "${BUILD_TYPE}" == "release" ]]; then
+        DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
+    elif [[ "${BUILD_TYPE}" == "release" ]]; then
         echo "Calculating DOCKER_TAG variable for release..."
         branchPattern='^release-[0-9]+\.[0-9]+$'
         echo "${PULL_BASE_REF}" | grep -E -q "${branchPattern}"
@@ -52,13 +57,14 @@ function export_variables() {
             vPatch=$((vPatch + 1))
             newVersion="$vMajor.$vMinor.$vPatch"
         fi
-         echo "New version is $newVersion"
-         DOCKER_TAG=$newVersion
+        echo "New version is $newVersion"
+        DOCKER_TAG=$newVersion
 
     else
         echo "Not supported build type - ${BUILD_TYPE}"
         exit 1
     fi
+
     readonly DOCKER_TAG
     export DOCKER_TAG
 }
@@ -66,14 +72,12 @@ function export_variables() {
 init
 export_variables
 
-pushd "${SOURCES_DIR}"
-
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    make ci-pr
+    make -C "${SOURCES_DIR}" ci-pr
 elif [[ "${BUILD_TYPE}" == "master" ]]; then
-    make ci-master
+    make -C "${SOURCES_DIR}" ci-master
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    make ci-release
+    make -C "${SOURCES_DIR}" ci-release
 else
     echo "Not supported build type - ${BUILD_TYPE}"
     exit 1
