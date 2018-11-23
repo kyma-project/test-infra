@@ -21,7 +21,7 @@ spec:
     - host: status.build.kyma-project.io
       http:
         paths:
-          - path: /*
+          - path: /
             backend:
               serviceName: deck
               servicePort: 80
