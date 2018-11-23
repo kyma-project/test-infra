@@ -2,6 +2,9 @@ plugins:
   kyma-project:
     - cat
     - trigger
+  kyma-incubator:
+    - cat
+    - trigger
   kyma-project/test-infra:
     - config-updater
 
