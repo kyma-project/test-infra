@@ -2,22 +2,23 @@ package main
 
 import (
 	"bytes"
-	"cloud.google.com/go/storage"
 	"context"
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"io"
+
+	"cloud.google.com/go/storage"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/cloudkms/v1"
-	"io"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	typedv1 "k8s.io/client-go/kubernetes/typed/core/v1"
-	"k8s.io/client-go/tools/clientcmd"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 const fileNameExtension = "encrypted"
@@ -65,12 +66,14 @@ func main() {
 
 }
 
+// SecretsPopulator is responsible for populating secrets
 type SecretsPopulator struct {
 	secretsClient typedv1.SecretInterface
 	storageClient *storage.Client
 	kmsClient     *cloudkms.Service
 }
 
+// PopulateSecrets populates secrets
 func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, fileNamePrefixes []string, bucket, keyring, key, location string) error {
 	parentName := fmt.Sprintf("projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s",
 		project, location, keyring, key)
