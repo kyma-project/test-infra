@@ -116,7 +116,7 @@ branch-protection:
               - test-infra-buildpack-golang
               - test-infra-buildpack-node
               - test-infra-cleaner
-              - test-infra-development/tools
+              - test-infra-development-tools
               - test-infra-test-jobs-yaml-definitions
               - test-infra-validate-scripts
               - test-infra-validate-configs
