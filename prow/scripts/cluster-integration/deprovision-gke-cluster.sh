@@ -33,8 +33,15 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
+#TODO: DEBUG
 
-gcloud compute disks list --filter="name~'gke-gkeint-kyma-projec-pvc' AND labels.cluster:${CLUSTER_NAME}"
+gcloud compute instances list --filter="labels.job:gkeint AND labels.cluster:${CLUSTER_NAME}"
+for vm in $(gcloud compute instances list --filter="labels.job:gkeint AND labels.cluster:${CLUSTER_NAME}" --format="value(name)"); do
+    gcloud compute disks list --filter="name=$vm"
+done
+
+#gcloud compute disks list --filter="name~'gke-gkeint-kyma-projec-pvc' AND labels.cluster:${CLUSTER_NAME}"
+
 sleep 120
 
 gcloud container clusters delete "${CLUSTER_NAME}" --quiet
