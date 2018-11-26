@@ -165,6 +165,8 @@ fi
 CLEANUP_CLUSTER="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/provision-gke-cluster.sh
 
+echo TODO: Remove me!
+exit 1
 
 shout "Install Tiller"
 date
