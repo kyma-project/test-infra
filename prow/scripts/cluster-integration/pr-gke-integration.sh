@@ -19,7 +19,7 @@
 # - CLUSTER_VERSION (optional): GKE cluster version
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
-# - Compute Network Admin
+# - Compute Admin TODO: Update Docu!
 # - Kubernetes Engine Admin
 # - Kubernetes Engine Cluster Admin
 # - DNS Administrator

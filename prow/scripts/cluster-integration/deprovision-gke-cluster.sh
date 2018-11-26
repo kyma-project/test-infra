@@ -35,14 +35,19 @@ gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
 #TODO: DEBUG
 
-gcloud compute instances list --filter="labels.job:gkeint AND labels.cluster:${CLUSTER_NAME}"
-for vm in $(gcloud compute instances list --filter="labels.job:gkeint AND labels.cluster:${CLUSTER_NAME}" --format="value(name)"); do
-    gcloud compute disks list --filter="name=$vm"
-done
+#gcloud compute instances list --filter="labels.job:kyma-gke-integration AND labels.cluster:${CLUSTER_NAME}"
+VM_INSTANCES=$(gcloud compute instances list --filter="labels.job:gkeint AND labels.cluster:${CLUSTER_NAME}" --format="value(name)")
+echo "VM Instances: ${VM_INSTANCES}"
 
+trap cleanup_vm EXIT
+cleanup_vm() {
+    sleep 5
+    for vm in "${VM_INSTANCES}"; do
+        gcloud compute disks list --filter="name=$vm"
+    done
 #gcloud compute disks list --filter="name~'gke-gkeint-kyma-projec-pvc' AND labels.cluster:${CLUSTER_NAME}"
+}
 
-sleep 120
 
 gcloud container clusters delete "${CLUSTER_NAME}" --quiet
 
