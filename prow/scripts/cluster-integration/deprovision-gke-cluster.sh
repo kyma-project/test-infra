@@ -36,7 +36,7 @@ gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 #TODO: DEBUG
 
 #gcloud compute instances list --filter="labels.job:kyma-gke-integration AND labels.cluster:${CLUSTER_NAME}"
-VM_INSTANCES=$(gcloud compute instances list --filter="labels.job:gkeint AND labels.cluster:${CLUSTER_NAME}" --format="value(name)")
+VM_INSTANCES=$(gcloud compute instances list --filter="labels.job:kyma-gke-integration AND labels.cluster:${CLUSTER_NAME}" --format="value(name)")
 echo "VM Instances: ${VM_INSTANCES}"
 
 trap cleanup_vm EXIT
