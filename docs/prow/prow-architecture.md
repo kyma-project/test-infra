@@ -48,12 +48,12 @@ Different build jobs are specified in the `jobs` folder per repository. Each of 
 
 > **NOTE:** A job cannot access the K8s API.
 
-## Dynamic Provisioning using GKE or Google Compute Engine (GCE)
+## Dynamic provisioning using GKE or Google Compute Engine (GCE)
 The integration job performs integration tests against real clusters. To achieve this, it creates and deletes either the managed Kubernetes clusters using GKE or Virtual Machines (VM) with Minikube installed on them. The integration job uses the Secret configured for a dedicated Google service account.
 
-## Publish Images to Google Container Registry (GCR)
+## Publish images to Google Container Registry (GCR)
 Every job can have a Secret configured to upload Docker images to GCR. That Secret belongs to a dedicated Google service account.
 Prow in Kyma uses the Docker-in-Docker (dind) approach to build a Docker image as part of a job.
 
-## Build Logs on GCS
+## Build logs on GCS
 Build logs are archived by Plank on GCS in a dedicated bucket. The bucket is configured to have a Secret with a dedicated Google service account for GCS.
