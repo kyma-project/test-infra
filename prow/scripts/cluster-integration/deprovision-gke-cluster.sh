@@ -33,23 +33,5 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-#TODO: DEBUG
-
-#gcloud compute instances list --filter="labels.job:kyma-gke-integration AND labels.cluster:${CLUSTER_NAME}"
-VM_INSTANCES=$(gcloud compute instances list --filter="labels.job:kyma-gke-integration AND labels.cluster:${CLUSTER_NAME}" --format="value(name)")
-echo "VM Instances: ${VM_INSTANCES}"
-
-trap cleanup_vm EXIT
-cleanup_vm() {
-    echo "Deleting disks"
-    sleep 5
-    for vm in ${VM_INSTANCES}; do
-        echo "Deleting disk: ${vm}"
-        gcloud compute disks list --filter="name=${vm}"
-    done
-#gcloud compute disks list --filter="name~'gke-gkeint-kyma-projec-pvc' AND labels.cluster:${CLUSTER_NAME}"
-}
-
-
 gcloud container clusters delete "${CLUSTER_NAME}" --quiet
 
