@@ -5,7 +5,7 @@
 #Expected vars:
 # - CLOUDSDK_CORE_PROJECT: name of a GCP project containing the Zone with the record.
 # - CLOUDSDK_DNS_ZONE_NAME: Name of the existing DNS zone in the project (NOT it's DNS name!)
-# - DNS_SUBDOMAIN: a subdomain in the Zone.
+# - DNS_FULL_NAME: Full DNS domain.
 # - IP_ADDRESS: v4 IP Address of the DNS record.
 #
 #Permissions: In order to run this script you need to use a service account with "DNS Administrator" role
@@ -13,7 +13,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN IP_ADDRESS; do
+for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_FULL_NAME IP_ADDRESS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -23,9 +23,6 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
-
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
 gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 

@@ -5,8 +5,7 @@
 #Expected vars:
 # - CLOUDSDK_CORE_PROJECT: name of a GCP project where new DNS record is created.
 # - CLOUDSDK_DNS_ZONE_NAME: Name of an existing DNS zone in the project (NOT its DNS name!)
-# - DNS_DOMAIN: Name of DNS domain controlled by DNS zone CLOUDSDK_DNS_ZONE_NAME
-# - DNS_SUBDOMAIN: a subdomain to create entry for. Example: If DNS_DOMAIN referrs to "cool.dot.com." domain, use DNS_SUBDOMAIN="how" to create an entry: "how.cool.dot.com."
+# - DNS_FULL_NAME: Full DNS domain 
 # - IP_ADDRESS: v4 IP Address for the DNS record.
 #
 #Permissions: In order to run this script you need to use a service account with "DNS Administrator" role
@@ -15,7 +14,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_SUBDOMAIN DNS_DOMAIN IP_ADDRESS; do
+for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_FULL_NAME IP_ADDRESS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -33,8 +32,6 @@ cleanup() {
         gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
     fi
 }
-
-DNS_FULL_NAME="${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
 CLEANUP_DNS_TRANSACTION=true
 
