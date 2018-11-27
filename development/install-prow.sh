@@ -25,7 +25,7 @@ if [ -z "${LOCATION}" ]; then
 fi
 
 ## Create an HMAC token
-hmac_token="$(openssl rand -hex 20)"
+hmac_token="$(openssl rand -hex 32)"
 echo "$hmac_token" > hmac_token.txt
 echo "Token hmac stored in hmac_token.txt file"
 
