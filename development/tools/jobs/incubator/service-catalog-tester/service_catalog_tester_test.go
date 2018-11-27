@@ -10,7 +10,7 @@ import (
 
 func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/service-catalog-tester/service-catalog-tester.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/service-catalog-tester/service-catalog-tester.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -39,7 +39,7 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 
 func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/service-catalog-tester/service-catalog-tester.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/service-catalog-tester/service-catalog-tester.yaml")
 	// THEN
 	require.NoError(t, err)
 
