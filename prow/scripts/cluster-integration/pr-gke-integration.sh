@@ -208,9 +208,5 @@ shout "Test Kyma"
 date
 #"${KYMA_SCRIPTS_DIR}"/testing.sh
 
-kubectl label installation/kyma-installation action=uninstall
-sleep 3
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/uninstall-kyma.sh
-
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
