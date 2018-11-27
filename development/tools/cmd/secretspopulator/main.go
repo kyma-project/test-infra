@@ -6,10 +6,11 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"github.com/ghodss/yaml"
 	"io"
 	"io/ioutil"
 	"os"
+
+	"github.com/ghodss/yaml"
 
 	"cloud.google.com/go/storage"
 	"github.com/pkg/errors"
@@ -141,25 +142,30 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 	return nil
 }
 
+// RequiredSecretsData represents secrets required by Prow cluster
 type RequiredSecretsData struct {
 	ServiceAccounts []SASecret
 	Generics        []GenericSecret
 }
 
+// SASecret represents Service Account Secret
 type SASecret struct {
 	Prefix string
 }
 
+// GenericSecret represents other than Service Account secrets
 type GenericSecret struct {
 	Prefix string
 	Key    string
 }
 
+// SecretModel defines secret to be stored in k8s
 type SecretModel struct {
 	Prefix string
 	Key    string
 }
 
+// SecretsFromData converts input data to SecretModels
 func SecretsFromData(data RequiredSecretsData) []SecretModel {
 	out := make([]SecretModel, 0)
 	for _, sa := range data.ServiceAccounts {

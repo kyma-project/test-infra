@@ -3,7 +3,7 @@
 ## Overview
 
 This command reads secrets stored in Gcloud bucket, decrypt it with KMS key, and stores them as a k8s Secrets in a cluster.
-By default, k8s secret data key is set to "service-account.json". It can be overriden, by specifying object metadata with key `override-secret-data-key`.
+Which and how secrets have to be stored is defined by input parameter `secrets-def-file`.
 
 ## Usage
 
@@ -41,4 +41,4 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | Path to application credentials.                              
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | Path to the application credentials. Requires KMS and Storage roles.                            

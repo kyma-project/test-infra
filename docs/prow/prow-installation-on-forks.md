@@ -90,7 +90,9 @@ Follow these steps to install Prow:
 - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
 - **KEYRING_NAME** is the KMS key ring.
 - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
-- **KUBECONFIG**
+- **KUBECONFIG** is a path to kubeconfig.
+- **PROJECT** is a Gcloud project name.
+- **$GOOGLE_APPLICATION_CREDENTIALS** is a path to service account file. This service account requires KMS and Storage roles.  
 The account files are encrypted with the **ENCRYPTION_KEY_NAME** key from **KEYRING_NAME** and are stored in **BUCKET_NAME**.
 
 2. Go to the `development` folder and run the following script to start the installation process:
