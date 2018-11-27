@@ -72,7 +72,7 @@ kubectl create secret generic hmac-token --from-literal=hmac="$hmac_token"
 kubectl create secret generic oauth-token --from-literal=oauth="$oauth_token"
 
 # Create GCP secrets
-go run ./tools/cmd/secretspopulator/main.go --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}"
+go run "${CURRENT_DIR}/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_CLUSTER_DIR}/required-secrets.yaml"
 
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
