@@ -16,7 +16,6 @@ spec:
     - secretName: prow-tls
       hosts:
         - status.build.kyma-project.io
-        - gcsweb.build.kyma-project.io
   rules:
     - host: status.build.kyma-project.io
       http:
@@ -29,10 +28,3 @@ spec:
             backend:
               serviceName: hook
               servicePort: 8888
-    - host: gcsweb.build.kyma-project.io
-      http:
-        paths:
-          - path: /*
-            backend:
-              serviceName: gcsweb
-              servicePort: 80
