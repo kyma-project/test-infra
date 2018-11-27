@@ -41,9 +41,11 @@ echo "VM Instances: ${VM_INSTANCES}"
 
 trap cleanup_vm EXIT
 cleanup_vm() {
+    echo "Deleting disks"
     sleep 5
-		for vm in ${VM_INSTANCES}; do
-        gcloud compute disks list --filter="name=$vm"
+    for vm in ${VM_INSTANCES}; do
+        echo "Deleting disk: ${vm}"
+        gcloud compute disks list --filter="name=${vm}"
     done
 #gcloud compute disks list --filter="name~'gke-gkeint-kyma-projec-pvc' AND labels.cluster:${CLUSTER_NAME}"
 }
