@@ -124,7 +124,7 @@ The `Makefile` has to define these three targets:
 See an example of a `Makefile` for the `binding-usage-controller` component:
 
 ```Makefile
-APP_NAME = "binding-usage-controller"
+APP_NAME = binding-usage-controller
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
 TAG = $(DOCKER_TAG)
 binary=$(APP_NAME)
