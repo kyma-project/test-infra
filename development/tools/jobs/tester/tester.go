@@ -24,6 +24,8 @@ const (
 	PresetDockerPushRepo Preset = "preset-docker-push-repository"
 	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
 	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
+	// PresetDockerPushRepoIncubator means Decker repository incubator images
+	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
