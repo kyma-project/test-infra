@@ -17,10 +17,10 @@
 set +e
 echo "Removing remaining PVC disks"
 
-for DISK in ${DISKS}
+for NAMEPATTERN in ${DISKS}
 do
-    DISK_NAME=$(gcloud compute disks list --filter="name~${DISK}" --format="value(name)")
+    DISK_NAME=$(gcloud compute disks list --filter="name~${NAMEPATTERN}" --format="value(name)")
     echo "Removing disk: ${DISK_NAME}"
-    gcloud compute disks delete ${DISK_NAME} --quiet
+    gcloud compute disks delete "${DISK_NAME}" --quiet
 done
 

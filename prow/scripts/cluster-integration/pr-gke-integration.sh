@@ -56,8 +56,9 @@ cleanup() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        #save disk names to remove later
-        export DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        #save disk names while cluster still exist to remove them later
+        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        export DISKS
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
