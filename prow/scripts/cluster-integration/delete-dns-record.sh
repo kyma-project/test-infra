@@ -5,7 +5,7 @@
 #Expected vars:
 # - CLOUDSDK_CORE_PROJECT: name of a GCP project containing the Zone with the record.
 # - CLOUDSDK_DNS_ZONE_NAME: Name of the existing DNS zone in the project (NOT it's DNS name!)
-# - DNS_FULL_NAME: Full DNS domain.
+# - DNS_FULL_NAME: DNS name
 # - IP_ADDRESS: v4 IP Address of the DNS record.
 #
 #Permissions: In order to run this script you need to use a service account with "DNS Administrator" role
