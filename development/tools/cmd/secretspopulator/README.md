@@ -11,12 +11,12 @@ To run it, use:
 
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \ 
-    -bucket={bucket_name} 
-    -keyring={keyring} 
-    -key={key} 
-    -location={kms location} 
-    -kubeconfig={path to kubeconfig}
-    -project={gcloud project name}
+    -bucket={bucket_name} \
+    -keyring={keyring} \
+    -key={key} \
+    -location={kms location} \
+    -kubeconfig={path to kubeconfig} \
+    -project={gcloud project name} \
     -secrets-def-file={path to file with definition of secrets to populate}
 ```
 

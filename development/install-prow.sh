@@ -4,6 +4,7 @@ set -o errexit
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/../prow/cluster" && pwd )"
+readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 
 if [ -z "$BUCKET_NAME" ]; then
       echo "\$BUCKET_NAME is empty"
@@ -24,10 +25,6 @@ if [ -z "${LOCATION}" ]; then
     LOCATION="global"
 fi
 
-if [ -z "$KUBECONFIG" ]; then
-      echo "\$KUBECONFIG is empty"
-      exit 1
-fi
 
 # requried by secretspopulator
 if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then

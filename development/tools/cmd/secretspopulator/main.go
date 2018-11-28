@@ -10,6 +10,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/ghodss/yaml"
 
 	"cloud.google.com/go/storage"
@@ -44,6 +46,8 @@ func main() {
 	panicOnMissingArg("project", argProject)
 	panicOnMissingArg("secrets-def-file", argSecretsDefFile)
 
+	logger := logrus.StandardLogger()
+
 	k8sConfig, err := clientcmd.BuildConfigFromFlags("", *argKubeconfigPath)
 	panicOnError(err)
 	k8sCli, err := kubernetes.NewForConfig(k8sConfig)
@@ -62,8 +66,9 @@ func main() {
 
 	p := SecretsPopulator{
 		secretsClient: secretInterface,
-		storageClient: storageClient,
-		kmsClient:     kmsService,
+		decryptor:     &decryptorWrapper{wrapped: kmsService},
+		storageReader: &storageReaderWrapper{wrapped: storageClient},
+		logger:        logger,
 	}
 
 	secrets, err := readSecretDefFile(*argSecretsDefFile)
@@ -76,8 +81,43 @@ func main() {
 // SecretsPopulator is responsible for populating secrets
 type SecretsPopulator struct {
 	secretsClient typedv1.SecretInterface
-	storageClient *storage.Client
-	kmsClient     *cloudkms.Service
+	storageReader StorageReader
+	decryptor     Decryptor
+	logger        logrus.FieldLogger
+}
+
+//go:generate mockery -name=Decryptor -output=automock -outpkg=automock -case=underscore
+
+// Decryptor decrypts data
+type Decryptor interface {
+	Decrypt(key string, bytes []byte) (*cloudkms.DecryptResponse, error)
+}
+
+type decryptorWrapper struct {
+	wrapped *cloudkms.Service
+}
+
+func (w *decryptorWrapper) Decrypt(decryptKey string, bytes []byte) (*cloudkms.DecryptResponse, error) {
+	decryptCall := w.wrapped.Projects.Locations.KeyRings.CryptoKeys.Decrypt(decryptKey, &cloudkms.DecryptRequest{
+		Ciphertext: base64.StdEncoding.EncodeToString(bytes),
+	})
+	return decryptCall.Do()
+}
+
+//go:generate mockery -name=StorageReader -output=automock -outpkg=automock -case=underscore
+
+// StorageReader provide interface for reading from object storage
+type StorageReader interface {
+	Read(ctx context.Context, bucket, name string) (io.Reader, error)
+}
+
+type storageReaderWrapper struct {
+	wrapped *storage.Client
+}
+
+func (w *storageReaderWrapper) Read(ctx context.Context, bucket, name string) (io.Reader, error) {
+	objHandle := w.wrapped.Bucket(bucket).Object(name)
+	return objHandle.NewReader(ctx)
 }
 
 // PopulateSecrets populates secrets
@@ -87,9 +127,8 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 
 	for _, sec := range secrets {
 		name := fmt.Sprintf("%s.%s", sec.Prefix, fileNameExtension)
-		objHandle := s.storageClient.Bucket(bucket).Object(name)
-		fmt.Printf("Reading object [%s] from bucket [%s]\n", name, bucket)
-		r, err := objHandle.NewReader(ctx)
+		s.logger.Infof("Reading object [%s] from bucket [%s]", name, bucket)
+		r, err := s.storageReader.Read(ctx, bucket, name)
 		if err != nil {
 			return errors.Wrapf(err, "while reading object [%s] from bucket [%s]", name, bucket)
 		}
@@ -99,11 +138,7 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 			return errors.Wrapf(err, "while coping file [%s] to buffer", name)
 		}
 
-		decryptCall := s.kmsClient.Projects.Locations.KeyRings.CryptoKeys.Decrypt(parentName, &cloudkms.DecryptRequest{
-			Ciphertext: base64.StdEncoding.EncodeToString(buf.Bytes()),
-		})
-
-		resp, err := decryptCall.Do()
+		resp, err := s.decryptor.Decrypt(parentName, buf.Bytes())
 		if err != nil {
 			return errors.Wrap(err, "while making decrypt call")
 		}
@@ -116,14 +151,14 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 		curr, err := s.secretsClient.Get(sec.Prefix, metav1.GetOptions{})
 		switch {
 		case err == nil:
-			fmt.Printf("Updating k8s secret [%s]\n", curr.Name)
+			s.logger.Infof("Updating k8s secret [%s]", curr.Name)
 			curr.Data[sec.Key] = decoded
 			if _, err = s.secretsClient.Update(curr); err != nil {
 				return errors.Wrap(err, "while updating secret")
 			}
 
 		case k8serrors.IsNotFound(err):
-			fmt.Printf("Creating k8s secret [%s] with key [%s] \n", sec.Prefix, sec.Key)
+			s.logger.Infof("Creating k8s secret [%s] with key [%s]", sec.Prefix, sec.Key)
 			if _, err := s.secretsClient.Create(&corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: sec.Prefix,
@@ -197,11 +232,11 @@ func readSecretDefFile(fname string) ([]SecretModel, error) {
 
 func panicOnError(err error) {
 	if err != nil {
-		panic(err)
+		logrus.Fatal(err)
 	}
 }
 func panicOnMissingArg(argName string, val *string) {
 	if val == nil || *val == "" {
-		panic(fmt.Sprintf("missing argument [%s]", argName))
+		logrus.Fatal("missing argument [%s]", argName)
 	}
 }
