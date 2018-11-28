@@ -1,0 +1,28 @@
+presubmits:
+  suleymanakbas91/kyma:
+    - name: kyma-components-istio-kyma-patch
+      run_if_changed: "^components/istio-kyma-patch/"
+      branches:
+        - master
+      skip_report: true
+      decorate: true
+      path_alias: github.com/suleymanakbas91/kyma
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
+      labels:
+        preset-dind-enabled: "true"
+        preset-sa-gcr-push: "true"
+        preset-docker-push-repository: "true"
+        preset-build-pr: "true"
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+            args:
+              - "/home/prow/go/src/github.com/suleymanakbas91/kyma/components/istio-kyma-patch"
