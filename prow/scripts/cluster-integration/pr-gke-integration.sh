@@ -40,10 +40,10 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-trap cleanup EXIT
+#trap cleanup EXIT
 
 #!Put cleanup code in this function!
-cleanup() {
+cleanup11() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
