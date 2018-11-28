@@ -56,7 +56,7 @@ cleanup() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        #save disk names while cluster still exist to remove them later
+        #save disk names while the cluster still exists to remove them later
         DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
         export DISKS
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
