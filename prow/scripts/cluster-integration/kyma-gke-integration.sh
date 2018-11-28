@@ -7,7 +7,7 @@
 #
 # - REPO_OWNER - Set up by prow, repository owner/organization
 # - REPO_NAME - Set up by prow, repository name
-# - BUILD_TYPE - Set up by prow, pr/master/release
+# - BUILD_TYPE - Set up by preset-labels in ProwJobs, pr/master/release
 # - DOCKER_PUSH_REPOSITORY - Docker repository hostname
 # - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
@@ -105,6 +105,10 @@ export REPO_NAME
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
+    if [ -z "${!PULL_NUMBER}" ] ; then
+        echo "ERROR: PR job detected but no PULL_NUMBER found!"
+        exit 1
+    fi
     IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
     CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
@@ -122,7 +126,7 @@ export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
 export CLUSTER_NAME
-
+export KYMA_INSTALLER_IMAGE
 export IP_ADDRESS="will_be_generated"
 
 #For provision-gke-cluster.sh
@@ -149,7 +153,6 @@ init
 
 shout "Build Kyma-Installer Docker image"
 date
-export KYMA_INSTALLER_IMAGE
 CLEANUP_DOCKER_IMAGE="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 
