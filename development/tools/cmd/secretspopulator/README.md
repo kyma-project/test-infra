@@ -2,13 +2,12 @@
 
 ## Overview
 
-This command reads secrets stored in Gcloud bucket, decrypt it with KMS key, and stores them as a k8s Secrets in a cluster.
-Which and how secrets have to be stored is defined by input parameter `secrets-def-file`.
+This command reads secrets stored in a Gcloud bucket, decrypt it with KMS key, and stores them as a k8s Secrets in a cluster.
+Secrets to populate are defined by input parameter `secrets-def-file`.
 
 ## Usage
 
 To run it, use:
-
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \ 
     -bucket={bucket_name} \
@@ -19,7 +18,6 @@ env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go
     -project={gcloud project name} \
     -secrets-def-file={path to file with definition of secrets to populate}
 ```
-
 
 ### Flags
 

@@ -38,31 +38,31 @@ func main() {
 	argProject := flag.String("project", "", "")
 	argSecretsDefFile := flag.String("secrets-def-file", "", "")
 	flag.Parse()
-	panicOnMissingArg("bucket", argBucket)
-	panicOnMissingArg("keyring", argKeyring)
-	panicOnMissingArg("key", argKey)
-	panicOnMissingArg("location", argLocation)
-	panicOnMissingArg("kubeconfig", argKubeconfigPath)
-	panicOnMissingArg("project", argProject)
-	panicOnMissingArg("secrets-def-file", argSecretsDefFile)
+	fatalOnMissingArg("bucket", argBucket)
+	fatalOnMissingArg("keyring", argKeyring)
+	fatalOnMissingArg("key", argKey)
+	fatalOnMissingArg("location", argLocation)
+	fatalOnMissingArg("kubeconfig", argKubeconfigPath)
+	fatalOnMissingArg("project", argProject)
+	fatalOnMissingArg("secrets-def-file", argSecretsDefFile)
 
 	logger := logrus.StandardLogger()
 
 	k8sConfig, err := clientcmd.BuildConfigFromFlags("", *argKubeconfigPath)
-	panicOnError(err)
+	fatalOnError(err)
 	k8sCli, err := kubernetes.NewForConfig(k8sConfig)
-	panicOnError(err)
+	fatalOnError(err)
 
 	secretInterface := k8sCli.CoreV1().Secrets(metav1.NamespaceDefault)
 
 	ctx := context.Background()
 	storageClient, err := storage.NewClient(ctx)
-	panicOnError(err)
+	fatalOnError(err)
 	client, err := google.DefaultClient(ctx, cloudkms.CloudPlatformScope)
-	panicOnError(err)
+	fatalOnError(err)
 
 	kmsService, err := cloudkms.New(client)
-	panicOnError(err)
+	fatalOnError(err)
 
 	p := SecretsPopulator{
 		secretsClient: secretInterface,
@@ -72,9 +72,9 @@ func main() {
 	}
 
 	secrets, err := readSecretDefFile(*argSecretsDefFile)
-	panicOnError(err)
+	fatalOnError(err)
 
-	panicOnError(p.PopulateSecrets(ctx, *argProject, secrets, *argBucket, *argKeyring, *argKey, *argLocation))
+	fatalOnError(p.PopulateSecrets(ctx, *argProject, secrets, *argBucket, *argKeyring, *argKey, *argLocation))
 
 }
 
@@ -230,12 +230,12 @@ func readSecretDefFile(fname string) ([]SecretModel, error) {
 	return SecretsFromData(data), nil
 }
 
-func panicOnError(err error) {
+func fatalOnError(err error) {
 	if err != nil {
 		logrus.Fatal(err)
 	}
 }
-func panicOnMissingArg(argName string, val *string) {
+func fatalOnMissingArg(argName string, val *string) {
 	if val == nil || *val == "" {
 		logrus.Fatal("missing argument [%s]", argName)
 	}
