@@ -40,10 +40,10 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-#trap cleanup EXIT
+trap cleanup EXIT
 
 #!Put cleanup code in this function!
-cleanup11() {
+cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
@@ -58,10 +58,13 @@ cleanup11() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
+
+        #Delete cluster
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-        sleep 5
+
+        #Delete orphaned disks
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-disks.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -203,9 +206,9 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
 
-shout "Test Kyma"
-date
-#"${KYMA_SCRIPTS_DIR}"/testing.sh
+#shout "Test Kyma"
+#date
+#TODO: "${KYMA_SCRIPTS_DIR}"/testing.sh
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

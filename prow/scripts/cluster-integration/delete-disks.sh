@@ -13,7 +13,7 @@
 #Permissions: In order to run this script you need to use a service account with "Compute Admin" role
 
 set +e
-echo "Removing remaining PVC disks"
+shout "Removing remaining PVC disks"
 DISKS_NAMES=$(gcloud compute disks list --filter="labels.cluster:${CLUSTER_NAME}" --format="value(name)")
 echo "TODO: DEBUG: DISKS: $DISKS_NAMES"
 echo
