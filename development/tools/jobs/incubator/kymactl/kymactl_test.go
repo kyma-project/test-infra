@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
+func TestKymactlJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/kymactl/kymactl.yaml")
 	// THEN
@@ -37,7 +37,7 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/kymactl"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
+func TestKymactlJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/kymactl/kymactl.yaml")
 	// THEN
