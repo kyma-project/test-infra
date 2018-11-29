@@ -65,6 +65,8 @@ cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         #Delete orphaned disks
+        shout "Delete orphaned PVC disks..."
+        date
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-disks.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -110,7 +112,11 @@ export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-${BUILD_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
-export CLUSTER_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+#Pseudo-random name suffix, 15 characters
+CLUSTER_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c15)
+#Cluster name must be less than 40 characters!
+CLUSTER_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${CLUSTER_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+export CLUSTER_NAME
 
 export IP_ADDRESS="will_be_generated"
 
