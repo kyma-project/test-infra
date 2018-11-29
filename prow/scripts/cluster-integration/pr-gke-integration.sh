@@ -198,8 +198,6 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
 
-sleep 9h
-
 shout "Test Kyma"
 date
 "${KYMA_SCRIPTS_DIR}"/testing.sh
