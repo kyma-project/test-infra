@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Remove resources from regular clusters, with 0 instances"
 while [[ ORPHANS=$(gcloud compute instance-groups list --filter="INSTANCES=0" | tail -n +2 | wc -l) -gt 0 ]]; do
 	echo "---> There are ${ORPHANS} to delete"
 
@@ -26,3 +26,6 @@ while [[ ORPHANS=$(gcloud compute instance-groups list --filter="INSTANCES=0" | 
 	echo "---> Deleting instance-groups"
 	gcloud compute instance-groups unmanaged delete "k8s-ig--${RESOURCE_ID}" --zone "${RESOURCE_ZONE}" -q
 done
+
+echo "Remove resources orphaned created by istio"
+
