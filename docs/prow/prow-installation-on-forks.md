@@ -64,8 +64,8 @@ For the purpose of the installation, you must have a set of service accounts and
 
 2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
-- **sa-gke-kyma-integration** with roles that allow the account to create Kubernetes clusters:
-  - Compute Network Admin (`roles/compute.networkAdmin`)
+- **sa-gke-kyma-integration** with roles that allow the account to manage Kubernetes clusters and their resources:
+  - Compute Admin (`roles/compute.admin`)
   - Kubernetes Engine Admin (`roles/container.admin`)
   - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
   - DNS Administrator (`roles/dns.admin`)
