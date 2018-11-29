@@ -99,6 +99,14 @@ presets:
     env:
       - name: BUILD_TYPE
         value: release
+  - labels:
+      preset-bot-npm-token: "true"
+    env:
+      - name: BOT_NPM_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-npm-token
+            key: token
 
 branch-protection:
   orgs:

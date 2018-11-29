@@ -4,6 +4,7 @@ set -o errexit
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/../prow/cluster" && pwd )"
+readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
 
 if [ -z "$BUCKET_NAME" ]; then
       echo "\$BUCKET_NAME is empty"
@@ -22,6 +23,18 @@ fi
 
 if [ -z "${LOCATION}" ]; then
     LOCATION="global"
+fi
+
+
+# requried by secretspopulator
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+      echo "\$GOOGLE_APPLICATION_CREDENTIALS is empty"
+      exit 1
+fi
+
+if [ -z "$PROJECT" ]; then
+      echo "\$PROJECT is empty"
+      exit 1
 fi
 
 ## Create an HMAC token
@@ -56,7 +69,7 @@ kubectl create secret generic hmac-token --from-literal=hmac="$hmac_token"
 kubectl create secret generic oauth-token --from-literal=oauth="$oauth_token"
 
 # Create GCP secrets
-bash "${CURRENT_DIR}/create-gcp-secrets.sh" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}"
+go run "${CURRENT_DIR}/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_CLUSTER_DIR}/required-secrets.yaml"
 
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
