@@ -59,6 +59,8 @@ cleanup() {
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
 
+        DISKS_NAMES=$(gcloud compute disks list --filter="labels.cluster:${CLUSTER_NAME}" --format="value(name)")
+        export DISK_NAMES
         #Delete cluster
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
         TMP_STATUS=$?
@@ -109,14 +111,18 @@ cleanup() {
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-${BUILD_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
+
 #Pseudo-random name suffix, 15 characters
-CLUSTER_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c15)
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c15)
+COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+export IP_ADDRESS_NAME="${COMMON_NAME}"
+export DNS_SUBDOMAIN="${COMMON_NAME}"
 #Cluster name must be less than 40 characters!
-CLUSTER_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${CLUSTER_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-export CLUSTER_NAME
+export CLUSTER_NAME="${COMMON_NAME}"
 
 export IP_ADDRESS="will_be_generated"
 
