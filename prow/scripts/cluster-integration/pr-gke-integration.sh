@@ -115,7 +115,6 @@ cleanup() {
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 DNS_SUBDOMAIN="${COMMON_NAME}"
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
@@ -164,6 +163,7 @@ echo "IP Address: ${IP_ADDRESS} created"
 
 shout "Create DNS Record"
 date
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 export DNS_FULL_NAME
 CLEANUP_DNS_RECORD="true"
