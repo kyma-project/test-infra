@@ -56,9 +56,6 @@ cleanup11() {
     set +e
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        #save disk names while the cluster still exists to remove them later
-        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        export DISKS
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
@@ -109,7 +106,8 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-${BUILD_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
-export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
+export CLUSTER_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
 
 export IP_ADDRESS="will_be_generated"
 
@@ -207,7 +205,7 @@ kubectl label installation/kyma-installation action=install
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+#"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
