@@ -16,15 +16,15 @@ The structure of the folder looks as follows:
   ├── 03-tls-ing_ingress.yaml           # The definition of the encrypted Ingress that accesses the Prow cluster
   ├── 04-branchprotector_cronjob.yaml   # The definition of the Branch Protector CronJob that configures protection on branches
   ├── starter.yaml                      # The basic definition of Prow, including ConfigMaps, Deployments, and CustomResourceDefinitions
-  └── required-secrets.yaml             # Define list of required secrets that needs to be stored in a Storage Bucket
+  └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket
 ```
 
 #### Required secrets structure
-The `required-secrets.yaml` file is read by `secretspopulator` and consists of required secrets stored in a Gcloud storage bucket.
-You can define 2 kind of secrets:
-- service accounts
-- generic secrets
+The `required-secrets.yaml` file is read by `secretspopulator` and consists of required Secrets stored in a Gcloud storage bucket.
+You can define two kinds of Secrets:
+- Service accounts
+- Generic Secrets
 
-`Secretspopulator` looks for object `{prefix}.encrypted` in a bucket and creates Kubernetes secret with name `{prefix}`.
-For service accounts, secret key is `service-account.json`, for generic secret you have to provide key.
-For more details about structure, see type `RequiredSecretsData` in `development/tools/cmd/secretspopulator/secretspopulator`
+`Secretspopulator` looks for a `{prefix}.encrypted` object in a bucket and creates a Kubernetes Secret with a `{prefix}` name.
+For service accounts, the Secret key is `service-account.json`. For generic Secrets, you must provide a key.
+For more details about the syntax of this file, see the `RequiredSecretsData` type in `development/tools/cmd/secretspopulator/secretspopulator`.

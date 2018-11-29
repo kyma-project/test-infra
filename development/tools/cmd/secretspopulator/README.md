@@ -2,8 +2,8 @@
 
 ## Overview
 
-This command reads secrets stored in a Gcloud bucket, decrypt it with KMS key, and stores them as a k8s Secrets in a cluster.
-Secrets to populate are defined by input parameter `secrets-def-file`.
+This command reads Secrets stored in a Gcloud bucket, decrypts them with a Key Management Service(KMS) key, and saves them as Kubernetes Secrets in a cluster.
+You define Secrets to populate in the `secrets-def-file` input parameter.
 
 ## Usage
 
@@ -25,12 +25,12 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--bucket**              |   Yes    | Gcloud bucket name where secrets are stored                                
-| **--keyring**             |   Yes    | KMS keyring            
-| **--key**                 |   Yes    |  KMS key
-| **--location**            |   Yes    |  KMS location            
-| **--kubeconfig**          |   Yes    | Path to kubeconfig file that points to Prow cluster    
-| **--secrets-def-file**    |   Yes    | Path to yaml file defining secrets to populate. See `RequiredSecretsData` type to learn format of the file.   
+| **--bucket**              |   Yes    | The name of the Gcloud bucket name where Secrets are stored                                
+| **--keyring**             |   Yes    | KMS key ring            
+| **--key**                 |   Yes    | KMS key
+| **--location**            |   Yes    | KMS location            
+| **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file that points to the Prow cluster    
+| **--secrets-def-file**    |   Yes    | The path to the `yaml` file that define Secrets to populate. See the `RequiredSecretsData` type to learn about the syntax of the file.   
 | **--project**             |   Yes    | Gcloud project name   
 
 ### Environment variables
@@ -39,4 +39,4 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | Path to the application credentials. Requires KMS and Storage roles.                            
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the application credentials. It requires KMS and storage roles.                            
