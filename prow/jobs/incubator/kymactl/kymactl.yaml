@@ -26,7 +26,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/kymactl:
     - name: kymactl
-      run_if_changed: "^kymactl/"
+      always_run: true
       branches:
         - master
       <<: *job_template
