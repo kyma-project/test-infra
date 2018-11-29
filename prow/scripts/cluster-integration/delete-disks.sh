@@ -13,11 +13,12 @@
 #Permissions: In order to run this script you need to use a service account with "Compute Admin" role
 
 set +e
-echo "TODO: DEBUG: DISKS: $DISKS_NAMES"
+echo "TODO: DEBUG: DISKS: $DISKS"
 echo
 
-for DISK_NAME in ${DISKS_NAMES}
+for NAMEPATTERN in ${DISKS}
 do
+    DISK_NAME=$(gcloud compute disks list --filter="name~${NAMEPATTERN}" --format="value(name)")
     echo "Removing disk: ${DISK_NAME}"
     gcloud compute disks delete "${DISK_NAME}" --quiet
 done

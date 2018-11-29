@@ -59,8 +59,10 @@ cleanup() {
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
 
-        DISKS_NAMES=$(gcloud compute disks list --filter="labels.cluster:${CLUSTER_NAME}" --format="value(name)")
-        export DISK_NAMES
+        #save disk names while the cluster still exists to remove them later
+        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        export DISKS
+
         #Delete cluster
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
         TMP_STATUS=$?
