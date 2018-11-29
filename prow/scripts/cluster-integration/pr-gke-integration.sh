@@ -212,9 +212,9 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh
 
-#shout "Test Kyma"
-#date
-#TODO: "${KYMA_SCRIPTS_DIR}"/testing.sh
+shout "Test Kyma"
+date
+"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
