@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRemoteEnvironmentControllerTestsTestsJobsPresubmit(t *testing.T) {
+func TestRemoteEnvironmentControllerTestsJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/remote-environment-controller-tests/remote-environment-controller-tests.yaml")
 	// THEN
@@ -36,7 +36,7 @@ func TestRemoteEnvironmentControllerTestsTestsJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/remote-environment-controller-tests"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestRemoteEnvironmentControllerTestsTestsJobPostsubmit(t *testing.T) {
+func TestRemoteEnvironmentControllerTestsJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/remote-environment-controller-tests/remote-environment-controller-tests.yaml")
 	// THEN
