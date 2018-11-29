@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestBucJobsPresubmit(t *testing.T) {
+func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestBucJobPostsubmit(t *testing.T) {
+func TestHttpDbServiceAcceptanceTestsJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
 	// THEN

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestBucJobsPresubmit(t *testing.T) {
+func TestMonitoringCustomMetricsJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/monitoring-custom-metrics/monitoring-custom-metrics.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestBucJobPostsubmit(t *testing.T) {
+func TestMonitoringCustomMetricsJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/monitoring-custom-metrics/monitoring-custom-metrics.yaml")
 	// THEN

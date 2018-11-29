@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestBucJobsPresubmit(t *testing.T) {
+func TestEventEmailServiceJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/event-email-service/event-email-service.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/event-email-service"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestBucJobPostsubmit(t *testing.T) {
+func TestEventEmailServiceJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/event-email-service/event-email-service.yaml")
 	// THEN
