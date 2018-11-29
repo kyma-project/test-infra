@@ -100,9 +100,8 @@ cleanup() {
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-job-${PROW_JOB_ID}" | tr "[:upper:]" "[:lower:]")
+IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-${BUILD_ID}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME
-export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
 export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
 
 export IP_ADDRESS="will_be_generated"
@@ -146,8 +145,10 @@ echo "IP Address: ${IP_ADDRESS} created"
 
 shout "Create DNS Record"
 date
+DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-export DNS_DOMAIN
+DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+export DNS_FULL_NAME
 CLEANUP_DNS_RECORD="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
 
@@ -173,7 +174,8 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 
 shout "Generate self-signed certificate"
 date
-export DOMAIN=${DNS_DOMAIN%?}
+DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+export DOMAIN
 CERT_KEY=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
