@@ -15,8 +15,6 @@
 #Permissions: In order to run this script you need to use a service account with "Compute Admin" role
 
 set +e
-echo "TODO: DEBUG: DISKS: $DISKS"
-echo
 
 for NAMEPATTERN in ${DISKS}
 do

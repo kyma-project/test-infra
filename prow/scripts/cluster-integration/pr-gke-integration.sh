@@ -128,7 +128,6 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
-### Pseudo-random name suffix, 15 characters
 DNS_SUBDOMAIN="${COMMON_NAME}"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
@@ -218,7 +217,7 @@ kubectl label installation/kyma-installation action=install
 
 shout "Test Kyma"
 date
-#"${KYMA_SCRIPTS_DIR}"/testing.sh
+"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
