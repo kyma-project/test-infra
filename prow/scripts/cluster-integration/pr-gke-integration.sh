@@ -119,7 +119,7 @@ export IP_ADDRESS_NAME
 export DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
 
 #Pseudo-random name suffix, 15 characters
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c15)
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export IP_ADDRESS_NAME="${COMMON_NAME}"
 export DNS_SUBDOMAIN="${COMMON_NAME}"
@@ -222,7 +222,7 @@ kubectl label installation/kyma-installation action=install
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+#"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
