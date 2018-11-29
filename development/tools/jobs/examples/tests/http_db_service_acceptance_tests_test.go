@@ -10,7 +10,7 @@ import (
 
 func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -29,7 +29,7 @@ func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/examples", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^call-ec/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tests/http-db-service/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"}, actualPresubmit.Spec.Containers[0].Args)
@@ -37,7 +37,7 @@ func TestHttpDbServiceAcceptanceTestsJobsPresubmit(t *testing.T) {
 
 func TestHttpDbServiceAcceptanceTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/examples/tests/http-db-service-acceptance-tests/http-db-service-acceptance-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
