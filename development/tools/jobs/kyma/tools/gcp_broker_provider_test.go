@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestETCDBackupJobsPresubmit(t *testing.T) {
+func TestGCPBrokerProviderJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/etcd-backup/etcd-backup.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -20,7 +20,7 @@ func TestETCDBackupJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-tools-etcd-backup"
+	expName := "kyma-tools-gcp-broker-provider"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -29,16 +29,16 @@ func TestETCDBackupJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^tools/etcd-backup/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tools/etcd-backup/some_random_file.go")
+	assert.Equal(t, "^tools/gcp-broker-provider/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tools/gcp-broker-provider/some_random_file.go")
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/etcd-backup"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/gcp-broker-provider"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestETCDBackupJobPostsubmit(t *testing.T) {
+func TestGCPBrokerProviderJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/etcd-backup/etcd-backup.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -48,7 +48,7 @@ func TestETCDBackupJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-tools-etcd-backup"
+	expName := "kyma-tools-gcp-broker-provider"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
@@ -59,5 +59,5 @@ func TestETCDBackupJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/etcd-backup"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/gcp-broker-provider"}, actualPost.Spec.Containers[0].Args)
 }
