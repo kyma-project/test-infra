@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestExampleTracingJobsPresubmit(t *testing.T) {
+func TestTracingJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/example-tracing/example-tracing.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tracing/tracing.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -20,7 +20,7 @@ func TestExampleTracingJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "examples-example-tracing"
+	expName := "examples-tracing"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -29,15 +29,15 @@ func TestExampleTracingJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/examples", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^example-tracing/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tracing/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/example-tracing"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/tracing"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestExampleTracingJobPostsubmit(t *testing.T) {
+func TestTracingJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/example-tracing/example-tracing.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/examples/tracing/tracing.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -47,7 +47,7 @@ func TestExampleTracingJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "examples-example-tracing"
+	expName := "examples-tracing"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
@@ -58,5 +58,5 @@ func TestExampleTracingJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/example-tracing"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/tracing"}, actualPost.Spec.Containers[0].Args)
 }
