@@ -4,6 +4,8 @@ FROM eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    libfontconfig \
+    procps \
     nodejs \
     && apt-get clean
 
