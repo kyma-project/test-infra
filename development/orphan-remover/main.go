@@ -5,6 +5,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"golang.org/x/oauth2"
@@ -76,12 +77,13 @@ func main() {
 	fmt.Printf("HealthChecks item: %s\n", garbagePool[0].healthChecks)
 	// deleteForwardingRule(svc, *project, garbagePool[0].name, garbagePool[0].region)
 	// deleteTargetPool(svc, *project, garbagePool[0].name, garbagePool[0].region)
-	deleteHealthChecks(svc, *project, garbagePool[0].healthChecks)
+	// deleteHealthChecks(svc, *project, garbagePool[0].healthChecks)
+	// lookupBackendServices(svc, *project, garbagePool[0].healthChecks)
 }
 
 func deleteHealthChecks(svc *compute.Service, project string, names []string) {
 	for _, check := range names {
-		_, err := svc.HealthChecks.Delete(project, name).Do()
+		_, err := svc.HealthChecks.Delete(project, check).Do()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -107,6 +109,23 @@ func markInstance(svc *compute.Service, project string, instance *Instance) {
 	if err != nil {
 		instance.exists = false
 	}
+}
+
+func lookupBackendServices(svc *compute.Service, project string, checks []string) ([]string, error) {
+	call := svc.BackendServices.List(project)
+	call := call.Filter("")
+	var items []string
+	f := func(page *compute.BackendServiceList) error {
+		for _, list := range page.Items {
+			js, _ := json.Marshal(list)
+			fmt.Printf("%s\n\n", js)
+		}
+		return nil
+	}
+	if err := call.Pages(oauth2.NoContext, f); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 func lookupTargetPools(svc *compute.Service, project string) ([]TargetPool, error) {
