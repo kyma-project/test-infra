@@ -19,7 +19,7 @@
 # - CLUSTER_VERSION (optional): GKE cluster version
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
-# - Compute Network Admin
+# - Compute Admin
 # - Kubernetes Engine Admin
 # - Kubernetes Engine Cluster Admin
 # - DNS Administrator
@@ -58,7 +58,20 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
+
+        #save disk names while the cluster still exists to remove them later
+        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        export DISKS
+
+        #Delete cluster
         "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+        #Delete orphaned disks
+        shout "Delete orphaned PVC disks..."
+        date
+        "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-disks.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
@@ -98,19 +111,24 @@ cleanup() {
 }
 
 #Exported variables
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-IP_ADDRESS_NAME=$(echo "pr-${PULL_NUMBER}-${BUILD_ID}" | tr "[:upper:]" "[:lower:]")
-export IP_ADDRESS_NAME
-export CLUSTER_NAME="gkeint-${REPO_OWNER}-${REPO_NAME}-${PULL_NUMBER}"
+
+export IP_ADDRESS_NAME="${COMMON_NAME}"
+### Cluster name must be less than 40 characters!
+export CLUSTER_NAME="${COMMON_NAME}"
 
 export IP_ADDRESS="will_be_generated"
 
-#For provision-gke-cluster.sh
+### For provision-gke-cluster.sh
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
+DNS_SUBDOMAIN="${COMMON_NAME}"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
@@ -145,7 +163,6 @@ echo "IP Address: ${IP_ADDRESS} created"
 
 shout "Create DNS Record"
 date
-DNS_SUBDOMAIN="${IP_ADDRESS_NAME}"
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 export DNS_FULL_NAME
