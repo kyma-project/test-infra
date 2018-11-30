@@ -7,7 +7,7 @@ init
 for i in {1..600}
 do
     echo "Building ${i}"
-    docker build -t abcd .
+    docker build -t abcd abcd
     docker rmi abcd:latest
 done
 
