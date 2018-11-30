@@ -24,6 +24,8 @@ const (
 	PresetDockerPushRepo Preset = "preset-docker-push-repository"
 	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
 	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
+	// PresetDockerPushRepoIncubator means Decker repository incubator images
+	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
@@ -37,6 +39,9 @@ const (
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181119-afd3fbd"
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
+
+	// BuildScriptDir means build script directory
+	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 )
 
 // ReadJobConfig reads job configuration from file
@@ -105,4 +110,9 @@ func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile str
 	require.NoError(t, config.SetPresubmitRegexes(sl))
 	assert.True(t, sl[0].RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 
+}
+
+// AssertThatHasCommand checks if job has
+func AssertThatHasCommand(t *testing.T, command []string) {
+	assert.Equal(t, []string{BuildScriptDir}, command)
 }

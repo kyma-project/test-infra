@@ -124,7 +124,7 @@ The `Makefile` has to define these three targets:
 See an example of a `Makefile` for the `binding-usage-controller` component:
 
 ```Makefile
-APP_NAME = "binding-usage-controller"
+APP_NAME = binding-usage-controller
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
 TAG = $(DOCKER_TAG)
 binary=$(APP_NAME)
@@ -258,6 +258,7 @@ Use these Presets to define a ProwJob for your component:
 | **preset-gc-compute-envs**         | It provides environment variables with the Gcloud compute zone and the Gcloud compute region.                                                                   |
 | **preset-sa-vm-kyma-integration**  | It injects credentials for the service account to run integration tests on virtual machines (VMs).                                                              |
 | **preset-sa-gke-kyma-integration** | It injects credentials for the service account to run integration tests on a Google Cloud Engine (GKE) cluster.                                                 |
+| **preset-bot-npm-token**           | It provides an environment variable with token for publishing npm packages.
 
 ### Pipeline overview
 

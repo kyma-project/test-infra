@@ -43,7 +43,7 @@ The following environment variables are required:
 The pipeline accesses GCP using a service account configured with the **GOOGLE_APPLICATION_CREDENTIALS** environment variable.
 This service account must have GCP permissions equivalent to the following GCP roles:
 
-- Compute Network Admin (`roles/compute.networkAdmin`)
+- Compute Admin (`roles/compute.admin`)
 - Kubernetes Engine Admin (`roles/container.admin`)
 - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
 - DNS Administrator (`roles/dns.admin`)
