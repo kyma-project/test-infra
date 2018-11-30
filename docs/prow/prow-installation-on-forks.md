@@ -64,8 +64,8 @@ For the purpose of the installation, you must have a set of service accounts and
 
 2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
-- **sa-gke-kyma-integration** with roles that allow the account to create Kubernetes clusters:
-  - Compute Network Admin (`roles/compute.networkAdmin`)
+- **sa-gke-kyma-integration** with roles that allow the account to manage Kubernetes clusters and their resources:
+  - Compute Admin (`roles/compute.admin`)
   - Kubernetes Engine Admin (`roles/container.admin`)
   - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
   - DNS Administrator (`roles/dns.admin`)
@@ -79,6 +79,7 @@ For the purpose of the installation, you must have a set of service accounts and
   - Storage Object Admin (`roles/storage.objectAdmin`)
 - **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
   - Storage Admin `roles/storage.admin`
+- **kyma-bot-npm-token** which is a token for publishing npm packages
 
 ## Install Prow
 
@@ -89,7 +90,9 @@ Follow these steps to install Prow:
 - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
 - **KEYRING_NAME** is the KMS key ring.
 - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
-
+- **KUBECONFIG** is a path to a `kubeconfig` file.
+- **PROJECT** is a Gcloud project name.
+- **GOOGLE_APPLICATION_CREDENTIALS** is a path to a service account file. This service account requires KMS and storage roles.  
 The account files are encrypted with the **ENCRYPTION_KEY_NAME** key from **KEYRING_NAME** and are stored in **BUCKET_NAME**.
 
 2. Go to the `development` folder and run the following script to start the installation process:
