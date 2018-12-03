@@ -55,7 +55,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-integration-master
+    - name: kyma-integration
       branches:
         - master
       max_concurrency: 10
@@ -74,7 +74,7 @@ postsubmits:
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-    - name: kyma-gke-integration-master
+    - name: kyma-gke-integration
       branches:
         - master
       max_concurrency: 10
