@@ -24,6 +24,7 @@ var (
 	garbagePool     = []TargetPool{}
 	instanceGroups  = []InstanceGroup{}
 	backendServices = []BackendService{}
+	urlMaps         = []URLMap{}
 )
 
 //TargetPool ???
@@ -56,6 +57,12 @@ type BackendService struct {
 	id   string
 }
 
+// URLMap ???
+type URLMap struct {
+	name string
+	id   string
+}
+
 func main() {
 	flag.Parse()
 
@@ -64,8 +71,6 @@ func main() {
 		flag.Usage()
 		os.Exit(2)
 	}
-
-	fmt.Printf("!!! DRY-RUN: %t\n", *dryRun)
 
 	context := context.Background()
 	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
@@ -106,44 +111,58 @@ func main() {
 			}
 		}
 	}
+	urlMaps, _ := lookupURLMaps(svc, *project)
 	backendServices, _ := lookupBackendServices(svc, *project)
-	purge(svc, garbagePool, instanceGroups, backendServices, *dryRun)
+	purge(svc, garbagePool, instanceGroups, backendServices, urlMaps, *dryRun)
 }
 
-func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []InstanceGroup, backendServices []BackendService, dryRun bool) {
+func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []InstanceGroup, backendServices []BackendService, urlMaps []URLMap, dryRun bool) {
 	for _, target := range targetPool {
-		fmt.Printf("Processing item: %s\n", target.name)
+		fmt.Printf("-> Processing targetPool: %s\n", target.name)
 
-		fmt.Printf("Delete ForwardingRules: %s in Region: %s\n", target.name, target.region)
+		fmt.Printf("---> Delete ForwardingRules: %s in Region: %s\n", target.name, target.region)
 		if !dryRun {
 			deleteForwardingRule(svc, *project, target.name, target.region)
 			time.Sleep(5 * time.Second)
 		}
-		fmt.Printf("Delete HealthCheck: %s\n", target.healthChecks)
+		fmt.Printf("---> Delete HealthCheck: %s\n", target.healthChecks)
 		if !dryRun {
 			deleteHealthChecks(svc, *project, target.healthChecks)
 			time.Sleep(5 * time.Second)
 		}
-		fmt.Printf("Delete TargetPool: %s in Region: %s\n", target.name, target.region)
+		fmt.Printf("---> Delete TargetPool: %s in Region: %s\n", target.name, target.region)
 		if !dryRun {
 			deleteTargetPool(svc, *project, target.name, target.region)
 			time.Sleep(5 * time.Second)
 		}
 	}
 	for _, group := range instanceGroups {
-		fmt.Printf("Processing item: %s\n", group.name)
+		fmt.Printf("-> Processing instanceGroup: %s\n", group.name)
+		fmt.Printf("---> Delete URLMap: %s\n", findURLMap(group.id, urlMaps))
+		if !dryRun {
+			deleteURLMap(svc, *project, findURLMap(group.id, urlMaps))
+			time.Sleep(5 * time.Second)
+		}
 		services := findBackendServices(group.id, backendServices)
 		for _, service := range services {
-			fmt.Printf("Delete BackendService: %s\n", service)
+			fmt.Printf("---> Delete BackendService: %s\n", service)
 			if !dryRun {
 				deleteBackendService(svc, *project, service)
 				time.Sleep(5 * time.Second)
 			}
 		}
-		fmt.Printf("Delete InstanceGroup: %s in Zone: %s\n", group.name, group.zone)
+		fmt.Printf("---> Delete InstanceGroup: %s in Zone: %s\n", group.name, group.zone)
 		if !dryRun {
 			deleteInstanceGroup(svc, *project, group.zone, group.name)
+			time.Sleep(5 * time.Second)
 		}
+	}
+}
+
+func deleteURLMap(svc *compute.Service, project string, urlMap string) {
+	_, err := svc.UrlMaps.Delete(project, urlMap).Do()
+	if err != nil {
+		log.Print(err)
 	}
 }
 
@@ -191,6 +210,23 @@ func markInstance(svc *compute.Service, project string, instance *Instance) {
 	}
 }
 
+func lookupURLMaps(svc *compute.Service, project string) ([]URLMap, error) {
+	call := svc.UrlMaps.List(project)
+	var items []URLMap
+	f := func(page *compute.UrlMapList) error {
+		for _, list := range page.Items {
+			fields := strings.Split(list.Name, "--")
+			id := fields[len(fields)-1]
+			items = append(items, URLMap{list.Name, id})
+		}
+		return nil
+	}
+	if err := call.Pages(oauth2.NoContext, f); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 func lookupBackendServices(svc *compute.Service, project string) ([]BackendService, error) {
 	call := svc.BackendServices.List(project)
 	var items []BackendService
@@ -198,8 +234,7 @@ func lookupBackendServices(svc *compute.Service, project string) ([]BackendServi
 		for _, list := range page.Items {
 			fields := strings.Split(list.Name, "--")
 			id := fields[len(fields)-1]
-			bs := BackendService{list.Name, id}
-			items = append(items, bs)
+			items = append(items, BackendService{list.Name, id})
 		}
 		return nil
 	}
@@ -284,4 +319,13 @@ func findBackendServices(id string, backendServices []BackendService) []string {
 		}
 	}
 	return items
+}
+
+func findURLMap(id string, urlMaps []URLMap) string {
+	for _, maps := range urlMaps {
+		if maps.id == id {
+			return maps.name
+		}
+	}
+	return "NOT_FOUND"
 }
