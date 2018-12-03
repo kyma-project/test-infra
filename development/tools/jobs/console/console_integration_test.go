@@ -44,7 +44,7 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 
 func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/core/console-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/console-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
