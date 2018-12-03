@@ -5,7 +5,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	// "encoding/json"
 	"flag"
 	"fmt"
 	"golang.org/x/oauth2"
@@ -18,11 +18,12 @@ import (
 )
 
 var (
-	project        = flag.String("project", "", "Project ID")
-	dryRun         = flag.Bool("dry-run", true, "Dry Run enabled")
-	targetPool     = []TargetPool{}
-	garbagePool    = []TargetPool{}
-	instanceGroups = []InstanceGroup{}
+	project         = flag.String("project", "", "Project ID")
+	dryRun          = flag.Bool("dry-run", true, "Dry Run enabled")
+	targetPool      = []TargetPool{}
+	garbagePool     = []TargetPool{}
+	instanceGroups  = []InstanceGroup{}
+	backendServices = []BackendService{}
 )
 
 //TargetPool ???
@@ -45,7 +46,14 @@ type Instance struct {
 // InstanceGroup ???
 type InstanceGroup struct {
 	name string
+	id   string
 	zone string
+}
+
+// BackendService ???
+type BackendService struct {
+	name string
+	id   string
 }
 
 func main() {
@@ -56,6 +64,8 @@ func main() {
 		flag.Usage()
 		os.Exit(2)
 	}
+
+	fmt.Printf("!!! DRY-RUN: %t\n", *dryRun)
 
 	context := context.Background()
 	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
@@ -68,61 +78,79 @@ func main() {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}
 
-	// targetPool, _ := lookupTargetPools(svc, *project)
-	// for _, target := range targetPool {
-	// 	markCount := 0
-	// 	for _, instance := range target.instances {
-	// 		markInstance(svc, *project, &instance)
-	// 		if !instance.exists {
-	// 			markCount++
-	// 		}
-	// 	}
-	// 	if markCount == target.instanceCount {
-	// 		garbagePool = append(garbagePool, target)
-	// 	}
-	// }
-	// fmt.Printf("All items: %d\n", len(targetPool))
-	// fmt.Printf("Garbage items: %d\n", len(garbagePool))
+	targetPool, _ := lookupTargetPools(svc, *project)
+	for _, target := range targetPool {
+		markCount := 0
+		for _, instance := range target.instances {
+			markInstance(svc, *project, &instance)
+			if !instance.exists {
+				markCount++
+			}
+		}
+		if markCount == target.instanceCount {
+			garbagePool = append(garbagePool, target)
+		}
+	}
+
+	fmt.Printf("All items: %d\n", len(targetPool))
+	fmt.Printf("Garbage items: %d\n", len(garbagePool))
 
 	zones, _ := lookupZones(svc, *project, "europe-*")
 	for _, zone := range zones {
 		igList, _ := lookupInstanceGroup(svc, *project, zone)
 		if len(igList) > 0 {
-			for _, ig := range igList {
-				// fmt.Printf("IG: %s, ZONE: %s\n", ig, zone)
-				instanceGroups = append(instanceGroups, InstanceGroup{ig, zone})
+			for _, name := range igList {
+				fields := strings.Split(name, "--")
+				id := fields[len(fields)-1]
+				instanceGroups = append(instanceGroups, InstanceGroup{name, id, zone})
 			}
-
 		}
 	}
-	fmt.Printf("%s", instanceGroups)
-	deleteInstanceGroup(svc, *project, instanceGroups[0].zone, instanceGroups[0].name)
-	// log.Print("---> Looking up BackendServices!")
-	// lookupBackendServices(svc, *project, garbagePool[0].healthChecks)
+	backendServices, _ := lookupBackendServices(svc, *project)
+	purge(svc, garbagePool, instanceGroups, backendServices, *dryRun)
+}
 
-	// log.Print("---> Looking up InstanceGroups!\n Item: %s", garbagePool[0])
-	// lookupInstanceGroup(svc, *project, garbagePool[0].instances[0].zone)
+func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []InstanceGroup, backendServices []BackendService, dryRun bool) {
+	for _, target := range targetPool {
+		fmt.Printf("Processing item: %s\n", target.name)
 
-	if !*dryRun {
-		purge(svc, garbagePool)
+		fmt.Printf("Delete ForwardingRules: %s in Region: %s\n", target.name, target.region)
+		if !dryRun {
+			deleteForwardingRule(svc, *project, target.name, target.region)
+			time.Sleep(5 * time.Second)
+		}
+		fmt.Printf("Delete HealthCheck: %s\n", target.healthChecks)
+		if !dryRun {
+			deleteHealthChecks(svc, *project, target.healthChecks)
+			time.Sleep(5 * time.Second)
+		}
+		fmt.Printf("Delete TargetPool: %s in Region: %s\n", target.name, target.region)
+		if !dryRun {
+			deleteTargetPool(svc, *project, target.name, target.region)
+			time.Sleep(5 * time.Second)
+		}
+	}
+	for _, group := range instanceGroups {
+		fmt.Printf("Processing item: %s\n", group.name)
+		services := findBackendServices(group.id, backendServices)
+		for _, service := range services {
+			fmt.Printf("Delete BackendService: %s\n", service)
+			if !dryRun {
+				deleteBackendService(svc, *project, service)
+				time.Sleep(5 * time.Second)
+			}
+		}
+		fmt.Printf("Delete InstanceGroup: %s in Zone: %s\n", group.name, group.zone)
+		if !dryRun {
+			deleteInstanceGroup(svc, *project, group.zone, group.name)
+		}
 	}
 }
 
-func purge(svc *compute.Service, pool []TargetPool) {
-	for _, target := range pool {
-		log.Print("Processing item: %s\n", target.name)
-
-		log.Print("Delete ForwardingRules: %s\n", target.name)
-		deleteForwardingRule(svc, *project, target.name, target.region)
-		time.Sleep(5 * time.Second)
-
-		log.Print("Delete HealthCheck : %s\n", target.healthChecks)
-		deleteHealthChecks(svc, *project, target.healthChecks)
-		time.Sleep(5 * time.Second)
-
-		log.Print("Delete TargetPool : %s\n", target.name)
-		deleteTargetPool(svc, *project, target.name, target.region)
-		time.Sleep(5 * time.Second)
+func deleteBackendService(svc *compute.Service, project string, backendService string) {
+	_, err := svc.BackendServices.Delete(project, backendService).Do()
+	if err != nil {
+		log.Print(err)
 	}
 }
 
@@ -163,13 +191,15 @@ func markInstance(svc *compute.Service, project string, instance *Instance) {
 	}
 }
 
-func lookupBackendServices(svc *compute.Service, project string, checks []string) ([]string, error) {
+func lookupBackendServices(svc *compute.Service, project string) ([]BackendService, error) {
 	call := svc.BackendServices.List(project)
-	var items []string
+	var items []BackendService
 	f := func(page *compute.BackendServiceList) error {
 		for _, list := range page.Items {
-			js, _ := json.Marshal(list)
-			fmt.Printf("%s\n\n", js)
+			fields := strings.Split(list.Name, "--")
+			id := fields[len(fields)-1]
+			bs := BackendService{list.Name, id}
+			items = append(items, bs)
 		}
 		return nil
 	}
@@ -244,4 +274,14 @@ func lookupZones(svc *compute.Service, project, pattern string) ([]string, error
 		return nil, err
 	}
 	return zones, nil
+}
+
+func findBackendServices(id string, backendServices []BackendService) []string {
+	var items []string
+	for _, service := range backendServices {
+		if service.id == id {
+			items = append(items, service.name)
+		}
+	}
+	return items
 }
