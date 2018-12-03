@@ -77,7 +77,7 @@ cleanup() {
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-        shout "Delete DNS Record"
+        shout "Delete Gateway DNS Record"
         date
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
         TMP_STATUS=$?
@@ -93,7 +93,7 @@ cleanup() {
     fi
 
     if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
-        shout "Delete DNS Record"
+        shout "Delete Remote Environments DNS Record"
         date
         IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
         TMP_STATUS=$?
@@ -101,7 +101,7 @@ cleanup() {
     fi
 
     if [ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]; then
-        shout "Release Gateway IP Address"
+        shout "Release Remote Environments IP Address"
         date
         IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
         TMP_STATUS=$?
