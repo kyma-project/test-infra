@@ -17,6 +17,14 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/console/core"
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1.5
+      limits:
+        memory: 2Gi
+        cpu: 1.5
+
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
