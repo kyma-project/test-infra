@@ -7,7 +7,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
 	"log"
@@ -57,6 +56,18 @@ type URLMap struct {
 	id   string
 }
 
+// HTTPProxy ???
+type HTTPProxy struct {
+	name string
+	id   string
+}
+
+// GlobalForwardingRule ???
+type GlobalForwardingRule struct {
+	name string
+	id   string
+}
+
 func main() {
 	flag.Parse()
 
@@ -71,10 +82,12 @@ func main() {
 	var instanceGroups = []InstanceGroup{}
 	var backendServices = []BackendService{}
 	var urlMaps = []URLMap{}
+	var httpProxies = []HTTPProxy{}
+	var globalForwardingRules = []GlobalForwardingRule{}
 
-	context := context.Background()
+	ctx := context.Background()
 
-	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
+	connenction, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
@@ -130,10 +143,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not list BackendServices: %v", err)
 	}
-	purge(svc, garbagePool, instanceGroups, backendServices, urlMaps, *dryRun)
+	httpProxies, err = lookupHTTPProxy(svc, *project)
+	if err != nil {
+		log.Fatalf("Could not list HTTPProxy: %v", err)
+	}
+	globalForwardingRules, err = lookupGlobalForwardingRule(svc, *project)
+	if err != nil {
+		log.Fatalf("Could not list GlobalForwardingRule: %v", err)
+	}
+	purge(svc, garbagePool, instanceGroups, backendServices, urlMaps, httpProxies, globalForwardingRules, *dryRun)
 }
 
-func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []InstanceGroup, backendServices []BackendService, urlMaps []URLMap, dryRun bool) {
+func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []InstanceGroup, backendServices []BackendService, urlMaps []URLMap, httpProxies []HTTPProxy, globalForwardingRules []GlobalForwardingRule, dryRun bool) {
 	for _, target := range targetPool {
 		fmt.Printf("-> Processing targetPool: %s\n", target.name)
 
@@ -155,6 +176,16 @@ func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []Insta
 	}
 	for _, group := range instanceGroups {
 		fmt.Printf("-> Processing instanceGroup: %s\n", group.name)
+		fmt.Printf("---> Delete ForwardingRules: %s\n", findGlobalForwardingRule(group.id, globalForwardingRules))
+		if !dryRun {
+			deleteGlobalForwardingRule(svc, *project, findGlobalForwardingRule(group.id, globalForwardingRules))
+			time.Sleep(5 * time.Second)
+		}
+		fmt.Printf("---> Delete HTTPProxy: %s\n", findHTTPProxy(group.id, httpProxies))
+		if !dryRun {
+			deleteHTTPProxy(svc, *project, findHTTPProxy(group.id, httpProxies))
+			time.Sleep(5 * time.Second)
+		}
 		fmt.Printf("---> Delete URLMap: %s\n", findURLMap(group.id, urlMaps))
 		if !dryRun {
 			deleteURLMap(svc, *project, findURLMap(group.id, urlMaps))
@@ -173,6 +204,13 @@ func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []Insta
 			deleteInstanceGroup(svc, *project, group.zone, group.name)
 			time.Sleep(5 * time.Second)
 		}
+	}
+}
+
+func deleteHTTPProxy(svc *compute.Service, project string, httpProxy string) {
+	_, err := svc.TargetHttpProxies.Delete(project, httpProxy).Do()
+	if err != nil {
+		log.Print(err)
 	}
 }
 
@@ -213,6 +251,13 @@ func deleteForwardingRule(svc *compute.Service, project string, name string, reg
 	}
 }
 
+func deleteGlobalForwardingRule(svc *compute.Service, project string, name string) {
+	_, err := svc.GlobalForwardingRules.Delete(project, name).Do()
+	if err != nil {
+		log.Print(err)
+	}
+}
+
 func deleteTargetPool(svc *compute.Service, project string, name string, region string) {
 	_, err := svc.TargetPools.Delete(project, region, name).Do()
 	if err != nil {
@@ -238,7 +283,7 @@ func lookupURLMaps(svc *compute.Service, project string) ([]URLMap, error) {
 		}
 		return nil
 	}
-	if err := call.Pages(oauth2.NoContext, f); err != nil {
+	if err := call.Pages(context.Background(), f); err != nil {
 		return nil, err
 	}
 	return items, nil
@@ -255,7 +300,7 @@ func lookupBackendServices(svc *compute.Service, project string) ([]BackendServi
 		}
 		return nil
 	}
-	if err := call.Pages(oauth2.NoContext, f); err != nil {
+	if err := call.Pages(context.Background(), f); err != nil {
 		return nil, err
 	}
 	return items, nil
@@ -271,7 +316,7 @@ func lookupInstanceGroup(svc *compute.Service, project string, zone string) ([]s
 		}
 		return nil
 	}
-	if err := call.Pages(oauth2.NoContext, f); err != nil {
+	if err := call.Pages(context.Background(), f); err != nil {
 		return nil, err
 	}
 	return items, nil
@@ -301,7 +346,7 @@ func lookupTargetPools(svc *compute.Service, project string) ([]TargetPool, erro
 		}
 		return nil
 	}
-	if err := call.Pages(oauth2.NoContext, f); err != nil {
+	if err := call.Pages(context.Background(), f); err != nil {
 		return nil, err
 	}
 	return items, nil
@@ -321,10 +366,44 @@ func lookupZones(svc *compute.Service, project, pattern string) ([]string, error
 		return nil
 	}
 
-	if err := call.Pages(oauth2.NoContext, f); err != nil {
+	if err := call.Pages(context.Background(), f); err != nil {
 		return nil, err
 	}
 	return zones, nil
+}
+
+func lookupHTTPProxy(svc *compute.Service, project string) ([]HTTPProxy, error) {
+	call := svc.TargetHttpProxies.List(project)
+	var items []HTTPProxy
+	f := func(page *compute.TargetHttpProxyList) error {
+		for _, list := range page.Items {
+			fields := strings.Split(list.Name, "--")
+			id := fields[len(fields)-1]
+			items = append(items, HTTPProxy{list.Name, id})
+		}
+		return nil
+	}
+	if err := call.Pages(context.Background(), f); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+func lookupGlobalForwardingRule(svc *compute.Service, project string) ([]GlobalForwardingRule, error) {
+	call := svc.GlobalForwardingRules.List(project)
+	var items []GlobalForwardingRule
+	f := func(page *compute.ForwardingRuleList) error {
+		for _, list := range page.Items {
+			fields := strings.Split(list.Name, "--")
+			id := fields[len(fields)-1]
+			items = append(items, GlobalForwardingRule{list.Name, id})
+		}
+		return nil
+	}
+	if err := call.Pages(context.Background(), f); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 func findBackendServices(id string, backendServices []BackendService) []string {
@@ -341,6 +420,24 @@ func findURLMap(id string, urlMaps []URLMap) string {
 	for _, maps := range urlMaps {
 		if maps.id == id {
 			return maps.name
+		}
+	}
+	return "NOT_FOUND"
+}
+
+func findHTTPProxy(id string, httpProxy []HTTPProxy) string {
+	for _, proxy := range httpProxy {
+		if proxy.id == id {
+			return proxy.name
+		}
+	}
+	return "NOT_FOUND"
+}
+
+func findGlobalForwardingRule(id string, forwadingRules []GlobalForwardingRule) string {
+	for _, rule := range forwadingRules {
+		if rule.id == id {
+			return rule.name
 		}
 	}
 	return "NOT_FOUND"

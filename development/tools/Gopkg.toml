@@ -48,3 +48,7 @@ required = [
 [[override]]
   name = "k8s.io/code-generator"
   branch = "release-1.11"
+
+[[constraint]]
+  name = "google.golang.org/api"
+  branch = "master"
