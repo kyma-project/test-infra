@@ -25,8 +25,8 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-tests-environments
-      run_if_changed: "^tests/environments/"
+    - name: kyma-tests-test-environments
+      run_if_changed: "^tests/test-environments/"
       branches:
         - master
       <<: *job_template
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-tests-environments
+    - name: kyma-tests-test-environments
       branches:
         - master
       <<: *job_template

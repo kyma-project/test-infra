@@ -10,7 +10,7 @@ import (
 
 func TestEnvironmentsTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/environments/environments-test.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/test-environments/test-environments.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -20,7 +20,7 @@ func TestEnvironmentsTestsJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-tests-environments"
+	expName := "kyma-tests-test-environments"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -29,16 +29,16 @@ func TestEnvironmentsTestsJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/environments/fix")
-	assert.Equal(t, "^tests/environments/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/test-environments/fix")
+	assert.Equal(t, "^tests/test-environments/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/environments", actualPresubmit.Spec.Containers[0].Args[0])
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/test-environments", actualPresubmit.Spec.Containers[0].Args[0])
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
 
 func TestEnvironmentsTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/environments/environments-test.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/test-environments/test-environments.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -48,7 +48,7 @@ func TestEnvironmentsTestsJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-tests-environments"
+	expName := "kyma-tests-test-environments"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
@@ -58,6 +58,6 @@ func TestEnvironmentsTestsJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/environments", actualPost.Spec.Containers[0].Args[0])
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/test-environments", actualPost.Spec.Containers[0].Args[0])
 
 }
