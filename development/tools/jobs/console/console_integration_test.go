@@ -15,7 +15,7 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
+	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/console"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
@@ -28,15 +28,11 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
-	assert.Equal(t, "kyma-project", actualPresubmit.ExtraRefs[1].Org)
-	assert.Equal(t, "console", actualPresubmit.ExtraRefs[1].Repo)
-	assert.Equal(t, "master", actualPresubmit.ExtraRefs[1].BaseRef)
-	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.ExtraRefs[1].PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/|^resources/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/some_random_file.js")
+	assert.Equal(t, "^tests/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/some_random_file.js")
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/tests"}, actualPresubmit.Spec.Containers[0].Args)
@@ -49,7 +45,7 @@ func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/kyma"]
+	kymaPost, ex := jobConfig.Postsubmits["kyma-project/console"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
@@ -61,12 +57,8 @@ func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
+	assert.Equal(t, "github.com/kyma-project/console", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
-	assert.Equal(t, "kyma-project", actualPost.ExtraRefs[1].Org)
-	assert.Equal(t, "console", actualPost.ExtraRefs[1].Repo)
-	assert.Equal(t, "master", actualPost.ExtraRefs[1].BaseRef)
-	assert.Equal(t, "github.com/kyma-project/console", actualPost.ExtraRefs[1].PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
