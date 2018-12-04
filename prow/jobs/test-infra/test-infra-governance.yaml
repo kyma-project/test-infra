@@ -23,7 +23,7 @@ periodics: # runs periodic on master
   branches:
     - master
   path_alias: github.com/kyma-project/test-infra
-  cron: "0 1 * * 1-7" # “At 01:00 on every day-of-week from Monday through Sunday.”
+  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Sunday.”
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1

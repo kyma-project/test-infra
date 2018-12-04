@@ -28,7 +28,7 @@ periodics: # runs periodic on master
   branches:
     - master
   path_alias: github.com/kyma-project/community
-  cron: "0 1 * * 1-7" # “At 01:00 on every day-of-week from Monday through Sunday.”
+  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
   extra_refs:
     - org: kyma-project
       repo: test-infra
