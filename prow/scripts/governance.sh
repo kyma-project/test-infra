@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 readonly MILV_IMAGE="magicmatatjahu/milv:0.0.6"
-readonly BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
+readonly BRANCH_NAME=$(git branch | cut -d ' ' -f2)
 readonly REPOSITORY_NAME=$1
 readonly NIGHTLY_VALIDATION=$2
 OUTPUT=0
@@ -12,7 +12,7 @@ if [[ -z "${REPOSITORY_NAME}" ]]; then
 fi
 
 function run_milv_docker() {
-    docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v $PWD:/${REPOSITORY_NAME}:ro ${MILV_IMAGE} --base-path=/${REPOSITORY_NAME} $1
+    docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${PWD}":/"${REPOSITORY_NAME}":ro "${MILV_IMAGE}" --base-path=/"${REPOSITORY_NAME}" "$1"
     local result=$?
     if [ ${result} != 0 ]; then
         OUTPUT=1
@@ -31,7 +31,8 @@ function validate_external_links() {
 
 function validate_external_links_on_changed_files() {
     echo "Fetching changes between origin/master...origin/${BRANCH_NAME}"
-    local files=$(git --no-pager diff --name-only origin/master...origin/${BRANCH_NAME} | grep '.md' || echo '')
+    local files=""
+    files=$(git --no-pager diff --name-only origin/master...origin/"${BRANCH_NAME}" | grep '.md' || echo '')
     local changed_files=""
     for file in $files; do
         changed_files="${changed_files} ${file}"
