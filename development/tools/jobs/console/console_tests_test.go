@@ -10,7 +10,7 @@ import (
 
 func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/console-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/tests/console-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -19,7 +19,7 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "console-integration"
+	expName := "console-tests"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -40,7 +40,7 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 
 func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/console-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/tests/console-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -49,7 +49,7 @@ func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "console-integration"
+	expName := "console-tests"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
