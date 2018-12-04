@@ -35,7 +35,7 @@ function validate_external_links_on_changed_files() {
     files=$(git --no-pager diff --name-only origin/master...origin/"${BRANCH_NAME}" | grep '.md' || echo '')
     local changed_files=""
     for file in $files; do
-        changed_files="${changed_files} ${file}"
+        changed_files="${changed_files} ./${REPOSITORY_NAME}/${file}"
     done
 
     if [ -n "${changed_files}" ]; then
