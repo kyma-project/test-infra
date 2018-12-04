@@ -1,0 +1,38 @@
+presubmits: # runs on PRs
+  kyma-project/kyma:
+    - name: kyma-governance
+      skip_report: true
+      decorate: true
+      max_concurrency: 10
+      branches:
+        - master
+      labels:
+        preset-build-pr: "true"
+      run_if_changed: "milv.config.yaml|.md$"
+      path_alias: github.com/kyma-project/kyma
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "kyma"
+
+periodics: # runs periodics on master
+- name: kyma-governance-nightly
+  branches:
+    - master
+  path_alias: github.com/kyma-project/kyma
+  cron: "0 1 * * 1-7" # “At 01:00 on every day-of-week from Monday through Sunday.”
+  spec:
+    containers:
+    - image: magicmatatjahu/milv:0.0.6
+      args:
+        - "--base-path=/kyma"
+        - "--ignore-external"
+
