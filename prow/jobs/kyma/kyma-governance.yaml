@@ -23,16 +23,23 @@ presubmits: # runs on PRs
             args:
               - "kyma"
 
-periodics: # runs periodics on master
+periodics: # runs periodic on master
 - name: kyma-governance-nightly
   branches:
     - master
   path_alias: github.com/kyma-project/kyma
   cron: "0 1 * * 1-7" # “At 01:00 on every day-of-week from Monday through Sunday.”
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-    - image: magicmatatjahu/milv:0.0.6
-      args:
-        - "--base-path=/kyma"
-        - "--ignore-external"
+      - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+        args:
+          - "kyma"
+          - "true"
 
