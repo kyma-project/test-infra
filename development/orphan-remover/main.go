@@ -5,7 +5,6 @@ package main
 
 import (
 	"context"
-	// "encoding/json"
 	"flag"
 	"fmt"
 	"golang.org/x/oauth2"
@@ -27,7 +26,7 @@ var (
 	urlMaps         = []URLMap{}
 )
 
-//TargetPool ???
+// TargetPool ???
 type TargetPool struct {
 	name          string
 	instances     []Instance
@@ -83,7 +82,10 @@ func main() {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}
 
-	targetPool, _ := lookupTargetPools(svc, *project)
+	targetPool, err := lookupTargetPools(svc, *project)
+	if err != nil {
+		log.Fatalf("Could not list TargetPools: %v", err)
+	}
 	for _, target := range targetPool {
 		markCount := 0
 		for _, instance := range target.instances {
@@ -100,9 +102,15 @@ func main() {
 	fmt.Printf("All items: %d\n", len(targetPool))
 	fmt.Printf("Garbage items: %d\n", len(garbagePool))
 
-	zones, _ := lookupZones(svc, *project, "europe-*")
+	zones, err := lookupZones(svc, *project, "europe-*")
+	if err != nil {
+		log.Fatalf("Could not list Zones: %v", err)
+	}
 	for _, zone := range zones {
-		igList, _ := lookupInstanceGroup(svc, *project, zone)
+		igList, err := lookupInstanceGroup(svc, *project, zone)
+		if err != nil {
+			log.Fatalf("Could not list InstanceGroups: %v", err)
+		}
 		if len(igList) > 0 {
 			for _, name := range igList {
 				fields := strings.Split(name, "--")
@@ -111,8 +119,14 @@ func main() {
 			}
 		}
 	}
-	urlMaps, _ := lookupURLMaps(svc, *project)
-	backendServices, _ := lookupBackendServices(svc, *project)
+	urlMaps, err := lookupURLMaps(svc, *project)
+	if err != nil {
+		log.Fatalf("Could not list UrlMaps: %v", err)
+	}
+	backendServices, err := lookupBackendServices(svc, *project)
+	if err != nil {
+		log.Fatalf("Could not list BackendServices: %v", err)
+	}
 	purge(svc, garbagePool, instanceGroups, backendServices, urlMaps, *dryRun)
 }
 
@@ -270,8 +284,7 @@ func lookupTargetPools(svc *compute.Service, project string) ([]TargetPool, erro
 				var instances []Instance
 				for _, inst := range element.Instances {
 					fields := strings.Split(inst, "/")
-					singleInstance := Instance{fields[len(fields)-1], fields[len(fields)-3], true}
-					instances = append(instances, singleInstance)
+					instances = append(instances, Instance{fields[len(fields)-1], fields[len(fields)-3], true})
 				}
 				var checks []string
 				for _, check := range element.HealthChecks {
