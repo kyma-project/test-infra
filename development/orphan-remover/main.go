@@ -17,13 +17,8 @@ import (
 )
 
 var (
-	project         = flag.String("project", "", "Project ID")
-	dryRun          = flag.Bool("dry-run", true, "Dry Run enabled")
-	targetPool      = []TargetPool{}
-	garbagePool     = []TargetPool{}
-	instanceGroups  = []InstanceGroup{}
-	backendServices = []BackendService{}
-	urlMaps         = []URLMap{}
+	project = flag.String("project", "", "Project ID")
+	dryRun  = flag.Bool("dry-run", true, "Dry Run enabled")
 )
 
 // TargetPool ???
@@ -71,7 +66,14 @@ func main() {
 		os.Exit(2)
 	}
 
+	var targetPool = []TargetPool{}
+	var garbagePool = []TargetPool{}
+	var instanceGroups = []InstanceGroup{}
+	var backendServices = []BackendService{}
+	var urlMaps = []URLMap{}
+
 	context := context.Background()
+
 	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
@@ -82,7 +84,8 @@ func main() {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}
 
-	targetPool, err := lookupTargetPools(svc, *project)
+	log.Print("Creating mesh of network elements to delete. This takes some time\n")
+	targetPool, err = lookupTargetPools(svc, *project)
 	if err != nil {
 		log.Fatalf("Could not list TargetPools: %v", err)
 	}
@@ -119,11 +122,11 @@ func main() {
 			}
 		}
 	}
-	urlMaps, err := lookupURLMaps(svc, *project)
+	urlMaps, err = lookupURLMaps(svc, *project)
 	if err != nil {
 		log.Fatalf("Could not list UrlMaps: %v", err)
 	}
-	backendServices, err := lookupBackendServices(svc, *project)
+	backendServices, err = lookupBackendServices(svc, *project)
 	if err != nil {
 		log.Fatalf("Could not list BackendServices: %v", err)
 	}
