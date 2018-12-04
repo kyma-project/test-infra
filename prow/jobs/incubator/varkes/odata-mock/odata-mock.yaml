@@ -26,7 +26,6 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/varkes:
     - name: varkes-odata-mock
-      always_run: true
       branches:
         - master
       run_if_changed: "^odata-mock/"
