@@ -12,8 +12,8 @@
     "internal/version",
     "storage"
   ]
-  revision = "0ebda48a7f143b1cce9eb37a8c1106ac762a3430"
-  version = "v0.34.0"
+  revision = "bb12be1742b232539b22ad8d0efc7afb02bbae39"
+  version = "v0.33.0"
 
 [[projects]]
   branch = "master"
@@ -220,7 +220,7 @@
     "internal/bitbucket.org/ww/goautoneg",
     "model"
   ]
-  revision = "4724e9255275ce38f7179b2478abeae4e28c904f"
+  revision = "1f2c4f3cd6db5fd6f68f36af6b6d5d936fd93c4e"
 
 [[projects]]
   branch = "master"
@@ -231,7 +231,7 @@
     "nfs",
     "xfs"
   ]
-  revision = "1dc9a6cbc91aacc3e8b2d63db4d2e957a5394ac4"
+  revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
 
 [[projects]]
   branch = "master"
@@ -302,7 +302,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
+  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
 
 [[projects]]
   branch = "master"
@@ -317,7 +317,7 @@
     "internal/timeseries",
     "trace"
   ]
-  revision = "351d144fa1fc0bd934e2408202be0c29f25e35a0"
+  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
@@ -329,7 +329,7 @@
     "jws",
     "jwt"
   ]
-  revision = "d668ce993890a79bda886613ee587a69dd5da7a6"
+  revision = "f42d05182288abf10faef86d16c0d07b8d40ea2d"
 
 [[projects]]
   branch = "master"
@@ -338,7 +338,7 @@
     "unix",
     "windows"
   ]
-  revision = "a5c9d58dba9a56f97aaa86f55e638b718c5a6c42"
+  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -380,7 +380,7 @@
     "internal/fastwalk",
     "internal/gopathwalk"
   ]
-  revision = "22934f0fdb6201c132a3dc6120150dcb1646d74c"
+  revision = "9c8bd463e3aca40b6288cd14f7b7703206ff743b"
 
 [[projects]]
   branch = "master"
@@ -399,7 +399,7 @@
     "transport/http",
     "transport/http/internal/propagation"
   ]
-  revision = "6142e720c068c6cd71f2258e007ff1991572e1d5"
+  revision = "83a9d304b1e613fc253e1e2710778642fe81af53"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -427,7 +427,7 @@
     "googleapis/rpc/code",
     "googleapis/rpc/status"
   ]
-  revision = "bd91e49a0898e27abb88c339b432fa53d7497ac0"
+  revision = "b5d43981345bdb2c233eb4bf3277847b48c6fdc6"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -436,22 +436,17 @@
     "balancer",
     "balancer/base",
     "balancer/roundrobin",
-    "binarylog/grpc_binarylog_v1",
     "codes",
     "connectivity",
     "credentials",
-    "credentials/internal",
     "encoding",
     "encoding/proto",
     "grpclog",
     "internal",
     "internal/backoff",
-    "internal/binarylog",
     "internal/channelz",
     "internal/envconfig",
     "internal/grpcrand",
-    "internal/grpcsync",
-    "internal/syscall",
     "internal/transport",
     "keepalive",
     "metadata",
@@ -464,8 +459,8 @@
     "status",
     "tap"
   ]
-  revision = "df014850f6dee74ba2fc94874043a9f3f75fbfd8"
-  version = "v1.17.0"
+  revision = "2e463a05d100327ca47ac218281906921038fd95"
+  version = "v1.16.0"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -482,8 +477,8 @@
 [[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
-  version = "v2.2.2"
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
 
 [[projects]]
   branch = "release-1.11"
@@ -519,7 +514,7 @@
     "storage/v1alpha1",
     "storage/v1beta1"
   ]
-  revision = "2dd39edadc55ab8a4ab2b27b84a9ed1b467ef47e"
+  revision = "4e7be11eab3ffcfc1876898b8272df53785a9504"
 
 [[projects]]
   branch = "release-1.11"
@@ -564,7 +559,7 @@
     "third_party/forked/golang/json",
     "third_party/forked/golang/reflect"
   ]
-  revision = "3d8ee2261517413977a62256b7d79644d7ffdc43"
+  revision = "8ee1a638bafa4ae9691077e690cb45dd54f45111"
 
 [[projects]]
   name = "k8s.io/client-go"
@@ -689,13 +684,7 @@
     "prow/sidecar",
     "testgrid/util/gcs"
   ]
-  revision = "0be5ec05ed6b2b29999016e7d3903007919bc660"
-
-[[projects]]
-  name = "sigs.k8s.io/yaml"
-  packages = ["."]
-  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
-  version = "v1.1.0"
+  revision = "29046634e60d5044447238dfefef4bcc26808bd2"
 
 [solve-meta]
   analyzer-name = "dep"
