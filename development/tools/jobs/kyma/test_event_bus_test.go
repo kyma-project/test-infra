@@ -10,7 +10,7 @@ import (
 
 func TestTestEventBusJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/test-event-bus.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -37,7 +37,7 @@ func TestTestEventBusJobsPresubmit(t *testing.T) {
 
 func TestTestEventBusJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/test-event-bus.yaml")
 	// THEN
 	require.NoError(t, err)
 
