@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the Buildpack with Node.js and Chromium installed that is based on the Bootstrap image. Use it to run tests requiring Puppeteer API.
+This folder contains the Buildpack with Node.js and Chromium installed that is based on the Bootstrap image. Use it to run tests requiring Chromium.
 
 The image consists of:
 
