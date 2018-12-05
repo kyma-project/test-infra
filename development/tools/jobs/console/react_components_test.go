@@ -10,7 +10,7 @@ import (
 
 func TestReactComponentsJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/react-components/react-components.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/components/react/react-components.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -40,7 +40,7 @@ func TestReactComponentsJobPresubmit(t *testing.T) {
 
 func TestReactComponentsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/react-components/react-components.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/components/react/react-components.yaml")
 	// THEN
 	require.NoError(t, err)
 

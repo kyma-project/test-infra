@@ -34,7 +34,7 @@ Horologium triggers periodic jobs from the `job` folder based on a predefined tr
 Sinker scans for jobs older than one day and cleans up their Pods.
 
 ### Branch Protector
-Branch Protector updates branch protection settings on GitHub repositories every 30 minutes. It takes configuration from the `config.yaml` file on the cluster.
+Branch Protector is a Prow component that is responsible for defining branch protection settings on GitHub repositories. It updates protection settings on GitHub repositories every 30 minutes. It takes configuration from the `config.yaml` file on the cluster.
 
 ## Plugins
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.

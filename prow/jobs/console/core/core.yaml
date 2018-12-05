@@ -10,28 +10,44 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181119-afd3fbd
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
+        securityContext:
+          privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/components/react"
+          - "/home/prow/go/src/github.com/kyma-project/console/core"
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1.5
+      limits:
+        memory: 2Gi
+        cpu: 1.5
 
-presubmits:
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository: "true"
+
+presubmits: # runs on PRs
   kyma-project/console:
-    - name: console-react-components
+    - name: console-core
       branches:
         - master
-      run_if_changed: "^components/react/"
+      run_if_changed: "^core/"
       labels:
+        <<: *job_labels_template
         preset-build-pr: "true"
       <<: *job_template
 
 postsubmits:
   kyma-project/console:
-    - name: console-react-components
+    - name: console-core
       branches:
         - master
       <<: *job_template
       labels:
+        <<: *job_labels_template
         preset-build-master: "true"
-
