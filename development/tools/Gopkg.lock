@@ -159,16 +159,6 @@
   version = "v1.0.1"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/kyma-project/test-infra"
-  packages = [
-    "development/tools/cmd/secretspopulator/automock",
-    "development/tools/jobs/tester",
-    "development/tools/pkg/file"
-  ]
-  revision = "3579a686414ec0984179960b0acb2bfe8d8fb424"
-
-[[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
   revision = "c12348ce28de40eed0136aa2b644d0ee0650e56c"
@@ -710,6 +700,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5c81f8b3250d600e6ba99a42209c3b08ffe572220d4d5e309cb4db81d2515737"
+  inputs-digest = "e0484980eb252b1443ee5a9dbd2f38c1f459eb3f05e06a13d1d9da05824f9d72"
   solver-name = "gps-cdcl"
   solver-version = 1
