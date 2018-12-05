@@ -7,12 +7,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"golang.org/x/oauth2/google"
-	compute "google.golang.org/api/compute/v1"
 	"log"
 	"os"
 	"strings"
 	"time"
+
+	"golang.org/x/oauth2/google"
+	compute "google.golang.org/api/compute/v1"
 )
 
 var (
@@ -174,6 +175,7 @@ func purge(svc *compute.Service, targetPool []TargetPool, instanceGroups []Insta
 			time.Sleep(5 * time.Second)
 		}
 	}
+
 	for _, group := range instanceGroups {
 		fmt.Printf("-> Processing instanceGroup: %s\n", group.name)
 		fmt.Printf("---> Delete ForwardingRules: %s\n", findGlobalForwardingRule(group.id, globalForwardingRules))
