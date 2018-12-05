@@ -1,10 +1,9 @@
 # Node buildpack with chromium and its dependencies
 
-FROM eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181119-afd3fbd
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nodejs \
     procps \
     gconf-service \
     libasound2 \
