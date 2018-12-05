@@ -109,7 +109,6 @@ func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile str
 	sl := []config.Presubmit{p}
 	require.NoError(t, config.SetPresubmitRegexes(sl))
 	assert.True(t, sl[0].RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
-
 }
 
 // AssertThatHasCommand checks if job has
