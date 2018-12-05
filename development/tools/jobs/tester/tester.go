@@ -32,6 +32,10 @@ const (
 	PresetBuildMaster Preset = "preset-build-master"
 	// PresetBuildRelease means release environment
 	PresetBuildRelease Preset = "preset-build-release"
+	// PresetBotGithubToken means github token
+	PresetBotGithubToken Preset = "preset-bot-github-token"
+	// PresetBotGithubSSH means github ssh
+	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
