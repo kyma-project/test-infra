@@ -166,7 +166,7 @@
     "development/tools/jobs/tester",
     "development/tools/pkg/file"
   ]
-  revision = "4e402d5e6ec5103685aa5a05a2ad022edf99665a"
+  revision = "3579a686414ec0984179960b0acb2bfe8d8fb424"
 
 [[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
