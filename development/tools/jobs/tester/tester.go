@@ -46,6 +46,8 @@ const (
 
 	// BuildScriptDir means build script directory
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+	// GovernanceScriptDir means governance script directory
+	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
 
 // ReadJobConfig reads job configuration from file
@@ -79,6 +81,17 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presub
 
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// FindPeriodicJobByName finds periodic job by name from provided jobs list
+func FindPeriodicJobByName(jobs []config.Periodic, name string) *config.Periodic {
 	for _, job := range jobs {
 		if job.Name == name {
 			return &job
