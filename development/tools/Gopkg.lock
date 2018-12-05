@@ -12,8 +12,8 @@
     "internal/version",
     "storage"
   ]
-  revision = "bb12be1742b232539b22ad8d0efc7afb02bbae39"
-  version = "v0.33.0"
+  revision = "0ebda48a7f143b1cce9eb37a8c1106ac762a3430"
+  version = "v0.34.0"
 
 [[projects]]
   branch = "master"
@@ -159,6 +159,16 @@
   version = "v1.0.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/kyma-project/test-infra"
+  packages = [
+    "development/tools/cmd/secretspopulator/automock",
+    "development/tools/jobs/tester",
+    "development/tools/pkg/file"
+  ]
+  revision = "9b23660d764c4e927aeccee0be9741168a03ad23"
+
+[[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
   revision = "c12348ce28de40eed0136aa2b644d0ee0650e56c"
@@ -220,7 +230,7 @@
     "internal/bitbucket.org/ww/goautoneg",
     "model"
   ]
-  revision = "1f2c4f3cd6db5fd6f68f36af6b6d5d936fd93c4e"
+  revision = "4724e9255275ce38f7179b2478abeae4e28c904f"
 
 [[projects]]
   branch = "master"
@@ -231,7 +241,7 @@
     "nfs",
     "xfs"
   ]
-  revision = "185b4288413d2a0dd0806f78c90dde719829e5ae"
+  revision = "1dc9a6cbc91aacc3e8b2d63db4d2e957a5394ac4"
 
 [[projects]]
   branch = "master"
@@ -302,7 +312,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
 
 [[projects]]
   branch = "master"
@@ -317,7 +327,7 @@
     "internal/timeseries",
     "trace"
   ]
-  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
+  revision = "351d144fa1fc0bd934e2408202be0c29f25e35a0"
 
 [[projects]]
   branch = "master"
@@ -329,7 +339,7 @@
     "jws",
     "jwt"
   ]
-  revision = "f42d05182288abf10faef86d16c0d07b8d40ea2d"
+  revision = "d668ce993890a79bda886613ee587a69dd5da7a6"
 
 [[projects]]
   branch = "master"
@@ -338,7 +348,7 @@
     "unix",
     "windows"
   ]
-  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
+  revision = "4ed8d59d0b35e1e29334a206d1b3f38b1e5dfb31"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -380,13 +390,14 @@
     "internal/fastwalk",
     "internal/gopathwalk"
   ]
-  revision = "9c8bd463e3aca40b6288cd14f7b7703206ff743b"
+  revision = "22934f0fdb6201c132a3dc6120150dcb1646d74c"
 
 [[projects]]
   branch = "master"
   name = "google.golang.org/api"
   packages = [
     "cloudkms/v1",
+    "compute/v1",
     "gensupport",
     "googleapi",
     "googleapi/internal/uritemplates",
@@ -398,7 +409,7 @@
     "transport/http",
     "transport/http/internal/propagation"
   ]
-  revision = "83a9d304b1e613fc253e1e2710778642fe81af53"
+  revision = "6142e720c068c6cd71f2258e007ff1991572e1d5"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -426,7 +437,7 @@
     "googleapis/rpc/code",
     "googleapis/rpc/status"
   ]
-  revision = "b5d43981345bdb2c233eb4bf3277847b48c6fdc6"
+  revision = "bd91e49a0898e27abb88c339b432fa53d7497ac0"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -435,17 +446,22 @@
     "balancer",
     "balancer/base",
     "balancer/roundrobin",
+    "binarylog/grpc_binarylog_v1",
     "codes",
     "connectivity",
     "credentials",
+    "credentials/internal",
     "encoding",
     "encoding/proto",
     "grpclog",
     "internal",
     "internal/backoff",
+    "internal/binarylog",
     "internal/channelz",
     "internal/envconfig",
     "internal/grpcrand",
+    "internal/grpcsync",
+    "internal/syscall",
     "internal/transport",
     "keepalive",
     "metadata",
@@ -458,8 +474,8 @@
     "status",
     "tap"
   ]
-  revision = "2e463a05d100327ca47ac218281906921038fd95"
-  version = "v1.16.0"
+  revision = "df014850f6dee74ba2fc94874043a9f3f75fbfd8"
+  version = "v1.17.0"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -476,8 +492,8 @@
 [[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
-  version = "v2.2.1"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
 
 [[projects]]
   branch = "release-1.11"
@@ -513,7 +529,7 @@
     "storage/v1alpha1",
     "storage/v1beta1"
   ]
-  revision = "4e7be11eab3ffcfc1876898b8272df53785a9504"
+  revision = "2dd39edadc55ab8a4ab2b27b84a9ed1b467ef47e"
 
 [[projects]]
   branch = "release-1.11"
@@ -558,7 +574,7 @@
     "third_party/forked/golang/json",
     "third_party/forked/golang/reflect"
   ]
-  revision = "8ee1a638bafa4ae9691077e690cb45dd54f45111"
+  revision = "3d8ee2261517413977a62256b7d79644d7ffdc43"
 
 [[projects]]
   name = "k8s.io/client-go"
@@ -683,11 +699,17 @@
     "prow/sidecar",
     "testgrid/util/gcs"
   ]
-  revision = "29046634e60d5044447238dfefef4bcc26808bd2"
+  revision = "0be5ec05ed6b2b29999016e7d3903007919bc660"
+
+[[projects]]
+  name = "sigs.k8s.io/yaml"
+  packages = ["."]
+  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "aef4ff1bee18fb050a453fca4968013a9616e3381d7bad197a7886c9a6e4be40"
+  inputs-digest = "5c81f8b3250d600e6ba99a42209c3b08ffe572220d4d5e309cb4db81d2515737"
   solver-name = "gps-cdcl"
   solver-version = 1
