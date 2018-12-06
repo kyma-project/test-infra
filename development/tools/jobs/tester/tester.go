@@ -5,6 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"fmt"
+
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -101,17 +103,37 @@ func FindPeriodicJobByName(jobs []config.Periodic, name string) *config.Periodic
 	return nil
 }
 
-// AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
-func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
+// AssertThatHasExtraRef checks if UtilityConfig has repository passed in argument defined
+func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, repository string) {
 	for _, curr := range in.ExtraRefs {
-		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
+		if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
 			curr.Org == "kyma-project" &&
-			curr.Repo == "test-infra" &&
+			curr.Repo == repository &&
 			curr.BaseRef == "master" {
 			return
 		}
 	}
-	assert.FailNow(t, "Job has not configured test-infra as a extra ref")
+	assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+}
+
+// AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
+func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
+	AssertThatHasExtraRef(t, in, "test-infra")
+}
+
+// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
+func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories []string) {
+	for _, repository := range repositories {
+		for _, curr := range in.ExtraRefs {
+			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
+				curr.Org == "kyma-project" &&
+				curr.Repo == repository &&
+				curr.BaseRef == "master" {
+				return
+			}
+		}
+		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+	}
 }
 
 // AssertThatHasPresets checks if JobBase has expected labels

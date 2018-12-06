@@ -52,6 +52,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--repository test-infra", "--full-validation true"}, actualPeriodic.Spec.Containers[0].Args)

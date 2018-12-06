@@ -53,7 +53,8 @@ function validate_external_links() {
 }
 
 function validate_external_links_on_changed_files() {
-    local branch_name=$(git branch | cut -d ' ' -f2)
+    local branch_name=""
+    branch_name=$(git branch | cut -d ' ' -f2)
     echo "Fetching changes between origin/master...origin/${branch_name}"
     local files=""
     files=$(git --no-pager diff --name-only origin/master...origin/"${branch_name}" | grep '.md' || echo '')
