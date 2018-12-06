@@ -13,7 +13,6 @@ The `development` folder has the following structure:
 ```
   ├── checker                  # This folder contains code sources of a simple Go application that verifies the configuration of jobs, "config.yaml", and "plugins.yaml".
   ├── tools                    # This folder contains code sources of Go applications for the "test-infra" repository.
-  ├── create-gcp-secrets.sh    # This script downloads Secrets from the GCP storage bucket to your Prow installation.
   ├── install-prow.sh          # This script installs Prow on your cluster.
   ├── provision-cluster.sh     # This script creates a Kubernetes cluster.
   ├── remove-prow.sh           # This script removes Prow from your Kubernetes cluster.

@@ -19,7 +19,7 @@ The integration job is a pipeline that consists of multiple steps:
 
 ### Project structure
 
-The main entry point for the entire pipeline is the `pr-gke-integration.sh` script that invokes other helper scripts and CLI tools.
+The main entry point for the entire pipeline is the `kyma-gke-integration.sh` script that invokes other helper scripts and CLI tools.
 The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
 
 ### Required environment variables
@@ -29,7 +29,7 @@ The following environment variables are required:
 
 - **REPO_OWNER** is the repository owner or organization. This variable is set up by Prow.
 - **REPO_NAME** is the repository name. This variable is set up by Prow.
-- **PULL_NUMBER** is the pull request number. This variable is set up by Prow.
+- **BUILD_TYPE** is one of pr/master/release. This variable is created by using the `preset-build` label in ProwJob definition
 - **DOCKER_PUSH_REPOSITORY** is the Docker repository hostname.
 - **DOCKER_PUSH_DIRECTORY** - the Docker top-level directory, preceded by a slash (/).
 - **KYMA_PROJECT_DIR** is a directory path with Kyma sources to use for the installation.
@@ -43,7 +43,7 @@ The following environment variables are required:
 The pipeline accesses GCP using a service account configured with the **GOOGLE_APPLICATION_CREDENTIALS** environment variable.
 This service account must have GCP permissions equivalent to the following GCP roles:
 
-- Compute Network Admin (`roles/compute.networkAdmin`)
+- Compute Admin (`roles/compute.admin`)
 - Kubernetes Engine Admin (`roles/container.admin`)
 - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
 - DNS Administrator (`roles/dns.admin`)

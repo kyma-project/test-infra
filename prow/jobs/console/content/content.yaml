@@ -1,30 +1,45 @@
+job_template: &job_template
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-project/console
+  max_concurrency: 10
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/console/content"
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository: "true"
+
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: prow/console/content
-      run_if_changed: "content/"
-      context: prow/console/content
-      optional: true
-      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-      max_concurrency: 10
+    - name: console-content
+      branches:
+        - master
+      run_if_changed: "^content/"
       labels:
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository: "true"
+        <<: *job_labels_template
         preset-build-pr: "true"
-      decorate: true
-      path_alias: github.com/kyma-project/console
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/prow/buildpack-node:0.0.1
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pipeline.sh"
-            env:
-              - name: SOURCES_DIR
-                value: "/home/prow/go/src/github.com/kyma-project/console/content"
+      <<: *job_template
+
+postsubmits:
+  kyma-project/console:
+    - name: console-content
+      branches:
+        - master
+      <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-master: "true"

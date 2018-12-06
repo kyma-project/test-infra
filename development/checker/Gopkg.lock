@@ -42,12 +42,6 @@
   version = "v1.4.7"
 
 [[projects]]
-  name = "github.com/ghodss/yaml"
-  packages = ["."]
-  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
-  version = "v1.0.0"
-
-[[projects]]
   name = "github.com/gogo/protobuf"
   packages = [
     "proto",
@@ -475,6 +469,7 @@
     "prow/plugins/docs-no-retest",
     "prow/plugins/dog",
     "prow/plugins/golint",
+    "prow/plugins/golint/suggestion",
     "prow/plugins/heart",
     "prow/plugins/help",
     "prow/plugins/hold",
@@ -510,11 +505,17 @@
     "prow/slack",
     "testgrid/util/gcs"
   ]
-  revision = "8f00a6cd63411d912e723fb0b33e1cf7b7ee5785"
+  revision = "b9a576b397892c55487e495721d23b3a52ac9472"
+
+[[projects]]
+  name = "sigs.k8s.io/yaml"
+  packages = ["."]
+  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ff4c1fa908a0990a392426c7cb8a6cd822b52518a51aec96d297e35b31bd9999"
+  inputs-digest = "82b9ea6e12a095e4dca32075e99e598317fe3517be92125318891906341810ed"
   solver-name = "gps-cdcl"
   solver-version = 1

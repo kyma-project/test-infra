@@ -4,7 +4,7 @@
 
 Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests, applying and removing labels, or opening and closing issues.
 
-You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in Google Cloud Platform (GCP). Each Prow component is a small Go service that has its own function in the management of these one-off single-pod Prow jobs.
+You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in Google Cloud Platform (GCP). Each Prow component is a small Go service that has its own function in the management of ProwJobs.
 
 In the context of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
@@ -19,7 +19,7 @@ Prow replies on this basic set of configurations:
   - `oauth-token` which is a GitHub token with read and write access to the bot account
 - Service accounts and their Secret files for sensitive jobs that are encrypted using Key Management Service (KMS) and stored in Google Cloud Storage (GCS)
 - The `starter.yaml` file with a basic configuration of Prow components
-- Webhooks configured for the GitHub repository to enable sending Events from a GitHub repository to Prow.
+- Webhooks configured for the GitHub repository to enable sending events from a GitHub repository to Prow.
 - Plugins enabled by creating and modifying the `plugins.yaml` file
 - Jobs enabled by creating and configuring the basic `config.yaml` file, and specifying job definitions in the `jobs` subfolder
 
@@ -43,7 +43,7 @@ Its structure looks as follows:
 ```
 
   ├── cluster               # Files for Prow cluster provisioning
-  ├── images                # Images for Prow jobs
+  ├── images                # Images for ProwJobs
   ├── jobs                  # Files with job definitions
   ├── scripts               # Scripts used by the test jobs
   ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
@@ -85,10 +85,10 @@ prow
 
 ### Convention for naming jobs
 
-When you define jobs for Prow, both **name** and **context** of the job must follow one of these patterns:
+When you define jobs for Prow, **name** of the job must follow one of these patterns:
 
-- `prow/{repository_name}/{component_name}/{job_name}` for components
-- `prow/{repository_name}/{job_name}` for jobs not connected to a particular component
+- `{repository_name}-{component_name}-{job_name}` for components
+- `{repository_name}-{job_name}` for jobs not connected to a particular component
 
 In both cases, `{job_name}` must reflect the job's responsibility.
 
@@ -119,14 +119,14 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla
-              - prow/test-infra/validate-scripts
-              - prow/test-infra/validate-configs
-              - prow/test-infra/bootstrap
-              - prow/test-infra/buildpack-golang
-              - prow/test-infra/buildpack-node
-              - prow/test-infra/cleaner
-              - prow/test-infra/development/tools
-              - prow/test-infra/test-jobs-yaml-definitions
+              - test-infra-validate-scripts
+              - test-infra-validate-configs
+              - test-infra-bootstrap
+              - test-infra-buildpack-golang
+              - test-infra-buildpack-node
+              - test-infra-cleaner
+              - test-infra-development/tools
+              - test-infra-test-jobs-yaml-definitions
 ```
 
 The Branch Protector component updates the configuration every 30 minutes.

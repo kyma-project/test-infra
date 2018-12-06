@@ -22,17 +22,30 @@ const (
 	PresetGcrPush Preset = "preset-sa-gcr-push"
 	// PresetDockerPushRepo means Docker repository
 	PresetDockerPushRepo Preset = "preset-docker-push-repository"
+	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
+	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
+	// PresetDockerPushRepoIncubator means Decker repository incubator images
+	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
 	PresetBuildMaster Preset = "preset-build-master"
 	// PresetBuildRelease means release environment
 	PresetBuildRelease Preset = "preset-build-release"
+	// PresetBotGithubToken means github token
+	PresetBotGithubToken Preset = "preset-bot-github-token"
+	// PresetBotGithubSSH means github ssh
+	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
-	// EnvSourcesDir means directory with component to build
-	EnvSourcesDir = "SOURCES_DIR"
+	// ImageNodeBuildpackLatest means Node.js buildpack image
+	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
+	// ImageBootstrapLatest means Bootstrap image
+	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
+
+	// BuildScriptDir means build script directory
+	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 )
 
 // ReadJobConfig reads job configuration from file
@@ -51,6 +64,28 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 		return config.JobConfig{}, errors.Wrapf(err, "while unmarshalling file [%s]", fileName)
 	}
 	return jobConfig, nil
+}
+
+// FindPresubmitJobByName finds presubmit job by name from provided jobs list
+func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
+
+	return nil
 }
 
 // AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
@@ -78,5 +113,9 @@ func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile str
 	sl := []config.Presubmit{p}
 	require.NoError(t, config.SetPresubmitRegexes(sl))
 	assert.True(t, sl[0].RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
+}
 
+// AssertThatHasCommand checks if job has
+func AssertThatHasCommand(t *testing.T, command []string) {
+	assert.Equal(t, []string{BuildScriptDir}, command)
 }

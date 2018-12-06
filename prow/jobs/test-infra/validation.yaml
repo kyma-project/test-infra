@@ -1,6 +1,6 @@
 presubmits:
   kyma-project/test-infra:
-    - name: prow/test-infra/validate-scripts
+    - name: test-infra-validate-scripts
       run_if_changed: "/*.sh$"
       decorate: true
       skip_report: false
@@ -9,7 +9,7 @@ presubmits:
           - image: eu.gcr.io/kyma-project/prow/test-infra/develop/bootstrap:v20181115-af8fb73
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
-    - name: prow/test-infra/validate-configs
+    - name: test-infra-validate-configs
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
       skip_report: false

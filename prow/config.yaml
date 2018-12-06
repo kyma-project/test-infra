@@ -76,6 +76,11 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/prow/test-infra" # TODO: change to eu.gcr.io/kyma-project/test-infra
   - labels:
+      preset-docker-push-repository-incubator: "true"
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "eu.gcr.io/kyma-project/prow/incubator" # TODO: change to eu.gcr.io/kyma-project/incubator
+  - labels:
       preset-build-pr: "true"
     env:
       - name: BUILD_TYPE
@@ -94,6 +99,35 @@ presets:
     env:
       - name: BUILD_TYPE
         value: release
+  - labels:
+      preset-bot-npm-token: "true"
+    env:
+      - name: BOT_NPM_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-npm-token
+            key: token
+  - labels:
+      preset-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-token
+            key: token
+  - labels:
+      preset-bot-github-ssh: "true"
+    env:
+      - name: BOT_GITHUB_SSH_PATH
+        value: /etc/credentials/kyma-bot-github-ssh/key.pem
+    volumes:
+      - name: kyma-bot-github-ssh
+        secret:
+          secretName: kyma-bot-github-ssh
+    volumeMounts:
+      - name: kyma-bot-github-ssh
+        mountPath: /etc/credentials/kyma-bot-github-ssh
+        readOnly: true
 
 branch-protection:
   orgs:
@@ -111,17 +145,19 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
-              - prow/test-infra/bootstrap
-              - prow/test-infra/bootstrap-helm
-              - prow/test-infra/buildpack-golang
-              - prow/test-infra/buildpack-node
-              - prow/test-infra/cleaner
-              - prow/test-infra/development/tools
-              - prow/test-infra/test-jobs-yaml-definitions
-              - prow/test-infra/validate-scripts
-              - prow/test-infra/validate-configs
+              - test-infra-bootstrap
+              - test-infra-bootstrap-helm
+              - test-infra-buildpack-golang
+              - test-infra-buildpack-node
+              - test-infra-cleaner
+              - test-infra-development-tools
+              - test-infra-test-jobs-yaml-definitions
+              - test-infra-validate-scripts
+              - test-infra-validate-configs
 
 plank:
+  job_url_template: 'https://status.build.kyma-project.io/view/gcs/prow-production/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
+  job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   pod_pending_timeout: 60m
   default_decoration_config:
@@ -136,3 +172,11 @@ plank:
       bucket: prow-production
       path_strategy: "explicit"
     gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
+
+deck:
+  spyglass:
+    size_limit: 500000000 # 500MB
+    viewers:
+      "started.json|finished.json": ["metadata-viewer"]
+      "build-log.txt": ["build-log-viewer"]
+      "artifacts/junit.*\\.xml": ["junit-viewer"]
