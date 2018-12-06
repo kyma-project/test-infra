@@ -60,7 +60,7 @@ For the purpose of the installation, you must have a set of service accounts and
 
 1. Create two buckets on GCS, one for storing Secrets and the second for storing logs.
 
-> **NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file.
+> **NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file. This bucket is also used in Prow by Spyglass to display the logs. To make it publicly accessible, assign **Storage Object Viewer** and **Storage Legacy Bucket Reader** roles to `allUsers`.
 
 2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
