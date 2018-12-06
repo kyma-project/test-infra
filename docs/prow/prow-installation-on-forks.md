@@ -168,21 +168,21 @@ If the files are configured correctly, upload the files on a cluster.
 
 1. Use the `update-plugins.sh {file_path}` script to apply plugin changes on a cluster.
 
-```
-./update-plugins.sh ../prow/plugins.yaml
-```
+   ```
+   ./update-plugins.sh ../prow/plugins.yaml
+   ```
 
 2. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
 
-```
-./update-config.sh ../prow/config.yaml
-```
+   ```
+   ./update-config.sh ../prow/config.yaml
+   ```
 
 3. Use the `update-jobs.sh {jobs_dir_path}` script to apply jobs configuration on a cluster.
 
-```
-./update-jobs.sh ../prow/jobs
-```
+   ```
+   ./update-jobs.sh ../prow/jobs
+   ```
 
 After you complete the required configuration, you can test the uploaded plugins and configuration. You can also create your own job pipeline and test it against the forked repository.
 
