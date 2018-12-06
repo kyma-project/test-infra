@@ -1,4 +1,4 @@
-# Buildpack Node.js + Chromium Docker Image
+# Node.js buildpack with Chromium Docker image
 
 ## Overview
 
