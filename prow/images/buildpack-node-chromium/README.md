@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the Buildpack with Chromium installed that is based on the [buildpack-node](../buildpack-node) image. Use it to run tests requiring Chromium.
+This folder contains the Node.js buildpack with Chromium installed. It is based on the [buildpack-node](../buildpack-node) image, and you can use it to run tests requiring Chromium.
 
 The image consists of:
 
