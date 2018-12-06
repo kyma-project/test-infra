@@ -73,6 +73,32 @@ go run "${CURRENT_DIR}/tools/cmd/secretspopulator/main.go" --project="${PROJECT}
 
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
 
-# Add annotations to Prow Ingress 
-kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
-kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
+# Remove default ingress
+kubectl delete ingress ing
+
+# Recreate ingress with nginx labels
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    name: ing
+    namespace: default
+  spec:
+    rules:
+    - http:
+        paths:
+        - backend:
+            serviceName: deck
+            servicePort: 80
+          path: /
+        - backend:
+            serviceName: hook
+            servicePort: 8888
+          path: /hook
+  status: {}
+EOF
