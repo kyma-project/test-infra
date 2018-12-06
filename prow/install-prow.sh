@@ -28,5 +28,8 @@ kubectl apply -f cluster/03-tls-ing_ingress.yaml
 # Install branch protector
 kubectl apply -f cluster/04-branchprotector_cronjob.yaml
 
+# Define limit range
+kubectl apply -f cluster/05-limit-range.yaml
+
 # Remove Insecure ingress 
 kubectl delete ingress ing
