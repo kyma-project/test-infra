@@ -1,5 +1,6 @@
 job_template: &job_template
   skip_report: true
+  run_if_changed: "^core/"
   decorate: true
   path_alias: github.com/kyma-project/console
   max_concurrency: 10
@@ -36,7 +37,6 @@ presubmits: # runs on PRs
     - name: console-core
       branches:
         - master
-      run_if_changed: "^core/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"

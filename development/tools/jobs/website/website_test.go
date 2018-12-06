@@ -28,6 +28,7 @@ func TestWebsiteJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
+	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-project/website", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetBotGithubToken, tester.PresetBotGithubSSH)

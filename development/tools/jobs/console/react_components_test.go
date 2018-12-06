@@ -60,6 +60,7 @@ func TestReactComponentsJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/console", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster)
+	assert.Equal(t, "^components/react/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/components/react"}, actualPost.Spec.Containers[0].Args)

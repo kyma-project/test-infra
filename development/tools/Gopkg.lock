@@ -683,7 +683,13 @@
     "prow/sidecar",
     "testgrid/util/gcs"
   ]
-  revision = "29046634e60d5044447238dfefef4bcc26808bd2"
+  revision = "526a12079a26fb7022e6aea1a2d08fd7915c50d1"
+
+[[projects]]
+  name = "sigs.k8s.io/yaml"
+  packages = ["."]
+  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"
