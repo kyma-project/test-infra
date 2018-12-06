@@ -7,7 +7,6 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/library.sh"
 
 readonly MILV_IMAGE="magicmatatjahu/milv:0.0.6"
-readonly BRANCH_NAME=$(git branch | cut -d ' ' -f2)
 OUTPUT=0
 
 # read arguments
@@ -54,9 +53,10 @@ function validate_external_links() {
 }
 
 function validate_external_links_on_changed_files() {
-    echo "Fetching changes between origin/master...origin/${BRANCH_NAME}"
+    local branch_name=$(git branch | cut -d ' ' -f2)
+    echo "Fetching changes between origin/master...origin/${branch_name}"
     local files=""
-    files=$(git --no-pager diff --name-only origin/master...origin/"${BRANCH_NAME}" | grep '.md' || echo '')
+    files=$(git --no-pager diff --name-only origin/master...origin/"${branch_name}" | grep '.md' || echo '')
     local changed_files=""
     for file in $files; do
         changed_files="${changed_files} ./${REPOSITORY_NAME}/${file}"
