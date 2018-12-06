@@ -17,6 +17,11 @@ while test $# -gt 0; do
             readonly REPOSITORY_NAME=$1
             shift
             ;;
+        --repository-dir)
+            shift
+            readonly REPOSITORY_DIR=$1
+            shift
+            ;;
         --full-validation)
             shift
             readonly FULL_VALIDATION=$1
@@ -34,8 +39,12 @@ if [[ -z "${REPOSITORY_NAME}" ]]; then
     exit 1
 fi
 
+if [[ -z "${REPOSITORY_DIR}" ]]; then
+    REPOSITORY_DIR="${PWD}"
+fi
+
 function run_milv_docker() {
-    docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${PWD}:/${REPOSITORY_NAME}:ro" "${MILV_IMAGE}" --base-path="/${REPOSITORY_NAME}" "${@}"
+    docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${REPOSITORY_DIR}:/${REPOSITORY_NAME}:ro" "${MILV_IMAGE}" --base-path="/${REPOSITORY_NAME}" "${@}"
     local result=$?
     if [ ${result} != 0 ]; then
         OUTPUT=1

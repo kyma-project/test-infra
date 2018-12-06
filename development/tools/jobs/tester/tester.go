@@ -46,6 +46,9 @@ const (
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 
+	// KymaProjectDir means kyma project dir
+	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
+
 	// BuildScriptDir means build script directory
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 	// GovernanceScriptDir means governance script directory

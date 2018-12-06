@@ -3,6 +3,8 @@ package console
 import (
 	"testing"
 
+	"fmt"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -56,5 +58,6 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "console"})
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"--repository console", "--full-validation true"}, actualPeriodic.Spec.Containers[0].Args)
+	repositoryDirArg := fmt.Sprintf("--repository-dir %s/console", tester.KymaProjectDir)
+	assert.Equal(t, []string{"--repository console", repositoryDirArg, "--full-validation true"}, actualPeriodic.Spec.Containers[0].Args)
 }

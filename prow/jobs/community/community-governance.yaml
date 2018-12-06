@@ -49,5 +49,6 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
         args:
           - "--repository community"
+          - "--repository-dir /home/prow/go/src/github.com/kyma-project/community"
           - "--full-validation true"
 
