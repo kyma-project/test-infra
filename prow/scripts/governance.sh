@@ -65,6 +65,7 @@ function validate_external_links_on_changed_files() {
 
     if [ -n "${changed_files}" ]; then
         echo "Validate external links in changed markdown files"
+        # shellcheck disable=SC2086
         run_milv_docker --ignore-internal ${changed_files}
     else
         echo "Any markdown files to checking external links"
