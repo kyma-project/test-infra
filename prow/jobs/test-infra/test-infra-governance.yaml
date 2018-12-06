@@ -1,12 +1,12 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: test-infra-governance
-      skip_report: true
       decorate: true
       max_concurrency: 10
       branches:
         - master
       labels:
+        preset-dind-enabled: "true"
         preset-build-pr: "true"
       run_if_changed: "milv.config.yaml|.md$"
       path_alias: github.com/kyma-project/test-infra
@@ -16,20 +16,19 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
-              - "test-infra"
+              - "--repository test-infra"
 
 periodics: # runs periodic on master
 - name: test-infra-governance-nightly
-  branches:
-    - master
-  path_alias: github.com/kyma-project/test-infra
   cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+  labels:
+    preset-dind-enabled: "true"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
         args:
-          - "test-infra"
-          - "true"
+          - "--repository test-infra"
+          - "--full-validation true"
 

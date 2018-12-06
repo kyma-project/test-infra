@@ -29,13 +29,13 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetDindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"console"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository console"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestGovernanceJobPeriodic(t *testing.T) {
@@ -51,10 +51,9 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.Equal(t, "github.com/kyma-project/console", actualPeriodic.PathAlias)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig)
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"console", "true"}, actualPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository console", "--full-validation true"}, actualPeriodic.Spec.Containers[0].Args)
 }

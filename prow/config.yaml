@@ -154,6 +154,7 @@ branch-protection:
               - test-infra-test-jobs-yaml-definitions
               - test-infra-validate-scripts
               - test-infra-validate-configs
+              - test-infra-governance
         website:
           #TODO: move to default config for organization
           enforce_admins: false
@@ -170,7 +171,7 @@ branch-protection:
               - license/cla #TODO: move to default config for organization
               - website
               - website-tools-documentation-generator
-              - continuous-integration/jenkins/pr-head #TODO: replace by governance job
+              - website-governance
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/prow-production/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'

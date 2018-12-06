@@ -25,17 +25,17 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/website", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetDindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"website"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository website"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestGovernanceJobPeriodic(t *testing.T) {
@@ -51,10 +51,9 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
-	assert.Equal(t, "github.com/kyma-project/website", actualPeriodic.PathAlias)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig)
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"website", "true"}, actualPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository website", "--full-validation true"}, actualPeriodic.Spec.Containers[0].Args)
 }
