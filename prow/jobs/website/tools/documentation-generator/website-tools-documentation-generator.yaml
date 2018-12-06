@@ -1,5 +1,4 @@
 job_template: &job_template
-  skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/website
   max_concurrency: 10
