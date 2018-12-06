@@ -6,7 +6,6 @@ ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_VERSION 70.0.3538.110-1~deb9u1
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
     gconf-service \
