@@ -24,10 +24,12 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
-              - "--repository kyma"
+              - "--repository"
+              - "kyma"
 
 periodics: # runs periodic on master
 - name: kyma-governance-nightly
+  decorate: true
   cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
   labels:
     preset-dind-enabled: "true"
@@ -48,7 +50,10 @@ periodics: # runs periodic on master
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
         args:
-          - "--repository kyma"
-          - "--repository-dir /home/prow/go/src/github.com/kyma-project/kyma"
-          - "--full-validation true"
+          - "--repository"
+          - "kyma"
+          - "--repository-dir"
+          - "/home/prow/go/src/github.com/kyma-project/kyma"
+          - "--full-validation"
+          - "true"
 

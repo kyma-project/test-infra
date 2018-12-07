@@ -36,7 +36,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"--repository test-infra"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository", "test-infra"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestGovernanceJobPeriodic(t *testing.T) {
@@ -52,11 +52,12 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
+	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
-	repositoryDirArg := fmt.Sprintf("--repository-dir %s/test-infra", tester.KymaProjectDir)
-	assert.Equal(t, []string{"--repository test-infra", repositoryDirArg, "--full-validation true"}, actualPeriodic.Spec.Containers[0].Args)
+	repositoryDirArg := fmt.Sprintf("%s/test-infra", tester.KymaProjectDir)
+	assert.Equal(t, []string{"--repository", "test-infra", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
 }
