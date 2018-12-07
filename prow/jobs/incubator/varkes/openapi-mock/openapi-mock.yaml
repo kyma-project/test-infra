@@ -1,5 +1,6 @@
 job_template: &job_template
   skip_report: false
+  run_if_changed: "^openapi-mock/"
   decorate: true
   path_alias: github.com/kyma-incubator/varkes
   max_concurrency: 10
@@ -28,7 +29,6 @@ presubmits: # runs on PRs
     - name: varkes-openapi-mock
       branches:
         - master
-      run_if_changed: "^openapi-mock/"
       <<: *job_template
       labels:
         <<: *job_labels_template

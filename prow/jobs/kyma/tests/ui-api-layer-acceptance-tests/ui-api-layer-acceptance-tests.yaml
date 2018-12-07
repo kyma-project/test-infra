@@ -1,5 +1,6 @@
 job_template: &job_template
   skip_report: true
+  run_if_changed: "^tests/ui-api-layer-acceptance-tests/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -28,7 +29,6 @@ presubmits: # runs on PRs
     - name: kyma-tests-ui-api-layer-acceptance-tests
       branches:
         - master
-      run_if_changed: "^tests/ui-api-layer-acceptance-tests/"
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template

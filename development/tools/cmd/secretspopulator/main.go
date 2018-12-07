@@ -237,6 +237,6 @@ func fatalOnError(err error) {
 }
 func fatalOnMissingArg(argName string, val *string) {
 	if val == nil || *val == "" {
-		logrus.Fatal("missing argument [%s]", argName)
+		logrus.Fatalf("missing argument [%s]", argName)
 	}
 }
