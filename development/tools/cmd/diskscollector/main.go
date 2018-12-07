@@ -7,11 +7,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/diskscollector"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
 )
@@ -34,7 +34,8 @@ func main() {
 		os.Exit(2)
 	}
 
-	log.Printf("Running with arguments: project: \"%s\", dryRun: \"%t\", ageInHours: \"%d\", diskNameRegex: \"%s\"", *project, *dryRun, *ageInHours, *diskNameRegex)
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
+	log.Infof("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, diskNameRegex: \"%s\"", *project, *dryRun, *ageInHours, *diskNameRegex)
 	context := context.Background()
 
 	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
@@ -57,7 +58,6 @@ func main() {
 
 	err = gc.Run(*project, !(*dryRun))
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatalf("Disk collector error: %v", err)
 	}
 }

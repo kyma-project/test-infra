@@ -1,9 +1,10 @@
 package diskscollector
 
 import (
-	"log"
 	"regexp"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	compute "google.golang.org/api/compute/v1"
 )
@@ -55,9 +56,9 @@ func (gc *DisksGarbageCollector) Run(project string, makeChanges bool) error {
 		}
 
 		if err != nil {
-			log.Printf("Error deleting disk %s: %#v", gd.disk.Name, err)
+			log.Errorf("deleting disk %s: %#v", gd.disk.Name, err)
 		} else {
-			log.Printf("%sRequested disk delete: \"%s\". Project \"%s\", zone \"%s\", disk creationTimestamp: \"%s\"", msgPrefix, gd.disk.Name, project, gd.zone, gd.disk.CreationTimestamp)
+			log.Infof("%sRequested disk delete: \"%s\". Project \"%s\", zone \"%s\", disk creationTimestamp: \"%s\"", msgPrefix, gd.disk.Name, project, gd.zone, gd.disk.CreationTimestamp)
 		}
 	}
 
@@ -83,14 +84,14 @@ func (gc *DisksGarbageCollector) list(project string) ([]*garbageDisk, error) {
 	for _, zone := range zones {
 		disks, err := gc.diskAPI.ListDisks(project, zone)
 		if err != nil {
-			log.Printf("Error listing disks for zone \"%s\": %#v", zone, err)
+			log.Errorf("listing disks for zone \"%s\": %#v", zone, err)
 		}
 
-		log.Printf("Fetched disks for zone: %s: %d disks", zone, len(disks))
+		log.Infof("Fetched disks for zone: %s: %d disks", zone, len(disks))
 		for _, disk := range disks {
 			shouldRemove, err := gc.shouldRemove(disk)
 			if err != nil {
-				log.Printf("Cannot check status of the disk %s due to an error: %#v", disk.Name, err)
+				log.Warnf("Cannot check status of the disk %s due to an error: %#v", disk.Name, err)
 			} else if shouldRemove {
 				toRemove = append(toRemove, &garbageDisk{zone, disk})
 			}
@@ -116,7 +117,7 @@ func NewDiskFilter(diskNameRegexp *regexp.Regexp, ageInHours int) DiskRemovalPre
 
 		diskCreationTime, err := time.Parse(time.RFC3339, disk.CreationTimestamp)
 		if err != nil {
-			log.Printf("Error while parsing CreationTimestamp: \"%s\" for the disk: %s", disk.CreationTimestamp, disk.Name)
+			log.Errorf("Error while parsing CreationTimestamp: \"%s\" for the disk: %s", disk.CreationTimestamp, disk.Name)
 			return false, err
 		}
 
@@ -129,7 +130,7 @@ func NewDiskFilter(diskNameRegexp *regexp.Regexp, ageInHours int) DiskRemovalPre
 
 		if nameMatches && oldEnough {
 			message := "Found a disk that could be deleted but's still in use. Name: %s, age: %f[hours], use count: %d"
-			log.Printf(message, disk.Name, diskAgeHours, len(disk.Users))
+			log.Infof(message, disk.Name, diskAgeHours, len(disk.Users))
 		}
 
 		return false, nil
