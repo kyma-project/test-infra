@@ -37,6 +37,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: kyma-tests-event-bus
+      run_if_changed: "^tests/event-bus/"
       branches:
         - master
       <<: *job_template
