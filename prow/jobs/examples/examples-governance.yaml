@@ -1,0 +1,59 @@
+presubmits: # runs on PRs
+  kyma-project/examples:
+    - name: examples-governance
+      skip_report: true
+      decorate: true
+      max_concurrency: 10
+      branches:
+        - master
+      labels:
+        preset-dind-enabled: "true"
+        preset-build-pr: "true"
+      run_if_changed: "milv.config.yaml|.md$"
+      path_alias: github.com/kyma-project/examples
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "examples"
+
+periodics: # runs periodic on master
+- name: examples-governance-nightly
+  decorate: true
+  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+  labels:
+    preset-dind-enabled: "true"
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - org: kyma-project
+      repo: examples
+      base_ref: master
+      path_alias: github.com/kyma-project/examples
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+        args:
+          - "--repository"
+          - "examples"
+          - "--repository-dir"
+          - "/home/prow/go/src/github.com/kyma-project/examples"
+          - "--full-validation"
+          - "true"
+

@@ -12,7 +12,7 @@ Use the following tools and configuration:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
-- [Kubernetes cluster](./prow-installation-on-forks.md/#provision-a-cluster)
+- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-cluster)
 - Two Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
