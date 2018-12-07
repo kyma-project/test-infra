@@ -20,4 +20,3 @@ To build the Docker image, run this command:
 ```bash
 docker build .
 ```
-
