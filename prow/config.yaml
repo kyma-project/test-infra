@@ -149,6 +149,7 @@ branch-protection:
               - test-infra-bootstrap-helm
               - test-infra-buildpack-golang
               - test-infra-buildpack-node
+              - test-infra-buildpack-node-chromium
               - test-infra-cleaner
               - test-infra-development-tools
               - test-infra-test-jobs-yaml-definitions
