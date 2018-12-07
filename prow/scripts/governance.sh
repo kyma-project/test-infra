@@ -7,6 +7,7 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/library.sh"
 
 readonly MILV_IMAGE="magicmatatjahu/milv:0.0.6"
+VOLUME_DIR=""
 OUTPUT=0
 
 # read arguments
@@ -43,8 +44,10 @@ if [[ -z "${REPOSITORY_DIR}" ]]; then
     REPOSITORY_DIR="${PWD}"
 fi
 
+VOLUME_DIR="${REPOSITORY_DIR}"
+
 function run_milv_docker() {
-    docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${REPOSITORY_DIR}:/${REPOSITORY_NAME}:ro" "${MILV_IMAGE}" --base-path="/${REPOSITORY_NAME}" "${@}"
+    docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${VOLUME_DIR}:/${REPOSITORY_NAME}:ro" "${MILV_IMAGE}" --base-path="/${REPOSITORY_NAME}" "${@}"
     local result=$?
     if [ ${result} != 0 ]; then
         OUTPUT=1
@@ -64,18 +67,28 @@ function validate_external_links() {
 function validate_external_links_on_changed_files() {
     local branch_name=""
     branch_name=$(git branch | cut -d ' ' -f2)
-    echo "Fetching changes between origin/master...origin/${branch_name}"
-    local files=""
-    files=$(git --no-pager diff --name-only origin/master...origin/"${branch_name}" | grep '.md' || echo '')
-    local changed_files=""
-    for file in $files; do
-        changed_files="${changed_files} ./${REPOSITORY_NAME}/${file}"
-    done
 
-    if [ -n "${changed_files}" ]; then
+    echo "Fetching changes between master...${branch_name}"
+    
+    local files=""
+    files=$(git --no-pager diff --name-only master..."${branch_name}" | grep '.md' || echo '')
+
+    if [ -n "${files}" ]; then
         echo "Validate external links in changed markdown files"
-        # shellcheck disable=SC2086
-        run_milv_docker --ignore-internal ${changed_files}
+        VOLUME_DIR="${REPOSITORY_DIR}/temp"
+
+        for file in $files; do
+            mkdir -p "${VOLUME_DIR}/$(dirname "${file}")"
+            cp -rf "${file}" "${VOLUME_DIR}/${file}"
+        done
+
+        local milv_config_file_dir=""
+        milv_config_file_dir="milv.config.yaml"
+        cp -rf "${milv_config_file_dir}" "${VOLUME_DIR}/${milv_config_file_dir}"
+
+        run_milv_docker --ignore-internal
+
+        rm -rf "${VOLUME_DIR}"
     else
         echo "Any markdown files to checking external links"
     fi
