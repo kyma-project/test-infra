@@ -28,7 +28,7 @@ echo "--------------------------------------------------------------------------
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
 echo "--------------------------------------------------------------------------------"
 echo
-docker build "${KYMA_SOURCES_DIR}" -f "${KYMA_SOURCES_DIR}"/kyma-installer/kyma.Dockerfile -t "${KYMA_INSTALLER_IMAGE}"
+docker build "${KYMA_SOURCES_DIR}" -f "${KYMA_SOURCES_DIR}"/tools/kyma-installer/kyma.Dockerfile -t "${KYMA_INSTALLER_IMAGE}"
 
 echo "--------------------------------------------------------------------------------"
 echo "pushing Kyma-Installer image"
