@@ -41,6 +41,8 @@ const (
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
 	// ImageNodeBuildpackLatest means Node.js buildpack image
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
+	// ImageNodeBuildpackLatest means Node.js + Chromium buildpack image
+	ImageNodeChromiumBuildPackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 
