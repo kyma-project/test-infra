@@ -43,12 +43,4 @@ func main() {
 
 	computeAPIWrapper := &orphanremover.ComputeAPIWrapper{Ctx: ctx, Svc: svc}
 	computeAPIWrapper.Collect(*dryRun, *project)
-	// zoneAPI := &diskscollector.ZoneAPIWrapper{Context: context, Zs: svc.Zones}
-	// diskAPI := &diskscollector.DiskAPIWrapper{Context: context, Ds: svc.Disks}
-	// filter := diskscollector.NewDiskFilter(rx, *ageInHours)
-	// gc := diskscollector.NewDisksGarbageCollector(zoneAPI, diskAPI, filter)
-	// err = gc.Run(*project, !(*dryRun))
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
 }
