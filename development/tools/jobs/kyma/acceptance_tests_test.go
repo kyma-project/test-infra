@@ -1,4 +1,4 @@
-package kyma
+package kyma_test
 
 import (
 	"testing"
@@ -32,8 +32,8 @@ func TestAcceptanceJobsPresubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/acceptance/fix")
 	assert.Equal(t, "^tests/acceptance/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance", actualPresubmit.Spec.Containers[0].Args[0])
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance", actualPresubmit.Spec.Containers[0].Args[0])
 }
 
 func TestAcceptanceJobPostsubmit(t *testing.T) {
@@ -57,7 +57,8 @@ func TestAcceptanceJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
+	assert.Equal(t, "^tests/acceptance/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance", actualPost.Spec.Containers[0].Args[0])
-
 }

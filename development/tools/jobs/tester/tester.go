@@ -43,6 +43,10 @@ const (
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
+	// ImageBoostrap001 represents version 0.0.1 of bootstrap image
+	ImageBoostrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
+	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 
 	// BuildScriptDir means build script directory
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"

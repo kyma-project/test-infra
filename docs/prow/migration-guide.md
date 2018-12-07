@@ -81,6 +81,7 @@ The table contains the list of all fields in the `yaml` file with their descript
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **name**                    | The job name. It should clearly identify the job. For reference, see the [convention](./../../prow/README.md#convention-for-naming-jobs) for naming jobs.                                                                                                                                                                                                                                                                                                                             |
 | **run_if_changed**          | A regular expression. Define the component for which changes in a PR must trigger the job. If a PR does not modify the component, this job sends a notification to GitHub with the information that it is skipped.                                                                                                                                                                                                                                                                    |
+| **always_run**              | A parameter that defines if a PR must trigger the job automatically. `always_run` and `run_if_changed` are mutually exclusive. If you do not set one of them, you can only trigger the job manually by adding a comment to a PR.                                                                 |
 | **branches**                | A list of base branches against which you want the job to run in the PR.                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **skip_report**             | A parameter that defines if a job status appears in the PR on GitHub. If you set it to `true`, Prow does not send the job's status to GitHub. Set it to `true` for the purpose of migration.                                                                                                                                                                                                                                                                                          |
 | **decorate**                | Decorated jobs automatically clone the repository and store logs from the job execution in Google Cloud Storage (GCS) buckets.                                                                                                                                                                                                                                                                                                                                                        |
@@ -189,6 +190,7 @@ See an example of the postsubmit job:
 ```yaml
 job_template: &job_template
   skip_report: true
+  run_if_changed: "^components/binding-usage-controller/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -215,7 +217,6 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-components-binding-usage-controller
-      run_if_changed: "^components/binding-usage-controller/"
       branches:
         - master
       <<: *job_template
