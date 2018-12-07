@@ -34,7 +34,6 @@ func main() {
 		os.Exit(2)
 	}
 
-	log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
 	log.Infof("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, diskNameRegex: \"%s\"", *project, *dryRun, *ageInHours, *diskNameRegex)
 	context := context.Background()
 
