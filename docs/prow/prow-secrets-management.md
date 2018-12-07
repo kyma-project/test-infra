@@ -57,44 +57,44 @@ gcloud kms keys create $ENCRYPTION_KEY_NAME --location $LOCATION \
 Follow these steps:
 
 1. Export the variables, where:
- - **SA_NAME** is the name of the service account.
- - **SA_DISPLAY_NAME** is the display name of the service account.
- - **SECRET_FILE** is the path to the private key.
- - **ROLE** is the role bound to the service account.
+   - **SA_NAME** is the name of the service account.
+   - **SA_DISPLAY_NAME** is the display name of the service account.
+   - **SECRET_FILE** is the path to the private key.
+   - **ROLE** is the role bound to the service account.
 
- See an example of variables you must export for such an account:
+   See an example of variables you must export for such an account:
 
- ```
- export SA_NAME=sa-gcs-plank
- export SA_DISPLAY_NAME=sa-gcs-plank
- export SECRET_FILE=sa-gcs-plank
- export ROLE=roles/storage.objectAdmin
+   ```
+   export SA_NAME=sa-gcs-plank
+   export SA_DISPLAY_NAME=sa-gcs-plank
+   export SECRET_FILE=sa-gcs-plank
+   export ROLE=roles/storage.objectAdmin
 
- ```
+   ```
 
 2. Create a service account:
-```
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-```
+   ```
+   gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
+   ```
 
 3. Create a private key for the service account:
-```
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
-```
+   ```
+   gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+   ```
 
 4. Add a policy binding to the service account:
-```
-gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
-```
+   ```
+   gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
+   ```
 
 ### Encrypt the Secret
 
 1. Export the **SECRET_FILE** variable which is the path to the file which contains the Secret.
 
 2. Encrypt the Secret:
-```
-gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
-```
+   ```
+   gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
+   ```
 
 ### Upload the Secret
 
