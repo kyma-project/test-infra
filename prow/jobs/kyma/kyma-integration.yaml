@@ -2,10 +2,11 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-integration
-      optional: true
       run_if_changed: "^(resources|installation)"
       skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
       max_concurrency: 10
+      branches:
+        - master
       labels:
         preset-sa-vm-kyma-integration: "true"
         preset-gc-project-env: "true"
@@ -25,9 +26,10 @@ presubmits: # runs on PRs
       run_if_changed: "^(resources|installation)"
       trigger: "(?m)^/test kyma-gke-integration"
       rerun_command: "/test kyma-gke-integration"
-      optional: true
       skip_report: true
       max_concurrency: 10
+      branches:
+        - master
       labels:
         preset-sa-gke-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -56,7 +58,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: kyma-integration
-      run_if_changed: "^(resources|installation)"
       branches:
         - master
       max_concurrency: 10
@@ -76,7 +77,6 @@ postsubmits:
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
     - name: kyma-gke-integration
-      run_if_changed: "^(resources|installation)"
       branches:
         - master
       max_concurrency: 10

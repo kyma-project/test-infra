@@ -661,7 +661,6 @@
   revision = "0317810137be915b9cf888946c6e115c1bfac693"
 
 [[projects]]
-  branch = "master"
   name = "k8s.io/test-infra"
   packages = [
     "prow/apis/prowjobs",
@@ -683,7 +682,7 @@
     "prow/sidecar",
     "testgrid/util/gcs"
   ]
-  revision = "526a12079a26fb7022e6aea1a2d08fd7915c50d1"
+  revision = "b9a576b397892c55487e495721d23b3a52ac9472"
 
 [[projects]]
   name = "sigs.k8s.io/yaml"
@@ -694,6 +693,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "aef4ff1bee18fb050a453fca4968013a9616e3381d7bad197a7886c9a6e4be40"
+  inputs-digest = "b6e148d0c75a709e197f318465914dccaa14144bf67be939a3634c2ff9334076"
   solver-name = "gps-cdcl"
   solver-version = 1
