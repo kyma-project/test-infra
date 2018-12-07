@@ -271,4 +271,4 @@ To have a better understanding of the role your ProwJob plays in the general Pro
 4. A Pod is created according to **spec** defined in the presubmit job. Additionally, the decorator clones your repository and mounts it under `/home/prow/go/src/{path_alias}`.
 5. The `build.sh` script is executed. It injects the required environment variables and points to the directory passed as an argument. It also executes **make-ci**, **make-master**, or **make-release**, depending on the value of the **BUILD_TYPE** variable.
 
-For further reference, read a more technical insight into a Kubernetes ProwJob flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow.md) document.
+For further reference, read a more technical insight into a Kubernetes ProwJob flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow_job.md) document.
