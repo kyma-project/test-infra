@@ -142,7 +142,7 @@ branch-protection:
             required_approving_review_count: 1
           protect: true
           #TODO: end move
-          # all jobs that has ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
+          # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
