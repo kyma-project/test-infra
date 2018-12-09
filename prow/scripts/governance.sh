@@ -16,6 +16,11 @@ function read_arguments() {
                 readonly REPOSITORY_NAME=$1
                 shift
                 ;;
+            --repository-org)
+                shift
+                readonly REPOSITORY_ORG=$1
+                shift
+                ;;
             --repository-dir)
                 shift
                 readonly REPOSITORY_DIR=$1
@@ -38,6 +43,10 @@ function read_arguments() {
         exit 1
     fi
 
+    if [[ -z "${REPOSITORY_ORG}" ]]; then
+        REPOSITORY_ORG="kyma-project"
+    fi
+
     if [[ -z "${REPOSITORY_DIR}" ]]; then
         REPOSITORY_DIR="${PWD}"
     fi
@@ -53,10 +62,10 @@ function load_library() {
 }
 
 function fetch_origin_master() {
-    local kyma_repository=""
-    kyma_repository="https://github.com/kyma-project/${REPOSITORY_NAME}.git"
+    local repository=""
+    repository="https://github.com/${REPOSITORY_ORG}/${REPOSITORY_NAME}.git"
 
-    git remote add origin "${kyma_repository}"
+    git remote add origin "${repository}"
     git pull origin master
 }
 
@@ -66,9 +75,7 @@ function copy_files() {
         cp -rf "${file}" "${VOLUME_DIR}/${file}"
     done
 
-    local milv_config_file_dir=""
-    milv_config_file_dir="milv.config.yaml"
-    cp -rf "${milv_config_file_dir}" "${VOLUME_DIR}/${milv_config_file_dir}"
+    cp -rf milv.config.yaml "${VOLUME_DIR}"/milv.config.yaml
 }
 
 function run_milv_docker() {
