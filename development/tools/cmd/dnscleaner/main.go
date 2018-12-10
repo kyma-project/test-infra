@@ -54,6 +54,6 @@ func main() {
 	computeAPI := &dnscleaner.ComputeServiceWrapper{Context: ctx, Compute: computeSvc}
 	dnsAPI := &dnscleaner.DNSServiceWrapper{Context: ctx, DNS: dnsSvc}
 	cleaner := dnscleaner.NewCleaner(computeAPI, dnsAPI)
-	cleaner.Run(*project, *dnsZone)
+	cleaner.Run(*project, *dnsZone, false)
 
 }

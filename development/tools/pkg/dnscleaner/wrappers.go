@@ -2,6 +2,7 @@ package dnscleaner
 
 import (
 	"context"
+	"log"
 
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
@@ -19,14 +20,14 @@ type DNSServiceWrapper struct {
 	DNS     *dns.Service
 }
 
-func (csw *ComputeServiceWrapper) lookupZones(project, pattern string) ([]string, error) {
-	call := csw.Compute.Zones.List(project)
+func (csw *ComputeServiceWrapper) lookupRegions(project, pattern string) ([]string, error) {
+	call := csw.Compute.Regions.List(project)
 	if pattern != "" {
 		call = call.Filter("name: " + pattern)
 	}
 
 	var zones []string
-	f := func(page *compute.ZoneList) error {
+	f := func(page *compute.RegionList) error {
 		for _, v := range page.Items {
 			zones = append(zones, v.Name)
 		}
@@ -54,4 +55,28 @@ func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, zone string) ([]*
 		return nil, err
 	}
 	return items, nil
+}
+
+func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region string) ([]*compute.Address, error) {
+	var items = []*compute.Address{}
+	call := csw.Compute.Addresses.List(project, region)
+	call = call.Filter("status: RESERVED")
+	f := func(page *compute.AddressList) error {
+		for _, v := range page.Items {
+			items = append(items, v)
+		}
+		return nil
+	}
+
+	if err := call.Pages(csw.Context, f); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) {
+	_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
+	if err != nil {
+		log.Print(err)
+	}
 }
