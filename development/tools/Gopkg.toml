@@ -32,6 +32,10 @@ required = [
   revision = "b9a576b397892c55487e495721d23b3a52ac9472"
   name = "k8s.io/test-infra"
 
+[[constraint]]
+  branch = "master"
+  name = "google.golang.org/api"
+
 # Need override because release-1.11 and kubernetes-1.11.0 are not semver compliant
 [[override]]
   name = "k8s.io/api"
