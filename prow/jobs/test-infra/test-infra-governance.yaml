@@ -3,7 +3,6 @@ presubmits: # runs on PRs
     - name: test-infra-governance
       decorate: true
       max_concurrency: 10
-      optional: true
       branches:
         - master
       labels:
