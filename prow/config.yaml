@@ -116,6 +116,13 @@ presets:
             name: kyma-bot-github-token
             key: token
   - labels:
+      preset-bot-github-credentials: "true"
+    env:
+      - name: BOT_GITHUB_EMAIL
+        value: "kyma.bot@sap.com"
+      - name: BOT_GITHUB_USER
+        value: "Kyma Bot"
+  - labels:
       preset-bot-github-ssh: "true"
     env:
       - name: BOT_GITHUB_SSH_PATH
