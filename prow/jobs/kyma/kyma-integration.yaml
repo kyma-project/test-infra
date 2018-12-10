@@ -117,15 +117,15 @@ periodics:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
 - name: orphanded-disks-cleaner
-  cron: "0/5 * * * *" # "Every five minutes"
+  cron: "0 * * * *" # "Every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
   decorate: true
   extra_refs:
-    - org: Tomasz-Smelcerz-SAP
+    - org: kyma-project
       repo: test-infra
-      base_ref: orphaned-disks-removal-prowjob
+      base_ref: master
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
@@ -134,4 +134,4 @@ periodics:
         - "bash"
       args:
         - "-c"
-        - "development/resources-cleanup.sh ${CLOUDSDK_CORE_PROJECT} --dryRun=true"
+        - "development/resources-cleanup.sh ${CLOUDSDK_CORE_PROJECT} --dryRun=false"
