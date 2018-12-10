@@ -2,6 +2,10 @@
 
 set -e
 
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/library.sh"
+
 readonly ARGS=("$@")
 readonly MILV_IMAGE="magicmatatjahu/milv:0.0.6"
 VOLUME_DIR=""
@@ -54,19 +58,10 @@ function read_arguments() {
     VOLUME_DIR="${REPOSITORY_DIR}"
 }
 
-function load_library() {
-    local script_dir=
-    script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    # shellcheck disable=SC1090
-    source "${script_dir}/library.sh"
-}
-
 function fetch_origin_master() {
-    local repository=""
-    repository="https://github.com/${REPOSITORY_ORG}/${REPOSITORY_NAME}.git"
-
+    local repository="https://github.com/${REPOSITORY_ORG}/${REPOSITORY_NAME}.git"
     git remote add origin "${repository}"
-    git pull origin master
+    git fetch origin master
 }
 
 function copy_files() {
@@ -117,7 +112,6 @@ function validate_external_on_pr() {
 
 function main() {
     read_arguments "${ARGS[@]}"
-    load_library
     init
 
     shout "Validate internal links"
