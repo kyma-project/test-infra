@@ -21,7 +21,7 @@ job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-bot-github-token: "true"
   preset-bot-github-ssh: "true"
-  preset-bot-github-credentials: "true"
+  preset-bot-github-identity: "true"
 
 presubmits: # runs on PRs
   kyma-project/website:

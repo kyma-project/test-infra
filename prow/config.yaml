@@ -116,7 +116,7 @@ presets:
             name: kyma-bot-github-token
             key: token
   - labels:
-      preset-bot-github-credentials: "true"
+      preset-bot-github-identity: "true"
     env:
       - name: BOT_GITHUB_EMAIL
         value: "kyma.bot@sap.com"
