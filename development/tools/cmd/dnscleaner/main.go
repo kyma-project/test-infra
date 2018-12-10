@@ -13,12 +13,6 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-//DNSRecord ???
-type DNSRecord struct {
-	name    string
-	records []string
-}
-
 var (
 	project = flag.String("project", "", "Project ID")
 	dnsZone = flag.String("dns-zone", "", "Name of the zone in DNS")
