@@ -134,4 +134,4 @@ periodics:
         - "bash"
       args:
         - "-c"
-        - "development/resources-cleanup.sh ${CLOUDSDK_CORE_PROJECT} --dryRun=false"
+        - "development/disks-cleanup.sh ${CLOUDSDK_CORE_PROJECT} --dryRun=false"
