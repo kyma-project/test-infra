@@ -149,19 +149,11 @@ branch-protection:
             required_approving_review_count: 1
           protect: true
           #TODO: end move
+          # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
-              - test-infra-bootstrap
-              - test-infra-bootstrap-helm
-              - test-infra-buildpack-golang
-              - test-infra-buildpack-node
-              - test-infra-buildpack-node-chromium
-              - test-infra-cleaner
-              - test-infra-development-tools
-              - test-infra-test-jobs-yaml-definitions
-              - test-infra-validate-scripts
-              - test-infra-validate-configs
+
         website:
           #TODO: move to default config for organization
           enforce_admins: false
@@ -176,8 +168,6 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
-              - website
-              - website-tools-documentation-generator
               - continuous-integration/jenkins/pr-head #TODO: replace by governance job
 
 plank:
