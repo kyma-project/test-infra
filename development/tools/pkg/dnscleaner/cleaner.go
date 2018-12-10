@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
+	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
 )
 
@@ -14,9 +16,18 @@ type DNSRecord struct {
 	records []string
 }
 
+//IPAddress Simplified Address object.
+type IPAddress struct {
+	name    string
+	address string
+	region  string
+}
+
 //ComputeAPI ???
 type ComputeAPI interface {
-	lookupZones(project string, pattern string) ([]string, error)
+	lookupRegions(project string, pattern string) ([]string, error)
+	lookupIPAddresses(project string, region string) ([]*compute.Address, error)
+	deleteIPAddress(project string, region string, address string)
 }
 
 //DNSAPI ???
@@ -36,15 +47,39 @@ func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI) *Cleaner {
 }
 
 //Run runs the logic
-func (cleaner *Cleaner) Run(project string, zone string) {
-	zones, err := cleaner.computeAPI.lookupZones(project, "europe-*")
+func (cleaner *Cleaner) Run(project string, zone string, dryRun bool) {
+	regions, err := cleaner.computeAPI.lookupRegions(project, "europe-*")
 	if err != nil {
 		log.Fatalf("Could not list Zones: %v", err)
 	}
-	fmt.Printf("%s\n\n", zones)
+
 	rawRecords, err := cleaner.dnsAPI.lookupDNSRecords(project, zone)
+	if err != nil {
+		log.Fatalf("Could not list DNSRecords: %v", err)
+	}
 	parsedRecords := extractRecords(rawRecords, "gkeint")
-	fmt.Printf("%s\n", parsedRecords)
+	fmt.Printf("%s\n\n", parsedRecords)
+
+	var parsedAddresses []IPAddress
+	for _, region := range regions {
+		rawIP, err := cleaner.computeAPI.lookupIPAddresses(project, region)
+		if err != nil {
+			log.Fatalf("Could not list IPAddress: %v", err)
+		}
+		parsedAddresses = append(parsedAddresses, extractIPAddresses(rawIP, region)...)
+	}
+	fmt.Printf("%s\n\n", parsedAddresses)
+	if !dryRun {
+		cleaner.purge(project, parsedRecords, parsedAddresses)
+	}
+}
+
+func extractIPAddresses(raw []*compute.Address, region string) []IPAddress {
+	var parsed []IPAddress
+	for _, ip := range raw {
+		parsed = append(parsed, IPAddress{ip.Name, ip.Address, region})
+	}
+	return parsed
 }
 
 func extractRecords(records []*dns.ResourceRecordSet, key string) []DNSRecord {
@@ -55,4 +90,33 @@ func extractRecords(records []*dns.ResourceRecordSet, key string) []DNSRecord {
 		}
 	}
 	return items
+}
+
+func findIPAddress(record string, addresses []IPAddress) string {
+	for _, ip := range addresses {
+		if ip.address == record {
+			return ip.name
+		}
+	}
+	return "NOT_FOUND"
+}
+
+func findIPRegion(name string, addresses []IPAddress) string {
+	for _, ip := range addresses {
+		if ip.name == name {
+			return ip.region
+		}
+	}
+	return "NOT_FOUND"
+}
+
+func (cleaner *Cleaner) purge(project string, records []DNSRecord, ips []IPAddress) {
+	for _, record := range records {
+		for _, recordIP := range record.records {
+			ad := findIPAddress(recordIP, ips)
+			fmt.Printf("---> Attempting to remove %s in %s\n", ad, recordIP)
+			// cleaner.computeAPI.deleteIPAddress(project, findIPRegion(ad, ips), ad)
+			time.Sleep(2 * time.Second)
+		}
+	}
 }
