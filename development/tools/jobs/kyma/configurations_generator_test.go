@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestApiControllerJobsPresubmit(t *testing.T) {
+func TestConfigurationsGeneratorJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/configurations-generator/configurations-generator.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestApiControllerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/configurations-generator"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestApiControllerJobPostsubmit(t *testing.T) {
+func TestConfigurationsGeneratorJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/configurations-generator/configurations-generator.yaml")
 	// THEN
