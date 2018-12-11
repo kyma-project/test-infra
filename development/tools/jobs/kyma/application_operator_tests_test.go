@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRemoteEnvironmentControllerJobsPresubmit(t *testing.T) {
+func TestApplicationOperatorTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/remote-environment-controller/remote-environment-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -20,7 +20,7 @@ func TestRemoteEnvironmentControllerJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-components-remote-environment-controller"
+	expName := "kyma-tests-application-operator-tests"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -29,16 +29,16 @@ func TestRemoteEnvironmentControllerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "components/remote-environment-controller/internal")
-	assert.Equal(t, "^components/remote-environment-controller/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/application-operator-tests/test")
+	assert.Equal(t, "^tests/application-operator-tests/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-controller"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/application-operator-tests"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestRemoteEnvironmentControllerJobPostsubmit(t *testing.T) {
+func TestApplicationOperatorTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/remote-environment-controller/remote-environment-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -48,7 +48,7 @@ func TestRemoteEnvironmentControllerJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-components-remote-environment-controller"
+	expName := "kyma-tests-application-operator-tests"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
@@ -57,8 +57,8 @@ func TestRemoteEnvironmentControllerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^components/remote-environment-controller/", actualPost.RunIfChanged)
+	assert.Equal(t, "^tests/application-operator-tests/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-controller"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/application-operator-tests"}, actualPost.Spec.Containers[0].Args)
 }
