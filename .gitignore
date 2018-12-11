@@ -1,7 +1,6 @@
 /development/hmac_token.txt
 /development/checker/vendor
 /development/tools/vendor
-/development/orphan-remover/vendor
 
 .idea/
 *.iml
