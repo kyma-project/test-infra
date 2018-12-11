@@ -41,6 +41,7 @@ func main() {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}
 
-	computeAPIWrapper := &orphanremover.ComputeAPIWrapper{Ctx: ctx, Svc: svc}
-	computeAPIWrapper.Collect(*dryRun, *project)
+	computeServiceWrapper := &orphanremover.ComputeServiceWrapper{Context: ctx, Compute: svc}
+	remover := orphanremover.NewRemover(computeServiceWrapper)
+	remover.Run(*dryRun, *project)
 }
