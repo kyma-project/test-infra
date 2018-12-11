@@ -116,6 +116,13 @@ presets:
             name: kyma-bot-github-token
             key: token
   - labels:
+      preset-bot-github-identity: "true"
+    env:
+      - name: BOT_GITHUB_EMAIL
+        value: "kyma.bot@sap.com"
+      - name: BOT_GITHUB_USER
+        value: "Kyma Bot"
+  - labels:
       preset-bot-github-ssh: "true"
     env:
       - name: BOT_GITHUB_SSH_PATH
@@ -142,23 +149,30 @@ branch-protection:
             required_approving_review_count: 1
           protect: true
           #TODO: end move
+          # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
-              - test-infra-bootstrap
-              - test-infra-bootstrap-helm
-              - test-infra-buildpack-golang
-              - test-infra-buildpack-node
-              - test-infra-cleaner
-              - test-infra-development-tools
-              - test-infra-test-jobs-yaml-definitions
-              - test-infra-validate-scripts
-              - test-infra-validate-configs
+        website:
+          #TODO: move to default config for organization
+          enforce_admins: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: true
+            required_approving_review_count: 1
+          #TODO: end move
+          branches:
+            master:
+              protect: true
+          required_status_checks:
+            contexts:
+              - license/cla #TODO: move to default config for organization
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/prow-production/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
   job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
+  max_concurrency: 10 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_config:
     timeout: 7200000000000 # 2h

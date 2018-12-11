@@ -5,6 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"fmt"
+
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -41,11 +43,22 @@ const (
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
 	// ImageNodeBuildpackLatest means Node.js buildpack image
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
+	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
+	ImageNodeChromiumBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
+	// ImageBoostrap001 represents version 0.0.1 of bootstrap image
+	ImageBoostrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
+	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
+
+	// KymaProjectDir means kyma project dir
+	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 
 	// BuildScriptDir means build script directory
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+	// GovernanceScriptDir means governance script directory
+	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
 
 // ReadJobConfig reads job configuration from file
@@ -88,17 +101,48 @@ func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Post
 	return nil
 }
 
-// AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
-func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
+// FindPeriodicJobByName finds periodic job by name from provided jobs list
+func FindPeriodicJobByName(jobs []config.Periodic, name string) *config.Periodic {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// AssertThatHasExtraRef checks if UtilityConfig has repository passed in argument defined
+func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, repository string) {
 	for _, curr := range in.ExtraRefs {
-		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
+		if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
 			curr.Org == "kyma-project" &&
-			curr.Repo == "test-infra" &&
+			curr.Repo == repository &&
 			curr.BaseRef == "master" {
 			return
 		}
 	}
-	assert.FailNow(t, "Job has not configured test-infra as a extra ref")
+	assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+}
+
+// AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
+func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
+	AssertThatHasExtraRef(t, in, "test-infra")
+}
+
+// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
+func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories []string) {
+	for _, repository := range repositories {
+		for _, curr := range in.ExtraRefs {
+			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
+				curr.Org == "kyma-project" &&
+				curr.Repo == repository &&
+				curr.BaseRef == "master" {
+				return
+			}
+		}
+		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+	}
 }
 
 // AssertThatHasPresets checks if JobBase has expected labels

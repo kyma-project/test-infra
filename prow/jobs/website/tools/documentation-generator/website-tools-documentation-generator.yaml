@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  run_if_changed: "^tools/documentation-generator/"
   decorate: true
   path_alias: github.com/kyma-project/website
   max_concurrency: 10
@@ -28,7 +28,6 @@ presubmits: # runs on PRs
     - name: website-tools-documentation-generator
       branches:
         - master
-      run_if_changed: "^tools/documentation-generator/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"

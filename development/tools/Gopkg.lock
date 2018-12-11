@@ -662,7 +662,6 @@
   revision = "0317810137be915b9cf888946c6e115c1bfac693"
 
 [[projects]]
-  branch = "master"
   name = "k8s.io/test-infra"
   packages = [
     "prow/apis/prowjobs",
@@ -684,7 +683,13 @@
     "prow/sidecar",
     "testgrid/util/gcs"
   ]
-  revision = "29046634e60d5044447238dfefef4bcc26808bd2"
+  revision = "b9a576b397892c55487e495721d23b3a52ac9472"
+
+[[projects]]
+  name = "sigs.k8s.io/yaml"
+  packages = ["."]
+  revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
+  version = "v1.1.0"
 
 [solve-meta]
   analyzer-name = "dep"

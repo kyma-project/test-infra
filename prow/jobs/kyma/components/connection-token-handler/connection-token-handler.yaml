@@ -1,5 +1,6 @@
 job_template: &job_template
   skip_report: true
+  run_if_changed: "^components/connection-token-handler/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -26,7 +27,6 @@ job_labels_template: &job_labels_template
 presubmits:
   kyma-project/kyma:
     - name: kyma-components-connection-token-handler
-      run_if_changed: "^components/connection-token-handler/"
       branches:
         - master
       <<: *job_template

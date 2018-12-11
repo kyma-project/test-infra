@@ -17,25 +17,23 @@ Install the following tools:
 
 1. Export these variables:
 
-```
-
-export PROJECT={project-name}
-export CLUSTER_NAME={cluster-name}
-export ZONE={zone-name}
-
-```
+   ```
+   export PROJECT={project-name}
+   export CLUSTER_NAME={cluster-name}
+   export ZONE={zone-name}
+   ```
 
 2. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project. Run this command:
 
-```
-gcloud config set project $PROJECT
-```
+   ```
+   gcloud config set project $PROJECT
+   ```
 
 3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on GKE. Make sure that kubectl points to the correct cluster. For GKE, run the following command:
-
-```
-gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
-```
+  
+   ```
+   gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+   ```
 
 ## Create a bot account
 
@@ -60,26 +58,26 @@ For the purpose of the installation, you must have a set of service accounts and
 
 1. Create two buckets on GCS, one for storing Secrets and the second for storing logs.
 
-> **NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file.
+   > **NOTE:** The bucket for storing logs is used in Prow by the Plank component. This reference is defined in the `config.yaml` file. This bucket is also used in Prow by Spyglass to display the logs. To make it publicly accessible, assign **Storage Object Viewer** and **Storage Legacy Bucket Reader** roles to `allUsers`.
 
 2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
-- **sa-gke-kyma-integration** with roles that allow the account to manage Kubernetes clusters and their resources:
-  - Compute Admin (`roles/compute.admin`)
-  - Kubernetes Engine Admin (`roles/container.admin`)
-  - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
-  - DNS Administrator (`roles/dns.admin`)
-  - Service Account User (`roles/iam.serviceAccountUser`)
-  - Storage Admin (`roles/storage.admin`)
-- **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines:
-  - Compute Instance Admin (beta) (`roles/compute.instanceAdmin`)
-  - Compute OS Admin Login (`roles/compute.osAdminLogin`)
-  - Service Account User (`roles/iam.serviceAccountUser`)
-- **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
-  - Storage Object Admin (`roles/storage.objectAdmin`)
-- **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
-  - Storage Admin `roles/storage.admin`
-- **kyma-bot-npm-token** which is a token for publishing npm packages
+   - **sa-gke-kyma-integration** with roles that allow the account to manage Kubernetes clusters and their resources:
+    - Compute Admin (`roles/compute.admin`)
+    - Kubernetes Engine Admin (`roles/container.admin`)
+    - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
+    - DNS Administrator (`roles/dns.admin`)
+    - Service Account User (`roles/iam.serviceAccountUser`)
+    - Storage Admin (`roles/storage.admin`)
+ - **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines:
+    - Compute Instance Admin (beta) (`roles/compute.instanceAdmin`)
+    - Compute OS Admin Login (`roles/compute.osAdminLogin`)
+    - Service Account User (`roles/iam.serviceAccountUser`)
+ - **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
+    - Storage Object Admin (`roles/storage.objectAdmin`)
+ - **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
+    - Storage Admin `roles/storage.admin`
+ - **kyma-bot-npm-token** which is a token for publishing npm packages
 
 ## Install Prow
 
@@ -170,21 +168,21 @@ If the files are configured correctly, upload the files on a cluster.
 
 1. Use the `update-plugins.sh {file_path}` script to apply plugin changes on a cluster.
 
-```
-./update-plugins.sh ../prow/plugins.yaml
-```
+   ```
+   ./update-plugins.sh ../prow/plugins.yaml
+   ```
 
 2. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
 
-```
-./update-config.sh ../prow/config.yaml
-```
+   ```
+   ./update-config.sh ../prow/config.yaml
+   ```
 
 3. Use the `update-jobs.sh {jobs_dir_path}` script to apply jobs configuration on a cluster.
 
-```
-./update-jobs.sh ../prow/jobs
-```
+   ```
+   ./update-jobs.sh ../prow/jobs
+   ```
 
 After you complete the required configuration, you can test the uploaded plugins and configuration. You can also create your own job pipeline and test it against the forked repository.
 

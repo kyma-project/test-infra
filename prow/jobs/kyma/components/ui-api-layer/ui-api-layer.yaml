@@ -47,6 +47,7 @@ postsubmits:
     - name: kyma-components-ui-api-layer
       branches:
         - master
+      run_if_changed: "^components/ui-api-layer/"
       <<: *job_template
       labels:
         <<: *job_labels_template

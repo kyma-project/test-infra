@@ -1,5 +1,4 @@
 job_template: &job_template
-  skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/website
   max_concurrency: 10
@@ -22,6 +21,7 @@ job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-bot-github-token: "true"
   preset-bot-github-ssh: "true"
+  preset-bot-github-identity: "true"
 
 presubmits: # runs on PRs
   kyma-project/website:
