@@ -1,6 +1,6 @@
 job_template: &job_template
   skip_report: true
-  run_if_changed: "^components/remote-environment-controller/"
+  run_if_changed: "^components/application-operator/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -17,7 +17,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-controller"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-operator"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -26,7 +26,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-components-remote-environment-controller
+    - name: kyma-components-application-operator
       branches:
         - master
       <<: *job_template
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-components-remote-environment-controller
+    - name: kyma-components-application-operator
       branches:
         - master
       <<: *job_template
