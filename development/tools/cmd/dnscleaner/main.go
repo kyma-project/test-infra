@@ -16,7 +16,7 @@ import (
 var (
 	project = flag.String("project", "", "Project ID")
 	dnsZone = flag.String("dns-zone", "", "Name of the zone in DNS")
-	// dryRun  = flag.Bool("dry-run", true, "Dry Run enabled")
+	dryRun  = flag.Bool("dry-run", true, "Dry Run enabled")
 )
 
 func main() {
@@ -54,6 +54,6 @@ func main() {
 	computeAPI := &dnscleaner.ComputeServiceWrapper{Context: ctx, Compute: computeSvc}
 	dnsAPI := &dnscleaner.DNSServiceWrapper{Context: ctx, DNS: dnsSvc}
 	cleaner := dnscleaner.NewCleaner(computeAPI, dnsAPI)
-	cleaner.Run(*project, *dnsZone, false)
+	cleaner.Run(*project, *dnsZone, *dryRun)
 
 }

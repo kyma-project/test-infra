@@ -68,10 +68,9 @@ func (cleaner *Cleaner) Run(project string, zone string, dryRun bool) {
 		}
 		parsedAddresses = append(parsedAddresses, extractIPAddresses(rawIP, region)...)
 	}
-	fmt.Printf("%s\n\n", parsedAddresses)
-	if !dryRun {
-		cleaner.purge(project, parsedRecords, parsedAddresses)
-	}
+
+	cleaner.purge(project, parsedRecords, rawRecords, parsedAddresses, dryRun)
+
 }
 
 func extractIPAddresses(raw []*compute.Address, region string) []IPAddress {
@@ -92,6 +91,15 @@ func extractRecords(records []*dns.ResourceRecordSet, key string) []DNSRecord {
 	return items
 }
 
+func findRecord(name string, rawRecords []*dns.ResourceRecordSet) *dns.ResourceRecordSet {
+	for it, record := range rawRecords {
+		if record.Name == name {
+			return rawRecords[it]
+		}
+	}
+	return nil
+}
+
 func findIPAddress(record string, addresses []IPAddress) string {
 	for _, ip := range addresses {
 		if ip.address == record {
@@ -110,13 +118,15 @@ func findIPRegion(name string, addresses []IPAddress) string {
 	return "NOT_FOUND"
 }
 
-func (cleaner *Cleaner) purge(project string, records []DNSRecord, ips []IPAddress) {
+func (cleaner *Cleaner) purge(project string, records []DNSRecord, rawRecords []*dns.ResourceRecordSet, ips []IPAddress, dryRun bool) {
 	for _, record := range records {
 		for _, recordIP := range record.records {
 			ad := findIPAddress(recordIP, ips)
 			fmt.Printf("---> Attempting to remove %s in %s\n", ad, recordIP)
-			// cleaner.computeAPI.deleteIPAddress(project, findIPRegion(ad, ips), ad)
-			time.Sleep(2 * time.Second)
+			if !dryRun {
+				cleaner.computeAPI.deleteIPAddress(project, findIPRegion(ad, ips), ad)
+				time.Sleep(2 * time.Second)
+			}
 		}
 	}
 }
