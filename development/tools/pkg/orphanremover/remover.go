@@ -11,6 +11,8 @@ import (
 
 const sleepFactor = 2
 
+//go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
+
 //ComputeAPI interface logic for Google cloud API
 type ComputeAPI interface {
 	deleteHTTPProxy(project string, httpProxy string)
