@@ -6,20 +6,20 @@ This command finds and removes orphaned disks created by the `kyma-gke-integrati
 
 When the `kyma-gke-integration` job installs Kyma on the GKE cluster, GCP creates disk resources automatically.
 Usually, the job that provisions the cluster cleans all such disks.
-Sometimes, though, the job is terminated before its clean-up finishes.
+It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
 The garbage collector finds and removes such disks.
 
 There are three conditions used to find disks for removal:
 - The disk name pattern that is specific for the `kyma-gke-integration` job
 - The disk users count where zero means the disk is unused
-- The disk's `creationTimestamp` value that is used to find disks existing at least for a configured number of hours
+- The disk `creationTimestamp` value that is used to find disks existing at least for a preconfigured number of hours
 
 Disks that meet these conditions are subject to removal.
 
 ## Usage
 
-For safety reasons, the dry-run mode is the default one. 
+For safety reasons, the dry-run mode is the default one.
 To run it, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
