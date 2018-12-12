@@ -116,7 +116,7 @@ periodics:
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
-- name: orphanded-disks-cleaner
+- name: orphaned-disks-cleaner
   cron: "0 * * * *" # "Every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
