@@ -13,35 +13,40 @@ type ComputeServiceWrapper struct {
 	Compute *compute.Service
 }
 
-func (csw *ComputeServiceWrapper) deleteHTTPProxy(project string, httpProxy string) {
+//DeleteHTTPProxy Delete an httpProxy object
+func (csw *ComputeServiceWrapper) DeleteHTTPProxy(project string, httpProxy string) {
 	_, err := csw.Compute.TargetHttpProxies.Delete(project, httpProxy).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteURLMap(project string, urlMap string) {
+//DeleteURLMap Delte an URLMap object
+func (csw *ComputeServiceWrapper) DeleteURLMap(project string, urlMap string) {
 	_, err := csw.Compute.UrlMaps.Delete(project, urlMap).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteBackendService(project string, backendService string) {
+//DeleteBackendService ???
+func (csw *ComputeServiceWrapper) DeleteBackendService(project string, backendService string) {
 	_, err := csw.Compute.BackendServices.Delete(project, backendService).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteInstanceGroup(project string, zone string, instanceGroup string) {
+//DeleteInstanceGroup ???
+func (csw *ComputeServiceWrapper) DeleteInstanceGroup(project string, zone string, instanceGroup string) {
 	_, err := csw.Compute.InstanceGroups.Delete(project, zone, instanceGroup).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteHealthChecks(project string, names []string) {
+//DeleteHealthChecks ???
+func (csw *ComputeServiceWrapper) DeleteHealthChecks(project string, names []string) {
 	for _, check := range names {
 		_, err := csw.Compute.HttpHealthChecks.Delete(project, check).Do()
 		if err != nil {
@@ -50,28 +55,32 @@ func (csw *ComputeServiceWrapper) deleteHealthChecks(project string, names []str
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteForwardingRule(project string, name string, region string) {
+//DeleteForwardingRule ???
+func (csw *ComputeServiceWrapper) DeleteForwardingRule(project string, name string, region string) {
 	_, err := csw.Compute.ForwardingRules.Delete(project, region, name).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteGlobalForwardingRule(project string, name string) {
+//DeleteGlobalForwardingRule ???
+func (csw *ComputeServiceWrapper) DeleteGlobalForwardingRule(project string, name string) {
 	_, err := csw.Compute.GlobalForwardingRules.Delete(project, name).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) deleteTargetPool(project string, name string, region string) {
+//DeleteTargetPool ???
+func (csw *ComputeServiceWrapper) DeleteTargetPool(project string, name string, region string) {
 	_, err := csw.Compute.TargetPools.Delete(project, region, name).Do()
 	if err != nil {
 		log.Print(err)
 	}
 }
 
-func (csw *ComputeServiceWrapper) lookupURLMaps(project string) ([]*compute.UrlMap, error) {
+//LookupURLMaps ???
+func (csw *ComputeServiceWrapper) LookupURLMaps(project string) ([]*compute.UrlMap, error) {
 	call := csw.Compute.UrlMaps.List(project)
 	var items []*compute.UrlMap
 	f := func(page *compute.UrlMapList) error {
@@ -86,7 +95,8 @@ func (csw *ComputeServiceWrapper) lookupURLMaps(project string) ([]*compute.UrlM
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) lookupBackendServices(project string) ([]*compute.BackendService, error) {
+//LookupBackendServices ???
+func (csw *ComputeServiceWrapper) LookupBackendServices(project string) ([]*compute.BackendService, error) {
 	call := csw.Compute.BackendServices.List(project)
 	var items []*compute.BackendService
 	f := func(page *compute.BackendServiceList) error {
@@ -101,7 +111,8 @@ func (csw *ComputeServiceWrapper) lookupBackendServices(project string) ([]*comp
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) lookupInstanceGroup(project string, zone string) ([]string, error) {
+//LookupInstanceGroup ???
+func (csw *ComputeServiceWrapper) LookupInstanceGroup(project string, zone string) ([]string, error) {
 	call := csw.Compute.InstanceGroups.List(project, zone)
 	call = call.Filter("size: 0")
 	var items []string
@@ -117,7 +128,8 @@ func (csw *ComputeServiceWrapper) lookupInstanceGroup(project string, zone strin
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) lookupTargetPools(project string) ([]*compute.TargetPool, error) {
+//LookupTargetPools ???
+func (csw *ComputeServiceWrapper) LookupTargetPools(project string) ([]*compute.TargetPool, error) {
 	call := csw.Compute.TargetPools.AggregatedList(project)
 	var items []*compute.TargetPool
 	f := func(page *compute.TargetPoolAggregatedList) error {
@@ -134,7 +146,8 @@ func (csw *ComputeServiceWrapper) lookupTargetPools(project string) ([]*compute.
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) lookupZones(project, pattern string) ([]string, error) {
+//LookupZones ???
+func (csw *ComputeServiceWrapper) LookupZones(project, pattern string) ([]string, error) {
 	call := csw.Compute.Zones.List(project)
 	if pattern != "" {
 		call = call.Filter("name: " + pattern)
@@ -154,7 +167,8 @@ func (csw *ComputeServiceWrapper) lookupZones(project, pattern string) ([]string
 	return zones, nil
 }
 
-func (csw *ComputeServiceWrapper) lookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error) {
+//LookupHTTPProxy ???
+func (csw *ComputeServiceWrapper) LookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error) {
 	call := csw.Compute.TargetHttpProxies.List(project)
 	var items []*compute.TargetHttpProxy
 	f := func(page *compute.TargetHttpProxyList) error {
@@ -169,7 +183,8 @@ func (csw *ComputeServiceWrapper) lookupHTTPProxy(project string) ([]*compute.Ta
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) lookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error) {
+//LookupGlobalForwardingRule ???
+func (csw *ComputeServiceWrapper) LookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error) {
 	call := csw.Compute.GlobalForwardingRules.List(project)
 	var items []*compute.ForwardingRule
 	f := func(page *compute.ForwardingRuleList) error {
@@ -184,7 +199,8 @@ func (csw *ComputeServiceWrapper) lookupGlobalForwardingRule(project string) ([]
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) checkInstance(project string, zone string, name string) bool {
+//CheckInstance Verify if instance (vm) of given name exists
+func (csw *ComputeServiceWrapper) CheckInstance(project string, zone string, name string) bool {
 	_, err := csw.Compute.Instances.Get(project, zone, name).Do()
 	if err != nil {
 		return false

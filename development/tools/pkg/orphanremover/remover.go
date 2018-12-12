@@ -15,22 +15,22 @@ const sleepFactor = 2
 
 //ComputeAPI interface logic for Google cloud API
 type ComputeAPI interface {
-	deleteHTTPProxy(project string, httpProxy string)
-	deleteURLMap(project string, urlMap string)
-	deleteBackendService(project string, backendService string)
-	deleteInstanceGroup(project string, zone string, instanceGroup string)
-	deleteHealthChecks(project string, names []string)
-	deleteForwardingRule(project string, name string, region string)
-	deleteGlobalForwardingRule(project string, name string)
-	deleteTargetPool(project string, name string, region string)
-	lookupURLMaps(project string) ([]*compute.UrlMap, error)
-	lookupBackendServices(project string) ([]*compute.BackendService, error)
-	lookupInstanceGroup(project string, zone string) ([]string, error)
-	lookupTargetPools(project string) ([]*compute.TargetPool, error)
-	lookupZones(project, pattern string) ([]string, error)
-	lookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error)
-	lookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error)
-	checkInstance(project string, zone string, name string) bool
+	DeleteHTTPProxy(project string, httpProxy string)
+	DeleteURLMap(project string, urlMap string)
+	DeleteBackendService(project string, backendService string)
+	DeleteInstanceGroup(project string, zone string, instanceGroup string)
+	DeleteHealthChecks(project string, names []string)
+	DeleteForwardingRule(project string, name string, region string)
+	DeleteGlobalForwardingRule(project string, name string)
+	DeleteTargetPool(project string, name string, region string)
+	LookupURLMaps(project string) ([]*compute.UrlMap, error)
+	LookupBackendServices(project string) ([]*compute.BackendService, error)
+	LookupInstanceGroup(project string, zone string) ([]string, error)
+	LookupTargetPools(project string) ([]*compute.TargetPool, error)
+	LookupZones(project, pattern string) ([]string, error)
+	LookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error)
+	LookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error)
+	CheckInstance(project string, zone string, name string) bool
 }
 
 //Remover Element holding the removal logic
@@ -89,21 +89,12 @@ func spliter(name string, delimiter string, position int) string {
 	return fields[len(fields)-position]
 }
 
-//Run the main find&destroy function
-func (remover *Remover) Run(dryRun bool, project string) {
+func filterGarbage(pool []targetPool, project string, computeAPI ComputeAPI) []targetPool {
 	var garbagePool = []targetPool{}
-	var instanceGroups = []instanceGroup{}
-
-	log.Print("Creating mesh of network elements to delete. This takes some time\n")
-	rawTargetPool, err := remover.computeAPI.lookupTargetPools(project)
-	if err != nil {
-		log.Fatalf("Could not list TargetPools: %v", err)
-	}
-	targetPool := extractTargetPool(rawTargetPool)
-	for _, target := range targetPool {
+	for _, target := range pool {
 		markCount := 0
 		for _, instance := range target.instances {
-			instance.exists = remover.computeAPI.checkInstance(project, instance.zone, instance.name)
+			instance.exists = computeAPI.CheckInstance(project, instance.zone, instance.name)
 			if !instance.exists {
 				markCount++
 			}
@@ -112,16 +103,13 @@ func (remover *Remover) Run(dryRun bool, project string) {
 			garbagePool = append(garbagePool, target)
 		}
 	}
+	return garbagePool
+}
 
-	fmt.Printf("All items: %d\n", len(targetPool))
-	fmt.Printf("Garbage items: %d\n", len(garbagePool))
-
-	zones, err := remover.computeAPI.lookupZones(project, "europe-*")
-	if err != nil {
-		log.Fatalf("Could not list Zones: %v", err)
-	}
+func filterInstanceGroups(zones []string, computeAPI ComputeAPI, project string) []instanceGroup {
+	var instanceGroups = []instanceGroup{}
 	for _, zone := range zones {
-		igList, err := remover.computeAPI.lookupInstanceGroup(project, zone)
+		igList, err := computeAPI.LookupInstanceGroup(project, zone)
 		if err != nil {
 			log.Fatalf("Could not list InstanceGroups: %v", err)
 		}
@@ -131,25 +119,49 @@ func (remover *Remover) Run(dryRun bool, project string) {
 			}
 		}
 	}
-	rawURLMaps, err := remover.computeAPI.lookupURLMaps(project)
+	return instanceGroups
+}
+
+//Run the main find&destroy function
+func (remover *Remover) Run(dryRun bool, project string) {
+	var instanceGroups = []instanceGroup{}
+
+	log.Print("Creating mesh of network elements to delete. This takes some time\n")
+	rawTargetPool, err := remover.computeAPI.LookupTargetPools(project)
+	if err != nil {
+		log.Fatalf("Could not list TargetPools: %v", err)
+	}
+	targetPool := extractTargetPool(rawTargetPool)
+	garbagePool := filterGarbage(targetPool, project, remover.computeAPI)
+
+	fmt.Printf("All TargetPool items: %d\n", len(targetPool))
+	fmt.Printf("Garbage TargetPool items: %d\n", len(garbagePool))
+
+	zones, err := remover.computeAPI.LookupZones(project, "europe-*")
+	if err != nil {
+		log.Fatalf("Could not list Zones: %v", err)
+	}
+	instanceGroups = filterInstanceGroups(zones, remover.computeAPI, project)
+
+	rawURLMaps, err := remover.computeAPI.LookupURLMaps(project)
 	if err != nil {
 		log.Fatalf("Could not list UrlMaps: %v", err)
 	}
 	urlMaps := extractURLMaps(rawURLMaps)
 
-	rawBackendServices, err := remover.computeAPI.lookupBackendServices(project)
+	rawBackendServices, err := remover.computeAPI.LookupBackendServices(project)
 	if err != nil {
 		log.Fatalf("Could not list BackendServices: %v", err)
 	}
 	backendServices := extractBackendServices(rawBackendServices)
 
-	rawHTTPProxies, err := remover.computeAPI.lookupHTTPProxy(project)
+	rawHTTPProxies, err := remover.computeAPI.LookupHTTPProxy(project)
 	if err != nil {
 		log.Fatalf("Could not list HTTPProxy: %v", err)
 	}
 	httpProxies := extractHTTPProxies(rawHTTPProxies)
 
-	rawGlobalForwardingRules, err := remover.computeAPI.lookupGlobalForwardingRule(project)
+	rawGlobalForwardingRules, err := remover.computeAPI.LookupGlobalForwardingRule(project)
 	if err != nil {
 		log.Fatalf("Could not list GlobalForwardingRule: %v", err)
 	}
@@ -164,17 +176,17 @@ func (remover *Remover) purge(targetPool []targetPool, instanceGroups []instance
 
 		fmt.Printf("---> Delete ForwardingRules: %s in Region: %s\n", target.name, target.region)
 		if !dryRun {
-			remover.computeAPI.deleteForwardingRule(project, target.name, target.region)
+			remover.computeAPI.DeleteForwardingRule(project, target.name, target.region)
 			time.Sleep(sleepFactor * time.Second)
 		}
 		fmt.Printf("---> Delete HealthCheck: %s\n", target.healthChecks)
 		if !dryRun {
-			remover.computeAPI.deleteHealthChecks(project, target.healthChecks)
+			remover.computeAPI.DeleteHealthChecks(project, target.healthChecks)
 			time.Sleep(sleepFactor * time.Second)
 		}
 		fmt.Printf("---> Delete TargetPool: %s in Region: %s\n", target.name, target.region)
 		if !dryRun {
-			remover.computeAPI.deleteTargetPool(project, target.name, target.region)
+			remover.computeAPI.DeleteTargetPool(project, target.name, target.region)
 			time.Sleep(sleepFactor * time.Second)
 		}
 	}
@@ -183,30 +195,30 @@ func (remover *Remover) purge(targetPool []targetPool, instanceGroups []instance
 		fmt.Printf("-> Processing instanceGroup: %s\n", group.name)
 		fmt.Printf("---> Delete ForwardingRules: %s\n", findGlobalForwardingRule(group.id, globalForwardingRules))
 		if !dryRun {
-			remover.computeAPI.deleteGlobalForwardingRule(project, findGlobalForwardingRule(group.id, globalForwardingRules))
+			remover.computeAPI.DeleteGlobalForwardingRule(project, findGlobalForwardingRule(group.id, globalForwardingRules))
 			time.Sleep(sleepFactor * time.Second)
 		}
 		fmt.Printf("---> Delete HTTPProxy: %s\n", findHTTPProxy(group.id, httpProxies))
 		if !dryRun {
-			remover.computeAPI.deleteHTTPProxy(project, findHTTPProxy(group.id, httpProxies))
+			remover.computeAPI.DeleteHTTPProxy(project, findHTTPProxy(group.id, httpProxies))
 			time.Sleep(sleepFactor * time.Second)
 		}
 		fmt.Printf("---> Delete URLMap: %s\n", findURLMap(group.id, urlMaps))
 		if !dryRun {
-			remover.computeAPI.deleteURLMap(project, findURLMap(group.id, urlMaps))
+			remover.computeAPI.DeleteURLMap(project, findURLMap(group.id, urlMaps))
 			time.Sleep(sleepFactor * time.Second)
 		}
 		services := findBackendServices(group.id, backendServices)
 		for _, service := range services {
 			fmt.Printf("---> Delete BackendService: %s\n", service)
 			if !dryRun {
-				remover.computeAPI.deleteBackendService(project, service)
+				remover.computeAPI.DeleteBackendService(project, service)
 				time.Sleep(sleepFactor * time.Second)
 			}
 		}
 		fmt.Printf("---> Delete InstanceGroup: %s in Zone: %s\n", group.name, group.zone)
 		if !dryRun {
-			remover.computeAPI.deleteInstanceGroup(project, group.zone, group.name)
+			remover.computeAPI.DeleteInstanceGroup(project, group.zone, group.name)
 			time.Sleep(sleepFactor * time.Second)
 		}
 	}

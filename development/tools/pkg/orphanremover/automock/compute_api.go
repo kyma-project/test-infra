@@ -10,8 +10,8 @@ type ComputeAPI struct {
 	mock.Mock
 }
 
-// checkInstance provides a mock function with given fields: project, zone, name
-func (_m *ComputeAPI) checkInstance(project string, zone string, name string) bool {
+// CheckInstance provides a mock function with given fields: project, zone, name
+func (_m *ComputeAPI) CheckInstance(project string, zone string, name string) bool {
 	ret := _m.Called(project, zone, name)
 
 	var r0 bool
@@ -24,48 +24,48 @@ func (_m *ComputeAPI) checkInstance(project string, zone string, name string) bo
 	return r0
 }
 
-// deleteBackendService provides a mock function with given fields: project, backendService
-func (_m *ComputeAPI) deleteBackendService(project string, backendService string) {
+// DeleteBackendService provides a mock function with given fields: project, backendService
+func (_m *ComputeAPI) DeleteBackendService(project string, backendService string) {
 	_m.Called(project, backendService)
 }
 
-// deleteForwardingRule provides a mock function with given fields: project, name, region
-func (_m *ComputeAPI) deleteForwardingRule(project string, name string, region string) {
+// DeleteForwardingRule provides a mock function with given fields: project, name, region
+func (_m *ComputeAPI) DeleteForwardingRule(project string, name string, region string) {
 	_m.Called(project, name, region)
 }
 
-// deleteGlobalForwardingRule provides a mock function with given fields: project, name
-func (_m *ComputeAPI) deleteGlobalForwardingRule(project string, name string) {
+// DeleteGlobalForwardingRule provides a mock function with given fields: project, name
+func (_m *ComputeAPI) DeleteGlobalForwardingRule(project string, name string) {
 	_m.Called(project, name)
 }
 
-// deleteHTTPProxy provides a mock function with given fields: project, httpProxy
-func (_m *ComputeAPI) deleteHTTPProxy(project string, httpProxy string) {
+// DeleteHTTPProxy provides a mock function with given fields: project, httpProxy
+func (_m *ComputeAPI) DeleteHTTPProxy(project string, httpProxy string) {
 	_m.Called(project, httpProxy)
 }
 
-// deleteHealthChecks provides a mock function with given fields: project, names
-func (_m *ComputeAPI) deleteHealthChecks(project string, names []string) {
+// DeleteHealthChecks provides a mock function with given fields: project, names
+func (_m *ComputeAPI) DeleteHealthChecks(project string, names []string) {
 	_m.Called(project, names)
 }
 
-// deleteInstanceGroup provides a mock function with given fields: project, zone, instanceGroup
-func (_m *ComputeAPI) deleteInstanceGroup(project string, zone string, instanceGroup string) {
+// DeleteInstanceGroup provides a mock function with given fields: project, zone, instanceGroup
+func (_m *ComputeAPI) DeleteInstanceGroup(project string, zone string, instanceGroup string) {
 	_m.Called(project, zone, instanceGroup)
 }
 
-// deleteTargetPool provides a mock function with given fields: project, name, region
-func (_m *ComputeAPI) deleteTargetPool(project string, name string, region string) {
+// DeleteTargetPool provides a mock function with given fields: project, name, region
+func (_m *ComputeAPI) DeleteTargetPool(project string, name string, region string) {
 	_m.Called(project, name, region)
 }
 
-// deleteURLMap provides a mock function with given fields: project, urlMap
-func (_m *ComputeAPI) deleteURLMap(project string, urlMap string) {
+// DeleteURLMap provides a mock function with given fields: project, urlMap
+func (_m *ComputeAPI) DeleteURLMap(project string, urlMap string) {
 	_m.Called(project, urlMap)
 }
 
-// lookupBackendServices provides a mock function with given fields: project
-func (_m *ComputeAPI) lookupBackendServices(project string) ([]*compute.BackendService, error) {
+// LookupBackendServices provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupBackendServices(project string) ([]*compute.BackendService, error) {
 	ret := _m.Called(project)
 
 	var r0 []*compute.BackendService
@@ -87,8 +87,8 @@ func (_m *ComputeAPI) lookupBackendServices(project string) ([]*compute.BackendS
 	return r0, r1
 }
 
-// lookupGlobalForwardingRule provides a mock function with given fields: project
-func (_m *ComputeAPI) lookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error) {
+// LookupGlobalForwardingRule provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error) {
 	ret := _m.Called(project)
 
 	var r0 []*compute.ForwardingRule
@@ -110,8 +110,8 @@ func (_m *ComputeAPI) lookupGlobalForwardingRule(project string) ([]*compute.For
 	return r0, r1
 }
 
-// lookupHTTPProxy provides a mock function with given fields: project
-func (_m *ComputeAPI) lookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error) {
+// LookupHTTPProxy provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error) {
 	ret := _m.Called(project)
 
 	var r0 []*compute.TargetHttpProxy
@@ -133,8 +133,8 @@ func (_m *ComputeAPI) lookupHTTPProxy(project string) ([]*compute.TargetHttpProx
 	return r0, r1
 }
 
-// lookupInstanceGroup provides a mock function with given fields: project, zone
-func (_m *ComputeAPI) lookupInstanceGroup(project string, zone string) ([]string, error) {
+// LookupInstanceGroup provides a mock function with given fields: project, zone
+func (_m *ComputeAPI) LookupInstanceGroup(project string, zone string) ([]string, error) {
 	ret := _m.Called(project, zone)
 
 	var r0 []string
@@ -156,8 +156,8 @@ func (_m *ComputeAPI) lookupInstanceGroup(project string, zone string) ([]string
 	return r0, r1
 }
 
-// lookupTargetPools provides a mock function with given fields: project
-func (_m *ComputeAPI) lookupTargetPools(project string) ([]*compute.TargetPool, error) {
+// LookupTargetPools provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupTargetPools(project string) ([]*compute.TargetPool, error) {
 	ret := _m.Called(project)
 
 	var r0 []*compute.TargetPool
@@ -179,8 +179,8 @@ func (_m *ComputeAPI) lookupTargetPools(project string) ([]*compute.TargetPool, 
 	return r0, r1
 }
 
-// lookupURLMaps provides a mock function with given fields: project
-func (_m *ComputeAPI) lookupURLMaps(project string) ([]*compute.UrlMap, error) {
+// LookupURLMaps provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupURLMaps(project string) ([]*compute.UrlMap, error) {
 	ret := _m.Called(project)
 
 	var r0 []*compute.UrlMap
@@ -202,8 +202,8 @@ func (_m *ComputeAPI) lookupURLMaps(project string) ([]*compute.UrlMap, error) {
 	return r0, r1
 }
 
-// lookupZones provides a mock function with given fields: project, pattern
-func (_m *ComputeAPI) lookupZones(project string, pattern string) ([]string, error) {
+// LookupZones provides a mock function with given fields: project, pattern
+func (_m *ComputeAPI) LookupZones(project string, pattern string) ([]string, error) {
 	ret := _m.Called(project, pattern)
 
 	var r0 []string
