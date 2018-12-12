@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRebJobsPresubmit(t *testing.T) {
+func TestAbJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-broker/application-broker.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestRebJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestRebJobPostsubmit(t *testing.T) {
+func TestAbJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-broker/application-broker.yaml")
 	// THEN
