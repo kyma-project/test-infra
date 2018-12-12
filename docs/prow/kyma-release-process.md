@@ -24,90 +24,49 @@ The internal release process is documented as a comment in [this](https://github
 7. Attach artifacts and a `README.md` document to the release on GitHub.
 
 ## Release process in Prow
+When using standard kyma buildpacks, like buildpack for go or node applications, additionally to `kyma` repository, `test-infra` repository is cloned.
+To gain reproducibility, we have to define separate release jobs for every component. In the release job, cloning of `test-infra` repository should be done from equivalent branch in
+`test-infra` repository, i.e. when defining job for releasing version 0.6, test-infra should be cloned from branch `release-0.6`.
 
-The proposed release process looks as follows in Prow:
+Considering that Presubmit jobs are more powerful than postsubmits, all activities around releasing new version  should be done in the context of a pull request to release branch.
+When creating PR, job for every component will be triggered. 
+After intruducing all necessary changes, like modification of `values.yaml` with new version of components, release master 
+has to trigger additional, required jobs by adding comment to PR. Those jobs are:
+- kyma-integration
+- kyma-gke-integration
+- job that create release artifacts, and create github release (to be defined). 
 
-1.  Create a release branch in the `kyma` repository. Do it only for a new release, not for a bugfix release.
-    The name of this branch should follow the `release-x.y` pattern, such as `release-0.4`.
-2.  Create a pull request (PR). Set the **version** and **dir** parameters in `values.yaml` files in root charts to those of the release version.
-    For every component, there is a presubmit job for release branches, that is responsible for publishing Docker images with a release tag, such as `0.4.3`.
+Only after all checks passed, pull request can be merged to a release branch. 
 
+### Action plan for releasing
+
+1. Release preparation
+In this phase, we define release jobs for every component, ensure that tests for jobs exists and modify branch protection rules.
+This phase needs to be done only for releasing major or minor versions.  
+
+When adding release jobs, configuration file for sample component looks as follows:
 ```
-    name: kyma-components-ui-api-layer-release
-    branches:
-      - release-X.Y
-    run_if_changed: ...values.yaml,components-ui-api-layer
-```
+test_infra_ref: &test_infra_ref
+  org: aszecowka
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
 
-For details on how to calculate the proper image tag, see the **Calculate the release image tag** [section](#calculate-the-release-image-tag).
 
-Such a configuration ensures that after modifying all `values.yaml` files successfully, all images are published.
-There can be an additional job that checks if all components in all `values.yaml` files use exactly the same version, such as `0.4.3`.
-You must define branch protection rules for release branches and the `master` branch. These rules mark all checks as required.
-Without them, the **Squash and merge** button is enabled even if some checks failed or are in progress.
-
-3. Run the integration jobs. Use one of these options to configure them:
-
-- Run it on every change on a PR. This is a very simple solution from Prow's perspective. Unfortunately, there is a high possibility that this job fails at the beginning.
-  This job should be run only after all
-  components are already built and images are already published. Unfortunately, there is no option to configure ProwJobs in that way.
-  You need to retrigger failed integration tests by adding a `retest` comment on a PR.
-- Run integration tests on demand. A comment on a PR, instead of a change in a source code, triggers the job.
-  The Release Manager is responsible for adding such a comment.
-- Run integration tests after merging to the release branch. This is a very simple solution, but it can happen that on a release branch we have changes
-  that do not pass integration tests.
-
-4. Publish artifacts and create the release. Use one of the options to configure them:
-
-- Run jobs after integrations jobs:
-
-```
-    name: kyma-integration
-    branches:
-      - release-X.Y
-    // run integration tests
-    run_after_success:
-      - build kyma installer
-      - publish artifacts
-      - create release
-```
-
-You can configure it either as a presubmit job that runs on a PR or a postsubmit job that runs after you merge a PR.
-With a presubmit job, it is easy to retrigger such an action by adding a proper command to a PR. Such an option is not available for
-a postsubmit job.
-
-- Trigger jobs by specifying comments on a PR. This can be an option, if there are some manual steps required before publishing artifacts.
-
-### Consequences
-
-In the proposed approach, you have to define an additional presubmit job for every component responsible for releasing a given component.
-Such a job is almost the same as the presubmit job for the `master` branch, except for the differences in:
-
-- Branch name.
-- **run_if_changed** parameters.
-- Labels, since you use `preset-build-release` instead of `preset-build-pr`.
-  To reduce boilerplate code and code repetition, use `yaml` features, such as extending objects.
-
-```yaml
 job_template: &job_template
-  optional: false
-  skip_report: false
+  name: kyma-components-binding-usage-controller
+  skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
-  extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+  max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -115,80 +74,129 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: kyma-components-ui-api-layer
-      branches:
+  aszecowka/kyma:
+    - branches:
         - master
-      run_if_changed: "components/ui-api-layer/"
+      <<: *job_template
+      run_if_changed: "^components/binding-usage-controller/"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
       labels:
+        <<: *job_labels_template
         preset-build-pr: "true"
-        <<: *job_labels_template
+    - branches:
+      - release-0.6
       <<: *job_template
-    - name: kyma-components-ui-api-layer-release
-      run_if_changed: "(components/ui-api-layer/|resources/core/values.yaml)"
-      branches:
-        - '^release-\d+\.\d+$'
+      always_run: true # don't make sense to define run_if_changed right now
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.6
       labels:
-        preset-build-release: "true"
         <<: *job_labels_template
+        preset-build-release: "true"
+
+postsubmits:
+  aszecowka/kyma:
+    - name: kyma-components-binding-usage-controller
+      branches:
+        - &branch master
       <<: *job_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: *branch
+      labels:
+        <<: *job_labels_template
+        preset-build-master: "true"
 ```
+
+Difference between a releasing job and Presubmit job for master branch are following:
+
+- branch
+- used label `preset-build-release` instead of `preset-build-pr`
+- extra refs that clones `test-infra` repository use branch `release-0.6` instead of `master`
+- `always-run` set to `true` instead specifying `run_if_changed`
+
+In the next releases (when a new release branch is created), ca 10 lines for every component will be added:
+```
+  - branches:
+      - release-0.7
+      <<: *job_template
+      always_run: true # don't make sense to define run_if_changed right now
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.7
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+```
+
+When we define a new job, we should also define test for it. 
+
+```go
+func TestBucReleases(t *testing.T) {
+	// WHEN
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["aszecowka/kyma"], "kyma-components-binding-usage-controller", currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.True(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefToTestInfraBranch(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t,actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller")
+		})
+	}
+}
+```
+In the example above, we run job's test for given component for every release (see `tester.GetAllKymaReleaseBranches()`).
+If there will be no changes in Prow job definitions between releases, modification of tests is not needed (except modyfing function `GetAllKymaReleaseBranches`).
+
+Last thing that needs to be done in this phase is to modify branch protection rules.
+Because some jobs are triggered manually, we need to mark them explicitly as required in branch-protection configuration file (`prow/config.yaml`).
+```
+    release-0.6:
+      required_status_checks:
+        contexts:
+          - kyma-integration 
+          - kyma-gke-integration
+          - ...
+```
+
+2. Create release branch in `test-infra` repository.:
+This is done to ensure builds reproducibility. This phase applies only for major and minor releases.
+
+3. Define release version. 
+Usually, we produce some release candidates at the beginning and then final version. This information is stored in file `RELEASE_VERSION` in `test-infra` repository.
+
+3.  Create a release branch in the `kyma` repository. Do it only for a new release, not for a bugfix release.
+    The name of this branch should follow the `release-x.y` pattern, such as `release-0.4`.
+    
+4. Create PR (pull request) to release branch. This triggers all jobs for components. Every job will be published with version defined in `test-infra` repository, released branch, file `RELEASE_VERSION`, for example `0.6.0-rc1` 
+
+3. Run integration tests by adding comment to PR:
+```
+/test kyma-integration
+```
+```
+/test kyma-gke-integration
+
+```
+
+
+4. Publish artifacts and create the release by adding comment to PR:
+
+```
+/test publish-release-artifacts
+```
+
 
 ### Calculate the release image tag
 
 In the internal CI (Jenkins), used for the release process, it is easy to specify which version to publish by adding it as a job parameter.
-In Prow, such an option is not available. Instead, you need to calculate this version. This proposal describes how to do it be reading Git tags.
-See the proposal for the **export_variables** function in `prow/scripts/library.sh`, which shows how to calculate a new tag:
-
-```bash
-function export_variables() {
-    if [[ "${BUILD_TYPE}" == "pr" ]]; then
-        DOCKER_TAG="PR-${PULL_NUMBER}"
-    elif [[ "${BUILD_TYPE}" == "master" ]]; then
-        DOCKER_TAG="$(git describe --tags --always)"
-     elif [[ "${BUILD_TYPE}" == "release" ]]; then
-        echo "Calculating DOCKER_TAG variable for release..."
-        branchPattern="^release-[0-9]+\.[0-9]+$"
-        echo ${PULL_BASE_REF} | grep -E -q ${branchPattern}
-        branchMatchesPattern=$?
-        if [ ${branchMatchesPattern} -ne 0 ]
-        then
-            echo "Branch name does not match pattern: ${branchPattern}"
-            exit 1
-        fi
-
-        version=${PULL_BASE_REF:8}
-        # Getting last tag that matches version
-        last=$(git tag --list "${version}.*" --sort "-version:refname" | head -1)
-
-        if [ -z "$last" ]
-        then
-            newVersion="${version}.0"
-        else
-            tagPattern="^[0-9]+.[0-9]+.[0-9]+$"
-            echo ${last} | grep -E -q ${tagPattern}
-            lastTagMatches=$?
-            if [ ${lastTagMatches} -ne 0 ]
-            then
-                echo "Last tag does not match pattern: ${tagPattern}"
-                exit 1
-            fi
-
-            list=(`echo ${last} | tr '.' ' '`)
-            vMajor=${list[0]}
-            vMinor=${list[1]}
-            vPatch=${list[2]}
-            vPatch=$((vPatch + 1))
-            newVersion="$vMajor.$vMinor.$vPatch"
-        fi
-         echo "New version is $newVersion"
-         DOCKER_TAG=$newVersion
-
-    else
-        echo "Not supported build type - ${BUILD_TYPE}"
-        exit 1
-    fi
-    readonly DOCKER_TAG
-    export DOCKER_TAG
-}
-```
+In Prow, such an option is not available. Instead, we read that information from file `RELEASE_VERSION` defined in `test-infra` repository.
