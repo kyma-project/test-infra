@@ -1,5 +1,4 @@
 job_template: &job_template
-  run_if_changed: "^bundles/"
   decorate: true
   path_alias: github.com/kyma-project/bundles
   max_concurrency: 10
@@ -27,6 +26,7 @@ presubmits: # runs on PRs
     - name: kyma-bundles
       branches:
         - master
+      always_run: true
       <<: *job_template
       labels:
         <<: *job_labels_template
