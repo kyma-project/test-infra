@@ -6,7 +6,7 @@ This command finds and removes orphaned disks created by the `kyma-gke-integrati
 
 When the `kyma-gke-integration` job installs Kyma on the GKE cluster, GCP creates disk resources automatically.
 Usually, the job that provisions the cluster cleans all such disks.
-It can happen, however, the job is terminated before its clean-up finishes.
+It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
 The garbage collector finds and removes such disks.
 
