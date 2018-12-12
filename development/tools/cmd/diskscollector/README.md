@@ -13,7 +13,7 @@ The garbage collector finds and removes such disks.
 There are three conditions used to find disks for removal:
 - The disk name pattern that is specific for the `kyma-gke-integration` job
 - The disk users count where zero means the disk is unused
-- The disk's `creationTimestamp` value that is used to find disks existing at least for a preconfigured number of hours
+- The disk `creationTimestamp` value that is used to find disks existing at least for a preconfigured number of hours
 
 Disks that meet these conditions are subject to removal.
 
