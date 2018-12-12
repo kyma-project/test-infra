@@ -106,12 +106,12 @@ func filterGarbage(pool []targetPool, project string, computeAPI ComputeAPI) []t
 	return garbagePool
 }
 
-func filterInstanceGroups(zones []string, computeAPI ComputeAPI, project string) []instanceGroup {
+func filterInstanceGroups(zones []string, computeAPI ComputeAPI, project string) ([]instanceGroup, error) {
 	var instanceGroups = []instanceGroup{}
 	for _, zone := range zones {
 		igList, err := computeAPI.LookupInstanceGroup(project, zone)
 		if err != nil {
-			log.Fatalf("Could not list InstanceGroups: %v", err)
+			return nil, err
 		}
 		if len(igList) > 0 {
 			for _, name := range igList {
@@ -119,7 +119,7 @@ func filterInstanceGroups(zones []string, computeAPI ComputeAPI, project string)
 			}
 		}
 	}
-	return instanceGroups
+	return instanceGroups, nil
 }
 
 //Run the main find&destroy function
@@ -141,8 +141,10 @@ func (remover *Remover) Run(dryRun bool, project string) {
 	if err != nil {
 		log.Fatalf("Could not list Zones: %v", err)
 	}
-	instanceGroups = filterInstanceGroups(zones, remover.computeAPI, project)
-
+	instanceGroups, err = filterInstanceGroups(zones, remover.computeAPI, project)
+	if err != nil {
+		log.Fatalf("Could not list InstanceGroups: %v", err)
+	}
 	rawURLMaps, err := remover.computeAPI.LookupURLMaps(project)
 	if err != nil {
 		log.Fatalf("Could not list UrlMaps: %v", err)
