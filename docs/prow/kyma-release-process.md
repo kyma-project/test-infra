@@ -32,16 +32,24 @@ Considering that Presubmit jobs are more powerful than postsubmits, all activiti
 When creating PR, job for every component will be triggered. 
 After intruducing all necessary changes, like modification of `values.yaml` with new version of components, release master 
 has to trigger additional, required jobs by adding comment to PR. Those jobs are:
-- kyma-integration
-- kyma-gke-integration
-- job that create release artifacts, and create github release (to be defined). 
+- kyma-installer
+- job that create release artifacts
+    - kyma-config-local.yaml
+    - kyma-config-cluster.yaml
+- kyma-integration-release*
+- kyma-gke-integration-release (* dont build kyma installer, use already released)
+- kyma-integration (on-the-fly)
+- kyma-gke-integration (on-the-fly)
+
+- kyma-release-creator <- postsubmit
+
 
 Only after all checks passed, pull request can be merged to a release branch. After merge, git tag should be created. To automate this, Postsubmit job can be defined for that purpose. 
 
 ### Action plan for releasing
 
 1. Release preparation
-In this phase, we define release jobs for every component, ensure that tests for jobs exists and modify branch protection rules.
+In this phase, we define release jobs for EVERY component, ensure that tests for jobs exists and modify branch protection rules.
 This phase needs to be done only for releasing major or minor versions (when release branch is created). 
 
 When adding release jobs, configuration file for sample component looks as follows:
@@ -74,7 +82,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  aszecowka/kyma:
+  kyma-project/kyma:
     - branches:
         - master
       <<: *job_template
@@ -121,7 +129,7 @@ In the next releases (when a new release branch is created), ca 10 lines for eve
   - branches:
       - release-0.7
       <<: *job_template
-      always_run: true # don't make sense to define run_if_changed right now
+      always_run: true 
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.7
@@ -199,3 +207,6 @@ The name of this branch should follow the `release-x.y` pattern, such as `releas
 
 In the internal CI (Jenkins), used for the release process, it is easy to specify which version to publish by adding it as a job parameter.
 In Prow, such an option is not available. Instead, we read that information from file `RELEASE_VERSION` defined in `test-infra` repository.
+
+
+TODO: prerelease**

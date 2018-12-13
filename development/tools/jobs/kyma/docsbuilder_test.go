@@ -20,7 +20,7 @@ func TestDocsBuilderJobPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "kyma-tools-docsbuilder"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -29,7 +29,7 @@ func TestDocsBuilderJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig,"master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^tools/docsbuilder/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tools/docsbuilder/some_random_file.go")
@@ -58,7 +58,7 @@ func TestDocsBuilderJobPostsubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig,"master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)

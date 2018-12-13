@@ -29,7 +29,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"master"}, actualVM.Branches)
 	assert.True(t, actualVM.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualVM.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig,"master")
 	assert.Equal(t, tester.ImageBoostrap001, actualVM.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"}, actualVM.Spec.Containers[0].Command)
 
@@ -44,7 +44,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"master"}, actualGKE.Branches)
 	assert.True(t, actualGKE.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualGKE.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig,"master")
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualGKE.Spec.Containers[0].Image)
 }
 
@@ -65,7 +65,7 @@ func TestKymaIntegrationJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "", actualVM.RunIfChanged)
 	assert.True(t, actualVM.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualVM.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig,"master")
 	// TODO add assertions about presets
 	assert.Equal(t, tester.ImageBoostrap001, actualVM.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"}, actualVM.Spec.Containers[0].Command)
@@ -78,7 +78,7 @@ func TestKymaIntegrationJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"master"}, actualGKE.Branches)
 	assert.True(t, actualGKE.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualGKE.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig,"master")
 
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualGKE.Spec.Containers[0].Image)
 }

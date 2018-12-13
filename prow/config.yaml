@@ -153,6 +153,28 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla #TODO: move to default config for organization
+        kyma:
+          #TODO: move to default config for organization
+          enforce_admins: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: true
+            required_approving_review_count: 1
+          protect: true
+          #TODO: end move
+          # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
+          required_status_checks:
+            contexts:
+            - license/cla #TODO: move to default config for organization
+
+          branches:
+            master:
+            release-0.6:
+              required_status_checks:
+                contexts:
+                  - kyma-integration
+                  - kyma-gke-integration
+
         website:
           #TODO: move to default config for organization
           enforce_admins: false

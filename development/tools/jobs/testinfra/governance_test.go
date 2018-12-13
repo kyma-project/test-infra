@@ -22,7 +22,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Len(t, presubmits, 1)
 
 	expName := "test-infra-governance"
-	actualPresubmit := tester.FindPresubmitJobByName(presubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -55,7 +55,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig,"master")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/test-infra", tester.KymaProjectDir)

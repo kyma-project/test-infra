@@ -23,43 +23,8 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
-        echo "Calculating DOCKER_TAG variable for release..."
-        branchPattern='^release-[0-9]+\.[0-9]+$'
-        echo "${PULL_BASE_REF}" | grep -E -q "${branchPattern}"
-        branchMatchesPattern=$?
-        if [ ${branchMatchesPattern} -ne 0 ]
-        then
-            echo "Branch name does not match pattern: ${branchPattern}"
-            exit 1
-        fi
-
-        version=${PULL_BASE_REF:8}
-        # Getting last tag that matches version
-        last=$(git tag --list "${version}.*" --sort "-version:refname" | head -1)
-
-        if [ -z "$last" ]
-        then
-            newVersion="${version}.0"
-        else
-            tagPattern='^[0-9]+.[0-9]+.[0-9]+$'
-            echo "${last}" | grep -E -q "${tagPattern}"
-            lastTagMatches=$?
-            if [ ${lastTagMatches} -ne 0 ]
-            then
-                echo "Last tag does not match pattern: ${tagPattern}"
-                exit 1
-            fi
-
-            list=$(echo "${last}" | tr '.' ' ')
-            vMajor=${list[0]}
-            vMinor=${list[1]}
-            vPatch=${list[2]}
-            vPatch=$((vPatch + 1))
-            newVersion="$vMajor.$vMinor.$vPatch"
-        fi
-        echo "New version is $newVersion"
-        DOCKER_TAG=$newVersion
-
+        DOCKER_TAG=`cat ${SCRIPT_DIR}/../RELEASE_VERSION`
+        echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
     else
         echo "Not supported build type - ${BUILD_TYPE}"
         exit 1
