@@ -24,11 +24,11 @@ The internal release process is documented as a comment in [this](https://github
 7. Attach artifacts and a `README.md` document to the release on GitHub.
 
 ## Release process in Prow
-When using standard kyma buildpacks, like buildpack for go or node applications, additionally to `kyma` repository, `test-infra` repository is cloned.
-To gain reproducibility, we have to define separate release jobs for every component. In the release job, cloning of `test-infra` repository should be done from equivalent branch in
-`test-infra` repository, i.e. when defining job for releasing version 0.6, test-infra should be cloned from branch `release-0.6`.
+When using standard kyma buildpacks, like buildpack for go or node applications, job for a component additionally clones `test-infra` repository to access build scripts.
+To gain reproducibility, we have to define separate release jobs for every component. In the release job, cloning of `test-infra` repository should be done from equivalent branch, 
+i.e. when defining job for releasing version 0.6, test-infra should be cloned also from branch `release-0.6`.
 
-Considering that Presubmit jobs are more powerful than postsubmits, all activities around releasing new version  should be done in the context of a pull request to release branch.
+Considering that Presubmit jobs are more powerful than postsubmits, all activities around releasing new version should be done in the context of a pull request to a release branch.
 When creating PR, job for every component will be triggered. 
 After intruducing all necessary changes, like modification of `values.yaml` with new version of components, release master 
 has to trigger additional, required jobs by adding comment to PR. Those jobs are:
@@ -36,13 +36,13 @@ has to trigger additional, required jobs by adding comment to PR. Those jobs are
 - kyma-gke-integration
 - job that create release artifacts, and create github release (to be defined). 
 
-Only after all checks passed, pull request can be merged to a release branch. 
+Only after all checks passed, pull request can be merged to a release branch. After merge, git tag should be created. To automate this, Postsubmit job can be defined for that purpose. 
 
 ### Action plan for releasing
 
 1. Release preparation
 In this phase, we define release jobs for every component, ensure that tests for jobs exists and modify branch protection rules.
-This phase needs to be done only for releasing major or minor versions.  
+This phase needs to be done only for releasing major or minor versions (when release branch is created). 
 
 When adding release jobs, configuration file for sample component looks as follows:
 ```
@@ -88,7 +88,7 @@ presubmits: # runs on PRs
     - branches:
       - release-0.6
       <<: *job_template
-      always_run: true # don't make sense to define run_if_changed right now
+      always_run: true 
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.6
@@ -109,8 +109,7 @@ postsubmits:
         <<: *job_labels_template
         preset-build-master: "true"
 ```
-
-Difference between a releasing job and Presubmit job for master branch are following:
+The difference between a releasing job and Presubmit job for master branch are following:
 
 - branch
 - used label `preset-build-release` instead of `preset-build-pr`
@@ -155,7 +154,7 @@ func TestBucReleases(t *testing.T) {
 }
 ```
 In the example above, we run job's test for given component for every release (see `tester.GetAllKymaReleaseBranches()`).
-If there will be no changes in Prow job definitions between releases, modification of tests is not needed (except modyfing function `GetAllKymaReleaseBranches`).
+If there will be no changes in Prow job definitions between releases, modification of tests is not needed (except global modification of the `GetAllKymaReleaseBranches` function).
 
 Last thing that needs to be done in this phase is to modify branch protection rules.
 Because some jobs are triggered manually, we need to mark them explicitly as required in branch-protection configuration file (`prow/config.yaml`).
@@ -168,16 +167,16 @@ Because some jobs are triggered manually, we need to mark them explicitly as req
           - ...
 ```
 
-2. Create release branch in `test-infra` repository.:
+2. Create release branch in `test-infra` repository.
 This is done to ensure builds reproducibility. This phase applies only for major and minor releases.
 
 3. Define release version. 
 Usually, we produce some release candidates at the beginning and then final version. This information is stored in file `RELEASE_VERSION` in `test-infra` repository.
 
 3.  Create a release branch in the `kyma` repository. Do it only for a new release, not for a bugfix release.
-    The name of this branch should follow the `release-x.y` pattern, such as `release-0.4`.
+The name of this branch should follow the `release-x.y` pattern, such as `release-0.4`.
     
-4. Create PR (pull request) to release branch. This triggers all jobs for components. Every job will be published with version defined in `test-infra` repository, released branch, file `RELEASE_VERSION`, for example `0.6.0-rc1` 
+4. Create PR (pull request) to `kyma` release branch. This triggers all jobs for components. Every job will be published with version defined in file `RELEASE_VERSION` stored in `test-infra` repository on given release branch, for example `0.6.0-rc1`. 
 
 3. Run integration tests by adding comment to PR:
 ```
