@@ -136,7 +136,7 @@ periodics:
         - "-c"
         - "development/disks-cleanup.sh ${CLOUDSDK_CORE_PROJECT}"
 - name: orphaned-loadbalancer-cleaner
-  cron: "0 0 * * 5" # “At 24:00 every Friday”
+  cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
