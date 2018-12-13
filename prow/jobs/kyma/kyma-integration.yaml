@@ -109,13 +109,32 @@ periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
 - name: utilities-kyma-integration-cleaner
-  cron: "0 7 * * 1-5" # “At 07:00 on every day-of-week from Monday through Friday.”
+  cron: "0 7 * * 1-5" # "At 07:00 on every day-of-week from Monday through Friday."
   labels:
     preset-sa-vm-kyma-integration: "true"
     preset-gc-project-env: "true"
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+- name: orphaned-disks-cleaner
+  cron: "0 * * * *" # "Every hour"
+  labels:
+    preset-sa-gke-kyma-integration: "true"
+    preset-gc-project-env: "true"
+  decorate: true
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+      command:
+        - "bash"
+      args:
+        - "-c"
+        - "development/disks-cleanup.sh ${CLOUDSDK_CORE_PROJECT}"
 - name: orphaned-loadbalancer-cleaner
   cron: "0 0 * * 5" # “At 24:00 every Friday”
   labels:
@@ -135,3 +154,4 @@ periodics:
       args:
         - "-c"
         - "development/loadbalancer-cleanup.sh ${CLOUDSDK_CORE_PROJECT}"
+

@@ -1,6 +1,5 @@
 job_template: &job_template
   skip_report: true
-  run_if_changed: "^components/remote-environment-broker/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -17,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/components/remote-environment-broker"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/api-controller-acceptance-tests"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -26,7 +25,8 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-components-remote-environment-broker
+    - name: kyma-tests-api-controller-acceptance-tests
+      run_if_changed: "^tests/api-controller-acceptance-tests/"
       branches:
         - master
       <<: *job_template
@@ -36,7 +36,8 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-components-remote-environment-broker
+    - name: kyma-tests-api-controller-acceptance-tests
+      run_if_changed: "^tests/api-controller-acceptance-tests/"
       branches:
         - master
       <<: *job_template

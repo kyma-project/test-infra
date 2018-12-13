@@ -15,4 +15,4 @@ Read the documents to learn how to:
 
  Read also:
  - [Prow architecture](./prow-architecture.md) and its set up in the Kyma project.
- - The proposal for the new [release process](./kyma-release-process.md) in Kyma that uses Prow, and see how it differs from the release process with the internal CI.
+ - The proposal for the new [release process](./kyma-release-process.md) in Kyma that uses Prow. See how it differs from the release process with the internal CI.
