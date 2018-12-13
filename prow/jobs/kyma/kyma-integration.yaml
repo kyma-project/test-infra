@@ -116,3 +116,22 @@ periodics:
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+- name: orphaned-loadbalancer-cleaner
+  cron: "0 0 * * 5" # “At 24:00 every Friday”
+  labels:
+    preset-sa-gke-kyma-integration: "true"
+    preset-gc-project-env: "true"
+  decorate: true
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+      command:
+        - "bash"
+      args:
+        - "-c"
+        - "development/loadbalancer-cleanup.sh ${CLOUDSDK_CORE_PROJECT}"
