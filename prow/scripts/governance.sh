@@ -66,6 +66,11 @@ function fetch_origin_master() {
 
 function copy_files() {
     for file in $1; do
+        if [[ ! -f "${file}" ]]; then
+            echo "Skipping deleted file ${file}..."
+            continue
+        fi
+        
         mkdir -p "${VOLUME_DIR}/$(dirname "${file}")"
         cp -rf "${file}" "${VOLUME_DIR}/${file}"
     done
