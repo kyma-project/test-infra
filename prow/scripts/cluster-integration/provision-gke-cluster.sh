@@ -35,7 +35,7 @@ fi
 
 DEFAULT_VERSION="1.10.7"
 AVILABLE_CLUSTER_VERSIONS=$(gcloud container get-server-config --zone="${GCLOUD_COMPUTE_ZONE}" --format json | jq '.validMasterVersions' | grep "${DEFAULT_VERSION}" | tr -d '",' | sed -e 's/^[ \t]*//')
-NEWEST_WANTED_VERSION=$(echo ${AVILABLE_CLUSTER_VERSIONS} | head -n 1)
+NEWEST_WANTED_VERSION=$(echo "${AVILABLE_CLUSTER_VERSIONS}" | head -n 1)
 CLUSTER_VERSION_PARAM="--cluster-version=${NEWEST_WANTED_VERSION}"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
 NUM_NODES_PARAM="--num-nodes=3"
