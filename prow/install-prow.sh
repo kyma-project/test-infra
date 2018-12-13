@@ -18,6 +18,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 # Deploy Prow
 kubectl apply -f cluster/starter.yaml
 
+# Enable https redirection on deck
+kubectl patch deployment deck --patch "$(cat cluster/00-deck-patch.yaml)"
+
 # Install cert-manager
 kubectl apply -f cluster/01-cert-manager.yaml
 kubectl apply -f cluster/02-cluster-issuer.yaml

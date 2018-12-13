@@ -1,0 +1,12 @@
+---
+spec:
+  template:
+    spec:
+      containers:
+      - name: deck
+        args:
+        - --tide-url=http://tide/
+        - --hook-url=http://hook:8888/plugin-help
+        - --job-config-path=/etc/job-config
+        - --spyglass
+        - --redirect-http-to=status.build.kyma-project.io
