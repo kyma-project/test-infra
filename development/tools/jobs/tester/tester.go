@@ -60,6 +60,7 @@ const (
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
 
+// GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
 	return []string{"release-0.6"}
 }
@@ -127,6 +128,7 @@ func FindPeriodicJobByName(jobs []config.Periodic, name string) *config.Periodic
 	return nil
 }
 
+// AssertThatHasExtraRefTestInfra checks if job has configured extra ref to test-infra repository
 func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig, expectedBaseRef string) {
 	for _, curr := range in.ExtraRefs {
 		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
@@ -171,6 +173,7 @@ func AssertThatHasCommand(t *testing.T, command []string) {
 	assert.Equal(t, []string{BuildScriptDir}, command)
 }
 
+// AssertThatExecGolangBuidlpack checks if job executes golang buildpack
 func AssertThatExecGolangBuidlpack(t *testing.T, job config.JobBase, img string, args ...string) {
 	assert.Len(t, job.Spec.Containers, 1)
 	assert.Equal(t, job.Spec.Containers[0].Image, img)

@@ -1,14 +1,15 @@
 package testinfra
 
 import (
+	"io/ioutil"
+	"os"
+	"testing"
+
 	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
 	"k8s.io/test-infra/prow/config"
-	"os"
-	"testing"
 )
 
 func TestBranchProtection(t *testing.T) {
