@@ -25,6 +25,7 @@ func TestApiServerProxyJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.True(t, actualPresubmit.SkipReport)
 	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "components/apiserver-proxy/")
+	assert.Equal(t, "^components/apiserver-proxy/", actualPresubmit.RunIfChanged)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
