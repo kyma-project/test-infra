@@ -30,7 +30,7 @@ if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
     popd
 fi
 
-go run "${DEVELOPMENT_DIR}"/tools/cmd/orphanremover/main.go  --project="${PROJECT}" --dryRun=false
+go run "${DEVELOPMENT_DIR}"/tools/cmd/orphanremover/main.go  --project="${PROJECT}" --dry-run=false
 status=$?
 
 if [ ${status} -ne 0 ]
