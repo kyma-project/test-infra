@@ -12,11 +12,14 @@ kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user "$(gcloud config get-value account)"
 
 # Deploy NGINX Ingress Controller
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/mandatory.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/provider/cloud-generic.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.21.0/deploy/mandatory.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.21.0/deploy/provider/cloud-generic.yaml
 
 # Deploy Prow
 kubectl apply -f cluster/starter.yaml
+
+# Enable https redirection on deck
+kubectl patch deployment deck --patch "$(cat cluster/00-deck-patch.yaml)"
 
 # Install cert-manager
 kubectl apply -f cluster/01-cert-manager.yaml
