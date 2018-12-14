@@ -2,7 +2,6 @@ package dnscleaner
 
 import (
 	"context"
-	"log"
 
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
@@ -74,9 +73,23 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) {
+func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) error {
 	_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
 	if err != nil {
-		log.Print(err)
+		return err
 	}
+	return nil
+}
+
+func (dsw *DNSServiceWrapper) deleteDNSRecord(project string, zone string, record *dns.ResourceRecordSet) error {
+	request := &dns.Change{
+		"deletions": [
+			record
+		]
+	}
+	_, err := dsw.DNS.Changes.Create(project, zone, request).Do()
+	if err != nil {
+		return err
+	}
+	return nil
 }
