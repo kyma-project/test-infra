@@ -23,7 +23,7 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
-        DOCKER_TAG=$(cat ${SCRIPT_DIR}/../RELEASE_VERSION)
+        DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
         echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
     else
         echo "Not supported build type - ${BUILD_TYPE}"
