@@ -60,8 +60,8 @@ kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user "$(gcloud config get-value account)"
 
 # Deploy NGINX Ingress Controller
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/mandatory.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.20.0/deploy/provider/cloud-generic.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.21.0/deploy/mandatory.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.21.0/deploy/provider/cloud-generic.yaml
 
 # Follow the installation steps in https://github.com/kubernetes/test-infra/blob/master/prow/getting_started.md#how-to-turn-up-a-new-cluster
 
@@ -72,7 +72,3 @@ kubectl create secret generic oauth-token --from-literal=oauth="$oauth_token"
 go run "${CURRENT_DIR}/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_CLUSTER_DIR}/required-secrets.yaml"
 
 kubectl apply -f "${PROW_CLUSTER_DIR}/starter.yaml"
-
-# Add annotations to Prow Ingress 
-kubectl annotate ingress ing kubernetes.io/ingress.class=nginx nginx.ingress.kubernetes.io/ssl-redirect=false
-kubectl patch ingress ing --type=json -p='[{"op": "replace", "path": "/spec/rules/0/http/paths/0/path", "value":"/"}]'
