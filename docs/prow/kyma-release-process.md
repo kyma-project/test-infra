@@ -36,15 +36,12 @@ has to trigger additional, required jobs by adding comment to PR. Those jobs are
 - job that create release artifacts
     - kyma-config-local.yaml
     - kyma-config-cluster.yaml
-- kyma-integration-release*
-- kyma-gke-integration-release (* dont build kyma installer, use already released)
-- kyma-integration (on-the-fly)
-- kyma-gke-integration (on-the-fly)
-
-- kyma-release-creator <- postsubmit
+- kyma-integration
+- kyma-gke-integration-release (does not build kyma installer, use already released version)
 
 
-Only after all checks passed, pull request can be merged to a release branch. After merge, git tag should be created. To automate this, Postsubmit job can be defined for that purpose. 
+Only after all checks passed, pull request can be merged to a release branch. This will trigger postsubmit job that is responsible for creating 
+github release and adding tag. In case of release candidate, prerelease will be created.   
 
 ### Action plan for releasing
 
@@ -196,11 +193,7 @@ The name of this branch should follow the `release-x.y` pattern, such as `releas
 ```
 
 
-4. Publish artifacts and create the release by adding comment to PR:
-
-```
-/test publish-release-artifacts
-```
+4. If all checks passed, merge PR and observe if postsubmit job succeeded. In case of error, retrigger job from Prow dashboard available at: `https://status.build.kyma-project.io/`
 
 
 ### Calculate the release image tag
@@ -209,4 +202,5 @@ In the internal CI (Jenkins), used for the release process, it is easy to specif
 In Prow, such an option is not available. Instead, we read that information from file `RELEASE_VERSION` defined in `test-infra` repository.
 
 
-TODO: prerelease**
+### Removing components
+Beaware, that in case of removing kyma component or it's renaming, releasing jobs for previous versions should be not modified.
