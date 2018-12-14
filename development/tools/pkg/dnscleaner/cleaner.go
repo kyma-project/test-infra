@@ -27,7 +27,7 @@ type IPAddress struct {
 type ComputeAPI interface {
 	lookupRegions(project string, pattern string) ([]string, error)
 	lookupIPAddresses(project string, region string) ([]*compute.Address, error)
-	deleteIPAddress(project string, region string, address string)
+	deleteIPAddress(project string, region string, address string) error
 }
 
 //DNSAPI ???
@@ -58,7 +58,6 @@ func (cleaner *Cleaner) Run(project string, zone string, dryRun bool) {
 		log.Fatalf("Could not list DNSRecords: %v", err)
 	}
 	parsedRecords := extractRecords(rawRecords, "gkeint")
-	fmt.Printf("%s\n\n", parsedRecords)
 
 	var parsedAddresses []IPAddress
 	for _, region := range regions {
@@ -122,11 +121,13 @@ func (cleaner *Cleaner) purge(project string, records []DNSRecord, rawRecords []
 	for _, record := range records {
 		for _, recordIP := range record.records {
 			ad := findIPAddress(recordIP, ips)
-			fmt.Printf("---> Attempting to remove %s in %s\n", ad, recordIP)
+			fmt.Printf("---> Attempting to remove %s with IP: %s\n", ad, recordIP)
 			if !dryRun {
 				cleaner.computeAPI.deleteIPAddress(project, findIPRegion(ad, ips), ad)
 				time.Sleep(2 * time.Second)
 			}
 		}
+		recordToDelete := findRecord(record.name, rawRecords)
+		fmt.Printf("---> Attempting to remove DNS Record: %v\n", recordToDelete)
 	}
 }
