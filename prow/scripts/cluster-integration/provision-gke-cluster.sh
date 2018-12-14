@@ -33,7 +33,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-DEFAULT_VERSION="1.10.7"
+DEFAULT_VERSION="1.10"
 AVILABLE_CLUSTER_VERSIONS=$(gcloud container get-server-config --zone="${GCLOUD_COMPUTE_ZONE}" --format json | jq '.validMasterVersions' | grep "${DEFAULT_VERSION}" | tr -d '",' | sed -e 's/^[ \t]*//')
 NEWEST_WANTED_VERSION=$(echo "${AVILABLE_CLUSTER_VERSIONS}" | head -n 1)
 CLUSTER_VERSION_PARAM="--cluster-version=${NEWEST_WANTED_VERSION}"
