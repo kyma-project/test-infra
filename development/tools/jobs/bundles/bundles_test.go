@@ -32,7 +32,7 @@ func TestBundlesJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetBotGithubToken)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-bundles.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/bundles"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -45,7 +45,7 @@ func TestBundlesJobPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	kymaPost, ex := jobConfig.Postsubmits["kyma-project/bundles"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPost, 3)
+	assert.Len(t, kymaPost, 2)
 
 	expName := "kyma-bundles"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
@@ -59,7 +59,7 @@ func TestBundlesJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetBotGithubToken)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-bundles.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/bundles"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -72,7 +72,7 @@ func TestBundlesReleaseJobPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	kymaPost, ex := jobConfig.Postsubmits["kyma-project/bundles"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPost, 3)
+	assert.Len(t, kymaPost, 2)
 
 	expName := "kyma-bundles-release"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
@@ -84,33 +84,7 @@ func TestBundlesReleaseJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetBotGithubToken)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-bundles.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/bundles"}, actualPost.Spec.Containers[0].Args)
 	assert.Equal(t, []string{"\\d+\\.\\d+\\.\\d+$"}, actualPost.Branches)
-}
-
-func TestBundlesReleaseBranchJobPostsubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/bundles/bundles.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/bundles"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPost, 3)
-
-	expName := "kyma-bundles-release-branch"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
-	require.NotNil(t, actualPost)
-	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/bundles", actualPost.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetBotGithubToken)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/bundles"}, actualPost.Spec.Containers[0].Args)
-	assert.Equal(t, []string{"^release-\\d+\\.\\d+$"}, actualPost.Branches)
 }
