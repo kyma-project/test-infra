@@ -172,6 +172,7 @@ branch-protection:
             release-0.6:
               required_status_checks:
                 contexts:
+                  # TODO this is just an example
                   - kyma-integration
                   - kyma-gke-integration
 

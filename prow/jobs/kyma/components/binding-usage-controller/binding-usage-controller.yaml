@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   - branches:
     - release-0.6
     <<: *job_template
-    always_run: true # don't make sense to define run_if_changed right now
+    always_run: true
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.6
