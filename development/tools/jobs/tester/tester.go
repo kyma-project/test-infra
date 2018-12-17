@@ -163,7 +163,7 @@ func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
 	}
 }
 
-// AssertThatJobRunIfChanged checks if Presubmit has run_if_changed parameter
+// AssertThatJobRunIfChanged checks if job that has specified run_if_changed parameter will be triggered by changes in specified file.
 func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
 	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
