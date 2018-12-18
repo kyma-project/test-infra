@@ -20,8 +20,5 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-"${CURRENT_DIR}"/validate-image-name.sh
-
 gcloud container images delete "${KYMA_INSTALLER_IMAGE}"
 
