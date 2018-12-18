@@ -35,16 +35,13 @@ func (iaw *InstancesAPIWrapper) ListInstances(project string) ([]*compute.Instan
 	return instances, nil
 }
 
-// RemoveInstance delegates to InstancesService.Delete() function
+// RemoveInstance delegates to InstancesService.Delete(project, zone, name) function
 func (iaw *InstancesAPIWrapper) RemoveInstance(project, zone, name string) error {
 
-	//TODO: Uncomment
-	/*
-		_, err := iaw.Service.Delete(project, zone, name).Context(iaw.Context).Do()
+	_, err := iaw.Service.Delete(project, zone, name).Context(iaw.Context).Do()
 
-		if err != nil {
-			return err
-		}
-	*/
+	if err != nil {
+		return err
+	}
 	return nil
 }

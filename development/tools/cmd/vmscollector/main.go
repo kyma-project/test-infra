@@ -43,9 +43,6 @@ func main() {
 		os.Exit(2)
 	}
 
-	//TODO: Remove
-	*dryRun = true
-
 	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, vmNameRegexp: \"%s\", jobLabelRegexp: \"%s\"", *project, *dryRun, *ageInHours, *vmNameRegexp, *jobLabelRegexp)
 
 	instanceNameRx := regexp.MustCompile(*vmNameRegexp)

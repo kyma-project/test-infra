@@ -60,7 +60,7 @@ func (gc *InstancesGarbageCollector) Run(project string, makeChanges bool) (allS
 		var removeErr error
 
 		if makeChanges {
-			removeErr = gc.instancesAPI.RemoveInstance(project, instance.Zone, instance.Name)
+			removeErr = gc.instancesAPI.RemoveInstance(project, formatZone(instance.Zone), instance.Name)
 		}
 
 		if removeErr != nil {

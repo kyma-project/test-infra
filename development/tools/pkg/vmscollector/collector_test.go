@@ -126,24 +126,6 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		assert.Equal(t, instanceMatching2, res[1])
 	})
 
-	t.Run("Run(makeChanges=true) should remove matching disks", func(t *testing.T) {
-
-		mockInstancesAPI := &automock.InstancesAPI{}
-		defer mockInstancesAPI.AssertExpectations(t)
-
-		testProject := "testProject"
-		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
-
-		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching1.Zone, instanceMatching1.Name).Return(nil)
-		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching2.Zone, instanceMatching2.Name).Return(nil)
-
-		gdc := NewInstancesGarbageCollector(mockInstancesAPI, filterFunc)
-
-		allSucceeded, err := gdc.Run(testProject, true)
-		require.NoError(t, err)
-		assert.True(t, allSucceeded)
-	})
-
 	t.Run("Run() should fail if list() fails", func(t *testing.T) {
 
 		mockInstancesAPI := &automock.InstancesAPI{}
@@ -160,7 +142,25 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		assert.Equal(t, testError, err)
 	})
 
-	t.Run("Run(makeChanges=true) should continue process if a previous call failed", func(t *testing.T) {
+	t.Run("Run(makeChanges=true) should remove matching instances", func(t *testing.T) {
+
+		mockInstancesAPI := &automock.InstancesAPI{}
+		defer mockInstancesAPI.AssertExpectations(t)
+
+		testProject := "testProject"
+		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
+
+		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching1.Name+"-zone", instanceMatching1.Name).Return(nil)
+		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching2.Name+"-zone", instanceMatching2.Name).Return(nil)
+
+		gdc := NewInstancesGarbageCollector(mockInstancesAPI, filterFunc)
+
+		allSucceeded, err := gdc.Run(testProject, true)
+		require.NoError(t, err)
+		assert.True(t, allSucceeded)
+	})
+
+	t.Run("Run(makeChanges=true) should continue processing if a previous call failed", func(t *testing.T) {
 
 		mockInstancesAPI := &automock.InstancesAPI{}
 		defer mockInstancesAPI.AssertExpectations(t)
@@ -170,8 +170,8 @@ func TestInstancesGarbageCollector(t *testing.T) {
 		//Given
 		mockInstancesAPI.On("ListInstances", testProject).Return([]*compute.Instance{instanceMatching1, instanceNonMatchingName, instanceNonMatchingLabel, instanceCreatedTooRecently, instanceMatching2}, nil)
 
-		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching1.Zone, instanceMatching1.Name).Return(errors.New("testError"))
-		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching2.Zone, instanceMatching2.Name).Return(nil)
+		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching1.Name+"-zone", instanceMatching1.Name).Return(errors.New("testError"))
+		mockInstancesAPI.On("RemoveInstance", testProject, instanceMatching2.Name+"-zone", instanceMatching2.Name).Return(nil)
 		//When
 		gdc := NewInstancesGarbageCollector(mockInstancesAPI, filterFunc)
 		allSucceeded, err := gdc.Run(testProject, true)
@@ -207,7 +207,7 @@ func TestInstancesGarbageCollector(t *testing.T) {
 func createInstance(name, creationTimestamp, jobLabel, status string) *compute.Instance {
 	return &compute.Instance{
 		Name:              name,
-		Zone:              name + "-zone",
+		Zone:              fmt.Sprintf("https://www.googleapis.com/compute/v1/projects/test/zones/%s-zone", name), //This is what GCloud API returns in "Zone" attribute on List() call
 		CreationTimestamp: creationTimestamp,
 		Labels:            map[string]string{jobLabelName: jobLabel},
 		Status:            status,
