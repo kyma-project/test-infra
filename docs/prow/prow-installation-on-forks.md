@@ -75,7 +75,7 @@ For the purpose of the installation, you must have a set of service accounts and
     - Service Account User (`roles/iam.serviceAccountUser`)
  - **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
     - Storage Object Admin (`roles/storage.objectAdmin`)
- - **sa-gcr-push-kyma-project** with the role that allows the account to push images to Google Container Repository in `kyma-project` GCP Project:
+ - **sa-gcr-push-kyma-project** with the role that allows the account to push images to Google Container Repository in the `kyma-project` GCP project:
     - Storage Admin (`roles/storage.admin`)
  - **kyma-bot-npm-token** which is a token for publishing npm packages
 
