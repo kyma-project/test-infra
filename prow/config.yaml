@@ -199,3 +199,7 @@ deck:
       "started.json|finished.json": ["metadata-viewer"]
       "build-log.txt": ["build-log-viewer"]
       "artifacts/junit.*\\.xml": ["junit-viewer"]
+
+push_gateway:
+  endpoint: pushgateway
+  interval: 10s
