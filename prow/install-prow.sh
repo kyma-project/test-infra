@@ -69,5 +69,11 @@ kubectl apply -f cluster/03-tls-ing_ingress.yaml
 # Install branch protector
 kubectl apply -f cluster/04-branchprotector_cronjob.yaml
 
+# Install tiller
+kubectl apply -f cluster/05-tiller.yaml
+
+# Install pushgateway
+kubectl apply -f cluster/06-pushgateway_deployment.yaml
+
 # Remove Insecure ingress 
 kubectl delete ingress ing
