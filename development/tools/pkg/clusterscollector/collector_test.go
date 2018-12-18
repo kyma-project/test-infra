@@ -107,7 +107,7 @@ func TestClustersGarbageCollector(t *testing.T) {
 	clusterCreatedTooRecently := createCluster(sampleClusterName+"4", timeNowFormatted, sampleJobLabel, sampleStatus)     //not old enough
 	clusterMatching2 := createCluster(sampleClusterName+"5", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)      //matches removal filter
 
-	t.Run("list() should filter two clusters to remove out of five", func(t *testing.T) {
+	t.Run("list() should select two clusters out of five", func(t *testing.T) {
 
 		mockClusterAPI := &automock.ClusterAPI{}
 		defer mockClusterAPI.AssertExpectations(t)
@@ -128,7 +128,23 @@ func TestClustersGarbageCollector(t *testing.T) {
 		assert.Equal(t, clusterMatching2, res[1])
 	})
 
-	t.Run("Run(makeChanges=true) should remove matching disks", func(t *testing.T) {
+	t.Run("Run() should fail if list() fails", func(t *testing.T) {
+
+		mockClusterAPI := &automock.ClusterAPI{}
+		defer mockClusterAPI.AssertExpectations(t)
+
+		testError := errors.New("testError")
+		testProject := "testProject"
+		mockClusterAPI.On("ListClusters", testProject).Return(nil, testError)
+
+		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
+
+		_, err := gdc.Run(testProject, true)
+		require.Error(t, err)
+		assert.Equal(t, testError, err)
+	})
+
+	t.Run("Run(makeChanges=true) should remove matching clusters", func(t *testing.T) {
 
 		mockClusterAPI := &automock.ClusterAPI{}
 		defer mockClusterAPI.AssertExpectations(t)
@@ -144,22 +160,6 @@ func TestClustersGarbageCollector(t *testing.T) {
 		allSucceeded, err := gdc.Run(testProject, true)
 		require.NoError(t, err)
 		assert.True(t, allSucceeded)
-	})
-
-	t.Run("Run() should fail if list() fails", func(t *testing.T) {
-
-		mockClusterAPI := &automock.ClusterAPI{}
-		defer mockClusterAPI.AssertExpectations(t)
-
-		testError := errors.New("testError")
-		testProject := "testProject"
-		mockClusterAPI.On("ListClusters", testProject).Return(nil, testError)
-
-		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
-
-		_, err := gdc.Run(testProject, true)
-		require.Error(t, err)
-		assert.Equal(t, testError, err)
 	})
 
 	t.Run("Run(makeChanges=true) should continue process if a previous call failed", func(t *testing.T) {
@@ -206,12 +206,12 @@ func TestClustersGarbageCollector(t *testing.T) {
 	})
 }
 
-func createCluster(name, createTime, jobLabel, status string) *container.Cluster {
+func createCluster(name, createTime, jobLabelValue, status string) *container.Cluster {
 	return &container.Cluster{
 		Name:           name,
 		Zone:           name + "-zone",
 		CreateTime:     createTime,
-		ResourceLabels: map[string]string{"job": jobLabel},
+		ResourceLabels: map[string]string{jobLabelName: jobLabelValue},
 		Status:         status,
 	}
 }
