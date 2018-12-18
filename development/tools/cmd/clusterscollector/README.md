@@ -4,7 +4,7 @@
 
 This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
 
-The `kyma-gke-integration` job creates a GKE cluster in order to install and test Kyma.
+The `kyma-gke-integration` job creates a GKE cluster to install and test Kyma.
 Usually, the job also cleans up the cluster.
 It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
