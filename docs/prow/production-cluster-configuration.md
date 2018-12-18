@@ -36,9 +36,9 @@ Use the following tools and configuration:
    Export these variables:
 
    ```
-   export CLUSTER_NAME=prow-production
-   export ZONE=europe-west3-b
-   export PROJECT=kyma-project
+   export CLUSTER_NAME=kyma-prow
+   export ZONE=europe-west3-a
+   export PROJECT=sap-kyma-prow
    ```
 
    For GKE, run the following command:
@@ -54,7 +54,7 @@ Use the following tools and configuration:
    - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
    ```
-   export BUCKET_NAME=kyma-prow
+   export BUCKET_NAME=kyma-prow-secrets
    export KEYRING_NAME=kyma-prow
    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
    ```
