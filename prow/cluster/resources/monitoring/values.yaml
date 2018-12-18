@@ -15,7 +15,7 @@ prometheus-operator:
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.global-static-ip-name: prow-monitoring
+        kubernetes.io/ingress.global-static-ip-name: kyma-prow-monitoring
         kubernetes.io/ingress.class: "gce"
         kubernetes.io/tls-acme: "true"
         certmanager.k8s.io/cluster-issuer: letsencrypt-prod
