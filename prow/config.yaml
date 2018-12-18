@@ -10,7 +10,7 @@ presets:
       preset-gc-project-env: "true"
     env:
       - name: CLOUDSDK_CORE_PROJECT
-        value: "kyma-project"
+        value: "sap-kyma-prow"
   - labels:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
@@ -45,14 +45,14 @@ presets:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-gcr-push/service-account.json
+        value: /etc/credentials/sa-gcr-push-kyma-project/service-account.json
     volumes:
-      - name: sa-gcr-push
+      - name: sa-gcr-push-kyma-project
         secret:
-          secretName: sa-gcr-push
+          secretName: sa-gcr-push-kyma-project
     volumeMounts:
-      - name: sa-gcr-push
-        mountPath: /etc/credentials/sa-gcr-push
+      - name: sa-gcr-push-kyma-project
+        mountPath: /etc/credentials/sa-gcr-push-kyma-project
         readOnly: true
   - labels:
       preset-dind-enabled: "true"
@@ -70,6 +70,11 @@ presets:
     env:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/prow/test" # TODO: change to eu.gcr.io/kyma-project
+  - labels:
+      preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "eu.gcr.io/sap-kyma-prow/test" # TODO: change to eu.gcr.io/sap-kyma-prow
   - labels:
       preset-docker-push-repository-test-infra: "true"
     env:
@@ -169,7 +174,7 @@ branch-protection:
               - license/cla #TODO: move to default config for organization
 
 plank:
-  job_url_template: 'https://status.build.kyma-project.io/view/gcs/prow-production/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
+  job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
   job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 10 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
@@ -183,7 +188,7 @@ plank:
       entrypoint: "gcr.io/k8s-prow/entrypoint:v20181019-08e9d55c9"
       sidecar: "gcr.io/k8s-prow/sidecar:v20181019-08e9d55c9"
     gcs_configuration:
-      bucket: prow-production
+      bucket: kyma-prow-logs
       path_strategy: "explicit"
     gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
 
