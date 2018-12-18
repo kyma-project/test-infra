@@ -14,12 +14,11 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
-	compute "google.golang.org/api/compute/v1"
 	container "google.golang.org/api/container/v1"
 )
 
 const defaultClusterNameRegexp = "^gkeint[-](pr|commit)[-].*"
-const defaultJobLabelRegexp = "^kyma-gke-integration"
+const defaultJobLabelRegexp = "^kyma-gke-integration$"
 
 var (
 	project           = flag.String("project", "", "Project ID [Required]")
@@ -47,7 +46,7 @@ func main() {
 	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, clusterNameRegexp: \"%s\", jobLabelRegexp: \"%s\"", *project, *dryRun, *ageInHours, *clusterNameRegexp, *jobLabelRegexp)
 	context := context.Background()
 
-	connection, err := google.DefaultClient(context, compute.CloudPlatformScope, container.CloudPlatformScope)
+	connection, err := google.DefaultClient(context, container.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
