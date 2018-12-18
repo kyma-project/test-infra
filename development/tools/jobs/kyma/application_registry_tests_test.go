@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMetadataServiceTestsJobsPresubmit(t *testing.T) {
+func TestApplicationRegistryTestsJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests.yaml")
 	// THEN
@@ -36,7 +36,7 @@ func TestMetadataServiceTestsJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/application-registry-tests"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestMetadataServiceTestsJobPostsubmit(t *testing.T) {
+func TestApplicationRegistryTestsJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests.yaml")
 	// THEN
