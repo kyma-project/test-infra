@@ -29,8 +29,6 @@ var (
 	timeNowFormatted         = timeNow.Format(time.RFC3339Nano)
 	timeTwoHoursAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
 	timeTwoHoursAgoFormatted = timeTwoHoursAgo.Format(time.RFC3339Nano)
-	nonEmptyUsers            = []string{"someUser"}
-	emptyUsers               = []string{}
 )
 
 func TestNewClusterRemovalPredicate(t *testing.T) {
