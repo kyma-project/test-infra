@@ -4,18 +4,18 @@
 
 This command finds and removes orphaned virtual machines created by the `kyma-integration` job in a Google Cloud Platform (GCP) project.
 
-The `kyma-gke-integration` job creates a GKE cluster in order to install and test Kyma.
-Usually, the job also cleans up the cluster.
+The `kyma-integration` job creates a Virtual Machine (VM) instance to install and test Kyma.
+Usually, the job also cleans up the instance.
 It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
-The garbage collector finds and removes such clusters.
+The garbage collector finds and removes such VM instances.
 
-There are three conditions used to find clusters for removal:
-- The cluster name pattern that is specific for the `kyma-gke-integration` job
-- The value of a `job` label the cluster is annotated with
-- The cluster `createTime` value that is used to find clusters existing at least for a preconfigured number of hours
+There are three conditions used to find instances for removal:
+- The instance name pattern that is specific for the `kyma-integration` job
+- The value of a `job-name` label the instance is annotated with
+- The instance `creationTimestamp` value that is used to find instance existing at least for a preconfigured number of hours
 
-Clusters that meet these conditions are subject to removal.
+VM instances that meet these conditions are subject to removal.
 
 ## Usage
 
@@ -41,9 +41,9 @@ See the list of available flags:
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--project**             |   Yes    | GCP project name.
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
-| **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`.
-| **--clusterNameRegexp**   |    No    | The string value with a valid Golang regexp. It is used to match clusters by their name. It defaults to `^gkeint[-](pr|commit)[-].*`.
-| **--jobLabelRegexp**      |    No    | The string value with a valid Golang regexp. It is used to match clusters by the `job` label value. It defaults to `^kyma-gke-integration`.
+| **--ageInHours**          |    No    | The integer value for the number of hours. It only matches VM instances older than `now()-ageInHours`. It defaults to `3`.
+| **--vmNameRegexp**        |    No    | The string value with a valid Golang regexp. It is used to match VM instances by their name. It defaults to `^kyma-integration-test-.*`.
+| **--jobLabelRegexp**      |    No    | The string value with a valid Golang regexp. It is used to match VM instances by the `job-name` label value. It defaults to `^kyma-integration$`.
 
 ### Environment variables
 
@@ -51,5 +51,5 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least: `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `compute.instances.list` and `compute.instances.delete` Google IAM permissions. |
 
