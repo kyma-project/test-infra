@@ -6,7 +6,7 @@ kind: Ingress
 metadata:
   name: tls-ing
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: prow-status
+    kubernetes.io/ingress.global-static-ip-name: kyma-prow-status
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     certmanager.k8s.io/acme-http01-edit-in-place: "true"
