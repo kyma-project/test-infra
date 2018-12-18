@@ -18,8 +18,8 @@ Use the following tools and configuration:
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
 - Two buckets on Google Cloud Storage (GCS), one for storing Secrets and the second for storing logs
 - GCP configuration that includes:
-  - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-production` name
-  - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-production` address
+  - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-status` name
+  - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-status` address
 
 ## Installation
 

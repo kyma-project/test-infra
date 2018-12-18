@@ -8,12 +8,50 @@
 
 set -o errexit
 
+readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
+readonly PROW_CLUSTER_DIR="$( cd "${CURRENT_DIR}/cluster" && pwd )"
+
+if [ -z "$BUCKET_NAME" ]; then
+      echo "\$BUCKET_NAME is empty"
+      exit 1
+fi
+
+if [ -z "$KEYRING_NAME" ]; then
+      echo "\$KEYRING_NAME is empty"
+      exit 1
+fi
+
+if [ -z "$ENCRYPTION_KEY_NAME" ]; then
+      echo "\$ENCRYPTION_KEY_NAME is empty"
+      exit 1
+fi
+
+if [ -z "${LOCATION}" ]; then
+    LOCATION="global"
+fi
+
+
+# requried by secretspopulator
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+      echo "\$GOOGLE_APPLICATION_CREDENTIALS is empty"
+      exit 1
+fi
+
+if [ -z "$PROJECT" ]; then
+      echo "\$PROJECT is empty"
+      exit 1
+fi
+
 kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin --user "$(gcloud config get-value account)"
 
 # Deploy NGINX Ingress Controller
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.21.0/deploy/mandatory.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.21.0/deploy/provider/cloud-generic.yaml
+
+# Create secrets
+go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_CLUSTER_DIR}/required-secrets.yaml"
 
 # Deploy Prow
 kubectl apply -f cluster/starter.yaml

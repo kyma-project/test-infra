@@ -21,9 +21,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-"${CURRENT_DIR}"/validate-image-name.sh
-
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
 echo "--------------------------------------------------------------------------------"
