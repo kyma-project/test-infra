@@ -51,5 +51,5 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least: `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
 
