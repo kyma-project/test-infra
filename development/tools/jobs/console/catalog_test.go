@@ -20,7 +20,7 @@ func TestCatalogJobPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "console-catalog"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -29,7 +29,7 @@ func TestCatalogJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^catalog/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "catalog/some_random_file.js")
@@ -58,7 +58,7 @@ func TestCatalogJobPostsubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/console", actualPost.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^catalog/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)

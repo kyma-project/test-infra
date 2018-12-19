@@ -13,6 +13,7 @@ Read the documents to learn how to:
 - [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
 - [Prepare your component for the migration](./migration-guide.md) from the internal CI to Prow.
+- [Define a release job for your component](./migration-guide-release.md)
 
 Read also:
 
