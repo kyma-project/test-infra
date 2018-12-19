@@ -1,7 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: test-infra-test-jobs-yaml-definitions
-    run_if_changed: "^(prow/jobs|prow/config\.yaml$|development/tools/jobs)"
+    run_if_changed: "^(prow/jobs|prow/config\\.yaml$|development/tools/jobs)"
     branches:
     - master
     skip_report: false
