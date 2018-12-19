@@ -56,6 +56,9 @@ go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --proj
 # Deploy Prow
 kubectl apply -f cluster/starter.yaml
 
+# Create ConfigMap with Kyma images for deck
+kubectl create configmap branding --from-file "${CURRENT_DIR}/branding"
+
 # Enable https redirection on deck
 kubectl patch deployment deck --patch "$(cat cluster/00-deck-patch.yaml)"
 
