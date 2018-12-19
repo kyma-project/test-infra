@@ -171,6 +171,7 @@ branch-protection:
           required_status_checks:
             contexts:
             - license/cla #TODO: move to default config for organization
+            - continuous-integration/jenkins/pr-head
 
           branches:
             master:
