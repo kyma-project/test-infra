@@ -2,7 +2,7 @@
 
 ## Overview
 
-This command finds and removes orphaned virtual machines created by the `kyma-integration` job in a Google Cloud Platform (GCP) project.
+This command finds and removes orphaned virtual machines (VMs) created by the `kyma-integration` job in a Google Cloud Platform (GCP) project.
 
 The `kyma-integration` job creates a Virtual Machine (VM) instance to install and test Kyma.
 Usually, the job also cleans up the instance.
