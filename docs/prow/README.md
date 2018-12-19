@@ -12,7 +12,7 @@ Read the documents to learn how to:
 - [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Create a service account](./prow-secrets-management.md) and store its encrypted key in a GCS bucket.
 - [Prepare your component for the migration](./migration-guide.md) from the internal CI to Prow.
-- [Define release job for your component](./migration-guide-release.md)
+- [Define a release job for your component](./migration-guide-release.md)
 
  Read also:
  - [Prow architecture](./prow-architecture.md) and its set up in the Kyma project.
