@@ -1,13 +1,16 @@
-# Release Jobs Migration Guide
+# Migration Guide for Release Jobs
 
-This document describes the procedure of defining release Jobs for kyma components. There is an assumption that the reader is 
-familiar with migration guide for standard jobs available [here](https://github.com/kyma-project/test-infra/blob/master/docs/prow/migration-guide.md).
+This document describes the procedure for defining release jobs for Kyma components.
+
+>**NOTE:** Before you follow the steps in this guide, read the [migration guide for standard jobs](https://github.com/kyma-project/test-infra/blob/master/docs/prow/migration-guide.md).
 
 ## Steps
 
-### Implement release rule
-In your component's Makefile, please make sure that you defined released rule `ci-release`.
-Example from Binding Usage Controller:
+Follow the subsections to define component jobs for a release.
+
+### Implement a release rule
+Define the `ci-release` released rule in your component's Makefile.
+See the Binding Usage Controller as an example:
 ```
 APP_NAME = binding-usage-controller
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
@@ -21,16 +24,15 @@ ci-release: build build-image push-image
 
 ```
 
-### Define release job
-The difference between a releasing job and Presubmit job for the master branch are following:
+### Define a release job
 
-- different branch
-- used label `preset-build-release` instead of `preset-build-pr`
-- extra refs that clones `test-infra` repository use branch `release-0.6` instead of `master`
-- `always-run` set to `true` instead specifying `run_if_changed`
+The differences between a release job and a job for the `master` branch are as follows:
+- Different branches
+- The `preset-build-release` label used instead of `preset-build-pr`
+- The **extra_refs** parameter for the `test-infra` repository that uses the `release-0.6` branch instead of `master`
+- The **always_run** parameter set to `true` instead of specifying the **run_if_changed** parameter
 
-
-Full example:
+See an example:
 ```
 test_infra_ref: &test_infra_ref
   org: kyma-project
@@ -96,19 +98,19 @@ postsubmits:
 
 ```
 
-Please note that in comparison to [migration guide](https://github.com/kyma-project/test-infra/blob/master/docs/prow/migration-guide.md) following changes were introduced:
+The component job configuration in this guide differs from the one defined in the [migration guide for standard jobs](https://github.com/kyma-project/test-infra/blob/master/docs/prow/migration-guide.md) as follows:
 
--`test-infra-ref` object was defined, where `org`, `repo` and `path_alias` are defined.
-- `job-template` now defines `name`, but `run_if_changed` and `extra-refs` were removed from it. 
-`run_if_changed` is defined only for Presubmit and Postsubmit job for `master` branch.
-- all jobs have to define proper `extra-refs` with specified `base-ref`
-- every job use different build preset (`preset-build-master`, `preset-build-release`, `preset-build-pr`).
-- releasing job is defined for branch `release-0.6`
-- release job has `always_run` flag set to `true`
+- The **test-infra-ref** object is defined, where **org**, **repo**, and **path_alias** are specified.
+- **job-template** now defines **name**, but **run_if_changed** and **extra_refs** are removed from it.
+**run_if_changed** is defined only for the presubmit and postsubmit job for the `master` branch.
+- All jobs must define proper **extra_refs** with the specified **base_ref**.
+- Every job uses a different build Preset (**preset-build-master**, **preset-build-release**, **preset-build-pr**).
+- The release job is defined for the `release-0.6` branch.
+- The release job has the **always_run** flag set to `true`.
 
-### Define test for release jobs
+### Define a test for a release job
 
-See example from `binding_usage_controller_test.go`:
+See an example of a test configuration from the `binding_usage_controller_test.go` file:
 ```
 func TestBucReleases(t *testing.T) {
 	// WHEN
@@ -132,7 +134,5 @@ func TestBucReleases(t *testing.T) {
 
 ```
 
-Because we have to be prepared for supporting many releases and for every release separate job for every component needs to be defined, we suggest to implement 
-tests as presented above.
-In the example above, we use `tester.GetAllKymaReleaseBranches()` function that returns all supported Kyma release branches and run a separate test for every release branch.
-If new branch will be added, we have automatically tests for release job. In this approach, we assume that job definition does not differ between releases except `branch` and `extra-refs.base_ref`
+Follow the presented example to implement tests to reuse them in every release.
+The example uses the `tester.GetAllKymaReleaseBranches()` function that returns all supported Kyma release branches and runs a separate test for every release branch. If you add a new branch, the tests for the release job are already available. This approach assumes that the job definition does not differ between releases, except for the `branch` and `extra-refs.base_ref` parameters.
