@@ -39,7 +39,7 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name.
+| **--project**             |   Yes    | GCP project name
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches VM instances older than `now()-ageInHours`. It defaults to `3`.
 | **--vmNameRegexp**        |    No    | The string value with a valid Golang regexp. It is used to match VM instances by their name. It defaults to `^kyma-integration-test-.*`.
