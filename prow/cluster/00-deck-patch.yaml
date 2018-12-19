@@ -10,3 +10,12 @@ spec:
         - --job-config-path=/etc/job-config
         - --spyglass
         - --redirect-http-to=status.build.kyma-project.io
+        volumeMounts:
+        - mountPath: /static/extensions
+          name: branding
+          readOnly: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: branding
+        name: branding

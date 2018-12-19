@@ -42,6 +42,7 @@ Its structure looks as follows:
 
 ```
 
+  ├── branding              # Files related to Kyma branding for a Prow cluster
   ├── cluster               # Files for Prow cluster provisioning
   ├── images                # Images for ProwJobs
   ├── jobs                  # Files with job definitions

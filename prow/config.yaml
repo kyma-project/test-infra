@@ -223,6 +223,11 @@ deck:
       "started.json|finished.json": ["metadata-viewer"]
       "build-log.txt": ["build-log-viewer"]
       "artifacts/junit.*\\.xml": ["junit-viewer"]
+  branding:
+    header_color: "#0b74de" # Kyma color
+    logo: "extensions/logo.svg"
+    favicon: "extensions/favicon.png"
+    
 
 push_gateway:
   endpoint: pushgateway
