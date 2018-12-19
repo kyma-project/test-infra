@@ -2,6 +2,9 @@ black-list: ["/vendor/"]
 timeout: 60
 request-repeats: 5
 files:
+  - path: "./test-infra/development/tools/cmd/clusterscollector/README.md"
+    config:
+      white-list-internal: ["pr|commit"]
   - path: "./test-infra/.github/ISSUE_TEMPLATE/security-vulnerability.md"
     config:
       white-list-internal: ["{CVSS"]
