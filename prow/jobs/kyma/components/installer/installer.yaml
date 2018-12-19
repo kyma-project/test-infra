@@ -6,7 +6,6 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   name: kyma-components-installer
   skip_report: true
-  run_if_changed: "^components/installer/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -30,6 +29,7 @@ presubmits: # runs on PRs
   - branches:
     - master
     <<: *job_template
+    run_if_changed: "^components/installer/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -52,6 +52,7 @@ postsubmits:
   - branches:
     - master
     <<: *job_template
+    run_if_changed: "^components/installer/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
