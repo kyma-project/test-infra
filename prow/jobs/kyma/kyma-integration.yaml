@@ -35,7 +35,7 @@ presubmits: # runs on PRs
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-build-pr: "true"
-        preset-docker-push-repository: "true"
+        preset-docker-push-repository-gke-integration: "true"
         preset-dind-enabled: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -85,7 +85,7 @@ postsubmits:
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-build-master: "true"
-        preset-docker-push-repository: "true"
+        preset-docker-push-repository-gke-integration: "true"
         preset-dind-enabled: "true"
       decorate: true
       path_alias: github.com/kyma-project/kyma

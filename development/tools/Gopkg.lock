@@ -388,6 +388,7 @@
   packages = [
     "cloudkms/v1",
     "compute/v1",
+    "container/v1",
     "gensupport",
     "googleapi",
     "googleapi/internal/uritemplates",
@@ -694,6 +695,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ae835df4cd9841847114c2a0f635e7a6863436b8ad83739e6801ac30b65136ac"
+  inputs-digest = "afa3740756d6b1e7d6af3d68d566dcdffec2c73fde128bec58e5854fe5b4794e"
   solver-name = "gps-cdcl"
   solver-version = 1

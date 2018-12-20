@@ -1,0 +1,21 @@
+{{- $prometheusGrafana :=  index .Values "prometheus-operator" "grafana" }}
+{{- if and $prometheusGrafana.enabled .Values.grafana.provisionDashboards }}
+apiVersion: v1
+kind: ConfigMapList
+items:
+{{- range $path, $fileContents := .Files.Glob "dashboards/*.json" }}
+{{- $dashboardName := regexReplaceAll "(^.*/)(.*)\\.json$" $path "${2}" }}
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: {{ printf "%s-%s" (include "prometheus-operator.fullname" $) $dashboardName | trunc 63 | trimSuffix "-" }}
+    labels:
+      {{- if $prometheusGrafana.sidecar.dashboards.label }}
+      {{ $prometheusGrafana.sidecar.dashboards.label }}: "1"
+      {{- end }}
+      app: {{ template "prometheus-operator.name" $ }}-grafana
+{{ include "prometheus-operator.labels" $ | indent 6 }}
+  data:
+    {{ $dashboardName }}.json: {{ $.Files.Get $path | toJson }}
+{{- end }}
+{{- end }}
