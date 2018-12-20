@@ -19,7 +19,7 @@ import (
 const defaultDiskNameRegex = "^gke-gkeint.*[-]pvc[-]"
 
 var (
-	project       = flag.String("project", "", "Project ID")
+	project       = flag.String("project", "", "Project ID [Required]")
 	dryRun        = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 	ageInHours    = flag.Int("ageInHours", 2, "Disk age in hours. Disks older than: now()-ageInHours are considered for removal.")
 	diskNameRegex = flag.String("diskNameRegex", defaultDiskNameRegex, "Disk name regex. Matching disks are considered for removal.")

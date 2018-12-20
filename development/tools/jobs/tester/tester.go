@@ -37,6 +37,10 @@ const (
 	PresetBotGithubToken Preset = "preset-bot-github-token"
 	// PresetBotGithubSSH means github ssh
 	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
+	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
+	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
+	// PresetGCProjectEnv means project name is injected as env variable
+	PresetGCProjectEnv = "preset-gc-project-env"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
