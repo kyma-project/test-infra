@@ -124,7 +124,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "*/13 * * * *", vmsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, vmsCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", vmsCleanerPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpackLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, vmsCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
 
