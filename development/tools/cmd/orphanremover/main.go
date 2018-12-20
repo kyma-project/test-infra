@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	project = flag.String("project", "", "Project ID")
-	dryRun  = flag.Bool("dry-run", true, "Dry Run enabled")
+	project = flag.String("project", "", "Project ID [Required]")
+	dryRun  = flag.Bool("dryRun", true, "Dry Run enabled")
 )
 
 func main() {
