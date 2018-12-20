@@ -46,7 +46,7 @@ if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
 fi
 
 
-go run "${DEVELOPMENT_DIR}"/tools/cmd/${TOOL_DIR}/main.go  --project="${PROJECT}" $@
+go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go"  --project="${PROJECT}" "$@"
 status=$?
 
 if [ ${status} -ne 0 ]
