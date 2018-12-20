@@ -117,8 +117,7 @@ periodics:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
 - name: orphaned-disks-cleaner
-  #cron: "0 * * * *" # "Every hour"
-  cron: "*/10 * * * *" # "Every ten minutes (Temporary Dry Run to ensure it works)"
+  cron: "15 */2 * * *" # "At minute 15 past every 2nd hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -135,10 +134,9 @@ periodics:
         - "bash"
       args:
         - "-c"
-        - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"
+        - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
 - name: orphaned-clusters-cleaner
-  #cron: "0 */4 * * *" # "Every four hours"
-  cron: "*/10 * * * *" # "Every ten minutes (Temporary Dry Run to ensure it works)"
+  cron: "0 */4 * * *" # "Every four hours"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -155,10 +153,9 @@ periodics:
         - "bash"
       args:
         - "-c"
-        - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"
+        - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
 - name: orphaned-loadbalancer-cleaner
-  #cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
-  cron: "*/10 * * * *" # "Every ten minutes (Temporary Dry Run to ensure it works)"
+  cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -175,5 +172,5 @@ periodics:
         - "bash"
       args:
         - "-c"
-        - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"
+        - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
 
