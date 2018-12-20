@@ -17,6 +17,8 @@ if [ -z "$BUCKET_NAME" ]; then
       exit 1
 fi
 
+echo "DUMMY CHANGE"
+
 if [ -z "$KEYRING_NAME" ]; then
       echo "\$KEYRING_NAME is empty"
       exit 1
