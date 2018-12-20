@@ -4,6 +4,18 @@
 # DO NOT INVOKE DIRECTLY, USE FROM OTHER SCRIPTS
 ################################################################################
 
+################################################################################
+# Generic resource cleanup tool launcher
+# This script invokes a cleanup tool specified by input arguments.
+# It passes all input parameters, unchanged, to the target tool.
+# The script also checks for existence of the mandatory
+# GOOGLE_APPLICATION_CREDENTIALS environment variable.
+#
+# Input parameters (positional):
+# $1 - tool subdirectory in the existing hierarchy: ../development/tools/cmd/<tool-directory>/
+# $2 - name of the object subject to cleanup, for nice log messages.
+################################################################################
+
 set -e
 set -o pipefail
 
@@ -39,7 +51,6 @@ if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
     dep ensure -v -vendor-only
     popd
 fi
-
 
 go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go" "$@"
 status=$?
