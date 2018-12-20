@@ -26,13 +26,8 @@ if [ -z "${OBJECT_NAME}" ]; then
 		exit 1
 fi
 
-readonly PROJECT="$3"
-
 shift #pass $1
 shift #pass $2
-if [ -n "$3" ]; then
-    shift #pass $3
-fi
 
 echo "--------------------------------------------------------------------------------"
 echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration jobs...  "
@@ -46,7 +41,7 @@ if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
 fi
 
 
-go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go"  --project="${PROJECT}" "$@"
+go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go" "$@"
 status=$?
 
 if [ ${status} -ne 0 ]
