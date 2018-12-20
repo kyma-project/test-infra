@@ -60,6 +60,16 @@ func TestBranchProtection(t *testing.T) {
 		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "license/cla")
 	})
 
+	t.Run("repository community, branch master", func(t *testing.T) {
+		masterPolicy, err := actual.GetBranchProtection("kyma-project", "community", "master")
+		require.NoError(t, err)
+		require.NotNil(t, masterPolicy)
+		assert.True(t, *masterPolicy.Protect)
+		require.NotNil(t, masterPolicy.RequiredStatusChecks)
+		assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, 1)
+		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "license/cla")
+	})
+
 }
 
 func readConfig(t *testing.T) config.Config {
