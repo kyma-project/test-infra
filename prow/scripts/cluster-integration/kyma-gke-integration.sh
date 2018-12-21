@@ -257,7 +257,7 @@ date
 shout "Trigger installation"
 date
 kubectl label installation/kyma-installation action=install
-"${KYMA_SCRIPTS_DIR}"/is-installed.sh
+"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 shout "Test Kyma"
 date
