@@ -14,7 +14,7 @@ func TestKubelessIntegrationTestsJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-kubeless-integration", currentRelease)
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-kubeless-integration", "master")
 
 	expName := "kyma-tests-kubeless-integration"
 	assert.Equal(t, expName, actualPresubmit.Name)
