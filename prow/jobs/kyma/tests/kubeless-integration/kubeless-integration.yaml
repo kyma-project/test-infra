@@ -3,8 +3,8 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 job_template: &job_template
+  name: kyma-tests-kubeless-integration
   skip_report: true
-  run_if_changed: "^tests/kubeless-integration/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -30,16 +30,15 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-tests-kubeless-integration
-      branches:
-        - master
+    - branches:
+      - master
       <<: *job_template
+      run_if_changed: "^tests/kubeless-integration/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: kyma-tests-kubeless-integration-release
-      branches:
-        - release-0.6
+    - branches:
+      - release-0.6
       <<: *job_template
       always_run: true
       extra_refs:
@@ -51,10 +50,10 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-tests-kubeless-integration
-      branches:
-        - master
+    - branches:
+      - master
       <<: *job_template
+      run_if_changed: "^tests/kubeless-integration/"
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
