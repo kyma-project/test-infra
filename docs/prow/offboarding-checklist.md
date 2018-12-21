@@ -1,0 +1,11 @@
+# Offboarding Checklist
+
+When someone having access to the Prow cluster leaves the project, we need to apply the following steps to keep our assets secured.
+
+## Remove the person from Google project
+
+The person should be removed from the Google project `kyma-prow` immediately. Follow [this document](https://cloud.google.com/iam/docs/granting-changing-revoking-access) to revoke access.
+
+## Rotate all the secrets
+
+All the secrets that were valid when the person was in the project should be rotated. Follow [Prow secret management](./prow-secrets-management.md) to create a new key ring and new secrets. Then, use [secrets populator](./../../development/tools/cmd/secretspopulator/README.md) to update all the secrets on Prow cluster.
