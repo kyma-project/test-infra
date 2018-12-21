@@ -121,12 +121,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, vmsCleanerPeriodic)
 	assert.Equal(t, expName, vmsCleanerPeriodic.Name)
 	assert.True(t, vmsCleanerPeriodic.Decorate)
-	assert.Equal(t, "*/13 * * * *", vmsCleanerPeriodic.Cron)
+	assert.Equal(t, "30 */4 * * *", vmsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, vmsCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, vmsCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
 
 	expName = "orphaned-loadbalancer-cleaner"
 	loadbalancerCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
