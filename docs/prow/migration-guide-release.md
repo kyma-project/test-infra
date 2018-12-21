@@ -91,7 +91,7 @@ postsubmits:
     run_if_changed: "^components/binding-usage-controller/"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: maser
+      base_ref: master
     labels:
       <<: *job_labels_template
       preset-build-master: "true"
