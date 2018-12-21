@@ -1,6 +1,6 @@
 # Offboarding Checklist
 
-When someone having access to the Prow cluster leaves the project, we need to apply the following steps to keep our assets secured.
+When someone with access to the Prow cluster leaves the project, we must apply the following steps to keep our assets secured.
 
 ## Remove the person from Google project
 
