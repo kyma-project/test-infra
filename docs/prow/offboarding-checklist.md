@@ -4,7 +4,7 @@ When someone with access to the Prow cluster leaves the project, we must apply t
 
 ## Remove the person from Google project
 
-The person should be removed from the Google project `kyma-prow` immediately. Follow [this document](https://cloud.google.com/iam/docs/granting-changing-revoking-access) to revoke access.
+Remove the person from the `kyma-prow` Google project immediately. Follow [this document](https://cloud.google.com/iam/docs/granting-changing-revoking-access) to revoke access.
 
 ## Rotate all the secrets
 
