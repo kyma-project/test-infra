@@ -8,4 +8,4 @@ Remove the person from the `kyma-prow` Google project immediately. Follow [this 
 
 ## Rotate all the Secrets
 
-All the secrets that were valid when the person was in the project should be rotated. Follow [Prow secret management](./prow-secrets-management.md) to create a new key ring and new secrets. Then, use [secrets populator](./../../development/tools/cmd/secretspopulator/README.md) to update all the secrets on Prow cluster.
+All the Secrets that were valid when the person was in the project must be rotated. Follow the [Prow secret management](./prow-secrets-management.md) to create a new keyring and new Secrets. Then, use [Secrets populator](./../../development/tools/cmd/secretspopulator/README.md) to update all the Secrets in the Prow cluster.
