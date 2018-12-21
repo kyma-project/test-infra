@@ -14,7 +14,7 @@ func TestKubelessTestsJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-kubeless-release", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-kubeless", "master")
 
 	expName := "kyma-tests-kubeless"
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -65,7 +65,7 @@ func TestKubelessReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/kubeless/kubeless.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-kubeless-release", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-kubeless", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.True(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
