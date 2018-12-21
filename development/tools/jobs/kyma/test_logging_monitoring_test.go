@@ -12,6 +12,7 @@ func TestLoggingMonitoringTestJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/test-logging-monitoring/test-logging-monitoring.yaml")
 	// THEN
+	require.NoError(t, err)
 
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-test-logging-monitoring", "master")
 	expName := "kyma-tests-test-logging-monitoring"
