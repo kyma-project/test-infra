@@ -11,7 +11,7 @@ The `development` folder has the following structure:
 <!-- Update the project structure each time you modify it. -->
 
 ```
-  ├── checker                  # This folder contains code sources of a simple Go application that verifies the configuration of jobs, "config.yaml", and "plugins.yaml".
+  ├── checker                  # This folder contains code sources of a simple Go application that verifies the configuration of jobs, "config.yaml", and "plugins.yaml". Dummy change
   ├── tools                    # This folder contains code sources of Go applications for the "test-infra" repository.
   ├── install-prow.sh          # This script installs Prow on your cluster.
   ├── provision-cluster.sh     # This script creates a Kubernetes cluster.
