@@ -62,7 +62,7 @@ func TestKubelessIntegrationTestsJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/kubeless-integration"}, actualPost.Spec.Containers[0].Args)
 }
 
-func TestBucReleases(t *testing.T) {
+func TestKubelessIntegrationReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {

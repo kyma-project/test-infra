@@ -62,7 +62,7 @@ func TestKubelessTestsJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/kubeless"}, actualPost.Spec.Containers[0].Args)
 }
 
-func TestBucReleases(t *testing.T) {
+func TestKubelessReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
