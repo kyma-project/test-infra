@@ -20,6 +20,13 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "test-infra"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+          limits:
+            memory: 2Gi
+            cpu: 1.4
 
 periodics: # runs periodic on master
 - name: test-infra-governance-nightly
@@ -46,4 +53,10 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/test-infra"
           - "--full-validation"
           - "true"
-
+    resources:
+      requests:
+        memory: 1.5Gi
+        cpu: 0.8
+      limits:
+        memory: 2Gi
+        cpu: 1.4
