@@ -61,7 +61,7 @@ func TestKymaIntegrationJobPostsubmit(t *testing.T) {
 	actualVM := kymaPostsubmits[0]
 	assert.Equal(t, "kyma-integration", actualVM.Name)
 	assert.Equal(t, []string{"master"}, actualVM.Branches)
-	assert.Equal(t, 10, actualVM.MaxConcurrency)
+	assert.Equal(t, 1, actualVM.MaxConcurrency)
 	assert.Equal(t, "", actualVM.RunIfChanged)
 	assert.True(t, actualVM.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualVM.PathAlias)
@@ -73,7 +73,7 @@ func TestKymaIntegrationJobPostsubmit(t *testing.T) {
 	actualGKE := kymaPostsubmits[1]
 	assert.Equal(t, "kyma-gke-integration", actualGKE.Name)
 	assert.Equal(t, "", actualGKE.RunIfChanged)
-	assert.Equal(t, 10, actualGKE.MaxConcurrency)
+	assert.Equal(t, 1, actualGKE.MaxConcurrency)
 	// TODO add assertions about presets
 	assert.Equal(t, []string{"master"}, actualGKE.Branches)
 	assert.True(t, actualGKE.Decorate)
