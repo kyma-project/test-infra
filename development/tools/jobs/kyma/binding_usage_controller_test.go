@@ -9,7 +9,6 @@ import (
 )
 
 func TestBucReleases(t *testing.T) {
-	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
@@ -49,7 +48,6 @@ func TestBucJobsPresubmit(t *testing.T) {
 }
 
 func TestBucJobPostsubmit(t *testing.T) {
-	t.SkipNow()
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
 	// THEN
