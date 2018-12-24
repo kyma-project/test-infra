@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestApplicationRegistryReleases(t *testing.T) {
+func TestApplicationRegistryTestsReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
@@ -42,10 +42,10 @@ func TestApplicationRegistryTestsJobsPresubmit(t *testing.T) {
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/application-registry-tests/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tests/application-registry-tests/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/application-registry-tests"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/application-registry-tests"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestApplicationRegistryTestsJobPostsubmit(t *testing.T) {
