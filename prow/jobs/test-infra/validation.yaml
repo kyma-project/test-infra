@@ -9,10 +9,10 @@ presubmits:
           - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: test-infra-validate-configs
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
@@ -26,10 +26,10 @@ presubmits:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: test-infra-validate-prow
       run_if_changed: "^(development/tools|prow)" # Also for any changes in prow directory
       branches:
@@ -48,7 +48,7 @@ presubmits:
               - "-C"
               - "development/tools"
               - "validate"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
