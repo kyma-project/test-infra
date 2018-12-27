@@ -8,23 +8,37 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestApiServerProxyReleases(t *testing.T) {
+	// WHEN
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-apiserver-proxy", currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.True(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/apiserver-proxy")
+		})
+	}
+}
+
 func TestApiServerProxyJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml")
 	// THEN
 	require.NoError(t, err)
 
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-apiserver-proxy", "master")
 	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
-	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-components-apiserver-proxy"
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	require.NotNil(t, actualPresubmit)
 	assert.True(t, actualPresubmit.SkipReport)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "components/apiserver-proxy/")
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/apiserver-proxy/")
 	assert.Equal(t, "^components/apiserver-proxy/", actualPresubmit.RunIfChanged)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
@@ -42,22 +56,18 @@ func TestApiServerProxyJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-apiserver-proxy")
 	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPost, 1)
+	require.NotNil(t, actualPostsubmit)
 
-	actualPost := kymaPost[0]
-	expName := "kyma-components-apiserver-proxy"
-	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
-	assert.Equal(t, "^components/apiserver-proxy/", actualPost.RunIfChanged)
-	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/apiserver-proxy"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"master"}, actualPostsubmit.Branches)
+	assert.Equal(t, "^components/apiserver-proxy/", actualPostsubmit.RunIfChanged)
+	assert.True(t, actualPostsubmit.Decorate)
+	assert.Equal(t, "github.com/kyma-project/kyma", actualPostsubmit.PathAlias)
+	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
+	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/apiserver-proxy"}, actualPostsubmit.Spec.Containers[0].Args)
 }
