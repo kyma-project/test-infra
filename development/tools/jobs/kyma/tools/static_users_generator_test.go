@@ -12,7 +12,7 @@ func TestStaticUsersGeneratorReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tools/static-users-generator/static-users-generator.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/static-users-generator/static-users-generator.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tools-static-users-generator", currentRelease)
