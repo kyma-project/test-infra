@@ -1,23 +1,28 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 job_template: &job_template
+  name: kyma-tools-static-users-generator
   skip_report: true
-  run_if_changed: "^tools/static-users-generator/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+  - org: kyma-project
+    repo: test-infra
+    base_ref: master
+    path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/static-users-generator"
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-project/kyma/tools/static-users-generator"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -26,20 +31,36 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-tools-static-users-generator
-      branches:
-        - master
-      <<: *job_template
-      labels:
-        <<: *job_labels_template
-        preset-build-pr: "true"
+  - branches:
+    - master
+    <<: *job_template
+    run_if_changed: "^tools/static-users-generator/"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+  - branches:
+    - release-0.6
+    <<: *job_template
+    always_run: true
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.6
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-tools-static-users-generator
-      branches:
-        - master
-      <<: *job_template
-      labels:
-        <<: *job_labels_template
-        preset-build-master: "true"
+  - branches:
+    - master
+    <<: *job_template
+    run_if_changed: "^tools/static-users-generator/"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    labels:
+      <<: *job_labels_template
+      preset-build-master: "true"
