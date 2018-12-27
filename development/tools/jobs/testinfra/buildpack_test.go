@@ -19,7 +19,7 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-bootstrap"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -72,7 +72,7 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-bootstrap-helm"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -125,7 +125,7 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-buildpack-golang"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -178,7 +178,7 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-buildpack-node"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -231,7 +231,7 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-cleaner"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName)
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)

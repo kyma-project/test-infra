@@ -18,8 +18,8 @@ Use the following tools and configuration:
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
 - Two buckets on Google Cloud Storage (GCS), one for storing Secrets and the second for storing logs
 - GCP configuration that includes:
-  - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `prow-production` name
-  - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `prow-production` address
+  - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `kyma-prow-status` name
+  - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `kyma-prow-status` address
 
 ## Installation
 
@@ -36,9 +36,9 @@ Use the following tools and configuration:
    Export these variables:
 
    ```
-   export CLUSTER_NAME=prow-production
-   export ZONE=europe-west3-b
-   export PROJECT=kyma-project
+   export CLUSTER_NAME=kyma-prow
+   export ZONE=europe-west3-a
+   export PROJECT=sap-kyma-prow
    ```
 
    For GKE, run the following command:
@@ -54,7 +54,7 @@ Use the following tools and configuration:
    - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
    ```
-   export BUCKET_NAME=kyma-prow
+   export BUCKET_NAME=kyma-prow-secrets
    export KEYRING_NAME=kyma-prow
    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
    ```

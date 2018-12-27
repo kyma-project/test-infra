@@ -17,6 +17,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 1.5
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -31,14 +35,6 @@ presubmits: # runs on PRs
       run_if_changed: "^components/ui-api-layer/"
       labels:
         preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *job_template
-    - name: kyma-components-ui-api-layer-release
-      run_if_changed: "(^components/ui-api-layer/|^resources/core/values.yaml)"
-      branches:
-        - '^release-\d+\.\d+$'
-      labels:
-        preset-build-release: "true"
         <<: *job_labels_template
       <<: *job_template
 

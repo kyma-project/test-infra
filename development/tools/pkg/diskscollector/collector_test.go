@@ -160,8 +160,9 @@ func TestGarbageDiskCollector(t *testing.T) {
 
 		gdc := NewDisksGarbageCollector(mockZoneAPI, mockDiskAPI, filterFunc)
 
-		err := gdc.Run(testProject, true)
+		allSucceeded, err := gdc.Run(testProject, true)
 		require.NoError(t, err)
+		assert.True(t, allSucceeded)
 	})
 
 	t.Run("Run(makeChanges=true) should continue process if a call fails", func(t *testing.T) {
@@ -182,8 +183,9 @@ func TestGarbageDiskCollector(t *testing.T) {
 
 		gdc := NewDisksGarbageCollector(mockZoneAPI, mockDiskAPI, filterFunc)
 
-		err := gdc.Run(testProject, true)
+		allSucceeded, err := gdc.Run(testProject, true)
 		require.NoError(t, err)
+		assert.False(t, allSucceeded)
 	})
 
 	t.Run("Run(makeChanges=false) should not remove anything (dry run)", func(t *testing.T) {
@@ -201,8 +203,9 @@ func TestGarbageDiskCollector(t *testing.T) {
 
 		gdc := NewDisksGarbageCollector(mockZoneAPI, mockDiskAPI, filterFunc)
 
-		err := gdc.Run(testProject, false)
+		allSucceeded, err := gdc.Run(testProject, false)
 		require.NoError(t, err)
+		assert.True(t, allSucceeded)
 	})
 }
 

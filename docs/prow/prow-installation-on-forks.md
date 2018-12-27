@@ -30,7 +30,7 @@ Install the following tools:
    ```
 
 3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on GKE. Make sure that kubectl points to the correct cluster. For GKE, run the following command:
-  
+
    ```
    gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
    ```
@@ -75,8 +75,8 @@ For the purpose of the installation, you must have a set of service accounts and
     - Service Account User (`roles/iam.serviceAccountUser`)
  - **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
     - Storage Object Admin (`roles/storage.objectAdmin`)
- - **sa-gcr-push** with the role that allows the account to push images to Google Container Repository:
-    - Storage Admin `roles/storage.admin`
+ - **sa-gcr-push-kyma-project** with the role that allows the account to push images to Google Container Repository in the `kyma-project` GCP project:
+    - Storage Admin (`roles/storage.admin`)
  - **kyma-bot-npm-token** which is a token for publishing npm packages
 
 ## Install Prow

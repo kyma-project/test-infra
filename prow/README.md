@@ -29,7 +29,7 @@ Follow these basic rules when working with Prow in the `kyma-project` organizati
 
 - You cannot test Prow configuration locally on Minikube. Perform all tests on the cluster.
 - Avoid provisioning long-running clusters.
-- Test Prow configuration against your `kyma` fork repository.
+- Test Prow configuration against your forked `kyma` repository.
 - Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only to the `master` branch but also to release branches.
 
 ### Project structure
@@ -42,6 +42,7 @@ Its structure looks as follows:
 
 ```
 
+  ├── branding              # Files related to Kyma branding for a Prow cluster
   ├── cluster               # Files for Prow cluster provisioning
   ├── images                # Images for ProwJobs
   ├── jobs                  # Files with job definitions

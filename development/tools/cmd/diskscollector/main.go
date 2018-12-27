@@ -10,6 +10,7 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	"github.com/kyma-project/test-infra/development/tools/pkg/diskscollector"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
@@ -19,7 +20,7 @@ import (
 const defaultDiskNameRegex = "^gke-gkeint.*[-]pvc[-]"
 
 var (
-	project       = flag.String("project", "", "Project ID")
+	project       = flag.String("project", "", "Project ID [Required]")
 	dryRun        = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 	ageInHours    = flag.Int("ageInHours", 2, "Disk age in hours. Disks older than: now()-ageInHours are considered for removal.")
 	diskNameRegex = flag.String("diskNameRegex", defaultDiskNameRegex, "Disk name regex. Matching disks are considered for removal.")
@@ -34,7 +35,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	log.Infof("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, diskNameRegex: \"%s\"", *project, *dryRun, *ageInHours, *diskNameRegex)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, diskNameRegex: \"%s\"", *project, *dryRun, *ageInHours, *diskNameRegex)
 	context := context.Background()
 
 	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
@@ -55,8 +56,14 @@ func main() {
 
 	gc := diskscollector.NewDisksGarbageCollector(zoneAPI, diskAPI, filter)
 
-	err = gc.Run(*project, !(*dryRun))
+	allSucceeded, err := gc.Run(*project, !(*dryRun))
 	if err != nil {
 		log.Fatalf("Disk collector error: %v", err)
 	}
+
+	if !allSucceeded {
+		log.Warn("Some operations failed.")
+	}
+
+	common.Shout("Finished")
 }

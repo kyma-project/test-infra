@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	log "github.com/sirupsen/logrus"
 
 	compute "google.golang.org/api/compute/v1"
@@ -37,32 +38,45 @@ func NewDisksGarbageCollector(zoneAPI ZoneAPI, diskAPI DiskAPI, shouldRemove Dis
 }
 
 // Run executes disks garbage collection process
-func (gc *DisksGarbageCollector) Run(project string, makeChanges bool) error {
+func (gc *DisksGarbageCollector) Run(project string, makeChanges bool) (allSucceeded bool, err error) {
+
+	common.Shout("Looking for matching disks in \"%s\" project...", project)
 
 	garbageDisks, err := gc.list(project)
 	if err != nil {
-		return err
+		return
 	}
 
+	var msgPrefix string
+	if !makeChanges {
+		msgPrefix = "[DRY RUN] "
+	}
+
+	if len(garbageDisks) > 0 {
+		log.Infof("%sFound %d matching disks", msgPrefix, len(garbageDisks))
+		common.Shout("Removing matching disks...")
+	} else {
+		log.Infof("%sFound no disks to delete", msgPrefix)
+	}
+
+	allSucceeded = true
 	for _, gd := range garbageDisks {
 
 		var err error
-		var msgPrefix string
 
 		if makeChanges {
 			err = gc.diskAPI.RemoveDisk(project, gd.zone, gd.disk.Name)
-		} else {
-			msgPrefix = "[DRY RUN] "
 		}
 
 		if err != nil {
 			log.Errorf("deleting disk %s: %#v", gd.disk.Name, err)
+			allSucceeded = false
 		} else {
 			log.Infof("%sRequested disk delete: \"%s\". Project \"%s\", zone \"%s\", disk creationTimestamp: \"%s\"", msgPrefix, gd.disk.Name, project, gd.zone, gd.disk.CreationTimestamp)
 		}
 	}
 
-	return nil
+	return allSucceeded, nil
 }
 
 type garbageDisk struct {
@@ -87,7 +101,6 @@ func (gc *DisksGarbageCollector) list(project string) ([]*garbageDisk, error) {
 			log.Errorf("listing disks for zone \"%s\": %#v", zone, err)
 		}
 
-		log.Infof("Fetched disks for zone: %s: %d disks", zone, len(disks))
 		for _, disk := range disks {
 			shouldRemove, err := gc.shouldRemove(disk)
 			if err != nil {

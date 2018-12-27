@@ -3,7 +3,6 @@ presubmits: # runs on PRs
     - name: test-infra-governance
       decorate: true
       max_concurrency: 10
-      optional: true
       branches:
         - master
       labels:
@@ -21,6 +20,10 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "test-infra"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
 
 periodics: # runs periodic on master
 - name: test-infra-governance-nightly
@@ -47,4 +50,7 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/test-infra"
           - "--full-validation"
           - "true"
-
+        resources:
+          requests:
+            memory: 10Mi
+            cpu: 100m

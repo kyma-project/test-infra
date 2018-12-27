@@ -10,7 +10,6 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
 )
 
@@ -38,6 +37,10 @@ const (
 	PresetBotGithubToken Preset = "preset-bot-github-token"
 	// PresetBotGithubSSH means github ssh
 	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
+	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
+	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
+	// PresetGCProjectEnv means project name is injected as env variable
+	PresetGCProjectEnv = "preset-gc-project-env"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
@@ -61,6 +64,11 @@ const (
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
 
+// GetAllKymaReleaseBranches returns all supported kyma release branches
+func GetAllKymaReleaseBranches() []string {
+	return []string{"release-0.6"}
+}
+
 // ReadJobConfig reads job configuration from file
 func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	f, err := os.Open(fileName)
@@ -76,13 +84,25 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	if err = yaml.Unmarshal(b, &jobConfig); err != nil {
 		return config.JobConfig{}, errors.Wrapf(err, "while unmarshalling file [%s]", fileName)
 	}
+
+	for _, v := range jobConfig.Presubmits {
+		if err := config.SetPresubmitRegexes(v); err != nil {
+			return config.JobConfig{}, errors.Wrap(err, "while setting presubmit regexes")
+		}
+	}
+
+	for _, v := range jobConfig.Postsubmits {
+		if err := config.SetPostsubmitRegexes(v); err != nil {
+			return config.JobConfig{}, errors.Wrap(err, "while setting postsubmit regexes")
+		}
+	}
 	return jobConfig, nil
 }
 
 // FindPresubmitJobByName finds presubmit job by name from provided jobs list
-func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name {
+		if job.Name == name && job.RunsAgainstBranch(branch) {
 			return &job
 		}
 	}
@@ -112,22 +132,17 @@ func FindPeriodicJobByName(jobs []config.Periodic, name string) *config.Periodic
 	return nil
 }
 
-// AssertThatHasExtraRef checks if UtilityConfig has repository passed in argument defined
-func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, repository string) {
+// AssertThatHasExtraRefTestInfra checks if job has configured extra ref to test-infra repository
+func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig, expectedBaseRef string) {
 	for _, curr := range in.ExtraRefs {
-		if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
+		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
 			curr.Org == "kyma-project" &&
-			curr.Repo == repository &&
-			curr.BaseRef == "master" {
+			curr.Repo == "test-infra" &&
+			curr.BaseRef == expectedBaseRef {
 			return
 		}
 	}
-	assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
-}
-
-// AssertThatHasExtraRefTestInfra checks if UtilityConfig has test-infra repository defined
-func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig) {
-	AssertThatHasExtraRef(t, in, "test-infra")
+	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s]", expectedBaseRef))
 }
 
 // AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
@@ -152,14 +167,21 @@ func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
 	}
 }
 
-// AssertThatJobRunIfChanged checks if Presubmit has run_if_changed parameter
+// AssertThatJobRunIfChanged checks if job that has specified run_if_changed parameter will be triggered by changes in specified file.
 func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
-	sl := []config.Presubmit{p}
-	require.NoError(t, config.SetPresubmitRegexes(sl))
-	assert.True(t, sl[0].RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
+	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
 
 // AssertThatHasCommand checks if job has
 func AssertThatHasCommand(t *testing.T, command []string) {
 	assert.Equal(t, []string{BuildScriptDir}, command)
+}
+
+// AssertThatExecGolangBuidlpack checks if job executes golang buildpack
+func AssertThatExecGolangBuidlpack(t *testing.T, job config.JobBase, img string, args ...string) {
+	assert.Len(t, job.Spec.Containers, 1)
+	assert.Equal(t, job.Spec.Containers[0].Image, img)
+	assert.Len(t, job.Spec.Containers[0].Command, 1)
+	assert.Equal(t, job.Spec.Containers[0].Command[0], "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh")
+	assert.Equal(t, job.Spec.Containers[0].Args, args)
 }
