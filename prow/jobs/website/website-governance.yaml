@@ -25,6 +25,10 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "website"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
 
 periodics: # runs periodic on master
 - name: website-governance-nightly
@@ -55,4 +59,7 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/website"
           - "--full-validation"
           - "true"
-
+        resources:
+          requests:
+            memory: 10Mi
+            cpu: 100m

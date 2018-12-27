@@ -22,6 +22,10 @@ presubmits: # runs on PRs
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
     - name: kyma-gke-integration
       run_if_changed: "^(resources|installation)"
       trigger: "(?m)^/test kyma-gke-integration"
@@ -54,13 +58,17 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
 
 postsubmits:
   kyma-project/kyma:
     - name: kyma-integration
       branches:
         - master
-      max_concurrency: 10
+      max_concurrency: 1
       labels:
         preset-sa-vm-kyma-integration: "true"
         preset-gc-project-env: "true"
@@ -76,10 +84,14 @@ postsubmits:
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
     - name: kyma-gke-integration
       branches:
         - master
-      max_concurrency: 10
+      max_concurrency: 1
       labels:
         preset-sa-gke-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -104,6 +116,10 @@ postsubmits:
             args:
               - "-c"
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
 
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
@@ -116,6 +132,10 @@ periodics:
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
 - name: orphaned-disks-cleaner
   cron: "15 */2 * * *" # "At minute 15 past every 2nd hour"
   labels:
@@ -135,6 +155,10 @@ periodics:
       args:
         - "-c"
         - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
 - name: orphaned-clusters-cleaner
   cron: "0 */4 * * *" # "Every four hours"
   labels:
@@ -154,6 +178,10 @@ periodics:
       args:
         - "-c"
         - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
 - name: orphaned-vms-cleaner
   cron: "30 */4 * * *" # "At minute 30 past every 4th hour"
   labels:
@@ -173,6 +201,10 @@ periodics:
       args:
         - "-c"
         - "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
 - name: orphaned-loadbalancer-cleaner
   cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
   labels:
@@ -192,4 +224,7 @@ periodics:
       args:
         - "-c"
         - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
