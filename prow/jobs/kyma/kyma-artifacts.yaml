@@ -1,5 +1,5 @@
 test_infra_ref: &test_infra_ref
-  org: kyma-project
+  org: aszecowka # TODO
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
@@ -30,14 +30,14 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true" #
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
+  aszecowka/kyma: # TODO
   - branches:
     - release-0.6
     <<: *job_template
     always_run: false
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: release-0.6
+      base_ref: release-artifacts # TODO
     labels:
       <<: *job_labels_template
       preset-build-custom: "true"
