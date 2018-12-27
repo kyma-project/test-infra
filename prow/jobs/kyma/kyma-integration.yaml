@@ -22,10 +22,10 @@ presubmits: # runs on PRs
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-        resources:
-          requests:
-            memory: 100Mi
-            cpu: 50m
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
     - name: kyma-gke-integration
       run_if_changed: "^(resources|installation)"
       trigger: "(?m)^/test kyma-gke-integration"
@@ -58,10 +58,10 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
 
 postsubmits:
   kyma-project/kyma:
@@ -84,10 +84,10 @@ postsubmits:
           - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-        resources:
-          requests:
-            memory: 100Mi
-            cpu: 50m
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
     - name: kyma-gke-integration
       branches:
         - master
