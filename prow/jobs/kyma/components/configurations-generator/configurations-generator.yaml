@@ -56,7 +56,7 @@ postsubmits:
   - branches:
     - master
     <<: *job_template
-    run_if_changed: "^tools/static-users-generator/"
+    run_if_changed: "^components/configurations-generator/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
