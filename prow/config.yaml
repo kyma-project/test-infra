@@ -105,6 +105,11 @@ presets:
       - name: BUILD_TYPE
         value: release
   - labels:
+      preset-build-custom: "true"
+    env:
+    - name: BUILD_TYPE
+      value: custom
+  - labels:
       preset-bot-npm-token: "true"
     env:
       - name: BOT_NPM_TOKEN
