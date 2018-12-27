@@ -22,7 +22,12 @@ func TestKymaInstallerReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageBootstrap20181204, "/home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer")
+			assert.Len(t, actualPresubmit.Spec.Containers, 1)
+			testContainer := actualPresubmit.Spec.Containers[0]
+			assert.Equal(t, tester.ImageBootstrap20181204, testContainer.Image)
+			assert.Len(t, testContainer.Command, 1)
+			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh", testContainer.Command[0])
+			assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer"}, testContainer.Args)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
 	}
