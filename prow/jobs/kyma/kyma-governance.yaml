@@ -26,10 +26,10 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "kyma"
-        resources:
-          requests:
-            memory: 10Mi
-            cpu: 100m
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
 
 periodics: # runs periodic on master
 - name: kyma-governance-nightly
@@ -60,7 +60,7 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/kyma"
           - "--full-validation"
           - "true"
-    resources:
-      requests:
-        memory: 10Mi
-        cpu: 100m
+        resources:
+          requests:
+            memory: 10Mi
+            cpu: 100m
