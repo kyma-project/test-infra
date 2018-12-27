@@ -28,8 +28,8 @@ presubmits: # runs on PRs
               - "examples"
         resources:
           requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            memory: 10Mi
+            cpu: 100m
 
 periodics: # runs periodic on master
 - name: examples-governance-nightly
@@ -62,5 +62,5 @@ periodics: # runs periodic on master
           - "true"
     resources:
       requests:
-        memory: 1.5Gi
-        cpu: 0.8
+        memory: 10Mi
+        cpu: 100m

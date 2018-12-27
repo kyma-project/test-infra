@@ -22,8 +22,8 @@ presubmits: # runs on PRs
               - "test-infra"
         resources:
           requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            memory: 10Mi
+            cpu: 100m
 
 periodics: # runs periodic on master
 - name: test-infra-governance-nightly
@@ -52,5 +52,5 @@ periodics: # runs periodic on master
           - "true"
     resources:
       requests:
-        memory: 1.5Gi
-        cpu: 0.8
+        memory: 10Mi
+        cpu: 100m
