@@ -1,0 +1,42 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+job_template: &job_template
+  name: kyma-installer
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 0.2
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository: "true"
+
+presubmits: # runs on PRs
+  kyma-project/kyma:
+  - branches:
+    - release-0.6
+    <<: *job_template
+    always_run: true
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.6
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
