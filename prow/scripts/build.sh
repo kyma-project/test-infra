@@ -43,12 +43,6 @@ elif [[ "${BUILD_TYPE}" == "master" ]]; then
     make -C "${SOURCES_DIR}" ci-master
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
     make -C "${SOURCES_DIR}" ci-release
-elif [[ "${BUILD_TYPE}" == "custom" ]]; then
-    if [[ -z "${CUSTOM_MAKEFILE_RULE}" ]]; then
-        echo "Missing required environment variable 'CUSTOM_MAKEFILE_RULE'"
-        exit 1
-    fi
-    make -C "${SOURCES_DIR}" "${CUSTOM_MAKEFILE_RULE}"
 else
     echo "Not supported build type - ${BUILD_TYPE}"
     exit 1

@@ -15,7 +15,7 @@ job_template: &job_template
       securityContext:
         privileged: true
       command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
       args:
       - "/home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer"
       env:
