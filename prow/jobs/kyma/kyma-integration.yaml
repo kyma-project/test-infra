@@ -26,9 +26,6 @@ presubmits: # runs on PRs
           requests:
             memory: 1.5Gi
             cpu: 0.8
-          limits:
-            memory: 2Gi
-            cpu: 1.4
     - name: kyma-gke-integration
       run_if_changed: "^(resources|installation)"
       trigger: "(?m)^/test kyma-gke-integration"
@@ -65,9 +62,6 @@ presubmits: # runs on PRs
           requests:
             memory: 1.5Gi
             cpu: 0.8
-          limits:
-            memory: 2Gi
-            cpu: 1.4
 
 postsubmits:
   kyma-project/kyma:

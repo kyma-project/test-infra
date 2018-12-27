@@ -20,9 +20,6 @@ job_template: &job_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 presubmits:
   kyma-project/console:

@@ -30,9 +30,6 @@ presubmits: # runs on PRs
           requests:
             memory: 1.5Gi
             cpu: 0.8
-          limits:
-            memory: 2Gi
-            cpu: 1.4
 
 periodics: # runs periodic on master
 - name: console-governance-nightly
@@ -67,6 +64,3 @@ periodics: # runs periodic on master
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4

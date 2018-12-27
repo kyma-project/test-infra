@@ -27,9 +27,6 @@ bootstrap_job_template: &bootstrap_job_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 bootstrap_helm_template: &bootstrap_helm_template
   run_if_changed: "^prow/images/bootstrap-helm/"
@@ -47,9 +44,6 @@ bootstrap_helm_template: &bootstrap_helm_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 buildpack_golang_job_template: &buildpack_golang_job_template
   run_if_changed: "^prow/images/buildpack-golang/"
@@ -67,9 +61,6 @@ buildpack_golang_job_template: &buildpack_golang_job_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 buildpack_node_job_template: &buildpack_node_job_template
   run_if_changed: "^prow/images/buildpack-node/"
@@ -87,9 +78,6 @@ buildpack_node_job_template: &buildpack_node_job_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 buildpack_node_chromium_job_template: &buildpack_node_chromium_job_template
   run_if_changed: "^prow/images/buildpack-node-chromium/"
@@ -107,9 +95,6 @@ buildpack_node_chromium_job_template: &buildpack_node_chromium_job_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 cleaner_job_template: &cleaner_job_template
   run_if_changed: "^prow/images/cleaner/"
@@ -127,9 +112,6 @@ cleaner_job_template: &cleaner_job_template
       requests:
         memory: 1.5Gi
         cpu: 0.8
-      limits:
-        memory: 2Gi
-        cpu: 1.4
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
