@@ -25,4 +25,7 @@ function export_variables() {
 init
 export_variables
 
+echo "LS -la logs"
+ls -la /logs
+
 make -C "${SOURCES_DIR}" ci-create-release-artifacts
