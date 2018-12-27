@@ -73,6 +73,10 @@ presubmits:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
 ```
 
 The table contains the list of all fields in the `yaml` file with their descriptions.
@@ -91,6 +95,7 @@ The table contains the list of all fields in the `yaml` file with their descript
 | **spec.containers.command** | Buildpacks have the `build.sh` script that allows you to easily trigger the build for your component. The `build.sh` script populates some environment variables, such as **DOCKER_TAG**. It also initializes Docker and executes one of the `Makefile` targets, depending on the value of the **BUILD_TYPE** variable. This environment variable can be injected by one of the build's Presets, which are **preset-build-pr**, **preset-build-release**, or **preset-build-master**. |
 | **spec.containers.args**    | The `build.sh` script requires a path to the directory where the `Makefile` for your component is located.                                                                                                                                                                                                                                                                                                                                                                        |
 | **labels**                  | Regular Kubernetes labels. They are used to enable PodPresets. The available Presets are defined in the `/prow/config.yaml` file. For their detailed descriptions, go to the [**Available Presets**](#available-presets) section.                                                                                                                                                                                                                                                     |
+| **spec.resources**          | Regular Kubernetes resources requirements for containers. |
 
 ### Check your configuration locally
 
@@ -208,6 +213,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
+    resources:
+      requests:
+        memory: 1.5Gi
+        cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
