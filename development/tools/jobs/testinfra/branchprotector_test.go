@@ -20,9 +20,8 @@ func TestBranchProtection(t *testing.T) {
 		require.NotNil(t, masterPolicy)
 		assert.True(t, *masterPolicy.Protect)
 		require.NotNil(t, masterPolicy.RequiredStatusChecks)
-		assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, 2)
+		assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, 1)
 		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "license/cla")
-		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "continuous-integration/jenkins/pr-head")
 	})
 
 	for _, relBranch := range tester.GetAllKymaReleaseBranches() {
@@ -32,11 +31,10 @@ func TestBranchProtection(t *testing.T) {
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
-			assert.Len(t, p.RequiredStatusChecks.Contexts, 4)
+			assert.Len(t, p.RequiredStatusChecks.Contexts, 3)
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-integration")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-gke-integration")
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, "continuous-integration/jenkins/pr-head")
 		})
 	}
 
