@@ -24,7 +24,7 @@ func TestKymactlJobsPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-incubator/kymactl", actualPresubmit.PathAlias)
