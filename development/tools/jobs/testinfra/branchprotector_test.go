@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
+	"fmt"
 
 	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -14,15 +15,41 @@ import (
 
 func TestBranchProtection(t *testing.T) {
 	actual := readConfig(t)
-	t.Run("repository kyma, branch master", func(t *testing.T) {
-		masterPolicy, err := actual.GetBranchProtection("kyma-project", "kyma", "master")
-		require.NoError(t, err)
-		require.NotNil(t, masterPolicy)
-		assert.True(t, *masterPolicy.Protect)
-		require.NotNil(t, masterPolicy.RequiredStatusChecks)
-		assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, 1)
-		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "license/cla")
-	})
+
+	var testcases = []struct {
+		organization string
+		repository   string
+		branch       string
+		contexts     []string
+		approvals    int
+	}{
+		{"kyma-project", "kyma", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "test-infra", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "website", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "community", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "console", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "examples", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "luigi", "master", []string{"license/cla"}, 2},
+		{"kyma-project", "bundles", "master", []string{"license/cla"}, 1},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(fmt.Sprintf("Org: %s, repository: %s, branch: %s", testcase.organization, testcase.repository, testcase.branch), func(t *testing.T) {
+			masterPolicy, err := actual.GetBranchProtection(testcase.organization, testcase.repository, testcase.branch)
+			require.NoError(t, err)
+			require.NotNil(t, masterPolicy)
+			assert.True(t, *masterPolicy.Protect)
+			require.NotNil(t, masterPolicy.RequiredPullRequestReviews)
+			assert.Equal(t, testcase.approvals, *masterPolicy.RequiredPullRequestReviews.Approvals)
+			require.NotNil(t, masterPolicy.RequiredStatusChecks)
+			assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, len(testcase.contexts))
+			assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, testcase.contexts[0])
+		})
+	}
+}
+
+func TestBranchProtectionRelease(t *testing.T) {
+	actual := readConfig(t)
 
 	for _, relBranch := range tester.GetAllKymaReleaseBranches() {
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
@@ -37,37 +64,6 @@ func TestBranchProtection(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-gke-integration")
 		})
 	}
-
-	t.Run("repository test-infra, branch master", func(t *testing.T) {
-		p, err := actual.GetBranchProtection("kyma-project", "test-infra", "master")
-		require.NoError(t, err)
-		require.NotNil(t, p)
-		assert.True(t, *p.Protect)
-		require.NotNil(t, p.RequiredStatusChecks)
-		assert.Len(t, p.RequiredStatusChecks.Contexts, 1)
-		assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
-	})
-
-	t.Run("repository website, branch master", func(t *testing.T) {
-		masterPolicy, err := actual.GetBranchProtection("kyma-project", "website", "master")
-		require.NoError(t, err)
-		require.NotNil(t, masterPolicy)
-		assert.True(t, *masterPolicy.Protect)
-		require.NotNil(t, masterPolicy.RequiredStatusChecks)
-		assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, 1)
-		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "license/cla")
-	})
-
-	t.Run("repository community, branch master", func(t *testing.T) {
-		masterPolicy, err := actual.GetBranchProtection("kyma-project", "community", "master")
-		require.NoError(t, err)
-		require.NotNil(t, masterPolicy)
-		assert.True(t, *masterPolicy.Protect)
-		require.NotNil(t, masterPolicy.RequiredStatusChecks)
-		assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, 1)
-		assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, "license/cla")
-	})
-
 }
 
 func readConfig(t *testing.T) config.Config {
