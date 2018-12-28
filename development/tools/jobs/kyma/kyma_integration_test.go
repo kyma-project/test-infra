@@ -52,6 +52,7 @@ func TestKymaIntegrationVMJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig, "master")
 	assert.Equal(t, tester.ImageBootstrap001, actualVM.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"}, actualVM.Spec.Containers[0].Command)
+	tester.AssertThatSpecifiesResourceRequests(t, actualVM.JobBase)
 }
 
 func TestKymaIntegrationGKEJobsPresubmit(t *testing.T) {
@@ -73,6 +74,7 @@ func TestKymaIntegrationGKEJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualGKE.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualGKE.JobBase.UtilityConfig, "master")
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualGKE.Spec.Containers[0].Image)
+	tester.AssertThatSpecifiesResourceRequests(t, actualGKE.JobBase)
 }
 
 func TestKymaIntegrationVMJobPostsubmit(t *testing.T) {
@@ -96,7 +98,7 @@ func TestKymaIntegrationVMJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualVM.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageBootstrap001, actualVM.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"}, actualVM.Spec.Containers[0].Command)
-
+	tester.AssertThatSpecifiesResourceRequests(t, actualVM.JobBase)
 }
 
 func TestKymaIntegrationGKEJobPostsubmit(t *testing.T) {
@@ -118,8 +120,8 @@ func TestKymaIntegrationGKEJobPostsubmit(t *testing.T) {
 	assert.True(t, actualGKE.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualGKE.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualGKE.JobBase.UtilityConfig, "master")
-
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualGKE.Spec.Containers[0].Image)
+	tester.AssertThatSpecifiesResourceRequests(t, actualGKE.JobBase)
 }
 
 func TestKymaIntegrationJobPeriodics(t *testing.T) {
@@ -142,6 +144,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", disksCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, disksCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, disksCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, disksCleanerPeriodic.JobBase)
 
 	expName = "orphaned-clusters-cleaner"
 	clustersCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -154,6 +157,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", clustersCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, clustersCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, clustersCleanerPeriodic.JobBase)
 
 	expName = "orphaned-vms-cleaner"
 	vmsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -166,6 +170,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, vmsCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, vmsCleanerPeriodic.JobBase)
 
 	expName = "orphaned-loadbalancer-cleaner"
 	loadbalancerCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -178,4 +183,5 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", loadbalancerCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
 }
