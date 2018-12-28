@@ -15,6 +15,9 @@ source "${SCRIPT_DIR}/library.sh"
 function export_variables() {
    DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
    echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
+
+   readonly DOCKER_TAG
+   export DOCKER_TAG
 }
 
 init
