@@ -43,7 +43,9 @@ func TestBranchProtection(t *testing.T) {
 			assert.Equal(t, testcase.approvals, *masterPolicy.RequiredPullRequestReviews.Approvals)
 			require.NotNil(t, masterPolicy.RequiredStatusChecks)
 			assert.Len(t, masterPolicy.RequiredStatusChecks.Contexts, len(testcase.contexts))
-			assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, testcase.contexts[0])
+			for _, context := range testcase.contexts {
+				assert.Contains(t, masterPolicy.RequiredStatusChecks.Contexts, context)
+			}
 		})
 	}
 }
