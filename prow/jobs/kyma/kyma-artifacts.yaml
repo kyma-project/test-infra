@@ -24,7 +24,8 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
-  preset-docker-push-repository: "true" #
+  preset-docker-push-repository: "true"
+  preset-sa-kyma-artifacts: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -37,4 +38,4 @@ presubmits: # runs on PRs
       base_ref: release-0.6
     labels:
       <<: *job_labels_template
-      preset-build-custom: "true"
+
