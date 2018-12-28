@@ -46,4 +46,4 @@ postsubmits:
       <<: *job_template
       labels:
         <<: *job_labels_template
-        preset-build-release: "true"
+        preset-build-console-master: "true"
