@@ -34,15 +34,9 @@ func TestApiControllerAcceptanceTestsJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-api-controller-acceptance-tests", "master")
 	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
-	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-tests-api-controller-acceptance-tests"
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.True(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
@@ -50,7 +44,7 @@ func TestApiControllerAcceptanceTestsJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^tests/api-controller-acceptance-tests/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/api-controller-acceptance-tests/apicontroller")
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/api-controller-acceptance-tests/apicontroller")
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/api-controller-acceptance-tests"}, actualPresubmit.Spec.Containers[0].Args)
