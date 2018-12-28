@@ -202,6 +202,33 @@ branch-protection:
           branches:
             master:
               protect: true
+    kyma-incubator:
+      enforce_admins: false
+      required_pull_request_reviews:
+        dismiss_stale_reviews: false
+        require_code_owner_reviews: true
+        required_approving_review_count: 1
+      # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
+      required_status_checks:
+        contexts:
+          - license/cla # TODO: Check if it should be required, bot is not integrated with kyma-incubator org
+      repos:
+        varkes:
+          branches:
+            master:
+              protect: true
+        kymactl:
+          branches:
+            master:
+              protect: true
+        vstudio-extension:
+          branches:
+            master:
+              protect: true
+        service-catalog-tester:
+          branches:
+            master:
+              protect: true
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
