@@ -17,7 +17,7 @@ func TestApiControllerReleases(t *testing.T) {
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-api-controller", currentRelease)
 			require.NotNil(t, actualPresubmit)
-			assert.True(t, actualPresubmit.SkipReport)
+			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
