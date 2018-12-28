@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 
 vm_job_template: &vm_job_template
   name: kyma-integration
-  skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
+  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-project/kyma
   spec:
@@ -25,7 +25,7 @@ vm_job_labels_template: &vm_job_labels_template
 
 gke_job_template: &gke_job_template
   name: kyma-gke-integration
-  skip_report: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   spec:
