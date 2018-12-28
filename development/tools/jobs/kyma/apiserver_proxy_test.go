@@ -23,7 +23,7 @@ func TestApiServerProxyJobsPresubmit(t *testing.T) {
 	expName := "kyma-components-apiserver-proxy"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "components/apiserver-proxy/")
 	assert.Equal(t, "^components/apiserver-proxy/", actualPresubmit.RunIfChanged)
 	assert.True(t, actualPresubmit.Decorate)

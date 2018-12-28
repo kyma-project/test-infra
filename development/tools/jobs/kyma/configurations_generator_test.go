@@ -38,7 +38,7 @@ func TestConfigurationsGeneratorJobsPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
