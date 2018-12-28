@@ -1,10 +1,10 @@
 package testinfra
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
-	"fmt"
 
 	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
