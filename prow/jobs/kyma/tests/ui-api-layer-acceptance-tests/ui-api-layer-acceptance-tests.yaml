@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   run_if_changed: "^tests/ui-api-layer-acceptance-tests/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
