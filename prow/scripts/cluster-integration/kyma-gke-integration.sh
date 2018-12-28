@@ -138,7 +138,8 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
-else 
+else
+    # TODO
     # Otherwise (master, or release), operate on triggering commit id
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
@@ -242,7 +243,21 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 shout "Apply Kyma config"
 date
-"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    echo "Use released artifacts"
+    # 1. download file
+    cat file.yaml \
+        | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
+        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
+        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
+        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
+        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | kubectl apply -f-
+else
+    echo "Manual concatenating yamls"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
     | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
     | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
@@ -253,6 +268,8 @@ date
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
+fi
+
 
 shout "Trigger installation"
 date
