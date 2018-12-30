@@ -30,7 +30,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -247,7 +247,12 @@ date
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     # 1. download file
-    cat file.yaml \
+
+    RELEASED_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASED_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
+
+    cat downloaded-kyma-config-cluster.yaml \
         | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
         | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \

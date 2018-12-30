@@ -49,6 +49,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-gc-project-env: "true"
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
+  preset-kyma-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -65,13 +66,11 @@ presubmits: # runs on PRs
   - branches:
     - release-0.6
     <<: *vm_job_template
-    always_run: true
     labels:
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.6
-
 
   - <<: *gke_job_template
     run_if_changed: "^(resources|installation)"
