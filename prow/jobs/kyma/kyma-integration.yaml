@@ -65,6 +65,7 @@ presubmits: # runs on PRs
       base_ref: master
   - branches:
     - release-0.6
+    always_run: false
     <<: *vm_job_template
     labels:
       <<: *vm_job_labels_template
@@ -72,17 +73,28 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-artifacts
 
-  - <<: *gke_job_template
+  - branches:
+    - master
+    <<: *gke_job_template
     run_if_changed: "^(resources|installation)"
     max_concurrency: 10
-    branches:
-    - master
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+  - branches:
+    - release-0.6
+    <<: *gke_job_template
+    always_run: false
+    max_concurrency: 10
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-artifacts
 
 
 postsubmits:
