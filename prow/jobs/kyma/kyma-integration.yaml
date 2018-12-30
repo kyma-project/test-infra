@@ -1,6 +1,6 @@
 ---
 test_infra_ref: &test_infra_ref
-  org: kyma-project
+  org: aszecowka
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
@@ -52,7 +52,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-kyma-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
+  aszecowka/kyma:
   - branches:
     - master
     <<: *vm_job_template
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: release-0.6
+      base_ref: release-artifacts
 
   - <<: *gke_job_template
     run_if_changed: "^(resources|installation)"
@@ -111,99 +111,99 @@ postsubmits:
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
-- name: utilities-kyma-integration-cleaner
-  cron: "0 7 * * 1-5" # "At 07:00 on every day-of-week from Monday through Friday."
-  labels:
-    preset-sa-vm-kyma-integration: "true"
-    preset-gc-project-env: "true"
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
-      resources:
-        requests:
-          memory: 100Mi
-          cpu: 50m
-- name: orphaned-disks-cleaner
-  cron: "15 */2 * * *" # "At minute 15 past every 2nd hour"
-  labels:
-    preset-sa-gke-kyma-integration: "true"
-    preset-gc-project-env: "true"
-  decorate: true
-  extra_refs:
-  - <<: *test_infra_ref
-    base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 400m
-- name: orphaned-clusters-cleaner
-  cron: "0 */4 * * *" # "Every four hours"
-  labels:
-    preset-sa-gke-kyma-integration: "true"
-    preset-gc-project-env: "true"
-  decorate: true
-  extra_refs:
-  - <<: *test_infra_ref
-    base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 400m
-- name: orphaned-vms-cleaner
-  cron: "30 */4 * * *" # "At minute 30 past every 4th hour"
-  labels:
-    preset-sa-gke-kyma-integration: "true"
-    preset-gc-project-env: "true"
-  decorate: true
-  extra_refs:
-  - <<: *test_infra_ref
-    base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 400m
-- name: orphaned-loadbalancer-cleaner
-  cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
-  labels:
-    preset-sa-gke-kyma-integration: "true"
-    preset-gc-project-env: "true"
-  decorate: true
-  extra_refs:
-  - <<: *test_infra_ref
-    base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 400m
+#- name: utilities-kyma-integration-cleaner
+#  cron: "0 7 * * 1-5" # "At 07:00 on every day-of-week from Monday through Friday."
+#  labels:
+#    preset-sa-vm-kyma-integration: "true"
+#    preset-gc-project-env: "true"
+#  spec:
+#    containers:
+#    - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+#      resources:
+#        requests:
+#          memory: 100Mi
+#          cpu: 50m
+#- name: orphaned-disks-cleaner
+#  cron: "15 */2 * * *" # "At minute 15 past every 2nd hour"
+#  labels:
+#    preset-sa-gke-kyma-integration: "true"
+#    preset-gc-project-env: "true"
+#  decorate: true
+#  extra_refs:
+#  - <<: *test_infra_ref
+#    base_ref: master
+#  spec:
+#    containers:
+#    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+#      command:
+#      - "bash"
+#      args:
+#      - "-c"
+#      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+#      resources:
+#        requests:
+#          memory: 1Gi
+#          cpu: 400m
+#- name: orphaned-clusters-cleaner
+#  cron: "0 */4 * * *" # "Every four hours"
+#  labels:
+#    preset-sa-gke-kyma-integration: "true"
+#    preset-gc-project-env: "true"
+#  decorate: true
+#  extra_refs:
+#  - <<: *test_infra_ref
+#    base_ref: master
+#  spec:
+#    containers:
+#    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+#      command:
+#      - "bash"
+#      args:
+#      - "-c"
+#      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+#      resources:
+#        requests:
+#          memory: 1Gi
+#          cpu: 400m
+#- name: orphaned-vms-cleaner
+#  cron: "30 */4 * * *" # "At minute 30 past every 4th hour"
+#  labels:
+#    preset-sa-gke-kyma-integration: "true"
+#    preset-gc-project-env: "true"
+#  decorate: true
+#  extra_refs:
+#  - <<: *test_infra_ref
+#    base_ref: master
+#  spec:
+#    containers:
+#    - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+#      command:
+#      - "bash"
+#      args:
+#      - "-c"
+#      - "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+#      resources:
+#        requests:
+#          memory: 1Gi
+#          cpu: 400m
+#- name: orphaned-loadbalancer-cleaner
+#  cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
+#  labels:
+#    preset-sa-gke-kyma-integration: "true"
+#    preset-gc-project-env: "true"
+#  decorate: true
+#  extra_refs:
+#  - <<: *test_infra_ref
+#    base_ref: master
+#  spec:
+#    containers:
+#    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+#      command:
+#      - "bash"
+#      args:
+#      - "-c"
+#      - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+#      resources:
+#        requests:
+#          memory: 1Gi
+#          cpu: 400m
