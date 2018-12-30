@@ -152,6 +152,11 @@ presets:
       - name: kyma-bot-github-ssh
         mountPath: /etc/credentials/kyma-bot-github-ssh
         readOnly: true
+  - labels:
+      preset-kyma-artifacts-bucket: "true"
+    env:
+      - name: KYMA_ARTIFACTS_BUCKET
+        value: gs://kyma-prow-artifacts
 
 branch-protection:
   orgs:
