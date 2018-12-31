@@ -65,7 +65,7 @@ presubmits: # runs on PRs
     - org: aszecowka # TODO for testing purposes
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
-      base_ref: release-int-gke
+      base_ref: release-int-gke-2
 
   kyma-project/kyma:
   - branches:
