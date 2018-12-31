@@ -86,7 +86,7 @@ presubmits: # runs on PRs
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: release-artifacts
+      base_ref: release-0.6
 
   - branches:
     - master
@@ -99,7 +99,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
 
 
 postsubmits:
