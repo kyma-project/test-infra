@@ -17,7 +17,7 @@ function start_docker() {
             sleep ${WAIT_N}
         else
             echo "Reached maximum attempts, not waiting any longer..."
-            break
+            exit 1
         fi
     done
     printf '=%.0s' {1..80}; echo
@@ -31,6 +31,32 @@ function authenticate() {
     gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
 }
 
+function configure_git() {
+    echo "Configuring git"
+    # configure ssh
+    if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]]; then
+        cp "${BOT_GITHUB_SSH_PATH}" "${HOME}/ssh_key.pem"
+        mkdir "${HOME}/.ssh/"
+        touch "${HOME}/.ssh/known_hosts"
+        ssh-keyscan -H github.com >> "${HOME}/.ssh/known_hosts"
+        chmod 400 "${SSH_FILE}"
+        eval "$(ssh-agent -s)"
+        ssh-add "${SSH_FILE}"
+        ssh-add -l
+        git config --global core.sshCommand 'ssh -i '${SSH_FILE}''
+    fi
+
+    # configure email
+    if [[ ! -z "${BOT_GITHUB_EMAIL}" ]]; then
+        git config --global user.email "${BOT_GITHUB_EMAIL}"
+    fi
+    
+    # configure name
+    if [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
+        git config --global user.name "${BOT_GITHUB_NAME}"
+    fi
+}
+
 function init() {
     echo "Initializing"
 
@@ -40,6 +66,10 @@ function init() {
 
     if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
         start_docker
+    fi
+
+    if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
+        configure_git
     fi
 }
 
