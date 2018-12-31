@@ -43,7 +43,7 @@ function configure_git() {
         eval "$(ssh-agent -s)"
         ssh-add "${SSH_FILE}"
         ssh-add -l
-        git config --global core.sshCommand 'ssh -i '${SSH_FILE}''
+        git config --global core.sshCommand "ssh -i ${SSH_FILE}"
     fi
 
     # configure email
