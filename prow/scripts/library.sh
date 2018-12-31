@@ -35,8 +35,9 @@ function configure_git() {
     echo "Configuring git"
     # configure ssh
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]]; then
-        cp "${BOT_GITHUB_SSH_PATH}" "${HOME}/ssh_key.pem"
         mkdir "${HOME}/.ssh/"
+        cp "${BOT_GITHUB_SSH_PATH}" "${HOME}/.ssh/ssh_key.pem"
+        local SSH_FILE="${HOME}/.ssh/ssh_key.pem"
         touch "${HOME}/.ssh/known_hosts"
         ssh-keyscan -H github.com >> "${HOME}/.ssh/known_hosts"
         chmod 400 "${SSH_FILE}"
