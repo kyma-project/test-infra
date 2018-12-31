@@ -1,4 +1,6 @@
 plugins:
+  aszecowka:
+    - trigger # TODO only for testing purposes
   kyma-project:
     - cat
     - trigger
