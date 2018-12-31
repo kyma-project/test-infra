@@ -55,6 +55,18 @@ presets:
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
         readOnly: true
   - labels:
+      preset-sa-kyma-artifacts: "true"
+    env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /etc/credentials/sa-kyma-artifacts/service-account.json
+    volumes:
+    - name: sa-kyma-artifacts
+      secret:
+        secretName: sa-kyma-artifacts
+    volumeMounts:
+    - name: sa-kyma-artifacts
+      mountPath: /etc/credentials/sa-kyma-artifacts
+  - labels:
       preset-dind-enabled: "true"
     env:
       - name: DOCKER_IN_DOCKER_ENABLED
@@ -145,6 +157,11 @@ presets:
       - name: kyma-bot-github-ssh
         mountPath: /etc/credentials/kyma-bot-github-ssh
         readOnly: true
+  - labels:
+      preset-kyma-artifacts-bucket: "true"
+    env:
+      - name: KYMA_ARTIFACTS_BUCKET
+        value: gs://kyma-prow-artifacts
 
 branch-protection:
   orgs:
