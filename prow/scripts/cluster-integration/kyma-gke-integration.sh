@@ -141,6 +141,9 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    echo "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
