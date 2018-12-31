@@ -139,6 +139,13 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    echo "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    KYMA_INSTALLER_IMAGE="eu.gcr.io/kyma-project/prow/test/kyma-installer:${RELEASE_VERSION}"
 else
     # TODO
     # Otherwise (master, or release), operate on triggering commit id
@@ -178,12 +185,12 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-
-shout "Build Kyma-Installer Docker image"
-date
-CLEANUP_DOCKER_IMAGE="true"
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
-
+if [[ "$BUILD_TYPE" -ne "release" ]]; then
+    shout "Build Kyma-Installer Docker image"
+    date
+    CLEANUP_DOCKER_IMAGE="true"
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
+fi
 
 shout "Reserve IP Address for Ingressgateway"
 date
@@ -248,10 +255,7 @@ date
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     # 1. download file
-
-    RELEASED_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASED_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
 
     cat downloaded-kyma-config-cluster.yaml \
         | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
