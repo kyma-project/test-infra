@@ -176,6 +176,7 @@ INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Used to detect errors for logging purposes
+#Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
 # shellcheck disable=SC1090
@@ -256,6 +257,8 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     # 1. download file
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
+    REMOTE_ENV_CA=""
+    REMOTE_ENV_CA_KEY=""
 
     cat downloaded-kyma-config-cluster.yaml \
         | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
@@ -263,6 +266,8 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
         | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
+        | sed -e "s/__REMOTE_ENV_CA__/${REMOTE_ENV_CA}/g" \
+        | sed -e "s/__REMOTE_ENV_CA_KEY__/${REMOTE_ENV_CA_KEY}/g" \
         | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
         | kubectl apply -f-
 else
