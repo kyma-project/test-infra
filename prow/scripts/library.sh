@@ -28,7 +28,7 @@ function start_docker() {
 
 function authenticate() {
     echo "Authenticating"
-    gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}"
+    gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
 }
 
 function configure_git() {
