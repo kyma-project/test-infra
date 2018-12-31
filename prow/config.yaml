@@ -198,7 +198,7 @@ branch-protection:
         community:
           branches:
             master:
-              protect: true 
+              protect: true
         examples:
           branches:
             master:
