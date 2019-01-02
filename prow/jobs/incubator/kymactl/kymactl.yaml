@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-incubator/kymactl
   max_concurrency: 10

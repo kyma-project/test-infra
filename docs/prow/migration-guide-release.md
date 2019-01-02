@@ -41,7 +41,7 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   name: kyma-components-binding-usage-controller
-  skip_report: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10

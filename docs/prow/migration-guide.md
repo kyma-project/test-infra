@@ -51,7 +51,7 @@ presubmits:
       run_if_changed: "^components/binding-usage-controller/"
       branches:
         - master
-      skip_report: true
+      skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
       extra_refs:
@@ -194,7 +194,7 @@ See an example of the postsubmit job:
 
 ```yaml
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   run_if_changed: "^components/binding-usage-controller/"
   decorate: true
   path_alias: github.com/kyma-project/kyma

@@ -164,17 +164,17 @@ presets:
         value: gs://kyma-prow-artifacts
 
 branch-protection:
+  enforce_admins: false
+  required_pull_request_reviews:
+    dismiss_stale_reviews: false
+    require_code_owner_reviews: true
+    required_approving_review_count: 1
+  # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
+  required_status_checks:
+    contexts:
+      - license/cla
   orgs:
     kyma-project:
-      enforce_admins: false
-      required_pull_request_reviews:
-        dismiss_stale_reviews: false
-        require_code_owner_reviews: true
-        required_approving_review_count: 1
-      # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
-      required_status_checks:
-        contexts:
-          - license/cla
       repos:
         test-infra:
           branches:
@@ -216,6 +216,24 @@ branch-protection:
             dismiss_stale_reviews: false
             require_code_owner_reviews: true
             required_approving_review_count: 2
+          branches:
+            master:
+              protect: true
+    kyma-incubator:
+      repos:
+        varkes:
+          branches:
+            master:
+              protect: true
+        kymactl:
+          branches:
+            master:
+              protect: true
+        vstudio-extension:
+          branches:
+            master:
+              protect: true
+        service-catalog-tester:
           branches:
             master:
               protect: true
