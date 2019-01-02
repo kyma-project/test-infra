@@ -1,125 +1,128 @@
 ---
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+vm_job_template: &vm_job_template
+  name: kyma-integration
+  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
+
+vm_job_labels_template: &vm_job_labels_template
+  preset-sa-vm-kyma-integration: "true"
+  preset-gc-project-env: "true"
+
+gke_job_template: &gke_job_template
+  name: kyma-gke-integration
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+gke_job_labels_template: &gke_job_labels_template
+  preset-sa-gke-kyma-integration: "true"
+  preset-gc-compute-envs: "true"
+  preset-gc-project-env: "true"
+  preset-docker-push-repository-gke-integration: "true"
+  preset-dind-enabled: "true"
+  preset-kyma-artifacts-bucket: "true"
+
 presubmits: # runs on PRs
+  aszecowka/kyma: # TODO for testing purposes
+  - branches:
+    - release-0.6
+    <<: *gke_job_template
+    always_run: false
+    max_concurrency: 10
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: aszecowka # TODO for testing purposes
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-int-gke-2
+
   kyma-project/kyma:
-    - name: kyma-integration
-      run_if_changed: "^(resources|installation)"
-      skip_report: true # from documentation: SkipReport skips commenting and setting status on GitHub.
-      max_concurrency: 10
-      branches:
-        - master
-      labels:
-        preset-sa-vm-kyma-integration: "true"
-        preset-gc-project-env: "true"
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-    - name: kyma-gke-integration
-      run_if_changed: "^(resources|installation)"
-      trigger: "(?m)^/test kyma-gke-integration"
-      rerun_command: "/test kyma-gke-integration"
-      skip_report: true
-      max_concurrency: 10
-      branches:
-        - master
-      labels:
-        preset-sa-gke-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-build-pr: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-dind-enabled: "true"
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
+  - branches:
+    - master
+    <<: *vm_job_template
+    run_if_changed: "^(resources|installation)"
+    max_concurrency: 10
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+  - branches:
+    - release-0.6
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.6
+
+  - branches:
+    - master
+    <<: *gke_job_template
+    run_if_changed: "^(resources|installation)"
+    max_concurrency: 10
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-integration
-      branches:
-        - master
-      max_concurrency: 1
-      labels:
-        preset-sa-vm-kyma-integration: "true"
-        preset-gc-project-env: "true"
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-    - name: kyma-gke-integration
-      branches:
-        - master
-      max_concurrency: 1
-      labels:
-        preset-sa-gke-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-build-master: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-dind-enabled: "true"
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
+  - <<: *vm_job_template
+    branches:
+    - master
+    max_concurrency: 1
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+
+  - <<: *gke_job_template
+    branches:
+    - master
+    max_concurrency: 1
+    labels:
+      preset-build-master: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
 
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
@@ -143,18 +146,16 @@ periodics:
     preset-gc-project-env: "true"
   decorate: true
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+  - <<: *test_infra_ref
+    base_ref: master
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
       command:
-        - "bash"
+      - "bash"
       args:
-        - "-c"
-        - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "-c"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
       resources:
         requests:
           memory: 1Gi
@@ -166,18 +167,16 @@ periodics:
     preset-gc-project-env: "true"
   decorate: true
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+  - <<: *test_infra_ref
+    base_ref: master
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
       command:
-        - "bash"
+      - "bash"
       args:
-        - "-c"
-        - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "-c"
+      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
       resources:
         requests:
           memory: 1Gi
@@ -189,18 +188,16 @@ periodics:
     preset-gc-project-env: "true"
   decorate: true
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+  - <<: *test_infra_ref
+    base_ref: master
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
       command:
-        - "bash"
+      - "bash"
       args:
-        - "-c"
-        - "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "-c"
+      - "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
       resources:
         requests:
           memory: 1Gi
@@ -212,18 +209,16 @@ periodics:
     preset-gc-project-env: "true"
   decorate: true
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+  - <<: *test_infra_ref
+    base_ref: master
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
       command:
-        - "bash"
+      - "bash"
       args:
-        - "-c"
-        - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "-c"
+      - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
       resources:
         requests:
           memory: 1Gi

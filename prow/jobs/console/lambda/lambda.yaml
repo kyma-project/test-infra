@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   run_if_changed: "^lambda/"
   decorate: true
   path_alias: github.com/kyma-project/console
@@ -46,4 +46,4 @@ postsubmits:
       <<: *job_template
       labels:
         <<: *job_labels_template
-        preset-build-master: "true"
+        preset-build-console-master: "true"
