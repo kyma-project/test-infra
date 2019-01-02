@@ -6,6 +6,7 @@ test_infra_ref: &test_infra_ref
 website_ref: &website_ref
   org: kyma-project
   repo: website
+  base_ref: master
   path_alias: github.com/kyma-project/website
 
 job_template: &job_template
@@ -46,7 +47,6 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: master
       - <<: *website_ref
-        base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -58,7 +58,6 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-0.6
       - <<: *website_ref
-        base_ref: release-0.6
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -73,7 +72,6 @@ postsubmits:
       - <<: *test_infra_ref
         base_ref: master
       - <<: *website_ref
-        base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-master: "true"

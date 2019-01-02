@@ -39,6 +39,8 @@ const (
 	PresetBotGithubToken Preset = "preset-bot-github-token"
 	// PresetBotGithubSSH means github ssh
 	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
+	// PresetBotGithubIdentity means github identity
+	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
 	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable
