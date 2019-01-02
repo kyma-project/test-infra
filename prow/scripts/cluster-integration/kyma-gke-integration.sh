@@ -17,7 +17,7 @@
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - MACHINE_TYPE (optional): GKE machine type
 # - CLUSTER_VERSION (optional): GKE cluster version
-# KYMA_ARTIFACTS_BUCKET: to be defined
+# - KYMA_ARTIFACTS_BUCKET: GCP bucket
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Admin
@@ -147,8 +147,7 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
-    # TODO
-    # Otherwise (master, or release), operate on triggering commit id
+    # Otherwise (master), operate on triggering commit id
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
@@ -187,7 +186,7 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-if [[ "$BUILD_TYPE" -ne "release" ]]; then
+if [[ "$BUILD_TYPE" != "release" ]]; then
     shout "Build Kyma-Installer Docker image"
     date
     CLEANUP_DOCKER_IMAGE="true"
@@ -261,8 +260,8 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
     REMOTE_ENV_CA=""
     REMOTE_ENV_CA_KEY=""
 
-    cat downloaded-kyma-config-cluster.yaml \
-        | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
+
+     sed -e "s/__DOMAIN__/${DOMAIN}/g" downloaded-kyma-config-cluster.yaml \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
         | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
