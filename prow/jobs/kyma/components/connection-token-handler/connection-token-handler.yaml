@@ -4,8 +4,8 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
+  name: kyma-components-connection-token-handler
   skip_report: false
-  run_if_changed: "^components/connection-token-handler/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -33,6 +33,7 @@ presubmits:
   - branches:
     - master
     <<: *job_template
+    run_if_changed: "^components/connection-token-handler/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -55,6 +56,7 @@ postsubmits:
   - branches:
     - master
     <<: *job_template
+    run_if_changed: "^components/connection-token-handler/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
