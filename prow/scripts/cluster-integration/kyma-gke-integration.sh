@@ -255,11 +255,9 @@ date
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    # 1. download file
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
-    REMOTE_ENV_CA=""
+    REMOTE_ENV_CA="" 
     REMOTE_ENV_CA_KEY=""
-
 
      sed -e "s/__DOMAIN__/${DOMAIN}/g" downloaded-kyma-config-cluster.yaml \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
