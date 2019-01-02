@@ -1,18 +1,20 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+website_ref: &website_ref
+  org: kyma-project
+  repo: website
+  base_ref: master
+  path_alias: github.com/kyma-project/website
+
 job_template: &job_template
+  name: kyma-docs
   skip_report: false
-  run_if_changed: "^docs/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
-    - org: kyma-project
-      repo: website
-      base_ref: master
-      path_alias: github.com/kyma-project/website
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
@@ -37,20 +39,39 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-docs
-      branches:
+    - branches:
         - master
-      labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
       <<: *job_template
+      run_if_changed: "^docs/"
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *website_ref
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
+    - branches:
+      - release-0.6
+      <<: *job_template
+      always_run: true
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.6
+      - <<: *website_ref
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-docs
-      branches:
+    - branches:
         - master
       <<: *job_template
+      run_if_changed: "^docs/"
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-master: "true"

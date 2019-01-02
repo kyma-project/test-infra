@@ -39,6 +39,8 @@ const (
 	PresetBotGithubToken Preset = "preset-bot-github-token"
 	// PresetBotGithubSSH means github ssh
 	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
+	// PresetBotGithubIdentity means github identity
+	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
 	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable
@@ -67,6 +69,10 @@ const (
 	// GovernanceScriptDir means governance script directory
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
+
+type jobRunner interface {
+	RunsAgainstChanges([]string) bool
+}
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
@@ -172,7 +178,7 @@ func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
 }
 
 // AssertThatJobRunIfChanged checks if job that has specified run_if_changed parameter will be triggered by changes in specified file.
-func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
+func AssertThatJobRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
 

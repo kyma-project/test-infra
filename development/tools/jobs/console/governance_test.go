@@ -1,4 +1,4 @@
-package console
+package console_test
 
 import (
 	"testing"
