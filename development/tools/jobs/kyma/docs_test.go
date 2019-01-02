@@ -78,5 +78,6 @@ func TestDocsJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBotGithubToken, tester.PresetBotGithubSSH, tester.PresetBotGithubIdentity, tester.PresetBuildMaster)
 	tester.AssertThatHasExtraRefs(t, actualPost.JobBase.UtilityConfig, []string{"test-infra", "website"})
 	assert.Equal(t, "^docs/", actualPost.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPost, "docs/some_random_file.go")
 	tester.AssertThatExecGolangBuidlpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
 }

@@ -70,6 +70,10 @@ const (
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
 
+type jobRunner interface {
+	RunsAgainstChanges([]string) bool
+}
+
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
 	return []string{"release-0.6"}
@@ -174,7 +178,7 @@ func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
 }
 
 // AssertThatJobRunIfChanged checks if job that has specified run_if_changed parameter will be triggered by changes in specified file.
-func AssertThatJobRunIfChanged(t *testing.T, p config.Presubmit, changedFile string) {
+func AssertThatJobRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
 

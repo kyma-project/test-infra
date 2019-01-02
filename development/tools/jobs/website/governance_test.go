@@ -1,4 +1,4 @@
-package website
+package website_test
 
 import (
 	"testing"

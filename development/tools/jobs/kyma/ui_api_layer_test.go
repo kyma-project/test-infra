@@ -76,5 +76,6 @@ func TestUiApiLayerJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^components/ui-api-layer/", actualPost.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/ui-api-layer/some_random_file.go")
 	tester.AssertThatExecGolangBuidlpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer")
 }

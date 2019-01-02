@@ -1,4 +1,4 @@
-package testinfra
+package testinfra_test
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package community
+package community_test
 
 import (
 	"testing"
