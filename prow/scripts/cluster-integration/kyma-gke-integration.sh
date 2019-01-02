@@ -256,17 +256,14 @@ date
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
-    REMOTE_ENV_CA="" 
-    REMOTE_ENV_CA_KEY=""
 
      sed -e "s/__DOMAIN__/${DOMAIN}/g" downloaded-kyma-config-cluster.yaml \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
         | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__REMOTE_ENV_CA__/${REMOTE_ENV_CA}/g" \
-        | sed -e "s/__REMOTE_ENV_CA_KEY__/${REMOTE_ENV_CA_KEY}/g" \
         | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | sed -e "s/__.*__//g" \
         | kubectl apply -f-
 else
     echo "Manual concatenating yamls"
@@ -282,7 +279,6 @@ else
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 fi
-
 
 shout "Trigger installation"
 date
