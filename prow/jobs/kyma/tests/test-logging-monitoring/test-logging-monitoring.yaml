@@ -6,7 +6,6 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   name: kyma-tests-test-logging-monitoring
   skip_report: false
-  run_if_changed: "^tests/test-logging-monitoring/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
