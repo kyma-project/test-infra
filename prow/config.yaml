@@ -55,6 +55,18 @@ presets:
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
         readOnly: true
   - labels:
+      preset-sa-kyma-artifacts: "true"
+    env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /etc/credentials/sa-kyma-artifacts/service-account.json
+    volumes:
+    - name: sa-kyma-artifacts
+      secret:
+        secretName: sa-kyma-artifacts
+    volumeMounts:
+    - name: sa-kyma-artifacts
+      mountPath: /etc/credentials/sa-kyma-artifacts
+  - labels:
       preset-dind-enabled: "true"
     env:
       - name: DOCKER_IN_DOCKER_ENABLED
@@ -69,22 +81,22 @@ presets:
       preset-docker-push-repository: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/prow/test" # TODO: change to eu.gcr.io/kyma-project
+        value: "eu.gcr.io/kyma-project"
   - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow/test" # TODO: change to eu.gcr.io/sap-kyma-prow
+        value: "eu.gcr.io/sap-kyma-prow"
   - labels:
       preset-docker-push-repository-test-infra: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/prow/test-infra" # TODO: change to eu.gcr.io/kyma-project/test-infra
+        value: "eu.gcr.io/kyma-project/test-infra"
   - labels:
       preset-docker-push-repository-incubator: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/prow/incubator" # TODO: change to eu.gcr.io/kyma-project/incubator
+        value: "eu.gcr.io/kyma-project/incubator"
   - labels:
       preset-build-pr: "true"
     env:
@@ -99,6 +111,11 @@ presets:
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: "/develop"
+  - labels:
+      preset-build-console-master: "true"
+    env:
+      - name: BUILD_TYPE
+        value: master
   - labels:
       preset-build-release: "true"
     env:
@@ -140,92 +157,68 @@ presets:
       - name: kyma-bot-github-ssh
         mountPath: /etc/credentials/kyma-bot-github-ssh
         readOnly: true
+  - labels:
+      preset-kyma-artifacts-bucket: "true"
+    env:
+      - name: KYMA_ARTIFACTS_BUCKET
+        value: gs://kyma-prow-artifacts
 
 branch-protection:
   orgs:
     kyma-project:
+      enforce_admins: false
+      required_pull_request_reviews:
+        dismiss_stale_reviews: false
+        require_code_owner_reviews: true
+        required_approving_review_count: 1
+      # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
+      required_status_checks:
+        contexts:
+          - license/cla
       repos:
         test-infra:
-          #TODO: move to default config for organization
-          enforce_admins: false
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 1
-          protect: true
-          #TODO: end move
-          # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
-          required_status_checks:
-            contexts:
-              - license/cla #TODO: move to default config for organization
-        kyma:
-          #TODO: move to default config for organization
-          enforce_admins: false
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 1
-          protect: true
-          #TODO: end move
-          # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
-          required_status_checks:
-            contexts:
-            - license/cla #TODO: move to default config for organization
-            - continuous-integration/jenkins/pr-head
-
           branches:
             master:
+              protect: true
+        kyma:
+          branches:
+            master:
+              protect: true
             release-0.6:
+              protect: true
               required_status_checks:
                 contexts:
                   # TODO this is just an example
                   - kyma-integration
                   - kyma-gke-integration
-
         website:
-          #TODO: move to default config for organization
-          enforce_admins: false
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 1
-          #TODO: end move
           branches:
             master:
               protect: true
-          required_status_checks:
-            contexts:
-              - license/cla #TODO: move to default config for organization
-
         community:
-          #TODO: move to default config for organization
-          enforce_admins: false
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 1
-          #TODO: end move
           branches:
             master:
               protect: true
-          required_status_checks:
-            contexts:
-              - license/cla #TODO: move to default config for organization
-              
         examples:
-          #TODO: move to default config for organization
-          enforce_admins: false
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 1
-          #TODO: end move
           branches:
             master:
               protect: true
-          required_status_checks:
-            contexts:
-              - license/cla #TODO: move to default config for organization
+        console:
+          branches:
+            master:
+              protect: true
+        bundles:
+          branches:
+            master:
+              protect: true
+        luigi:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: true
+            required_approving_review_count: 2
+          branches:
+            master:
+              protect: true
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'

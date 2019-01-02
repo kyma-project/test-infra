@@ -31,6 +31,8 @@ const (
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
 	PresetBuildMaster Preset = "preset-build-master"
+	// PresetBuildConsoleMaster means console master environment
+	PresetBuildConsoleMaster Preset = "preset-build-console-master"
 	// PresetBuildRelease means release environment
 	PresetBuildRelease Preset = "preset-build-release"
 	// PresetBotGithubToken means github token
