@@ -47,7 +47,7 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.6
-    lables:
+    labels:
       <<: *job_labels_template
       preset-build-release: "true"
 
