@@ -6,7 +6,6 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   name: kyma-tests-kubeless-integration
   skip_report: false
-  run_if_changed: "^tests/kubeless-integration/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
