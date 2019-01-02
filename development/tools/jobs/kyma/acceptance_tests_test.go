@@ -8,32 +8,42 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestAcceptanceReleases(t *testing.T) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/acceptance/acceptance.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-acceptance", currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance")
+		})
+	}
+}
+
 func TestAcceptanceJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/acceptance/acceptance.yaml")
 	// THEN
 	require.NoError(t, err)
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-tests-acceptance", "master")
+	require.NotNil(t, actualPresubmit)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
-	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-tests-acceptance"
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/acceptance/fix")
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/acceptance/fix")
 	assert.Equal(t, "^tests/acceptance/", actualPresubmit.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance", actualPresubmit.Spec.Containers[0].Args[0])
+	tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance")
 }
 
 func TestAcceptanceJobPostsubmit(t *testing.T) {
@@ -58,7 +68,5 @@ func TestAcceptanceJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^tests/acceptance/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance", actualPost.Spec.Containers[0].Args[0])
+	tester.AssertThatExecGolangBuidlpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/acceptance")
 }

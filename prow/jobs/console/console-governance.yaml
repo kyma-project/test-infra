@@ -1,7 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/console:
     - name: console-governance
-      skip_report: true
+      skip_report: false
       decorate: true
       max_concurrency: 10
       branches:
@@ -26,6 +26,10 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "console"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
 
 periodics: # runs periodic on master
 - name: console-governance-nightly
@@ -56,4 +60,7 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/console"
           - "--full-validation"
           - "true"
-
+        resources:
+          requests:
+            memory: 10Mi
+            cpu: 100m

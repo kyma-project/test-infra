@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   run_if_changed: "^tests/"
   decorate: true
   path_alias: github.com/kyma-project/console
@@ -18,6 +18,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/console/tests"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -42,4 +46,4 @@ postsubmits:
       <<: *job_template
       labels:
         <<: *job_labels_template
-        preset-build-master: "true"
+        preset-build-console-master: "true"

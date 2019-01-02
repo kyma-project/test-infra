@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   run_if_changed: "^tests/kubeless-integration/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -18,6 +18,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/kyma/tests/kubeless-integration"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"

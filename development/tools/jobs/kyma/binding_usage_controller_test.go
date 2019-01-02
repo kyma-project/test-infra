@@ -9,7 +9,6 @@ import (
 )
 
 func TestBucReleases(t *testing.T) {
-	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
@@ -17,7 +16,7 @@ func TestBucReleases(t *testing.T) {
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-binding-usage-controller", currentRelease)
 			require.NotNil(t, actualPresubmit)
-			assert.True(t, actualPresubmit.SkipReport)
+			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
@@ -36,7 +35,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-binding-usage-controller", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 
@@ -49,7 +48,6 @@ func TestBucJobsPresubmit(t *testing.T) {
 }
 
 func TestBucJobPostsubmit(t *testing.T) {
-	t.SkipNow()
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/binding-usage-controller/binding-usage-controller.yaml")
 	// THEN

@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -17,6 +17,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 1.5
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
