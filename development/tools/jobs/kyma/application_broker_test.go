@@ -8,34 +8,44 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAbJobsPresubmit(t *testing.T) {
+func TestApplicationBrokerReleases(t *testing.T) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-broker/application-broker.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-application-broker", currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker")
+		})
+	}
+}
+
+func TestApplicationBrokerJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-broker/application-broker.yaml")
 	// THEN
 	require.NoError(t, err)
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-application-broker", "master")
+	require.NotNil(t, actualPresubmit)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
-	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-components-application-broker"
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^components/application-broker/", actualPresubmit.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker"}, actualPresubmit.Spec.Containers[0].Args)
+	tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker")
 }
 
-func TestAbJobPostsubmit(t *testing.T) {
+func TestApplicationBrokerJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-broker/application-broker.yaml")
 	// THEN
@@ -57,8 +67,6 @@ func TestAbJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^components/application-broker/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker"}, actualPost.Spec.Containers[0].Args)
+	tester.AssertThatExecGolangBuidlpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker")
 
 }

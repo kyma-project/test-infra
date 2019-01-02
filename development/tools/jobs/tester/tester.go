@@ -31,6 +31,8 @@ const (
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
 	PresetBuildMaster Preset = "preset-build-master"
+	// PresetBuildConsoleMaster means console master environment
+	PresetBuildConsoleMaster Preset = "preset-build-console-master"
 	// PresetBuildRelease means release environment
 	PresetBuildRelease Preset = "preset-build-release"
 	// PresetBotGithubToken means github token
@@ -50,8 +52,10 @@ const (
 	ImageNodeChromiumBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
-	// ImageBoostrap001 represents version 0.0.1 of bootstrap image
-	ImageBoostrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageBootstrap20181204 represents boostrap image published on 2018.12.04
+	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
+	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 
@@ -180,8 +184,16 @@ func AssertThatHasCommand(t *testing.T, command []string) {
 // AssertThatExecGolangBuidlpack checks if job executes golang buildpack
 func AssertThatExecGolangBuidlpack(t *testing.T, job config.JobBase, img string, args ...string) {
 	assert.Len(t, job.Spec.Containers, 1)
-	assert.Equal(t, job.Spec.Containers[0].Image, img)
+	assert.Equal(t, img, job.Spec.Containers[0].Image)
 	assert.Len(t, job.Spec.Containers[0].Command, 1)
-	assert.Equal(t, job.Spec.Containers[0].Command[0], "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh")
-	assert.Equal(t, job.Spec.Containers[0].Args, args)
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh", job.Spec.Containers[0].Command[0])
+	assert.Equal(t, args, job.Spec.Containers[0].Args)
+}
+
+// AssertThatSpecifiesResourceRequests checks if resources requests for memory and cpu are specified
+func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
+	assert.Len(t, job.Spec.Containers, 1)
+	assert.False(t, job.Spec.Containers[0].Resources.Requests.Memory().IsZero())
+	assert.False(t, job.Spec.Containers[0].Resources.Requests.Cpu().IsZero())
+
 }

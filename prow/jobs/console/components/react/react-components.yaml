@@ -1,5 +1,5 @@
 job_template: &job_template
-  skip_report: true
+  skip_report: false
   run_if_changed: "^components/react/"
   decorate: true
   path_alias: github.com/kyma-project/console
@@ -16,6 +16,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/console/components/react"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
 
 presubmits:
   kyma-project/console:
@@ -33,5 +37,5 @@ postsubmits:
         - master
       <<: *job_template
       labels:
-        preset-build-master: "true"
+        preset-build-console-master: "true"
 

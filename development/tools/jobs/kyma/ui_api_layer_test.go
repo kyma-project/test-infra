@@ -25,7 +25,7 @@ func TestUiApiLayerJobPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)

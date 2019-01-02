@@ -33,7 +33,7 @@ The differences between a release job and a job for the `master` branch are as f
 - The **always_run** parameter set to `true` instead of specifying the **run_if_changed** parameter
 
 See an example:
-```
+```yaml
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -54,6 +54,10 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
       args:
       - "/home/prow/go/src/github.com/kyma-project/kyma/components/binding-usage-controller"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -91,7 +95,7 @@ postsubmits:
     run_if_changed: "^components/binding-usage-controller/"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: maser
+      base_ref: master
     labels:
       <<: *job_labels_template
       preset-build-master: "true"
@@ -111,7 +115,7 @@ The component job configuration in this guide differs from the one defined in th
 ### Define a test for a release job
 
 See an example of a test configuration from the `binding_usage_controller_test.go` file:
-```
+```go
 func TestBucReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
