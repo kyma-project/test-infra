@@ -9,6 +9,14 @@ Install the following tools:
 - Helm v2.11.0
 - kubectl
 
+## Configure Slack for failure notifications
+
+Follow these steps:
+
+1. Create a Slack channel and create an [Incoming Webhook](https://api.slack.com/incoming-webhooks) for this channel. Copy the resulting Webhook URL.
+
+2. Replace <SLACK_URL> on [values.yaml] with the Weebhook URL you obtaied and replace <SLACK_CHANNEL> with the channel name.
+
 ## Provision a monitoring chart
 
 Follow these steps:
@@ -30,7 +38,7 @@ Follow these steps:
 4. Install the monitoring chart:
 
    ```bash
-   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring
+   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring -f resources/monitoring/values.yaml
    ```
 
 5. Open the Grafana dashboard.
