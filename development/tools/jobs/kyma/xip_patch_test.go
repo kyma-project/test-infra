@@ -8,21 +8,34 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestXipPatchReleases(t *testing.T) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/xip-patch/xip-patch.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-xip-patch", currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Image, tester.ImageBootstrapLatest)
+		})
+	}
+}
+
 func TestXipPatchJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/xip-patch/xip-patch.yaml")
 	// THEN
 	require.NoError(t, err)
 
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-xip-patch", "master")
+	require.NotNil(t, actualPresubmit)
 	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
-	actualPresubmit := kymaPresubmits[0]
-	expName := "kyma-components-xip-patch"
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
@@ -41,23 +54,19 @@ func TestXipPatchJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-xip-patch")
+	require.NotNil(t, actualPostsubmit)
 	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPost, 1)
 
-	actualPost := kymaPost[0]
-	expName := "kyma-components-xip-patch"
-	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"master"}, actualPostsubmit.Branches)
 
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^components/xip-patch/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/xip-patch"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
+	assert.True(t, actualPostsubmit.Decorate)
+	assert.Equal(t, "github.com/kyma-project/kyma", actualPostsubmit.PathAlias)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
+	assert.Equal(t, "^components/xip-patch/", actualPostsubmit.RunIfChanged)
+	assert.Equal(t, tester.ImageBootstrapLatest, actualPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/xip-patch"}, actualPostsubmit.Spec.Containers[0].Args)
 }
