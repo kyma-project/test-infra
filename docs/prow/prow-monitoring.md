@@ -15,7 +15,7 @@ Follow these steps:
 
 1. Create a Slack channel and create an [Incoming Webhook](https://api.slack.com/incoming-webhooks) for this channel. Copy the resulting Webhook URL.
 
-2. Replace <SLACK_URL> on [values.yaml](./../../prow/cluster/resources/monitoring/values.yaml) with the Weebhook URL you obtaied and replace <SLACK_CHANNEL> with the channel name.
+2. Replace **<SLACK_URL>** on [values.yaml](./../../prow/cluster/resources/monitoring/values.yaml) with the Weebhook URL you obtaied and replace **<SLACK_CHANNEL>** with the channel name.
 
 ## Provision a monitoring chart
 
