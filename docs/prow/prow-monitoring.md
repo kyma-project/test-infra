@@ -38,7 +38,7 @@ Follow these steps:
 4. Install the monitoring chart:
 
    ```bash
-   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring -f resources/monitoring/values.yaml
+   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring
    ```
 
 5. Open the Grafana dashboard.
