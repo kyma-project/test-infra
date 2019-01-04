@@ -1,4 +1,6 @@
 plugins:
+  jasiu001:
+    - trigger # TODO only for testing purposes
   kyma-project:
     - cat
     - trigger
