@@ -1,7 +1,7 @@
 test_infra_ref: &test_infra_ref
-  org: kyma-project
+  org: jasiu001
   repo: test-infra
-  path_alias: github.com/jasiu001/test-infra
+  path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
   name: kyma-artifacts
@@ -26,6 +26,7 @@ job_labels_template: &job_labels_template
   preset-sa-kyma-artifacts: "true"
   preset-kyma-artifacts-bucket: "true"
 
+# TODO only for testing purposes
 presubmits: # runs on PRs
   jasiu001/kyma:
   - branches:
