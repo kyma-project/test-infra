@@ -52,21 +52,6 @@ gke_job_labels_template: &gke_job_labels_template
   preset-kyma-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
-  aszecowka/kyma: # TODO for testing purposes
-  - branches:
-    - release-0.6
-    <<: *gke_job_template
-    always_run: false
-    max_concurrency: 10
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: aszecowka # TODO for testing purposes
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: release-int-gke-2
-
   kyma-project/kyma:
   - branches:
     - master
@@ -99,6 +84,20 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+
+  - branches:
+    - release-0.6
+    <<: *gke_job_template
+    always_run: false
+    max_concurrency: 10
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.6
 
 
 postsubmits:

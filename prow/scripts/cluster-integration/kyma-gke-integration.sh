@@ -17,6 +17,7 @@
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - MACHINE_TYPE (optional): GKE machine type
 # - CLUSTER_VERSION (optional): GKE cluster version
+# - KYMA_ARTIFACTS_BUCKET: GCP bucket
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Admin
@@ -30,7 +31,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -39,6 +40,12 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanup EXIT
 
@@ -138,17 +145,20 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     COMMON_NAME=$(echo "gkeint-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    export KYMA_INSTALLER_IMAGE
+elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    COMMON_NAME=$(echo "gkeint-rel-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
-    # Otherwise (master, or release), operate on triggering commit id
+    # Otherwise (master), operate on triggering commit id
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    export KYMA_INSTALLER_IMAGE
 fi
 
-#Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export KYMA_INSTALLER_IMAGE
 
 ### Cluster name must be less than 40 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -169,19 +179,17 @@ INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 shout "Authenticate"
 date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-
-shout "Build Kyma-Installer Docker image"
-date
-CLEANUP_DOCKER_IMAGE="true"
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
-
+if [[ "$BUILD_TYPE" != "release" ]]; then
+    shout "Build Kyma-Installer Docker image"
+    date
+    CLEANUP_DOCKER_IMAGE="true"
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
+fi
 
 shout "Reserve IP Address for Ingressgateway"
 date
@@ -242,7 +250,22 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 shout "Apply Kyma config"
 date
-"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    echo "Use released artifacts"
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-integration/downloaded-config.yaml
+
+     sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-integration/downloaded-config.yaml \
+        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
+        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
+        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
+        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | sed -e "s/__.*__//g" \
+        | kubectl apply -f-
+else
+    echo "Manual concatenating yamls"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
     | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
     | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
@@ -253,6 +276,7 @@ date
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
+fi
 
 shout "Trigger installation"
 date
