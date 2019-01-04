@@ -143,9 +143,8 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-    echo "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-    COMMON_NAME=$(echo "gkeint-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    COMMON_NAME=$(echo "gkeint-rel-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
@@ -175,7 +174,6 @@ INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
-#Used to detect errors for logging purposes
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -255,9 +253,9 @@ date
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" downloaded-kyma-config-cluster.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-integration/downloaded-config.yaml
 
-     sed -e "s/__DOMAIN__/${DOMAIN}/g" downloaded-kyma-config-cluster.yaml \
+     sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-integration/downloaded-config.yaml \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
         | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \

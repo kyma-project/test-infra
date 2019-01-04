@@ -17,7 +17,7 @@ import (
 	container "google.golang.org/api/container/v1"
 )
 
-const defaultClusterNameRegexp = "^gkeint[-](pr|commit)[-].*"
+const defaultClusterNameRegexp = "^gkeint[-](pr|commit|rel)[-].*"
 const defaultJobLabelRegexp = "^kyma-gke-integration$"
 
 var (
