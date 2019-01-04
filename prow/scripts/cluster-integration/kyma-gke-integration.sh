@@ -29,9 +29,6 @@
 
 set -o errexit
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
 discoverUnsetVar=false
 
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
@@ -43,6 +40,12 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+# shellcheck disable=SC1090
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanup EXIT
 
@@ -155,10 +158,6 @@ else
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
-
-#Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 
 ### Cluster name must be less than 40 characters!
