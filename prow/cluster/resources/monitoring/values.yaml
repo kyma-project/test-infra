@@ -10,9 +10,9 @@ prometheus-operator:
       - name: "null"
       - name: "slack"
         slack_configs:
-        - channel: <SLACK_CHANNEL>
+        - channel: {SLACK_CHANNEL}
           send_resolved: true
-          api_url: <SLACK_URL>
+          api_url: {SLACK_URL}
           title: "{{ .CommonAnnotations.description }}"
           text: "<!channel> \nDescription: {{ .CommonAnnotations.description }}"
       route:
