@@ -10,14 +10,14 @@ spec:
   - name: ./prow.rules
     rules:
     - alert: KymaIntegration
-      expr: (max(kube_pod_status_phase{phase="Failed"} == 1) by(pod) * on(pod) topk (1, (max (kube_pod_labels{namespace="default", label_prow_k8s_io_job="kyma-integration", label_prow_k8s_io_type="postsubmit"}) by(pod)) * on(pod) max(kube_pod_completion_time{namespace="default"}) by(pod)) != 0)
+      expr: topk (1, kube_pod_completion_time{namespace="default"} and on(pod) kube_pod_labels{namespace="default", label_prow_k8s_io_job="kyma-integration", label_prow_k8s_io_type="postsubmit"}) and on(pod) kube_pod_status_phase{phase="Failed"} == 1
       labels:
         severity: critical
       annotations:
-        description: "Kyma integration tests failed!"
+        description: "Kyma integration tests failed! Pod: {{`{{$labels.pod}}`}}"
     - alert: KymaGKEIntegration
-      expr: (max(kube_pod_status_phase{phase="Failed"} == 1) by(pod) * on(pod) topk (1, (max (kube_pod_labels{namespace="default", label_prow_k8s_io_job="kyma-gke-integration", label_prow_k8s_io_type="postsubmit"}) by(pod)) * on(pod) max(kube_pod_completion_time{namespace="default"}) by(pod)) != 0)
+      expr: topk (1, kube_pod_completion_time{namespace="default"} and on(pod) kube_pod_labels{namespace="default", label_prow_k8s_io_job="kyma-gke-integration", label_prow_k8s_io_type="postsubmit"}) and on(pod) kube_pod_status_phase{phase="Failed"} == 1
       labels:
         severity: critical
       annotations:
-        description: "Kyma integration tests on GKE failed!"
+        description: "Kyma integration tests on GKE failed! Pod: {{`{{$labels.pod}}`}}"
