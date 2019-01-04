@@ -29,6 +29,9 @@
 
 set -o errexit
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 discoverUnsetVar=false
 
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
@@ -177,8 +180,6 @@ INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 shout "Authenticate"
 date
 init
