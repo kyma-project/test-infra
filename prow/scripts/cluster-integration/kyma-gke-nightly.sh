@@ -2,6 +2,18 @@
 
 set -o errexit
 
+discoverUnsetVar=false
+
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL SLACK_CLIENT_CHANNEL_ID; do
+    if [ -z "${!var}" ] ; then
+        echo "ERROR: $var is not set"
+        discoverUnsetVar=true
+    fi
+done
+if [ "${discoverUnsetVar}" = true ] ; then
+    exit 1
+fi
+
 function removeCluster() {
 	TIMESTAMP=$1
 	COMMON_NAME="gkeint-nightly-${TIMESTAMP}"
@@ -104,11 +116,8 @@ function installKyma() {
 }
 
 function installStabilityChecker() {
-	STATS_FAILING_TEST_REGEXP="'\"'([0-9A-Za-z_-]+)'\"' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"
-	STATS_SUCCESSFUL_TEST_REGEXP="Test of '\"'([0-9A-Za-z_-]+)'\"' was successful"
-	SLACK_CLIENT_TOKEN="ToAdd"
-	SLACK_CLIENT_WEBHOOK_URL="ToAdd"
-	SLACK_CLIENT_CHANNEL_ID="ToAdd"
+	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'\"'([0-9A-Za-z_-]+)'\"' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
+	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '\"'([0-9A-Za-z_-]+)'\"' was successful"}
 	STATS_ENABLED=true
 	
 	SC_DIR=${KYMA_SOURCES_DIR}/tools/stability-checker

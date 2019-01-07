@@ -162,6 +162,15 @@ presets:
     env:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
+  - labels:
+      preset-slack-notifications: "true"
+    env:
+      - name: SLACK_CLIENT_WEBHOOK_URL
+        value: https://sap-cx.slack.com/services/hooks/jenkins-ci
+      - name: SLACK_CLIENT_CHANNEL_ID
+        value: "#c4core-kyma-ci-force"
+      - name: SLACK_CLIENT_TOKEN
+        value: dummy-token
 
 branch-protection:
   enforce_admins: false
