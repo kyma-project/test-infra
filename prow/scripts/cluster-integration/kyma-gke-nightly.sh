@@ -6,6 +6,8 @@ function removeCluster() {
 	TIMESTAMP=$1
 	COMMON_NAME="gkeint-nightly-${TIMESTAMP}"
 	
+	EXIT_STATUS=$?
+
 	shout "Delete cluster $CLUSTER_NAME"
 	CLUSTER_NAME=${COMMON_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
@@ -16,6 +18,14 @@ function removeCluster() {
 	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${TIMESTAMP}" "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+	MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+    shout "Job is finished ${MSG}"
+    date
+    set -e
+
+    exit "${EXIT_STATUS}"
 }
 
 function createCluster() {
@@ -103,11 +113,11 @@ function installStabilityChecker() {
 	
 	SC_DIR=${KYMA_SOURCES_DIR}/tools/stability-checker
 
-	kubectl create -f ${SC_DIR}/local/provisioning.yaml
-	bash ${SC_DIR}/local/helpers/isready.sh kyma-system app  stability-test-provisioner
+	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
+	bash "${SC_DIR}/local/helpers/isready.sh" kyma-system app  stability-test-provisioner
 	kubectl exec stability-test-provisioner -n kyma-system --  mkdir -p /home/input
-	kubectl cp ${KYMA_SCRIPTS_DIR}/testing.sh stability-test-provisioner:/home/input/ -n kyma-system
-	kubectl cp ${KYMA_SCRIPTS_DIR}/utils.sh stability-test-provisioner:/home/input/ -n kyma-system
+	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
+	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
 	helm install --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
@@ -116,7 +126,7 @@ function installStabilityChecker() {
 		--set stats.enabled="${STATS_ENABLED}" \
 		--set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
 		--set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
-			${SC_DIR}/deploy/chart/stability-checker \
+		"${SC_DIR}/deploy/chart/stability-checker" \
 		--namespace=kyma-system \
 		--name=stability-checker
 }
@@ -156,7 +166,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 shout "Authenticate"
 date
 init
-export DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+readonly DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+export DNS_DOMAIN
 
 shout "Delete old cluster - gkeint-nightly-${LAST_TIMESTAMP}"
 date
@@ -164,7 +175,6 @@ removeCluster "${LAST_TIMESTAMP}"
 
 shout "Build Kyma-Installer Docker image"
 date
-CLEANUP_DOCKER_IMAGE="true"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
 
 shout "Create new cluster"
