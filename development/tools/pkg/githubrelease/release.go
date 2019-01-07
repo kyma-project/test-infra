@@ -1,6 +1,8 @@
 package githubrelease
 
 import (
+	"io/ioutil"
+	"log"
 	"os"
 	"path"
 
@@ -11,18 +13,24 @@ import (
 type Release struct {
 	Github  *GithubAPIWrapper
 	Storage *StorageAPIWrapper
-	TmpDir  string
 }
+
+var kymaArtifactsDir = "kyma-artifacts"
 
 //CreateRelease .
 func (gr *Release) CreateRelease(releaseVersion string, targetCommit string, releaseChangelogName string, localArtifactName string, clusterArtifactName string, isPreRelease bool) error {
+	artifactsDir, err := ioutil.TempDir("", kymaArtifactsDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	//kymaConfigCluster
 	clusterArtifactData, err := gr.Storage.ReadBucketObject(clusterArtifactName)
 	if err != nil {
 		return errors.Wrapf(err, "while reading %s from bucket", clusterArtifactName)
 	}
 
-	clusterArtifactFile, err := os.OpenFile(path.Join(gr.TmpDir, clusterArtifactName), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
+	clusterArtifactFile, err := os.OpenFile(path.Join(artifactsDir, clusterArtifactName), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
 		return errors.Wrapf(err, "while opening %s file", clusterArtifactName)
 	}
@@ -38,7 +46,7 @@ func (gr *Release) CreateRelease(releaseVersion string, targetCommit string, rel
 		return errors.Wrapf(err, "while reading %s file", localArtifactName)
 	}
 
-	localArtifactFile, err := os.OpenFile(path.Join(gr.TmpDir, localArtifactName), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
+	localArtifactFile, err := os.OpenFile(path.Join(artifactsDir, localArtifactName), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
 		return errors.Wrapf(err, "while opening %s file", clusterArtifactName)
 	}
@@ -51,6 +59,7 @@ func (gr *Release) CreateRelease(releaseVersion string, targetCommit string, rel
 	defer func() {
 		clusterArtifactFile.Close()
 		localArtifactFile.Close()
+		os.RemoveAll(artifactsDir)
 	}()
 
 	//changelog

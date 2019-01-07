@@ -8,7 +8,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -31,7 +30,6 @@ var (
 	githubRepoName         = flag.String("githubRepoName", "", "Github repository name [Required]")
 	githubAccessToken      = flag.String("githubAccessToken", "", "Github access token [Required]")
 	releaseVersionFilePath = flag.String("releaseVersionFilePath", "", "Full path to a file containing release version [Required]")
-	kymaArtifactsDir       = "kyma-artifacts"
 )
 
 func main() {
@@ -69,13 +67,6 @@ func main() {
 
 	ctx := context.Background()
 
-	artifactsDir, err := ioutil.TempDir("", kymaArtifactsDir)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer os.RemoveAll(artifactsDir)
-
 	common.Shout("Reading release version file")
 
 	releaseVersion, err := file.ReadFile(*releaseVersionFilePath)
@@ -102,7 +93,7 @@ func main() {
 
 	gap := &githubrelease.GithubAPIWrapper{Context: ctx, Client: client, RepoOwner: *githubRepoOwner, RepoName: *githubRepoName}
 
-	gr := &githubrelease.Release{Github: gap, Storage: saw, TmpDir: artifactsDir}
+	gr := &githubrelease.Release{Github: gap, Storage: saw}
 
 	// Github Release
 	err = gr.CreateRelease(releaseVersion, *targetCommit, *kymaChangelog, *kymaConfigLocal, *kymaConfigCluster, isPreRelease)
