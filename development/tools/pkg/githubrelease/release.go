@@ -2,7 +2,6 @@ package githubrelease
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 
@@ -21,7 +20,7 @@ var kymaArtifactsDir = "kyma-artifacts"
 func (gr *Release) CreateRelease(releaseVersion string, targetCommit string, releaseChangelogName string, localArtifactName string, clusterArtifactName string, isPreRelease bool) error {
 	artifactsDir, err := ioutil.TempDir("", kymaArtifactsDir)
 	if err != nil {
-		log.Fatal(err)
+		return errors.Wrapf(err, "while creating temp %s dir", kymaArtifactsDir)
 	}
 
 	//kymaConfigCluster

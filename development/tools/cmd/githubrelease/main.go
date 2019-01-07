@@ -76,7 +76,7 @@ func main() {
 
 	isPreRelease := strings.Contains(releaseVersion, "rc")
 
-	common.Shout("Release version: %s, Pre-release: %b", releaseVersion, isPreRelease)
+	common.Shout("Release version: %s, Pre-release: %t", releaseVersion, isPreRelease)
 
 	storageClient, err := storage.NewClient(ctx)
 	if err != nil {
