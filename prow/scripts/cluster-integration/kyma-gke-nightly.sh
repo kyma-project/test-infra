@@ -34,9 +34,6 @@ function removeCluster() {
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
     date
-    set -e
-
-    exit "${EXIT_STATUS}"
 }
 
 function createCluster() {
@@ -180,9 +177,12 @@ export DNS_DOMAIN
 shout "Delete old cluster"
 date
 OLD_CLUSTERS=$(gcloud container clusters list --filter="name~gkeint-nightly" --format json | jq '.[].name' | tr -d '"')
-for CLUSTER in $OLD_CLUSTERS; do
-	removeCluster "${OLD_CLUSTER}"
-done
+CLUSTERS_SIZE=$(echo $OLD_CLUSTERS | wc -l)
+if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
+	for CLUSTER in $OLD_CLUSTERS; do
+		removeCluster "${CLUSTER}"
+	done
+fi
 
 shout "Build Kyma-Installer Docker image"
 date
