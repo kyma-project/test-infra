@@ -154,8 +154,9 @@ else
 	readonly LAST_TIMESTAMP=$(date +%Y%m%d --date="yesterday")
 fi
 
-readonly COMMON_NAME=$(echo "gkeint-nightly-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
-readonly KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+readonly NAME_ROOT="gkeint-nightly"
+readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
+readonly KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${NAME_ROOT}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
 export KYMA_INSTALLER_IMAGE
 
 ### Cluster name must be less than 40 characters!
@@ -176,8 +177,8 @@ export DNS_DOMAIN
 
 shout "Delete old cluster"
 date
-OLD_CLUSTERS=$(gcloud container clusters list --filter="name~gkeint-nightly" --format json | jq '.[].name' | tr -d '"')
-CLUSTERS_SIZE=$(echo $OLD_CLUSTERS | wc -l)
+OLD_CLUSTERS=$(gcloud container clusters list --filter="name~${NAME_ROOT}" --format json | jq '.[].name' | tr -d '"')
+CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
 if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 	for CLUSTER in $OLD_CLUSTERS; do
 		removeCluster "${CLUSTER}"
