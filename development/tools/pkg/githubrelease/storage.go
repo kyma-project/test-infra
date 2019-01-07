@@ -21,7 +21,7 @@ type StorageAPIWrapper struct {
 
 // ReadBucketObject downloads and saves in temporary directory a file specified by fileName from a given bucket
 func (saw *StorageAPIWrapper) ReadBucketObject(fileName string) (*os.File, error) {
-	common.Shout("Reading %s/%s file from % bucket", saw.FolderName, fileName, saw.BucketName)
+	common.Shout("Reading %s/%s file from %s bucket", saw.FolderName, fileName, saw.BucketName)
 
 	rc, err := saw.StorageClient.Bucket(saw.BucketName).Object(saw.FolderName + "/" + fileName).NewReader(saw.Context)
 	if err != nil {

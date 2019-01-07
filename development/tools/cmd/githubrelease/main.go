@@ -102,7 +102,7 @@ func main() {
 
 	gap := &githubrelease.GithubAPIWrapper{Context: ctx, Client: client, RepoOwner: *githubRepoOwner, RepoName: *githubRepoName}
 
-	gr := &githubrelease.Release{Gap: gap, Saw: saw}
+	gr := &githubrelease.Release{Github: gap, Storage: saw}
 
 	// Github Release
 	err = gr.CreateRelease(releaseVersion, *targetCommit, *kymaChangelog, *kymaConfigLocal, *kymaConfigCluster, isPreRelease)
