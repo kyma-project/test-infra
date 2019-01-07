@@ -34,7 +34,7 @@ func ReadFile(filePath string) (string, error) {
 		return "", err
 	}
 
-	content := string(data[:])
+	content := string(data)
 
 	return content, nil
 }

@@ -92,7 +92,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	saw := &githubrelease.StorageAPIWrapper{Context: ctx, StorageClient: storageClient, BucketName: *bucketName, FolderName: releaseVersion, TmpDir: artifactsDir}
+	saw := &githubrelease.StorageAPIWrapper{Context: ctx, StorageClient: storageClient, BucketName: *bucketName, FolderName: releaseVersion}
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: *githubAccessToken},
@@ -102,7 +102,7 @@ func main() {
 
 	gap := &githubrelease.GithubAPIWrapper{Context: ctx, Client: client, RepoOwner: *githubRepoOwner, RepoName: *githubRepoName}
 
-	gr := &githubrelease.Release{Github: gap, Storage: saw}
+	gr := &githubrelease.Release{Github: gap, Storage: saw, TmpDir: artifactsDir}
 
 	// Github Release
 	err = gr.CreateRelease(releaseVersion, *targetCommit, *kymaChangelog, *kymaConfigLocal, *kymaConfigCluster, isPreRelease)

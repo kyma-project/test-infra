@@ -1,7 +1,9 @@
 package githubrelease
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/pkg/file"
+	"os"
+	"path"
+
 	"github.com/pkg/errors"
 )
 
@@ -9,35 +11,56 @@ import (
 type Release struct {
 	Github  *GithubAPIWrapper
 	Storage *StorageAPIWrapper
+	TmpDir  string
 }
 
 //CreateRelease .
 func (gr *Release) CreateRelease(releaseVersion string, targetCommit string, releaseChangelogName string, localArtifactName string, clusterArtifactName string, isPreRelease bool) error {
 	//kymaConfigCluster
-	clusterArtifactFile, err := gr.Storage.ReadBucketObject(clusterArtifactName)
+	clusterArtifactData, err := gr.Storage.ReadBucketObject(clusterArtifactName)
 	if err != nil {
-		return errors.Wrapf(err, "while reading %s file", clusterArtifactName)
+		return errors.Wrapf(err, "while reading %s from bucket", clusterArtifactName)
+	}
+
+	clusterArtifactFile, err := os.OpenFile(path.Join(gr.TmpDir, clusterArtifactName), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		return errors.Wrapf(err, "while opening %s file", clusterArtifactName)
+	}
+
+	clusterArtifactFile, err = saveArtifact(clusterArtifactFile, clusterArtifactData)
+	if err != nil {
+		return errors.Wrapf(err, "while writing %s file", clusterArtifactName)
 	}
 
 	//kymaConfigLocal
-	localArtifactFile, err := gr.Storage.ReadBucketObject(localArtifactName)
+	localArtifactData, err := gr.Storage.ReadBucketObject(localArtifactName)
 	if err != nil {
 		return errors.Wrapf(err, "while reading %s file", localArtifactName)
 	}
 
-	//changelog
-	releaseChangelogFile, err := gr.Storage.ReadBucketObject(releaseChangelogName)
+	localArtifactFile, err := os.OpenFile(path.Join(gr.TmpDir, localArtifactName), os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
-		return errors.Wrapf(err, "while reading %s file", releaseChangelogName)
+		return errors.Wrapf(err, "while opening %s file", clusterArtifactName)
 	}
 
-	releaseChangelogString, err := file.ReadFile(releaseChangelogFile.Name())
+	localArtifactFile, err = saveArtifact(localArtifactFile, localArtifactData)
+	if err != nil {
+		return errors.Wrapf(err, "while writing %s file", localArtifactFile)
+	}
+
+	defer func() {
+		clusterArtifactFile.Close()
+		localArtifactFile.Close()
+	}()
+
+	//changelog
+	releaseChangelogData, err := gr.Storage.ReadBucketObject(releaseChangelogName)
 	if err != nil {
 		return errors.Wrapf(err, "while reading %s file", releaseChangelogName)
 	}
 
 	//release
-	release, _, err := gr.Github.CreateGithubRelease(releaseVersion, releaseChangelogString, targetCommit, isPreRelease)
+	release, _, err := gr.Github.CreateGithubRelease(releaseVersion, string(releaseChangelogData), targetCommit, isPreRelease)
 	if err != nil {
 		return errors.Wrapf(err, "while creating github release")
 	}
@@ -55,4 +78,23 @@ func (gr *Release) CreateRelease(releaseVersion string, targetCommit string, rel
 	}
 
 	return nil
+}
+
+func saveArtifact(artifactFile *os.File, artifactData []byte) (*os.File, error) {
+	_, err := artifactFile.Write(artifactData)
+	if err != nil {
+		return nil, err
+	}
+
+	err = artifactFile.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	artifactFile, err = os.Open(artifactFile.Name())
+	if err != nil {
+		return nil, err
+	}
+
+	return artifactFile, nil
 }
