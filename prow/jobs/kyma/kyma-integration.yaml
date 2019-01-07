@@ -232,6 +232,9 @@ periodics:
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master
+  - org: kyma-project
+    repo: kyma
+    path_alias: github.com/kyma-project/kyma
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc

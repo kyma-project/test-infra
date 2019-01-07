@@ -15,9 +15,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function removeCluster() {
-	TIMESTAMP=$1
-	COMMON_NAME="gkeint-nightly-${TIMESTAMP}"
-	
+	COMMON_NAME=$1
+	TIMESTAMP=$(echo "${COMMON_NAME}" | cut -d '-' -f 3)
 	EXIT_STATUS=$?
 
 	shout "Delete cluster $CLUSTER_NAME"
@@ -178,9 +177,12 @@ init
 readonly DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
 
-shout "Delete old cluster - gkeint-nightly-${LAST_TIMESTAMP}"
+shout "Delete old cluster"
 date
-removeCluster "${LAST_TIMESTAMP}"
+OLD_CLUSTERS=$(gcloud container clusters list --filter="name~gkeint-nightly" --format json | jq '.[].name' | tr -d '"')
+for CLUSTER in $OLD_CLUSTERS; do
+	removeCluster "${OLD_CLUSTER}"
+done
 
 shout "Build Kyma-Installer Docker image"
 date
