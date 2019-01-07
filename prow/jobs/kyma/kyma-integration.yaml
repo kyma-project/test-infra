@@ -241,9 +241,8 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"
       resources:
         requests:
           memory: 200Mi
           cpu: 80m
-
