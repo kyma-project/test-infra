@@ -4,6 +4,11 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+kyma_ref: &kyma_ref
+  org: kyma-project
+  repo: kyma
+  path_alias: github.com/kyma-project/kyma
+
 vm_job_template: &vm_job_template
   name: kyma-integration
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -228,8 +233,8 @@ periodics:
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master
-  - org: kyma-project
-    repo: kyma
+  - <<: *kyma_ref
+    base_ref: master
     path_alias: github.com/kyma-project/kyma
   spec:
     containers:
