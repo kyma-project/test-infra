@@ -54,7 +54,7 @@ func TestXipPatchJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-xip-patch")
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-xip-patch", "master")
 	require.NotNil(t, actualPostsubmit)
 	assert.Len(t, jobConfig.Postsubmits, 1)
 

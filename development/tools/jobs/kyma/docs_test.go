@@ -66,7 +66,7 @@ func TestDocsJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	expName := "kyma-docs"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
