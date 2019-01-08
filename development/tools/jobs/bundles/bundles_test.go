@@ -75,7 +75,7 @@ func TestBundlesReleaseJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 2)
 
 	expName := "kyma-bundles-release"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "1.2.3")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

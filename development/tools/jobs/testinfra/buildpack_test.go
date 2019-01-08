@@ -47,7 +47,7 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-bootstrap"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -100,7 +100,7 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-bootstrap-helm"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -153,7 +153,7 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-buildpack-golang"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -206,7 +206,7 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-buildpack-node"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -259,7 +259,7 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "test-infra-cleaner"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
