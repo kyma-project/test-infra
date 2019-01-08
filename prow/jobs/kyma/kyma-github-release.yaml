@@ -6,6 +6,7 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   name: kyma-github-release
   skip_report: false
+  decorate: true
   max_concurrency: 1
   spec:
     containers:
