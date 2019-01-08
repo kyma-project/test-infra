@@ -197,9 +197,10 @@ branch-protection:
               protect: true
               required_status_checks:
                 contexts:
-                  # TODO this is just an example
                   - kyma-integration
                   - kyma-gke-integration
+                  - kyma-artifacts
+                  - kyma-installer
         website:
           branches:
             master:

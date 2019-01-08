@@ -27,3 +27,4 @@ make -C /home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer ci-c
 
 gsutil cp "${ARTIFACTS}/kyma-config-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-cluster.yaml"
 gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-local.yaml"
+"${SCRIPT_DIR}"/changelog-generator.sh

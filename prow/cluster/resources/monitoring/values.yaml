@@ -2,6 +2,33 @@ grafana:
   provisionDashboards: true
 
 prometheus-operator:
+  alertmanager:
+    config:
+      global:
+        resolve_timeout: 5m
+      receivers:
+      - name: "null"
+      - name: "slack"
+        slack_configs:
+        - channel: {SLACK_CHANNEL}
+          send_resolved: true
+          api_url: {SLACK_URL}
+          title: "{{ .CommonAnnotations.description }}"
+          text: "<!channel> \nDescription: {{ .CommonAnnotations.description }}"
+      route:
+        group_by:
+        - job
+        group_interval: 30m
+        group_wait: 30s
+        receiver: "null"
+        repeat_interval: 12h
+        routes:
+        - match:
+            alertname: KymaIntegration
+          receiver: "slack"
+        - match:
+            alertname: KymaGKEIntegration
+          receiver: "slack"
   grafana:
     env:
       GF_AUTH_ANONYMOUS_ENABLED: true

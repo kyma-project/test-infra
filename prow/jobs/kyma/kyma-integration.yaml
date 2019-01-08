@@ -9,6 +9,7 @@ vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
@@ -28,6 +29,7 @@ gke_job_template: &gke_job_template
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
@@ -52,27 +54,11 @@ gke_job_labels_template: &gke_job_labels_template
   preset-kyma-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
-  aszecowka/kyma: # TODO for testing purposes
-  - branches:
-    - release-0.6
-    <<: *gke_job_template
-    always_run: false
-    max_concurrency: 10
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: aszecowka # TODO for testing purposes
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: release-int-gke-2
-
   kyma-project/kyma:
   - branches:
     - master
     <<: *vm_job_template
     run_if_changed: "^(resources|installation)"
-    max_concurrency: 10
     labels:
       <<: *vm_job_labels_template
     extra_refs:
@@ -92,7 +78,6 @@ presubmits: # runs on PRs
     - master
     <<: *gke_job_template
     run_if_changed: "^(resources|installation)"
-    max_concurrency: 10
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
@@ -100,13 +85,25 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
+  - branches:
+    - release-0.6
+    <<: *gke_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.6
+
 
 postsubmits:
   kyma-project/kyma:
   - <<: *vm_job_template
     branches:
     - master
-    max_concurrency: 1
     labels:
       <<: *vm_job_labels_template
     extra_refs:
@@ -116,7 +113,6 @@ postsubmits:
   - <<: *gke_job_template
     branches:
     - master
-    max_concurrency: 1
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
@@ -140,7 +136,7 @@ periodics:
           memory: 100Mi
           cpu: 50m
 - name: orphaned-disks-cleaner
-  cron: "15 */2 * * *" # "At minute 15 past every 2nd hour"
+  cron: "15 */2 * * 1-5" # "At minute 15 past every 2nd hour from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -161,7 +157,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-clusters-cleaner
-  cron: "0 */4 * * *" # "Every four hours"
+  cron: "0 */4 * * 1-5" # "Every four hours from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -182,7 +178,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-vms-cleaner
-  cron: "30 */4 * * *" # "At minute 30 past every 4th hour"
+  cron: "30 */4 * * 1-5" # "At minute 30 past every 4th hour from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -223,3 +219,29 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
+- name: kyma-gke-nightly
+  cron: "0 8-16/3 * * 1-5" # At minute 0 past every 3rd hour from 8 through 16 on every day-of-week from Monday through Friday.
+  labels:
+    preset-slack-notifications: "true"
+    <<: *gke_job_labels_template
+  decorate: true
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - org: kyma-project
+    repo: kyma
+    path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m

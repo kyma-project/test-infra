@@ -32,6 +32,29 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 	}
 }
 
+func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-gke-integration", currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetSaGKEKymaIntegration, tester.PresetGCProjectEnv, tester.PresetBuildRelease, tester.PresetDindEnabled, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-kyma-artifacts-bucket")
+			assert.False(t, actualPresubmit.AlwaysRun)
+			assert.Len(t, actualPresubmit.Spec.Containers, 1)
+			testContainer := actualPresubmit.Spec.Containers[0]
+			assert.Equal(t, tester.ImageBootstrapHelm20181121, testContainer.Image)
+			assert.Len(t, testContainer.Command, 1)
+			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
+		})
+	}
+}
+
 func TestKymaIntegrationVMJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
@@ -90,7 +113,7 @@ func TestKymaIntegrationVMJobPostsubmit(t *testing.T) {
 	actualVM := kymaPostsubmits[0]
 	assert.Equal(t, "kyma-integration", actualVM.Name)
 	assert.Equal(t, []string{"master"}, actualVM.Branches)
-	assert.Equal(t, 1, actualVM.MaxConcurrency)
+	assert.Equal(t, 10, actualVM.MaxConcurrency)
 	assert.Equal(t, "", actualVM.RunIfChanged)
 	assert.True(t, actualVM.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualVM.PathAlias)
@@ -114,7 +137,7 @@ func TestKymaIntegrationGKEJobPostsubmit(t *testing.T) {
 	actualGKE := kymaPostsubmits[1]
 	assert.Equal(t, "kyma-gke-integration", actualGKE.Name)
 	assert.Equal(t, "", actualGKE.RunIfChanged)
-	assert.Equal(t, 1, actualGKE.MaxConcurrency)
+	assert.Equal(t, 10, actualGKE.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualGKE.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildMaster, tester.PresetDindEnabled, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 	assert.Equal(t, []string{"master"}, actualGKE.Branches)
 	assert.True(t, actualGKE.Decorate)
@@ -138,7 +161,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, disksCleanerPeriodic)
 	assert.Equal(t, expName, disksCleanerPeriodic.Name)
 	assert.True(t, disksCleanerPeriodic.Decorate)
-	assert.Equal(t, "15 */2 * * *", disksCleanerPeriodic.Cron)
+	assert.Equal(t, "15 */2 * * 1-5", disksCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, disksCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, disksCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", disksCleanerPeriodic.Spec.Containers[0].Image)
@@ -151,7 +174,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, clustersCleanerPeriodic)
 	assert.Equal(t, expName, clustersCleanerPeriodic.Name)
 	assert.True(t, clustersCleanerPeriodic.Decorate)
-	assert.Equal(t, "0 */4 * * *", clustersCleanerPeriodic.Cron)
+	assert.Equal(t, "0 */4 * * 1-5", clustersCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, clustersCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, clustersCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", clustersCleanerPeriodic.Spec.Containers[0].Image)
@@ -164,7 +187,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, vmsCleanerPeriodic)
 	assert.Equal(t, expName, vmsCleanerPeriodic.Name)
 	assert.True(t, vmsCleanerPeriodic.Decorate)
-	assert.Equal(t, "30 */4 * * *", vmsCleanerPeriodic.Cron)
+	assert.Equal(t, "30 */4 * * 1-5", vmsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, vmsCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
@@ -184,5 +207,4 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
-
 }
