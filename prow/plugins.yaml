@@ -1,6 +1,6 @@
 plugins:
   strekm:
-    - trigger // TODO only for testing
+    - trigger
   kyma-project:
     - cat
     - trigger
@@ -23,6 +23,7 @@ config_updater:
 
 triggers:
 - repos:
+  - strekm
   - kyma-project
   - kyma-incubator
   trusted_org: kyma-project
