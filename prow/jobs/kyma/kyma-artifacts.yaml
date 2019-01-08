@@ -1,5 +1,5 @@
 test_infra_ref: &test_infra_ref
-  org: jasiu001
+  org: kyma-project
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
@@ -27,15 +27,14 @@ job_labels_template: &job_labels_template
   preset-kyma-artifacts-bucket: "true"
   preset-bot-github-token: "true"
 
-# TODO only for testing purposes
 presubmits: # runs on PRs
-  jasiu001/kyma:
+  kyma-project/kyma:
   - branches:
     - release-0.6
     <<: *job_template
     always_run: false
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: changelog-generator
+      base_ref: release-0.6
     labels:
       <<: *job_labels_template

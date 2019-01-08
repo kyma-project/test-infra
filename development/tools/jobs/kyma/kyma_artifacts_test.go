@@ -13,14 +13,12 @@ func TestKymaArtifactsReleases(t *testing.T) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-artifacts.yaml")
 			require.NoError(t, err)
-			// TODO only for testing purposes
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["jasiu001/kyma"], "kyma-artifacts", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-artifacts", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.True(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			// TODO only for testing purposes
-			//tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, "preset-sa-kyma-artifacts", "preset-kyma-artifacts-bucket")
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
