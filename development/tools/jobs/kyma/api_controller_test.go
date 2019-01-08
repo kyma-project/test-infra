@@ -56,7 +56,7 @@ func TestApiControllerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-api-controller")
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-api-controller", "master")
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	require.NotNil(t, actualPostsubmit)
 

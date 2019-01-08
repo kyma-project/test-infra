@@ -35,7 +35,7 @@ func TestNamespaceControllerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-namespace-controller")
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-namespace-controller", "master")
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	require.NotNil(t, actualPostsubmit)
 

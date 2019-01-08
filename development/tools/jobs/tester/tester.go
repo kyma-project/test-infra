@@ -121,9 +121,9 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *confi
 }
 
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
-func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
+func FindPostsubmitJobByName(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name {
+		if job.Name == name && job.RunsAgainstBranch(branch) {
 			return &job
 		}
 	}
