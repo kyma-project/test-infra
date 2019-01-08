@@ -48,7 +48,7 @@ func TestBundlesJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 2)
 
 	expName := "kyma-bundles"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
@@ -75,7 +75,7 @@ func TestBundlesReleaseJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 2)
 
 	expName := "kyma-bundles-release"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
+	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
