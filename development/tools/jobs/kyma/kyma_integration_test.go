@@ -154,7 +154,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 5)
+	assert.Len(t, periodics, 6)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -207,4 +207,17 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
+
+	expName = "kyma-gke-nightly"
+	nightlyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, nightlyPeriodic)
+	assert.Equal(t, expName, nightlyPeriodic.Name)
+	assert.True(t, nightlyPeriodic.Decorate)
+	assert.Equal(t, "0 8-16/3 * * 1-5", nightlyPeriodic.Cron)
+	tester.AssertThatHasPresets(t, nightlyPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
+	tester.AssertThatHasExtraRefs(t, nightlyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc", nightlyPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, nightlyPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"}, nightlyPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, nightlyPeriodic.JobBase)
 }
