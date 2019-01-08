@@ -223,29 +223,3 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: kyma-gke-nightly
-  cron: "0 8-16/3 * * 1-5" # At minute 0 past every 3rd hour from 8 through 16 on every day-of-week from Monday through Friday.
-  labels:
-    preset-slack-notifications: "true"
-    <<: *gke_job_labels_template
-  decorate: true
-  extra_refs:
-  - <<: *test_infra_ref
-    base_ref: master
-  - org: kyma-project
-    repo: kyma
-    path_alias: github.com/kyma-project/kyma
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
