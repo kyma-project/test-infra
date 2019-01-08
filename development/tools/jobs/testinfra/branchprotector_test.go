@@ -64,10 +64,12 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
-			assert.Len(t, p.RequiredStatusChecks.Contexts, 3)
+			assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-integration")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-gke-integration")
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-installer")
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-artifacts")
 		})
 	}
 }
