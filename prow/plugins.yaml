@@ -23,7 +23,6 @@ config_updater:
 
 triggers:
 - repos:
-  - strekm
   - kyma-project
   - kyma-incubator
   trusted_org: kyma-project
