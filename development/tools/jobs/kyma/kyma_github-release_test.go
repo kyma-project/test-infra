@@ -14,9 +14,10 @@ func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-github-release.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["strekm/kyma"], "kyma-github-release", currentRelease)
+			actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-github-release", currentRelease)
 			require.NotNil(t, actualPostsubmit)
-			// tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, currentRelease)
+			assert.True(t, actualPostsubmit.Decorate)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, "preset-sa-kyma-artifacts", "preset-bot-github-token")
 			assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
 		})
