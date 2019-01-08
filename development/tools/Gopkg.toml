@@ -36,6 +36,10 @@ required = [
   branch = "master"
   name = "google.golang.org/api"
 
+[[constraint]]
+  name = "github.com/google/go-github"
+  version = "v21.0.0"
+
 # Need override because release-1.11 and kubernetes-1.11.0 are not semver compliant
 [[override]]
   name = "k8s.io/api"
