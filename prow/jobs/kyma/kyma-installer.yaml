@@ -33,7 +33,7 @@ presubmits: # runs on PRs
   - branches:
     - release-0.6
     <<: *job_template
-    always_run: true
+    always_run: false
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.6
