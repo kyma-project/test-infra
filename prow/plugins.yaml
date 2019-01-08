@@ -1,6 +1,4 @@
 plugins:
-  strekm:
-    - trigger
   kyma-project:
     - cat
     - trigger
