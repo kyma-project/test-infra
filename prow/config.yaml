@@ -171,11 +171,6 @@ presets:
         value: "#c4core-kyma-ci-force"
       - name: SLACK_CLIENT_TOKEN
         value: dummy-token
-  - labels:
-      preset-kyma-github-release-file-path: "true"
-    env:
-      - name: KYMA_RELEASE_VERSION_FILE_PATH
-        value: /home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION
 
 branch-protection:
   enforce_admins: false
