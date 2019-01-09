@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/website:
-    - name: website-tools-documentation-generator
+    - name: pre-master-website-tools-documentation-generator
       branches:
         - master
       labels:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/website:
-    - name: website-tools-documentation-generator
+    - name: post-master-website-tools-documentation-generator
       branches:
         - master
       <<: *job_template

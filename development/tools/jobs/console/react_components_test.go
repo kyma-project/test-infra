@@ -19,7 +19,7 @@ func TestReactComponentsJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "console-react-components"
+	expName := "pre-master-console-react-components"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -49,7 +49,7 @@ func TestReactComponentsJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "console-react-components"
+	expName := "post-master-console-react-components"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

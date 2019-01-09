@@ -1,6 +1,6 @@
 presubmits:
   kyma-project/test-infra:
-    - name: test-infra-validate-scripts
+    - name: pre-test-infra-validate-scripts
       run_if_changed: "/*.sh$"
       decorate: true
       skip_report: false
@@ -13,7 +13,7 @@ presubmits:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: test-infra-validate-configs
+    - name: pre-test-infra-validate-configs
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
       skip_report: false
@@ -30,7 +30,7 @@ presubmits:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: test-infra-validate-prow
+    - name: pre-master-test-infra-validate-prow
       run_if_changed: "^(development/tools|prow)" # Also for any changes in prow directory
       branches:
         - master

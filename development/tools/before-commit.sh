@@ -56,7 +56,7 @@ check_result "dep status" $?
 # GO TEST
 ##
 echo "? go test"
-go test ./...
+go test -count=1 ./...
 check_result "go test" $?
 
 goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")

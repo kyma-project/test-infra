@@ -23,7 +23,7 @@ job_template: &job_template
 
 presubmits:
   kyma-project/console:
-    - name: console-react-components
+    - name: pre-master-console-react-components
       branches:
         - master
       labels:
@@ -32,7 +32,7 @@ presubmits:
 
 postsubmits:
   kyma-project/console:
-    - name: console-react-components
+    - name: post-master-console-react-components
       branches:
         - master
       <<: *job_template

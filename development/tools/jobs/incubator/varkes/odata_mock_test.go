@@ -20,7 +20,7 @@ func TestOdataMockJobsPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
-	expName := "varkes-odata-mock"
+	expName := "pre-master-varkes-odata-mock"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -47,7 +47,7 @@ func TestOdataMockJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "varkes-odata-mock"
+	expName := "post-master-varkes-odata-mock"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 

@@ -21,7 +21,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, presubmits, 1)
 
-	expName := "test-infra-governance"
+	expName := "pre-master-test-infra-governance"
 	actualPresubmit := tester.FindPresubmitJobByName(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
