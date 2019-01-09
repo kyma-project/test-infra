@@ -170,7 +170,10 @@ presets:
       - name: SLACK_CLIENT_CHANNEL_ID
         value: "#c4core-kyma-ci-force"
       - name: SLACK_CLIENT_TOKEN
-        value: dummy-token
+        valueFrom:
+          secretKeyRef:
+            name: slack-client-token
+            key: token
 
 branch-protection:
   enforce_admins: false

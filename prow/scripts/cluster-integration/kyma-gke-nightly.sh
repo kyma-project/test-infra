@@ -37,6 +37,7 @@ function removeCluster() {
 }
 
 function createCluster() {
+	DNS_SUBDOMAIN="${COMMON_NAME}"
 	shout "Build Kyma-Installer Docker image"
 	date
 	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
@@ -174,11 +175,11 @@ init
 readonly DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
 
-shout "Delete old cluster"
-date
 OLD_CLUSTERS=$(gcloud container clusters list --filter="name~${NAME_ROOT}" --format json | jq '.[].name' | tr -d '"')
 CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
 if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
+	shout "Delete old cluster"
+	date
 	for CLUSTER in $OLD_CLUSTERS; do
 		removeCluster "${CLUSTER}"
 	done
