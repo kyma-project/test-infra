@@ -4,7 +4,6 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  name: kyma-tools-etcd-backup
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -30,7 +29,8 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - branches:
+    - name: pre-master-kyma-tools-etcd-backup
+      branches:
         - master
       <<: *job_template
       run_if_changed: "^tools/etcd-backup/"
@@ -40,7 +40,8 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - branches:
+    - name: pre-rel06-kyma-tools-etcd-backup
+      branches:
       - release-0.6
       <<: *job_template
       always_run: true
@@ -53,7 +54,8 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - branches:
+    - name: post-master-kyma-tools-etcd-backup
+      branches:
         - master
       <<: *job_template
       run_if_changed: "^tools/etcd-backup/"

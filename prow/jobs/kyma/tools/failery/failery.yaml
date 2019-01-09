@@ -23,7 +23,7 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-tools-failery
+    - name: pre-master-kyma-tools-failery
       branches:
         - master
       labels:
@@ -32,7 +32,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-tools-failery
+    - name: post-master-kyma-tools-failery
       branches:
         - master
       <<: *job_template
