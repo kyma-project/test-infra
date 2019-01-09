@@ -15,7 +15,7 @@ func TestValidateProwPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
 
-	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "pre-test-infra-validate-prow", "master")
+	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "pre-master-test-infra-validate-prow", "master")
 	require.NotNil(t, sut)
 
 	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/cmd/configuploader/main.go")
