@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/kymactl:
-    - name: kymactl
+    - name: pre-master-kymactl
       always_run: true
       branches:
         - master
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/kymactl:
-    - name: kymactl
+    - name: post-master-kymactl
       branches:
         - master
       <<: *job_template
