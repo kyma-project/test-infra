@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/community:
-    - name: community-governance
+    - name: pre-master-community-governance
       decorate: true
       max_concurrency: 10
       branches:
