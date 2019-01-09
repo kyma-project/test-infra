@@ -15,7 +15,6 @@ cleanup() {
 
 RANDOM_ID=$(openssl rand -hex 4)
 DATE=$(date +v%Y%m%d)
-ZONE=$(openssl rand -hex 4)
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
@@ -24,7 +23,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "kyma-deps-image-vm-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --machine-type n1-standard-4 \
-        --image debian-9-stretch-v20181011 \
+        --image-family debian-9 \
         --image-project debian-cloud \
         --zone "${ZONE}" \
         --boot-disk-size 20 &&\
