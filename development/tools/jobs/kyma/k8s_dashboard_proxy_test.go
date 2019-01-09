@@ -14,7 +14,7 @@ func TestK8SDashboardProxyReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-k8s-dashboard-proxy", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-k8s-dashboard-proxy", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -32,7 +32,7 @@ func TestK8SDashboardProxyJobsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml")
 	// THEN
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-k8s-dashboard-proxy", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-k8s-dashboard-proxy", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -59,7 +59,7 @@ func TestK8SDashboardProxyJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-components-k8s-dashboard-proxy"
+	expName := "post-master-kyma-components-k8s-dashboard-proxy"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 

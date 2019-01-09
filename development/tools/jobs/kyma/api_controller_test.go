@@ -15,7 +15,7 @@ func TestApiControllerReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/api-controller/api-controller.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-api-controller", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-api-controller", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -34,7 +34,7 @@ func TestApiControllerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-api-controller", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-api-controller", "master")
 	assert.Len(t, jobConfig.Presubmits, 1)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -56,7 +56,7 @@ func TestApiControllerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-api-controller", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-components-api-controller", "master")
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	require.NotNil(t, actualPostsubmit)
 

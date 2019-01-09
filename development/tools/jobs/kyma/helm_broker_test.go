@@ -14,7 +14,7 @@ func TestHelmBrokerReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/helm-broker/helm-broker.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-helm-broker", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-helm-broker", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -33,7 +33,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-helm-broker", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-helm-broker", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -57,7 +57,7 @@ func TestHelmBrokerJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-components-helm-broker"
+	expName := "post-master-kyma-components-helm-broker"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 

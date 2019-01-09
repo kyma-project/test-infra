@@ -15,7 +15,7 @@ func TestUiApiLayerJobReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/ui-api-layer/ui-api-layer.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-ui-api-layer", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-ui-api-layer", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -34,7 +34,7 @@ func TestUiApiLayerJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "kyma-components-ui-api-layer"
+	expName := "pre-master-kyma-components-ui-api-layer"
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -64,7 +64,7 @@ func TestUiApiLayerJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "kyma-components-ui-api-layer"
+	expName := "post-master-kyma-components-ui-api-layer"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

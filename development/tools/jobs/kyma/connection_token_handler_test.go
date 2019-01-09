@@ -15,7 +15,7 @@ func TestConnectionTokenHandlerReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/connection-token-handler/connection-token-handler.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-connection-token-handler", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-connection-token-handler", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -33,7 +33,7 @@ func TestConnectionTokenHandlerJobsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/connection-token-handler/connection-token-handler.yaml")
 	// THEN
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-connection-token-handler", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-connection-token-handler", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -60,7 +60,7 @@ func TestConnectionTokenHandlerJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-components-connection-token-handler"
+	expName := "post-master-kyma-components-connection-token-handler"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 

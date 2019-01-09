@@ -14,7 +14,7 @@ func TestNamespaceControllerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-namespace-controller", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-namespace-controller", "master")
 	assert.Len(t, jobConfig.Presubmits, 1)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -35,7 +35,7 @@ func TestNamespaceControllerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-namespace-controller", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-components-namespace-controller", "master")
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	require.NotNil(t, actualPostsubmit)
 
@@ -58,7 +58,7 @@ func TestNamespaceControllerReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/namespace-controller/namespace-controller.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-namespace-controller", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-namespace-controller", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)

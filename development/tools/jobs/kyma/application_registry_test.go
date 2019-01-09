@@ -15,7 +15,7 @@ func TestApplicationRegistryReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-registry/application-registry.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-application-registry", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-application-registry", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -33,7 +33,7 @@ func TestApplicationRegistryJobsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-registry/application-registry.yaml")
 	// THEN
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-application-registry", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-application-registry", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -60,7 +60,7 @@ func TestApplicationRegistryJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]
-	expName := "kyma-components-application-registry"
+	expName := "post-master-kyma-components-application-registry"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 
