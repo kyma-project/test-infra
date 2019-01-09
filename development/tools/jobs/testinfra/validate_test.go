@@ -15,7 +15,7 @@ func TestValidateProwPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
 
-	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "test-infra-validate-prow", "master")
+	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "pre-test-infra-validate-prow", "master")
 	require.NotNil(t, sut)
 
 	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/cmd/configuploader/main.go")
@@ -41,7 +41,7 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
 
-	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "test-infra-validate-configs", "master")
+	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "pre-test-infra-validate-configs", "master")
 	require.NotNil(t, sut)
 
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/config.yaml")
@@ -69,7 +69,7 @@ func TestValidateScriptsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
 
-	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "test-infra-validate-scripts", "master")
+	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "pre-test-infra-validate-scripts", "master")
 	require.NotNil(t, sut)
 
 	tester.AssertThatJobRunIfChanged(t, *sut, "ala.sh")
