@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/website:
-    - name: website
+    - name: pre-master-website
       branches:
         - master
       always_run: true 
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/website:
-    - name: website
+    - name: post-master-website
       branches:
         - master
       <<: *job_template
