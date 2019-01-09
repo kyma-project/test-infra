@@ -19,7 +19,7 @@ func TestBundlesJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "kyma-bundles"
+	expName := "pre-master-kyma-bundles"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -47,7 +47,7 @@ func TestBundlesJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 2)
 
-	expName := "kyma-bundles"
+	expName := "post-master-kyma-bundles"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -74,7 +74,7 @@ func TestBundlesReleaseJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 2)
 
-	expName := "kyma-bundles-release"
+	expName := "post-rel-kyma-bundles"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "1.2.3")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
