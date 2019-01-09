@@ -57,7 +57,6 @@ func TestETCDBackupJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-
 	expName := "post-master-kyma-tools-etcd-backup"
 	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], expName, "master")
 	require.NotNil(t, actualPost)
