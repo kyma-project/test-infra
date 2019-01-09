@@ -14,7 +14,7 @@ func TestXipPatchReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/xip-patch/xip-patch.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-xip-patch", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-components-xip-patch", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -33,7 +33,7 @@ func TestXipPatchJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-components-xip-patch", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-xip-patch", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Len(t, jobConfig.Presubmits, 1)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -54,7 +54,7 @@ func TestXipPatchJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "kyma-components-xip-patch", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-components-xip-patch", "master")
 	require.NotNil(t, actualPostsubmit)
 	assert.Len(t, jobConfig.Postsubmits, 1)
 

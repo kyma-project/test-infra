@@ -15,7 +15,7 @@ func TestDocsJobReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/docs/docs.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-docs", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-docs", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -34,7 +34,7 @@ func TestDocsJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "kyma-docs"
+	expName := "pre-master-kyma-docs"
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -65,7 +65,7 @@ func TestDocsJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "kyma-docs"
+	expName := "post-master-kyma-docs"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

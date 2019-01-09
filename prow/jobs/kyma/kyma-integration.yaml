@@ -10,7 +10,6 @@ kyma_ref: &kyma_ref
   path_alias: github.com/kyma-project/kyma
 
 vm_job_template: &vm_job_template
-  name: kyma-integration
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -30,7 +29,6 @@ vm_job_labels_template: &vm_job_labels_template
   preset-gc-project-env: "true"
 
 gke_job_template: &gke_job_template
-  name: kyma-gke-integration
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -60,7 +58,8 @@ gke_job_labels_template: &gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - branches:
+  - name: pre-master-kyma-integration
+    branches:
     - master
     <<: *vm_job_template
     run_if_changed: "^(resources|installation)"
@@ -69,7 +68,8 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  - branches:
+  - name: pre-rel06-kyma-integration
+    branches:
     - release-0.6
     always_run: false
     <<: *vm_job_template
@@ -79,7 +79,8 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-0.6
 
-  - branches:
+  - name: pre-master-kyma-gke-integration
+    branches:
     - master
     <<: *gke_job_template
     run_if_changed: "^(resources|installation)"
@@ -90,7 +91,8 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - branches:
+  - name: pre-rel06-kyma-gke-integration
+    branches:
     - release-0.6
     <<: *gke_job_template
     always_run: false
@@ -106,7 +108,8 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-  - <<: *vm_job_template
+  - name: post-master-kyma-integration
+    <<: *vm_job_template
     branches:
     - master
     labels:
@@ -115,7 +118,8 @@ postsubmits:
     - <<: *test_infra_ref
       base_ref: master
 
-  - <<: *gke_job_template
+  - name: post-master-kyma-gke-integration
+    <<: *gke_job_template
     branches:
     - master
     labels:

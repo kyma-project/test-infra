@@ -30,7 +30,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/varkes:
-    - name: varkes-odata-mock
+    - name: pre-master-varkes-odata-mock
       branches:
         - master
       <<: *job_template
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/varkes:
-    - name: varkes-odata-mock
+    - name: post-master-varkes-odata-mock
       branches:
         - master
       <<: *job_template

@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/bundles:
-    - name: bundles-governance
+    - name: pre-master-bundles-governance
       decorate: true
       max_concurrency: 10
       branches:

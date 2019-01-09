@@ -197,10 +197,10 @@ branch-protection:
               protect: true
               required_status_checks:
                 contexts:
-                  - kyma-integration
-                  - kyma-gke-integration
-                  - kyma-artifacts
-                  - kyma-installer
+                  - pre-rel06-kyma-integration
+                  - pre-rel06-kyma-gke-integration
+                  - pre-rel06-kyma-artifacts
+                  - pre-rel06-kyma-installer
         website:
           branches:
             master:

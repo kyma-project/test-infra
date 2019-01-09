@@ -14,7 +14,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-integration", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-integration", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -38,7 +38,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-gke-integration", currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-rel06-kyma-gke-integration", currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -61,9 +61,8 @@ func TestKymaIntegrationVMJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualVM := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-integration", "master")
+	actualVM := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-integration", "master")
 	require.NotNil(t, actualVM)
-	assert.Equal(t, "kyma-integration", actualVM.Name)
 	assert.Equal(t, "^(resources|installation)", actualVM.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualVM, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualVM, "installation/file.yaml")
@@ -84,9 +83,8 @@ func TestKymaIntegrationGKEJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualGKE := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "kyma-gke-integration", "master")
+	actualGKE := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration", "master")
 	require.NotNil(t, actualGKE)
-	assert.Equal(t, "kyma-gke-integration", actualGKE.Name)
 	assert.Equal(t, "^(resources|installation)", actualGKE.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualGKE, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualGKE, "installation/file.yaml")
@@ -111,7 +109,7 @@ func TestKymaIntegrationVMJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPostsubmits, 2)
 
 	actualVM := kymaPostsubmits[0]
-	assert.Equal(t, "kyma-integration", actualVM.Name)
+	assert.Equal(t, "post-master-kyma-integration", actualVM.Name)
 	assert.Equal(t, []string{"master"}, actualVM.Branches)
 	assert.Equal(t, 10, actualVM.MaxConcurrency)
 	assert.Equal(t, "", actualVM.RunIfChanged)
@@ -135,7 +133,7 @@ func TestKymaIntegrationGKEJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPostsubmits, 2)
 
 	actualGKE := kymaPostsubmits[1]
-	assert.Equal(t, "kyma-gke-integration", actualGKE.Name)
+	assert.Equal(t, "post-master-kyma-gke-integration", actualGKE.Name)
 	assert.Equal(t, "", actualGKE.RunIfChanged)
 	assert.Equal(t, 10, actualGKE.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualGKE.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildMaster, tester.PresetDindEnabled, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")

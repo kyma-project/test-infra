@@ -30,7 +30,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-tools-docsbuilder
+    - name: pre-master-kyma-tools-docsbuilder
       branches:
         - master
       labels:
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-tools-docsbuilder
+    - name: post-master-kyma-tools-docsbuilder
       branches:
         - master
       <<: *job_template

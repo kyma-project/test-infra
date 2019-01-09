@@ -19,7 +19,7 @@ func TestDocsBuilderJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "kyma-tools-docsbuilder"
+	expName := "pre-master-kyma-tools-docsbuilder"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -49,7 +49,7 @@ func TestDocsBuilderJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "kyma-tools-docsbuilder"
+	expName := "post-master-kyma-tools-docsbuilder"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

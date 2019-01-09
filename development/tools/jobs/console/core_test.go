@@ -19,7 +19,7 @@ func TestCoreJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	expName := "console-core"
+	expName := "pre-master-console-core"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -49,7 +49,7 @@ func TestCoreJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "console-core"
+	expName := "post-master-console-core"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

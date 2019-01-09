@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/website:
-    - name: website-governance
+    - name: pre-master-website-governance
       decorate: true
       max_concurrency: 10
       branches:

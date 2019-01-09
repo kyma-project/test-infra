@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGovernanceJobPresubmit(t *testing.T) {
+func TestBundlesGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/bundles/bundles-governance.yaml")
 	// THEN
@@ -21,7 +21,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, presubmits, 1)
 
-	expName := "bundles-governance"
+	expName := "pre-master-bundles-governance"
 	actualPresubmit := tester.FindPresubmitJobByName(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -40,7 +40,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"--repository", "bundles"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestGovernanceJobPeriodic(t *testing.T) {
+func TestBundlesGovernanceJobPeriodic(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/bundles/bundles-governance.yaml")
 	// THEN

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/ghodss/yaml"
@@ -66,12 +67,21 @@ func TestBranchProtectionRelease(t *testing.T) {
 			require.NotNil(t, p.RequiredStatusChecks)
 			assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-integration")
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-gke-integration")
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-installer")
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, "kyma-artifacts")
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 		})
 	}
+}
+
+// status check prefix uses shorten version of release branch, because of that we need to generate the name
+func generateStatusCheck(commonJobName, releaseBranch string) string {
+	rel := strings.Replace(releaseBranch, "release", "rel", -1)
+	rel = strings.Replace(rel, ".", "", -1)
+	rel = strings.Replace(rel, "-", "", -1)
+	return "pre-" + rel + "-" + commonJobName
+
 }
 
 func readConfig(t *testing.T) config.Config {
