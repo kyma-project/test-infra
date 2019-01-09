@@ -3,8 +3,8 @@
 set -o errexit
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
 readonly ROOT_DIR=${CURRENT_DIR}/../../
+# shellcheck disable=SC1090
 source "${ROOT_DIR}/prow/scripts/library.sh"
 
 cleanup() {   
