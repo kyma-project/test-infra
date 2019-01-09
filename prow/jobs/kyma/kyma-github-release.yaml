@@ -4,7 +4,6 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  name: kyma-github-release
   skip_report: false
   decorate: true
   max_concurrency: 1
@@ -29,7 +28,8 @@ job_labels_template: &job_labels_template
 
 postsubmits: 
   kyma-project/kyma: 
-  - branches:
+  - name: post-rel06-kyma-github-release
+    branches:
     - release-0.6
     <<: *job_template
     extra_refs:
