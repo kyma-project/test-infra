@@ -8,7 +8,7 @@ The purpose of this document is to define how to create a new Google Compute Eng
 The script performs the following steps:
 
 1. Provision a new VM under the VM instance in the Google Compute Engine.
-   The new VM instance is named according to the **kyma-deps-image-vm-{RANDOM_ID}** pattern and and will be created in a random **zone** in Europe.
+   The new VM instance is named according to the **kyma-deps-image-vm-{RANDOM_ID}** pattern and created in a random **zone** in Europe.
 
 2. Move the [`install-deps-debian.sh`](./install-deps-debian.sh) script to the newly provisioned VM and execute it.
 
