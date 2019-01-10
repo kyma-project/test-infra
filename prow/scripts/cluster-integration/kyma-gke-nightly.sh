@@ -20,12 +20,12 @@ function removeCluster() {
 	# Set +e for testing purposes. This should be deleted only we move to daily schedule
 	set +e
 
-	COMMON_NAME=$1
-	TIMESTAMP=$(echo "${COMMON_NAME}" | cut -d '-' -f 3)
+	export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+	TIMESTAMP=$(echo "$1" | cut -d '-' -f 3)
 	EXIT_STATUS=$?
 
 	shout "Delete cluster $CLUSTER_NAME"
-	CLUSTER_NAME=${COMMON_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+	CLUSTER_NAME=$1 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
