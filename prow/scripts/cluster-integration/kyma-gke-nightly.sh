@@ -193,6 +193,12 @@ function installStabilityChecker() {
 	        --name=stability-checker
 }
 
+function notifySlackNow() {
+	curl -H 'Content-type: application/json' \
+		--data '{"text": "$2", "channel": "$1"}' \
+		"${SLACK_CLIENT_WEBHOOK_URL}?token=${SLACK_CLIENT_TOKEN}"
+}
+
 readonly REPO_OWNER="kyma-project"
 export REPO_OWNER
 readonly REPO_NAME="kyma"
