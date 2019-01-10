@@ -15,6 +15,9 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function removeCluster() {
+	# Set +e for testing purposes. This should be deleted only we move to daily schedule
+	set +e
+	
 	COMMON_NAME=$1
 	TIMESTAMP=$(echo "${COMMON_NAME}" | cut -d '-' -f 3)
 	EXIT_STATUS=$?
@@ -37,6 +40,10 @@ function removeCluster() {
 }
 
 function createCluster() {
+	# Set +e for testing purposes. This should be deleted only we move to daily schedule
+	set +e
+
+	DNS_SUBDOMAIN="${COMMON_NAME}"
 	shout "Build Kyma-Installer Docker image"
 	date
 	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
@@ -46,22 +53,26 @@ function createCluster() {
 	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+	export CLEANUP_GATEWAY_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Ingressgateway IP"
 	date
 	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
+	export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 	shout "Reserve IP Address for Remote Environments"
 	date
 	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
 	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
 	echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
+	export CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Remote Environments IP"
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
+	export CLEANUP_REMOTEENVS_DNS_RECORD="true"
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
@@ -72,7 +83,7 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-
+	export CLEANUP_CLUSTER="true"
 	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/provision-gke-cluster.sh
 }
 
@@ -174,11 +185,11 @@ init
 readonly DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
 
-shout "Delete old cluster"
-date
 OLD_CLUSTERS=$(gcloud container clusters list --filter="name~${NAME_ROOT}" --format json | jq '.[].name' | tr -d '"')
 CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
 if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
+	shout "Delete old cluster"
+	date
 	for CLUSTER in $OLD_CLUSTERS; do
 		removeCluster "${CLUSTER}"
 	done
