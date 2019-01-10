@@ -17,7 +17,7 @@ fi
 function removeCluster() {
 	# Set +e for testing purposes. This should be deleted only we move to daily schedule
 	set +e
-	
+
 	COMMON_NAME=$1
 	TIMESTAMP=$(echo "${COMMON_NAME}" | cut -d '-' -f 3)
 	EXIT_STATUS=$?
@@ -28,6 +28,41 @@ function removeCluster() {
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 	# ToDo Add deletion of IP/DNS
+    shout "Delete Gateway DNS Record"
+    date
+    GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
+    GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.build.kyma-project.io."
+    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Release Gateway IP Address"
+    date
+    GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
+    IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Delete Remote Environments DNS Record"
+    date
+    REMOTEENVS_IP_ADDRESS=$(gcloud compute addresses describe "remoteenvs-${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
+    DNS_FULL_NAME="gateway.${CLUSTER_NAME}.build.kyma-project.io."
+    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Release Remote Environments IP Address"
+    date
+    REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${CLUSTER_NAME}"
+    IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Delete temporary Kyma-Installer Docker image"
+    date
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${TIMESTAMP}" "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
 	TMP_STATUS=$?
@@ -53,26 +88,22 @@ function createCluster() {
 	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
-	export CLEANUP_GATEWAY_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Ingressgateway IP"
 	date
 	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
-	export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 	shout "Reserve IP Address for Remote Environments"
 	date
 	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
 	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
 	echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-	export CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Remote Environments IP"
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
-	export CLEANUP_REMOTEENVS_DNS_RECORD="true"
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
@@ -83,11 +114,23 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	export CLEANUP_CLUSTER="true"
 	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/provision-gke-cluster.sh
 }
 
 function installKyma() {
+
+	kymaUnsetVar=false
+
+	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS ; do
+    	if [ -z "${!var}" ] ; then
+        	echo "ERROR: $var is not set"
+        	kymaUnsetVar=true
+    	fi
+	done
+	if [ "${kymaUnsetVar}" = true ] ; then
+    	exit 1
+	fi
+
 	DNS_SUBDOMAIN="${COMMON_NAME}"
 	
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
@@ -145,6 +188,7 @@ function installStabilityChecker() {
 		"${SC_DIR}/deploy/chart/stability-checker" \
 		--namespace=kyma-system \
 		--name=stability-checker
+
 }
 
 readonly REPO_OWNER="kyma-project"
