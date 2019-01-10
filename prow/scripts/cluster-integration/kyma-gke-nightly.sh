@@ -18,7 +18,7 @@ function removeCluster() {
 	COMMON_NAME=$1
 	TIMESTAMP=$(echo "${COMMON_NAME}" | cut -d '-' -f 3)
 	EXIT_STATUS=$?
-
+	set +e
 	shout "Delete cluster $CLUSTER_NAME"
 	CLUSTER_NAME=${COMMON_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
@@ -41,7 +41,7 @@ function createCluster() {
 	shout "Build Kyma-Installer Docker image"
 	date
 	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
-
+	set +e
 	shout "Reserve IP Address for Ingressgateway"
 	date
 	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
