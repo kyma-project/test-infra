@@ -13,7 +13,6 @@ prometheus-operator:
         - channel: {SLACK_CHANNEL}
           send_resolved: true
           api_url: {SLACK_URL}
-          title: "{{ .CommonAnnotations.description }}"
           text: "<!channel> \nDescription: {{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
       route:
         group_by:
