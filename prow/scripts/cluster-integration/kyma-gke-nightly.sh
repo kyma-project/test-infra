@@ -136,15 +136,16 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
-	helm install --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
-		--set slackClientChannelId="${SLACK_CLIENT_CHANNEL_ID}" \
-		--set slackClientToken="${SLACK_CLIENT_TOKEN}" \
-		--set stats.enabled="${STATS_ENABLED}" \
-		--set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
-		--set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
-		"${SC_DIR}/deploy/chart/stability-checker" \
-		--namespace=kyma-system \
-		--name=stability-checker
+	helm install --set clusterName="Nightly" \
+	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
+	        --set slackClientChannelId="${SLACK_CLIENT_CHANNEL_ID}" \
+	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
+	        --set stats.enabled="${STATS_ENABLED}" \
+	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
+	        --set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
+	        "${SC_DIR}/deploy/chart/stability-checker" \
+	        --namespace=kyma-system \
+	        --name=stability-checker
 }
 
 readonly REPO_OWNER="kyma-project"
