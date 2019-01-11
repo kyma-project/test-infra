@@ -77,7 +77,7 @@ are dependencies between jobs. See diagram: ![](./assets/kyma-rel-jobs.svg)
 
 5. Let assume a situation that problem appears and integration test failed or manual test detected any problems.
 Then you need to wait for the fix (fixed on PR or cherry picked to the PR). Then all jobs will be triggered one more time
-and you need to return to point 2.
+and you need to return to point 6.
 
 9. After all checks passed merge PR.
 
