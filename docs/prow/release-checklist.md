@@ -10,6 +10,8 @@ This part applies only for new major and minor versions.
 1. Define release jobs in test-infra repository
  - for every component
  - for every tool
+ - for every test
+ - kyma-docs
  - kyma-integration
  - kyma-gke-integration
  - kyma-artifacts
@@ -18,8 +20,12 @@ This part applies only for new major and minor versions.
 To see all release jobs for release 0.6, look for job names with prefix: `pre-rel06`.
 Every job name has to have unique name, so remember about prefixing it with `pre-rel<XY>`
 
-2. Ensure that tests for jobs exist
-3. Define branch protection rules for the release branch.
+2. Ensure that tests for jobs exist. 
+To do that, update function `GetAllKymaReleaseBranches()`
+  defined in `development/tools/jobs/tester/tester.go` file from
+`test-infra` repository.
+
+3. Define branch protection rules for the release branch in `prow/config.yaml` file.
 For release-0.6 definition was following:
 ```
 release-0.6:
@@ -40,6 +46,8 @@ This part applies only for new major and minor versions.
 The name of this branch should follow the `release-x.y` pattern, such as `release-0.6`.
 
 2. Ensure that `RELEASE_VERSION` file contains version to be created.
+File should contains version if format `<A>.<B>.<C>` or `<A>.<B>.<C>-rc<D>` where `A`,`B`, `C` and `D` are numbers.
+If you define release candidate version, pre-release will be created.
 
 3. Create a release branch in the `kyma` repository. Do it only for a new release, not for a bugfix release.
 The name of this branch should follow the `release-x.y` pattern, such as `release-0.6`.
@@ -63,12 +71,13 @@ Every component image is published with a version defined in the `RELEASE_VERSIO
 
 5. In case of a temporary failure of any job, you can retrigger it by adding a comment:
 ```
-test <job_name>
+/test <job_name>
 ```
 
 6. Wait until all components for jobs or tools will be finished. 
 `kyma-integration`, `kyma-gke-integration`, `kyma-artifacts` and `kyma-installer` needs to be executed manually, because there
-are dependencies between jobs. See diagram: ![](./assets/kyma-rel-jobs.svg)
+are dependencies between jobs. See diagram: 
+![](./assets/kyma-rel-jobs.svg)
 
 7.  Execute `kyma-integration` by adding comment on PR:
 `/test pre-rel06-kyma-integration`
