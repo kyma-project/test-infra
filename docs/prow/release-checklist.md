@@ -21,8 +21,9 @@ To see all release jobs for release 0.6, look for job names with prefix: `pre-re
 Every job name has to have unique name, so remember about prefixing it with `pre-rel<XY>`.
 Prow reads job configuration from master branch of test-infra repository, so release jobs should also be defined on master branch.
 
-2. Ensure that tests for jobs exist. 
-To do that, update function `GetAllKymaReleaseBranches()`
+2. Ensure that tests for release jobs exist. Release tests usually iterates through all release versions and run tests for them.
+See test `TestBucReleases` defined in `development/tools/jobs/kyma/binding_usage_controller_test.go` as a reference.
+To add tests for all jobs for the new release just update function `GetAllKymaReleaseBranches()`
   defined in `development/tools/jobs/tester/tester.go` file from
 `test-infra` repository.
 
