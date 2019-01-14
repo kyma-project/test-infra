@@ -16,6 +16,7 @@ This part applies only for new major and minor versions.
  - kyma-gke-integration
  - kyma-artifacts
  - kyma-installer
+ 
 To see all release jobs for release 0.6, look for job names with prefix: `pre-rel06`.
 Every job name has to have a unique name, so remember about prefixing it with `pre-rel<XY>`.
 Prow reads job configuration from the `master` branch of the `test-infra` repository, so release jobs should also be defined on the `master` branch.
@@ -80,6 +81,7 @@ Every component image is published with a version defined in the `RELEASE_VERSIO
 6. Wait until all components for jobs or tools will be finished. 
 `kyma-integration`, `kyma-gke-integration`, `kyma-artifacts` and `kyma-installer` needs to be executed manually because there
 are dependencies between jobs. See diagram: 
+
 ![](./assets/kyma-rel-jobs.svg)
 
 7.  Execute `kyma-integration` by adding comment on PR:
