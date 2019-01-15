@@ -129,7 +129,7 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_upgradeability_job_template
-    always_run: false
+    run_if_changed: "^(resources|installation)"
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"

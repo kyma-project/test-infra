@@ -244,7 +244,7 @@ date
 
 echo "Use last released artifacts - pre releases are omitted"
 LAST_RELEASE_VERSION=$(curl --silent "https://api.github.com/repos/kyma-project/kyma/releases/latest?access_token=${BOT_GITHUB_TOKEN}" | jq -r .tag_name)
-curl -L --silent https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-local.yaml --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
+curl -L --silent "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-local.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
 sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
     | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
     | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
