@@ -22,9 +22,8 @@ Define the release jobs on the `master` branch since Prow reads the job configur
 
 2. Ensure that tests for release jobs exist. Release tests usually iterate through all release versions and run tests for them.
 See the `TestBucReleases` test defined in `development/tools/jobs/kyma/binding_usage_controller_test.go` as a reference.
-To add tests for all jobs for the new release, update the `GetAllKymaReleaseBranches()` function
-  defined in the `development/tools/jobs/tester/tester.go` file under
-the `test-infra` repository.
+To add tests for all jobs for the new release, update the `GetAllKymaReleaseBranches()` function 
+defined in the `development/tools/jobs/tester/tester.go` file under the `test-infra` repository.
 
 3. Define branch protection rules for the release branch in the `prow/config.yaml` file.
 For example, see the release-0.6 definition:
@@ -79,27 +78,27 @@ Every component image is published with a version defined in the `RELEASE_VERSIO
 /test {job_name}
 ```
 
-6.  Wait until all jobs for components and tools finish. 
+6. Wait until all jobs for components and tools finish. 
 `kyma-integration`, `kyma-gke-integration`, `kyma-artifacts`, and `kyma-installer` needs to be executed manually because there
 are dependencies between these jobs. See the diagram for details: 
 
 ![](./assets/kyma-rel-jobs.svg)
 
-7.  Execute `kyma-integration` by adding comment on PR:
+7. Execute `kyma-integration` by adding comment on PR:
 `/test pre-rel06-kyma-integration`
 
 8. Execute `kyma-installer`, `kyma-artifacts`, and `kyma-gke-integration` one after another. 
 You don't have to wait until `pre-rel06-kyma-integration` job finishes.
 
-5.  If you detect any problems with the release, such as failing tests, wait for the fix that can be delivered either on a PR or cherry-picked to the PR from the `master` branch.  
+9. If you detect any problems with the release, such as failing tests, wait for the fix that can be delivered either on a PR or cherry-picked to the PR from the `master` branch.  
 Prow triggers the jobs again. Return to point 6 to rerun manual jobs.
 
-9. After all checks pass, merge the PR.
+10. After all checks pass, merge the PR.
 
-10. Merging the PR to the release branch executes the postsubmit job that creates a Github release.
+11. Merging the PR to the release branch executes the postsubmit job that creates a Github release.
 Validate the `yaml` and changelog files generated under [releases](https://github.com/kyma-project/kyma/releases).
 Update the release content manually with the instruction on how to install the latest Kyma release.
 
-11. Update `RELEASE_VERSION` to the next version both on the `master` and release branch. Do it immediately after the release, otherwise any PR to a release branch done by 
+12. Update `RELEASE_VERSION` to the next version both on the `master` and release branch. Do it immediately after the release, otherwise any PR to a release branch done by 
 a Kyma developer overrides the previously published Docker images.  
  
