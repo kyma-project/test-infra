@@ -18,4 +18,4 @@ Read the documents to learn how to:
 Read also:
 
  - [Prow architecture](./prow-architecture.md) and its set up in the Kyma project.
- - [Release checklist](./release-checklist.md) that guides through release process.
+ - [Release process](./release-process.md) that guides you through the release process.
