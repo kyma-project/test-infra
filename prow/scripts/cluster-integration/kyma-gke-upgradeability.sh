@@ -33,12 +33,12 @@ set -o errexit
 discoverUnsetVar=false
 
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
-    if [ -z "${!var}" ] ; then
+    if [[ -z "${!var}" ]] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
     fi
 done
-if [ "${discoverUnsetVar}" = true ] ; then
+if [[ "${discoverUnsetVar}" = true ]] ; then
     exit 1
 fi
 
@@ -55,15 +55,16 @@ cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    if [[ "${ERROR_LOGGING_GUARD}" = "true" ]]; then
         shout "AN ERROR OCCURED! Take a look at preceding log entries."
         echo
     fi
 
+    kubectl get pod --all-namespaces
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
+    if [[ -n "${CLEANUP_CLUSTER}" ]]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
 
@@ -84,7 +85,7 @@ cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+    if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
         shout "Delete Gateway DNS Record"
         date
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
@@ -92,7 +93,7 @@ cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+    if [[ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]]; then
         shout "Release Gateway IP Address"
         date
         IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
@@ -100,7 +101,7 @@ cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
+    if [[ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]]; then
         shout "Delete Remote Environments DNS Record"
         date
         IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
@@ -231,7 +232,6 @@ CLEANUP_CLUSTER="true"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 shout "Install Tiller"
@@ -239,12 +239,21 @@ date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
-shout "Apply Kyma config from latest release"
+shout "Apply Kyma config from latest release - pre releases are omitted"
 date
 
-echo "Use last released artifacts - pre releases are omitted"
-LAST_RELEASE_VERSION=$(curl --silent "https://api.github.com/repos/kyma-project/kyma/releases/latest?access_token=${BOT_GITHUB_TOKEN}" | jq -r .tag_name)
-curl -L --silent "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-local.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
+mkdir -p /tmp/kyma-gke-upgradeability
+
+function getLastReleaseVersion() {
+    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" \
+     | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+
+    echo ${version}
+}
+
+LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+echo "Use released artifacts from version ${LAST_RELEASE_VERSION}"
+curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
 sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
     | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
     | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
@@ -259,52 +268,38 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
-#echo "Delete yamls"
-## TODO
-#
-#
-#echo "BUILD INSTALLER IMAGE"
-## TODO
-#
-#echo "APPLY YAMLS"
+echo "Delete the kyma-installation CR"
+# Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
+# More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
+kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+kubectl delete Installation -n default kyma-installation
 
-echo "Apply new Kyma config"
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-integration/downloaded-config.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-upgrade-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-upgrade-cluster.yaml
 
-     sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-integration/downloaded-config.yaml \
-        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
+    kubectl apply -f /tmp/kyma-gke-integration/new-release-upgrade-cluster.yaml
 else
-    shout "Build Kyma-Installer Docker image"
-#     use the KYMA_INSTALLER_IMAGE defined on top
+    shout "Build Kyma Installer Docker image"
+    # use the KYMA_INSTALLER_IMAGE defined on top
     date
     "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
     CLEANUP_DOCKER_IMAGE="true"
 
-    echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+    shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-    | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-    | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-    | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
+
+    kubectl get deploy/kyma-installer -n kyma-installer -o yaml
 fi
+
 shout "Trigger update"
 date
 kubectl label installation/kyma-installation action=install
-"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 10m
 
 shout "Test Kyma"
 date
