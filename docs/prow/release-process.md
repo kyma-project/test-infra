@@ -88,17 +88,18 @@ are dependencies between these jobs. See the diagram for details:
 7.  Execute `kyma-integration` by adding comment on PR:
 `/test pre-rel06-kyma-integration`
 
-8. Execute one after the other `kyma-installer`, `kyma-artifacts` and `kyma-gke-integration` jobs. 
-You don't have to wait until `pre-rel06-kyma-integration` job will be finished.
+8. Execute `kyma-installer`, `kyma-artifacts`, and `kyma-gke-integration` one after another. 
+You don't have to wait until `pre-rel06-kyma-integration` job finishes.
 
-5. In case of  detecting problems with a release, for example failing tests, you need to wait for the fix (fixed on PR or cherry picked to the PR). 
-Then all jobs will be triggered one more time and you need to return to point 6.
+5.  If you detect any problems with the release, such as failing tests, wait for the fix that can be delivered either on a PR or cherry-picked to the PR from the `master` branch.  
+Prow triggers the jobs again. Return to point 6 to rerun manual jobs.
 
-9. After all checks pass, merge PR.
+9. After all checks pass, merge the PR.
 
-10. Merge to the release branch, executes Postsubmit job that creates a Github release.
-Validate generated `yamls` and changelog files: https://github.com/kyma-project/kyma/releases
-Update manually release content with instruction how to install released Kyma.
+10. Merging the PR to the release branch executes the postsubmit job that creates a Github release.
+Validate the `yaml` and changelog files generated under [releases](https://github.com/kyma-project/kyma/releases).
+Update the release content manually with the instruction on how to install the latest Kyma release.
 
-11. Update `RELEASE_VERSION` to next version immediately after the release, both on master and release branch. If not, any PR to a release branch done by 
-Kyma developer overrides previously published Docker images.  
+11. Update `RELEASE_VERSION` to the next version both on the `master` and release branch. Do it immediately after the release, otherwise any PR to a release branch done by 
+a Kyma developer overrides the previously published Docker images.  
+ 
