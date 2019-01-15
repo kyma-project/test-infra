@@ -47,7 +47,7 @@ This point only applies to new major and minor versions.
 The name of this branch should follow the `release-x.y` pattern, such as `release-0.6`.
 
 2. Ensure that the `prow/RELEASE_VERSION` file from the `test-infra` repository on a release branch contains the correct version to be created.
-The file should contain a release version following `{A}.{B}.{C}` or `{A}.{B}.{C}-rc{D}` format, where `A`,`B`, `C`, and `D` are numbers.
+The file should contain a release version following the `{A}.{B}.{C}` or `{A}.{B}.{C}-rc{D}` format, where `A`,`B`, `C`, and `D` are numbers.
 If you define a release candidate version, a pre-release is created.
 
 3. Create a release branch in the `kyma` repository. Do it only for a new release, not for a bugfix release.
@@ -79,13 +79,12 @@ Every component image is published with a version defined in the `RELEASE_VERSIO
 ```
 
 6. Wait until all jobs for components and tools finish. 
-`kyma-integration`, `kyma-gke-integration`, `kyma-artifacts`, and `kyma-installer` needs to be executed manually because there
+`kyma-integration`, `kyma-gke-integration`, `kyma-artifacts`, and `kyma-installer` jobs needs to be executed manually because there
 are dependencies between these jobs. See the diagram for details: 
 
 ![](./assets/kyma-rel-jobs.svg)
 
-7. Execute `kyma-integration` by adding comment on PR:
-`/test pre-rel06-kyma-integration`
+7. Execute `kyma-integration` by adding the `/test pre-rel06-kyma-integration` comment to the PR.
 
 8. Execute `kyma-installer`, `kyma-artifacts`, and `kyma-gke-integration` one after another. 
 You don't have to wait until `pre-rel06-kyma-integration` job finishes.
