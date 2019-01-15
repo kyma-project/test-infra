@@ -48,6 +48,26 @@ gke_job_template: &gke_job_template
           memory: 200Mi
           cpu: 80m
 
+gke_upgradeability_job_template: &gke_upgradeability_job_template
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "/home/prow/go/src/github.com/mszostok/test-infra/prow/scripts/cluster-integration/kyma-gke-upgradeability.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_labels_template: &gke_job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
@@ -105,6 +125,38 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.6
 
+  - name: pre-master-kyma-gke-upgradeability
+    branches:
+    - master
+    <<: *gke_upgradeability_job_template
+    run_if_changed: "^(resources|installation)"
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - org: mszostok
+      repo: test-infra
+      path_alias: github.com/mszostok/test-infra
+      base_ref: upgradeability
+
+  - name: pre-rel06-kyma-gke-upgradeability
+    branches:
+    - release-0.6
+    <<: *gke_upgradeability_job_template
+    always_run: false
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.6
+
 
 postsubmits:
   kyma-project/kyma:
@@ -123,6 +175,18 @@ postsubmits:
     branches:
     - master
     labels:
+      preset-build-master: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+
+  - name: post-master-kyma-gke-upgradeability
+    <<: *gke_upgradeability_job_template
+    branches:
+    - master
+    labels:
+      preset-bot-github-token: "true"
       preset-build-master: "true"
       <<: *gke_job_labels_template
     extra_refs:

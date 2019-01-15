@@ -106,7 +106,7 @@ func TestKymaIntegrationVMJobPostsubmit(t *testing.T) {
 
 	kymaPostsubmits, ex := jobConfig.Postsubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPostsubmits, 2)
+	assert.Len(t, kymaPostsubmits, 3)
 
 	actualVM := kymaPostsubmits[0]
 	assert.Equal(t, "post-master-kyma-integration", actualVM.Name)
@@ -130,7 +130,7 @@ func TestKymaIntegrationGKEJobPostsubmit(t *testing.T) {
 
 	kymaPostsubmits, ex := jobConfig.Postsubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPostsubmits, 2)
+	assert.Len(t, kymaPostsubmits, 3)
 
 	actualGKE := kymaPostsubmits[1]
 	assert.Equal(t, "post-master-kyma-gke-integration", actualGKE.Name)
