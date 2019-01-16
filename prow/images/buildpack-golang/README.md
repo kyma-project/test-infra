@@ -6,13 +6,13 @@ This folder contains the Buildpack Golang image that is based on the Bootstrap i
 
 The image consists of:
 
-- golang
-- dep
+- golang 1.11.4
+- dep 0.5.0
 
 ## Installation
 
 To build the Docker image, run this command:
 
 ```bash
-docker build buildpack-golang .
+docker build -t buildpack-golang .
 ```
