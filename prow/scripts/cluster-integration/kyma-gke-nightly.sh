@@ -62,11 +62,8 @@ function removeCluster() {
 
     shout "Delete temporary Kyma-Installer Docker image"
     date
-    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
-    TMP_STATUS=$?
-    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -143,6 +140,8 @@ function installKyma() {
 	shout "Generate self-signed certificate"
 	date
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+	export DOMAIN
+
 	CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-self-signed-cert.sh)
 	TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 	TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
@@ -168,10 +167,10 @@ function installKyma() {
 }
 
 function installStabilityChecker() {
-	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'\"'([0-9A-Za-z_-]+)'\"' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
-	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '\"'([0-9A-Za-z_-]+)'\"' was successful"}
-	STATS_ENABLED=true
-	
+	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'([0-9A-Za-z_-]+)' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
+	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '([0-9A-Za-z_-]+)' was successful"}
+	STATS_ENABLED="true"
+
 	SC_DIR=${KYMA_SOURCES_DIR}/tools/stability-checker
 
 	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
@@ -218,6 +217,7 @@ fi
 
 readonly NAME_ROOT="gkeint-nightly"
 readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
+export COMMON_NAME
 readonly KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${NAME_ROOT}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
 export KYMA_INSTALLER_IMAGE
 
