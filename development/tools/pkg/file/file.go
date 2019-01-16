@@ -38,3 +38,21 @@ func ReadFile(filePath string) (string, error) {
 
 	return content, nil
 }
+
+// SaveDataToTmpFile writes a slice of bytes to a tmp file
+func SaveDataToTmpFile(artifactData []byte, tmpFilePattern string) (*os.File, error) {
+
+	artifactFile, err := ioutil.TempFile("", tmpFilePattern)
+	if err != nil {
+		return nil, err
+	}
+
+	defer artifactFile.Close()
+
+	_, err = artifactFile.Write(artifactData)
+	if err != nil {
+		return nil, err
+	}
+
+	return artifactFile, nil
+}

@@ -40,6 +40,10 @@ required = [
   name = "github.com/google/go-github"
   version = "v21.0.0"
 
+[[constraint]]
+  name = "github.com/smartystreets/goconvey"
+  version = "1.6.3"
+
 # Need override because release-1.11 and kubernetes-1.11.0 are not semver compliant
 [[override]]
   name = "k8s.io/api"
