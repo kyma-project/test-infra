@@ -1,21 +1,17 @@
-# Migration Guide
+# Create Component Jobs
 
-This document describes the procedure for defining standard ProwJobs for `kyma` components. Its purpose is to provide steps required to prepare a component for the migration from the internal CI to Prow.
+This document describes the procedure for defining standard ProwJobs for `kyma` components. Its purpose is to provide steps required to prepare your component for the Prow CI pipeline.
 
 > **NOTE:** Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining ProwJobs.
 
-## Migration plan
+When you configure a job for your component, make sure that:
 
-In the first phase of the migration, jobs for components are duplicated. It means that there is one job for the internal CI and the other for Prow. That is a temporary state until the Prow server is production-ready and jobs for the internal CI can be disabled.
-
-That is why, when you configure a job for your component, make sure that:
-
-- Your ProwJob is configured to push Docker images to a different directory than the one used by the internal CI. To set it, add a `preset-docker-push-repository` Preset to your ProwJob definition.
-- Your ProwJob does not send events to GitHub. To configure it, set the **skip_report** parameter to `true`.
+- Your ProwJob is configured to push Docker images to a proper directory. To set it, add a `preset-docker-push-repository` Preset to your ProwJob definition.
+- Your ProwJob sends events to GitHub. To configure it, set the **skip_report** parameter to `false`.
 
 ## Steps
 
-Follow the steps to prepare your component for the migration.
+Follow the steps to prepare your component for the CI pipeline.
 
 ### Create a presubmit job
 
@@ -28,10 +24,11 @@ The structure of this directory looks as follows:
 ```
 jobs
 |-- {repository1}
-|---- components
+|---- {components}
 |------ {component1}
 |-------- {component1.yaml}
 |------ {component2}
+|-------- {component2.yaml}
 
 ```
 
@@ -47,7 +44,7 @@ See an example of such a job for the `kyma-project/kyma` repository.
 ```yaml
 presubmits:
   kyma-project/kyma:
-    - name: kyma-components-binding-usage-controller
+    - name: pre-master-kyma-components-binding-usage-controller
       run_if_changed: "^components/binding-usage-controller/"
       branches:
         - master
@@ -83,18 +80,18 @@ The table contains the list of all fields in the `yaml` file with their descript
 
 | Field                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **name**                    | The job name. It should clearly identify the job. For reference, see the [convention](./../../prow/README.md#convention-for-naming-jobs) for naming jobs.                                                                                                                                                                                                                                                                                                                             |
+| **name**                    | The job name. It should clearly identify the job. For reference, see the [convention](./../../prow/README.md#convention-for-naming-jobs) for naming jobs. Add the `pre-master-` prefix in front if names of presubmit jobs and the `post-master-` prefix in front if names of postsubmit jobs that run against the `master` branch.                                                                                                                                                                                                                                                                                                                             |
 | **run_if_changed**          | A regular expression. Define the component for which changes in a PR must trigger the job. If a PR does not modify the component, this job sends a notification to GitHub with the information that it is skipped.                                                                                                                                                                                                                                                                    |
 | **always_run**              | A parameter that defines if a PR must trigger the job automatically. `always_run` and `run_if_changed` are mutually exclusive. If you do not set one of them, you can only trigger the job manually by adding a comment to a PR.                                                                 |
 | **branches**                | A list of base branches against which you want the job to run in the PR.                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **skip_report**             | A parameter that defines if a job status appears in the PR on GitHub. If you set it to `true`, Prow does not send the job's status to GitHub. Set it to `true` for the purpose of migration.                                                                                                                                                                                                                                                                                          |
+| **skip_report**             | A parameter that defines if a job status appears in the PR on GitHub. Set it to `false` for Prow to send the job's status to GitHub.                                                                                                                                                                                                                                                                                        |
 | **decorate**                | Decorated jobs automatically clone the repository and store logs from the job execution in Google Cloud Storage (GCS) buckets.                                                                                                                                                                                                                                                                                                                                                        |
 | **path_alias**              | The non-standard Go path under which you want to clone the test repository.                                                                                                                                                                                                                                                                                                                                                                                                           |
 | **extra_ref**               | Additional repositories to clone in addition to the main repository.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **spec.containers.image**   | A Docker image. The `test-infra` repository provides Go and Node.js images. For more details, go to `prow/images`. To build a Docker image in your job, you require the privileged mode.                                                                                                                                                                                                                                                                                              |
 | **spec.containers.command** | Buildpacks have the `build.sh` script that allows you to easily trigger the build for your component. The `build.sh` script populates some environment variables, such as **DOCKER_TAG**. It also initializes Docker and executes one of the `Makefile` targets, depending on the value of the **BUILD_TYPE** variable. This environment variable can be injected by one of the build's Presets, which are **preset-build-pr**, **preset-build-release**, or **preset-build-master**. |
 | **spec.containers.args**    | The `build.sh` script requires a path to the directory where the `Makefile` for your component is located.                                                                                                                                                                                                                                                                                                                                                                        |
-| **labels**                  | Regular Kubernetes labels. They are used to enable PodPresets. The available Presets are defined in the `/prow/config.yaml` file. For their detailed descriptions, go to the [**Available Presets**](#available-presets) section.                                                                                                                                                                                                                                                     |
+| **labels**                  | Regular Kubernetes labels. They are used to enable PodPresets. The available Presets are defined in the `/prow/config.yaml` file. For their detailed descriptions, go to the [**Presets**](./presets.md) document.                                                                                                                                                                                                                                                     |
 | **spec.resources**          | Regular Kubernetes resources requirements for containers. |
 
 ### Check your configuration locally
@@ -118,7 +115,7 @@ After your PR is reviewed and approved, merge the changes to the `test-infra` re
 
 ![msg](./assets/msg-updated-config.png).
 
-### Create the Makefile for your component
+### Create a Makefile for your component
 
 Both buildpacks require a `Makefile` defined in your component directory.  
 The `Makefile` has to define these three targets:
@@ -179,9 +176,9 @@ The trigger for ProwJobs are GitHub events. For example, GitHub sends events to 
 To test your changes, create a new PR for your component.
 If you want to trigger your job again, add a comment on the PR for your component:
 
-- `/test all` to run all tests
+- `/test all` to rerun all tests
 - `/retest` to only rerun failed tests
-- `/test {your test name}`, such as `/test kyma-components-binding-usage-controller`, to only run a specific test
+- `/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test kyma-components-binding-usage-controller`.
 
 After you trigger the job, it appears on `https://status.build.kyma-project.io/`.
 
@@ -225,7 +222,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: kyma-components-binding-usage-controller
+    - name: pre-master-kyma-components-binding-usage-controller
       branches:
         - master
       <<: *job_template
@@ -235,7 +232,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: kyma-components-binding-usage-controller
+    - name: post-master-kyma-components-binding-usage-controller
       branches:
         - master
       <<: *job_template
@@ -248,29 +245,7 @@ To check if your configuration is correct, write a Go test. See the `development
 Place your new test under `development/tools/jobs` for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 If you have access to the Prow cluster, there is an option to test a ProwJob on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
-## References
-
-See the list of available Presets to use in your job definition and an overview of the Prow pipeline.
-
-### Available Presets
-
-Use these Presets to define a ProwJob for your component:
-
-| Name                               | Description                                                                                                                                                     |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **preset-dind-enabled**            | It allows the Docker to run in your job.                                                                                                                        |
-| **preset-sa-gcr-push**             | It injects credentials for pushing images to Google Cloud Registry.                                                                                             |
-| **preset-docker-push-repository**  | It provides the environment variable with the address of the Docker repository.                                                                                 |
-| **preset-build-pr**                | It provides the environment variable with the location of the Docker repository directory for storing images. It also sets the **BUILD_TYPE** variable to `pr`. |
-| **preset-build-master**            | It is similar to the **preset-build-pr** Preset, but the **BUILD_TYPE** variable is set to `master`.                                                            |
-| **preset-build-release**           | It is similar to the **preset-build-pr** Preset, but the **BUILD_TYPE** variable is set to `release`.                                                           |
-| **preset-gc-project-env**          | It provides the environment variable with the Gcloud project name.                                                                                              |
-| **preset-gc-compute-envs**         | It provides environment variables with the Gcloud compute zone and the Gcloud compute region.                                                                   |
-| **preset-sa-vm-kyma-integration**  | It injects credentials for the service account to run integration tests on virtual machines (VMs).                                                              |
-| **preset-sa-gke-kyma-integration** | It injects credentials for the service account to run integration tests on a Google Cloud Engine (GKE) cluster.                                                 |
-| **preset-bot-npm-token**           | It provides an environment variable with token for publishing npm packages.
-
-### Pipeline overview
+## Pipeline overview
 
 To have a better understanding of the role your ProwJob plays in the general Prow pipeline, see this flow description:
 
@@ -280,4 +255,4 @@ To have a better understanding of the role your ProwJob plays in the general Pro
 4. A Pod is created according to **spec** defined in the presubmit job. Additionally, the decorator clones your repository and mounts it under `/home/prow/go/src/{path_alias}`.
 5. The `build.sh` script is executed. It injects the required environment variables and points to the directory passed as an argument. It also executes **make-ci**, **make-master**, or **make-release**, depending on the value of the **BUILD_TYPE** variable.
 
-For further reference, read a more technical insight into a Kubernetes ProwJob flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow_job.md) document.
+For further reference, read a more technical insight into the Kubernetes ProwJob flow described in the [**Life of a Prow job**](https://github.com/kubernetes/test-infra/blob/master/prow/life_of_a_prow_job.md) document.
