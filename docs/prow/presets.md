@@ -4,7 +4,7 @@ This document contains the list of all Presets available in the [`config.yaml`](
 
 | Name                               | Description                                                                                                                                                     |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **preset-dind-enabled**            | It allows the Docker to run in your job.                                                                                                                        |
+| **preset-dind-enabled**            | It allows Docker to run in your job.                                                                                                                        |
 | **preset-sa-gcr-push**             | It injects credentials for pushing images to Google Cloud Registry.                                                                                             |
 | **preset-docker-push-repository**  | It provides the environment variable with the address of the Docker repository.                                                                                 |
 | **preset-build-pr**                | It provides the environment variable with the location of the directory in the Docker repository for storing images. It also sets the **BUILD_TYPE** variable to `pr`. |
