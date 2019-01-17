@@ -15,7 +15,7 @@ Read the documents to learn how to:
 - [Create standard component jobs](./create-component-jobs.md) for the Prow pipeline.
 - [Define release jobs](./create-release-jobs.md) for your components.
 
-Read about:
+Find out more about:
 
 - [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
 - [Release process](./release-process.md) that guides you through the steps required to prepare and execute a Kyma release.
