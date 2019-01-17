@@ -19,7 +19,27 @@ The integration job is a pipeline that consists of multiple steps:
 
 ### Project structure
 
+The structure of the folder looks as follows:
+
+``` 
+├── helpers # This directory contains helpers scripts used by pipeline jobs.
+│   ├── create-dns-record.sh
+│   ├── create-image.sh
+│   ├── delete-disks.sh
+│   ├── delete-dns-record.sh
+│   ├── delete-image.sh
+│   ├── deprovision-gke-cluster.sh
+│   ├── generate-self-signed-cert.sh
+│   ├── provision-gke-cluster.sh
+│   ├── release-ip-address.sh
+│   └── reserve-ip-address.sh
+├── kyma-gke-integration.sh # The purpose of this script is to install and test Kyma on real GKE cluster.
+├── kyma-gke-nightly.sh # The purpose of this script is to create from master branch a long-lived GKE cluster. This cluster should be recreated once per day. 
+└── kyma-gke-upgradeability.sh # The purpose of this script is to install last Kyma release on GKE cluster, upgrade it with current changes from master/PR/release branch and trigger Kyma testing script.
+```
+
 The main entry point for the entire pipeline is the `kyma-gke-integration.sh` script that invokes other helper scripts and CLI tools.
+
 The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
 
 ### Required environment variables

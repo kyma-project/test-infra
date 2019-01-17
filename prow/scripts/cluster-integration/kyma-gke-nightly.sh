@@ -14,6 +14,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
 function removeCluster() {
 	# Set +e for testing purposes. This should be deleted only we move to daily schedule
 	set +e
@@ -23,13 +25,13 @@ function removeCluster() {
 	EXIT_STATUS=$?
 
 	shout "Delete cluster $CLUSTER_NAME"
-	CLUSTER_NAME=${COMMON_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/deprovision-gke-cluster.sh
+	CLUSTER_NAME=${COMMON_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 	# ToDo Add deletion of IP/DNS
 
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${TIMESTAMP}" "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-image.sh
+	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -46,32 +48,32 @@ function createCluster() {
 	DNS_SUBDOMAIN="${COMMON_NAME}"
 	shout "Build Kyma-Installer Docker image"
 	date
-	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
 
 	shout "Reserve IP Address for Ingressgateway"
 	date
 	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
+	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 	export CLEANUP_GATEWAY_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Ingressgateway IP"
 	date
 	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
+	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 	export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 	shout "Reserve IP Address for Remote Environments"
 	date
 	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
-	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/reserve-ip-address.sh)
+	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 	export CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Remote Environments IP"
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-dns-record.sh
+	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 	export CLEANUP_REMOTEENVS_DNS_RECORD="true"
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
@@ -84,7 +86,7 @@ function createCluster() {
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
 	export CLEANUP_CLUSTER="true"
-	"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/provision-gke-cluster.sh
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
 function installKyma() {
@@ -98,7 +100,7 @@ function installKyma() {
 	shout "Generate self-signed certificate"
 	date
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-	CERT_KEY=$("${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/generate-self-signed-cert.sh)
+	CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-self-signed-cert.sh)
 	TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 	TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
@@ -198,7 +200,7 @@ fi
 
 shout "Build Kyma-Installer Docker image"
 date
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/create-image.sh
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
 
 shout "Create new cluster"
 date
