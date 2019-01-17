@@ -2,7 +2,7 @@
 
 This document describes the procedure for defining release jobs for Kyma components.
 
->**NOTE:** Before you follow the steps in this guide, read the [Create component jobs](./create-component-jobs.md) document to learn how to create a standard component job.
+>**NOTE:** Before you follow the steps in this guide, read the [**Create component jobs**](./create-component-jobs.md) document to learn how to create a standard component job.
 
 ## Steps
 
@@ -28,7 +28,7 @@ ci-release: build build-image push-image
 
 The differences between a release job and a job for the `master` branch are as follows:
 - Different branches
-- Different prefixes for job names. Use `pre-rel{number}-` before the given release job name. For example, write `pre-rel06-kyma-components-binding-usage-controller`.
+- Different prefixes for job names. Use `pre-rel{number}-` in front of the given release job name. For example, write `pre-rel06-kyma-components-binding-usage-controller`.
 - The `preset-build-release` label used instead of `preset-build-pr`
 - The **extra_refs** parameter for the `test-infra` repository that uses the `release-0.6` branch instead of `master`
 - The **always_run** parameter set to `true` instead of specifying the **run_if_changed** parameter
@@ -103,7 +103,7 @@ postsubmits:
 
 ```
 
-The component job configuration in this guide differs from the one defined in the document on [creating standard component jobs](./create-component-jobs.md) as follows:
+The component job configuration in this guide differs from the one defined in the [**Create component jobs**](./create-component-jobs.md) document as follows:
 
 - The **test-infra-ref** object is defined, where **org**, **repo**, and **path_alias** are specified.
 - **job-template** now defines **name**, but **run_if_changed** and **extra_refs** are removed from it.
