@@ -15,7 +15,9 @@ Read the documents to learn how to:
 - [Create standard component jobs](./create-component-jobs.md) for the Prow pipeline.
 - [Define release jobs for your components](./create-release-jobs.md).
 
-Read also:
+Read about:
 
- - [Prow architecture](./prow-architecture.md) and its set up in the Kyma project.
- - [Release process](./release-process.md) that guides you through the steps required to prepare and execute a Kyma release.
+- [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
+- [Release process](./release-process.md) that guides you through the steps required to prepare and execute a Kyma release.
+- [Offboarding steps](offboarding-checklist.md) to perform when someone leaves the project.
+- [Presets][./presets.md] you can use to define ProwJobs.
