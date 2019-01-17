@@ -6,7 +6,7 @@ This document describes the procedure for defining standard ProwJobs for `kyma` 
 
 When you configure a job for your component, make sure that:
 
-- Your ProwJob is configured to push Docker images to a proper directory. To set it, add a `preset-docker-push-repository` Preset to your ProwJob definition.
+- Your ProwJob is configured to push Docker images to a proper directory. To set it, add the `preset-docker-push-repository` Preset to your ProwJob definition.
 - Your ProwJob sends events to GitHub. To configure it, set the **skip_report** parameter to `false`.
 
 ## Steps
