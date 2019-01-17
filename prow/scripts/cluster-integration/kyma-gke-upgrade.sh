@@ -47,6 +47,8 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export KYMA_INSTALL_TIMEOUT="30m"
+export KYMA_UPDATE_TIMEOUT="15m"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -256,10 +258,10 @@ function installKyma() {
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
 
-    shout "Trigger installation"
+    shout "Trigger installation with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
     kubectl label installation/kyma-installation action=install
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
 function upgradeKyma() {
@@ -294,10 +296,10 @@ function upgradeKyma() {
         | kubectl apply -f-
     fi
 
-    shout "Trigger update"
+    shout "Trigger update with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
     kubectl label installation/kyma-installation action=install
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 15m
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 }
 
 function testKyma() {
