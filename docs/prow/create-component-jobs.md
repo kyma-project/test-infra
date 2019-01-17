@@ -178,7 +178,7 @@ If you want to trigger your job again, add a comment on the PR for your componen
 
 - `/test all` to rerun all tests
 - `/retest` to only rerun failed tests
-- `/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test kyma-components-binding-usage-controller`.
+- `/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test pre-master-kyma-components-binding-usage-controller`.
 
 After you trigger the job, it appears on `https://status.build.kyma-project.io/`.
 
