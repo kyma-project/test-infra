@@ -103,7 +103,7 @@ postsubmits:
 
 ```
 
-The component job configuration in this guide differs from the one defined in the document on [creating standard component jobs](https://github.com/kyma-project/test-infra/blob/master/docs/prow/create-component-jobs.md) as follows:
+The component job configuration in this guide differs from the one defined in the document on [creating standard component jobs](./create-component-jobs.md) as follows:
 
 - The **test-infra-ref** object is defined, where **org**, **repo**, and **path_alias** are specified.
 - **job-template** now defines **name**, but **run_if_changed** and **extra_refs** are removed from it.
