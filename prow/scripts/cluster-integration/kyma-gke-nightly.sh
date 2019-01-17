@@ -180,7 +180,7 @@ function installStabilityChecker() {
 	        --set stats.enabled="${STATS_ENABLED}" \
 	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
 	        --set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
-			--set testResultWindowTime="1h" \
+	        --set testResultWindowTime="1h" \
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
 	        --name=stability-checker
@@ -235,10 +235,6 @@ if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 		removeCluster "${CLUSTER}"
 	done
 fi
-
-shout "Build Kyma-Installer Docker image"
-date
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
 
 shout "Create new cluster"
 date
