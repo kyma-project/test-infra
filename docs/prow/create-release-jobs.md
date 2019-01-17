@@ -2,7 +2,7 @@
 
 This document describes the procedure for defining release jobs for Kyma components.
 
->**NOTE:** Before you follow the steps in this guide, read the [Create component jobs](https://github.com/kyma-project/test-infra/blob/master/docs/prow/create-component-jobs.md) document to learn how to create a standard component job.
+>**NOTE:** Before you follow the steps in this guide, read the [Create component jobs](./create-component-jobs.md) document to learn how to create a standard component job.
 
 ## Steps
 
