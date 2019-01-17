@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestOdataMockJobsPresubmit(t *testing.T) {
+func TestExamplesCombinedOdataMockJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/examples/combined-odata-mock/examples-combined-odata-mock.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestOdataMockJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/examples/combined-odata-mock"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestOdataMockJobPostsubmit(t *testing.T) {
+func TestExamplesCombinedOdataMockJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/examples/combined-odata-mock/examples-combined-odata-mock.yaml")
 	// THEN

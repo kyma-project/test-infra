@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestOdataMockJobsPresubmit(t *testing.T) {
+func TestExamplesOdataMockJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/examples/openapi-mock/examples-openapi-mock.yaml")
 	// THEN
@@ -35,7 +35,7 @@ func TestOdataMockJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/examples/openapi-mock"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestOdataMockJobPostsubmit(t *testing.T) {
+func TestExamplesOdataMockJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/examples/openapi-mock/examples-openapi-mock.yaml")
 	// THEN
