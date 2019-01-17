@@ -35,12 +35,10 @@ The structure of the folder looks as follows:
 │   └── reserve-ip-address.sh
 ├── kyma-gke-integration.sh # The purpose of this script is to install and test Kyma on real GKE cluster.
 ├── kyma-gke-nightly.sh # The purpose of this script is to create from master branch a long-lived GKE cluster. This cluster should be recreated once per day. 
-└── kyma-gke-upgradeability.sh # The purpose of this script is to install last Kyma release on GKE cluster, upgrade it with current changes from master/PR/release branch and trigger Kyma testing script.
+└── kyma-gke-upgrade.sh # The purpose of this script is to install last Kyma release on GKE cluster, upgrade it with current changes from master/PR/release branch and trigger Kyma testing script.
 ```
 
-The main entry point for the entire pipeline is the `kyma-gke-integration.sh` script that invokes other helper scripts and CLI tools.
-
-The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
+The scripts at the root of the `cluster-integration` directory are used for Prow pipelines. The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
 
 ### Required environment variables
 

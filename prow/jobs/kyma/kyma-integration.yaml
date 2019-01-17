@@ -48,8 +48,8 @@ gke_job_template: &gke_job_template
           memory: 200Mi
           cpu: 80m
 
-gke_upgradeability_job_template: &gke_upgradeability_job_template
-  skip_report: true
+gke_upgrade_job_template: &gke_upgrade_job_template
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -62,7 +62,7 @@ gke_upgradeability_job_template: &gke_upgradeability_job_template
       - "bash"
       args:
       - "-c"
-      - "/home/prow/go/src/github.com/mszostok/test-infra/prow/scripts/cluster-integration/kyma-gke-upgradeability.sh"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
       resources:
         requests:
           memory: 200Mi
@@ -125,11 +125,12 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.6
 
-  - name: pre-master-kyma-gke-upgradeability
+  - name: pre-master-kyma-gke-upgrade
     branches:
     - master
-    <<: *gke_upgradeability_job_template
+    <<: *gke_upgrade_job_template
     run_if_changed: "^(resources|installation)"
+    optional: true
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"
@@ -137,26 +138,8 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-    - org: mszostok
-      repo: test-infra
-      path_alias: github.com/mszostok/test-infra
-      base_ref: upgradeability
 
-  - name: pre-rel06-kyma-gke-upgradeability
-    branches:
-    - release-0.6
-    <<: *gke_upgradeability_job_template
-    always_run: false
-    labels:
-      preset-bot-github-token: "true"
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: release-0.6
-
+# TODO: define the pre-rel07-kyma-gke-upgrade job when releasing Kyma 0.7 Dublin version
 
 postsubmits:
   kyma-project/kyma:
@@ -181,8 +164,9 @@ postsubmits:
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: post-master-kyma-gke-upgradeability
-    <<: *gke_upgradeability_job_template
+  - name: post-master-kyma-gke-upgrade
+    <<: *gke_upgrade_job_template
+    optional: true
     branches:
     - master
     labels:
