@@ -17,19 +17,15 @@ fi
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 function removeCluster() {
-	# Set +e for testing purposes. This should be deleted only we move to daily schedule
-	set +e
+	CLUSTER_NAME=$1
 
-	export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-	TIMESTAMP=$(echo "$1" | cut -d '-' -f 3)
 	EXIT_STATUS=$?
 
 	shout "Delete cluster $CLUSTER_NAME"
-	CLUSTER_NAME=$1 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-	# ToDo Add deletion of IP/DNS
     shout "Delete Gateway DNS Record"
     date
     GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
@@ -49,7 +45,7 @@ function removeCluster() {
     date
     REMOTEENVS_IP_ADDRESS=$(gcloud compute addresses describe "remoteenvs-${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
     REMOTEENVS_DNS_FULL_NAME="gateway.${CLUSTER_NAME}.build.kyma-project.io."
-    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
     TMP_STATUS=$?
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -74,9 +70,6 @@ function removeCluster() {
 }
 
 function createCluster() {
-	# Set +e for testing purposes. This should be deleted only we move to daily schedule
-	set +e
-
 	DNS_SUBDOMAIN="${COMMON_NAME}"
 	shout "Build Kyma-Installer Docker image"
 	date
@@ -106,7 +99,7 @@ function createCluster() {
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
-	export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+	
 	if [ -z "$MACHINE_TYPE" ]; then
 		export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
 	fi
@@ -192,12 +185,6 @@ function installStabilityChecker() {
 	        --name=stability-checker
 }
 
-function notifySlackNow() {
-	curl -H 'Content-type: application/json' \
-		--data '{"text": "$2", "channel": "$1"}' \
-		"${SLACK_CLIENT_WEBHOOK_URL}?token=${SLACK_CLIENT_TOKEN}"
-}
-
 readonly REPO_OWNER="kyma-project"
 export REPO_OWNER
 readonly REPO_NAME="kyma"
@@ -206,6 +193,7 @@ export REPO_NAME
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
@@ -263,10 +251,6 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Install kyma"
 date
 installKyma
-
-shout "Test kyma"
-date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 shout "Install stability-checker"
 date
