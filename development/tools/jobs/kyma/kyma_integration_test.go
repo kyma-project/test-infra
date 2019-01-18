@@ -211,7 +211,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, nightlyPeriodic)
 	assert.Equal(t, expName, nightlyPeriodic.Name)
 	assert.True(t, nightlyPeriodic.Decorate)
-	assert.Equal(t, "0 8-16/2 * * 1-5", nightlyPeriodic.Cron)
+	assert.Equal(t, "0 4 * * 1-5", nightlyPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, nightlyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc", nightlyPeriodic.Spec.Containers[0].Image)
