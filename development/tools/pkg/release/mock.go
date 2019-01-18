@@ -27,17 +27,17 @@ type FakeGithubAPIWrapper struct {
 }
 
 // CreateGithubRelease is a fake implementation of CreateGithubRelease func
-func (fgaw *FakeGithubAPIWrapper) CreateGithubRelease(ctx context.Context, releaseVersion string, releaseBody string, targetCommit string, isPreRelease bool) (*github.RepositoryRelease, *github.Response, error) {
+func (fgaw *FakeGithubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
 
 	fakeID := int64(1)
 
 	input := &github.RepositoryRelease{
 		ID:              &fakeID,
-		TagName:         &releaseVersion,
-		TargetCommitish: &targetCommit,
-		Name:            &releaseVersion,
-		Body:            &releaseBody,
-		Prerelease:      &isPreRelease,
+		TagName:         &opts.Version,
+		TargetCommitish: &opts.TargetCommit,
+		Name:            &opts.Version,
+		Body:            &opts.Body,
+		Prerelease:      &opts.IsPreRelease,
 	}
 
 	fgaw.Release = input

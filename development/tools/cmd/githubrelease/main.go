@@ -9,10 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	"github.com/kyma-project/test-infra/development/tools/pkg/file"
 	"github.com/kyma-project/test-infra/development/tools/pkg/release"
 	log "github.com/sirupsen/logrus"
 )
@@ -64,28 +61,22 @@ func main() {
 
 	ctx := context.Background()
 
-	common.Shout("Reading release version file")
-
-	releaseVersion, err := file.ReadFile(*releaseVersionFilePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	isPreRelease := strings.Contains(releaseVersion, "rc")
-
-	common.Shout("Release version: %s, Pre-release: %t", releaseVersion, isPreRelease)
-
 	ga := release.NewGithubAPI(ctx, *githubAccessToken, *githubRepoOwner, *githubRepoName)
 
-	sa, err := release.NewStorageAPI(ctx, *bucketName, releaseVersion)
+	sa, err := release.NewStorageAPI(ctx, *bucketName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	c := release.NewCreator(ga, sa)
 
+	relOpts, err := release.NewOptions(ctx, sa, *releaseVersionFilePath, *kymaChangelog, *targetCommit)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Github release
-	err = c.CreateNewRelease(ctx, releaseVersion, *targetCommit, *kymaChangelog, *kymaConfigLocal, *kymaConfigCluster, isPreRelease)
+	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaConfigCluster)
 	if err != nil {
 		log.Fatal(err)
 	}

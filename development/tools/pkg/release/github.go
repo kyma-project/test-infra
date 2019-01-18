@@ -12,7 +12,7 @@ import (
 
 // GithubAPI exposes functions to interact with Github releases
 type GithubAPI interface {
-	CreateGithubRelease(ctx context.Context, releaseVersion string, releaseBody string, targetCommit string, isPreRelease bool) (*github.RepositoryRelease, *github.Response, error)
+	CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error)
 	UploadFile(ctx context.Context, releaseID int64, artifactName string, artifactFile *os.File) (*github.ReleaseAsset, *github.Response, error)
 }
 
@@ -41,15 +41,15 @@ func NewGithubAPI(ctx context.Context, githubAccessToken, repoOwner, repoName st
 }
 
 // CreateGithubRelease creates a Github release
-func (gap *githubAPIWrapper) CreateGithubRelease(ctx context.Context, releaseVersion string, releaseBody string, targetCommit string, isPreRelease bool) (*github.RepositoryRelease, *github.Response, error) {
-	common.Shout("Creating release %s in %s/%s repository", releaseVersion, gap.repoOwner, gap.repoName)
+func (gap *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
+	common.Shout("Creating release %s in %s/%s repository", opts.Version, gap.repoOwner, gap.repoName)
 
 	input := &github.RepositoryRelease{
-		TagName:         &releaseVersion,
-		TargetCommitish: &targetCommit,
-		Name:            &releaseVersion,
-		Body:            &releaseBody,
-		Prerelease:      &isPreRelease,
+		TagName:         &opts.Version,
+		TargetCommitish: &opts.TargetCommit,
+		Name:            &opts.Version,
+		Body:            &opts.Body,
+		Prerelease:      &opts.IsPreRelease,
 	}
 
 	return gap.githubClient.Repositories.CreateRelease(ctx, gap.repoOwner, gap.repoName, input)

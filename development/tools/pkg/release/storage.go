@@ -17,11 +17,10 @@ type StorageAPI interface {
 type storageAPIWrapper struct {
 	storageClient *storage.Client
 	bucketName    string
-	folderName    string
 }
 
 // NewStorageAPI returns implementation of storageAPI
-func NewStorageAPI(ctx context.Context, bucketName, folderName string) (StorageAPI, error) {
+func NewStorageAPI(ctx context.Context, bucketName string) (StorageAPI, error) {
 
 	storageClient, err := storage.NewClient(ctx)
 	if err != nil {
@@ -31,15 +30,14 @@ func NewStorageAPI(ctx context.Context, bucketName, folderName string) (StorageA
 	return &storageAPIWrapper{
 		storageClient: storageClient,
 		bucketName:    bucketName,
-		folderName:    folderName,
 	}, nil
 }
 
 // ReadBucketObject downloads and saves in temporary directory a file specified by fileName from a given bucket
 func (saw *storageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) ([]byte, error) {
-	common.Shout("Reading %s/%s file from %s bucket", saw.folderName, fileName, saw.bucketName)
+	common.Shout("Reading %s file from %s bucket", fileName, saw.bucketName)
 
-	rc, err := saw.storageClient.Bucket(saw.bucketName).Object(saw.folderName + "/" + fileName).NewReader(ctx)
+	rc, err := saw.storageClient.Bucket(saw.bucketName).Object(fileName).NewReader(ctx)
 	if err != nil {
 		return nil, err
 	}
