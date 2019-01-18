@@ -19,8 +19,16 @@ The integration job is a pipeline that consists of multiple steps:
 
 ### Project structure
 
-The main entry point for the entire pipeline is the `kyma-gke-integration.sh` script that invokes other helper scripts and CLI tools.
-The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
+The structure of the folder looks as follows:
+
+``` 
+├── helpers # This directory contains helper scripts used by pipeline jobs.
+├── kyma-gke-integration.sh # This script installs and tests Kyma on a real GKE cluster.
+├── kyma-gke-nightly.sh # This script creates a long-lived GKE cluster from the master branch. This cluster should be recreated once a day. 
+└── kyma-gke-upgrade.sh # This script installs the last Kyma release on a GKE cluster and upgrades it with current changes from the PR, master, or release branch. It also triggers the Kyma testing script.
+```
+
+The scripts at the root of the `cluster-integration` directory are used for Prow pipelines. The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
 
 ### Required environment variables
 

@@ -55,94 +55,136 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 	}
 }
 
-func TestKymaIntegrationVMJobsPresubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	// THEN
-	require.NoError(t, err)
+func TestKymaIntegrationJobsPresubmit(t *testing.T) {
+	tests := map[string]struct {
+		givenJobName string
+		expPresets   []tester.Preset
+		expJobImage  string
+	}{
+		"Should contains the kyma-integration job": {
+			givenJobName: "pre-master-kyma-integration",
 
-	actualVM := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-integration", "master")
-	require.NotNil(t, actualVM)
-	assert.Equal(t, "^(resources|installation)", actualVM.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualVM, "resources/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualVM, "installation/file.yaml")
-	assert.False(t, actualVM.SkipReport)
-	assert.Equal(t, 10, actualVM.MaxConcurrency)
-	tester.AssertThatHasPresets(t, actualVM.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
-	assert.True(t, actualVM.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualVM.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig, "master")
-	assert.Equal(t, tester.ImageBootstrap001, actualVM.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"}, actualVM.Spec.Containers[0].Command)
-	tester.AssertThatSpecifiesResourceRequests(t, actualVM.JobBase)
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
+			},
+
+			expJobImage: tester.ImageBootstrap001,
+		},
+		"Should contains the gke-integration job": {
+			givenJobName: "pre-master-kyma-gke-integration",
+
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, tester.PresetBuildPr,
+				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+			},
+			expJobImage: tester.ImageBootstrapHelm20181121,
+		},
+		"Should contains the gke-upgrade job": {
+			givenJobName: "pre-master-kyma-gke-upgrade",
+
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, tester.PresetBuildPr,
+				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+				"preset-bot-github-token",
+			},
+			expJobImage: tester.ImageBootstrapHelm20181121,
+		},
+	}
+
+	for tn, tc := range tests {
+		t.Run(tn, func(t *testing.T) {
+			// given
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			require.NoError(t, err)
+
+			// when
+			actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tc.givenJobName, "master")
+			require.NotNil(t, actualJob)
+
+			// then
+			// the common expectation
+			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+			assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+			assert.True(t, actualJob.Decorate)
+			assert.False(t, actualJob.SkipReport)
+			assert.Equal(t, 10, actualJob.MaxConcurrency)
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+
+			// the job specific expectation
+			assert.Equal(t, tc.expJobImage, actualJob.Spec.Containers[0].Image)
+			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
+		})
+	}
 }
 
-func TestKymaIntegrationGKEJobsPresubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	// THEN
-	require.NoError(t, err)
+func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
+	tests := map[string]struct {
+		givenJobName string
+		expPresets   []tester.Preset
+		expJobImage  string
+	}{
+		"Should contains the kyma-integration job": {
+			givenJobName: "post-master-kyma-integration",
 
-	actualGKE := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration", "master")
-	require.NotNil(t, actualGKE)
-	assert.Equal(t, "^(resources|installation)", actualGKE.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualGKE, "resources/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualGKE, "installation/file.yaml")
-	assert.False(t, actualGKE.SkipReport)
-	assert.Equal(t, 10, actualGKE.MaxConcurrency)
-	tester.AssertThatHasPresets(t, actualGKE.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr, tester.PresetDindEnabled, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
-	assert.True(t, actualGKE.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualGKE.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualGKE.JobBase.UtilityConfig, "master")
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualGKE.Spec.Containers[0].Image)
-	tester.AssertThatSpecifiesResourceRequests(t, actualGKE.JobBase)
-}
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
+			},
 
-func TestKymaIntegrationVMJobPostsubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	// THEN
-	require.NoError(t, err)
+			expJobImage: tester.ImageBootstrap001,
+		},
+		"Should contains the gke-integration job": {
+			givenJobName: "post-master-kyma-gke-integration",
 
-	kymaPostsubmits, ex := jobConfig.Postsubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPostsubmits, 3)
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
+				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+			},
+			expJobImage: tester.ImageBootstrapHelm20181121,
+		},
+		"Should contains the gke-upgrade job": {
+			givenJobName: "post-master-kyma-gke-upgrade",
 
-	actualVM := kymaPostsubmits[0]
-	assert.Equal(t, "post-master-kyma-integration", actualVM.Name)
-	assert.Equal(t, []string{"master"}, actualVM.Branches)
-	assert.Equal(t, 10, actualVM.MaxConcurrency)
-	assert.Equal(t, "", actualVM.RunIfChanged)
-	assert.True(t, actualVM.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualVM.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualVM.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualVM.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
-	assert.Equal(t, tester.ImageBootstrap001, actualVM.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"}, actualVM.Spec.Containers[0].Command)
-	tester.AssertThatSpecifiesResourceRequests(t, actualVM.JobBase)
-}
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
+				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+				"preset-bot-github-token",
+			},
+			expJobImage: tester.ImageBootstrapHelm20181121,
+		},
+	}
 
-func TestKymaIntegrationGKEJobPostsubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	// THEN
-	require.NoError(t, err)
+	for tn, tc := range tests {
+		t.Run(tn, func(t *testing.T) {
+			// given
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			require.NoError(t, err)
 
-	kymaPostsubmits, ex := jobConfig.Postsubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPostsubmits, 3)
+			// when
+			actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], tc.givenJobName, "master")
+			require.NotNil(t, actualJob)
 
-	actualGKE := kymaPostsubmits[1]
-	assert.Equal(t, "post-master-kyma-gke-integration", actualGKE.Name)
-	assert.Equal(t, "", actualGKE.RunIfChanged)
-	assert.Equal(t, 10, actualGKE.MaxConcurrency)
-	tester.AssertThatHasPresets(t, actualGKE.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildMaster, tester.PresetDindEnabled, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
-	assert.Equal(t, []string{"master"}, actualGKE.Branches)
-	assert.True(t, actualGKE.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualGKE.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, actualGKE.JobBase.UtilityConfig, "master")
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualGKE.Spec.Containers[0].Image)
-	tester.AssertThatSpecifiesResourceRequests(t, actualGKE.JobBase)
+			// then
+			// the common expectation
+			assert.Equal(t, []string{"master"}, actualJob.Branches)
+			assert.Equal(t, 10, actualJob.MaxConcurrency)
+			assert.Equal(t, "", actualJob.RunIfChanged)
+			assert.True(t, actualJob.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+
+			// the job specific expectation
+			assert.Equal(t, tc.expJobImage, actualJob.Spec.Containers[0].Image)
+			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
+		})
+	}
 }
 
 func TestKymaIntegrationJobPeriodics(t *testing.T) {
