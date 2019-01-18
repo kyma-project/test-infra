@@ -9,7 +9,7 @@ You define Secrets to populate in the `secrets-def-file` input parameter.
 
 To run it, use:
 ```bash
-env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \ 
+env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
     -bucket={bucket_name} \
     -keyring={keyring} \
     -key={key} \
@@ -30,7 +30,7 @@ See the list of available flags:
 | **--key**                 |   Yes    | KMS key
 | **--location**            |   Yes    | KMS location            
 | **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file that points to the Prow cluster    
-| **--secrets-def-file**    |   Yes    | The path to the `yaml` file that define Secrets to populate. See the `RequiredSecretsData` type to learn about the syntax of the file.   
+| **--secrets-def-file**    |   Yes    | The path to the `yaml` file that defines Secrets to populate. See the `RequiredSecretsData` type to learn about the syntax of the file.   
 | **--project**             |   Yes    | Gcloud project name   
 
 ### Environment variables

@@ -91,7 +91,7 @@ Follow these steps to install Prow:
 - **KEYRING_NAME** is the KMS key ring.
 - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 - **KUBECONFIG** is a path to a `kubeconfig` file.
-- **PROJECT** is a Gcloud project name.
+- **PROJECT** is a GCP project name.
 - **GOOGLE_APPLICATION_CREDENTIALS** is a path to a service account file. This service account requires KMS and storage roles.  
 The account files are encrypted with the **ENCRYPTION_KEY_NAME** key from **KEYRING_NAME** and are stored in **BUCKET_NAME**.
 
@@ -154,7 +154,7 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 You can define a test presubmit job for a component. However, remember to adjust its definition in the `yaml` file to point to your forked repository instead of the original repository.
 
-For details on how to define a presubmit job, see the [Migration Guide](./migration-guide.md#create-a-presubmit-job).
+For details on how to define a presubmit job, see the [Migration Guide](./create-component-jobs.md#create-a-presubmit-job).
 
 ### Verify the configuration
 

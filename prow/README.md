@@ -86,10 +86,15 @@ prow
 
 ### Convention for naming jobs
 
-When you define jobs for Prow, **name** of the job must follow one of these patterns:
+When you define jobs for Prow, the **name** parameter of the job must follow one of these patterns:
 
-- `{repository_name}-{component_name}-{job_name}` for components
-- `{repository_name}-{job_name}` for jobs not connected to a particular component
+  - `{prefix}-{repository-name}-{component-name}-{job-name}` for components
+  - `{prefix}-{repository-name}-{job-name}` for jobs not connected to a particular component
+
+Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
+- `pre-master` for presubmit jobs that run against the `master` branch.
+- `post-master` for postsubmit jobs that run against the `master` branch.
+- `pre-rel{release-number}` for presubmit jobs that run against the release branches. For example, write `pre-rel06-kyma-components-api-controller`.
 
 In both cases, `{job_name}` must reflect the job's responsibility.
 
