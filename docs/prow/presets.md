@@ -1,6 +1,6 @@
 # Presets
 
-This document contains the list of all Presets available in the [`config.yaml`](../../prow/config.yaml). Use them to define ProwJobs for your components.
+This document contains the list of all Presets available in the [`config.yaml`](../../prow/config.yaml) file. Use them to define ProwJobs for your components.
 
 | Name                               | Description                                                                                                                                                     |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -11,7 +11,7 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-build-master**            | It is similar to the **preset-build-pr** Preset, but the **BUILD_TYPE** variable is set to `master`.                                                            |
 | **preset-build-release**           | It is similar to the **preset-build-pr** Preset, but the **BUILD_TYPE** variable is set to `release`.                                                           |
 | **preset-gc-project-env**          | It provides the environment variable with the Google Cloud Platform (GCP) project name.                                                                                              |
-| **preset-gc-compute-envs**         | It provides environment variables with the gcloud compute zone and the gcloud compute region.                                                                   |
+| **preset-gc-compute-envs**         | It provides environment variables with the GCP compute zone and the GCP compute region.                                                                   |
 | **preset-sa-vm-kyma-integration**  | It injects credentials for the service account to run integration tests on virtual machines (VMs).                                                              |
 | **preset-sa-gke-kyma-integration** | It injects credentials for the service account to run integration tests on a Google Cloud Engine (GKE) cluster.                                                 |
 | **preset-bot-npm-token**           | It provides an environment variable with a token for publishing npm packages.

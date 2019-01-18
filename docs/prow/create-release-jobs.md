@@ -140,4 +140,4 @@ func TestBucReleases(t *testing.T) {
 ```
 
 Follow the presented example to implement tests to reuse them in every release.
-The example uses the `tester.GetAllKymaReleaseBranches()` function that returns all supported Kyma release branches and runs a separate test for every release branch. If you add a new branch, the tests for the release job are already available. This approach assumes that the job definition does not differ between releases, except for the `branch` and `extra-refs.base_ref` parameters.
+The example uses the `tester.GetAllKymaReleaseBranches()` function that returns all supported Kyma release branches and runs a separate test for every release branch. If you add a new branch, the tests for the release job are already available. This approach assumes that the job definition does not differ between releases, except for the **branch** and **extra-refs.base_ref** parameters.
