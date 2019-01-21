@@ -32,7 +32,6 @@ func TestCreateRelease(t *testing.T) {
 			mockRelVer := "0.0.1"
 			expectedBody := "test artifact data for 0.0.1/change-record.md"
 
-
 			relOpts, _ := NewOptions(ctx, fakeStorage, mockRelVer, mockChangelogFileName, mockCommitish, vReader)
 
 			Convey("should download three files from Google Storage, create a release and upload two assets", func() {
@@ -65,7 +64,6 @@ func TestCreateRelease(t *testing.T) {
 			mockRelVer := "0.0.2-rc"
 			expectedBody := "test artifact data for 0.0.2-rc/change-record.md"
 
-
 			relOpts, _ := NewOptions(ctx, fakeStorage, mockRelVer, mockChangelogFileName, mockCommitish, vReader)
 
 			Convey("should download three files from Google Storage, create a pre-release and upload two assets", func() {
@@ -87,7 +85,5 @@ func TestCreateRelease(t *testing.T) {
 
 			})
 		})
-
 	})
 }
-

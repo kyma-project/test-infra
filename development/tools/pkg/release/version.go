@@ -1,19 +1,22 @@
 package release
 
 import (
+	"regexp"
+	"strings"
+
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	"github.com/kyma-project/test-infra/development/tools/pkg/file"
 	"github.com/pkg/errors"
-	"regexp"
-	"strings"
 )
 
+// VersionReader wraps the Read method that reads RELEASE_VERSION file
 type VersionReader interface {
 	Read(filePath string) (string, bool, error)
 }
 
 type kymaVersionReader struct{}
 
+// NewVersionReader returns a ready-to-use implementation of VersionReadeer
 func NewVersionReader() VersionReader {
 	return &kymaVersionReader{}
 }

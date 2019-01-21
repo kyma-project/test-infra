@@ -2,13 +2,14 @@ package release
 
 import (
 	"context"
-	"github.com/google/go-github/github"
 	"io"
 	"strings"
+
+	"github.com/google/go-github/github"
 )
 
 // FakeKymaVersionReader is a fake kymaVersionReader for test purposes
-type FakeKymaVersionReader struct {}
+type FakeKymaVersionReader struct{}
 
 func (fkvr *FakeKymaVersionReader) Read(filePath string) (string, bool, error) {
 	return filePath, strings.Contains(filePath, "rc"), nil

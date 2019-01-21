@@ -3,6 +3,7 @@ package release
 import (
 	"bytes"
 	"context"
+
 	"github.com/pkg/errors"
 )
 

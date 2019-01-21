@@ -3,10 +3,11 @@ package release
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-querystring/query"
 	"io"
 	"net/url"
 	"reflect"
+
+	"github.com/google/go-querystring/query"
 
 	"golang.org/x/oauth2"
 

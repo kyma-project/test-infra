@@ -1,10 +1,11 @@
 package release
 
 import (
-	"cloud.google.com/go/storage"
 	"context"
-	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	"io"
+
+	"cloud.google.com/go/storage"
+	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 )
 
 // StorageAPI exposes a function to read objects from Google Storage buckets
