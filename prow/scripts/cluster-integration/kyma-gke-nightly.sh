@@ -17,34 +17,59 @@ fi
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 function removeCluster() {
-	# Set +e for testing purposes. This should be deleted only we move to daily schedule
-	set +e
-	
-	COMMON_NAME=$1
-	TIMESTAMP=$(echo "${COMMON_NAME}" | cut -d '-' -f 3)
+	CLUSTER_NAME=$1
+
 	EXIT_STATUS=$?
 
 	shout "Delete cluster $CLUSTER_NAME"
-	CLUSTER_NAME=${COMMON_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-	# ToDo Add deletion of IP/DNS
+	shout "Delete Gateway DNS Record"
+	date
+	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
+	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.build.kyma-project.io."
+	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-nightly/${REPO_OWNER}/${REPO_NAME}:${TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+	shout "Release Gateway IP Address"
+	date
+	GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
+	IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+	shout "Delete Remote Environments DNS Record"
+	date
+	REMOTEENVS_IP_ADDRESS=$(gcloud compute addresses describe "remoteenvs-${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
+	REMOTEENVS_DNS_FULL_NAME="gateway.${CLUSTER_NAME}.build.kyma-project.io."
+	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/delete-dns-record.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+	shout "Release Remote Environments IP Address"
+	date
+	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${CLUSTER_NAME}"
+	IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/release-ip-address.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+	shout "Delete temporary Kyma-Installer Docker image"
+	date
+
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 	MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
+	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+	shout "Job is finished ${MSG}"
+	date
 }
 
 function createCluster() {
-	# Set +e for testing purposes. This should be deleted only we move to daily schedule
-	set +e
-
 	DNS_SUBDOMAIN="${COMMON_NAME}"
 	shout "Build Kyma-Installer Docker image"
 	date
@@ -55,41 +80,49 @@ function createCluster() {
 	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
-	export CLEANUP_GATEWAY_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Ingressgateway IP"
 	date
 	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
-	export CLEANUP_GATEWAY_DNS_RECORD="true"
 
 	shout "Reserve IP Address for Remote Environments"
 	date
 	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
 	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-	export CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 
 	shout "Create DNS Record for Remote Environments IP"
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
-	export CLEANUP_REMOTEENVS_DNS_RECORD="true"
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
-	export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+	
 	if [ -z "$MACHINE_TYPE" ]; then
 		export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
 	fi
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	export CLEANUP_CLUSTER="true"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
 function installKyma() {
+
+	kymaUnsetVar=false
+
+	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS ; do
+    	if [ -z "${!var}" ] ; then
+        	echo "ERROR: $var is not set"
+        	kymaUnsetVar=true
+    	fi
+	done
+	if [ "${kymaUnsetVar}" = true ] ; then
+    	exit 1
+	fi
+
 	DNS_SUBDOMAIN="${COMMON_NAME}"
 	
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
@@ -100,6 +133,8 @@ function installKyma() {
 	shout "Generate self-signed certificate"
 	date
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+	export DOMAIN
+
 	CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-self-signed-cert.sh)
 	TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 	TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
@@ -125,10 +160,10 @@ function installKyma() {
 }
 
 function installStabilityChecker() {
-	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'\"'([0-9A-Za-z_-]+)'\"' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
-	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '\"'([0-9A-Za-z_-]+)'\"' was successful"}
-	STATS_ENABLED=true
-	
+	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'([0-9A-Za-z_-]+)' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
+	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '([0-9A-Za-z_-]+)' was successful"}
+	STATS_ENABLED="true"
+
 	SC_DIR=${KYMA_SOURCES_DIR}/tools/stability-checker
 
 	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
@@ -145,6 +180,7 @@ function installStabilityChecker() {
 	        --set stats.enabled="${STATS_ENABLED}" \
 	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
 	        --set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
+	        --set testResultWindowTime="1h" \
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
 	        --name=stability-checker
@@ -158,6 +194,7 @@ export REPO_NAME
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
@@ -169,6 +206,7 @@ fi
 
 readonly NAME_ROOT="gkeint-nightly"
 readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
+export COMMON_NAME
 readonly KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${NAME_ROOT}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
 export KYMA_INSTALLER_IMAGE
 
@@ -198,10 +236,6 @@ if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 	done
 fi
 
-shout "Build Kyma-Installer Docker image"
-date
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
-
 shout "Create new cluster"
 date
 createCluster
@@ -214,10 +248,6 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Install kyma"
 date
 installKyma
-
-shout "Test kyma"
-date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 shout "Install stability-checker"
 date
