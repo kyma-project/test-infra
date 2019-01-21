@@ -3,10 +3,6 @@ package release
 import (
 	"bytes"
 	"context"
-	"strings"
-
-	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	"github.com/kyma-project/test-infra/development/tools/pkg/file"
 	"github.com/pkg/errors"
 )
 
@@ -20,14 +16,18 @@ type Options struct {
 }
 
 //NewOptions returns new instance of Options
-func NewOptions(ctx context.Context, storage StorageAPI, releaseVersionFilePath, releaseChangelogName, commitish string) (*Options, error) {
+func NewOptions(ctx context.Context, storage StorageAPI, releaseVersionFilePath, releaseChangelogName, commitish string, r VersionReader) (*Options, error) {
 
 	relOpts := &Options{
 		storage:      storage,
 		TargetCommit: commitish,
 	}
 
-	releaseVersion, isPreRelease, err := readReleaseVersion(releaseVersionFilePath)
+	if r == nil {
+		r = NewVersionReader()
+	}
+
+	releaseVersion, isPreRelease, err := r.Read(releaseVersionFilePath)
 	if err != nil {
 		return nil, errors.Wrapf(err, "while reading %s file", releaseVersionFilePath)
 	}
@@ -46,27 +46,11 @@ func NewOptions(ctx context.Context, storage StorageAPI, releaseVersionFilePath,
 
 }
 
-func readReleaseVersion(releaseVersionFilePath string) (string, bool, error) {
-
-	common.Shout("Reading release version file")
-
-	releaseVersion, err := file.ReadFile(releaseVersionFilePath)
-	if err != nil {
-		return "", false, err
-	}
-
-	isPreRelease := strings.Contains(releaseVersion, "rc")
-
-	common.Shout("Release version: %s, Pre-release: %t", releaseVersion, isPreRelease)
-
-	return releaseVersion, isPreRelease, nil
-}
-
 func (ro *Options) readReleaseBody(ctx context.Context, releaseVersion, releaseChangelogName string) (string, error) {
 
 	releaseChangelogFullName := releaseVersion + "/" + releaseChangelogName
 
-	releaseChangelogData, _,  err := ro.storage.ReadBucketObject(ctx, releaseChangelogFullName)
+	releaseChangelogData, _, err := ro.storage.ReadBucketObject(ctx, releaseChangelogFullName)
 	if err != nil {
 		return "", nil
 	}

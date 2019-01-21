@@ -70,7 +70,7 @@ func main() {
 
 	c := release.NewCreator(ga, sa)
 
-	relOpts, err := release.NewOptions(ctx, sa, *releaseVersionFilePath, *kymaChangelog, *targetCommit)
+	relOpts, err := release.NewOptions(ctx, sa, *releaseVersionFilePath, *kymaChangelog, *targetCommit, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

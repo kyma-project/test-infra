@@ -2,8 +2,6 @@ package release_test
 
 import (
 	"context"
-	"io/ioutil"
-	"os"
 	"testing"
 
 	. "github.com/kyma-project/test-infra/development/tools/pkg/release"
@@ -22,6 +20,7 @@ func TestCreateRelease(t *testing.T) {
 	Convey("CreateNewRelease func", t, func() {
 
 		ctx := context.Background()
+		vReader := &FakeKymaVersionReader{}
 
 		Convey("provided with correct release data", func() {
 
@@ -33,10 +32,8 @@ func TestCreateRelease(t *testing.T) {
 			mockRelVer := "0.0.1"
 			expectedBody := "test artifact data for 0.0.1/change-record.md"
 
-			mockVersionFile := createMockVersionFile(mockRelVer)
-			defer os.Remove(mockVersionFile.Name())
 
-			relOpts, _ := NewOptions(ctx, fakeStorage, mockVersionFile.Name(), mockChangelogFileName, mockCommitish)
+			relOpts, _ := NewOptions(ctx, fakeStorage, mockRelVer, mockChangelogFileName, mockCommitish, vReader)
 
 			Convey("should download three files from Google Storage, create a release and upload two assets", func() {
 
@@ -69,7 +66,7 @@ func TestCreateRelease(t *testing.T) {
 			expectedBody := "test artifact data for 0.0.2-rc/change-record.md"
 
 
-			relOpts, _ := NewOptions(ctx, fakeStorage, mockVersionFile.Name(), mockChangelogFileName, mockCommitish)
+			relOpts, _ := NewOptions(ctx, fakeStorage, mockRelVer, mockChangelogFileName, mockCommitish, vReader)
 
 			Convey("should download three files from Google Storage, create a pre-release and upload two assets", func() {
 
