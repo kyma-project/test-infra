@@ -25,23 +25,33 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-trap cleanup EXIT
+retries=3
+retryTimeInSec="5"
+function createDNSWithRetries() {
+    set +e
 
-cleanup() {
-    if [ "${CLEANUP_DNS_TRANSACTION}" == true ]; then
+    for ((i=1; i<=retries; i++)); do
+        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+
+        [[ $? -eq 0 ]] && break
+
         gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
-    fi
+
+        if [[ "${i}" -lt "${retries}" ]]; then
+            echo "Unable to create DNS record, let's wait ${retryTimeInSec} seconds and retry [${i}/${retries}]."
+        else
+            echo "Unable to create DNS record after ${retries} retries, giving up."
+        fi
+
+        sleep retryTimeInSec
+    done
+
+    set -e
 }
 
-CLEANUP_DNS_TRANSACTION=true
-
-gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}"
-
-gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}"
-
-gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
-
-CLEANUP_DNS_TRANSACTION=false
+createDNSWithRetries
 
 SECONDS=0
 END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
