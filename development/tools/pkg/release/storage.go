@@ -1,16 +1,15 @@
 package release
 
 import (
-	"context"
-	"io/ioutil"
-
 	"cloud.google.com/go/storage"
+	"context"
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
+	"io"
 )
 
 // StorageAPI exposes a function to read objects from Google Storage buckets
 type StorageAPI interface {
-	ReadBucketObject(ctx context.Context, fileName string) ([]byte, error)
+	ReadBucketObject(ctx context.Context, fileName string) (io.Reader, int64, error)
 }
 
 // storageAPIWrapper implements reading objects from Google Storage buckets
@@ -34,14 +33,20 @@ func NewStorageAPI(ctx context.Context, bucketName string) (StorageAPI, error) {
 }
 
 // ReadBucketObject downloads and saves in temporary directory a file specified by fileName from a given bucket
-func (saw *storageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) ([]byte, error) {
+func (saw *storageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) (io.Reader, int64, error) {
 	common.Shout("Reading %s file from %s bucket", fileName, saw.bucketName)
 
-	rc, err := saw.storageClient.Bucket(saw.bucketName).Object(fileName).NewReader(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer rc.Close()
+	obj := saw.storageClient.Bucket(saw.bucketName).Object(fileName)
 
-	return ioutil.ReadAll(rc)
+	attrs, err := obj.Attrs(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	rc, err := obj.NewReader(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return rc, attrs.Size, nil
 }

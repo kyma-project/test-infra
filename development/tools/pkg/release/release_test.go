@@ -22,7 +22,6 @@ func TestCreateRelease(t *testing.T) {
 	Convey("CreateNewRelease func", t, func() {
 
 		ctx := context.Background()
-		initialFileCount := getTmpDirSize()
 
 		Convey("provided with correct release data", func() {
 
@@ -69,8 +68,6 @@ func TestCreateRelease(t *testing.T) {
 			mockRelVer := "0.0.2-rc"
 			expectedBody := "test artifact data for 0.0.2-rc/change-record.md"
 
-			mockVersionFile := createMockVersionFile(mockRelVer)
-			defer os.Remove(mockVersionFile.Name())
 
 			relOpts, _ := NewOptions(ctx, fakeStorage, mockVersionFile.Name(), mockChangelogFileName, mockCommitish)
 
@@ -94,23 +91,6 @@ func TestCreateRelease(t *testing.T) {
 			})
 		})
 
-		Convey("the function should delete any tmp files it created", func() {
-
-			finalFileCount := getTmpDirSize()
-
-			So(finalFileCount, ShouldEqual, initialFileCount)
-
-		})
 	})
 }
 
-func createMockVersionFile(content string) *os.File {
-	file, _ := ioutil.TempFile("", "mockVersionFile")
-	file.Write([]byte(content))
-	return file
-}
-
-func getTmpDirSize() int {
-	files, _ := ioutil.ReadDir(os.TempDir())
-	return len(files)
-}

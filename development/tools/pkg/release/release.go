@@ -2,11 +2,6 @@ package release
 
 import (
 	"context"
-	"os"
-
-	"github.com/kyma-project/test-infra/development/tools/pkg/file"
-
-	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 )
 
@@ -57,36 +52,16 @@ func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64
 
 	fullArtifactName := folderName + "/" + artifactName
 
-	artifactData, err := c.storage.ReadBucketObject(ctx, fullArtifactName)
+	artifactData, size, err := c.storage.ReadBucketObject(ctx, fullArtifactName)
 	if err != nil {
 		return errors.Wrapf(err, "while reading %s file", artifactName)
 	}
 
-	artifactFile, err := file.SaveDataToTmpFile(artifactData, tmpFilePattern)
-	if err != nil {
-		return errors.Wrap(err, "while saving temporary file")
-	}
-
-	defer os.Remove(artifactFile.Name())
-
-	_, _, err = c.uploadFile(ctx, releaseID, artifactFile, artifactName)
+	_, err = c.github.UploadContent(ctx, releaseID, artifactName, artifactData, size)
 	if err != nil {
 		return errors.Wrapf(err, "while uploading %s file", artifactName)
 	}
 
 	return nil
-
-}
-
-func (c *creatorImpl) uploadFile(ctx context.Context, releaseID int64, file *os.File, fileName string) (*github.ReleaseAsset, *github.Response, error) {
-
-	artifactFile, err := os.Open(file.Name())
-	if err != nil {
-		return nil, nil, err
-	}
-
-	defer artifactFile.Close()
-
-	return c.github.UploadFile(ctx, releaseID, fileName, artifactFile)
 
 }

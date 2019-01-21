@@ -2,9 +2,9 @@ package release
 
 import (
 	"context"
-	"os"
-
 	"github.com/google/go-github/github"
+	"io"
+	"strings"
 )
 
 // FakeStorageAPIWrapper is a fake storageAPIWrapper for test purposes
@@ -13,9 +13,10 @@ type FakeStorageAPIWrapper struct {
 }
 
 // ReadBucketObject is a fake implementation of ReadBucketObject func
-func (fsaw *FakeStorageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) ([]byte, error) {
+func (fsaw *FakeStorageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) (io.Reader, int64, error) {
 	fsaw.TimesReadBucketObjectCalled++
-	return []byte("test artifact data for " + fileName), nil
+	return strings.NewReader("test artifact data for " + fileName), 100, nil
+
 }
 
 // FakeGithubAPIWrapper is a fake githubAPIWrapper for test purposes
@@ -45,8 +46,8 @@ func (fgaw *FakeGithubAPIWrapper) CreateGithubRelease(ctx context.Context, opts 
 	return input, nil, nil
 }
 
-// UploadFile is a fake implementation of UploadFile func
-func (fgaw *FakeGithubAPIWrapper) UploadFile(ctx context.Context, releaseID int64, artifactName string, artifactFile *os.File) (*github.ReleaseAsset, *github.Response, error) {
+// UploadContent is a fake implementation of UploadContent func
+func (fgaw *FakeGithubAPIWrapper) UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error) {
 
 	currID := int64(fgaw.AssetCount)
 
@@ -60,6 +61,5 @@ func (fgaw *FakeGithubAPIWrapper) UploadFile(ctx context.Context, releaseID int6
 
 	fgaw.Assets = append(fgaw.Assets, asset)
 
-	return nil, nil, nil
-
+	return nil, nil
 }

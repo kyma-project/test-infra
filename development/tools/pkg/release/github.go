@@ -2,7 +2,11 @@ package release
 
 import (
 	"context"
-	"os"
+	"fmt"
+	"github.com/google/go-querystring/query"
+	"io"
+	"net/url"
+	"reflect"
 
 	"golang.org/x/oauth2"
 
@@ -13,7 +17,7 @@ import (
 // GithubAPI exposes functions to interact with Github releases
 type GithubAPI interface {
 	CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error)
-	UploadFile(ctx context.Context, releaseID int64, artifactName string, artifactFile *os.File) (*github.ReleaseAsset, *github.Response, error)
+	UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error)
 }
 
 // githubAPIWrapper implements functions to interact with Github releases
@@ -41,8 +45,8 @@ func NewGithubAPI(ctx context.Context, githubAccessToken, repoOwner, repoName st
 }
 
 // CreateGithubRelease creates a Github release
-func (gap *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
-	common.Shout("Creating release %s in %s/%s repository", opts.Version, gap.repoOwner, gap.repoName)
+func (gaw *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
+	common.Shout("Creating release %s in %s/%s repository", opts.Version, gaw.repoOwner, gaw.repoName)
 
 	input := &github.RepositoryRelease{
 		TagName:         &opts.Version,
@@ -52,13 +56,48 @@ func (gap *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Opti
 		Prerelease:      &opts.IsPreRelease,
 	}
 
-	return gap.githubClient.Repositories.CreateRelease(ctx, gap.repoOwner, gap.repoName, input)
+	return gaw.githubClient.Repositories.CreateRelease(ctx, gaw.repoOwner, gaw.repoName, input)
 }
 
-// UploadFile adds file to a Github release
-func (gap *githubAPIWrapper) UploadFile(ctx context.Context, releaseID int64, artifactName string, artifactFile *os.File) (*github.ReleaseAsset, *github.Response, error) {
+func (gaw *githubAPIWrapper) UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error) {
+
 	common.Shout("Uploading %s artifact", artifactName)
 
+	u := fmt.Sprintf("repos/%s/%s/releases/%d/assets", gaw.repoOwner, gaw.repoName, releaseID)
+
 	opt := &github.UploadOptions{Name: artifactName}
-	return gap.githubClient.Repositories.UploadReleaseAsset(ctx, gap.repoOwner, gap.repoName, releaseID, opt, artifactFile)
+
+	u, err := addOptions(u, opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := gaw.githubClient.NewUploadRequest(u, reader, size, "")
+	if err != nil {
+		return nil, err
+	}
+
+	asset := new(github.ReleaseAsset)
+
+	return gaw.githubClient.Do(ctx, req, asset)
+}
+
+func addOptions(s string, opt interface{}) (string, error) {
+	v := reflect.ValueOf(opt)
+	if v.Kind() == reflect.Ptr && v.IsNil() {
+		return s, nil
+	}
+
+	u, err := url.Parse(s)
+	if err != nil {
+		return s, err
+	}
+
+	qs, err := query.Values(opt)
+	if err != nil {
+		return s, err
+	}
+
+	u.RawQuery = qs.Encode()
+	return u.String(), nil
 }

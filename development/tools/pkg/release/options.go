@@ -1,6 +1,7 @@
 package release
 
 import (
+	"bytes"
 	"context"
 	"strings"
 
@@ -65,10 +66,13 @@ func (ro *Options) readReleaseBody(ctx context.Context, releaseVersion, releaseC
 
 	releaseChangelogFullName := releaseVersion + "/" + releaseChangelogName
 
-	releaseChangelogData, err := ro.storage.ReadBucketObject(ctx, releaseChangelogFullName)
+	releaseChangelogData, _,  err := ro.storage.ReadBucketObject(ctx, releaseChangelogFullName)
 	if err != nil {
 		return "", nil
 	}
 
-	return string(releaseChangelogData), nil
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(releaseChangelogData)
+
+	return buf.String(), nil
 }
