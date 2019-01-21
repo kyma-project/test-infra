@@ -52,4 +52,4 @@ done;
 
 shout "Triggering the installation"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
+gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
