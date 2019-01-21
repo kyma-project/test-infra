@@ -1,8 +1,8 @@
-# Migration Guide for Release Jobs
+# Create Release Jobs
 
 This document describes the procedure for defining release jobs for Kyma components.
 
->**NOTE:** Before you follow the steps in this guide, read the [migration guide for standard jobs](https://github.com/kyma-project/test-infra/blob/master/docs/prow/migration-guide.md).
+>**NOTE:** Before you follow the steps in this guide, read the [**Create component jobs**](./create-component-jobs.md) document to learn how to create a standard component job.
 
 ## Steps
 
@@ -28,6 +28,7 @@ ci-release: build build-image push-image
 
 The differences between a release job and a job for the `master` branch are as follows:
 - Different branches
+- Different prefixes for job names. Use `pre-rel{number}-` in front of the given release job name. For example, write `pre-rel06-kyma-components-binding-usage-controller`.
 - The `preset-build-release` label used instead of `preset-build-pr`
 - The **extra_refs** parameter for the `test-infra` repository that uses the `release-0.6` branch instead of `master`
 - The **always_run** parameter set to `true` instead of specifying the **run_if_changed** parameter
@@ -40,7 +41,7 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  name: kyma-components-binding-usage-controller
+  name: pre-rel06-kyma-components-binding-usage-controller
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -102,7 +103,7 @@ postsubmits:
 
 ```
 
-The component job configuration in this guide differs from the one defined in the [migration guide for standard jobs](https://github.com/kyma-project/test-infra/blob/master/docs/prow/migration-guide.md) as follows:
+The component job configuration in this guide differs from the one defined in the [**Create component jobs**](./create-component-jobs.md) document as follows:
 
 - The **test-infra-ref** object is defined, where **org**, **repo**, and **path_alias** are specified.
 - **job-template** now defines **name**, but **run_if_changed** and **extra_refs** are removed from it.
@@ -139,4 +140,4 @@ func TestBucReleases(t *testing.T) {
 ```
 
 Follow the presented example to implement tests to reuse them in every release.
-The example uses the `tester.GetAllKymaReleaseBranches()` function that returns all supported Kyma release branches and runs a separate test for every release branch. If you add a new branch, the tests for the release job are already available. This approach assumes that the job definition does not differ between releases, except for the `branch` and `extra-refs.base_ref` parameters.
+The example uses the `tester.GetAllKymaReleaseBranches()` function that returns all supported Kyma release branches and runs a separate test for every release branch. If you add a new branch, the tests for the release job are already available. This approach assumes that the job definition does not differ between releases, except for the **branch** and **extra-refs.base_ref** parameters.

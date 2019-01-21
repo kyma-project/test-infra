@@ -48,6 +48,8 @@ const (
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
+	// ImageGolangBuildpack1_11 means Golang buildpack image with Go 1.11.*
+	ImageGolangBuildpack1_11 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11"
 	// ImageNodeBuildpackLatest means Node.js buildpack image
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
 	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
