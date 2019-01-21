@@ -9,15 +9,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 
-	"cloud.google.com/go/storage"
-	"github.com/google/go-github/github"
-	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	"github.com/kyma-project/test-infra/development/tools/pkg/file"
-	"github.com/kyma-project/test-infra/development/tools/pkg/githubrelease"
+	"github.com/kyma-project/test-infra/development/tools/pkg/release"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/oauth2"
 )
 
 var (
@@ -67,36 +61,22 @@ func main() {
 
 	ctx := context.Background()
 
-	common.Shout("Reading release version file")
+	ga := release.NewGithubAPI(ctx, *githubAccessToken, *githubRepoOwner, *githubRepoName)
 
-	releaseVersion, err := file.ReadFile(*releaseVersionFilePath)
+	sa, err := release.NewStorageAPI(ctx, *bucketName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	isPreRelease := strings.Contains(releaseVersion, "rc")
+	c := release.NewCreator(ga, sa)
 
-	common.Shout("Release version: %s, Pre-release: %t", releaseVersion, isPreRelease)
-
-	storageClient, err := storage.NewClient(ctx)
+	relOpts, err := release.NewOptions(ctx, sa, *releaseVersionFilePath, *kymaChangelog, *targetCommit, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	saw := &githubrelease.StorageAPIWrapper{Context: ctx, StorageClient: storageClient, BucketName: *bucketName, FolderName: releaseVersion}
-
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: *githubAccessToken},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-
-	gap := &githubrelease.GithubAPIWrapper{Context: ctx, Client: client, RepoOwner: *githubRepoOwner, RepoName: *githubRepoName}
-
-	gr := &githubrelease.Release{Github: gap, Storage: saw}
-
-	// Github Release
-	err = gr.CreateRelease(releaseVersion, *targetCommit, *kymaChangelog, *kymaConfigLocal, *kymaConfigCluster, isPreRelease)
+	// Github release
+	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaConfigCluster)
 	if err != nil {
 		log.Fatal(err)
 	}
