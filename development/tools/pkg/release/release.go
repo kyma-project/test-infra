@@ -58,6 +58,8 @@ func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64
 		return errors.Wrapf(err, "while reading %s file", artifactName)
 	}
 
+	defer artifactData.Close()
+
 	_, err = c.github.UploadContent(ctx, releaseID, artifactName, artifactData, size)
 	if err != nil {
 		return errors.Wrapf(err, "while uploading %s file", artifactName)

@@ -56,6 +56,8 @@ func (ro *Options) readReleaseBody(ctx context.Context, releaseVersion, releaseC
 		return "", nil
 	}
 
+	defer releaseChangelogData.Close()
+
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(releaseChangelogData)
 

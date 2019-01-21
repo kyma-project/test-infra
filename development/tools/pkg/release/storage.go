@@ -10,7 +10,7 @@ import (
 
 // StorageAPI exposes a function to read objects from Google Storage buckets
 type StorageAPI interface {
-	ReadBucketObject(ctx context.Context, fileName string) (io.Reader, int64, error)
+	ReadBucketObject(ctx context.Context, fileName string) (io.ReadCloser, int64, error)
 }
 
 // storageAPIWrapper implements reading objects from Google Storage buckets
@@ -34,7 +34,7 @@ func NewStorageAPI(ctx context.Context, bucketName string) (StorageAPI, error) {
 }
 
 // ReadBucketObject downloads and saves in temporary directory a file specified by fileName from a given bucket
-func (saw *storageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) (io.Reader, int64, error) {
+func (saw *storageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) (io.ReadCloser, int64, error) {
 	common.Shout("Reading %s file from %s bucket", fileName, saw.bucketName)
 
 	obj := saw.storageClient.Bucket(saw.bucketName).Object(fileName)
