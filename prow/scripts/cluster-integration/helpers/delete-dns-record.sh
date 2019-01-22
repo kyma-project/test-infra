@@ -24,12 +24,12 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-retries=3
+attempts=3
 retryTimeInSec="5"
 function deleteDNSWithRetries() {
     set +e
 
-    for ((i=1; i<=retries; i++)); do
+    for ((i=1; i<=attempts; i++)); do
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
         gcloud dns record-sets transaction remove "${IP_ADDRESS}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${DNS_FULL_NAME}" --type=A --ttl=300 && \
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
@@ -38,10 +38,11 @@ function deleteDNSWithRetries() {
 
         gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
 
-        if [[ "${i}" -lt "${retries}" ]]; then
-            echo "Unable to delete DNS record, let's wait ${retryTimeInSec} seconds and retry [${i}/${retries}]."
+        if [[ "${i}" -lt "${attempts}" ]]; then
+            echo "Unable to delete DNS record, let's wait ${retryTimeInSec} seconds and retry. Attempts ${i} of ${attempts}."
         else
-            echo "Unable to delete DNS record after ${retries} retries, giving up."
+            echo "Unable to delete DNS record after ${attempts} attempts, giving up."
+            exit 1
         fi
 
         sleep ${retryTimeInSec}
