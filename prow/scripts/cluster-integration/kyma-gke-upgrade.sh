@@ -279,6 +279,7 @@ function upgradeKyma() {
     else
         shout "Build Kyma Installer Docker image"
         date
+        readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
         KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
         export KYMA_INSTALLER_IMAGE
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
