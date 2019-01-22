@@ -44,7 +44,7 @@ function deleteDNSWithRetries() {
             echo "Unable to delete DNS record after ${retries} retries, giving up."
         fi
 
-        sleep retryTimeInSec
+        sleep ${retryTimeInSec}
     done
 
     set -e

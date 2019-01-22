@@ -45,7 +45,7 @@ function createDNSWithRetries() {
             echo "Unable to create DNS record after ${retries} retries, giving up."
         fi
 
-        sleep retryTimeInSec
+        sleep ${retryTimeInSec}
     done
 
     set -e
