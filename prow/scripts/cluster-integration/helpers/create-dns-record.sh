@@ -35,7 +35,9 @@ function createDNSWithRetries() {
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
-        [[ $? -eq 0 ]] && break
+        if [[ $? -eq 0 ]]; then
+            break
+        fi
 
         gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
 

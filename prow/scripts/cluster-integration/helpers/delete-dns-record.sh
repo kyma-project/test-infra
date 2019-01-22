@@ -34,7 +34,9 @@ function deleteDNSWithRetries() {
         gcloud dns record-sets transaction remove "${IP_ADDRESS}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${DNS_FULL_NAME}" --type=A --ttl=300 && \
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
-        [[ $? -eq 0 ]] && break
+        if [[ $? -eq 0 ]]; then
+            break
+        fi
 
         gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
 
