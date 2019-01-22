@@ -40,6 +40,9 @@ export CLUSTER_NAME="${COMMON_NAME}"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function removeCluster() {
+	#Turn off exit-on-error so that next step is executed even if previous one fails.
+	set +e
+
 	CLUSTER_NAME=$1
 
 	EXIT_STATUS=$?
@@ -91,6 +94,8 @@ function removeCluster() {
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
 	shout "Job is finished ${MSG}"
 	date
+
+	set -e
 }
 
 function createCluster() {
@@ -210,7 +215,7 @@ function installStabilityChecker() {
 }
 
 function cleanup() {
-    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~${NAME_ROOT}" --format json | jq '.[].name' | tr -d '"')
+    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${NAME_ROOT}-" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 	    shout "Delete old cluster"
