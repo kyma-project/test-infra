@@ -1,15 +1,16 @@
 package release
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestParseVersion(t *testing.T) {
 
 	Convey("TestParseVersion func", t, func() {
 
-		Convey("should return false and no error if the provided version is valid and refers to a full-release", func(){
+		Convey("should return false and no error if the provided version is valid and refers to a full-release", func() {
 
 			//given
 			version := "0.0.4"
@@ -23,7 +24,7 @@ func TestParseVersion(t *testing.T) {
 
 		})
 
-		Convey("should return true and no error if the provided version is valid and refers to a pre-release", func(){
+		Convey("should return true and no error if the provided version is valid and refers to a pre-release", func() {
 
 			//given
 			version := "0.0.3-rc"
@@ -37,7 +38,7 @@ func TestParseVersion(t *testing.T) {
 
 		})
 
-		Convey("should return an error if the provided version is not in line with SemVer specification", func(){
+		Convey("should return an error if the provided version is not in line with SemVer specification", func() {
 
 			//given
 			version := "0.2"
@@ -50,7 +51,7 @@ func TestParseVersion(t *testing.T) {
 
 		})
 
-		Convey("should return an error if the provided version is malformed", func(){
+		Convey("should return an error if the provided version is malformed", func() {
 
 			//given
 			version := "0.0.1-zz"
