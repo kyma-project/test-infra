@@ -293,6 +293,7 @@ periodics:
   labels:
     preset-slack-notifications: "true"
     preset-build-master: "true"
+    preset-dex-github-integration: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:

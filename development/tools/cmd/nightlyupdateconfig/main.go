@@ -2,39 +2,36 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"path"
-
 	"github.com/ghodss/yaml"
+	"io/ioutil"
+	"os"
 )
 
 const (
-	envKymaProjectDir                      = "KYMA_PROJECT_DIR"
-	envDexGithubIntegrationAppClientID     = "DEX_GITHUB_INTEGRATION_APP_CLIENT_ID"
-	envDexGithubIntegrationAppClientSecret = "DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET"
+	ENV_KYMA_PROJECT_DIR                         = "KYMA_PROJECT_DIR"
+	ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_ID     = "DEX_GITHUB_INTEGRATION_APP_CLIENT_ID"
+	ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET = "DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET"
 )
 
 func main() {
-	kymaProjectDirVal := os.Getenv(envKymaProjectDir)
-	clientID := os.Getenv(envDexGithubIntegrationAppClientID)
-	clientSecret := os.Getenv(envDexGithubIntegrationAppClientSecret)
+	kymaProjectDirVal := os.Getenv(ENV_KYMA_PROJECT_DIR)
+	clientID := os.Getenv(ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_ID)
+	clientSecret := os.Getenv(ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET)
 	if kymaProjectDirVal == "" {
-		log.Fatalf("missing env: %s", envKymaProjectDir)
+		panic("missing env: " + ENV_KYMA_PROJECT_DIR)
 	}
 	if clientID == "" {
-		log.Fatalf("missing env: %s", envDexGithubIntegrationAppClientID)
+		panic("missing env: " + ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_ID)
 	}
 	if clientSecret == "" {
-		log.Fatalf("missing env: %s", envDexGithubIntegrationAppClientSecret)
+		panic("missing env: " + ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET)
 	}
 
-	kymaPath := fmt.Sprintf("%s/kymaPath", kymaProjectDirVal)
+	kyma := fmt.Sprintf("%s/kyma", kymaProjectDirVal)
 	clusterUsers := "/resources/core/charts/cluster-users/values.yaml"
 	dexConfigMap := "/resources/dex/templates/dex-config-map.yaml"
 
-	fUsers, err := os.OpenFile(path.Join(kymaPath, clusterUsers), os.O_RDWR, os.ModeAppend)
+	fUsers, err := os.OpenFile(kyma+clusterUsers, os.O_RDWR, os.ModeAppend)
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +62,7 @@ func main() {
 		panic(err)
 	}
 
-	fConfigMap, err := os.OpenFile(path.Join(kymaPath, dexConfigMap), os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	fConfigMap, err := os.OpenFile(kyma+dexConfigMap, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		panic(err)
 	}
@@ -94,18 +91,14 @@ var githubConnectorPattern = `
         - name: aszecowka-org
 `
 
-// RootClusterUsers .
 type RootClusterUsers struct {
 	Bindings Bindings `json:"bindings"`
 }
-
-// Bindings .
 type Bindings struct {
 	KymaAdmin Groups `json:"kymaAdmin"`
 	KymaView  Groups `json:"kymaView"`
 }
 
-// Groups .
 type Groups struct {
 	Groups []string `json:"groups"`
 }

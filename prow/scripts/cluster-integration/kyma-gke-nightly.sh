@@ -228,9 +228,17 @@ function cleanup() {
 
 }
 
+function addGithubDexConnector() {
+    shout "Add Github Dex Connector"
+    go run ${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go
+}
+
+
 shout "Authenticate"
 date
 init
+
+addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
