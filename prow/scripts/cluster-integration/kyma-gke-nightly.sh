@@ -230,7 +230,7 @@ function cleanup() {
 
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
-    go run ${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go
+    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
 }
 
 
