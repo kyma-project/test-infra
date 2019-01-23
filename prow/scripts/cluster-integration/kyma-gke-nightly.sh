@@ -23,9 +23,6 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-export DNS_DOMAIN
-
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
 readonly NAME_ROOT="gkeint-nightly"
@@ -230,6 +227,9 @@ function cleanup() {
 shout "Authenticate"
 date
 init
+
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+export DNS_DOMAIN
 
 shout "Cleanup"
 date
