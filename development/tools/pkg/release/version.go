@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-// VersionReader wraps the Read method that reads RELEASE_VERSION file
+// VersionReader wraps the ReadFromFile method that reads RELEASE_VERSION file
 type VersionReader interface {
-	Read(filePath string) (string, bool, error)
+	ReadFromFile(filePath string) (string, bool, error)
 }
 
 type kymaVersionReader struct{}
@@ -21,7 +21,8 @@ func NewVersionReader() VersionReader {
 	return &kymaVersionReader{}
 }
 
-func (*kymaVersionReader) Read(filePath string) (string, bool, error) {
+// ReadFromFile reads the file that contains Kyma version and returns it. It returns true if it is a pre-release version.
+func (*kymaVersionReader) ReadFromFile(filePath string) (string, bool, error) {
 
 	common.Shout("Reading release version file")
 
@@ -30,19 +31,27 @@ func (*kymaVersionReader) Read(filePath string) (string, bool, error) {
 		return "", false, err
 	}
 
-	r, err := regexp.Compile("^(\\d.){2}\\d(-rc)?$")
+	isPreRelease, err := parseVersion(releaseVersion)
 	if err != nil {
 		return "", false, err
 	}
-
-	if !r.MatchString(releaseVersion) {
-		return "", false, errors.New("Kyma version provided in the RELASE_VERSION file is malformed")
-	}
-
-	isPreRelease := strings.Contains(releaseVersion, "rc")
 
 	common.Shout("Release version: %s, Pre-release: %t", releaseVersion, isPreRelease)
 
 	return releaseVersion, isPreRelease, nil
 
+}
+
+func parseVersion(releaseVersion string) (bool, error) {
+
+	r, err := regexp.Compile("^(\\d.){2}\\d(-rc)?$")
+	if err != nil {
+		return false, err
+	}
+
+	if !r.MatchString(releaseVersion) {
+		return false, errors.New("Kyma version provided in the RELEASE_VERSION file is malformed")
+	}
+
+	return strings.Contains(releaseVersion, "rc"), nil
 }

@@ -28,7 +28,7 @@ func NewOptions(ctx context.Context, storage StorageAPI, releaseVersionFilePath,
 		r = NewVersionReader()
 	}
 
-	releaseVersion, isPreRelease, err := r.Read(releaseVersionFilePath)
+	releaseVersion, isPreRelease, err := r.ReadFromFile(releaseVersionFilePath)
 	if err != nil {
 		return nil, errors.Wrapf(err, "while reading %s file", releaseVersionFilePath)
 	}
