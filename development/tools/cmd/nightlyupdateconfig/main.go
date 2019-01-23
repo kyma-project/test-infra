@@ -2,29 +2,30 @@ package main
 
 import (
 	"fmt"
-	"github.com/ghodss/yaml"
 	"io/ioutil"
 	"os"
+
+	"github.com/ghodss/yaml"
 )
 
 const (
-	ENV_KYMA_PROJECT_DIR                         = "KYMA_PROJECT_DIR"
-	ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_ID     = "DEX_GITHUB_INTEGRATION_APP_CLIENT_ID"
-	ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET = "DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET"
+	envKymaProjectDir                      = "KYMA_PROJECT_DIR"
+	envDexGithubIntegrationAppClientID     = "DEX_GITHUB_INTEGRATION_APP_CLIENT_ID"
+	envDexGithubIntegrationAppClientSecret = "DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET"
 )
 
 func main() {
-	kymaProjectDirVal := os.Getenv(ENV_KYMA_PROJECT_DIR)
-	clientID := os.Getenv(ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_ID)
-	clientSecret := os.Getenv(ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET)
+	kymaProjectDirVal := os.Getenv(envKymaProjectDir)
+	clientID := os.Getenv(envDexGithubIntegrationAppClientID)
+	clientSecret := os.Getenv(envDexGithubIntegrationAppClientSecret)
 	if kymaProjectDirVal == "" {
-		panic("missing env: " + ENV_KYMA_PROJECT_DIR)
+		panic("missing env: " + envKymaProjectDir)
 	}
 	if clientID == "" {
-		panic("missing env: " + ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_ID)
+		panic("missing env: " + envDexGithubIntegrationAppClientID)
 	}
 	if clientSecret == "" {
-		panic("missing env: " + ENV_DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET)
+		panic("missing env: " + envDexGithubIntegrationAppClientSecret)
 	}
 
 	kyma := fmt.Sprintf("%s/kyma", kymaProjectDirVal)
@@ -91,14 +92,18 @@ var githubConnectorPattern = `
         - name: aszecowka-org
 `
 
+// RootClusterUsers .
 type RootClusterUsers struct {
 	Bindings Bindings `json:"bindings"`
 }
+
+// Bindings .
 type Bindings struct {
 	KymaAdmin Groups `json:"kymaAdmin"`
 	KymaView  Groups `json:"kymaView"`
 }
 
+// Groups .
 type Groups struct {
 	Groups []string `json:"groups"`
 }
