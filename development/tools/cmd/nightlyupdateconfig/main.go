@@ -30,7 +30,7 @@ func main() {
 		log.Fatalf("missing env: %s", envDexGithubIntegrationAppClientSecret)
 	}
 
-	kymaPath := fmt.Sprintf("%s/kymaPath", kymaProjectDirVal)
+	kymaPath := fmt.Sprintf("%s/kyma", kymaProjectDirVal)
 	clusterUsers := "/resources/core/charts/cluster-users/values.yaml"
 	dexConfigMap := "/resources/dex/templates/dex-config-map.yaml"
 
