@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# TODO: This is only temporary solution, to validate POC - Add dex github integration to nightly cluster
 set -o errexit
 
 discoverUnsetVar=false
@@ -25,7 +26,7 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
-readonly NAME_ROOT="gkeint-nightly"
+readonly NAME_ROOT="gkeint-nightly-dex"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
@@ -198,7 +199,7 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
-	helm install --set clusterName="Nightly" \
+	helm install --set clusterName="Nightly With DEX" \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
 	        --set slackClientChannelId="${SLACK_CLIENT_CHANNEL_ID}" \
 	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
@@ -224,9 +225,17 @@ function cleanup() {
 
 }
 
+function addGithubDexConnector() {
+    shout "Add Github Dex Connector"
+    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
+}
+
+
 shout "Authenticate"
 date
 init
+
+addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
