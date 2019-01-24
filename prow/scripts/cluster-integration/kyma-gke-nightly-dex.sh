@@ -238,11 +238,10 @@ function addGithubDexConnector() {
     export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
     mkdir -p ${GOPATH}/bin
     mkdir -p ${GOPATH}/src
-    
+
     echo "Install dep"
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-    pushd
-    cd ${KYMA_PROJECT_DIR}/test-infra/development/tools
+    pushd ${KYMA_PROJECT_DIR}/test-infra/development/tools
     dep ensure -v -vendor-only
     popd
     ./go/bin/go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
