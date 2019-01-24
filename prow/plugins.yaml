@@ -1,4 +1,6 @@
 plugins:
+  mszostok: # TODO only for testing purposes
+    - trigger
   kyma-project:
     - cat
     - trigger
