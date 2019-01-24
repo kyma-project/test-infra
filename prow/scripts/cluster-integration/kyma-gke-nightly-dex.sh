@@ -230,7 +230,13 @@ function addGithubDexConnector() {
     echo "Install Go"
     export GO_VERSION=1.11.4
     wget https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
-    tar xzf go${GO_VERSION}.linux-amd64.tar.gz
+    tar xzf go${GO_VERSION}.linux-amd64.tar.gz  && \
+    rm go${GO_VERSION}.linux-amd64.tar.gz && \
+    mv go /usr/local
+
+    export GOPATH=/workspace/go
+    export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+    
     echo "Install dep"
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     pushd
