@@ -125,6 +125,21 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.6
 
+  - name: pre-master-kyma-gke-upgrade
+    branches:
+    - master
+    <<: *gke_upgrade_job_template
+    run_if_changed: "^(resources|installation)"
+    optional: true
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+
+  mszostok/kyma:
   # TODO only for testing purposes
   - name: pre-rel07-kyma-gke-integration
     branches:
@@ -154,20 +169,6 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.7
-
-  - name: pre-master-kyma-gke-upgrade
-    branches:
-    - master
-    <<: *gke_upgrade_job_template
-    run_if_changed: "^(resources|installation)"
-    optional: true
-    labels:
-      preset-bot-github-token: "true"
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
 
 # TODO: define the pre-rel07-kyma-gke-upgrade job when releasing Kyma 0.7 Dublin version
 
