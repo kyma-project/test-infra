@@ -234,10 +234,9 @@ function addGithubDexConnector() {
     rm go${GO_VERSION}.linux-amd64.tar.gz && \
     mv go /usr/local
 
-    export GOPATH=/workspace/go
+    export GOPATH=/home/prow/go
     export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
     mkdir -p ${GOPATH}/bin
-    mkdir -p ${GOPATH}/src
 
     echo "Install dep"
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
