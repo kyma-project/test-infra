@@ -243,7 +243,7 @@ function addGithubDexConnector() {
     pushd ${KYMA_PROJECT_DIR}/test-infra/development/tools
     dep ensure -v -vendor-only
     popd
-    ./go/bin/go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
+    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
 }
 
 
