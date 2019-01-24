@@ -227,9 +227,16 @@ function cleanup() {
 
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
+    echo "Install Go"
     export GO_VERSION=1.11.4
     wget https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar xzf go${GO_VERSION}.linux-amd64.tar.gz
+    echo "Install dep"
+    curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+    pushd
+    cd ${KYMA_PROJECT_DIR}/test-infra/development/tools
+    dep ensure -v -vendor-only
+    popd
     ./go/bin/go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
 }
 
