@@ -247,16 +247,35 @@ function installKyma() {
 
 
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-    echo "Use released artifacts from version ${LAST_RELEASE_VERSION}"
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-    sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
+    shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
+
+    NEW_WAY_OF_RELEASE_VER="0.7.0"
+    if [[ "$(printf '%s\n' "$NEW_WAY_OF_RELEASE_VER" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_WAY_OF_RELEASE_VER" ]]; then
+        echo "Used Kyma release version is greater than or equal to 0.7.0. Using new way of installing Kyma release"
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
+        sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
+            | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
+            | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
+            | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+            | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
+            | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+            | sed -e "s/__.*__//g" \
+            | kubectl apply -f-
+    else
+        echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
+        sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
+            | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
+            | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
+            | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+            | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
+            | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+            | sed -e "s/__.*__//g" \
+            | kubectl apply -f-
+    fi
 
     shout "Trigger installation with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
