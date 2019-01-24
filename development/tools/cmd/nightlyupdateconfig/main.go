@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
-
 	"github.com/ghodss/yaml"
+	"io/ioutil"
+	"log"
+	"os"
+	"path"
 )
 
 const (
@@ -19,20 +20,20 @@ func main() {
 	clientID := os.Getenv(envDexGithubIntegrationAppClientID)
 	clientSecret := os.Getenv(envDexGithubIntegrationAppClientSecret)
 	if kymaProjectDirVal == "" {
-		panic("missing env: " + envKymaProjectDir)
+		log.Fatalf("missing env: %s", envKymaProjectDir)
 	}
 	if clientID == "" {
-		panic("missing env: " + envDexGithubIntegrationAppClientID)
+		log.Fatalf("missing env: %s", envDexGithubIntegrationAppClientID)
 	}
 	if clientSecret == "" {
-		panic("missing env: " + envDexGithubIntegrationAppClientSecret)
+		log.Fatalf("missing env: %s", envDexGithubIntegrationAppClientSecret)
 	}
 
-	kyma := fmt.Sprintf("%s/kyma", kymaProjectDirVal)
+	kymaPath := fmt.Sprintf("%s/kymaPath", kymaProjectDirVal)
 	clusterUsers := "/resources/core/charts/cluster-users/values.yaml"
 	dexConfigMap := "/resources/dex/templates/dex-config-map.yaml"
 
-	fUsers, err := os.OpenFile(kyma+clusterUsers, os.O_RDWR, os.ModeAppend)
+	fUsers, err := os.OpenFile(path.Join(kymaPath, clusterUsers), os.O_RDWR, os.ModeAppend)
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +64,7 @@ func main() {
 		panic(err)
 	}
 
-	fConfigMap, err := os.OpenFile(kyma+dexConfigMap, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	fConfigMap, err := os.OpenFile(path.Join(kymaPath, dexConfigMap), os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		panic(err)
 	}
