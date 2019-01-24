@@ -162,6 +162,7 @@ presubmits: # runs on PRs
     <<: *gke_upgrade_job_template
     always_run: false
     labels:
+      preset-bot-github-token: "true"
       preset-build-release: "true"
       <<: *gke_job_labels_template
     extra_refs:
