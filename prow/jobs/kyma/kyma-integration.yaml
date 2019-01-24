@@ -208,7 +208,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-(gkeint|gke-upgrade).*[-]pvc[-]'"
       resources:
         requests:
           memory: 1Gi
@@ -229,7 +229,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -clusterNameRegexp='^gke(int|-upgrade)[-](pr|commit|rel)[-].*'"
       resources:
         requests:
           memory: 1Gi
