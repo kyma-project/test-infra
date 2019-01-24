@@ -304,7 +304,7 @@ periodics:
           cpu: 80m
 
 - name: kyma-gke-nightly-with-dex-auth
-  cron: "0 10 * * 1-5" # "At 10:00 on every day-of-week from Monday through Friday."
+  cron: "0 8-18 * * 1-5" # "At minute 0 past every hour from 8 through 18 on every day-of-week from Monday through Friday."
   labels:
     preset-slack-notifications: "true"
     preset-build-master: "true"
