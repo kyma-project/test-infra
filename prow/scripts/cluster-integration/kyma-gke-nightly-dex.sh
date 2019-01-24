@@ -236,6 +236,8 @@ function addGithubDexConnector() {
 
     export GOPATH=/workspace/go
     export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+    mkdir -p ${GOPATH}/bin
+    mkdir -p ${GOPATH}/src
     
     echo "Install dep"
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
