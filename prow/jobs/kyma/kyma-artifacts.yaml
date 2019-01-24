@@ -38,3 +38,18 @@ presubmits: # runs on PRs
       base_ref: release-0.6
     labels:
       <<: *job_labels_template
+
+  # TODO only for testing purposes
+  mszostok/kyma:
+  - name: pre-rel07-kyma-artifacts
+    branches:
+    - release-0.7
+    <<: *job_template
+    always_run: false
+    extra_refs:
+    - org: mszostok
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.7
+    labels:
+      <<: *job_labels_template
