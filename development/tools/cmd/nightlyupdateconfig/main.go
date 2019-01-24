@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/ghodss/yaml"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
+
+	"github.com/ghodss/yaml"
 )
 
 const (
