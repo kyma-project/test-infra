@@ -26,7 +26,7 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
-readonly NAME_ROOT="gkeint-nightly-dex"
+readonly NAME_ROOT="dex-gkeint-night"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
