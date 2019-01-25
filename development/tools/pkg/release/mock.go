@@ -12,7 +12,8 @@ import (
 // FakeKymaVersionReader is a fake kymaVersionReader for test purposes
 type FakeKymaVersionReader struct{}
 
-func (fkvr *FakeKymaVersionReader) Read(filePath string) (string, bool, error) {
+// ReadFromFile is a fake implementation of a ReadFromFile method
+func (fkvr *FakeKymaVersionReader) ReadFromFile(filePath string) (string, bool, error) {
 	return filePath, strings.Contains(filePath, "rc"), nil
 }
 

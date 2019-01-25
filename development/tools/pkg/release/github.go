@@ -60,6 +60,7 @@ func (gaw *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Opti
 	return gaw.githubClient.Repositories.CreateRelease(ctx, gaw.repoOwner, gaw.repoName, input)
 }
 
+// UploadContent creates an asset by uploading a file into a release repository
 func (gaw *githubAPIWrapper) UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error) {
 
 	common.Shout("Uploading %s artifact", artifactName)
