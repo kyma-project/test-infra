@@ -24,6 +24,20 @@ func TestParseVersion(t *testing.T) {
 
 		})
 
+		Convey("should accept multi-digit numbers", func() {
+
+			//given
+			version := "10.204.35000"
+
+			//when
+			isPreRel, err := parseVersion(version)
+
+			//then
+			So(err, ShouldBeNil)
+			So(isPreRel, ShouldBeFalse)
+
+		})
+
 		Convey("should return true and no error if the provided version is valid and refers to a pre-release", func() {
 
 			//given
