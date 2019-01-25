@@ -93,6 +93,7 @@ var githubConnectorPattern = `
         orgs:
         - name: aszecowka-org
 `
+//TODO  change this redirectURI: https://dex.kyma.local/callback
 
 // RootClusterUsers .
 type RootClusterUsers struct {
