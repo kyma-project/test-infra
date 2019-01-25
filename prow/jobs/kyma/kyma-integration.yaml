@@ -139,7 +139,19 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-# TODO: define the pre-rel07-kyma-gke-upgrade job when releasing Kyma 0.7 Dublin version
+    # Already defined to ensure that pipeline is defined for the new upgrade job
+  - name: pre-rel07-kyma-gke-upgrade
+    branches:
+    - release-0.7
+    <<: *gke_upgrade_job_template
+    always_run: false
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.7
 
 postsubmits:
   kyma-project/kyma:
