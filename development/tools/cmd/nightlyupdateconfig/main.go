@@ -14,12 +14,15 @@ const (
 	envKymaProjectDir                      = "KYMA_PROJECT_DIR"
 	envDexGithubIntegrationAppClientID     = "DEX_GITHUB_INTEGRATION_APP_CLIENT_ID"
 	envDexGithubIntegrationAppClientSecret = "DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET"
+	envDexCallbackURL                      = "DEX_CALLBACK_URL"
 )
 
 func main() {
 	kymaProjectDirVal := os.Getenv(envKymaProjectDir)
 	clientID := os.Getenv(envDexGithubIntegrationAppClientID)
 	clientSecret := os.Getenv(envDexGithubIntegrationAppClientSecret)
+	dexCallbackURL := os.Getenv(envDexCallbackURL)
+
 	if kymaProjectDirVal == "" {
 		log.Fatalf("missing env: %s", envKymaProjectDir)
 	}
@@ -28,6 +31,9 @@ func main() {
 	}
 	if clientSecret == "" {
 		log.Fatalf("missing env: %s", envDexGithubIntegrationAppClientSecret)
+	}
+	if dexCallbackURL == "" {
+		log.Fatalf("missing env: %s", envDexCallbackURL)
 	}
 
 	kymaPath := fmt.Sprintf("%s/kyma", kymaProjectDirVal)
@@ -71,7 +77,7 @@ func main() {
 	}
 
 	_, err = fConfigMap.Write([]byte(
-		fmt.Sprintf(githubConnectorPattern, clientID, clientSecret)))
+		fmt.Sprintf(githubConnectorPattern, clientID, clientSecret, dexCallbackURL)))
 
 	if err != nil {
 		panic(err)
@@ -89,7 +95,7 @@ var githubConnectorPattern = `
       config:
         clientID: %s
         clientSecret: %s
-        redirectURI: https://dex.kyma.local/callback
+        redirectURI: %s
         orgs:
         - name: aszecowka-org
 `

@@ -29,7 +29,7 @@ readonly REPO_NAME="kyma"
 readonly NAME_ROOT="dex-gkeint-night"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
+readonly COMMON_NAME=$(echo "${NAME_ROOT}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${COMMON_NAME}"
 
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -132,7 +132,7 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
+	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
 function installKyma() {
@@ -247,6 +247,8 @@ function addGithubDexConnector() {
     pushd ${KYMA_PROJECT_DIR}/test-infra/development/tools
     dep ensure -v -vendor-only
     popd
+
+    export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/nightlyupdateconfig/main.go"
 }
 
