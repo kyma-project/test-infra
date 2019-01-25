@@ -139,23 +139,7 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  mszostok/kyma:
-  # TODO only for testing purposes
-  - name: pre-rel07-kyma-gke-integration
-    branches:
-    - release-0.7
-    <<: *gke_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: mszostok
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: release-0.7
-
-  # TODO only for testing purposes
+    # Already defined to ensure that pipeline is defined for the new upgrade job
   - name: pre-rel07-kyma-gke-upgrade
     branches:
     - release-0.7
@@ -166,12 +150,8 @@ presubmits: # runs on PRs
       preset-build-release: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - org: mszostok
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
+    - <<: *test_infra_ref
       base_ref: release-0.7
-
-# TODO: define the pre-rel07-kyma-gke-upgrade job when releasing Kyma 0.7 Dublin version
 
 postsubmits:
   kyma-project/kyma:

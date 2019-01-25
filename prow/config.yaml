@@ -217,6 +217,15 @@ branch-protection:
                   - pre-rel06-kyma-gke-integration
                   - pre-rel06-kyma-artifacts
                   - pre-rel06-kyma-installer
+            release-0.7: # Already defined to ensure that check is defined for the new upgrade job
+              protect: true
+              required_status_checks:
+                contexts:
+                - pre-rel07-kyma-integration
+                - pre-rel07-kyma-gke-integration
+                - pre-rel07-kyma-gke-upgrade
+                - pre-rel07-kyma-artifacts
+                - pre-rel07-kyma-installer
         website:
           branches:
             master:
