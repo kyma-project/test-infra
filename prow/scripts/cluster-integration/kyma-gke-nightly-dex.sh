@@ -41,6 +41,8 @@ function removeCluster() {
 	#Turn off exit-on-error so that next step is executed even if previous one fails.
 	set +e
 
+    # CLUSTER_NAME variable is used in other scripts so we need to change it for a while
+    ORIGINAL_CLUSTER_NAME=${CLUSTER_NAME}
 	CLUSTER_NAME=$1
 
 	EXIT_STATUS=$?
@@ -93,6 +95,8 @@ function removeCluster() {
 	shout "Job is finished ${MSG}"
 	date
 
+    # Revert previous value for CLUSTER_NAME variable
+    CLUSTER_NAME=${ORIGINAL_CLUSTER_NAME}
 	set -e
 }
 
