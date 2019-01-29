@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the image with tools useful for managing Kyma clusters, for example for provisioning.
+This folder contains the image with tools useful for Kyma cluster management operations, such as provisioning.
 
 The image consists of:
 - Go
