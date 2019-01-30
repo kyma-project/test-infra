@@ -1,19 +1,20 @@
-# Github Release
+# Enable Github Release
 
 ## Overview
 
-This command enables Github authentication on Kyma. To achieve that, 2 source files are edited: `dex-config-map.yaml` and `cluster-users/values.yaml`.
-
+This command enables Github authentication on Kyma. Internally, it updates these two source files: 
+- `dex-config-map.yaml` - adds the  Github connector to Dex
+- `cluster-users/values.yaml` - binds Github groups to the default roles added to every Kyma Namespace
 
 
 ### Environment variables
 
-Available environment variables:
+These are the available environment variables:
 
 | Name                                         | Required | Description                                                                                          |
 | :------------------------------------------- | :------: | :--------------------------------------------------------------------------------------------------- |
-| **KYMA_PROJECT_DIR**                         |    Yes   | Path to the kyma-project directory which contains Kyma source code  |
-| **GITHUB_INTEGRATION_APP_CLIENT_ID**         |    Yes   | Client ID of Github application  |
-| **GITHUB_INTEGRATION_APP_CLIENT_SECRET**     |    Yes   | Client secret of Github application  |
+| **KYMA_PROJECT_DIR**                         |    Yes   | Path to the `kyma-project` directory which contains the Kyma source code  |
+| **GITHUB_INTEGRATION_APP_CLIENT_ID**         |    Yes   | Client ID of an OAuth Github application  |
+| **GITHUB_INTEGRATION_APP_CLIENT_SECRET**     |    Yes   | Client secret of an OAuth Github application  |
 | **DEX_CALLBACK_URL**                         |    Yes   | DEX callback URL |
-| **GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS**     |    Yes   | Comma-separated list of Github teams in kyma-project that are bound to `kymaAdmins` role |
+| **GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS**     |    Yes   | Comma-separated list of Github teams in `kyma-project` that are bound to the `kymaAdmin` role |
