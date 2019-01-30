@@ -25,10 +25,10 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
-readonly NAME_ROOT="gkeint-nightly"
+readonly NAME_ROOT="nightly"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-readonly COMMON_NAME=$(echo "${NAME_ROOT}-${CURRENT_TIMESTAMP}" | tr "[:upper:]" "[:lower:]")
+readonly COMMON_NAME=$(echo "${NAME_ROOT}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${COMMON_NAME}"
 
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -131,7 +131,7 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
+	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
 function installKyma() {
@@ -216,7 +216,7 @@ function installStabilityChecker() {
 }
 
 function cleanup() {
-    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${NAME_ROOT}-" --format json | jq '.[].name' | tr -d '"')
+    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${NAME_ROOT}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 	    shout "Delete old cluster"
@@ -228,9 +228,21 @@ function cleanup() {
 
 }
 
+function addGithubDexConnector() {
+    shout "Add Github Dex Connector"
+    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
+    dep ensure -v -vendor-only
+    popd
+    export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
+    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
+}
+
+
 shout "Authenticate"
 date
 init
+
+addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN

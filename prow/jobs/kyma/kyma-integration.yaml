@@ -288,39 +288,12 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: kyma-gke-nightly
-  cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday."
-  labels:
-    preset-slack-notifications: "true"
-    preset-build-master: "true"
-    <<: *gke_job_labels_template
-  decorate: true
-  extra_refs:
-  - <<: *test_infra_ref
-    base_ref: master
-  - <<: *kyma_ref
-    base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
 
-- name: kyma-gke-nightly-with-dex-auth
-  cron: "0 7 * * 1-5" # "At 07:00 on every day-of-week from Monday through Friday."
+- name: kyma-gke-nightly
+  cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
     preset-slack-notifications: "true"
-    preset-build-master: "true"
-    preset-dex-github-integration: "true"
+    preset-nightly-github-integration: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
@@ -332,14 +305,17 @@ periodics:
     base_ref: master
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
       securityContext:
         privileged: true
       command:
       - "bash"
+      envs:
+      - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+      - value: developers
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly-dex.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"
       resources:
         requests:
           memory: 200Mi

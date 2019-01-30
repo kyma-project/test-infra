@@ -13,6 +13,7 @@
 # - CLUSTER_VERSION - the k8s version to use for the master and nodes
 # - MACHINE_TYPE - the type of machine to use for nodes
 # - NUM_NODES - the number of nodes to be created
+# - ADDITIONAL_LABELS - labels applied on the cluster
 #
 # REQUIREMENTS:
 # - gcloud
@@ -40,10 +41,14 @@ if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLU
 if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
 if [ "${NUM_NODES}" ]; then NUM_NODES_PARAM="--num-nodes=${NUM_NODES}"; fi
 
+APPENDED_LABELS=""
+if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
+LABELS_PARAM=(--labels="job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME}${APPENDED_LABELS[@]}")
+
 command -v gcloud
 
 gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-gcloud container clusters create "${CLUSTER_NAME}" "${CLUSTER_VERSION_PARAM}" "${MACHINE_TYPE_PARAM}" "${NUM_NODES_PARAM}" --labels="job=kyma-gke-integration,job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME}"
+gcloud container clusters create "${CLUSTER_NAME}" "${CLUSTER_VERSION_PARAM}" "${MACHINE_TYPE_PARAM}" "${NUM_NODES_PARAM}" "${LABELS_PARAM[@]}"
