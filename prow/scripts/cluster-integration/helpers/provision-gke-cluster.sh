@@ -32,7 +32,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-CLUSTER_VERSION_PARAM="--cluster-version=1.10"
+CLUSTER_VERSION_PARAM="--cluster-version=1.11"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
 NUM_NODES_PARAM="--num-nodes=3"
 
