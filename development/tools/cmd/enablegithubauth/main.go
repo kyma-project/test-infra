@@ -6,15 +6,17 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/ghodss/yaml"
 )
 
 const (
 	envKymaProjectDir                      = "KYMA_PROJECT_DIR"
-	envDexGithubIntegrationAppClientID     = "DEX_GITHUB_INTEGRATION_APP_CLIENT_ID"
-	envDexGithubIntegrationAppClientSecret = "DEX_GITHUB_INTEGRATION_APP_CLIENT_SECRET"
+	envDexGithubIntegrationAppClientID     = "GITHUB_INTEGRATION_APP_CLIENT_ID"
+	envDexGithubIntegrationAppClientSecret = "GITHUB_INTEGRATION_APP_CLIENT_SECRET"
 	envDexCallbackURL                      = "DEX_CALLBACK_URL"
+	envGithubTeamsWithKymaAdmins           = "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS"
 )
 
 func main() {
@@ -22,6 +24,7 @@ func main() {
 	clientID := os.Getenv(envDexGithubIntegrationAppClientID)
 	clientSecret := os.Getenv(envDexGithubIntegrationAppClientSecret)
 	dexCallbackURL := os.Getenv(envDexCallbackURL)
+	kymaAdmins := os.Getenv(envGithubTeamsWithKymaAdmins)
 
 	if kymaProjectDirVal == "" {
 		log.Fatalf("missing env: %s", envKymaProjectDir)
@@ -35,6 +38,9 @@ func main() {
 	if dexCallbackURL == "" {
 		log.Fatalf("missing env: %s", envDexCallbackURL)
 	}
+	if kymaAdmins == "" {
+		log.Fatalf("missing env: %s", envGithubTeamsWithKymaAdmins)
+	}
 
 	kymaPath := fmt.Sprintf("%s/kyma", kymaProjectDirVal)
 	clusterUsers := "/resources/core/charts/cluster-users/values.yaml"
@@ -42,10 +48,14 @@ func main() {
 
 	fUsers, err := os.OpenFile(path.Join(kymaPath, clusterUsers), os.O_RDWR, os.ModeAppend)
 	if err != nil {
-		panic(err)
+		log.Fatalf("cannot open file %s, %v", path.Join(kymaPath, clusterUsers), err)
 	}
 
-	defer fUsers.Close()
+	defer func() {
+		if err := fUsers.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	rClusterUsers := RootClusterUsers{}
 	b, err := ioutil.ReadAll(fUsers)
@@ -56,7 +66,11 @@ func main() {
 		panic(err)
 	}
 
-	rClusterUsers.Bindings.KymaAdmin.Groups = append(rClusterUsers.Bindings.KymaAdmin.Groups, "aszecowka-org:only-adam-team")
+	teams := strings.Split(kymaAdmins, ",")
+	for _, team := range teams {
+		rClusterUsers.Bindings.KymaAdmin.Groups = append(rClusterUsers.Bindings.KymaAdmin.Groups, fmt.Sprintf("kyma-project:%s", team))
+	}
+
 	n, err := yaml.Marshal(rClusterUsers)
 	if err != nil {
 		panic(err)
@@ -83,7 +97,9 @@ func main() {
 		panic(err)
 	}
 
-	fConfigMap.Close()
+	if err := fConfigMap.Close(); err != nil {
+		panic(err)
+	}
 
 }
 
@@ -97,9 +113,8 @@ var githubConnectorPattern = `
         clientSecret: %s
         redirectURI: %s
         orgs:
-        - name: aszecowka-org
+        - name: kyma-project
 `
-//TODO  change this redirectURI: https://dex.kyma.local/callback
 
 // RootClusterUsers .
 type RootClusterUsers struct {
