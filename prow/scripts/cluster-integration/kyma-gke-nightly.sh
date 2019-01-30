@@ -230,7 +230,7 @@ function cleanup() {
 
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
-    pushd ${KYMA_PROJECT_DIR}/test-infra/development/tools
+    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
