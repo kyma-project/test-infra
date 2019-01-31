@@ -1,4 +1,4 @@
-# Enable Github Release
+# Enable Github Auth
 
 ## Overview
 

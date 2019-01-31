@@ -194,7 +194,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 6)
+	assert.Len(t, periodics, 7)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -259,6 +259,29 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	//tester.AssertThatHasExtraRefs(t, nightlyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", nightlyPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, nightlyPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-nightly.sh"}, nightlyPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, nightlyPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, nightlyPeriodic.JobBase)
+	assert.Len(t, nightlyPeriodic.Spec.Containers[0].Env,2)
+	tester.AssertThatContainerHasEnv(t,nightlyPeriodic.Spec.Containers[0],"GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "developers")
+	tester.AssertThatContainerHasEnv(t,nightlyPeriodic.Spec.Containers[0],"INPUT_CLUSTER_NAME", "nightly")
+
+
+	expName = "kyma-gke-weekly"
+	weeklyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, weeklyPeriodic)
+	assert.Equal(t, expName, weeklyPeriodic.Name)
+	assert.True(t, weeklyPeriodic.Decorate)
+	assert.Equal(t, "0 6 * * 1", weeklyPeriodic.Cron)
+	tester.AssertThatHasPresets(t, weeklyPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-slack-notifications", "preset-weekly-github-integration")
+	// TODO uncomment this assertion after applying final configuarion
+	//tester.AssertThatHasExtraRefs(t, weeklyPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", weeklyPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, weeklyPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, weeklyPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, weeklyPeriodic.JobBase)
+	assert.Len(t, weeklyPeriodic.Spec.Containers[0].Env,3)
+	tester.AssertThatContainerHasEnv(t,weeklyPeriodic.Spec.Containers[0],"GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "developers")
+	tester.AssertThatContainerHasEnv(t,weeklyPeriodic.Spec.Containers[0],"INPUT_CLUSTER_NAME", "weekly")
+	tester.AssertThatContainerHasEnv(t,weeklyPeriodic.Spec.Containers[0],"TEST_RESULT_WINDOW_TIME", "24h")
+
 }
