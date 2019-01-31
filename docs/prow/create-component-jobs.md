@@ -246,6 +246,19 @@ To check if your configuration is correct, write a Go test. See the `development
 Place your new test under `development/tools/jobs` for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 If you have access to the Prow cluster, there is an option to test a ProwJob on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
+## Rename a component
+1. Change `name` value for presubmit and postsubmit jobs for `master` branch.
+2. Change `run_if_changed` value in job_template for new component path.
+3. Create new release job. For details, see the [official documentation](https://github.com/kyma-project/test-infra/blob/master/docs/prow/create-release-jobs.md).
+>**NOTE**: Don't delete existing release jobs, as the component you're renaming in previous releases is still defined by its old name.
+4. Make changes in tests.
+
+## Remove a component
+To remove component job, follow these steps:
+1. Delete presubmit and postsubmit jobs for `master` branch.
+2. Delete tests for these jobs.
+>**NOTE**: Don't delete existing release jobs, as the component you're removing might be necessary in previous releases
+
 ## Pipeline overview
 
 To have a better understanding of the role your ProwJob plays in the Prow pipeline, see this flow description:
