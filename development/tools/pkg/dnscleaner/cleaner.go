@@ -1,11 +1,10 @@
 package dnscleaner
 
 import (
-	"fmt"
-	"log"
 	"strings"
-	"time"
 
+	"github.com/kyma-project/test-infra/development/tools/pkg/common"
+	log "github.com/sirupsen/logrus"
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
 )
@@ -23,6 +22,11 @@ type IPAddress struct {
 	region  string
 }
 
+type ResourcesToRemove struct {
+	IPAddress  *IPAddress
+	DNSRecords []*DNSRecord
+}
+
 //ComputeAPI ???
 type ComputeAPI interface {
 	lookupRegions(project string, pattern string) ([]string, error)
@@ -33,6 +37,7 @@ type ComputeAPI interface {
 //DNSAPI ???
 type DNSAPI interface {
 	lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error)
+	deleteDNSRecord(project string, zone string, record *dns.ResourceRecordSet) error
 }
 
 //Cleaner ???
@@ -46,31 +51,70 @@ func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI) *Cleaner {
 	return &Cleaner{computeAPI, dnsAPI}
 }
 
-//Run runs the logic
-func (cleaner *Cleaner) Run(project string, zone string, dryRun bool) {
-	regions, err := cleaner.computeAPI.lookupRegions(project, "europe-*")
-	if err != nil {
-		log.Fatalf("Could not list Zones: %v", err)
-	}
-
-	rawRecords, err := cleaner.dnsAPI.lookupDNSRecords(project, zone)
-	if err != nil {
-		log.Fatalf("Could not list DNSRecords: %v", err)
-	}
-	parsedRecords := extractRecords(rawRecords, "gkeint")
-
-	var parsedAddresses []IPAddress
-	for _, region := range regions {
-		rawIP, err := cleaner.computeAPI.lookupIPAddresses(project, region)
-		if err != nil {
-			log.Fatalf("Could not list IPAddress: %v", err)
-		}
-		parsedAddresses = append(parsedAddresses, extractIPAddresses(rawIP, region)...)
-	}
-
-	cleaner.purge(project, parsedRecords, rawRecords, parsedAddresses, dryRun)
-
+func (gc *Cleaner) list() ([]*ResourcesToRemove, error) {
+	return nil, nil
 }
+
+// Run executes disks garbage collection process
+func (gc *Cleaner) Run(project string, zone string, dryRun bool) (allSucceeded bool, err error) {
+
+	//makeChanges := !dryRun
+	common.Shout("Looking for matching IP Addresses and DNS Records in \"%s\" project and \"%s\" zone...", project, zone)
+
+	garbageDisks, err := gc.list()
+	if err != nil {
+		return
+	}
+
+	var msgPrefix string
+	if dryRun {
+		msgPrefix = "[DRY RUN] "
+	}
+
+	if len(garbageDisks) > 0 {
+		log.Infof("%sFound %d matching disks", msgPrefix, len(garbageDisks))
+		common.Shout("Removing matching disks...")
+	} else {
+		log.Infof("%sFound no disks to delete", msgPrefix)
+	}
+
+	allSucceeded = true
+	for _, gd := range garbageDisks {
+
+		var err error
+
+		log.Infof("Processing IP Adress: \"%s\": %s (2 associated DNS records)", gd.IPAddress.name, gd.IPAddress.address)
+
+		for _, dnsRecord := range gd.DNSRecords {
+			err = gc.dnsAPI.deleteDNSRecord("", "", nil)
+			if err != nil {
+				log.Errorf("deleting DNS Records %s: %#v", "DNS", err)
+				allSucceeded = false
+			} else {
+				log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.name, project, zone)
+			}
+		}
+
+		err = gc.computeAPI.deleteIPAddress("", "", "")
+		if err != nil {
+			log.Errorf("deleting IP Address %s: %#v", "IP_ADDRESS", err)
+			allSucceeded = false
+		} else {
+			log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", disk creationTimestamp: \"%s\"", msgPrefix, gd.IPAddress.address, project, zone, "")
+		}
+	}
+
+	return allSucceeded, nil
+}
+
+/*
+Found 12 matching IP Addresses with 10 associated DNS entries
+SHOUT: Removing matching objects...
+Processing IP Address: 10.10.1.3 (2 associated DNS Record)
+Requested DNS Record delete: "*.gkeint-pr-123.build.kyma.io => 10.10.1.3"
+Requested DNS Record delete: "*.gkeint-pr-124.build.kyma.io => 10.10.1.3"
+Requested IP Address delete: 10.10.1.3
+*/
 
 func extractIPAddresses(raw []*compute.Address, region string) []IPAddress {
 	var parsed []IPAddress
@@ -115,19 +159,4 @@ func findIPRegion(name string, addresses []IPAddress) string {
 		}
 	}
 	return "NOT_FOUND"
-}
-
-func (cleaner *Cleaner) purge(project string, records []DNSRecord, rawRecords []*dns.ResourceRecordSet, ips []IPAddress, dryRun bool) {
-	for _, record := range records {
-		for _, recordIP := range record.records {
-			ad := findIPAddress(recordIP, ips)
-			fmt.Printf("---> Attempting to remove %s with IP: %s\n", ad, recordIP)
-			if !dryRun {
-				cleaner.computeAPI.deleteIPAddress(project, findIPRegion(ad, ips), ad)
-				time.Sleep(2 * time.Second)
-			}
-		}
-		recordToDelete := findRecord(record.name, rawRecords)
-		fmt.Printf("---> Attempting to remove DNS Record: %v\n", recordToDelete)
-	}
 }

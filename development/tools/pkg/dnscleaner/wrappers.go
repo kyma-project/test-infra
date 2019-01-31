@@ -74,22 +74,24 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 }
 
 func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) error {
-	_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
-	if err != nil {
-		return err
-	}
+	/*
+		_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
+		if err != nil {
+			return err
+		}
+	*/
 	return nil
 }
 
 func (dsw *DNSServiceWrapper) deleteDNSRecord(project string, zone string, record *dns.ResourceRecordSet) error {
-	request := &dns.Change{
-		"deletions": [
-			record
-		]
-	}
-	_, err := dsw.DNS.Changes.Create(project, zone, request).Do()
-	if err != nil {
-		return err
-	}
+	/*
+		request := &dns.Change{
+			Deletions: []*dns.ResourceRecordSet{record},
+		}
+		_, err := dsw.DNS.Changes.Create(project, zone, request).Do()
+		if err != nil {
+			return err
+		}
+	*/
 	return nil
 }
