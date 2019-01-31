@@ -19,7 +19,7 @@ Frequently Asked Questions (FAQ) a developer can have, regarding working with Pr
 
 	> **NOTE**: This will work only if you modify existing code, and requires a PR for each consecutive change.
 
-2. Add an `extra_refs` field to your ProwJob and work directly on Your branch:
+2. Add an `extra_refs` field to your ProwJob and work directly on Your branch. This will pull your chosen repository/branch into the job and execute the code from there:
 
 	> **NOTE**: Remember to remove/change this after your code has been merged
 
@@ -46,3 +46,6 @@ extra_refs:
 In such a situation it is required to remove the **PreSubmit** and **PostSubmit** ProwJob triggers for the **master branch**, while leaving the triggers for the **release branch only**
 
 ---
+**Q: The name of my component needs to change, what now?**
+
+**A:** In the case of renaming a component, please take a look [here](create-component-jobs.md#Rename-a-component)
