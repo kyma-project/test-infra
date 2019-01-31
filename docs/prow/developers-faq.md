@@ -25,10 +25,10 @@ Frequently Asked Questions (FAQ) a developer can have, regarding working with Pr
 
 ```yaml
 extra_refs:
-  - org: aszecowka # TODO only temporary solution
-    repo: test-infra
-    base_ref: dex-github
-    path_alias: github.com/kyma-project/test-infra
+  - org: aszecowka									# Your github user/organisation
+    repo: test-infra								# Your github repository
+    base_ref: dex-github							# Branch/tag/release to be used
+    path_alias: github.com/kyma-project/test-infra 	# Location where to clone
 ```
 
 ---
@@ -48,4 +48,4 @@ In such a situation it is required to remove the **PreSubmit** and **PostSubmit*
 ---
 **Q: The name of my component needs to change, what now?**
 
-**A:** In the case of renaming a component, please take a look [here](create-component-jobs.md#Rename-a-component)
+**A:** In the case of renaming a component, please follow this [guide](create-component-jobs.md#Rename-a-component)
