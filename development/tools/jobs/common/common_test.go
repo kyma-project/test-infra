@@ -50,7 +50,7 @@ func TestCommonJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/common"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestApiControllerJobPostsubmit(t *testing.T) {
+func TestCommonJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/common/common.yaml")
 	// THEN
