@@ -5,10 +5,12 @@ Frequently Asked Questions (FAQ) a developer can have, regarding working with Pr
 
 **A:** Creating a CI pipeline for a new component requires a new ProwJob. Please see [this document](create-component-jobs.md) for further information
 
+---
 **Q: I need my component to be a part of a release, how to do it?**
 
 **A:** A release job is a special kind of ProwJob that uses a specific release branch. Please see [this document](create-release-jobs.md) for further information
 
+---
 **Q: I would like to use Prow to check something on my fork, how should I do it?**
 
 **A:** In order to do this we have 2 possible solutions:
@@ -28,3 +30,19 @@ extra_refs:
     base_ref: dex-github
     path_alias: github.com/kyma-project/test-infra
 ```
+
+---
+**Q: How does the release process look like?**
+
+**A:** We have created a document showcasing the whole process, please take a look [here](release-process.md)
+
+---
+**Q: My component is no longer needed, how do I remove it?**
+
+**A:** In order to remove a component from Prow, we need to backtrack and remove everything we have created in [this document](create-component-jobs.md). 
+
+> **NOTE**: If the component You have created is a part of a release *X*, You **cannot** just delete it, as it will be required in *X.y* (f.e a component in 0.6 that is deleted in 0.7 is still needed for 0.6.1)
+
+In such a situation it is required to remove the **PreSubmit** and **PostSubmit** ProwJob triggers for the **master branch**, while leaving the triggers for the **release branch only**
+
+---
