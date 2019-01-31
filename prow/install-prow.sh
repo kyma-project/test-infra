@@ -78,5 +78,8 @@ kubectl apply -f cluster/05-tiller.yaml
 # Install pushgateway
 kubectl apply -f cluster/06-pushgateway_deployment.yaml
 
+# Install PodDisruptionBudgets
+kubectl apply -f cluster/07-kube-system_poddisruptionbudgets.yaml
+
 # Remove Insecure ingress 
 kubectl delete ingress ing

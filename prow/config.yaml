@@ -317,6 +317,8 @@ deck:
     logo: "extensions/logo.svg"
     favicon: "extensions/favicon.png"
     
+sinker:
+  max_pod_age: 5h
 
 push_gateway:
   endpoint: pushgateway

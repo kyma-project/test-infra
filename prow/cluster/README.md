@@ -18,6 +18,7 @@ The structure of the folder looks as follows:
   ├── 04-branchprotector_cronjob.yaml   # The definition of the Branch Protector CronJob that configures protection on branches
   ├── 05-tiller.yaml                    # The definition of the Tiller that is used for Helm integration
   ├── 06-pushgateway_deployment.yaml    # The definition of the Pushgateway that is used for monitoring
+  ├── 07-kube-system_poddisruptionbudgets.yaml # The definition of  Pod Disruption Budgets for pods in kube-system namespace to unblock the node autoscaler.
   ├── starter.yaml                      # The basic definition of Prow, including ConfigMaps, Deployments, and CustomResourceDefinitions
   └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket
 ```
