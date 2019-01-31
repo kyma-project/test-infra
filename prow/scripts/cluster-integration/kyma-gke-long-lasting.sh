@@ -47,6 +47,9 @@ function removeCluster() {
 
 	EXIT_STATUS=$?
 
+    shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe ${CLUSTER_NAME} --zone=${GCLOUD_COMPUTE_ZONE} --project=${GCLOUD_PROJECT_NAME} --format=json | jq --raw-output '.resourceLabels."created-at"')
+
 	shout "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
@@ -85,7 +88,7 @@ function removeCluster() {
 	shout "Delete temporary Kyma-Installer Docker image"
 	date
 
-    readonly OLD_TIMESTAMP=$(echo "${CLUSTER_NAME}" | cut -d '-' -f3)
+
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -135,6 +138,25 @@ function createCluster() {
 	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
+function waitForInstallationCRD() {
+    shout "Waiting for Installation CRD"
+
+	attempts=5
+    for ((i=1; i<=attempts; i++)); do
+        numberOfLines=$(kubectl get crd | grep "installations.installer.kyma-project.io" | wc -l | tr -d ' ')
+        if [[ "$numberOfLines" == "1" ]]; then
+            echo "CRD Installation found"
+            break
+        elif [[ ${i} == ${attempts} ]]; then
+            echo "ERROR: CRD Installation not found, exit"
+            exit 1
+        fi
+
+        echo "Sleep for 3 seconds"
+        sleep 3
+    done
+}
+
 function installKyma() {
 
 	kymaUnsetVar=false
@@ -160,31 +182,57 @@ function installKyma() {
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	
-	shout "Generate self-signed certificate"
+	shout "Generate lets encrypt certificate"
 	date
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 	export DOMAIN
 
-	CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-self-signed-cert.sh)
-	TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-	TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+    mkdir letsencrypt
+    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+    docker run  --name certbot \
+        --rm  \
+        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+        certbot/dns-google \
+        certonly \
+        -m "kyma.bot@sap.com" \
+        --agree-tos \
+        --no-eff-email \
+        --dns-google \
+        --dns-google-credentials /etc/letsencrypt/service-account.json \
+        --server https://acme-v02.api.letsencrypt.org/directory \
+        --dns-google-propagation-seconds=600 \
+        -d "*.${DOMAIN}"
 
+    export TLS_CERT=$(cat ./letsencrypt/live/$DOMAIN/fullchain.pem | base64 | tr -d '\n')
+    export TLS_KEY=$(cat ./letsencrypt/live/$DOMAIN/privkey.pem | base64 | tr -d '\n')
+
+    if [ -z "${TLS_CERT}" ] ; then
+        echo "ERROR: TLS_CERT is not set"
+    fi
+     if [ -z "${TLS_CERT}" ] ; then
+        echo "ERROR: TLS_CERT is not set"
+    fi
 	shout "Apply Kyma config"
 	date
+
 	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
 		| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
 		| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
 		| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-		| sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-		| sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+		| sed -e "s#__TLS_CERT__#${TLS_CERT}#g" \
+		| sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
 		| sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
 		| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
 		| sed -e "s/__VERSION__/0.0.1/g" \
+		| sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
+		| sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
+    waitForInstallationCRD
 	shout "Trigger installation"
 	date
+
 	kubectl label installation/kyma-installation action=install
 	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
