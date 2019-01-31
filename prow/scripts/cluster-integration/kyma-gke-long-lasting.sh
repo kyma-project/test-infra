@@ -4,7 +4,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL SLACK_CLIENT_CHANNEL_ID; do
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL SLACK_CLIENT_CHANNEL_ID; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -25,13 +25,14 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
-readonly NAME_ROOT="nightly"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-readonly COMMON_NAME=$(echo "${NAME_ROOT}" | tr "[:upper:]" "[:lower:]")
-readonly DNS_SUBDOMAIN="${COMMON_NAME}"
+readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
-export CLUSTER_NAME="${COMMON_NAME}"
+export CLUSTER_NAME="${STANDARIZED_NAME}"
+
+TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -85,7 +86,7 @@ function removeCluster() {
 	date
 
     readonly OLD_TIMESTAMP=$(echo "${CLUSTER_NAME}" | cut -d '-' -f3)
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${NAME_ROOT}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -102,7 +103,7 @@ function removeCluster() {
 function createCluster() {
 	shout "Reserve IP Address for Ingressgateway"
 	date
-	GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
+	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
@@ -113,7 +114,7 @@ function createCluster() {
 
 	shout "Reserve IP Address for Remote Environments"
 	date
-	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
+	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
 	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 
@@ -148,7 +149,7 @@ function installKyma() {
     	exit 1
 	fi
 
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${NAME_ROOT}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
 
 	shout "Build Kyma-Installer Docker image"
 	date
@@ -202,21 +203,21 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
-	helm install --set clusterName="Nightly" \
+	helm install --set clusterName="${CLUSTER_NAME}" \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
 	        --set slackClientChannelId="${SLACK_CLIENT_CHANNEL_ID}" \
 	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
 	        --set stats.enabled="${STATS_ENABLED}" \
 	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
 	        --set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
-	        --set testResultWindowTime="3h" \
+	        --set testResultWindowTime="${TEST_RESULT_WINDOW_TIME}" \
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
 	        --name=stability-checker
 }
 
 function cleanup() {
-    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${NAME_ROOT}" --format json | jq '.[].name' | tr -d '"')
+    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 	    shout "Delete old cluster"

@@ -5,6 +5,8 @@ import (
 	"os"
 	"testing"
 
+	"k8s.io/test-infra/prow/kube"
+
 	"fmt"
 
 	"github.com/ghodss/yaml"
@@ -204,4 +206,14 @@ func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
 	assert.False(t, job.Spec.Containers[0].Resources.Requests.Memory().IsZero())
 	assert.False(t, job.Spec.Containers[0].Resources.Requests.Cpu().IsZero())
 
+}
+
+// AssertThatContainerHasEnv checks if container has specified given environment variable
+func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expValue string) {
+	for _, env := range cont.Env {
+		if env.Name == expName && env.Value == expValue {
+			return
+		}
+	}
+	assert.Fail(t, "Container [%s] does not have environment variable [%s] with name [%s]", cont.Name, expValue, expValue)
 }
