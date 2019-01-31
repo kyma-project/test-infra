@@ -217,7 +217,7 @@ function installStabilityChecker() {
 }
 
 function cleanup() {
-    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${STANDARIZED_NAME}" --format json | jq '.[].name' | tr -d '"')
+    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 	    shout "Delete old cluster"

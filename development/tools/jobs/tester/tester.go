@@ -2,9 +2,10 @@ package tester
 
 import (
 	"io/ioutil"
-	"k8s.io/test-infra/prow/kube"
 	"os"
 	"testing"
+
+	"k8s.io/test-infra/prow/kube"
 
 	"fmt"
 
@@ -207,6 +208,7 @@ func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
 
 }
 
+// AssertThatContainerHasEnv checks if container has specified given environment variable
 func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expValue string) {
 	for _, env := range cont.Env {
 		if env.Name == expName && env.Value == expValue {
