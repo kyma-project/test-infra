@@ -48,9 +48,8 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
 if [[ -z "$IMAGE" ]]; then
-    shout "Pprovisioning vm using the latest default custom image ..."   
+    shout "Provisioning vm using the latest default custom image ..."   
 
     DEFAULT_IMAGES=$(gcloud compute images list --project "kyma-project" \
          --sort-by "~creationTimestamp" \
