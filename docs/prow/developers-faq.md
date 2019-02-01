@@ -3,15 +3,10 @@ Frequently Asked Questions (FAQ) a developer can have, regarding working with Pr
 
 **Q: I would like to add a new component/item and have it operated by Prow**
 
-**A:** Creating a CI pipeline for a new component requires a new ProwJob. Please see [this document](create-component-jobs.md) for further information
+**A:** Creating a CI pipeline is a two step process. First of all you need to define a ProwJob according to [this instruction](create-component-jobs.md). After that, you need to add the job in the release, from which you want it to be available. This requires some modifications to the created ProwJob, which can be found in this [document](create-release-jobs.md)
 
 ---
-**Q: I need my component to be a part of a release, how to do it?**
-
-**A:** A release job is a special kind of ProwJob that uses a specific release branch. Please see [this document](create-release-jobs.md) for further information
-
----
-**Q: I would like to use Prow to check something on my fork, how should I do it?**
+**Q: How to test changes I made to script definied in the test-infra repository?**
 
 **A:** In order to do this we have 2 possible solutions:
 
