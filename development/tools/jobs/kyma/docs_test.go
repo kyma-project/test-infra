@@ -23,7 +23,7 @@ func TestDocsJobReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBotGithubToken, tester.PresetBotGithubSSH, tester.PresetBotGithubIdentity, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
 		})
 	}
 }
@@ -51,7 +51,7 @@ func TestDocsJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, actualPresubmit.JobBase.UtilityConfig, []string{"test-infra", "website"})
 	assert.Equal(t, "^docs/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "docs/some_random_file.go")
-	tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
 }
 
 func TestDocsJobPostsubmit(t *testing.T) {
@@ -79,5 +79,5 @@ func TestDocsJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, actualPost.JobBase.UtilityConfig, []string{"test-infra", "website"})
 	assert.Equal(t, "^docs/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "docs/some_random_file.go")
-	tester.AssertThatExecGolangBuidlpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/docs")
 }

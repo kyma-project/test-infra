@@ -191,8 +191,8 @@ func AssertThatHasCommand(t *testing.T, command []string) {
 	assert.Equal(t, []string{BuildScriptDir}, command)
 }
 
-// AssertThatExecGolangBuidlpack checks if job executes golang buildpack
-func AssertThatExecGolangBuidlpack(t *testing.T, job config.JobBase, img string, args ...string) {
+// AssertThatExecGolangBuildpack checks if job executes golang buildpack
+func AssertThatExecGolangBuildpack(t *testing.T, job config.JobBase, img string, args ...string) {
 	assert.Len(t, job.Spec.Containers, 1)
 	assert.Equal(t, img, job.Spec.Containers[0].Image)
 	assert.Len(t, job.Spec.Containers[0].Command, 1)
