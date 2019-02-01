@@ -10,11 +10,11 @@ import (
 
 func TestAssetControllerJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-controller/asset-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/assetstore-controller-manager/assetstore-controller-manager.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	expName := "pre-master-kyma-components-asset-controller"
+	expName := "pre-master-kyma-components-assetstore-controller-manager"
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -28,14 +28,14 @@ func TestAssetControllerJobPresubmit(t *testing.T) {
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/asset-controller/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/asset-controller/lets_play.go")
-	tester.AssertThatExecGolangBuidlpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-controller")
+	assert.Equal(t, "^components/assetstore-controller-manager/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/assetstore-controller-manager/lets_play.go")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager")
 }
 
 func TestAssetControllerPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-controller/asset-controller.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/assetstore-controller-manager/assetstore-controller-manager.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -44,7 +44,7 @@ func TestAssetControllerPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "post-master-kyma-components-asset-controller"
+	expName := "post-master-kyma-components-assetstore-controller-manager"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -55,7 +55,7 @@ func TestAssetControllerPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^components/asset-controller/", actualPost.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/asset-controller/coco_jambo_i_do_przodu.go")
-	tester.AssertThatExecGolangBuidlpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-controller")
+	assert.Equal(t, "^components/assetstore-controller-manager/", actualPost.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/assetstore-controller-manager/coco_jambo_i_do_przodu.go")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager")
 }

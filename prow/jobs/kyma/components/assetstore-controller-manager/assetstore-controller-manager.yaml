@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/components/bucket-controller"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager"
         resources:
           requests:
             memory: 2Gi
@@ -29,11 +29,11 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-components-bucket-controller
+    - name: pre-master-kyma-components-assetstore-controller-manager
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^components/bucket-controller/"
+      run_if_changed: "^components/assetstore-controller-manager/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
@@ -43,11 +43,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-components-bucket-controller
+    - name: post-master-kyma-components-assetstore-controller-manager
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^components/bucket-controller/"
+      run_if_changed: "^components/assetstore-controller-manager/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
