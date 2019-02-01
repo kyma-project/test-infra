@@ -48,4 +48,4 @@ In such a situation it is required to remove the **PreSubmit** and **PostSubmit*
 ---
 **Q: The name of my component needs to change, what now?**
 
-**A:** In the case of renaming a component, please follow this [guide](create-component-jobs.md#Rename-a-component)
+**A:** In the case of renaming a component, please follow this [guide](create-component-jobs.md#rename-a-component)
