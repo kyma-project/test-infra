@@ -25,10 +25,10 @@ func (csw *ComputeServiceWrapper) lookupRegions(project, pattern string) ([]stri
 		call = call.Filter("name: " + pattern)
 	}
 
-	var zones []string
+	var regions []string
 	f := func(page *compute.RegionList) error {
 		for _, v := range page.Items {
-			zones = append(zones, v.Name)
+			regions = append(regions, v.Name)
 		}
 		return nil
 	}
@@ -36,7 +36,7 @@ func (csw *ComputeServiceWrapper) lookupRegions(project, pattern string) ([]stri
 	if err := call.Pages(csw.Context, f); err != nil {
 		return nil, err
 	}
-	return zones, nil
+	return regions, nil
 }
 
 func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error) {
@@ -60,6 +60,8 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 	var items = []*compute.Address{}
 	call := csw.Compute.Addresses.List(project, region)
 	call = call.Filter("status: RESERVED")
+	//2018-11-09T05:01:51.510-08:00
+	//call = call.Filter("creationTimestamp > 11") <- probably can't be done. Filtering in memory.
 	f := func(page *compute.AddressList) error {
 		for _, v := range page.Items {
 			items = append(items, v)
