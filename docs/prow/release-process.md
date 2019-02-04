@@ -90,7 +90,7 @@ are dependencies between these jobs. See the diagram for details:
 8. Execute `kyma-installer` and `kyma-artifacts` one after another.
 You don't have to wait until the `pre-rel06-kyma-integration` job finishes.
 
-9. Execute `kyma-gke-integration` and `kyma-gke-upgrade`. You must wait until the jobs from step 8th are finished.
+9. Execute `kyma-gke-integration` and `kyma-gke-upgrade`. Wait until the jobs from step 8 are finished.
 
 10. If you detect any problems with the release, such as failing tests, wait for the fix that can be delivered either on a PR or cherry-picked to the PR from the `master` branch.  
 Prow triggers the jobs again. Return to point 6 to rerun manual jobs.
