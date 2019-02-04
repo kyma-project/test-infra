@@ -249,8 +249,8 @@ function installKyma() {
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
-    NEW_WAY_OF_RELEASE_VER="0.7.0"
-    if [[ "$(printf '%s\n' "$NEW_WAY_OF_RELEASE_VER" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_WAY_OF_RELEASE_VER" ]]; then
+    NEW_INSTALL_PROCEDURE_SINCE="0.7.0"
+    if [[ "$(printf '%s\n' "$NEW_INSTALL_PROCEDURE_SINCE" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_INSTALL_PROCEDURE_SINCE" ]]; then
         echo "Used Kyma release version is greater than or equal to 0.7.0. Using new way of installing Kyma release"
         curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
         kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
