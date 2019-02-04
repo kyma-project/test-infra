@@ -1,6 +1,6 @@
-# Create Component Jobs
+# Component Jobs
 
-This document describes the procedure for defining standard ProwJobs for `kyma` components. Its purpose is to provide steps required to prepare your component for the Prow CI pipeline.
+This document describes how to define, modify, and remove standard ProwJobs for `kyma` components. Its purpose is to provide steps required to prepare your component for the Prow CI pipeline.
 
 > **NOTE:** Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining ProwJobs.
 
@@ -9,9 +9,11 @@ When you configure a job for your component, make sure that:
 - Your ProwJob is configured to push Docker images to a proper directory. To set it, add the `preset-docker-push-repository` Preset to your ProwJob definition.
 - Your ProwJob sends events to GitHub. To configure it, set the **skip_report** parameter to `false`.
 
-## Steps
+## Create component jobs
 
-Follow the steps to prepare your component for the CI pipeline.
+Creating a CI pipeline is a two-step process:
+- You need to define a ProwJob according to steps defined in this section.
+- You need to add the job to a release from which you want it to be available. This requires some modifications to the created ProwJob. For details on how to do that, see [this](./release-jobs.md) document which explains how to work with the release jobs.
 
 ### Create a presubmit job
 
@@ -134,17 +136,17 @@ binary=$(APP_NAME)
 
 .PHONY: build
 build:
-	./before-commit.sh ci
+  ./before-commit.sh ci
 
 .PHONY: build-image
 build-image:
-	cp $(binary) deploy/controller/$(binary)
-	docker build -t $(APP_NAME):latest deploy/controller
+  cp $(binary) deploy/controller/$(binary)
+  docker build -t $(APP_NAME):latest deploy/controller
 
 .PHONY: push-image
 push-image:
-	docker tag $(APP_NAME) $(IMG):$(TAG)
-	docker push $(IMG):$(TAG)
+  docker tag $(APP_NAME) $(IMG):$(TAG)
+  docker push $(IMG):$(TAG)
 
 .PHONY: ci-pr
 ci-pr: build build-image push-image
@@ -157,7 +159,7 @@ ci-release: build build-image push-image
 
 .PHONY: clean
 clean:
-	rm -f $(binary)
+  rm -f $(binary)
 
 ```
 
@@ -242,22 +244,37 @@ postsubmits:
 ```
 
 ### Define tests for presubmit and postsubmit jobs
+
 To check if your configuration is correct, write a Go test. See the `development/tools/jobs/binding_usage_controller_test.go` file for reference.
 Place your new test under `development/tools/jobs` for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 If you have access to the Prow cluster, there is an option to test a ProwJob on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
-## Rename a component
-1. Change `name` value for presubmit and postsubmit jobs for `master` branch.
-2. Change `run_if_changed` value in job_template for new component path.
-3. Create new release job. For details, see the [official documentation](https://github.com/kyma-project/test-infra/blob/master/docs/prow/create-release-jobs.md).
->**NOTE**: Don't delete existing release jobs, as the component you're renaming in previous releases is still defined by its old name.
-4. Make changes in tests.
 
-## Remove a component
-To remove component job, follow these steps:
-1. Delete presubmit and postsubmit jobs for `master` branch.
+## Modify component jobs
+
+To change the name of the component, follow these steps:
+
+1. Change the **name** value for presubmit and postsubmit jobs for the `master` branch.
+2. Change the **run_if_changed** value in **job_template** to a new component path.
+3. Create a new release job. For details, see the [official documentation](./release-jobs.md).
+
+>**NOTE**: Do not delete existing release jobs and tests for these jobs as the component you rename is still defined by its old name in previous releases.
+
+4. Modify tests.
+
+
+## Remove component jobs
+
+To remove a component from Prow, follow these steps:
+
+1. Delete presubmit and postsubmit jobs for the `master` branch.
+
+>**NOTE:** Do not delete jobs for release branches.
+
 2. Delete tests for these jobs.
->**NOTE**: Don't delete existing release jobs, as the component you're removing might be necessary in previous releases
+
+>**NOTE:** If the component you created is a part of the *X* release, you cannot delete it as the *X.y* release still requires it. For example, a component in `0.6` that is deleted in `0.7` is still needed for `0.6.1`.
+
 
 ## Pipeline overview
 

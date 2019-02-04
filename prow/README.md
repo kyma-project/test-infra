@@ -2,9 +2,9 @@
 
 ## Overview
 
-Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests, applying and removing labels, or opening and closing issues.
+Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.
 
-You interact with Prow using slash (/) commands, such as `/test all`. You add them on pull requests or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in Google Cloud Platform (GCP). Each Prow component is a small Go service that has its own function in the management of ProwJobs.
+You interact with Prow using slash (/) commands, such as `/test all`. You add them on PRs or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in Google Cloud Platform (GCP). Each Prow component is a small Go service that has its own function in the management of ProwJobs.
 
 In the context of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
@@ -58,7 +58,7 @@ Read the [`docs`](../docs/prow/README.md) to lean how to configure the productio
 
 ## Development
 
-Read about the conventions for organizing and naming jobs in the `prow` subdirectories.
+Read about the conventions for organizing and naming jobs in the `prow` subdirectories and Prow configuration.
 
 ### Strategy for organizing jobs
 
@@ -106,7 +106,7 @@ Prow configuration is automatically uploaded to the production cluster from the 
 
 Prow is responsible for setting branch protection on repositories. The configuration of branch protection is defined in `config.yaml`.
 
-After you create a new job, define it as required for pull requests. Add the job context to the `required_status_checks.contexts` list in the proper repository.
+After you create a new job, define it as required for PRs. Add the job context to the `required_status_checks.contexts` list in the proper repository.
 
 See the sample configuration for the `test-infra` repository:
 
@@ -136,3 +136,24 @@ branch-protection:
 ```
 
 The Branch Protector component updates the configuration every 30 minutes.
+
+
+### Test changes in scripts
+
+If you modify scripts in the `test-infra` repository and you want to test the changes made, follow one of these scenarios:
+
+- Create a PR with your changes and wait for the existing ProwJobs to verify your code.
+
+> **NOTE**: This scenario works only if you modify the existing code, and requires a PR for every consecutive change.
+
+- Add the **extra_refs** field to your ProwJob and work directly on your branch. This pulls the repository and branch you chose into the job and executes the code from that location.
+
+> **NOTE**: Remember to revert your changes after your merge the code.
+
+```yaml
+extra_refs:
+  - org: {username}                 # Your GitHub username in the organisation
+    repo: test-infra                # Your GitHub repository
+    base_ref: dex-github              # Branch, tag, and release to use
+    path_alias: github.com/kyma-project/test-infra  # Path to the location where you want to clone the code
+```
