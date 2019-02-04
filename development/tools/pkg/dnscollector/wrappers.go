@@ -85,9 +85,9 @@ func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, managedZone strin
 	return items, nil
 }
 
-func (dsw *DNSServiceWrapper) deleteDNSRecords(project string, managedZone string, recordsToDelete []*dns.ResourceRecordSet) error {
+func (dsw *DNSServiceWrapper) deleteDNSRecords(project string, managedZone string, recordToDelete *dns.ResourceRecordSet) error {
 	change := &dns.Change{
-		Deletions: recordsToDelete,
+		Deletions: []*dns.ResourceRecordSet{recordToDelete},
 	}
 
 	res, err := dsw.DNS.Changes.Create(project, managedZone, change).Context(dsw.Context).Do()

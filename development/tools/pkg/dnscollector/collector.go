@@ -10,17 +10,9 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-//DNSRecord Simplified DNS object.
-type DNSRecord struct {
-	name      string
-	ipAddress string
-}
-
-//IPAddress Simplified Address object.
-//TODO: Rename to AddressWrapper
-type IPAddress struct {
-	rawAddress *compute.Address
-	region     string
+type addressWrapper struct {
+	data   *compute.Address
+	region string
 }
 
 //ComputeAPI abstracts over google Compute API
@@ -33,7 +25,7 @@ type ComputeAPI interface {
 //DNSAPI abstracts over google DNS API
 type DNSAPI interface {
 	lookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error)
-	deleteDNSRecords(project string, managedZone string, record []*dns.ResourceRecordSet) error
+	deleteDNSRecords(project string, managedZone string, record *dns.ResourceRecordSet) error
 }
 
 //Collector ???
@@ -83,14 +75,14 @@ func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddress
 }
 
 //List IP Addresses in all regions. It's a "best effort" implementation,
-func (gc *Collector) listIPs(project string) (res []*IPAddress, allSucceeded bool, err error) {
+func (gc *Collector) listIPs(project string) (res []*addressWrapper, allSucceeded bool, err error) {
 	regions, err := gc.computeAPI.lookupRegions(project, "europe-*")
 	if err != nil {
 		log.Errorf("Could not list Regions: %v", err)
 		return nil, false, err
 	}
 	allSucceeded = true
-	res = []*IPAddress{}
+	res = []*addressWrapper{}
 
 	for _, regName := range regions {
 		ipAddresses, err := gc.listRegionIPs(project, regName)
@@ -107,8 +99,8 @@ func (gc *Collector) listIPs(project string) (res []*IPAddress, allSucceeded boo
 }
 
 //Lists matching IP Addresses in given region
-func (gc *Collector) listRegionIPs(project, region string) (res []*IPAddress, err error) {
-	res = []*IPAddress{}
+func (gc *Collector) listRegionIPs(project, region string) (res []*addressWrapper, err error) {
+	res = []*addressWrapper{}
 
 	rawIPs, err := gc.computeAPI.lookupIPAddresses(project, region)
 	if err != nil {
@@ -135,19 +127,18 @@ func (gc *Collector) listRegionIPs(project, region string) (res []*IPAddress, er
 	return res, nil
 }
 
-func (gc *Collector) listDNSRecords(project, managedZone string) ([]*DNSRecord, error) {
+func (gc *Collector) listDNSRecords(project, managedZone string) ([]*dns.ResourceRecordSet, error) {
 	rawDNSRecords, err := gc.dnsAPI.lookupDNSRecords(project, managedZone)
 
 	if err != nil {
 		return nil, err
 	}
 
-	res := []*DNSRecord{}
+	res := []*dns.ResourceRecordSet{}
 
 	for _, rawDNS := range rawDNSRecords {
 		if matchDNSRecord(rawDNS) {
-			//log.Infof("DNS Record [RAW]: %#v", rawDNS)
-			res = append(res, &DNSRecord{rawDNS.Name, rawDNS.Rrdatas[0]})
+			res = append(res, rawDNS)
 		}
 	}
 
@@ -191,21 +182,20 @@ func (gc *Collector) Run(project string, managedZone string, makeChanges bool) (
 
 	for _, ipAddress := range matchingIPs {
 
-		associatedRecords := findAssociatedRecords(ipAddress.rawAddress.Address, allDNSRecords)
+		associatedRecords := findAssociatedRecords(ipAddress.data.Address, allDNSRecords)
 
-		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.rawAddress.Address, ipAddress.rawAddress.Name, len(allDNSRecords))
+		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, len(associatedRecords))
 
 		for _, dnsRecord := range associatedRecords {
 			if makeChanges {
-				err = gc.dnsAPI.deleteDNSRecords("", "", nil)
+				err = gc.dnsAPI.deleteDNSRecords(project, managedZone, dnsRecord)
 				if err != nil {
 					log.Errorf("deleting DNS Records %s: %#v", "DNS", err)
 					allSucceeded = false
 					continue
 				}
 			}
-			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.name, project, managedZone)
-
+			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.Name, project, managedZone)
 		}
 
 		if makeChanges {
@@ -215,16 +205,16 @@ func (gc *Collector) Run(project string, managedZone string, makeChanges bool) (
 				allSucceeded = false
 			}
 		}
-		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.rawAddress.Address, project, managedZone, ipAddress.rawAddress.CreationTimestamp)
+		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.data.Address, project, managedZone, ipAddress.data.CreationTimestamp)
 	}
 
 	return allSucceeded, nil
 }
 
-func findAssociatedRecords(ipAddress string, dnsRecords []*DNSRecord) []*DNSRecord {
-	res := []*DNSRecord{}
+func findAssociatedRecords(ipAddress string, dnsRecords []*dns.ResourceRecordSet) []*dns.ResourceRecordSet {
+	res := []*dns.ResourceRecordSet{}
 	for _, rec := range dnsRecords {
-		if rec.ipAddress == ipAddress {
+		if rec.Rrdatas[0] == ipAddress {
 			res = append(res, rec)
 		}
 	}
@@ -241,6 +231,6 @@ Requested DNS Record delete: "*.gkeint-pr-124.build.kyma.io => 10.10.1.3"
 Requested IP Address delete: 10.10.1.3
 */
 
-func wrapAddress(address *compute.Address, region string) *IPAddress {
-	return &IPAddress{address, region}
+func wrapAddress(address *compute.Address, region string) *addressWrapper {
+	return &addressWrapper{address, region}
 }
