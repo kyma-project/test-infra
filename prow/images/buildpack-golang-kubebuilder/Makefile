@@ -1,6 +1,5 @@
 IMG_NAME ?= buildpack-golang-kubebuilder
 DOCKER_PUSH_REPOSITORY ?= eu.gcr.io/kyma-project
-DOCKER_PUSH_DIRECTORY ?= /pr
 DOCKER_TAG ?= latest
 
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
