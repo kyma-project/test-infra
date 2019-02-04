@@ -13,6 +13,7 @@ This section only applies to new major and minor versions. Follow the preparatio
  - `kyma-docs`
  - `kyma-integration`
  - `kyma-gke-integration`
+ - `kyma-gke-upgrade`
  - `kyma-artifacts`
  - `kyma-installer`
 
@@ -79,24 +80,26 @@ Every component image is published with a version defined in the `RELEASE_VERSIO
 ```
 
 6. Wait until all jobs for components and tools finish.
-`kyma-integration`, `kyma-gke-integration`, `kyma-artifacts`, and `kyma-installer` jobs need to be executed manually because there
+`kyma-integration`, `kyma-gke-integration`, `kyma-gke-upgrade`, `kyma-artifacts`, and `kyma-installer` jobs need to be executed manually because there
 are dependencies between these jobs. See the diagram for details:
 
 ![](./assets/kyma-rel-jobs.svg)
 
 7. Execute `kyma-integration` by adding the `/test pre-rel06-kyma-integration` comment to the PR.
 
-8. Execute `kyma-installer`, `kyma-artifacts`, and `kyma-gke-integration` one after another.
+8. Execute `kyma-installer` and `kyma-artifacts` one after another.
 You don't have to wait until the `pre-rel06-kyma-integration` job finishes.
 
-9. If you detect any problems with the release, such as failing tests, wait for the fix that can be delivered either on a PR or cherry-picked to the PR from the `master` branch.  
+9. Execute `kyma-gke-integration` and `kyma-gke-upgrade`. Wait until the jobs from step 8 are finished.
+
+10. If you detect any problems with the release, such as failing tests, wait for the fix that can be delivered either on a PR or cherry-picked to the PR from the `master` branch.  
 Prow triggers the jobs again. Return to point 6 to rerun manual jobs.
 
-10. After all checks pass, merge the PR.
+11. After all checks pass, merge the PR.
 
-11. Merging the PR to the release branch executes the postsubmit job that creates a GitHub release.
+12. Merging the PR to the release branch executes the postsubmit job that creates a GitHub release.
 Validate the `yaml` and changelog files generated under [releases](https://github.com/kyma-project/kyma/releases).
 Update the release content manually with the instruction on how to install the latest Kyma release.
 
-12. Update `RELEASE_VERSION` to the next version both on the `master` and release branch. Do it immediately after the release, otherwise any PR to a release branch done by
+13. Update `RELEASE_VERSION` to the next version both on the `master` and release branch. Do it immediately after the release, otherwise any PR to a release branch done by
 a Kyma developer overrides the previously published Docker images.  

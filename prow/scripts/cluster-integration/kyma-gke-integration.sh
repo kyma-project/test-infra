@@ -255,8 +255,11 @@ date
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-integration/downloaded-config.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
 
-     sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-integration/downloaded-config.yaml \
+    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
+
+    sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-integration/downloaded-config.yaml \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
         | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \

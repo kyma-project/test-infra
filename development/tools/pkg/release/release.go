@@ -6,11 +6,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-const tmpFilePattern = "release-artifact-"
-
 // Creator exposes a function to create complete Github releases
 type Creator interface {
-	CreateNewRelease(ctx context.Context, relOpts *Options, localArtifactName, clusterArtifactName string) error
+	CreateNewRelease(ctx context.Context, relOpts *Options, artifactNames ...string) error
 }
 
 // creatorImpl provides functions to create a complete Github Release
@@ -28,7 +26,7 @@ func NewCreator(github GithubAPI, storage StorageAPI) Creator {
 }
 
 //CreateNewRelease .
-func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, localArtifactName, clusterArtifactName string) error {
+func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, artifactNames ...string) error {
 
 	//Release
 	release, _, err := c.github.CreateGithubRelease(ctx, relOpts)
@@ -36,14 +34,10 @@ func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, lo
 		return errors.Wrap(err, "while creating Github release")
 	}
 
-	//LocalArtifactFile
-	if err = c.createReleaseArtifact(ctx, *release.ID, localArtifactName, relOpts.Version); err != nil {
-		return errors.Wrapf(err, "while creating release artifact: %s", localArtifactName)
-	}
-
-	//ClusterArtifactFile
-	if err = c.createReleaseArtifact(ctx, *release.ID, clusterArtifactName, relOpts.Version); err != nil {
-		return errors.Wrapf(err, "while creating release artifact: %s", clusterArtifactName)
+	for _, artifact := range artifactNames {
+		if err = c.createReleaseArtifact(ctx, *release.ID, artifact, relOpts.Version); err != nil {
+			return errors.Wrapf(err, "while creating release artifact: %s", artifact)
+		}
 	}
 
 	return nil
