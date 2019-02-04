@@ -42,6 +42,13 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 elif [[ "${BUILD_TYPE}" == "master" ]]; then
     make -C "${SOURCES_DIR}" ci-master
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
+    NEXT_RELEASE=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+    echo "Checking if ${NEXT_RELEASE} was already published on github..."
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/${NEXT_RELEASE})
+    if [[ $RESPONSE != 404* ]]; then
+        echo "The ${NEXT_RELEASE} is already published on github. Stopping."
+        exit 1
+    fi
     make -C "${SOURCES_DIR}" ci-release
 else
     echo "Not supported build type - ${BUILD_TYPE}"
