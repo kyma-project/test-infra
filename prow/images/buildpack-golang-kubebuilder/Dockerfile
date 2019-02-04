@@ -24,4 +24,4 @@ RUN curl -L -O "https://github.com/kubernetes-sigs/kubebuilder/releases/download
 
 ENV PATH /usr/local/kubebuilder/bin:$PATH
 # Path used by decorator
-ENV PATH /home/prow/go:$PATH
+ENV PATH /home/prow/go/bin:$PATH
