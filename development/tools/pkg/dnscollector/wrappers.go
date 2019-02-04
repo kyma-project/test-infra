@@ -3,6 +3,7 @@ package dnscollector
 import (
 	"context"
 
+	log "github.com/sirupsen/logrus"
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
 )
@@ -58,19 +59,17 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 }
 
 func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) error {
-	/*
-		res, err := csw.Compute.Addresses.Delete(project, region, address).Do()
-		if err != nil {
-			return err
-		}
-		//TODO: Remove
-		log.Infof("IP Address removal: %#v", res)
-	*/
+	res, err := csw.Compute.Addresses.Delete(project, region, address).Do()
+	if err != nil {
+		return err
+	}
+	//TODO: Remove
+	log.Infof("IP Address removal: %#v", res)
 	return nil
 }
 
-func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error) {
-	call := dsw.DNS.ResourceRecordSets.List(project, zone)
+func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error) {
+	call := dsw.DNS.ResourceRecordSets.List(project, managedZone)
 
 	var items = []*dns.ResourceRecordSet{}
 	f := func(page *dns.ResourceRecordSetsListResponse) error {
@@ -86,19 +85,17 @@ func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, zone string) ([]*
 	return items, nil
 }
 
-func (dsw *DNSServiceWrapper) deleteDNSRecord(project string, managedZone string, recordsToDelete []*dns.ResourceRecordSet) error {
-	/*
-		change := &dns.Change{
-			Deletions: recordsToDelete,
-		}
+func (dsw *DNSServiceWrapper) deleteDNSRecords(project string, managedZone string, recordsToDelete []*dns.ResourceRecordSet) error {
+	change := &dns.Change{
+		Deletions: recordsToDelete,
+	}
 
-		res, err := dsw.DNS.Changes.Create(project, managedZone, change).Context(dsw.Context).Do()
-		if err != nil {
-			return err
-		}
+	res, err := dsw.DNS.Changes.Create(project, managedZone, change).Context(dsw.Context).Do()
+	if err != nil {
+		return err
+	}
 
-		//TODO: Remove
-		log.Infof("DNS CHANGE: %#v", res)
-	*/
+	//TODO: Remove
+	log.Infof("DNS CHANGE: %#v", res)
 	return nil
 }

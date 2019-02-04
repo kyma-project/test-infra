@@ -20,7 +20,7 @@ const defaultAddressRegexpList = "(remoteenvs-)?gkeint-pr-.*,gke-upgrade-pr-.*"
 
 var (
 	project              = flag.String("project", "", "Project ID [Required]")
-	dnsZone              = flag.String("dnsZone", "", "Name of the zone in DNS [Required]")
+	dnsManagedZone       = flag.String("dnsZone", "", "Name of the DNS Managed Zone [Required]")
 	dryRun               = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 	ageInHours           = flag.Int("ageInHours", 2, "IP Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
 	addressNameRegexList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas. Matching addresses are considered for removal.")
@@ -35,7 +35,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	if *dnsZone == "" {
+	if *dnsManagedZone == "" {
 		fmt.Fprintln(os.Stderr, "missing -dnsZone flag")
 		flag.Usage()
 		os.Exit(2)
@@ -47,7 +47,7 @@ func main() {
 		regexpList = append(regexpList, regexp.MustCompile(pattern))
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dnsZone: \"%s\", dryRun: %t, ageInHours: %d, addressRegexpList: %s", *project, *dnsZone, *dryRun, *ageInHours, quoteElems(patterns))
+	common.ShoutFirst("Running with arguments: project: \"%s\", dnsZone: \"%s\", dryRun: %t, ageInHours: %d, addressRegexpList: %s", *project, *dnsManagedZone, *dryRun, *ageInHours, quoteElems(patterns))
 	ctx := context.Background()
 
 	computeConn, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
@@ -70,8 +70,8 @@ func main() {
 	shouldRemoveFunc := dnscollector.DefaultIPAddressRemovalPredicate(regexpList, *ageInHours)
 
 	cleaner := dnscollector.NewCleaner(computeAPI, dnsAPI, shouldRemoveFunc)
-	//TODO: use actual dryRun flag value
-	cleaner.Run(*project, *dnsZone, false)
+	makeChanges := !*dryRun
+	cleaner.Run(*project, *dnsManagedZone, makeChanges)
 }
 
 func quoteElems(elems []string) string {

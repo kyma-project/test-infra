@@ -23,21 +23,21 @@ type IPAddress struct {
 	region     string
 }
 
-//ComputeAPI ???
+//ComputeAPI abstracts over google Compute API
 type ComputeAPI interface {
 	lookupRegions(project string, pattern string) ([]string, error)
 	lookupIPAddresses(project string, region string) ([]*compute.Address, error)
 	deleteIPAddress(project string, region string, address string) error
 }
 
-//DNSAPI ???
+//DNSAPI abstracts over google DNS API
 type DNSAPI interface {
-	lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error)
-	deleteDNSRecord(project string, zone string, record []*dns.ResourceRecordSet) error
+	lookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error)
+	deleteDNSRecords(project string, managedZone string, record []*dns.ResourceRecordSet) error
 }
 
-//Cleaner ???
-type Cleaner struct {
+//Collector ???
+type Collector struct {
 	computeAPI   ComputeAPI
 	dnsAPI       DNSAPI
 	shouldRemove IPAddressRemovalPredicate
@@ -70,20 +70,20 @@ func DefaultIPAddressRemovalPredicate(addressRegexpList []*regexp.Regexp, minAge
 
 		ipAddressThreshold := time.Since(ipCreationTime).Hours() - float64(minAgeInHours)
 		//TODO: Remove
-		log.Infof("ipAddressThreshold: %v", ipAddressThreshold)
+		//log.Infof("ipAddressThreshold: %v", ipAddressThreshold)
 		ageMatches = ipAddressThreshold > 0
 
 		return nameMatches && ageMatches, nil
 	}
 }
 
-//NewCleaner ???
-func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddressRemovalPredicate) *Cleaner {
-	return &Cleaner{computeAPI, dnsAPI, removalPredicate}
+//NewCleaner returns an instance of DNSCollector
+func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddressRemovalPredicate) *Collector {
+	return &Collector{computeAPI, dnsAPI, removalPredicate}
 }
 
 //List IP Addresses in all regions. It's a "best effort" implementation,
-func (gc *Cleaner) listIPs(project string) (res []*IPAddress, allSucceeded bool, err error) {
+func (gc *Collector) listIPs(project string) (res []*IPAddress, allSucceeded bool, err error) {
 	regions, err := gc.computeAPI.lookupRegions(project, "europe-*")
 	if err != nil {
 		log.Errorf("Could not list Regions: %v", err)
@@ -107,7 +107,7 @@ func (gc *Cleaner) listIPs(project string) (res []*IPAddress, allSucceeded bool,
 }
 
 //Lists matching IP Addresses in given region
-func (gc *Cleaner) listRegionIPs(project, region string) (res []*IPAddress, err error) {
+func (gc *Collector) listRegionIPs(project, region string) (res []*IPAddress, err error) {
 	res = []*IPAddress{}
 
 	rawIPs, err := gc.computeAPI.lookupIPAddresses(project, region)
@@ -135,8 +135,8 @@ func (gc *Cleaner) listRegionIPs(project, region string) (res []*IPAddress, err 
 	return res, nil
 }
 
-func (gc *Cleaner) listDNSRecords(project, zone string) ([]*DNSRecord, error) {
-	rawDNSRecords, err := gc.dnsAPI.lookupDNSRecords(project, zone)
+func (gc *Collector) listDNSRecords(project, managedZone string) ([]*DNSRecord, error) {
+	rawDNSRecords, err := gc.dnsAPI.lookupDNSRecords(project, managedZone)
 
 	if err != nil {
 		return nil, err
@@ -161,14 +161,14 @@ func matchDNSRecord(rawDNS *dns.ResourceRecordSet) bool {
 }
 
 // Run executes disks garbage collection process
-func (gc *Cleaner) Run(project string, zone string, makeChanges bool) (allSucceeded bool, err error) {
+func (gc *Collector) Run(project string, managedZone string, makeChanges bool) (allSucceeded bool, err error) {
 
 	var msgPrefix string
 	if !makeChanges {
 		msgPrefix = "[DRY RUN] "
 	}
 
-	common.Shout("%sLooking for matching IP Addresses and DNS Records in project: \"%s\" and zone: \"%s\" ...", msgPrefix, project, zone)
+	common.Shout("%sLooking for matching IP Addresses and DNS Records in project: \"%s\" and zone: \"%s\" ...", msgPrefix, project, managedZone)
 
 	matchingIPs, allSucceeded, err := gc.listIPs(project)
 	if err != nil {
@@ -182,29 +182,29 @@ func (gc *Cleaner) Run(project string, zone string, makeChanges bool) (allSuccee
 		log.Infof("%sFound no IP Addresses to delete", msgPrefix)
 	}
 
-	dnsRecords, err := gc.listDNSRecords(project, zone)
+	allDNSRecords, err := gc.listDNSRecords(project, managedZone)
 
 	if err != nil {
-		log.Error("listing DNS Records for project \"%s\" and zone \"%s\", %v", project, zone, err)
+		log.Error("listing DNS Records for project \"%s\" and zone \"%s\", %v", project, managedZone, err)
 		return false, err
 	}
 
 	for _, ipAddress := range matchingIPs {
 
-		dnsRecords := findAssociatedRecords(ipAddress.rawAddress.Address, dnsRecords)
+		associatedRecords := findAssociatedRecords(ipAddress.rawAddress.Address, allDNSRecords)
 
-		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.rawAddress.Address, ipAddress.rawAddress.Name, len(dnsRecords))
+		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.rawAddress.Address, ipAddress.rawAddress.Name, len(allDNSRecords))
 
-		for _, dnsRecord := range dnsRecords {
+		for _, dnsRecord := range associatedRecords {
 			if makeChanges {
-				err = gc.dnsAPI.deleteDNSRecord("", "", nil)
+				err = gc.dnsAPI.deleteDNSRecords("", "", nil)
 				if err != nil {
 					log.Errorf("deleting DNS Records %s: %#v", "DNS", err)
 					allSucceeded = false
 					continue
 				}
 			}
-			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.name, project, zone)
+			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.name, project, managedZone)
 
 		}
 
@@ -215,7 +215,7 @@ func (gc *Cleaner) Run(project string, zone string, makeChanges bool) (allSuccee
 				allSucceeded = false
 			}
 		}
-		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.rawAddress.Address, project, zone, ipAddress.rawAddress.CreationTimestamp)
+		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.rawAddress.Address, project, managedZone, ipAddress.rawAddress.CreationTimestamp)
 	}
 
 	return allSucceeded, nil
