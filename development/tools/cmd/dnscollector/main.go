@@ -9,7 +9,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/dnscleaner"
+	"github.com/kyma-project/test-infra/development/tools/pkg/common"
+	"github.com/kyma-project/test-infra/development/tools/pkg/dnscollector"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
@@ -21,6 +22,7 @@ var (
 	project              = flag.String("project", "", "Project ID [Required]")
 	dnsZone              = flag.String("dnsZone", "", "Name of the zone in DNS [Required]")
 	dryRun               = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	ageInHours           = flag.Int("ageInHours", 2, "IP Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
 	addressNameRegexList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas. Matching addresses are considered for removal.")
 )
 
@@ -39,11 +41,13 @@ func main() {
 		os.Exit(2)
 	}
 
-	patterns := strings.Split(*addressNameRegexList, ",")
+	patterns := splitPatterns(*addressNameRegexList)
 	regexpList := []*regexp.Regexp{}
 	for _, pattern := range patterns {
 		regexpList = append(regexpList, regexp.MustCompile(pattern))
 	}
+
+	common.ShoutFirst("Running with arguments: project: \"%s\", dnsZone: \"%s\", dryRun: %t, ageInHours: %d, addressRegexpList: %s", *project, *dnsZone, *dryRun, *ageInHours, quoteElems(patterns))
 	ctx := context.Background()
 
 	computeConn, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
@@ -61,11 +65,34 @@ func main() {
 		log.Fatalf("Could not initialize gke client for Compute API: %v", err)
 	}
 
-	computeAPI := &dnscleaner.ComputeServiceWrapper{Context: ctx, Compute: computeSvc}
-	dnsAPI := &dnscleaner.DNSServiceWrapper{Context: ctx, DNS: dnsSvc}
-	shouldRemoveFunc := dnscleaner.DefaultIPAddressRemovalPredicate(regexpList, 1)
+	computeAPI := &dnscollector.ComputeServiceWrapper{Context: ctx, Compute: computeSvc}
+	dnsAPI := &dnscollector.DNSServiceWrapper{Context: ctx, DNS: dnsSvc}
+	shouldRemoveFunc := dnscollector.DefaultIPAddressRemovalPredicate(regexpList, *ageInHours)
 
-	cleaner := dnscleaner.NewCleaner(computeAPI, dnsAPI, shouldRemoveFunc)
+	cleaner := dnscollector.NewCleaner(computeAPI, dnsAPI, shouldRemoveFunc)
 	//TODO: use actual dryRun flag value
 	cleaner.Run(*project, *dnsZone, false)
+}
+
+func quoteElems(elems []string) string {
+
+	fmt.Println(len(elems))
+	res := "\"" + elems[0] + "\""
+	for i := 1; i < len(elems); i++ {
+		res = res + ","
+		res = res + "\"" + elems[i] + "\""
+	}
+
+	return "[" + res + "]"
+}
+
+func splitPatterns(commaSeparated string) []string {
+
+	res := []string{}
+	values := strings.Split(commaSeparated, ",")
+	for _, pattern := range values {
+		res = append(res, pattern)
+	}
+
+	return res
 }

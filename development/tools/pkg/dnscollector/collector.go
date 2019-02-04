@@ -1,4 +1,4 @@
-package dnscleaner
+package dnscollector
 
 import (
 	"regexp"
@@ -21,11 +21,6 @@ type DNSRecord struct {
 type IPAddress struct {
 	rawAddress *compute.Address
 	region     string
-}
-
-type ResourcesToRemove struct {
-	IPAddress  *IPAddress
-	DNSRecords []*DNSRecord
 }
 
 //ComputeAPI ???
@@ -123,7 +118,7 @@ func (gc *Cleaner) listRegionIPs(project, region string) (res []*IPAddress, err 
 
 	for _, rawIP := range rawIPs {
 		//TODO: remove
-		log.Infof("IP: %#v", rawIP)
+		//log.Infof("IP: %#v", rawIP)
 
 		addressMatches, err := gc.shouldRemove(rawIP)
 
@@ -132,7 +127,7 @@ func (gc *Cleaner) listRegionIPs(project, region string) (res []*IPAddress, err 
 		}
 
 		if addressMatches {
-			ipAddress := extractIPAddress(rawIP, region)
+			ipAddress := wrapAddress(rawIP, region)
 			res = append(res, ipAddress)
 		}
 	}
@@ -168,16 +163,16 @@ func matchDNSRecord(rawDNS *dns.ResourceRecordSet) bool {
 // Run executes disks garbage collection process
 func (gc *Cleaner) Run(project string, zone string, makeChanges bool) (allSucceeded bool, err error) {
 
-	common.Shout("Looking for matching IP Addresses and DNS Records in \"%s\" project and \"%s\" zone...", project, zone)
+	var msgPrefix string
+	if !makeChanges {
+		msgPrefix = "[DRY RUN] "
+	}
+
+	common.Shout("%sLooking for matching IP Addresses and DNS Records in project: \"%s\" and zone: \"%s\" ...", msgPrefix, project, zone)
 
 	matchingIPs, allSucceeded, err := gc.listIPs(project)
 	if err != nil {
 		return
-	}
-
-	var msgPrefix string
-	if !makeChanges {
-		msgPrefix = "[DRY RUN] "
 	}
 
 	if len(matchingIPs) > 0 {
@@ -246,15 +241,6 @@ Requested DNS Record delete: "*.gkeint-pr-124.build.kyma.io => 10.10.1.3"
 Requested IP Address delete: 10.10.1.3
 */
 
-func countDNSrecords(list []*ResourcesToRemove) int {
-	var count = 0
-	for _, toRemove := range list {
-		count = count + len(toRemove.DNSRecords)
-	}
-
-	return count
-}
-
-func extractIPAddress(rawAddress *compute.Address, region string) *IPAddress {
-	return &IPAddress{rawAddress, region}
+func wrapAddress(address *compute.Address, region string) *IPAddress {
+	return &IPAddress{address, region}
 }

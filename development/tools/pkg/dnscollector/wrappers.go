@@ -1,4 +1,4 @@
-package dnscleaner
+package dnscollector
 
 import (
 	"context"
