@@ -10,11 +10,6 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-type addressWrapper struct {
-	data   *compute.Address
-	region string
-}
-
 //ComputeAPI abstracts over google Compute API
 type ComputeAPI interface {
 	lookupRegions(project string, pattern string) ([]string, error)
@@ -69,9 +64,75 @@ func DefaultIPAddressRemovalPredicate(addressRegexpList []*regexp.Regexp, minAge
 	}
 }
 
-//NewCleaner returns an instance of DNSCollector
-func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddressRemovalPredicate) *Collector {
+type addressWrapper struct {
+	data   *compute.Address
+	region string
+}
+
+//New returns an new instance of the Collector
+func New(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddressRemovalPredicate) *Collector {
 	return &Collector{computeAPI, dnsAPI, removalPredicate}
+}
+
+// Run executes disks garbage collection process
+func (gc *Collector) Run(project string, managedZone string, makeChanges bool) (allSucceeded bool, err error) {
+
+	var msgPrefix string
+	if !makeChanges {
+		msgPrefix = "[DRY RUN] "
+	}
+
+	common.Shout("Looking for matching IP Addresses and DNS Records in project: \"%s\" and zone: \"%s\" ...", project, managedZone)
+
+	matchingIPs, allSucceeded, err := gc.listIPs(project)
+	if err != nil {
+		return false, err
+	}
+
+	if len(matchingIPs) > 0 {
+		log.Infof("%sFound %d matching IP Addresses", msgPrefix, len(matchingIPs))
+		common.Shout("Removing matching IP Addresses / DNS Records ...")
+	} else {
+		log.Infof("%sFound no IP Addresses to delete", msgPrefix)
+	}
+
+	allDNSRecords, err := gc.listDNSRecords(project, managedZone)
+
+	if err != nil {
+		log.Error("listing DNS Records for project \"%s\" and zone \"%s\", %v", project, managedZone, err)
+		return false, err
+	}
+
+	for _, ipAddress := range matchingIPs {
+
+		associatedRecords := findAssociatedRecords(ipAddress.data.Address, allDNSRecords)
+
+		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, len(associatedRecords))
+
+		for _, dnsRecord := range associatedRecords {
+			if makeChanges {
+				err = gc.dnsAPI.deleteDNSRecords(project, managedZone, dnsRecord)
+				if err != nil {
+					log.Errorf("deleting DNS Records %s: %#v", "DNS", err)
+					allSucceeded = false
+					continue
+				}
+			}
+			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.Name, project, managedZone)
+		}
+
+		if makeChanges {
+			err = gc.computeAPI.deleteIPAddress(project, ipAddress.region, ipAddress.data.Name)
+			if err != nil {
+				log.Errorf("deleting IP Address %s: %#v", "IP_ADDRESS", err)
+				allSucceeded = false
+				continue
+			}
+		}
+		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.data.Address, project, managedZone, ipAddress.data.CreationTimestamp)
+	}
+
+	return allSucceeded, nil
 }
 
 //List IP Addresses in all regions. It's a "best effort" implementation,
@@ -149,66 +210,6 @@ func matchDNSRecord(rawDNS *dns.ResourceRecordSet) bool {
 	typeMatches := rawDNS.Type == "A"
 	hasSingleIPAddress := len(rawDNS.Rrdatas) == 1
 	return typeMatches && hasSingleIPAddress
-}
-
-// Run executes disks garbage collection process
-func (gc *Collector) Run(project string, managedZone string, makeChanges bool) (allSucceeded bool, err error) {
-
-	var msgPrefix string
-	if !makeChanges {
-		msgPrefix = "[DRY RUN] "
-	}
-
-	common.Shout("%sLooking for matching IP Addresses and DNS Records in project: \"%s\" and zone: \"%s\" ...", msgPrefix, project, managedZone)
-
-	matchingIPs, allSucceeded, err := gc.listIPs(project)
-	if err != nil {
-		return
-	}
-
-	if len(matchingIPs) > 0 {
-		log.Infof("%sFound %d matching IP Addresses", msgPrefix, len(matchingIPs))
-		common.Shout("Removing matching IP Addresses / DNS Records ...")
-	} else {
-		log.Infof("%sFound no IP Addresses to delete", msgPrefix)
-	}
-
-	allDNSRecords, err := gc.listDNSRecords(project, managedZone)
-
-	if err != nil {
-		log.Error("listing DNS Records for project \"%s\" and zone \"%s\", %v", project, managedZone, err)
-		return false, err
-	}
-
-	for _, ipAddress := range matchingIPs {
-
-		associatedRecords := findAssociatedRecords(ipAddress.data.Address, allDNSRecords)
-
-		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, len(associatedRecords))
-
-		for _, dnsRecord := range associatedRecords {
-			if makeChanges {
-				err = gc.dnsAPI.deleteDNSRecords(project, managedZone, dnsRecord)
-				if err != nil {
-					log.Errorf("deleting DNS Records %s: %#v", "DNS", err)
-					allSucceeded = false
-					continue
-				}
-			}
-			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.Name, project, managedZone)
-		}
-
-		if makeChanges {
-			err = gc.computeAPI.deleteIPAddress("", "", "")
-			if err != nil {
-				log.Errorf("deleting IP Address %s: %#v", "IP_ADDRESS", err)
-				allSucceeded = false
-			}
-		}
-		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.data.Address, project, managedZone, ipAddress.data.CreationTimestamp)
-	}
-
-	return allSucceeded, nil
 }
 
 func findAssociatedRecords(ipAddress string, dnsRecords []*dns.ResourceRecordSet) []*dns.ResourceRecordSet {

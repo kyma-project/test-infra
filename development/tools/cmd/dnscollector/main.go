@@ -4,13 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"regexp"
 	"strings"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	"github.com/kyma-project/test-infra/development/tools/pkg/dnscollector"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
@@ -23,20 +23,20 @@ var (
 	dnsZone              = flag.String("dnsZone", "", "Name of the DNS Managed Zone [Required]")
 	dryRun               = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 	ageInHours           = flag.Int("ageInHours", 2, "IP Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
-	addressNameRegexList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas. Matching addresses are considered for removal.")
+	addressNameRegexList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas, spaces are trimmed. Matching addresses are considered for removal.")
 )
 
 func main() {
 	flag.Parse()
 
 	if *project == "" {
-		fmt.Fprintln(os.Stderr, "missing -project flag")
+		fmt.Fprintln(os.Stderr, "missing -project flag\n")
 		flag.Usage()
 		os.Exit(2)
 	}
 
 	if *dnsZone == "" {
-		fmt.Fprintln(os.Stderr, "missing -dnsZone flag")
+		fmt.Fprintln(os.Stderr, "missing -dnsZone flag\n")
 		flag.Usage()
 		os.Exit(2)
 	}
@@ -45,6 +45,12 @@ func main() {
 	regexpList := []*regexp.Regexp{}
 	for _, pattern := range patterns {
 		regexpList = append(regexpList, regexp.MustCompile(pattern))
+	}
+
+	if len(regexpList) == 0 {
+		fmt.Fprintln(os.Stderr, "missing addressRegexpList value\n")
+		flag.Usage()
+		os.Exit(2)
 	}
 
 	common.ShoutFirst("Running with arguments: project: \"%s\", dnsZone: \"%s\", dryRun: %t, ageInHours: %d, addressRegexpList: %s", *project, *dnsZone, *dryRun, *ageInHours, quoteElems(patterns))
@@ -69,9 +75,18 @@ func main() {
 	dnsAPI := &dnscollector.DNSServiceWrapper{Context: ctx, DNS: dnsSvc}
 	shouldRemoveFunc := dnscollector.DefaultIPAddressRemovalPredicate(regexpList, *ageInHours)
 
-	cleaner := dnscollector.NewCleaner(computeAPI, dnsAPI, shouldRemoveFunc)
-	makeChanges := !*dryRun
-	cleaner.Run(*project, *dnsZone, makeChanges)
+	cleaner := dnscollector.New(computeAPI, dnsAPI, shouldRemoveFunc)
+	allSucceeded, err := cleaner.Run(*project, *dnsZone, !(*dryRun))
+
+	if err != nil {
+		log.Fatalf("IP/DNS collector error: %v", err)
+	}
+
+	if !allSucceeded {
+		log.Warn("Some operations failed.")
+	}
+
+	common.Shout("Finished")
 }
 
 func quoteElems(elems []string) string {
@@ -91,7 +106,10 @@ func splitPatterns(commaSeparated string) []string {
 	res := []string{}
 	values := strings.Split(commaSeparated, ",")
 	for _, pattern := range values {
-		res = append(res, pattern)
+		val := strings.Trim(pattern, " ")
+		if len(val) > 0 {
+			res = append(res, val)
+		}
 	}
 
 	return res
