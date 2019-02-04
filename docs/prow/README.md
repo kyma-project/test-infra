@@ -12,8 +12,8 @@ Read the documents to learn how to:
 - [Create a service account](./prow-secrets-management.md) and store its encrypted key in a GCS bucket.
 - [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
-- [Create standard component jobs](./create-component-jobs.md) for the Prow pipeline.
-- [Define release jobs](./create-release-jobs.md) for your components.
+- [Create, modify, and remove standard component jobs](./component-jobs.md) for the Prow pipeline.
+- [Define release jobs](./release-jobs.md) for your components.
 
 Find out more about:
 
