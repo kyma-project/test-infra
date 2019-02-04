@@ -79,6 +79,23 @@ buildpack_golang_job_template: &buildpack_golang_job_template
             memory: 1.5Gi
             cpu: 0.8
 
+buildpack_golang_kubebuilder_job_template: &buildpack_golang_kubebuilder_job_template
+  run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
 buildpack_node_job_template: &buildpack_node_job_template
   run_if_changed: "^prow/images/buildpack-node/"
   <<: *common_job_template
@@ -152,6 +169,11 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
+    - name: pre-test-infra-buildpack-golang-kubebuilder
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      <<: *buildpack_golang_kubebuilder_job_template
     - name: pre-test-infra-buildpack-node
       labels:
         preset-build-pr: "true"
@@ -190,6 +212,11 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
+    - name: post-test-infra-buildpack-golang-kubebuilder
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *buildpack_golang_kubebuilder_job_template
     - name: post-test-infra-buildpack-node
       labels:
         preset-build-release: "true"
