@@ -39,23 +39,6 @@ func (csw *ComputeServiceWrapper) lookupRegions(project, pattern string) ([]stri
 	return regions, nil
 }
 
-func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error) {
-	call := dsw.DNS.ResourceRecordSets.List(project, zone)
-
-	var items = []*dns.ResourceRecordSet{}
-	f := func(page *dns.ResourceRecordSetsListResponse) error {
-		for _, v := range page.Rrsets {
-			items = append(items, v)
-		}
-		return nil
-	}
-
-	if err := call.Pages(dsw.Context, f); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region string) ([]*compute.Address, error) {
 	var items = []*compute.Address{}
 	call := csw.Compute.Addresses.List(project, region)
@@ -84,6 +67,23 @@ func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string,
 		log.Infof("IP Address removal: %#v", res)
 	*/
 	return nil
+}
+
+func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error) {
+	call := dsw.DNS.ResourceRecordSets.List(project, zone)
+
+	var items = []*dns.ResourceRecordSet{}
+	f := func(page *dns.ResourceRecordSetsListResponse) error {
+		for _, v := range page.Rrsets {
+			items = append(items, v)
+		}
+		return nil
+	}
+
+	if err := call.Pages(dsw.Context, f); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 func (dsw *DNSServiceWrapper) deleteDNSRecord(project string, managedZone string, recordsToDelete []*dns.ResourceRecordSet) error {
