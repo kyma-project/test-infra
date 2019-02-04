@@ -1,7 +1,7 @@
 package dnscleaner
 
 import (
-	"strings"
+	"regexp"
 	"time"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
@@ -17,11 +17,10 @@ type DNSRecord struct {
 }
 
 //IPAddress Simplified Address object.
+//TODO: Rename to AddressWrapper
 type IPAddress struct {
-	name              string
-	address           string
-	region            string
-	creationTimestamp string
+	rawAddress *compute.Address
+	region     string
 }
 
 type ResourcesToRemove struct {
@@ -39,29 +38,62 @@ type ComputeAPI interface {
 //DNSAPI ???
 type DNSAPI interface {
 	lookupDNSRecords(project string, zone string) ([]*dns.ResourceRecordSet, error)
-	deleteDNSRecord(project string, zone string, record *dns.ResourceRecordSet) error
+	deleteDNSRecord(project string, zone string, record []*dns.ResourceRecordSet) error
 }
 
 //Cleaner ???
 type Cleaner struct {
-	computeAPI ComputeAPI
-	dnsAPI     DNSAPI
+	computeAPI   ComputeAPI
+	dnsAPI       DNSAPI
+	shouldRemove IPAddressRemovalPredicate
+}
+
+// IPAddressRemovalPredicate returns true if IP Address should be deleted (matches removal criteria)
+type IPAddressRemovalPredicate func(*compute.Address) (bool, error)
+
+// DefaultIPAddressRemovalPredicate returns the default IPAddressRemovalPredicate
+// Matching criteria are:
+// - Name matches one of provided regular expressions.
+// - CreationTimestamp indicates that it is created more than ageInHours ago.
+func DefaultIPAddressRemovalPredicate(addressRegexpList []*regexp.Regexp, minAgeInHours int) IPAddressRemovalPredicate {
+
+	return func(address *compute.Address) (bool, error) {
+		nameMatches := false
+		ageMatches := false
+
+		for _, r := range addressRegexpList {
+			if r.MatchString(address.Name) {
+				nameMatches = true
+			}
+		}
+
+		ipCreationTime, err := time.Parse(time.RFC3339, address.CreationTimestamp)
+		if err != nil {
+			log.Errorf("Error while parsing CreationTimestamp: \"%s\" for IP Address: %s", address.CreationTimestamp, address.Address)
+			return false, err
+		}
+
+		ipAddressThreshold := time.Since(ipCreationTime).Hours() - float64(minAgeInHours)
+		//TODO: Remove
+		log.Infof("ipAddressThreshold: %v", ipAddressThreshold)
+		ageMatches = ipAddressThreshold > 0
+
+		return nameMatches && ageMatches, nil
+	}
 }
 
 //NewCleaner ???
-func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI) *Cleaner {
-	return &Cleaner{computeAPI, dnsAPI}
+func NewCleaner(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddressRemovalPredicate) *Cleaner {
+	return &Cleaner{computeAPI, dnsAPI, removalPredicate}
 }
 
 //List IP Addresses in all regions. It's a "best effort" implementation,
 func (gc *Cleaner) listIPs(project string) (res []*IPAddress, allSucceeded bool, err error) {
-
 	regions, err := gc.computeAPI.lookupRegions(project, "europe-*")
 	if err != nil {
 		log.Errorf("Could not list Regions: %v", err)
 		return nil, false, err
 	}
-
 	allSucceeded = true
 	res = []*IPAddress{}
 
@@ -93,7 +125,7 @@ func (gc *Cleaner) listRegionIPs(project, region string) (res []*IPAddress, err 
 		//TODO: remove
 		log.Infof("IP: %#v", rawIP)
 
-		addressMatches, err := matchIPAddress(rawIP)
+		addressMatches, err := gc.shouldRemove(rawIP)
 
 		if err != nil {
 			return nil, err
@@ -106,28 +138,6 @@ func (gc *Cleaner) listRegionIPs(project, region string) (res []*IPAddress, err 
 	}
 
 	return res, nil
-}
-
-func matchIPAddress(rawIP *compute.Address) (bool, error) {
-
-	//TODO: Parametrize
-	var minAgeInHours = 10
-
-	ipCreationTime, err := time.Parse(time.RFC3339, rawIP.CreationTimestamp)
-	if err != nil {
-		log.Errorf("Error while parsing CreationTimestamp: \"%s\" for IP Address: %s", rawIP.CreationTimestamp, rawIP.Address)
-		return false, err
-	}
-
-	ipAddressThreshold := time.Since(ipCreationTime).Hours() - float64(minAgeInHours)
-	log.Infof("ipAddressThreshold: %v", ipAddressThreshold)
-	ageMatches := ipAddressThreshold > 0
-
-	if ageMatches {
-		return true, nil
-	}
-
-	return false, nil
 }
 
 func (gc *Cleaner) listDNSRecords(project, zone string) ([]*DNSRecord, error) {
@@ -156,7 +166,7 @@ func matchDNSRecord(rawDNS *dns.ResourceRecordSet) bool {
 }
 
 // Run executes disks garbage collection process
-func (gc *Cleaner) Run(project string, zone string, dryRun bool) (allSucceeded bool, err error) {
+func (gc *Cleaner) Run(project string, zone string, makeChanges bool) (allSucceeded bool, err error) {
 
 	common.Shout("Looking for matching IP Addresses and DNS Records in \"%s\" project and \"%s\" zone...", project, zone)
 
@@ -166,7 +176,7 @@ func (gc *Cleaner) Run(project string, zone string, dryRun bool) (allSucceeded b
 	}
 
 	var msgPrefix string
-	if dryRun {
+	if !makeChanges {
 		msgPrefix = "[DRY RUN] "
 	}
 
@@ -186,29 +196,31 @@ func (gc *Cleaner) Run(project string, zone string, dryRun bool) (allSucceeded b
 
 	for _, ipAddress := range matchingIPs {
 
-		dnsRecords := findAssociatedRecords(ipAddress.address, dnsRecords)
+		dnsRecords := findAssociatedRecords(ipAddress.rawAddress.Address, dnsRecords)
 
-		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.address, ipAddress.name, len(dnsRecords))
+		log.Infof("Processing IP Adress: %s, name: \"%s\", %d associated DNS record(s)", ipAddress.rawAddress.Address, ipAddress.rawAddress.Name, len(dnsRecords))
 
-		/*
-			for _, dnsRecord := range gd.DNSRecords {
+		for _, dnsRecord := range dnsRecords {
+			if makeChanges {
 				err = gc.dnsAPI.deleteDNSRecord("", "", nil)
 				if err != nil {
 					log.Errorf("deleting DNS Records %s: %#v", "DNS", err)
 					allSucceeded = false
-				} else {
-					log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.name, project, zone)
+					continue
 				}
 			}
-		*/
+			log.Infof("%sRequested DNS record delete: \"%s\". Project \"%s\", zone \"%s\"", msgPrefix, dnsRecord.name, project, zone)
 
-		err = gc.computeAPI.deleteIPAddress("", "", "")
-		if err != nil {
-			log.Errorf("deleting IP Address %s: %#v", "IP_ADDRESS", err)
-			allSucceeded = false
-		} else {
-			log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.address, project, zone, ipAddress.creationTimestamp)
 		}
+
+		if makeChanges {
+			err = gc.computeAPI.deleteIPAddress("", "", "")
+			if err != nil {
+				log.Errorf("deleting IP Address %s: %#v", "IP_ADDRESS", err)
+				allSucceeded = false
+			}
+		}
+		log.Infof("%sRequested IP Address delete: \"%s\". Project \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, ipAddress.rawAddress.Address, project, zone, ipAddress.rawAddress.CreationTimestamp)
 	}
 
 	return allSucceeded, nil
@@ -243,16 +255,6 @@ func countDNSrecords(list []*ResourcesToRemove) int {
 	return count
 }
 
-func extractIPAddress(raw *compute.Address, region string) *IPAddress {
-	return &IPAddress{raw.Name, raw.Address, region, raw.CreationTimestamp}
-}
-
-func extractRecords(records []*dns.ResourceRecordSet, key string) []DNSRecord {
-	var items []DNSRecord
-	for _, record := range records {
-		if strings.Contains(record.Name, key) {
-			items = append(items, DNSRecord{record.Name, record.Rrdatas[0]})
-		}
-	}
-	return items
+func extractIPAddress(rawAddress *compute.Address, region string) *IPAddress {
+	return &IPAddress{rawAddress, region}
 }

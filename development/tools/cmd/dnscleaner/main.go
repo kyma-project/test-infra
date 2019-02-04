@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/dnscleaner"
 	"golang.org/x/oauth2/google"
@@ -13,10 +15,13 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
+const defaultAddressRegexpList = "(remoteenvs-)?gkeint-pr-.*,gke-upgrade-pr-.*"
+
 var (
-	project = flag.String("project", "", "Project ID [Required]")
-	dnsZone = flag.String("dnsZone", "", "Name of the zone in DNS [Required]")
-	dryRun  = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	project              = flag.String("project", "", "Project ID [Required]")
+	dnsZone              = flag.String("dnsZone", "", "Name of the zone in DNS [Required]")
+	dryRun               = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	addressNameRegexList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas. Matching addresses are considered for removal.")
 )
 
 func main() {
@@ -34,6 +39,11 @@ func main() {
 		os.Exit(2)
 	}
 
+	patterns := strings.Split(*addressNameRegexList, ",")
+	regexpList := []*regexp.Regexp{}
+	for _, pattern := range patterns {
+		regexpList = append(regexpList, regexp.MustCompile(pattern))
+	}
 	ctx := context.Background()
 
 	computeConn, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
@@ -53,7 +63,9 @@ func main() {
 
 	computeAPI := &dnscleaner.ComputeServiceWrapper{Context: ctx, Compute: computeSvc}
 	dnsAPI := &dnscleaner.DNSServiceWrapper{Context: ctx, DNS: dnsSvc}
-	cleaner := dnscleaner.NewCleaner(computeAPI, dnsAPI)
+	shouldRemoveFunc := dnscleaner.DefaultIPAddressRemovalPredicate(regexpList, 1)
+
+	cleaner := dnscleaner.NewCleaner(computeAPI, dnsAPI, shouldRemoveFunc)
 	//TODO: use actual dryRun flag value
-	cleaner.Run(*project, *dnsZone, true)
+	cleaner.Run(*project, *dnsZone, false)
 }

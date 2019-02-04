@@ -60,8 +60,7 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 	var items = []*compute.Address{}
 	call := csw.Compute.Addresses.List(project, region)
 	call = call.Filter("status: RESERVED")
-	//2018-11-09T05:01:51.510-08:00
-	//call = call.Filter("creationTimestamp > 11") <- probably can't be done. Filtering in memory.
+	//call = call.Filter("creationTimestamp > 2018-11-09T05:01:51.510-08:00") <- probably can't be done. Filtering in memory.
 	f := func(page *compute.AddressList) error {
 		for _, v := range page.Items {
 			items = append(items, v)
@@ -77,23 +76,29 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 
 func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) error {
 	/*
-		_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
+		res, err := csw.Compute.Addresses.Delete(project, region, address).Do()
 		if err != nil {
 			return err
 		}
+		//TODO: Remove
+		log.Infof("IP Address removal: %#v", res)
 	*/
 	return nil
 }
 
-func (dsw *DNSServiceWrapper) deleteDNSRecord(project string, zone string, record *dns.ResourceRecordSet) error {
+func (dsw *DNSServiceWrapper) deleteDNSRecord(project string, managedZone string, recordsToDelete []*dns.ResourceRecordSet) error {
 	/*
-		request := &dns.Change{
-			Deletions: []*dns.ResourceRecordSet{record},
+		change := &dns.Change{
+			Deletions: recordsToDelete,
 		}
-		_, err := dsw.DNS.Changes.Create(project, zone, request).Do()
+
+		res, err := dsw.DNS.Changes.Create(project, managedZone, change).Context(dsw.Context).Do()
 		if err != nil {
 			return err
 		}
+
+		//TODO: Remove
+		log.Infof("DNS CHANGE: %#v", res)
 	*/
 	return nil
 }
