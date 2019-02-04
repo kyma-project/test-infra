@@ -34,13 +34,19 @@ extra_refs:
 ---
 **Q: My component is no longer needed, how do I remove it?**
 
-**A:** In order to remove a component from Prow, we need to backtrack and remove everything we have created in [this document](create-component-jobs.md). 
+**A:** In order to remove a component from Prow, follow these steps:
+1. Delete **PreSubmit** and **PostSubmit** jobs for `master` branch. (Do not delete jobs for `release` branches)
+2. Delete tests for these jobs.
 
 > **NOTE**: If the component You have created is a part of a release *X*, You **cannot** just delete it, as it will be required in *X.y* (f.e a component in 0.6 that is deleted in 0.7 is still needed for 0.6.1)
-
-In such a situation it is required to remove the **PreSubmit** and **PostSubmit** ProwJob triggers for the **master branch**, while leaving the triggers for the **release branch only**
 
 ---
 **Q: The name of my component needs to change, what now?**
 
-**A:** In the case of renaming a component, please follow this [guide](create-component-jobs.md#rename-a-component)
+**A:** In the case of renaming a component, please follow these steps:
+1. Change `name` value for presubmit and postsubmit jobs for `master` branch.
+2. Change `run_if_changed` value in job_template for new component path.
+3. Create new release job. For details, see the [official documentation](https://github.com/kyma-project/test-infra/blob/master/docs/prow/create-release-jobs.md).
+>**NOTE**: Don't delete existing release jobs and tests for these jobs, as the component you're renaming in previous releases is still defined by its old name.
+4. Make changes in tests.
+
