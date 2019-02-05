@@ -217,5 +217,15 @@ func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expVa
 			return
 		}
 	}
-	assert.Fail(t, "Container [%s] does not have environment variable [%s] with name [%s]", cont.Name, expValue, expValue)
+	assert.Fail(t, fmt.Sprintf("Container [%s] does not have environment variable [%s] with value [%s]", cont.Name, expName, expValue))
+}
+
+// AssertThatContainerHasEnvFromSecret checks if container has specified given environment variable
+func AssertThatContainerHasEnvFromSecret(t *testing.T, cont kube.Container, expName, expSecretName, expSecretKey string) {
+	for _, env := range cont.Env {
+		if env.ValueFrom != nil && env.ValueFrom.SecretKeyRef != nil && env.ValueFrom.SecretKeyRef.Name == expSecretName && env.ValueFrom.SecretKeyRef.Key == expSecretKey {
+			return
+		}
+	}
+	assert.Fail(t, fmt.Sprintf("Container [%s] does not have environment variable [%s] with value from secret [name: %s, key: %s]", cont.Name, expName, expSecretName, expSecretKey))
 }

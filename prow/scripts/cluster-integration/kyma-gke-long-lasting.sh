@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 set -o errexit
+set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL SLACK_CLIENT_CHANNEL_ID; do
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -47,6 +48,9 @@ function removeCluster() {
 
 	EXIT_STATUS=$?
 
+    shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
+
 	shout "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
@@ -85,7 +89,7 @@ function removeCluster() {
 	shout "Delete temporary Kyma-Installer Docker image"
 	date
 
-    readonly OLD_TIMESTAMP=$(echo "${CLUSTER_NAME}" | cut -d '-' -f3)
+
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -135,6 +139,52 @@ function createCluster() {
 	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
+function waitUntilInstallerApiAvailable() {
+    shout "Waiting for Installer API"
+
+	attempts=5
+    for ((i=1; i<=attempts; i++)); do
+        numberOfLines=$(kubectl api-versions | grep -c "installer.kyma-project.io")
+        if [[ "$numberOfLines" == "1" ]]; then
+            echo "API found"
+            break
+        elif [[ "${i}" == "${attempts}" ]]; then
+            echo "ERROR: API not found, exit"
+            exit 1
+        fi
+
+        echo "Sleep for 3 seconds"
+        sleep 3
+    done
+}
+
+function generateAndExportLetsEncryptCert() {
+	shout "Generate lets encrypt certificate"
+	date
+
+    mkdir letsencrypt
+    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+    docker run  --name certbot \
+        --rm  \
+        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+        certbot/dns-google \
+        certonly \
+        -m "kyma.bot@sap.com" \
+        --agree-tos \
+        --no-eff-email \
+        --dns-google \
+        --dns-google-credentials /etc/letsencrypt/service-account.json \
+        --server https://acme-v02.api.letsencrypt.org/directory \
+        --dns-google-propagation-seconds=600 \
+        -d "*.${DOMAIN}"
+
+    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    export TLS_CERT
+    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+    export TLS_KEY
+
+}
+
 function installKyma() {
 
 	kymaUnsetVar=false
@@ -160,31 +210,34 @@ function installKyma() {
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	
-	shout "Generate self-signed certificate"
-	date
+
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 	export DOMAIN
-
-	CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-self-signed-cert.sh)
-	TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-	TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+    generateAndExportLetsEncryptCert
 
 	shout "Apply Kyma config"
 	date
-	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+
+	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
 		| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
 		| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
 		| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-		| sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-		| sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
+		| sed -e "s#__TLS_CERT__#${TLS_CERT}#g" \
+		| sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
 		| sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
 		| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
 		| sed -e "s/__VERSION__/0.0.1/g" \
+		| sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
+		| sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
+	waitUntilInstallerApiAvailable
+
 	shout "Trigger installation"
 	date
+
+    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
 	kubectl label installation/kyma-installation action=install
 	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
@@ -205,7 +258,7 @@ function installStabilityChecker() {
 
 	helm install --set clusterName="${CLUSTER_NAME}" \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
-	        --set slackClientChannelId="${SLACK_CLIENT_CHANNEL_ID}" \
+	        --set slackClientChannelId="${STABILITY_SLACK_CLIENT_CHANNEL_ID}" \
 	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
 	        --set stats.enabled="${STATS_ENABLED}" \
 	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \

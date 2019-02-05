@@ -163,12 +163,10 @@ presets:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
   - labels:
-      preset-slack-notifications: "true"
+      preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
         value: https://sap-cx.slack.com/services/hooks/jenkins-ci
-      - name: SLACK_CLIENT_CHANNEL_ID
-        value: "#prow-nightly-notify"
       - name: SLACK_CLIENT_TOKEN
         valueFrom:
           secretKeyRef:
