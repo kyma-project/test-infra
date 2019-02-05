@@ -17,6 +17,7 @@ import (
 )
 
 const defaultAddressRegexpList = "(remoteenvs-)?gkeint-pr-.*,gke-upgrade-pr-.*"
+const minAgeInHours = 1
 
 var (
 	project              = flag.String("project", "", "Project ID [Required]")
@@ -49,6 +50,12 @@ func main() {
 
 	if len(regexpList) == 0 {
 		fmt.Fprintln(os.Stderr, "missing addressRegexpList value\n")
+		flag.Usage()
+		os.Exit(2)
+	}
+
+	if *ageInHours < minAgeInHours {
+		fmt.Fprintf(os.Stderr, "invalid ageInHours. Value must not be smaller than %d\n\n", minAgeInHours)
 		flag.Usage()
 		os.Exit(2)
 	}
@@ -91,7 +98,6 @@ func main() {
 
 func quoteElems(elems []string) string {
 
-	fmt.Println(len(elems))
 	res := "\"" + elems[0] + "\""
 	for i := 1; i < len(elems); i++ {
 		res = res + ","
