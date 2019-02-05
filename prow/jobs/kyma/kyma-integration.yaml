@@ -321,7 +321,7 @@ periodics:
       - name: KYMA_ALERTS_SLACK_API_URL
         valueFrom:
           secretKeyRef:
-            name: kyma-alerts-slack-api-url #TODO
+            name: kyma-alerts-slack-api-url
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#c4core-kyma-ci-force"
@@ -365,7 +365,7 @@ periodics:
           - name: KYMA_ALERTS_SLACK_API_URL
             valueFrom:
               secretKeyRef:
-                name: kyma-alerts-slack-api-url #TODO
+                name: kyma-alerts-slack-api-url
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             value: "#c4core-kyma-ci-force"
