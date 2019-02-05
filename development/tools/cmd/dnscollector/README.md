@@ -4,7 +4,7 @@
 
 This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud Platform (GCP) project.
 
-When an integration job installs Kyma on the GKE cluster, an IP Address and DNS records are created as well.
+When an integration job installs Kyma on a GKE cluster, it reserves the required IP addresses and adds necessary DNS records.
 Usually, the job that provisions the cluster cleans up the resources once they are not needed.
 It can happen, however, that the job cleanup process fails.
 This causes a resource leak that generates unwanted costs.
@@ -17,7 +17,7 @@ There are three conditions used to find IP Address for removal:
 - The address `creationTimestamp` value that is used to find addresses existing at least for a preconfigured number of hours
 
 Addresses that meet these conditions are subject to removal.
-Before removal of a matching address, the tool finds all DNS records associated with the IP address.
+Before removal of a matching address, the command finds all DNS records associated with the IP address.
 The command removes all associated DNS records first, then the IP Address.
 
 ## Usage
