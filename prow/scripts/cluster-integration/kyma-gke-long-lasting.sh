@@ -218,7 +218,7 @@ function installKyma() {
 	shout "Apply Kyma config"
 	date
 
-	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
 		| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
 		| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
 		| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
@@ -232,10 +232,11 @@ function installKyma() {
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
-    waitUntilInstallerApiAvailable
+	waitUntilInstallerApiAvailable
+
 	shout "Trigger installation"
 	date
-
+    cat "${INSTALLER_CR}" | sed -e "s/__VERSION__/0.0.1/g" | sed -e "s/__.*__//g" | kubectl apply -f-
 	kubectl label installation/kyma-installation action=install
 	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
