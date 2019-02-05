@@ -8,7 +8,7 @@ When an integration job installs Kyma on the GKE cluster, an IP Address and DNS 
 Usually, the job that provisions the cluster cleans up the resources once they are not needed.
 It can happen, however, that the job cleanup process fails.
 This causes a resource leak that generates unwanted costs.
-The garbage collector finds and removes unused IP Addresses and related DNS records.
+The garbage collector finds and removes unused IP addresses and related DNS records.
 
 
 There are three conditions used to find IP Address for removal:
