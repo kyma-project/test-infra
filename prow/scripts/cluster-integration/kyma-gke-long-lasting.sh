@@ -236,7 +236,8 @@ function installKyma() {
 
 	shout "Trigger installation"
 	date
-    cat "${INSTALLER_CR}" | sed -e "s/__VERSION__/0.0.1/g" | sed -e "s/__.*__//g" | kubectl apply -f-
+
+    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
 	kubectl label installation/kyma-installation action=install
 	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
