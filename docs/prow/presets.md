@@ -24,4 +24,4 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-bot-github-identity** | It sets the environment variables for the name and email of the bot account.               |
 | **preset-bot-github-ssh** | It connects the ssh key of the bot account to your job and sets the value with the path to this key.                    |
 | **preset-kyma-artifacts-bucket** | It defines the environment variable for the Kyma's artifact bucket.                     |
-| **preset-stability-checker-slack-notifications** | It defines the webhook url, channel, and client token required for the Slack integration.                 |
+| **preset-stability-checker-slack-notifications** | It defines a webhook URL,  a channel, and a client token required for the Slack integration.                 |
