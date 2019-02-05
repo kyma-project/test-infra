@@ -15,7 +15,7 @@ CERT_PATH="${SCRIPTS_DIR}/cert.pem"
 KEY_PATH="${SCRIPTS_DIR}/key.pem"
 CERT_VALID_DAYS=${CERT_VALID_DAYS:-5}
 
-openssl req -x509 -nodes -days ${CERT_VALID_DAYS} -newkey rsa:4069 \
+openssl req -x509 -nodes -days "${CERT_VALID_DAYS}" -newkey rsa:4069 \
                  -subj "/CN=${DOMAIN}" \
                  -reqexts SAN -extensions SAN \
                  -config <(cat /etc/ssl/openssl.cnf \

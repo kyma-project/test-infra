@@ -48,7 +48,7 @@ function removeCluster() {
 	EXIT_STATUS=$?
 
     shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe ${CLUSTER_NAME} --zone=${GCLOUD_COMPUTE_ZONE} --project=${GCLOUD_PROJECT_NAME} --format=json | jq --raw-output '.resourceLabels."created-at"')
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
 
 	shout "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
@@ -143,11 +143,11 @@ function waitForInstallationCRD() {
 
 	attempts=5
     for ((i=1; i<=attempts; i++)); do
-        numberOfLines=$(kubectl get crd | grep "installations.installer.kyma-project.io" | wc -l | tr -d ' ')
+        numberOfLines=$(kubectl get crd | grep -c "installations.installer.kyma-project.io")
         if [[ "$numberOfLines" == "1" ]]; then
             echo "CRD Installation found"
             break
-        elif [[ ${i} == ${attempts} ]]; then
+        elif [[ "${i}" == "${attempts}" ]]; then
             echo "ERROR: CRD Installation not found, exit"
             exit 1
         fi
@@ -203,8 +203,8 @@ function installKyma() {
         --dns-google-propagation-seconds=600 \
         -d "*.${DOMAIN}"
 
-    export TLS_CERT=$(cat ./letsencrypt/live/$DOMAIN/fullchain.pem | base64 | tr -d '\n')
-    export TLS_KEY=$(cat ./letsencrypt/live/$DOMAIN/privkey.pem | base64 | tr -d '\n')
+    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 
     if [ -z "${TLS_CERT}" ] ; then
         echo "ERROR: TLS_CERT is not set"
