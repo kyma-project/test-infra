@@ -12,7 +12,7 @@ The garbage collector finds and removes unused IP addresses and related DNS reco
 
 
 There are three conditions used to find IP address for removal:
-- The address name pattern that is specific for given GKE integration job
+- The address name pattern that is specific for the given GKE integration job
 - The address status indicating it is not used (this value is not configurable by the user)
 - The address `creationTimestamp` value that is used to find addresses existing at least for a preconfigured number of hours
 
