@@ -167,8 +167,6 @@ presets:
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
         value: https://sap-cx.slack.com/services/hooks/jenkins-ci
-      - name: SLACK_CLIENT_CHANNEL_ID
-        value: "#c4core-kyma-ci-force"
       - name: SLACK_CLIENT_TOKEN
         valueFrom:
           secretKeyRef:

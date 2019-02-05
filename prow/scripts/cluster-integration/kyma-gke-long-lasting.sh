@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 set -o errexit
+set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL SLACK_CLIENT_CHANNEL_ID; do
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -138,23 +139,50 @@ function createCluster() {
 	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
-function waitForInstallationCRD() {
-    shout "Waiting for Installation CRD"
+function waitUntilInstallerApiAvailable() {
+    shout "Waiting for Installer API"
 
 	attempts=5
     for ((i=1; i<=attempts; i++)); do
-        numberOfLines=$(kubectl get crd | grep -c "installations.installer.kyma-project.io")
+        numberOfLines=$(kubectl api-versions | grep -c "installer.kyma-project.io")
         if [[ "$numberOfLines" == "1" ]]; then
-            echo "CRD Installation found"
+            echo "API found"
             break
         elif [[ "${i}" == "${attempts}" ]]; then
-            echo "ERROR: CRD Installation not found, exit"
+            echo "ERROR: API not found, exit"
             exit 1
         fi
 
         echo "Sleep for 3 seconds"
         sleep 3
     done
+}
+
+function generateAndExportLetsEncryptCert() {
+	shout "Generate lets encrypt certificate"
+	date
+
+    mkdir letsencrypt
+    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+    docker run  --name certbot \
+        --rm  \
+        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+        certbot/dns-google \
+        certonly \
+        -m "kyma.bot@sap.com" \
+        --agree-tos \
+        --no-eff-email \
+        --dns-google \
+        --dns-google-credentials /etc/letsencrypt/service-account.json \
+        --server https://acme-v02.api.letsencrypt.org/directory \
+        --dns-google-propagation-seconds=600 \
+        -d "*.${DOMAIN}"
+
+    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    export TLS_CERT
+    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+    export TLS_KEY
+
 }
 
 function installKyma() {
@@ -182,36 +210,11 @@ function installKyma() {
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	
-	shout "Generate lets encrypt certificate"
-	date
+
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 	export DOMAIN
+    generateAndExportLetsEncryptCert
 
-    mkdir letsencrypt
-    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
-
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-
-    if [ -z "${TLS_CERT}" ] ; then
-        echo "ERROR: TLS_CERT is not set"
-    fi
-     if [ -z "${TLS_CERT}" ] ; then
-        echo "ERROR: TLS_CERT is not set"
-    fi
 	shout "Apply Kyma config"
 	date
 
@@ -229,7 +232,7 @@ function installKyma() {
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
-    waitForInstallationCRD
+    waitUntilInstallerApiAvailable
 	shout "Trigger installation"
 	date
 
@@ -253,7 +256,7 @@ function installStabilityChecker() {
 
 	helm install --set clusterName="${CLUSTER_NAME}" \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
-	        --set slackClientChannelId="${SLACK_CLIENT_CHANNEL_ID}" \
+	        --set slackClientChannelId="${STABILITY_SLACK_CLIENT_CHANNEL_ID}" \
 	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
 	        --set stats.enabled="${STATS_ENABLED}" \
 	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
