@@ -18,14 +18,12 @@ import (
 )
 
 const defaultClusterNameRegexp = "^gkeint[-](pr|commit|rel)[-].*"
-const defaultJobLabelRegexp = "^kyma-gke-integration$"
 
 var (
 	project           = flag.String("project", "", "Project ID [Required]")
 	dryRun            = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 	ageInHours        = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
 	clusterNameRegexp = flag.String("clusterNameRegexp", defaultClusterNameRegexp, "Cluster name regexp pattern. Matching clusters are subject to removal.")
-	jobLabelRegexp    = flag.String("jobLabelRegexp", defaultJobLabelRegexp, "The regexp pattern for \"job\" label defined on the cluster object. Matching clusters are subject to removal.")
 )
 
 func main() {
@@ -43,10 +41,10 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, clusterNameRegexp: \"%s\", jobLabelRegexp: \"%s\"", *project, *dryRun, *ageInHours, *clusterNameRegexp, *jobLabelRegexp)
-	context := context.Background()
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, clusterNameRegexp: \"%s\"", *project, *dryRun, *ageInHours, *clusterNameRegexp)
+	ctx := context.Background()
 
-	connection, err := google.DefaultClient(context, container.CloudPlatformScope)
+	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
@@ -57,13 +55,12 @@ func main() {
 	}
 
 	clusterNameRx := regexp.MustCompile(*clusterNameRegexp)
-	jobLabelRx := regexp.MustCompile(*jobLabelRegexp)
 
 	clustersService := containerSvc.Projects.Locations.Clusters
 
-	clusterAPI := &clusterscollector.ClusterAPIWrapper{Context: context, Service: clustersService}
+	clusterAPI := &clusterscollector.ClusterAPIWrapper{Context: ctx, Service: clustersService}
 
-	clusterFilter := clusterscollector.DefaultClusterRemovalPredicate(clusterNameRx, jobLabelRx, uint(*ageInHours))
+	clusterFilter := clusterscollector.DefaultClusterRemovalPredicate(clusterNameRx, uint(*ageInHours))
 	gc := clusterscollector.NewClustersGarbageCollector(clusterAPI, clusterFilter)
 
 	allSucceeded, err := gc.Run(*project, !(*dryRun))

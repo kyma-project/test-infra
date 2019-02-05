@@ -43,7 +43,7 @@ if [ "${NUM_NODES}" ]; then NUM_NODES_PARAM="--num-nodes=${NUM_NODES}"; fi
 
 APPENDED_LABELS=""
 if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
-LABELS_PARAM=(--labels="job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME}${APPENDED_LABELS[@]}")
+LABELS_PARAM=(--labels="job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]}")
 
 command -v gcloud
 

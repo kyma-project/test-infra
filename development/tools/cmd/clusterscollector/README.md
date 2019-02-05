@@ -12,7 +12,7 @@ The garbage collector finds and removes such clusters.
 
 There are three conditions used to find clusters for removal:
 - The cluster name pattern that is specific for the `kyma-gke-integration` job
-- The value of a `job` label the cluster is annotated with
+- The value of a `volatile` label the cluster is annotated with
 - The cluster `createTime` value that is used to find clusters existing at least for a preconfigured number of hours
 
 Clusters that meet these conditions are subject to removal.
@@ -43,7 +43,6 @@ See the list of available flags:
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 | **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`.
 | **--clusterNameRegexp**   |    No    | The string value with a valid Golang regexp. It is used to match clusters by their name. It defaults to `^gkeint[-](pr|commit)[-].*`.
-| **--jobLabelRegexp**      |    No    | The string value with a valid Golang regexp. It is used to match clusters by the `job` label value. It defaults to `^kyma-gke-integration$`.
 
 ### Environment variables
 
