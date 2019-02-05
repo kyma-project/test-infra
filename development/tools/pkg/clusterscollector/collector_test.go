@@ -15,16 +15,14 @@ import (
 )
 
 const sampleClusterNameRegexp = "^gkeint[-](pr|commit)[-].*"
-const sampleJobLabelRegexp = "^kyma-gke-integration"
 
 const sampleClusterName = "gkeint-pr-2991-abc"
-const sampleJobLabel = "kyma-gke-integration"
+const volatileLabel = "true"
 const sampleStatus = "RUNNING"
 
 var (
 	clusterNameRegexp        = regexp.MustCompile(sampleClusterNameRegexp)
-	jobLabelRegexp           = regexp.MustCompile(sampleJobLabelRegexp)
-	filterFunc               = DefaultClusterRemovalPredicate(clusterNameRegexp, jobLabelRegexp, 1) //age is 1 hour
+	filterFunc               = DefaultClusterRemovalPredicate(clusterNameRegexp, 1) //age is 1 hour
 	timeNow                  = time.Now()
 	timeNowFormatted         = timeNow.Format(time.RFC3339Nano)
 	timeTwoHoursAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
@@ -39,45 +37,45 @@ func TestNewClusterRemovalPredicate(t *testing.T) {
 		expectedFilterValue bool
 		clusterName         string
 		clusterCreateTime   string
-		clusterJobLabel     string
+		volatileLabelValue  string
 		clusterStatus       string
 	}{
 		{name: "Should filter matching cluster",
 			expectedFilterValue: true,
 			clusterName:         sampleClusterName,
 			clusterCreateTime:   timeTwoHoursAgoFormatted,
-			clusterJobLabel:     sampleJobLabel,
+			volatileLabelValue:  volatileLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster with non matching name",
 			expectedFilterValue: false,
 			clusterName:         "otherName",
 			clusterCreateTime:   timeTwoHoursAgoFormatted,
-			clusterJobLabel:     sampleJobLabel,
+			volatileLabelValue:  volatileLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster recently created",
 			expectedFilterValue: false,
 			clusterName:         sampleClusterName,
 			clusterCreateTime:   timeNowFormatted,
-			clusterJobLabel:     sampleJobLabel,
+			volatileLabelValue:  volatileLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster with invalid label",
 			expectedFilterValue: false,
 			clusterName:         sampleClusterName,
 			clusterCreateTime:   timeTwoHoursAgoFormatted,
-			clusterJobLabel:     "otherLabel",
+			volatileLabelValue:  "no",
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster in STOPPING status",
 			expectedFilterValue: false,
 			clusterName:         sampleClusterName,
 			clusterCreateTime:   timeTwoHoursAgoFormatted,
-			clusterJobLabel:     sampleJobLabel,
+			volatileLabelValue:  volatileLabel,
 			clusterStatus:       "STOPPING"},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			cluster := createCluster(testCase.clusterName, testCase.clusterCreateTime, testCase.clusterJobLabel, testCase.clusterStatus)
+			cluster := createCluster(testCase.clusterName, testCase.clusterCreateTime, testCase.volatileLabelValue, testCase.clusterStatus)
 			collected, err := filterFunc(cluster)
 
 			//then
@@ -101,11 +99,11 @@ func TestNewClusterRemovalPredicate(t *testing.T) {
 
 func TestClustersGarbageCollector(t *testing.T) {
 
-	clusterMatching1 := createCluster(sampleClusterName+"1", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)      //matches removal filter
-	clusterNonMatchingName := createCluster("otherName"+"2", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)      //non matching name
+	clusterMatching1 := createCluster(sampleClusterName+"1", timeTwoHoursAgoFormatted, volatileLabel, sampleStatus)       //matches removal filter
+	clusterNonMatchingName := createCluster("otherName"+"2", timeTwoHoursAgoFormatted, volatileLabel, sampleStatus)       //non matching name
 	clusterNonMatchingLabel := createCluster(sampleClusterName+"3", timeTwoHoursAgoFormatted, "otherLabel", sampleStatus) //non matching label
-	clusterCreatedTooRecently := createCluster(sampleClusterName+"4", timeNowFormatted, sampleJobLabel, sampleStatus)     //not old enough
-	clusterMatching2 := createCluster(sampleClusterName+"5", timeTwoHoursAgoFormatted, sampleJobLabel, sampleStatus)      //matches removal filter
+	clusterCreatedTooRecently := createCluster(sampleClusterName+"4", timeNowFormatted, volatileLabel, sampleStatus)      //not old enough
+	clusterMatching2 := createCluster(sampleClusterName+"5", timeTwoHoursAgoFormatted, volatileLabel, sampleStatus)       //matches removal filter
 
 	t.Run("list() should select two clusters out of five", func(t *testing.T) {
 
@@ -211,7 +209,7 @@ func createCluster(name, createTime, jobLabelValue, status string) *container.Cl
 		Name:           name,
 		Zone:           name + "-zone",
 		CreateTime:     createTime,
-		ResourceLabels: map[string]string{jobLabelName: jobLabelValue},
+		ResourceLabels: map[string]string{volatileLabelName: jobLabelValue},
 		Status:         status,
 	}
 }

@@ -8,10 +8,10 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	container "google.golang.org/api/container/v1"
+	"google.golang.org/api/container/v1"
 )
 
-const jobLabelName = "job"
+const volatileLabelName = "volatile"
 
 //go:generate mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
 
@@ -100,8 +100,8 @@ func (gc *ClustersGarbageCollector) list(project string) ([]*container.Cluster, 
 // ClusterRemovalPredicate returns true when the cluster should be deleted (matches removal criteria)
 type ClusterRemovalPredicate func(cluster *container.Cluster) (bool, error)
 
-// DefaultClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on clusterNameRegexp, jobLabelRegexp, ageInHours and Status
-func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, jobLabelRegexp *regexp.Regexp, ageInHours uint) ClusterRemovalPredicate {
+// DefaultClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on clusterNameRegexp, label "temporary", ageInHours and Status
+func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, ageInHours uint) ClusterRemovalPredicate {
 	return func(cluster *container.Cluster) (bool, error) {
 		if cluster == nil {
 			return false, errors.New("Invalid data: Nil")
@@ -109,9 +109,9 @@ func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, jobLabelRe
 
 		nameMatches := clusterNameRegexp.MatchString(cluster.Name)
 
-		jobLabelMatches := false
-		if cluster.ResourceLabels != nil {
-			jobLabelMatches = jobLabelRegexp.MatchString(cluster.ResourceLabels[jobLabelName])
+		isVolatileCluster := false
+		if cluster.ResourceLabels != nil && cluster.ResourceLabels[volatileLabelName] == "true" {
+			isVolatileCluster = true
 		}
 
 		var ageMatches bool
@@ -125,7 +125,7 @@ func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, jobLabelRe
 		clusterAgeThreshold := time.Since(clusterCreationTime).Hours() - float64(ageInHours)
 		ageMatches = clusterAgeThreshold > 0
 
-		if nameMatches && jobLabelMatches && ageMatches {
+		if nameMatches && isVolatileCluster && ageMatches {
 			//Filter out clusters that are being deleted at this moment
 			if cluster.Status == "STOPPING" {
 				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime)
