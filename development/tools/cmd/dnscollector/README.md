@@ -1,0 +1,59 @@
+# IP Address and DNS Garbage Collector
+
+## Overview
+
+This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud Platform (GCP) project.
+
+When an integration job installs Kyma on the GKE cluster, an IP Address and DNS records are created as well.
+Usually, the job that provisions the cluster cleans up the resources once they are not needed.
+It can happen, however, that the job cleanup process fails.
+This causes a resource leak that generates unwanted costs.
+The garbage collector finds and removes unused IP Addresses and related DNS records.
+
+
+There are three conditions used to find IP Address for removal:
+- The address name pattern that is specific for given GKE integration job
+- The address status indicating it is not used (this value is not configurable)
+- The address `creationTimestamp` value that is used to find address existing at least for a preconfigured number of hours
+
+Addresses that meet these conditions are subject to removal.
+Before removal of a matching address, the tool finds all associated DNS records.
+The command removes all associated DNS records first, then the IP Address.
+
+## Usage
+
+For safety reasons, the dry-run mode is the default one.
+To run it, use:
+```bash
+env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
+    --project={gcloud project name} --dnsZone={gcloud managed zone name} \
+    --regions={list of GCP regions}
+```
+
+To turn the dry-run mode off, use:
+```bash
+env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
+    --project={gcloud project name} --dnsZone={gcloud managed zone name} \
+    --regions={list of GCP regions} --dryRun=false
+```
+
+### Flags
+
+See the list of available flags:
+
+| Name                    | Required | Description                                                                                          |
+| :---------------------- | :------: | :--------------------------------------------------------------------------------------------------- |
+| **--project**           |   Yes    | GCP project name.
+| **--regions**           |   Yes    | GCP region name or a comma-separated list of such values.
+| **--dnsZone**           |   Yes    | GCP DNS Managed Zone name used to lookup of DNS records for removal.
+| **--dryRun**            |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
+| **--ageInHours**        |    No    | The integer value for the number of hours. It only matches addresses older than `now()-ageInHours`. It defaults to `2`.
+| **--addressRegexpList** |    No    | The string value with a Golang regexp or a comma-separated list of such expressions. It is used to match addresses by their name. It defaults to `(remoteenvs-)?gkeint-(pr|commit)-.*,(remoteenvs-)?gke-upgrade-(pr|commit)-.*`.
+
+### Environment variables
+
+See the list of available environment variables:
+
+| Name                                  | Required | Description                                                                                          |
+| :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `TODO: list ips, list dns`, `TODO: remove address`, and `TODO: change DNS records` Google IAM permissions. |
