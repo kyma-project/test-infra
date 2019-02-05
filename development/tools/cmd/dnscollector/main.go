@@ -18,6 +18,7 @@ import (
 
 const defaultAddressRegexpList = "(remoteenvs-)?gkeint-pr-.*,gke-upgrade-pr-.*"
 const minAgeInHours = 1
+const minPatternLength = 5
 
 var (
 	project              = flag.String("project", "", "Project ID [Required]")
@@ -31,13 +32,15 @@ func main() {
 	flag.Parse()
 
 	if *project == "" {
-		fmt.Fprintln(os.Stderr, "missing -project flag\n")
+		fmt.Fprintln(os.Stderr, "missing -project flag")
+		fmt.Fprintln(os.Stderr, "")
 		flag.Usage()
 		os.Exit(2)
 	}
 
 	if *dnsZone == "" {
-		fmt.Fprintln(os.Stderr, "missing -dnsZone flag\n")
+		fmt.Fprintln(os.Stderr, "missing -dnsZone flag")
+		fmt.Fprintln(os.Stderr, "")
 		flag.Usage()
 		os.Exit(2)
 	}
@@ -45,11 +48,18 @@ func main() {
 	patterns := splitPatterns(*addressNameRegexList)
 	regexpList := []*regexp.Regexp{}
 	for _, pattern := range patterns {
+		if len(pattern) < minPatternLength {
+			fmt.Fprintf(os.Stderr, "invalid pattern: \"%s\". Value must not be shorter than %d characters.\n", pattern, minPatternLength)
+			fmt.Fprintln(os.Stderr, "")
+			flag.Usage()
+			os.Exit(2)
+		}
 		regexpList = append(regexpList, regexp.MustCompile(pattern))
 	}
 
 	if len(regexpList) == 0 {
-		fmt.Fprintln(os.Stderr, "missing addressRegexpList value\n")
+		fmt.Fprintln(os.Stderr, "missing addressRegexpList value")
+		fmt.Fprintln(os.Stderr, "")
 		flag.Usage()
 		os.Exit(2)
 	}
@@ -112,9 +122,7 @@ func splitPatterns(commaSeparated string) []string {
 	values := strings.Split(commaSeparated, ",")
 	for _, pattern := range values {
 		val := strings.Trim(pattern, " ")
-		if len(val) > 0 {
-			res = append(res, val)
-		}
+		res = append(res, val)
 	}
 
 	return res
