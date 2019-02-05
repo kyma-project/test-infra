@@ -100,7 +100,7 @@ func (gc *ClustersGarbageCollector) list(project string) ([]*container.Cluster, 
 // ClusterRemovalPredicate returns true when the cluster should be deleted (matches removal criteria)
 type ClusterRemovalPredicate func(cluster *container.Cluster) (bool, error)
 
-// DefaultClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on clusterNameRegexp, label "temporary", ageInHours and Status
+// DefaultClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on clusterNameRegexp, label "volatile", ageInHours and Status
 func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, ageInHours uint) ClusterRemovalPredicate {
 	return func(cluster *container.Cluster) (bool, error) {
 		if cluster == nil {
