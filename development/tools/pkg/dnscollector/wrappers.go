@@ -3,41 +3,20 @@ package dnscollector
 import (
 	"context"
 
-	log "github.com/sirupsen/logrus"
 	compute "google.golang.org/api/compute/v1"
 	dns "google.golang.org/api/dns/v1"
 )
 
-//ComputeServiceWrapper A wrapper for compute API service connections.
+//ComputeServiceWrapper A wrapper for compute API service.
 type ComputeServiceWrapper struct {
 	Context context.Context
 	Compute *compute.Service
 }
 
-//DNSServiceWrapper A wrapper for dns API service connections.
+//DNSServiceWrapper A wrapper for dns API service.
 type DNSServiceWrapper struct {
 	Context context.Context
 	DNS     *dns.Service
-}
-
-func (csw *ComputeServiceWrapper) lookupRegions(project, pattern string) ([]string, error) {
-	call := csw.Compute.Regions.List(project)
-	if pattern != "" {
-		call = call.Filter("name: " + pattern)
-	}
-
-	var regions []string
-	f := func(page *compute.RegionList) error {
-		for _, v := range page.Items {
-			regions = append(regions, v.Name)
-		}
-		return nil
-	}
-
-	if err := call.Pages(csw.Context, f); err != nil {
-		return nil, err
-	}
-	return regions, nil
 }
 
 func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region string) ([]*compute.Address, error) {
@@ -59,12 +38,10 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 }
 
 func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) error {
-	res, err := csw.Compute.Addresses.Delete(project, region, address).Do()
+	_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
 	if err != nil {
 		return err
 	}
-	//TODO: Remove
-	log.Infof("IP Address removal: %#v", res)
 	return nil
 }
 
@@ -90,12 +67,10 @@ func (dsw *DNSServiceWrapper) deleteDNSRecords(project string, managedZone strin
 		Deletions: []*dns.ResourceRecordSet{recordToDelete},
 	}
 
-	res, err := dsw.DNS.Changes.Create(project, managedZone, change).Context(dsw.Context).Do()
+	_, err := dsw.DNS.Changes.Create(project, managedZone, change).Context(dsw.Context).Do()
 	if err != nil {
 		return err
 	}
 
-	//TODO: Remove
-	log.Infof("DNS CHANGE: %#v", res)
 	return nil
 }

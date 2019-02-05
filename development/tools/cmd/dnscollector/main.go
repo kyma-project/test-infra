@@ -16,52 +16,52 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-const defaultAddressRegexpList = "(remoteenvs-)?gkeint-pr-.*,gke-upgrade-pr-.*"
+const defaultAddressRegexpList = "(remoteenvs-)?gkeint-(pr|commit)-.*,(remoteenvs-)?gke-upgrade-(pr|commit)-.*"
 const minAgeInHours = 1
 const minPatternLength = 5
 
 var (
-	project              = flag.String("project", "", "Project ID [Required]")
-	dnsZone              = flag.String("dnsZone", "", "Name of the DNS Managed Zone [Required]")
-	dryRun               = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
-	ageInHours           = flag.Int("ageInHours", 2, "IP Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
-	addressNameRegexList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas, spaces are trimmed. Matching addresses are considered for removal.")
+	project               = flag.String("project", "", "project id [required]")
+	regions               = flag.String("regions", "", "comma-separted list of GCP regions [required]")
+	dnsZone               = flag.String("dnsZone", "", "Name of the DNS Managed Zone [Required]")
+	dryRun                = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	ageInHours            = flag.Int("ageInHours", 2, "IP Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
+	addressNameRegexpList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas, spaces are trimmed. Matching addresses are considered for removal.")
 )
 
 func main() {
 	flag.Parse()
 
 	if *project == "" {
-		fmt.Fprintln(os.Stderr, "missing -project flag")
-		fmt.Fprintln(os.Stderr, "")
+		fmt.Fprint(os.Stderr, "missing -project flag\n\n")
 		flag.Usage()
 		os.Exit(2)
 	}
 
 	if *dnsZone == "" {
-		fmt.Fprintln(os.Stderr, "missing -dnsZone flag")
-		fmt.Fprintln(os.Stderr, "")
+		fmt.Fprint(os.Stderr, "missing -dnsZone flag\n\n")
 		flag.Usage()
 		os.Exit(2)
 	}
 
-	patterns := splitPatterns(*addressNameRegexList)
+	regionsList := splitPatterns(*regions)
+	for _, region := range regionsList {
+		if len(region) == 0 {
+			fmt.Fprint(os.Stderr, "invalid region: \"\"\n\n")
+			flag.Usage()
+			os.Exit(2)
+		}
+	}
+
+	patterns := splitPatterns(*addressNameRegexpList)
 	regexpList := []*regexp.Regexp{}
 	for _, pattern := range patterns {
 		if len(pattern) < minPatternLength {
-			fmt.Fprintf(os.Stderr, "invalid pattern: \"%s\". Value must not be shorter than %d characters.\n", pattern, minPatternLength)
-			fmt.Fprintln(os.Stderr, "")
+			fmt.Fprintf(os.Stderr, "invalid pattern: \"%s\". Value must not be shorter than %d characters.\n\n", pattern, minPatternLength)
 			flag.Usage()
 			os.Exit(2)
 		}
 		regexpList = append(regexpList, regexp.MustCompile(pattern))
-	}
-
-	if len(regexpList) == 0 {
-		fmt.Fprintln(os.Stderr, "missing addressRegexpList value")
-		fmt.Fprintln(os.Stderr, "")
-		flag.Usage()
-		os.Exit(2)
 	}
 
 	if *ageInHours < minAgeInHours {
@@ -70,7 +70,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dnsZone: \"%s\", dryRun: %t, ageInHours: %d, addressRegexpList: %s", *project, *dnsZone, *dryRun, *ageInHours, quoteElems(patterns))
+	common.ShoutFirst("Running with arguments: project: \"%s\", regions: \"%s\", dnsZone: \"%s\", dryRun: %t, ageInHours: %d, addressRegexpList: %s", *project, quoteElems(regionsList), *dnsZone, *dryRun, *ageInHours, quoteElems(patterns))
 	ctx := context.Background()
 
 	computeConn, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
@@ -93,7 +93,7 @@ func main() {
 	shouldRemoveFunc := dnscollector.DefaultIPAddressRemovalPredicate(regexpList, *ageInHours)
 
 	cleaner := dnscollector.New(computeAPI, dnsAPI, shouldRemoveFunc)
-	allSucceeded, err := cleaner.Run(*project, *dnsZone, !(*dryRun))
+	allSucceeded, err := cleaner.Run(*project, *dnsZone, regionsList, !(*dryRun))
 
 	if err != nil {
 		log.Fatalf("IP/DNS collector error: %v", err)
