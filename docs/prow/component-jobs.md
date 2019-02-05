@@ -273,7 +273,7 @@ To remove a component from Prow, follow these steps:
 
 2. Delete tests for these jobs.
 
->**NOTE:** If the component you created is a part of the *X* release, you cannot delete it as the *X.y* release still requires it. For example, a component in `0.6` that is deleted in `0.7` is still needed for `0.6.1`.
+>**NOTE:** If the component you created is a part of the **X** release, you cannot delete it as the **X.y** release still requires it. For example, a component in `0.6` that is deleted in `0.7` is still needed for `0.6.1`.
 
 
 ## Pipeline overview
