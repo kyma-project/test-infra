@@ -440,6 +440,7 @@
     "cloudkms/v1",
     "compute/v1",
     "container/v1",
+    "dns/v1",
     "gensupport",
     "googleapi",
     "googleapi/internal/uritemplates",

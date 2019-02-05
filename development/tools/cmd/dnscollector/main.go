@@ -100,8 +100,7 @@ func quoteElems(elems []string) string {
 
 	res := "\"" + elems[0] + "\""
 	for i := 1; i < len(elems); i++ {
-		res = res + ","
-		res = res + "\"" + elems[i] + "\""
+		res = res + ",\"" + elems[i] + "\""
 	}
 
 	return "[" + res + "]"
