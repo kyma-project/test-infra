@@ -93,6 +93,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 		common.Shout("Removing matching IP Addresses / DNS Records ...")
 	} else {
 		log.Infof("%sFound no IP Addresses to delete", msgPrefix)
+		return true, nil
 	}
 
 	allDNSRecords, err := gc.listDNSRecords(project, managedZone)

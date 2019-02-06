@@ -24,8 +24,13 @@ var (
 	timeNowFormatted         = timeNow.Format(time.RFC3339Nano)
 	timeTwoHoursAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
 	timeTwoHoursAgoFormatted = timeTwoHoursAgo.Format(time.RFC3339Nano)
-	nonEmptyUsers            = []string{"someUser"}
-	emptyUsers               = []string{}
+	addressMatching1         = createAddress(sampleAddressName+"1", "192.168.0.1", timeTwoHoursAgoFormatted) //matches removal filter
+	addressNotMatching2      = createAddress(sampleAddressName+"2", "192.168.0.2", timeNowFormatted)         //does not match removal filter
+	addressMatching3         = createAddress(sampleAddressName+"3", "192.168.0.3", timeTwoHoursAgoFormatted) //matches removal filter
+	addressMatching4         = createAddress(sampleAddressName+"4", "192.168.0.4", timeTwoHoursAgoFormatted) //matches removal filter
+	testRecord1              = createDNSRecord("", "192.168.0.1")
+	testRecord2              = createDNSRecord("", "192.168.0.2")
+	testRecord3              = createDNSRecord("", "192.168.0.3")
 )
 
 func TestDefaultIPAddressRemovalPredicate(t *testing.T) {
@@ -76,16 +81,14 @@ func TestDefaultIPAddressRemovalPredicate(t *testing.T) {
 }
 
 func TestListRegionIPs(t *testing.T) {
-	addressMatching1 := createAddress(sampleAddressName+"1", "192.168.0.1", timeTwoHoursAgoFormatted) //matches removal filter
-	addressNotMatching2 := createAddress(sampleAddressName+"2", "192.168.0.2", timeNowFormatted)      //does not match removal filter
-	addressMatching3 := createAddress(sampleAddressName+"3", "192.168.0.3", timeTwoHoursAgoFormatted) //matches removal filter
+
+	testProject := "testProject"
+	testRegion := "testRegion"
 
 	t.Run("listRegionIPs() should find matching addresses in region", func(t *testing.T) {
 		mockComputeAPI := &automock.ComputeAPI{}
 		defer mockComputeAPI.AssertExpectations(t)
 
-		testProject := "testProject"
-		testRegion := "testRegion"
 		mockComputeAPI.On("LookupIPAddresses", testProject, testRegion).Return([]*compute.Address{addressMatching1, addressNotMatching2, addressMatching3}, nil)
 
 		gdc := New(mockComputeAPI, nil, filterFunc)
@@ -104,8 +107,6 @@ func TestListRegionIPs(t *testing.T) {
 		mockComputeAPI := &automock.ComputeAPI{}
 		defer mockComputeAPI.AssertExpectations(t)
 
-		testProject := "testProject"
-		testRegion := "testRegion"
 		mockComputeAPI.On("LookupIPAddresses", testProject, testRegion).Return(nil, errors.New("testError"))
 
 		gdc := New(mockComputeAPI, nil, filterFunc)
@@ -116,15 +117,13 @@ func TestListRegionIPs(t *testing.T) {
 		assert.Equal(t, "testError", err.Error())
 	})
 
-	t.Run("listRegionIPs() should find matching addresses in region in case predicate function fails", func(t *testing.T) {
+	t.Run("listRegionIPs() should find matching addresses in case predicate function fails", func(t *testing.T) {
 		mockComputeAPI := &automock.ComputeAPI{}
 		defer mockComputeAPI.AssertExpectations(t)
 
 		addressWithInvalidTimestamp := createAddress(sampleAddressName, "192.168.0.4", timeTwoHoursAgoFormatted) //matches removal filter
 		addressWithInvalidTimestamp.CreationTimestamp = "abc"
 
-		testProject := "testProject"
-		testRegion := "testRegion"
 		mockComputeAPI.On("LookupIPAddresses", testProject, testRegion).Return([]*compute.Address{addressWithInvalidTimestamp, addressMatching1, addressNotMatching2, addressMatching3}, nil)
 
 		gdc := New(mockComputeAPI, nil, filterFunc)
@@ -141,11 +140,6 @@ func TestListRegionIPs(t *testing.T) {
 }
 
 func TestListIPs(t *testing.T) {
-
-	addressMatching1 := createAddress(sampleAddressName+"1", "192.168.0.1", timeTwoHoursAgoFormatted) //matches removal filter
-	addressNotMatching2 := createAddress(sampleAddressName+"2", "192.168.0.2", timeNowFormatted)      //does not match removal filter
-	addressMatching3 := createAddress(sampleAddressName+"3", "192.168.0.3", timeTwoHoursAgoFormatted) //matches removal filter
-	addressMatching4 := createAddress(sampleAddressName+"4", "192.168.0.4", timeTwoHoursAgoFormatted) //matches removal filter
 
 	t.Run("listIPs() should find matching addresses in regions", func(t *testing.T) {
 		mockComputeAPI := &automock.ComputeAPI{}
@@ -228,7 +222,7 @@ func TestListIPs(t *testing.T) {
 func TestMatchDNSRecord(t *testing.T) {
 	t.Run("matchDNSRecord() should return true for matching record", func(t *testing.T) {
 		//given
-		record := createDNSRecord("", "192.168.0.1")
+		record := testRecord1
 		//when
 		res := matchDNSRecord(record)
 		//then
@@ -244,6 +238,7 @@ func TestMatchDNSRecord(t *testing.T) {
 		//then
 		assert.False(t, res)
 	})
+
 	t.Run("matchDNSRecord() should return false for record with multiple IP addresses", func(t *testing.T) {
 		//given
 		record := dns.ResourceRecordSet{
@@ -261,7 +256,7 @@ func TestListDNSRecords(t *testing.T) {
 	testProject := "testProject"
 	testManagedZone := "testManagedZone"
 
-	t.Run("listDNSRecord should return error correctly", func(t *testing.T) {
+	t.Run("listDNSRecords() should return error correctly", func(t *testing.T) {
 		mockDNSAPI := &automock.DNSAPI{}
 		defer mockDNSAPI.AssertExpectations(t)
 
@@ -273,14 +268,15 @@ func TestListDNSRecords(t *testing.T) {
 		assert.Nil(t, res)
 		assert.Equal(t, "testError", err.Error())
 	})
-	t.Run("listDNSRecord should return matching DNS records", func(t *testing.T) {
+
+	t.Run("listDNSRecords() should return only matching DNS records", func(t *testing.T) {
 		mockDNSAPI := &automock.DNSAPI{}
 		defer mockDNSAPI.AssertExpectations(t)
 
-		recordMatching1 := createDNSRecord("", "192.168.0.1")
+		recordMatching1 := testRecord1
 		recordNotMatching2 := createDNSRecord("", "192.168.0.2")
 		recordNotMatching2.Type = "TXT"
-		recordMatching3 := createDNSRecord("", "192.168.0.3")
+		recordMatching3 := testRecord3
 
 		mockDNSAPI.On("LookupDNSRecords", testProject, testManagedZone).Return([]*dns.ResourceRecordSet{recordMatching1, recordNotMatching2, recordMatching3}, nil)
 
@@ -292,6 +288,129 @@ func TestListDNSRecords(t *testing.T) {
 		assert.Len(t, res, 2)
 		assert.Equal(t, recordMatching1, res[0])
 		assert.Equal(t, recordMatching3, res[1])
+	})
+}
+
+func TestFindAssociatedRecords(t *testing.T) {
+	t.Run("findAssociatedRecords() should find a record that matches an IP Address", func(t *testing.T) {
+
+		dnsRecords := []*dns.ResourceRecordSet{testRecord1, testRecord2, testRecord3}
+		res := findAssociatedRecords("192.168.0.2", dnsRecords)
+		assert.Len(t, res, 1)
+		assert.Equal(t, testRecord2, res[0])
+	})
+
+	t.Run("findAssociatedRecords() should work correctly when no record matches an IP address", func(t *testing.T) {
+
+		dnsRecords := []*dns.ResourceRecordSet{testRecord1, testRecord2, testRecord3}
+		res := findAssociatedRecords("192.168.0.4", dnsRecords)
+		assert.Len(t, res, 0)
+	})
+}
+
+func TestRun(t *testing.T) {
+
+	testProject := "testProject"
+	testManagedZone := "testManagedZone"
+	testRegions := []string{"testRegion"}
+
+	t.Run("Run() should return early when no IP Addresses are found", func(t *testing.T) {
+		mockComputeAPI := &automock.ComputeAPI{}
+		defer mockComputeAPI.AssertExpectations(t)
+		mockComputeAPI.On("LookupIPAddresses", testProject, testRegions[0]).Return([]*compute.Address{}, nil)
+
+		gdc := New(mockComputeAPI, nil, nil)
+
+		allSucceeded, err := gdc.Run(testProject, testManagedZone, testRegions, true)
+
+		assert.True(t, allSucceeded)
+		assert.Nil(t, err)
+	})
+
+	t.Run("Run() should return error when DNS records can't be listed", func(t *testing.T) {
+		mockComputeAPI := &automock.ComputeAPI{}
+		defer mockComputeAPI.AssertExpectations(t)
+		mockComputeAPI.On("LookupIPAddresses", testProject, testRegions[0]).Return([]*compute.Address{addressMatching1}, nil)
+		mockDNSAPI := &automock.DNSAPI{}
+		defer mockDNSAPI.AssertExpectations(t)
+		mockDNSAPI.On("LookupDNSRecords", testProject, testManagedZone).Return(nil, errors.New("testError"))
+
+		gdc := New(mockComputeAPI, mockDNSAPI, filterFunc)
+		allSucceeded, err := gdc.Run(testProject, testManagedZone, testRegions, true)
+
+		assert.False(t, allSucceeded)
+		assert.Equal(t, "testError", err.Error())
+	})
+
+	t.Run("Run() should delete associated DNS record before IP Address", func(t *testing.T) {
+
+		testRecord1 := createDNSRecord("", "192.168.0.1")
+		testRecord2 := createDNSRecord("", "192.168.0.2")
+		testRecord3 := createDNSRecord("", "192.168.0.3")
+
+		mockComputeAPI := &automock.ComputeAPI{}
+		defer mockComputeAPI.AssertExpectations(t)
+		mockComputeAPI.On("LookupIPAddresses", testProject, testRegions[0]).Return([]*compute.Address{addressMatching1, addressMatching3}, nil)
+		mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching1.Name).Return(nil)
+		mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching3.Name).Return(nil)
+
+		mockDNSAPI := &automock.DNSAPI{}
+		defer mockDNSAPI.AssertExpectations(t)
+		mockDNSAPI.On("LookupDNSRecords", testProject, testManagedZone).Return([]*dns.ResourceRecordSet{testRecord1, testRecord2, testRecord3}, nil)
+		mockDNSAPI.On("DeleteDNSRecord", testProject, testManagedZone, testRecord1).Return(nil)
+		mockDNSAPI.On("DeleteDNSRecord", testProject, testManagedZone, testRecord3).Return(nil)
+
+		gdc := New(mockComputeAPI, mockDNSAPI, filterFunc)
+		allSucceeded, err := gdc.Run(testProject, testManagedZone, testRegions, true)
+
+		assert.True(t, allSucceeded)
+		assert.Nil(t, err)
+	})
+
+	t.Run("Run() should continue if a call to delete IP Address fails", func(t *testing.T) {
+
+		testRecord1 := createDNSRecord("", "192.168.0.1")
+		testRecord2 := createDNSRecord("", "192.168.0.2")
+		testRecord3 := createDNSRecord("", "192.168.0.3")
+
+		mockComputeAPI := &automock.ComputeAPI{}
+		defer mockComputeAPI.AssertExpectations(t)
+		mockComputeAPI.On("LookupIPAddresses", testProject, testRegions[0]).Return([]*compute.Address{addressMatching1, addressMatching3}, nil)
+		mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching1.Name).Return(errors.New("testError"))
+		mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching3.Name).Return(nil)
+
+		mockDNSAPI := &automock.DNSAPI{}
+		defer mockDNSAPI.AssertExpectations(t)
+		mockDNSAPI.On("LookupDNSRecords", testProject, testManagedZone).Return([]*dns.ResourceRecordSet{testRecord1, testRecord2, testRecord3}, nil)
+		mockDNSAPI.On("DeleteDNSRecord", testProject, testManagedZone, testRecord1).Return(nil)
+		mockDNSAPI.On("DeleteDNSRecord", testProject, testManagedZone, testRecord3).Return(nil)
+
+		gdc := New(mockComputeAPI, mockDNSAPI, filterFunc)
+		allSucceeded, err := gdc.Run(testProject, testManagedZone, testRegions, true)
+
+		assert.False(t, allSucceeded)
+		assert.Nil(t, err)
+	})
+
+	t.Run("Run() should perform dry run correctly", func(t *testing.T) {
+
+		testRecord1 := createDNSRecord("", "192.168.0.1")
+		testRecord2 := createDNSRecord("", "192.168.0.2")
+		testRecord3 := createDNSRecord("", "192.168.0.3")
+
+		mockComputeAPI := &automock.ComputeAPI{}
+		defer mockComputeAPI.AssertExpectations(t)
+		mockComputeAPI.On("LookupIPAddresses", testProject, testRegions[0]).Return([]*compute.Address{addressMatching1, addressMatching3}, nil)
+
+		mockDNSAPI := &automock.DNSAPI{}
+		defer mockDNSAPI.AssertExpectations(t)
+		mockDNSAPI.On("LookupDNSRecords", testProject, testManagedZone).Return([]*dns.ResourceRecordSet{testRecord1, testRecord2, testRecord3}, nil)
+
+		gdc := New(mockComputeAPI, mockDNSAPI, filterFunc)
+		allSucceeded, err := gdc.Run(testProject, testManagedZone, testRegions, false)
+
+		assert.True(t, allSucceeded)
+		assert.Nil(t, err)
 	})
 }
 
