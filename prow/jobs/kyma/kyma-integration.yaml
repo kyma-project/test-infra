@@ -319,7 +319,7 @@ periodics:
       - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
         value: "#c4core-kyma-ci-force"
       - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-        value: "developers,sig-core"
+        value: "developers,cluster-access"
       - name: KYMA_ALERTS_SLACK_API_URL
         valueFrom:
           secretKeyRef:
@@ -365,7 +365,7 @@ periodics:
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
             value: "#c4core-kyma-ci-force"
           - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-            value: "developers,sig-core"
+            value: "developers,cluster-access"
           - name: KYMA_ALERTS_SLACK_API_URL
             valueFrom:
               secretKeyRef:
