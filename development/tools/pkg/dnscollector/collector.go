@@ -65,6 +65,7 @@ func DefaultIPAddressRemovalPredicate(addressRegexpList []*regexp.Regexp, minAge
 	}
 }
 
+//Wrapper to carry region info along with compute.Address
 type addressWrapper struct {
 	data   *compute.Address
 	region string
@@ -85,10 +86,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 
 	common.Shout("Looking for matching IP Addresses and DNS Records in project: \"%s\" and zone: \"%s\" ...", project, managedZone)
 
-	matchingIPs, allSucceeded, err := gc.listIPs(project, regions)
-	if err != nil {
-		return false, err
-	}
+	matchingIPs, allSucceeded := gc.listIPs(project, regions)
 
 	if len(matchingIPs) > 0 {
 		log.Infof("%sFound %d matching IP Addresses", msgPrefix, len(matchingIPs))
@@ -136,8 +134,8 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 	return allSucceeded, nil
 }
 
-//List IP Addresses in all regions. It's a "best effort" implementation,
-func (gc *Collector) listIPs(project string, regions []string) (res []*addressWrapper, allSucceeded bool, err error) {
+//List IP Addresses in all regions. It's a "best effort" implementation - continues reading in case of errors.
+func (gc *Collector) listIPs(project string, regions []string) (res []*addressWrapper, allSucceeded bool) {
 	allSucceeded = true
 	res = []*addressWrapper{}
 
@@ -156,7 +154,7 @@ func (gc *Collector) listIPs(project string, regions []string) (res []*addressWr
 		res = append(res, ipAddresses...)
 	}
 
-	return res, allSucceeded, nil
+	return res, allSucceeded
 }
 
 //Lists matching IP Addresses in given region
