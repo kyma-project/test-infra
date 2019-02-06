@@ -1,9 +1,11 @@
 # Create Custom Image
-The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images?authuser=1#custom_images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed. To set the created image as default custom image, add the flag `--default` when running this script.
+The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images?authuser=1#custom_images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
 
 > **NOTE:** To run the following script, make sure that you are signed in to the Google Cloud project with administrative rights.
 
 ## Image creation process
+
+To run the script, use the command **create-custom-image.sh**. To set the created image created by this script as default custom image, add the flag `--default` to the command.
 
 The script performs the following steps:
 
