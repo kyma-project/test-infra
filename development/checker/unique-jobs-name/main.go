@@ -16,8 +16,8 @@ type options struct {
 }
 
 type report struct {
-	active   bool
-	messages []string
+	foundDuplicates bool
+	messages        []string
 }
 
 func (r report) toString() string {
@@ -69,35 +69,35 @@ func main() {
 	addPreSubmitJobsName(jobs, c.Presubmits)
 	addPostSubmitJobsName(jobs, c.Postsubmits)
 
-	rep := report{active: false}
+	rep := report{foundDuplicates: false}
 	for name, val := range jobs {
 		if val > 1 {
-			rep.active = true
+			rep.foundDuplicates = true
 			rep.messages = append(rep.messages, fmt.Sprintf("Prow job %q has %d instances", name, val))
 		}
 	}
 
-	if rep.active {
+	if rep.foundDuplicates {
 		logrus.Fatalf("Config jobs are not unique:\n%s", rep.toString())
 	}
 }
 
-func addPreSubmitJobsName(jobs map[string]int, c map[string][]config.Presubmit) {
-	for _, jobKind := range c {
+func addPreSubmitJobsName(all map[string]int, config map[string][]config.Presubmit) {
+	for _, jobKind := range config {
 		for _, pre := range jobKind {
 			n := pre.Name
-			curr := jobs[n]
-			jobs[n] = curr + 1
+			curr := all[n]
+			all[n] = curr + 1
 		}
 	}
 }
 
-func addPostSubmitJobsName(jobs map[string]int, c map[string][]config.Postsubmit) {
-	for _, jobKind := range c {
+func addPostSubmitJobsName(all map[string]int, config map[string][]config.Postsubmit) {
+	for _, jobKind := range config {
 		for _, post := range jobKind {
 			n := post.Name
-			curr := jobs[n]
-			jobs[n] = curr + 1
+			curr := all[n]
+			all[n] = curr + 1
 		}
 	}
 }
