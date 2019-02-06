@@ -51,11 +51,8 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 if [[ -z "$IMAGE" ]]; then
     shout "Provisioning vm using the latest default custom image ..."   
     
-    DEFAULT_IMAGES=$(gcloud compute images list --sort-by "~creationTimestamp" \
-         --filter "family:custom images AND labels.default:yes" | tail -n +2 | awk '{print $1}')
-
-    default_image_arr=($DEFAULT_IMAGES)
-    IMAGE=${default_image_arr[0]}
+    IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
+         --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
     
     if [[ -z "$IMAGE" ]]; then
        shout "There are no default custom images, the script will exit ..." && exit 1 
