@@ -40,7 +40,7 @@ fi
 
 echo "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
 
-configChecker="${DEVELOPMENT_DIR}/checker/unique_jobs_name/main.go"
+configChecker="${DEVELOPMENT_DIR}/checker/unique-jobs-name/main.go"
 go run "${configChecker}" --config-path="${CONFIG_PATH}" --jobs-config-dir="${JOBS_CONFIG_PATH}"
 
 status=$?

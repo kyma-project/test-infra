@@ -8,7 +8,6 @@ import (
 	"k8s.io/test-infra/prow/config"
 
 	"os"
-	"path/filepath"
 )
 
 type options struct {
@@ -56,22 +55,19 @@ func main() {
 		logrus.Fatalf("Cannot find prow config file: %s", err)
 	}
 
-	jobConfigFiles, err := findJobsConfigFiles(o.jobConfigDir)
 	if err != nil {
 		logrus.Fatalf("Error during fetching jobs files: %s", err)
 	}
 
 	jobs := map[string]int{}
 
-	for _, file := range jobConfigFiles {
-		c, err := config.Load(o.prowConfig, file)
-		if err != nil {
-			logrus.Fatalf("Cannot load config from file %q: %s", file, err)
-		}
-
-		addPreSubmitJobsName(jobs, c.Presubmits)
-		addPostSubmitJobsName(jobs, c.Postsubmits)
+	c, err := config.Load(o.prowConfig, o.jobConfigDir)
+	if err != nil {
+		logrus.Fatalf("Cannot load config from directory %q: %s", o.jobConfigDir, err)
 	}
+
+	addPreSubmitJobsName(jobs, c.Presubmits)
+	addPostSubmitJobsName(jobs, c.Postsubmits)
 
 	rep := report{active: false}
 	for name, val := range jobs {
@@ -84,27 +80,6 @@ func main() {
 	if rep.active {
 		logrus.Fatalf("Config jobs are not unique:\n%s", rep.toString())
 	}
-}
-
-func findJobsConfigFiles(dir string) ([]string, error) {
-	out := []string{}
-
-	err := filepath.Walk(dir,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if info.IsDir() || filepath.Ext(info.Name()) != ".yaml" {
-				return nil
-			}
-			out = append(out, path)
-			return nil
-		})
-	if err != nil {
-		return nil, err
-	}
-
-	return out, nil
 }
 
 func addPreSubmitJobsName(jobs map[string]int, c map[string][]config.Presubmit) {
