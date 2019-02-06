@@ -3,6 +3,7 @@ package tester
 import (
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"k8s.io/test-infra/prow/kube"
@@ -124,6 +125,15 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *confi
 	}
 
 	return nil
+}
+
+// GetReleaseJobName returns name of release job based on branch name by adding release prefix
+func GetReleaseJobName(moduleName, releaseBranch string) string {
+	rel := strings.Replace(releaseBranch, "release", "rel", -1)
+	rel = strings.Replace(rel, ".", "", -1)
+	rel = strings.Replace(rel, "-", "", -1)
+
+	return fmt.Sprintf("pre-%s-%s", rel, moduleName)
 }
 
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list

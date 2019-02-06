@@ -37,3 +37,18 @@ then
 else
     echo "OK"
 fi
+
+echo "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
+
+configChecker="${DEVELOPMENT_DIR}/checker/unique_jobs_name/main.go"
+go run "${configChecker}" --config-path="${CONFIG_PATH}" --jobs-config-dir="${JOBS_CONFIG_PATH}"
+
+status=$?
+
+if [ ${status} -ne 0 ]
+then
+    echo "ERROR"
+    exit 1
+else
+    echo "OK"
+fi
