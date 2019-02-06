@@ -19,7 +19,7 @@ The `development` folder has the following structure:
   ├── update-config.sh         # This script updates the new configuration of the "config.yaml" file on a cluster.
   ├── update-jobs.sh           # This script updates the new configuration of the jobs on a cluster.
   ├── update-plugins.sh        # This script updates the new configuration of the "plugins.yaml" file on a cluster.
-  ├── validate-config.sh       # This script runs the "Checker" application.
+  ├── validate-config.sh       # This script runs the "Checker" application and checks the uniqueness of jobs names.
   ├── validate-scripts.sh      # This script performs a static analysis of bash scripts in the "test-infra" repository.
   ├── clusters-cleanup.sh      # This script invokes the tool for cleaning orphaned clusters created by the "kyma-gke-integration" job.
   ├── vms-cleanup.sh           # This script invokes the tool for cleaning orphaned VM instances created by the "kyma-gke-integration" job.
