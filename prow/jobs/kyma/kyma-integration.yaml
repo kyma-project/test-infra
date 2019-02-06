@@ -204,6 +204,7 @@ periodics:
         requests:
           memory: 100Mi
           cpu: 50m
+
 - name: orphaned-disks-cleaner
   cron: "15 */2 * * 1-5" # "At minute 15 past every 2nd hour from Monday through Friday"
   labels:
