@@ -19,7 +19,7 @@ type DNSServiceWrapper struct {
 	DNS     *dns.Service
 }
 
-func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region string) ([]*compute.Address, error) {
+func (csw *ComputeServiceWrapper) LookupIPAddresses(project string, region string) ([]*compute.Address, error) {
 	var items = []*compute.Address{}
 	call := csw.Compute.Addresses.List(project, region)
 	call = call.Filter("status: RESERVED")
@@ -37,7 +37,7 @@ func (csw *ComputeServiceWrapper) lookupIPAddresses(project string, region strin
 	return items, nil
 }
 
-func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string, address string) error {
+func (csw *ComputeServiceWrapper) DeleteIPAddress(project string, region string, address string) error {
 	_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
 	if err != nil {
 		return err
@@ -45,7 +45,7 @@ func (csw *ComputeServiceWrapper) deleteIPAddress(project string, region string,
 	return nil
 }
 
-func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error) {
+func (dsw *DNSServiceWrapper) LookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error) {
 	call := dsw.DNS.ResourceRecordSets.List(project, managedZone)
 
 	var items = []*dns.ResourceRecordSet{}
@@ -62,7 +62,7 @@ func (dsw *DNSServiceWrapper) lookupDNSRecords(project string, managedZone strin
 	return items, nil
 }
 
-func (dsw *DNSServiceWrapper) deleteDNSRecords(project string, managedZone string, recordToDelete *dns.ResourceRecordSet) error {
+func (dsw *DNSServiceWrapper) DeleteDNSRecords(project string, managedZone string, recordToDelete *dns.ResourceRecordSet) error {
 	change := &dns.Change{
 		Deletions: []*dns.ResourceRecordSet{recordToDelete},
 	}

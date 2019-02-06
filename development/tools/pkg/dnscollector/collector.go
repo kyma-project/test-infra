@@ -10,26 +10,30 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
+//go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
+
 //ComputeAPI abstracts over google Compute API
 type ComputeAPI interface {
-	lookupIPAddresses(project string, region string) ([]*compute.Address, error)
-	deleteIPAddress(project string, region string, address string) error
+	LookupIPAddresses(project string, region string) ([]*compute.Address, error)
+	DeleteIPAddress(project string, region string, address string) error
 }
+
+//go:generate mockery -name=DNSAPI -output=automock -outpkg=automock -case=underscore
 
 //DNSAPI abstracts over google DNS API
 type DNSAPI interface {
-	lookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error)
-	deleteDNSRecords(project string, managedZone string, record *dns.ResourceRecordSet) error
+	LookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error)
+	DeleteDNSRecords(project string, managedZone string, record *dns.ResourceRecordSet) error
 }
 
-//Collector ???
+//Collector can find and delete IP addresses and DNS records in a GCP project
 type Collector struct {
 	computeAPI   ComputeAPI
 	dnsAPI       DNSAPI
 	shouldRemove IPAddressRemovalPredicate
 }
 
-// IPAddressRemovalPredicate returns true if IP Address should be deleted (matches removal criteria)
+//IPAddressRemovalPredicate returns true if IP Address matches removal criteria
 type IPAddressRemovalPredicate func(*compute.Address) (bool, error)
 
 // DefaultIPAddressRemovalPredicate returns the default IPAddressRemovalPredicate
@@ -108,7 +112,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 
 		for _, dnsRecord := range associatedRecords {
 			if makeChanges {
-				err = gc.dnsAPI.deleteDNSRecords(project, managedZone, dnsRecord)
+				err = gc.dnsAPI.DeleteDNSRecords(project, managedZone, dnsRecord)
 				if err != nil {
 					log.Errorf("deleting DNS Records \"%s\": %v", dnsRecord.Name, err)
 					allSucceeded = false
@@ -119,7 +123,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 		}
 
 		if makeChanges {
-			err = gc.computeAPI.deleteIPAddress(project, ipAddress.region, ipAddress.data.Name)
+			err = gc.computeAPI.DeleteIPAddress(project, ipAddress.region, ipAddress.data.Name)
 			if err != nil {
 				log.Errorf("deleting IP Address \"%s\": %v", ipAddress.data.Address, err)
 				allSucceeded = false
@@ -138,11 +142,15 @@ func (gc *Collector) listIPs(project string, regions []string) (res []*addressWr
 	res = []*addressWrapper{}
 
 	for _, region := range regions {
-		ipAddresses, err := gc.listRegionIPs(project, region)
+		ipAddresses, allProcessed, err := gc.listRegionIPs(project, region)
 		if err != nil {
 			log.Errorf("Could not list IP Addresses in Region \"%s\": %v", region, err)
 			allSucceeded = false
 			continue
+		}
+
+		if !allProcessed {
+			allSucceeded = false
 		}
 
 		res = append(res, ipAddresses...)
@@ -152,20 +160,23 @@ func (gc *Collector) listIPs(project string, regions []string) (res []*addressWr
 }
 
 //Lists matching IP Addresses in given region
-func (gc *Collector) listRegionIPs(project, region string) (res []*addressWrapper, err error) {
+func (gc *Collector) listRegionIPs(project, region string) (res []*addressWrapper, allSucceeded bool, err error) {
 	res = []*addressWrapper{}
 
-	rawIPs, err := gc.computeAPI.lookupIPAddresses(project, region)
+	rawIPs, err := gc.computeAPI.LookupIPAddresses(project, region)
 	if err != nil {
 		log.Errorf("Could not list IP Addresses in Region \"%s\": %v", region, err)
-		return nil, err
+		return nil, false, err
 	}
 
+	allSucceeded = true
 	for _, rawIP := range rawIPs {
 		addressMatches, err := gc.shouldRemove(rawIP)
 
 		if err != nil {
-			return nil, err
+			log.Errorf("During verification of IP Address %s (\"%s\"): %v", rawIP.Address, rawIP.Name, err)
+			allSucceeded = false
+			continue
 		}
 
 		if addressMatches {
@@ -174,11 +185,11 @@ func (gc *Collector) listRegionIPs(project, region string) (res []*addressWrappe
 		}
 	}
 
-	return res, nil
+	return res, allSucceeded, nil
 }
 
 func (gc *Collector) listDNSRecords(project, managedZone string) ([]*dns.ResourceRecordSet, error) {
-	rawDNSRecords, err := gc.dnsAPI.lookupDNSRecords(project, managedZone)
+	rawDNSRecords, err := gc.dnsAPI.LookupDNSRecords(project, managedZone)
 
 	if err != nil {
 		return nil, err
