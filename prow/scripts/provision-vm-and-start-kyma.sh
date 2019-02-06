@@ -50,14 +50,17 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [[ -z "$IMAGE" ]]; then
     shout "Provisioning vm using the latest default custom image ..."   
-
-    DEFAULT_IMAGES=$(gcloud compute images list --project "kyma-project" \
-         --sort-by "~creationTimestamp" \
+    
+    DEFAULT_IMAGES=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" | tail -n +2 | awk '{print $1}')
 
     default_image_arr=($DEFAULT_IMAGES)
     IMAGE=${default_image_arr[0]}
-   fi
+    
+    if [[ -z "$IMAGE" ]]; then
+       shout "There are no default custom images, the script will exit ..." && exit 1 
+    fi   
+ fi
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
