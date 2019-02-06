@@ -19,6 +19,7 @@ type DNSServiceWrapper struct {
 	DNS     *dns.Service
 }
 
+//LookupIPAddresses delegates to GCP Compute API to find all IP Addresses with a "RESERVED" status in a given region.
 func (csw *ComputeServiceWrapper) LookupIPAddresses(project string, region string) ([]*compute.Address, error) {
 	var items = []*compute.Address{}
 	call := csw.Compute.Addresses.List(project, region)
@@ -37,6 +38,7 @@ func (csw *ComputeServiceWrapper) LookupIPAddresses(project string, region strin
 	return items, nil
 }
 
+//DeleteIPAddress delegates to GCP API to deletes specified IP Address
 func (csw *ComputeServiceWrapper) DeleteIPAddress(project string, region string, address string) error {
 	_, err := csw.Compute.Addresses.Delete(project, region, address).Do()
 	if err != nil {
@@ -45,6 +47,7 @@ func (csw *ComputeServiceWrapper) DeleteIPAddress(project string, region string,
 	return nil
 }
 
+//LookupDNSRecords delegates to GCP DNS API do find DNS Records in a specified managed zone.
 func (dsw *DNSServiceWrapper) LookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error) {
 	call := dsw.DNS.ResourceRecordSets.List(project, managedZone)
 
@@ -62,7 +65,8 @@ func (dsw *DNSServiceWrapper) LookupDNSRecords(project string, managedZone strin
 	return items, nil
 }
 
-func (dsw *DNSServiceWrapper) DeleteDNSRecords(project string, managedZone string, recordToDelete *dns.ResourceRecordSet) error {
+//DeleteDNSRecord delegates to GCP DNS API to delete specified DNS record
+func (dsw *DNSServiceWrapper) DeleteDNSRecord(project string, managedZone string, recordToDelete *dns.ResourceRecordSet) error {
 	change := &dns.Change{
 		Deletions: []*dns.ResourceRecordSet{recordToDelete},
 	}

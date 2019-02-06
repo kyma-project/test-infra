@@ -23,7 +23,7 @@ type ComputeAPI interface {
 //DNSAPI abstracts over google DNS API
 type DNSAPI interface {
 	LookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error)
-	DeleteDNSRecords(project string, managedZone string, record *dns.ResourceRecordSet) error
+	DeleteDNSRecord(project string, managedZone string, record *dns.ResourceRecordSet) error
 }
 
 //Collector can find and delete IP addresses and DNS records in a GCP project
@@ -112,7 +112,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 
 		for _, dnsRecord := range associatedRecords {
 			if makeChanges {
-				err = gc.dnsAPI.DeleteDNSRecords(project, managedZone, dnsRecord)
+				err = gc.dnsAPI.DeleteDNSRecord(project, managedZone, dnsRecord)
 				if err != nil {
 					log.Errorf("deleting DNS Records \"%s\": %v", dnsRecord.Name, err)
 					allSucceeded = false

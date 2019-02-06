@@ -11,8 +11,8 @@ type DNSAPI struct {
 	mock.Mock
 }
 
-// DeleteDNSRecords provides a mock function with given fields: project, managedZone, record
-func (_m *DNSAPI) DeleteDNSRecords(project string, managedZone string, record *dns.ResourceRecordSet) error {
+// DeleteDNSRecord provides a mock function with given fields: project, managedZone, record
+func (_m *DNSAPI) DeleteDNSRecord(project string, managedZone string, record *dns.ResourceRecordSet) error {
 	ret := _m.Called(project, managedZone, record)
 
 	var r0 error
