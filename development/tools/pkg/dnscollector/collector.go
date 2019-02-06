@@ -109,16 +109,22 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 
 		log.Infof("Processing IP Adress: %s, name: \"%s\", region: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, ipAddress.region, len(associatedRecords))
 
+		allDNSRecordsRemoved := true
 		for _, dnsRecord := range associatedRecords {
 			if makeChanges {
 				err = gc.dnsAPI.DeleteDNSRecord(project, managedZone, dnsRecord)
 				if err != nil {
 					log.Errorf("deleting DNS Records \"%s\": %v", dnsRecord.Name, err)
-					allSucceeded = false
+					allDNSRecordsRemoved = false
 					continue
 				}
 			}
 			log.Infof("%sRequested DNS record delete: \"%s\". Zone: \"%s\"", msgPrefix, dnsRecord.Name, managedZone)
+		}
+
+		if !allDNSRecordsRemoved {
+			allSucceeded = false
+			continue //Do NOT remove IP Address yet, next Run might succeed
 		}
 
 		if makeChanges {
