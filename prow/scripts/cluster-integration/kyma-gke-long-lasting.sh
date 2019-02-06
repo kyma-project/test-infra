@@ -256,6 +256,9 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
+    # create a secret with service account used for storing logs
+    kubectl create secret generic sa-stability-fluentd-storage-writer --from-file=service-account.json=/etc/credentials/sa-stability-fluentd-storage-writer/service-account.json -n kyma-system
+
 	helm install --set clusterName="${CLUSTER_NAME}" \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
 	        --set slackClientChannelId="${STABILITY_SLACK_CLIENT_CHANNEL_ID}" \
