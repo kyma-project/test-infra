@@ -194,7 +194,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 8)
+	assert.Len(t, periodics, 9)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -247,6 +247,19 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
+
+	expName = "orphaned-dns-cleaner"
+	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, dnsCleanerPeriodic)
+	assert.Equal(t, expName, dnsCleanerPeriodic.Name)
+	assert.True(t, dnsCleanerPeriodic.Decorate)
+	assert.Equal(t, "45 */4 * * 1-5", dnsCleanerPeriodic.Cron)
+	tester.AssertThatHasPresets(t, dnsCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
+	tester.AssertThatHasExtraRefs(t, dnsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, tester.ImageGolangBuildpackLatest, dnsCleanerPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, dnsCleanerPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone='build-kyma' -ageInHours=2 -regions='europe-west3'"}, dnsCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, dnsCleanerPeriodic.JobBase)
 
 	expName = "kyma-gke-nightly"
 	nightlyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
