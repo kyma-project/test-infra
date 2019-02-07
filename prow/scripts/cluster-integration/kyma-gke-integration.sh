@@ -294,7 +294,7 @@ date
 
 shout "End To End Test"
 date
-"${KYMA_SCRIPTS_DIR}"/endtoend.sh
+"${KYMA_SCRIPTS_DIR}"/e2e-testing.sh
 
 shout "Success"
 
