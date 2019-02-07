@@ -83,7 +83,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
-	return []string{"release-0.6", "release-0.7"}
+	return []string{"release-0.7"}
 }
 
 // ReadJobConfig reads job configuration from file
