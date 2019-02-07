@@ -35,6 +35,10 @@ do
             IMAGE="$2"
             shift
             shift
+            IMAGE_EXISTS=$(gcloud compute images list --filter "${IMAGE}" | tail -n +2 | awk '{print $1}')
+            if [[ -z "$IMAGE_EXISTS" ]]; then
+               shout "${IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
+            fi
             ;;
         --*)
             echo "Unknown flag ${1}"
