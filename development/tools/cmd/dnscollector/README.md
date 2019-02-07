@@ -56,4 +56,4 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `TODO: list ips, list dns`, `TODO: remove address`, and `TODO: change DNS records` Google IAM permissions. |
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `compute.addresses.list, compute.addresses.delete, dns.resourceRecordSets.list`, and `dns.changes.create` Google IAM permissions. |
