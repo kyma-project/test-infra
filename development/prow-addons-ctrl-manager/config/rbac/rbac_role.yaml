@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - prowjobs.prow.k8s.io
+  resources:
+  - prowjobs
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - prowjobs.prow.k8s.io
+  resources:
+  - prowjobs/status
+  verbs:
+  - get
+  - update
+  - patch

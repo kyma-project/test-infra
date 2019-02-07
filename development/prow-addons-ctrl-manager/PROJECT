@@ -1,0 +1,3 @@
+version: "1"
+domain: prow.k8s.io
+repo: github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager
