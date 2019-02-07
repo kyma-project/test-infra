@@ -305,7 +305,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone='build-kyma' -ageInHours=2 -regions='europe-west3'"
+      - "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION}"
       resources:
         requests:
           memory: 1Gi
