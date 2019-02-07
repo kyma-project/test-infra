@@ -14,7 +14,7 @@ func TestGCPBrokerProviderJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
+	assert.Len(t, jobConfig.Presubmits, 2)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
