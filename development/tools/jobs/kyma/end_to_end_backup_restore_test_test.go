@@ -30,7 +30,7 @@ func TestEndToEndBackupRstoreTestJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/end-to-end/backup-restore-test/fix")
-	assert.Equal(t, "^tests/end-to-end/backup-restore-test//", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tests/end-to-end/backup-restore-test/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	tester.AssertThatHasCommand(t, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
