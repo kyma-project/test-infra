@@ -14,10 +14,10 @@ func TestLoadTestJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 2)
+	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
+	assert.Len(t, kymaPresubmits, 2)
 
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-kyma-tools-load-test"
