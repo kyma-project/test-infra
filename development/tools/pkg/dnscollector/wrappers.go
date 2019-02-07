@@ -24,7 +24,6 @@ func (csw *ComputeServiceWrapper) LookupIPAddresses(project string, region strin
 	var items = []*compute.Address{}
 	call := csw.Compute.Addresses.List(project, region)
 	call = call.Filter("status: RESERVED")
-	//call = call.Filter("creationTimestamp > 2018-11-09T05:01:51.510-08:00") <- probably can't be done. Filtering in memory.
 	f := func(page *compute.AddressList) error {
 		for _, v := range page.Items {
 			items = append(items, v)
