@@ -311,8 +311,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, backupRestorePeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", backupRestorePeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, backupRestorePeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, backupRestorePeriodic.JobBase)
-	assert.Len(t, backupRestorePeriodic.Spec.Containers[0].Env, 6)
-
 }
