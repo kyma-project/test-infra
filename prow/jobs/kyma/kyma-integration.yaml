@@ -427,6 +427,34 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+- name: kyma-gke-end-to-end-test-backup-restore
+  cron: "0 9 * * 1-5" # "At 09:00 on every day-of-week from Monday through Friday."
+  labels:
+    preset-build-master: "true"
+    preset-weekly-github-integration: "true"
+    <<: *gke_job_labels_template
+  decorate: true
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
 
 # TODO: remove the kyma-gke-fluentd job
 - name: kyma-gke-fluentd

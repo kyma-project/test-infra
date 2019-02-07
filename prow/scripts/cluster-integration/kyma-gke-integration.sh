@@ -234,7 +234,6 @@ fi
 CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
-
 shout "Install Tiller"
 date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
@@ -282,6 +281,8 @@ else
     | kubectl apply -f-
 fi
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-ark-config.sh"
+
 shout "Trigger installation"
 date
 kubectl label installation/kyma-installation action=install
@@ -290,6 +291,10 @@ kubectl label installation/kyma-installation action=install
 shout "Test Kyma"
 date
 "${KYMA_SCRIPTS_DIR}"/testing.sh
+
+shout "End To End Test"
+date
+"${KYMA_SCRIPTS_DIR}"/endtoend.sh
 
 shout "Success"
 

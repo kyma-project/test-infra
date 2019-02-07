@@ -301,4 +301,18 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnvFromSecret(t, weeklyPeriodic.Spec.Containers[0], "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
+	expName = "kyma-gke-end-to-end-test-backup-restore"
+	backupRestorePeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, backupRestorePeriodic)
+	assert.Equal(t, expName, backupRestorePeriodic.Name)
+	assert.True(t, backupRestorePeriodic.Decorate)
+	assert.Equal(t, "0 9 * * 1-5", backupRestorePeriodic.Cron)
+	tester.AssertThatHasPresets(t, backupRestorePeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
+	tester.AssertThatHasExtraRefs(t, backupRestorePeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", backupRestorePeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, backupRestorePeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, backupRestorePeriodic.JobBase)
+	assert.Len(t, backupRestorePeriodic.Spec.Containers[0].Env, 6)
+
 }

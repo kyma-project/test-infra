@@ -171,6 +171,11 @@ presets:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
   - labels:
+      preset-kyma-ark-bucket: "true"
+    env:
+      - name: KYMA_ARK_BUCKET
+        value: gs://kyma-ark-bucket
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
