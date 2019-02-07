@@ -2,7 +2,7 @@ required = ["k8s.io/test-infra/prow/cmd/checkconfig"]
 
 [[constraint]]
   name = "k8s.io/test-infra"
-  revision = "b9a576b397892c55487e495721d23b3a52ac9472"
+  revision = "2c8e0dbb96b4c1a86d42275dfbed5474a6d05def"
 
 [prune]
   go-tests = true
