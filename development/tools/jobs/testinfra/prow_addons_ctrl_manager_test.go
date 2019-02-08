@@ -10,7 +10,7 @@ import (
 
 const prowAddonsCtrlManagerJobPath = "./../../../../prow/jobs/test-infra/prow-addons-ctrl-manager.yaml"
 
-func TestBucJobsPresubmit(t *testing.T) {
+func TestProwAddonsCtrlManagerJobsPresubmit(t *testing.T) {
 	// when
 	jobConfig, err := tester.ReadJobConfig(prowAddonsCtrlManagerJobPath)
 
@@ -30,7 +30,7 @@ func TestBucJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestBucJobPostsubmit(t *testing.T) {
+func TestProwAddonsCtrlManagerJobPostsubmit(t *testing.T) {
 	// when
 	jobConfig, err := tester.ReadJobConfig(prowAddonsCtrlManagerJobPath)
 
