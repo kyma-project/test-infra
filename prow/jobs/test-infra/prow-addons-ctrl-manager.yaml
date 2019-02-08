@@ -1,7 +1,7 @@
 job_template: &job_template
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-project/kyma
+  path_alias: github.com/kyma-project/test-infra
   max_concurrency: 10
   spec:
     containers:
