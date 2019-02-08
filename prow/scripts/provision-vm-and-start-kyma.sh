@@ -21,7 +21,7 @@ function testCustomImage() {
     fi
 }
 
-# authenticate
+authenticate
 
 RANDOM_ID=$(openssl rand -hex 4)
 
