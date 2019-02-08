@@ -78,8 +78,8 @@ type ReconcileProwJob struct {
 // Heavily inspired by Crier controller, see:
 // https://github.com/kubernetes/test-infra/blob/d195f316c99dd376934e6a0ae103b86e6da0db06/prow/crier/controller.go
 //
-// +kubebuilder:rbac:groups=prowjobs.prow.k8s.io,resources=prowjobs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=prowjobs.prow.k8s.io,resources=prowjobs/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=prow.k8s.io,resources=prowjobs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=prow.k8s.io,resources=prowjobs/status,verbs=get;update;patch
 func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	var (
 		ctx         = context.TODO()

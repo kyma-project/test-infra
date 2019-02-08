@@ -5,7 +5,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - prowjobs.prow.k8s.io
+  - prow.k8s.io
   resources:
   - prowjobs
   verbs:
@@ -17,7 +17,7 @@ rules:
   - patch
   - delete
 - apiGroups:
-  - prowjobs.prow.k8s.io
+  - prow.k8s.io
   resources:
   - prowjobs/status
   verbs:
