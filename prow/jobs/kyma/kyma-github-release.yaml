@@ -38,3 +38,13 @@ postsubmits:
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
+  - name: post-rel07-kyma-github-release
+    branches:
+    - release-0.7
+    <<: *job_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.7 
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"

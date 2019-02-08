@@ -83,7 +83,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
-	return []string{"release-0.6"}
+	return []string{"release-0.6", "release-0.7"}
 }
 
 // ReadJobConfig reads job configuration from file
@@ -134,6 +134,15 @@ func GetReleaseJobName(moduleName, releaseBranch string) string {
 	rel = strings.Replace(rel, "-", "", -1)
 
 	return fmt.Sprintf("pre-%s-%s", rel, moduleName)
+}
+
+// GetReleasePostSubmitJobName returns name of postsubmit job based on branch name
+func GetReleasePostSubmitJobName(moduleName, releaseBranch string) string {
+	rel := strings.Replace(releaseBranch, "release", "rel", -1)
+	rel = strings.Replace(rel, ".", "", -1)
+	rel = strings.Replace(rel, "-", "", -1)
+
+	return fmt.Sprintf("post-%s-%s", rel, moduleName)
 }
 
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list

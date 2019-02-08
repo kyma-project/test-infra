@@ -242,7 +242,6 @@ branch-protection:
                 contexts:
                 - pre-rel07-kyma-integration
                 - pre-rel07-kyma-gke-integration
-                - pre-rel07-kyma-gke-upgrade
                 - pre-rel07-kyma-artifacts
                 - pre-rel07-kyma-installer
         website:
