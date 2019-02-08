@@ -22,7 +22,7 @@ func TestProwAddonsCtrlManagerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^development/prow-addons-ctrl-manager/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
@@ -42,7 +42,7 @@ func TestProwAddonsCtrlManagerJobPostsubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 	assert.True(t, actualPostsubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-project/kyma", actualPostsubmit.PathAlias)
+	assert.Equal(t, "github.com/kyma-project/test-infra", actualPostsubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^development/prow-addons-ctrl-manager/", actualPostsubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
