@@ -13,6 +13,14 @@ cleanup() {
     exit $ARG
 }
 
+function testCustomImage() {
+    CUSTOM_IMAGE="$1"
+    IMAGE_EXISTS=$(gcloud compute images list --filter "${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
+    if [[ -z "$IMAGE_EXISTS" ]]; then
+        shout "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
+    fi
+}
+
 authenticate
 
 RANDOM_ID=$(openssl rand -hex 4)
@@ -33,6 +41,7 @@ do
     case ${key} in
         --image)
             IMAGE="$2"
+            testCustomImage "${IMAGE}"
             shift
             shift
             ;;
@@ -47,13 +56,6 @@ do
     esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
-
-
-IMAGE_EXISTS=$(gcloud compute images list --filter "${IMAGE}" | tail -n +2 | awk '{print $1}')
-
-if [[ -z "$IMAGE_EXISTS" ]]; then
-    shout "${IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
-fi
 
 if [[ -z "$IMAGE" ]]; then
     shout "Provisioning vm using the latest default custom image ..."   
