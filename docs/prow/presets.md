@@ -25,4 +25,4 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-bot-github-ssh** | It connects the ssh key of the bot account to your job and sets the value with the path to this key.                    |
 | **preset-kyma-artifacts-bucket** | It defines the environment variable for the Kyma's artifact bucket.                     |
 | **preset-stability-checker-slack-notifications** | It defines a webhook URL and a client token required for the Slack integration.                 |
-| **preset-sap-slack-bot-token** | It sets the environment variable with the Slack token for the bot account in internal workspace. More information can bo found [here](https://api.slack.com/docs/token-types#bot).|
+| **preset-sap-slack-bot-token** | It sets the environment variable for the Slack token of the bot account in the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).|
