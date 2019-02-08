@@ -19,8 +19,6 @@ CLOUD_PROVIDER="gcp"
 BASE64_CLOUD_PROVIDER=$(echo -n "${CLOUD_PROVIDER}" | base64 | tr -d '\n')
 BASE64_BUCKET=$(echo -n "${KYMA_ARK_BUCKET}" | base64 | tr -d '\n')
 
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$GCLOUD_PROJECT_NAME.iam.gserviceaccount.com
-
 BASE64_CLOUD_CREDENTIALS_FILE_CONTENT_BASE64=$(gcloud iam service-accounts keys list --iam-account=$SA_NAME@$GCLOUD_PROJECT_NAME.iam.gserviceaccount.com --limit=1 --format='csv[no-heading](KEY_ID)')
 
 
