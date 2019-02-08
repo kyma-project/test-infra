@@ -1,13 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app: prow-addons-ctrl-manager
-    control-plane: controller-manager
-    controller-tools.k8s.io: "1.0"
-  name: prow-addons-system
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
