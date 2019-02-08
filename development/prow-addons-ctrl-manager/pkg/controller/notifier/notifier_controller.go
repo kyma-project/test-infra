@@ -2,6 +2,7 @@ package notifier
 
 import (
 	"context"
+
 	"github.com/go-logr/logr"
 	"github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/pkg/slack"
 	apiSlack "github.com/nlopes/slack"
@@ -22,9 +23,8 @@ import (
 )
 
 type Config struct {
-	SlackToken         string
-	SlackReportChannel string
-	ActOnProwJobType   []prowjobsv1.ProwJobType
+	SlackToken    string
+	SlackReporter slack.ConfigReporter
 }
 
 // Add creates a new ProwJob Controller and adds it to the Manager with default RBAC. The Manager will set fields on the Controller
@@ -36,9 +36,11 @@ func Add(mgr manager.Manager) error {
 	}
 
 	slackCli := apiSlack.New(cfg.SlackToken)
+	reporter := slack.NewReporter(cfg.SlackReporter, slackCli)
+
 	r := &ReconcileProwJob{
 		k8sCli:   mgr.GetClient(),
-		reporter: slack.NewReporter(slackCli, cfg.SlackReportChannel, cfg.ActOnProwJobType),
+		reporter: reporter,
 		scheme:   mgr.GetScheme(),
 		log:      log.Log.WithName("ctrl:notifier"),
 	}
@@ -48,13 +50,11 @@ func Add(mgr manager.Manager) error {
 
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
 func add(mgr manager.Manager, r reconcile.Reconciler) error {
-	// Create a new controller
 	c, err := controller.New("prowjob-controller", mgr, controller.Options{Reconciler: r})
 	if err != nil {
 		return err
 	}
 
-	// Watch for changes to ProwJob
 	err = c.Watch(&source.Kind{Type: &prowjobsv1.ProwJob{}}, &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
@@ -69,12 +69,15 @@ var _ reconcile.Reconciler = &ReconcileProwJob{}
 type ReconcileProwJob struct {
 	k8sCli   client.Client
 	scheme   *runtime.Scheme
-	reporter *slack.Client
+	reporter *slack.Reporter
 	log      logr.Logger
 }
 
 // Reconcile reads that state of the cluster for a ProwJob object and makes changes based on the state read
 // and what is in the ProwJob.Spec
+// Heavily inspired by Crier controller, see:
+// https://github.com/kubernetes/test-infra/blob/d195f316c99dd376934e6a0ae103b86e6da0db06/prow/crier/controller.go
+//
 // +kubebuilder:rbac:groups=prowjobs.prow.k8s.io,resources=prowjobs,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=prowjobs.prow.k8s.io,resources=prowjobs/status,verbs=get;update;patch
 func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Result, error) {
@@ -86,8 +89,8 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 		actionTaken = false
 	)
 
-	//infoLog("Start reconcile")
-	//defer func() { infoLog("End reconcile", "actionTaken", actionTaken) }()
+	infoLog("Start reconcile")
+	defer func() { infoLog("End reconcile", "actionTaken", actionTaken) }()
 
 	if err := r.k8sCli.Get(ctx, request.NamespacedName, pj); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -98,8 +101,6 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 		// Error reading the object - requeue the request.
 		return reconcile.Result{}, err
 	}
-	infoLog("Start reconcile")
-	defer func() { infoLog("End reconcile", "actionTaken", actionTaken, "name", pj.Spec.Job) }()
 
 	if !r.reporter.ShouldReport(pj) {
 		debugLog("Decided that reporter should not act on ProwJob", "reporter", r.reporter.GetName())
@@ -127,6 +128,7 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 	debugLog("ProwJob updated", "reporter", r.reporter.GetName())
 	return reconcile.Result{}, nil
 }
+
 func (r *ReconcileProwJob) updateProwJobFn(ctx context.Context, name types.NamespacedName) func() error {
 	return func() error {
 		pj := &prowjobsv1.ProwJob{}
@@ -134,9 +136,8 @@ func (r *ReconcileProwJob) updateProwJobFn(ctx context.Context, name types.Names
 			return err
 		}
 
-		// update pj report status
 		cpy := pj.DeepCopy()
-		// we set omitempty on PrevReportStates, so here we need to init it if is nil
+		// PrevReportStates has property omitempty, so here we need to init it if is nil
 		if cpy.Status.PrevReportStates == nil {
 			cpy.Status.PrevReportStates = map[string]prowjobsv1.ProwJobState{}
 		}
@@ -145,13 +146,12 @@ func (r *ReconcileProwJob) updateProwJobFn(ctx context.Context, name types.Names
 		return r.k8sCli.Update(ctx, cpy)
 	}
 }
+
 func (r *ReconcileProwJob) alreadyReported(pj *prowjobsv1.ProwJob) bool {
-	// we set omitempty on PrevReportStates, so here we need to init it if is nil
 	if pj.Status.PrevReportStates == nil {
-		pj.Status.PrevReportStates = map[string]prowjobsv1.ProwJobState{}
+		return false
 	}
 
-	// already reported current state
 	if pj.Status.PrevReportStates[r.reporter.GetName()] == pj.Status.State {
 		return true
 	}

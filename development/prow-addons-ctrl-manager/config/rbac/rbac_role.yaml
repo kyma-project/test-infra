@@ -10,7 +10,6 @@ rules:
   - prowjobs
   verbs:
   - get
-  - list
   - watch
   - create
   - update

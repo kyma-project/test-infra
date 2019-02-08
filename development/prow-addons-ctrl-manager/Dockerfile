@@ -1,17 +1,20 @@
 # Build the manager binary
-FROM golang:1.10.3 as builder
+FROM golang:1.11.5-alpine3.8 as builder
 
 # Copy in the go src
-WORKDIR /go/src/github.com/kyma-project/test-infra/development/notifier
+WORKDIR /go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager
 COPY pkg/    pkg/
 COPY cmd/    cmd/
 COPY vendor/ vendor/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/kyma-project/test-infra/development/notifier/cmd/manager
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/cmd/manager
 
 # Copy the controller-manager into a thin image
-FROM ubuntu:latest
+FROM alpine:3.8
 WORKDIR /
-COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/notifier/manager .
+
+LABEL source=git@github.com:kyma-project/test-infra.git
+
+COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/manager .
 ENTRYPOINT ["/manager"]

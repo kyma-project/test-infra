@@ -1,76 +1,81 @@
-/*
-Copyright 2018 The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 // Package reporter contains helpers for publishing failed ProwJob statues to Slack channel.
+// Implementation respects the Crier Reporter interface:
+// https://github.com/kubernetes/test-infra/tree/d195f316c99dd376934e6a0ae103b86e6da0db06/prow/cmd/crier#adding-a-new-reporter
 package slack
 
 import (
 	"fmt"
 
 	apiSlack "github.com/nlopes/slack"
+	"github.com/pkg/errors"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 const (
 	// SlackSkipReportLabel annotation
-	SlackSkipReportLabel = "prow.k8s.io/slack.skipReportOnFailure"
+	SlackSkipReportLabel = "prow.k8s.io/slack.skipReport"
+
+	icon     = ":prow:"
+	username = "prow-notifier"
 )
 
-// Client is a reporter client fed to crier controller
-type Client struct {
-	slackCli     SlackSender
-	channel      string
-	actOnJobType map[prowapi.ProwJobType]struct{}
+// ConfigReporter holds configuration for Slack Reporter
+type ConfigReporter struct {
+	ActOnProwJobType  []prowapi.ProwJobType  `envconfig:"default=periodic;postsubmit"`
+	ActOnProwJobState []prowapi.ProwJobState `envconfig:"default=failure;error"`
+	Channel           string
 }
 
+// SlackSender sends messages to Slack
 type SlackSender interface {
 	SendMessage(channel string, options ...apiSlack.MsgOption) (string, string, string, error)
 }
 
+// Reporter is a reporter client for slack
+type Reporter struct {
+	slackCli      SlackSender
+	channel       string
+	actOnJobType  map[prowapi.ProwJobType]struct{}
+	actOnJobState map[prowapi.ProwJobState]struct{}
+}
+
 // NewReporter creates a new Slack reporter
-func NewReporter(slackCli SlackSender, channel string, pjTypes []prowapi.ProwJobType) *Client {
+func NewReporter(cfg ConfigReporter, slackCli SlackSender) *Reporter {
 	actOnJobType := map[prowapi.ProwJobType]struct{}{}
-	for _, typ := range pjTypes {
+	for _, typ := range cfg.ActOnProwJobType {
 		actOnJobType[typ] = struct{}{}
 	}
 
-	return &Client{
-		slackCli:     slackCli,
-		channel:      channel,
-		actOnJobType: actOnJobType,
+	actOnJobState := map[prowapi.ProwJobState]struct{}{}
+	for _, state := range cfg.ActOnProwJobState {
+		actOnJobState[state] = struct{}{}
+	}
+
+	return &Reporter{
+		slackCli:      slackCli,
+		channel:       cfg.Channel,
+		actOnJobType:  actOnJobType,
+		actOnJobState: actOnJobState,
 	}
 }
 
 // GetName returns the name of the reporter
-func (c *Client) GetName() string {
+func (r *Reporter) GetName() string {
 	return "slack-reporter"
 }
 
-func (c *Client) ShouldReport(pj *prowapi.ProwJob) bool {
+// ShouldReport checks if should react on given ProwJob
+func (r *Reporter) ShouldReport(pj *prowapi.ProwJob) bool {
 	skip := pj.Labels[SlackSkipReportLabel]
 	if skip == "true" {
 		return false
 	}
 
-	_, act := c.actOnJobType[pj.Spec.Type]
-	if !act {
+	if _, found := r.actOnJobType[pj.Spec.Type]; !found {
 		return false
 	}
 
-	if !(pj.Status.State == prowapi.ErrorState || pj.Status.State == prowapi.FailureState) {
+	if _, found := r.actOnJobState[pj.Status.State]; !found {
 		return false
 	}
 
@@ -78,22 +83,90 @@ func (c *Client) ShouldReport(pj *prowapi.ProwJob) bool {
 }
 
 // Report takes a ProwJob, and generate a Slack ReportMessage and publish to given channel
-func (c *Client) Report(pj *prowapi.ProwJob) error {
-	message := c.generateMessageFromPJ(pj)
+func (r *Reporter) Report(pj *prowapi.ProwJob) error {
+	// TODO(mszostok): can be in future replaced with renderer functionality,
+	// similar to this one: https://github.com/kyma-project/kyma/blob/release-0.6/tools/stability-checker/internal/notifier/renderer.go
+	var (
+		header = r.generateHeader(pj)
+		body   = r.generateBody(pj)
+		footer = r.generateFooter(pj)
+	)
 
-	c.slackCli.SendMessage(c.channel, apiSlack.MsgOptionText(message, false))
+	_, _, _, err := r.slackCli.SendMessage(
+		r.channel,
+
+		apiSlack.MsgOptionUsername(username),
+		apiSlack.MsgOptionPostMessageParameters(apiSlack.PostMessageParameters{IconEmoji: icon, Markdown: true}),
+
+		apiSlack.MsgOptionText(header, false),
+		apiSlack.MsgOptionAttachments(body, footer),
+	)
+	if err != nil {
+		return errors.Wrap(err, "while sending slack message")
+	}
 
 	return nil
 }
 
-func (c *Client) generateMessageFromPJ(pj *prowapi.ProwJob) string {
-	return fmt.Sprintf("ProwJob %s *FAILED:* State <%s>. Click <%s|here> to see the Job details. ", pj.Spec.Job, pj.Status.State, pj.Status.URL)
-	//return &ReportMessage{
-	//	Project: pubSubMap[SlackSkipReportLabel],
-	//	Topic:   pubSubMap[SlackOverrideChannelLabel],
-	//	RunID:   pubSubMap[PubSubRunIDLabel],
-	//	Status:  pj.Status.State,
-	//	URL:     pj.Status.URL,
-	//	GCSPath: strings.Replace(pj.Status.URL, c.config().Plank.JobURLPrefix, GCSPrefix, 1),
-	//}
+func (r *Reporter) generateHeader(pj *prowapi.ProwJob) string {
+	return fmt.Sprintf("*<%s|Prow Job> Alert*", pj.Status.URL)
+}
+
+func (r *Reporter) generateBody(pj *prowapi.ProwJob) apiSlack.Attachment {
+	var (
+		blue   = "#007FFF"
+		italic = func(s interface{}) string { return fmt.Sprintf("_%s_", s) }
+	)
+
+	body := apiSlack.Attachment{
+		Color: blue,
+		Fields: []apiSlack.AttachmentField{
+			{
+				Title: "Name",
+				Value: italic(pj.Spec.Job),
+				Short: true,
+			},
+			{
+				Title: "State",
+				Value: italic(pj.Status.State),
+				Short: true,
+			},
+			{
+				Title: "Type",
+				Value: italic(pj.Spec.Type),
+				Short: true,
+			},
+		},
+	}
+
+	if pj.Spec.Refs != nil {
+		details := []apiSlack.AttachmentField{
+			{
+				Title: "Repository",
+				Value: italic(pj.Spec.Refs.Repo),
+				Short: true,
+			},
+			{
+				Title: "Commit Culprit",
+				Value: italic(pj.Spec.Refs.BaseSHA),
+				Short: false,
+			},
+		}
+		body.Fields = append(body.Fields, details...)
+	}
+
+	return body
+}
+
+func (r *Reporter) generateFooter(pj *prowapi.ProwJob) apiSlack.Attachment {
+	footer := apiSlack.Attachment{
+		Fields: []apiSlack.AttachmentField{
+			{
+				Value: fmt.Sprintf("See the Job details *<%s|here>.*", pj.Status.URL),
+				Short: false,
+			},
+		},
+	}
+
+	return footer
 }
