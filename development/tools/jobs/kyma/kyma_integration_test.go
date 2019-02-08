@@ -253,7 +253,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, dnsCleanerPeriodic)
 	assert.Equal(t, expName, dnsCleanerPeriodic.Name)
 	assert.True(t, dnsCleanerPeriodic.Decorate)
-	assert.Equal(t, "*/20 * * * 1-5", dnsCleanerPeriodic.Cron)
+	assert.Equal(t, "45 */4 * * 1-5", dnsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, dnsCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, dnsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, dnsCleanerPeriodic.Spec.Containers[0].Image)
