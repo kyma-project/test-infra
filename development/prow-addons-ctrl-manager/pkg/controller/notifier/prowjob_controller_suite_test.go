@@ -1,6 +1,7 @@
 package notifier
 
 import (
+	"fmt"
 	stdlog "log"
 	"os"
 	"path/filepath"
@@ -19,6 +20,7 @@ import (
 var cfg *rest.Config
 
 func TestMain(m *testing.M) {
+	fmt.Println("aa")
 	t := &envtest.Environment{
 		CRDDirectoryPaths: []string{filepath.Join("..", "..", "..", "config", "crds")},
 	}
