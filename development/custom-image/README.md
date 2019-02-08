@@ -5,6 +5,11 @@ The purpose of this document is to define how to create a new Google Compute Eng
 
 ## Image creation process
 
+To run the script, use the `create-custom-image.sh` command. To set the image created by this script as a default custom image, add the `--default` flag to the command.
+
+> **NOTE:** Adding the `--default` flag to this script adds the `default:yes` label to the created custom image. By default, the [`provision-vm-and-start-kyma.sh`](../../prow/scripts/provision-vm-and-start-kyma.sh) script selects the latest default custom image available in Kyma project to provision the VM instance.
+
+
 The script performs the following steps:
 
 1. Provision a new VM under the VM instance in the Google Compute Engine.
