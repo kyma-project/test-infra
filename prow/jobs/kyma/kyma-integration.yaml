@@ -294,6 +294,7 @@ periodics:
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
+    preset-gc-compute-envs: "true"
   decorate: true
   extra_refs:
   - <<: *test_infra_ref
