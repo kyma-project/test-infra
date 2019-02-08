@@ -26,18 +26,19 @@ metadata:
   name: prow-addons-manager-role
 rules:
 - apiGroups:
-  - prowjobs.prow.k8s.io
+  - prow.k8s.io
   resources:
   - prowjobs
   verbs:
   - get
+  - list
   - watch
   - create
   - update
   - patch
   - delete
 - apiGroups:
-  - prowjobs.prow.k8s.io
+  - prow.k8s.io
   resources:
   - prowjobs/status
   verbs:
@@ -110,13 +111,15 @@ spec:
         - name: NOTIFIER_SLACK_TOKEN
           valueFrom:
             secretKeyRef:
-              key: ""
-              name: ""
-        - name: NOTIFIER_SLACK_REPORT_CHANNEL
-          value: ""
-        - name: NOTIFIER_ACT_ON_PROW_JOB_TYPE
+              key: token
+              name: slack-bot-token
+        - name: NOTIFIER_SLACK_REPORTER_CHANNEL
+          value: '#c4core-kyma-ci-force'
+        - name: NOTIFIER_SLACK_REPORTER_ACT_ON_PROW_JOB_TYPE
           value: periodic,postsubmit
-        image: controller:latest
+        - name: NOTIFIER_SLACK_REPORTER_ACT_ON_PROW_JOB_STATE
+          value: failure,error
+        image: eu.gcr.io/kyma-project/test-infra/develop/prow-addons-ctrl-manager:0.0.1
         imagePullPolicy: Always
         name: manager
         ports:
@@ -132,7 +135,4 @@ spec:
             memory: 20Mi
       serviceAccountName: prow-addons-controller-manager
       terminationGracePeriodSeconds: 10
-  volumeClaimTemplates:
-    metadata:
-      labels:
-        app: prow-addons-ctrl-manager
+  volumeClaimTemplates: []

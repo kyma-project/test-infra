@@ -5,7 +5,7 @@ IMG-CI = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME):$(DOCKER_
 all: test manager
 
 # Run tests
-test: generate fmt vet manifests
+test: generate fmt vet manifests validate
 	go test ./pkg/... ./cmd/... -coverprofile cover.out
 
 # Build manager binary
@@ -45,8 +45,6 @@ generate:
 # Build the docker image
 docker-build: resolve test
 	docker build . -t ${IMG}
-	@echo "updating kustomize image patch file for manager resource"
-	sed -i'' -e 's@image: .*@image: '"${IMG}"'@' ./config/default/manager_image_patch.yaml
 
 # Push the docker image
 docker-push:
@@ -58,6 +56,8 @@ docker-push:
 resolve:
 	dep ensure -v -vendor-only
 
+validate:
+	dep status
 # CI specified targets
 ci-pr: docker-build docker-push
 ci-master: docker-build docker-push

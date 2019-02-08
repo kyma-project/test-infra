@@ -114,6 +114,12 @@
   version = "v0.2.0"
 
 [[projects]]
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/gregjones/httpcache"
   packages = [
@@ -205,6 +211,15 @@
   packages = ["."]
   revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
   version = "1.0.1"
+
+[[projects]]
+  name = "github.com/nlopes/slack"
+  packages = [
+    ".",
+    "slackutilsx"
+  ]
+  revision = "a7deeca7935c178aa865249bab511daf816288ba"
+  version = "v0.5.0"
 
 [[projects]]
   name = "github.com/onsi/ginkgo"
@@ -343,6 +358,11 @@
   packages = ["."]
   revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
   version = "v1.0.3"
+
+[[projects]]
+  name = "github.com/vrischmann/envconfig"
+  packages = ["."]
+  revision = "d647766a494a7182c05fa4ddd1702c2c307a770d"
 
 [[projects]]
   name = "go.uber.org/atomic"
@@ -812,6 +832,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c88e967236fedfdbe2d6a779752d328cd6dcc0272a6bc1b3d92c6ca4d76f54d7"
+  inputs-digest = "9921c44035d1aefb575c9ef9ef4cc13b96dcfb36ec8166f07f8c68f5d49e9d3c"
   solver-name = "gps-cdcl"
   solver-version = 1

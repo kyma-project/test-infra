@@ -217,5 +217,5 @@ func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expVa
 			return
 		}
 	}
-	assert.Failf(t, "Container [%s] does not have environment variable [%s] with name [%s]", cont.Name, expValue, expValue)
+	assert.Fail(t, "Container [%s] does not have environment variable [%s] with name [%s]", cont.Name, expValue, expValue)
 }

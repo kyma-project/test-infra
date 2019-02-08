@@ -19,6 +19,10 @@ required = [
 [prune]
   go-tests = true
 
+[[constraint]]
+  name = "github.com/vrischmann/envconfig"
+  revision = "d647766a494a7182c05fa4ddd1702c2c307a770d"
+
 # Required because of transitive dependecies from test-infra to knative/build
 [[constraint]]
   name = "k8s.io/api"

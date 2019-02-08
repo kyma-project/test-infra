@@ -65,3 +65,4 @@ spec:
             cpu: 100m
             memory: 20Mi
       terminationGracePeriodSeconds: 10
+  volumeClaimTemplates: [] # workaround because of bug in kustomize, see: https://github.com/kubernetes-sigs/kustomize/issues/504#issuecomment-459748681
