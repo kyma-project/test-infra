@@ -253,12 +253,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, dnsCleanerPeriodic)
 	assert.Equal(t, expName, dnsCleanerPeriodic.Name)
 	assert.True(t, dnsCleanerPeriodic.Decorate)
-	assert.Equal(t, "*/20 * * * 1-5", dnsCleanerPeriodic.Cron)
+	assert.Equal(t, "45 */4 * * 1-5", dnsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, dnsCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, dnsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, dnsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, dnsCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION}"}, dnsCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"}, dnsCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, dnsCleanerPeriodic.JobBase)
 
 	expName = "kyma-gke-nightly"
