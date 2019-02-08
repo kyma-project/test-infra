@@ -14,6 +14,8 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/kyma
 FROM alpine:3.8
 WORKDIR /
 
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
 LABEL source=git@github.com:kyma-project/test-infra.git
 
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/manager .

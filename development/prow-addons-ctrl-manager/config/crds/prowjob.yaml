@@ -1,0 +1,63 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: prowjobs.prow.k8s.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .metadata.creationTimestamp
+    description: |-
+      CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
+
+      Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+    name: Age
+    type: date
+  group: prow.k8s.io
+  names:
+    kind: ProwJob
+    listKind: ProwJobList
+    plural: prowjobs
+    singular: prowjob
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          properties:
+            max_concurrency:
+              minimum: 0
+              type: integer
+            type:
+              enum:
+              - presubmit
+              - postsubmit
+              - periodic
+              - batch
+              type: string
+        status:
+          anyOf:
+          - not:
+              properties:
+                state:
+                  enum:
+                  - success
+                  - failure
+                  - error
+                  - aborted
+                  type: string
+          - required:
+            - completionTime
+          properties:
+            state:
+              enum:
+              - triggered
+              - pending
+              - success
+              - failure
+              - aborted
+              - error
+              type: string
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
