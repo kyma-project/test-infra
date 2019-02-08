@@ -290,8 +290,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-dns-cleaner
-  # cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-  cron: "*/20 * * * 1-5" # “At every 20th minute on every day-of-week from Monday through Friday.”
+  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -307,7 +306,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION}"
+      - "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
       resources:
         requests:
           memory: 1Gi
