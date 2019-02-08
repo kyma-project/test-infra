@@ -13,7 +13,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: token
-              name: slack-bot-token
+              name: sap-slack-bot-token
         - name: NOTIFIER_SLACK_REPORTER_CHANNEL
           value: "#c4core-kyma-ci-force"
         - name: NOTIFIER_SLACK_REPORTER_ACT_ON_PROW_JOB_TYPE

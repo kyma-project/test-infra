@@ -9,4 +9,4 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: prow-addons-controller-manager
-  namespace: prow-addons-system
+  namespace: default
