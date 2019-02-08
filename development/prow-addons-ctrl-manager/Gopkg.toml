@@ -14,10 +14,15 @@ required = [
     "sigs.k8s.io/controller-runtime/pkg/source",
     "sigs.k8s.io/testing_frameworks/integration", # for integration testing
 	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1",
-    ]
+	"github.com/vektra/mockery", # for mock autogeneration
+]
 
 [prune]
   go-tests = true
+
+[[constraint]]
+  name = "github.com/vektra/mockery"
+  revision = "e78b021dcbb558a8e7ac1fc5bc757ad7c277bb81"
 
 [[constraint]]
   name = "github.com/vrischmann/envconfig"

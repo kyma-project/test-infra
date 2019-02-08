@@ -381,6 +381,11 @@
   version = "v1.3.0"
 
 [[projects]]
+  name = "github.com/vektra/mockery"
+  packages = ["."]
+  revision = "e78b021dcbb558a8e7ac1fc5bc757ad7c277bb81"
+
+[[projects]]
   name = "github.com/vrischmann/envconfig"
   packages = ["."]
   revision = "d647766a494a7182c05fa4ddd1702c2c307a770d"
@@ -853,6 +858,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2a4de58a6d603fa0510136858b52ee3a7cd67824e3b70dc910a63463accf80c7"
+  inputs-digest = "127040f31b3bd462410844cbf410eb52c1e0010a14941a37906a1d63502fec99"
   solver-name = "gps-cdcl"
   solver-version = 1

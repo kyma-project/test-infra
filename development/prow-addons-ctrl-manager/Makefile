@@ -2,6 +2,8 @@ APP_NAME ?= prow-addons-ctrl-manager
 IMG ?= $(APP_NAME):latest
 IMG-CI = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME):$(DOCKER_TAG)
 
+MOCKERY= go run ./vendor/github.com/vektra/mockery/cmd/mockery/mockery.go
+
 all: test manager
 
 # Run tests
@@ -41,6 +43,7 @@ vet:
 # Generate code
 generate:
 	go generate ./pkg/... ./cmd/...
+	${MOCKERY} -dir=./pkg/controller/notifier/ -name=ReportClient -output=./pkg/controller/notifier/automock -outpkg=automock -case=underscore
 
 # Build the docker image
 docker-build: resolve test

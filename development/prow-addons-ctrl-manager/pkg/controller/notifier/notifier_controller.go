@@ -22,8 +22,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
-//go:generate mockery -name=ReportClient -output=./automock -outpkg=automock -case=underscore
-
 // Config holds configuration for Notifier Controller
 type Config struct {
 	SlackToken    string
