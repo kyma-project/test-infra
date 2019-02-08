@@ -22,9 +22,21 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
+//go:generate mockery -name=ReportClient -output=./automock -outpkg=automock -case=underscore
+
+// Config holds configuration for Notifier Controller
 type Config struct {
 	SlackToken    string
 	SlackReporter slack.ConfigReporter
+}
+
+// ReportClient used to reconciled ProwJob
+// Implementation respects the Crier Reporter interface:
+// https://github.com/kubernetes/test-infra/tree/d195f316c99dd376934e6a0ae103b86e6da0db06/prow/cmd/crier#adding-a-new-reporter
+type ReportClient interface {
+	Report(pj *prowjobsv1.ProwJob) error
+	GetName() string
+	ShouldReport(pj *prowjobsv1.ProwJob) bool
 }
 
 // Add creates a new ProwJob Controller and adds it to the Manager with default RBAC. The Manager will set fields on the Controller
@@ -69,7 +81,7 @@ var _ reconcile.Reconciler = &ReconcileProwJob{}
 type ReconcileProwJob struct {
 	k8sCli   client.Client
 	scheme   *runtime.Scheme
-	reporter *slack.Reporter
+	reporter ReportClient
 	log      logr.Logger
 }
 

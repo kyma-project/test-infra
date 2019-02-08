@@ -1,6 +1,7 @@
 package notifier
 
 import (
+	"fmt"
 	stdlog "log"
 	"os"
 	"path/filepath"
@@ -39,6 +40,7 @@ func TestMain(m *testing.M) {
 func SetupTestReconcile(inner reconcile.Reconciler) (reconcile.Reconciler, chan reconcile.Request) {
 	requests := make(chan reconcile.Request)
 	fn := reconcile.Func(func(req reconcile.Request) (reconcile.Result, error) {
+		fmt.Println(req)
 		result, err := inner.Reconcile(req)
 		requests <- req
 		return result, err
