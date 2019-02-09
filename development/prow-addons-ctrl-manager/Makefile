@@ -7,15 +7,15 @@ MOCKERY= go run ./vendor/github.com/vektra/mockery/cmd/mockery/mockery.go
 all: test manager
 
 # Run tests
-test: generate fmt vet manifests validate
+test: generate manifests validate
 	go test ./pkg/... ./cmd/... -coverprofile cover.out
 
 # Build manager binary
-manager: generate fmt vet
+manager: generate validate
 	go build -o bin/manager github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/cmd/manager
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
-run: generate fmt vet
+run: generate validate
 	go run ./cmd/manager/main.go
 
 # Install CRDs into a cluster
@@ -59,8 +59,9 @@ docker-push:
 resolve:
 	dep ensure -v -vendor-only
 
-validate:
+validate: fmt vet
 	dep status
+
 # CI specified targets
 ci-pr: docker-build docker-push
 ci-master: docker-build docker-push

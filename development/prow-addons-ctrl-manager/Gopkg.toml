@@ -21,6 +21,10 @@ required = [
   go-tests = true
 
 [[constraint]]
+  name = "github.com/google/go-github"
+  version = "21.0.1"
+
+[[constraint]]
   name = "github.com/vektra/mockery"
   revision = "e78b021dcbb558a8e7ac1fc5bc757ad7c277bb81"
 

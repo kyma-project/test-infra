@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+	"github.com/google/go-github/github"
 	"github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/pkg/slack"
 	apiSlack "github.com/nlopes/slack"
 	"github.com/pkg/errors"
 	"github.com/vrischmann/envconfig"
+	"golang.org/x/oauth2"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -24,8 +26,9 @@ import (
 
 // Config holds configuration for Notifier Controller
 type Config struct {
-	SlackToken    string
-	SlackReporter slack.ConfigReporter
+	SlackToken        string
+	GithubAccessToken string
+	SlackReporter     slack.ConfigReporter
 }
 
 // ReportClient used to reconciled ProwJob
@@ -45,12 +48,18 @@ func Add(mgr manager.Manager) error {
 		return errors.Wrap(err, "while initializing configuration for notifier controller")
 	}
 
+	httpClient := oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: cfg.GithubAccessToken},
+	))
+
+	ghClient := github.NewClient(httpClient)
+
 	slackCli := apiSlack.New(cfg.SlackToken)
-	reporter := slack.NewReporter(cfg.SlackReporter, slackCli)
+	reporter := slack.NewReporter(cfg.SlackReporter, slackCli, ghClient.Git)
 
 	r := &ReconcileProwJob{
-		k8sCli:   mgr.GetClient(),
 		reporter: reporter,
+		k8sCli:   mgr.GetClient(),
 		scheme:   mgr.GetScheme(),
 		log:      log.Log.WithName("ctrl:notifier"),
 	}
@@ -77,8 +86,9 @@ var _ reconcile.Reconciler = &ReconcileProwJob{}
 
 // ReconcileProwJob reconciles a ProwJob object
 type ReconcileProwJob struct {
-	k8sCli   client.Client
-	scheme   *runtime.Scheme
+	k8sCli client.Client
+	scheme *runtime.Scheme
+
 	reporter ReportClient
 	log      logr.Logger
 }
@@ -92,12 +102,14 @@ type ReconcileProwJob struct {
 // +kubebuilder:rbac:groups=prow.k8s.io,resources=prowjobs/status,verbs=get;update;patch
 func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	var (
-		ctx         = context.TODO()
 		pj          = &prowjobsv1.ProwJob{}
 		infoLog     = r.log.WithValues("prowjob", request.NamespacedName).Info
 		debugLog    = r.log.WithValues("prowjob", request.NamespacedName).V(1).Info
 		actionTaken = false
 	)
+
+	ctx, cancel := context.WithCancel(context.TODO())
+	defer cancel()
 
 	infoLog("Start reconcile")
 	defer func() { infoLog("End reconcile", "actionTaken", actionTaken) }()

@@ -4,11 +4,15 @@
 package slack
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/go-logr/logr"
+	"github.com/google/go-github/github"
 	apiSlack "github.com/nlopes/slack"
 	"github.com/pkg/errors"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+	"sigs.k8s.io/controller-runtime/pkg/runtime/log"
 )
 
 const (
@@ -31,16 +35,22 @@ type SlackSender interface {
 	SendMessage(channel string, options ...apiSlack.MsgOption) (string, string, string, error)
 }
 
+type GithubCommitFetcher interface {
+	GetCommit(ctx context.Context, owner string, repo string, sha string) (*github.Commit, *github.Response, error)
+}
+
 // Reporter is a reporter client for slack
 type Reporter struct {
-	slackCli      SlackSender
 	channel       string
+	slackCli      SlackSender
+	commitFetcher GithubCommitFetcher
 	actOnJobType  map[prowapi.ProwJobType]struct{}
 	actOnJobState map[prowapi.ProwJobState]struct{}
+	log           logr.Logger
 }
 
 // NewReporter creates a new Slack reporter
-func NewReporter(cfg ConfigReporter, slackCli SlackSender) *Reporter {
+func NewReporter(cfg ConfigReporter, slackCli SlackSender, commitFetcher GithubCommitFetcher) *Reporter {
 	actOnJobType := map[prowapi.ProwJobType]struct{}{}
 	for _, typ := range cfg.ActOnProwJobType {
 		actOnJobType[typ] = struct{}{}
@@ -52,10 +62,12 @@ func NewReporter(cfg ConfigReporter, slackCli SlackSender) *Reporter {
 	}
 
 	return &Reporter{
-		slackCli:      slackCli,
 		channel:       cfg.Channel,
+		slackCli:      slackCli,
+		commitFetcher: commitFetcher,
 		actOnJobType:  actOnJobType,
 		actOnJobState: actOnJobState,
+		log:           log.Log.WithName("reporter:slack"),
 	}
 }
 
@@ -84,7 +96,7 @@ func (r *Reporter) ShouldReport(pj *prowapi.ProwJob) bool {
 
 // Report takes a ProwJob, and generate a Slack ReportMessage and publish to given channel
 func (r *Reporter) Report(pj *prowapi.ProwJob) error {
-	// TODO(mszostok): can be in future replaced with renderer functionality,
+	// TODO(mszostok): in future  can be replaced with renderer functionality,
 	// similar to this one: https://github.com/kyma-project/kyma/blob/release-0.6/tools/stability-checker/internal/notifier/renderer.go
 	var (
 		header = r.generateHeader(pj)
@@ -140,18 +152,31 @@ func (r *Reporter) generateBody(pj *prowapi.ProwJob) apiSlack.Attachment {
 	}
 
 	if pj.Spec.Refs != nil {
+		org, repo, sha := pj.Spec.Refs.Org, pj.Spec.Refs.Repo, pj.Spec.Refs.BaseSHA
 		details := []apiSlack.AttachmentField{
 			{
 				Title: "Repository",
-				Value: italic(pj.Spec.Refs.Repo),
+				Value: italic(repo),
 				Short: true,
 			},
 			{
-				Title: "Commit Culprit",
-				Value: italic(pj.Spec.Refs.BaseSHA),
-				Short: false,
+				Title: "Commit",
+				Value: sha[:7],
+				Short: true,
 			},
 		}
+
+		commit, _, err := r.commitFetcher.GetCommit(context.TODO(), org, repo, sha)
+		if err != nil {
+			r.log.Error(err, "Cannot fetch git commit details", "org", org, "repo", repo, "sha", sha)
+		} else {
+			details = append(details, apiSlack.AttachmentField{
+				Title: "Author",
+				Value: italic(commit.Author.GetName()),
+				Short: true,
+			})
+		}
+
 		body.Fields = append(body.Fields, details...)
 	}
 

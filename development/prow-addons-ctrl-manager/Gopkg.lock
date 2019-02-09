@@ -118,6 +118,22 @@
   revision = "4030bb1f1f0c35b30ca7009e9ebd06849dd45306"
 
 [[projects]]
+  digest = "1:fd0a0133bcd8ba4fb393fed8dd3053e333b81ca97102479ff884cb3035965ffc"
+  name = "github.com/google/go-github"
+  packages = ["github"]
+  pruneopts = "T"
+  revision = "56cb1dd99043eba2e21c91aa8417d3ba2329259a"
+  version = "v21.0.1"
+
+[[projects]]
+  digest = "1:a98aaa0376806017a5d6f88cb8c3b8206943bd16585f58b394ac62d6e8abbc73"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  pruneopts = "T"
+  revision = "44c6ddd0a2342c386950e880b658017258da92fc"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   digest = "1:3ee90c0d94da31b442dde97c99635aaafec68d0b8a3c12ee2075c6bdabeec6bb"
   name = "github.com/google/gofuzz"
@@ -1015,6 +1031,7 @@
   input-imports = [
     "github.com/emicklei/go-restful",
     "github.com/go-logr/logr",
+    "github.com/google/go-github/github",
     "github.com/nlopes/slack",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
@@ -1023,6 +1040,7 @@
     "github.com/vektra/mockery",
     "github.com/vrischmann/envconfig",
     "golang.org/x/net/context",
+    "golang.org/x/oauth2",
     "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1",
     "k8s.io/apimachinery/pkg/api/errors",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
