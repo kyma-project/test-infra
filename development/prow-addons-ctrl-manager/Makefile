@@ -15,7 +15,7 @@ manager: generate validate
 	go build -o bin/manager github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/cmd/manager
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
-run: generate validate
+run: generate
 	go run ./cmd/manager/main.go
 
 # Install CRDs into a cluster

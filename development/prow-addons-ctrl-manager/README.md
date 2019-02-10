@@ -18,7 +18,10 @@ Use the following tools to set up the project:
 ## Available controllers
 
 ### Notifier
-Notifier is responsible for watching all ProwJobs and send alerts on Slack channel.
+Notifier is responsible for watching all ProwJobs and send notification on Slack channel:
+
+![](./docs/assets/slack_alert.png)
+
 For information about the available configuration, see the **Use environment variables** section. 
 
 The ProwJob can be ignored by adding label **prow.k8s.io/slack.skipReport** with value `true` under the ProwJob **metadata** entry. 
