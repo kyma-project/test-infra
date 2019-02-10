@@ -64,7 +64,9 @@ metadata:
   namespace: default
 spec:
   ports:
-  - port: 443
+  - name: http
+    port: 80
+    targetPort: http
   selector:
     app: prow-addons-ctrl-manager
     control-plane: controller-manager
@@ -88,8 +90,6 @@ spec:
   serviceName: prow-addons-controller-manager-service
   template:
     metadata:
-      annotations:
-        prometheus.io/scrape: "true"
       labels:
         app: prow-addons-ctrl-manager
         control-plane: controller-manager
@@ -99,6 +99,11 @@ spec:
       - command:
         - /manager
         env:
+        - name: NOTIFIER_GITHUB_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: oauth
+              name: oauth-token
         - name: NOTIFIER_SLACK_TOKEN
           valueFrom:
             secretKeyRef:
@@ -115,7 +120,7 @@ spec:
         name: manager
         ports:
         - containerPort: 8080
-          name: metrics
+          name: http
           protocol: TCP
         resources:
           limits:

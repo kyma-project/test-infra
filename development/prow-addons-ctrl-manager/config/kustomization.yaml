@@ -25,6 +25,7 @@ resources:
 - rbac/rbac_role.yaml
 - rbac/rbac_role_binding.yaml
 - manager/manager.yaml
+- default/manager_promethues_service.yaml
   # Comment the following 3 lines if you want to disable
   # the auth proxy (https://github.com/brancz/kube-rbac-proxy)
   # which protects your /metrics endpoint.
@@ -44,4 +45,4 @@ patches:
   # default/manager_prometheus_metrics_patch.yaml should be enabled.
 - default/manager_prometheus_metrics_patch.yaml
 - default/manager_env_patch.yaml
-- default/rbac_role_binding.yaml
+- default/rbac_role_binding_patch.yaml

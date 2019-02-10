@@ -9,6 +9,11 @@ spec:
       containers:
       - name: manager
         env:
+        - name: NOTIFIER_GITHUB_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: oauth
+              name: oauth-token
         - name: NOTIFIER_SLACK_TOKEN
           valueFrom:
             secretKeyRef:
