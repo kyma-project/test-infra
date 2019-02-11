@@ -50,7 +50,8 @@ presubmits: # runs on PRs
         base_ref: release-0.7
       labels:
         <<: *job_labels_template
-        preset-build-pr: "true"
+        preset-build-release: "true"
+        
 
 postsubmits:
   kyma-project/kyma:
