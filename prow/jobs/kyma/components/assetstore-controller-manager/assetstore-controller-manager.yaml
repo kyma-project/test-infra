@@ -47,7 +47,7 @@ presubmits: # runs on PRs
       run_if_changed: "^components/assetstore-controller-manager/"
       extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
+        base_ref: release-0.7
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
