@@ -17,10 +17,7 @@ import (
 
 const (
 	// SlackSkipReportLabel annotation
-	SlackSkipReportLabel = "prow.k8s.io/slack.skipReport"
-
-	icon     = ":prow:"
-	username = "prow-notifier"
+	SlackSkipReportLabel = "prow.kyma-project.io/slack.skipReport"
 )
 
 // ConfigReporter holds configuration for Slack Reporter
@@ -28,6 +25,8 @@ type ConfigReporter struct {
 	ActOnProwJobType  []prowapi.ProwJobType  `envconfig:"default=periodic;postsubmit"`
 	ActOnProwJobState []prowapi.ProwJobState `envconfig:"default=failure;error"`
 	Channel           string
+	UserIconEmoji     string `envconfig:":prow:"`
+	Username          string `envconfig:"prow-notifier"`
 }
 
 // SlackSender sends messages to Slack
@@ -41,7 +40,10 @@ type GithubCommitFetcher interface {
 
 // Reporter is a reporter client for slack
 type Reporter struct {
-	channel       string
+	channel  string
+	icon     string
+	username string
+
 	slackCli      SlackSender
 	commitFetcher GithubCommitFetcher
 	actOnJobType  map[prowapi.ProwJobType]struct{}
@@ -67,6 +69,8 @@ func NewReporter(cfg ConfigReporter, slackCli SlackSender, commitFetcher GithubC
 		commitFetcher: commitFetcher,
 		actOnJobType:  actOnJobType,
 		actOnJobState: actOnJobState,
+		icon:          cfg.UserIconEmoji,
+		username:      cfg.Username,
 		log:           log.Log.WithName("reporter:slack"),
 	}
 }
@@ -107,8 +111,8 @@ func (r *Reporter) Report(pj *prowapi.ProwJob) error {
 	_, _, _, err := r.slackCli.SendMessage(
 		r.channel,
 
-		apiSlack.MsgOptionUsername(username),
-		apiSlack.MsgOptionPostMessageParameters(apiSlack.PostMessageParameters{IconEmoji: icon, Markdown: true}),
+		apiSlack.MsgOptionUsername(r.username),
+		apiSlack.MsgOptionPostMessageParameters(apiSlack.PostMessageParameters{IconEmoji: r.icon, Markdown: true}),
 
 		apiSlack.MsgOptionText(header, false),
 		apiSlack.MsgOptionAttachments(body, footer),

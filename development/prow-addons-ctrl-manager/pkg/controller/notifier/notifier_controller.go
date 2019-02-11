@@ -121,7 +121,7 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 			return reconcile.Result{}, nil
 		}
 		// Error reading the object - requeue the request.
-		return reconcile.Result{}, err
+		return reconcile.Result{}, errors.Wrap(err, "while getting ProwJob to start the reconcile process")
 	}
 
 	if !r.reporter.ShouldReport(pj) {
@@ -136,7 +136,7 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 
 	debugLog("Report ProwJob", "reporter", r.reporter.GetName(), "state", pj.Status.State)
 	if err := r.reporter.Report(pj); err != nil {
-		return reconcile.Result{}, err
+		return reconcile.Result{}, errors.Wrap(err, "while calling report for ProwJob")
 	}
 	actionTaken = true
 
@@ -144,7 +144,7 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 	err := retry.RetryOnConflict(retry.DefaultBackoff, r.updateProwJobFn(ctx, request.NamespacedName))
 	if err != nil {
 		// may be conflict if max retries were hit
-		return reconcile.Result{}, err
+		return reconcile.Result{}, errors.Wrap(err, "while updating ProwJob status")
 	}
 
 	debugLog("ProwJob updated", "reporter", r.reporter.GetName())
@@ -155,7 +155,7 @@ func (r *ReconcileProwJob) updateProwJobFn(ctx context.Context, name types.Names
 	return func() error {
 		pj := &prowjobsv1.ProwJob{}
 		if err := r.k8sCli.Get(ctx, name, pj); err != nil {
-			return err
+			return errors.Wrap(err, "while getting ProwJob to start the update status process")
 		}
 
 		cpy := pj.DeepCopy()
