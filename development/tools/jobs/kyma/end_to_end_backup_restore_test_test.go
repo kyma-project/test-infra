@@ -14,27 +14,21 @@ func TestEndToEndBackupRstoreTestJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
-	actualPresubmit := kymaPresubmits[0]
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-end-to-end-backup-restore-test", "master")
 	expName := "pre-master-kyma-tests-end-to-end-backup-restore-test"
 	assert.Equal(t, expName, actualPresubmit.Name)
+	require.NotNil(t, actualPresubmit)
+
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
-	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/end-to-end/backup-restore-test/fix")
 	assert.Equal(t, "^tests/end-to-end/backup-restore-test/", actualPresubmit.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	tester.AssertThatHasCommand(t, actualPresubmit.Spec.Containers[0].Command)
+	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "tests/end-to-end/backup-restore-test/fix")
+	assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/backup-restore-test"}, actualPresubmit.Spec.Containers[0].Args)
+
 }
 
 func TestEndToEndBackupRstoreTestJobsPostsubmit(t *testing.T) {
@@ -43,24 +37,38 @@ func TestEndToEndBackupRstoreTestJobsPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/kyma"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPost, 1)
-
-	actualPost := kymaPost[0]
+	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-tests-end-to-end-backup-restore-test", "master")
 	expName := "post-master-tests-end-to-end-backup-restore-test"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	require.NotNil(t, actualPost)
 
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
+	assert.Equal(t, []string{"master"}, actualPost.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^tests/end-to-end/backup-restore-test/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPost.Spec.Containers[0].Image)
 	tester.AssertThatHasCommand(t, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/backup-restore-test"}, actualPost.Spec.Containers[0].Args)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
+}
+
+func TestEndToEndBackupRstoreTestReleases(t *testing.T) {
+	// WHEN
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/end-to-end/backup-restore-test/backup-restore-test.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("tests-end-to-end-backup-restore-test", currentRelease), currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/backup-restore-test")
+		})
+	}
 }
