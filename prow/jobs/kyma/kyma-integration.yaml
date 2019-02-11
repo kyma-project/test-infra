@@ -206,7 +206,7 @@ postsubmits:
     branches:
     - master
     labels:
-      prow.k8s.io/slack.skipReport: "true"
+      prow.kyma-project.io/slack.skipReport: "true"
       preset-bot-github-token: "true"
       preset-build-master: "true"
       <<: *gke_job_labels_template
