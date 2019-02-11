@@ -40,7 +40,7 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel07-kyma-tools-ark-plugins
+  - name: pre-rel07-kyma-tests-end-to-end-backup-restore-test
     branches:
       - release-0.7
     <<: *job_template
