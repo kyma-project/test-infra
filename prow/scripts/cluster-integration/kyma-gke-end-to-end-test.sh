@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
+#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install Kyma and run end to tests on real GKE cluster.
 #
 #
 #Expected vars:
