@@ -260,6 +260,7 @@ function installStabilityChecker() {
     kubectl create secret generic sa-stability-fluentd-storage-writer --from-file=service-account.json=/etc/credentials/sa-stability-fluentd-storage-writer/service-account.json -n kyma-system
 
 	helm install --set clusterName="${CLUSTER_NAME}" \
+	        --set logsPersistence.enabled=true \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
 	        --set slackClientChannelId="${STABILITY_SLACK_CLIENT_CHANNEL_ID}" \
 	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
