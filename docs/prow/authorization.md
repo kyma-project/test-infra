@@ -12,6 +12,29 @@ Every Prow cluster should be deployed in its own GCP project. You need an owner 
 
 ## Kubernetes RBAC rules on Prow cluster
 
+Following cluster roles exist on Prow cluster:
+- cert-manager - is able to manage following resources:
+    - `certificates.certmanager.k8s.io` 
+    - `issuers.certmanager.k8s.io`
+    - `clusterissuers.certmanager.k8s.io`
+    - `configmaps`
+    - `secrets`
+    - `events`
+    - `services`
+    - `pods`
+    - `ingresses.extensions`
+
+The `cluster-admin` kubernetes role is granted to `Tiller` service account.  
+
+Following roles exist on Prow cluster:
+- deck - is able to get, list prowjobs.prow.k8s.io resources and to get pods/log resources
+- horologium - is able to create, list prowjobs.prow.k8s.io resources
+- plank - is able to create, list, update prowjobs.prow.k8s.io resources and to create, delete, list pods resources
+- sinker - is able to delete, list prowjobs.prow.k8s.io resources and to delete, list pods resources
+- hook - is able to create, get prowjobs.prow.k8s.io resources and to update, get configmaps resources
+- tide - is able to create, list prowjobs.prow.k8s.io resources
+
+
 ## User permissions on GitHub
 
 ## Authorization decisions enforced by Prow
