@@ -7,5 +7,5 @@ files:
       white-list-internal: ["pr|commit"]
   - path: "./test-infra/.github/ISSUE_TEMPLATE/security-vulnerability.md"
     config:
-      white-list-internal: ["{CVSS"]
+      white-listbgfvfdghwrghrt-internal: ["{CVSS"]
       white-list-external: ["https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N"]
