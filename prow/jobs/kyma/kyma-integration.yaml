@@ -354,10 +354,18 @@ periodics:
   - <<: *kyma_ref
     base_ref: master
   spec:
+    volumes:
+    - name: sa-stability-fluentd-storage-writer
+      secret:
+        secretName: sa-stability-fluentd-storage-writer
     containers:
     - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
       securityContext:
         privileged: true
+      volumeMounts:
+      - name: sa-stability-fluentd-storage-writer
+        mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+        readOnly: true
       command:
       - "bash"
       env:
@@ -400,10 +408,18 @@ periodics:
     - <<: *kyma_ref
       base_ref: master
   spec:
+    volumes:
+      - name: sa-stability-fluentd-storage-writer
+        secret:
+          secretName: sa-stability-fluentd-storage-writer
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
         securityContext:
           privileged: true
+        volumeMounts:
+          - name: sa-stability-fluentd-storage-writer
+            mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+            readOnly: true
         command:
           - "bash"
         env:
@@ -457,61 +473,3 @@ periodics:
         requests:
           memory: 200Mi
           cpu: 80m
-
-# TODO: remove the kyma-gke-fluentd job
-- name: kyma-gke-fluentd
-  cron: "0 3 * * 1-5" # "At 03:00 on every day-of-week from Monday through Friday"
-  labels:
-    preset-build-master: "true"
-    preset-stability-checker-slack-notifications: "true"
-    preset-weekly-github-integration: "true"
-    <<: *gke_job_labels_template
-  decorate: true
-  extra_refs:
-    - org: piotrmiskiewicz
-      repo: test-infra
-      base_ref: fluentd-for-stability-checker
-      path_alias: github.com/kyma-project/test-infra
-    - org: kyma-project
-      repo: kyma
-      base_ref: add-fluentd-to-stability-checker
-      path_alias: github.com/kyma-project/kyma
-  spec:
-    volumes:
-          - name: sa-stability-fluentd-storage-writer
-            secret:
-              secretName: sa-stability-fluentd-storage-writer
-
-    containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-        securityContext:
-          privileged: true
-        volumeMounts:
-         - name: sa-stability-fluentd-storage-writer
-           mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-           readOnly: true
-        command:
-          - "bash"
-        env:
-          - name: INPUT_CLUSTER_NAME
-            value: "fluentd"
-          - name: TEST_RESULT_WINDOW_TIME
-            value: "120h"
-          - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-            value: "#c4core-kyma-ci-force-fake"
-          - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-            value: developers
-          - name: KYMA_ALERTS_SLACK_API_URL
-            valueFrom:
-              secretKeyRef:
-                name: kyma-alerts-slack-api-url
-                key: secret
-          - name: KYMA_ALERTS_CHANNEL
-            value: "#c4core-kyma-ci-force"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-fluentd.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
