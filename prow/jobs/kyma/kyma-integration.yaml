@@ -75,6 +75,8 @@ gke_job_labels_template: &gke_job_labels_template
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
+  preset-sa-kyma-backup-restore: "true"
+  preset-kyma-backup-restore-bucket: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -428,7 +430,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 - name: kyma-gke-end-to-end-test-backup-restore
-  cron: "0 9 * * 1-5" # "At 09:00 on every day-of-week from Monday through Friday."
+  cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
   labels:
     preset-build-master: "true"
     preset-weekly-github-integration: "true"
@@ -450,7 +452,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
       resources:
         requests:
           memory: 200Mi

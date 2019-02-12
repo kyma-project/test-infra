@@ -306,12 +306,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, backupRestorePeriodic)
 	assert.Equal(t, expName, backupRestorePeriodic.Name)
 	assert.True(t, backupRestorePeriodic.Decorate)
-	assert.Equal(t, "0 9 * * 1-5", backupRestorePeriodic.Cron)
-	tester.AssertThatHasPresets(t, backupRestorePeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
+	assert.Equal(t, "0 5 * * 1-5", backupRestorePeriodic.Cron)
+	tester.AssertThatHasPresets(t, backupRestorePeriodic.JobBase, tester.PresetSaKymaBackupRestore, tester.PresetKymaBackupRestoreBucket, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
 	tester.AssertThatHasExtraRefs(t, backupRestorePeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", backupRestorePeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, backupRestorePeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, backupRestorePeriodic.JobBase)
 	
 }
