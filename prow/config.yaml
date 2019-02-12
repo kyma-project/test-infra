@@ -67,18 +67,6 @@ presets:
     - name: sa-kyma-artifacts
       mountPath: /etc/credentials/sa-kyma-artifacts
   - labels:
-      preset-sa-kyma-backup-restore: "true"
-    env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/credentials/sa-kyma-backup-restore/service-account.json
-    volumes:
-    - name: sa-kyma-backup-restore
-      secret:
-        secretName: sa-kyma-backup-restore
-    volumeMounts:
-    - name: sa-kyma-backup-restore
-      mountPath: /etc/credentials/sa-kyma-backup-restore
-  - labels:
       preset-dind-enabled: "true"
     env:
       - name: DOCKER_IN_DOCKER_ENABLED
