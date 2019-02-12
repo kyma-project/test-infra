@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -vx
 
 shout "Create a Secret for Ark"
 
@@ -8,7 +8,7 @@ export SA_DISPLAY_NAME=sa-kyma-backup-restore
 export SECRET_FILE=sa-kyma-backup-restore
 export ROLE=roles/storage.objectAdmin
 
-CLOUD_CREDENTIALS_FILE_CONTENT_BASE64=$(gcloud iam service-accounts keys list --iam-account=$SA_NAME@$GCLOUD_PROJECT_NAME.iam.gserviceaccount.com --limit=1 --format="csv[no-heading](KEY_ID)")
+CLOUD_CREDENTIALS_FILE_CONTENT_BASE64=$(gcloud iam service-accounts keys list --iam-account=$SA_NAME@"${GCLOUD_PROJECT_NAME}".iam.gserviceaccount.com --limit=1 --format="csv[no-heading](KEY_ID)")
 
 ARK_SECRET_TPL_PATH="${KYMA_RESOURCES_DIR}/ark-secret.yaml.tpl"
 ARK_SECRET_OUTPUT_PATH=$(mktemp)
