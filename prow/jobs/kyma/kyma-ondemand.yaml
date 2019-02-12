@@ -5,7 +5,7 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   skip_report: true
-  always_run: true
+  run_if_changed: "^tools/watch-pods" #TODO only temporary solution for testing purposes
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10

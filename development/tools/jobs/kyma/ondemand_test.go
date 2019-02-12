@@ -1,10 +1,11 @@
 package kyma
 
 import (
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestPresubmitOnDemandKymaArtifacts(t *testing.T) {
@@ -17,7 +18,8 @@ func TestPresubmitOnDemandKymaArtifacts(t *testing.T) {
 	require.NotNil(t, job)
 
 	assert.True(t, job.SkipReport)
-	assert.True(t, job.AlwaysRun)
+	assert.False(t, job.AlwaysRun)
+	tester.AssertThatJobRunIfChanged(t, job, "tools/watch-pods")
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr, tester.PresetDockerPushRepo)
 	assert.Len(t, job.Spec.Containers, 1)
