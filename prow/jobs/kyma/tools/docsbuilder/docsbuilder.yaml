@@ -1,3 +1,8 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 job_template: &job_template
   skip_report: false
   decorate: true
@@ -37,6 +42,17 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *job_template
+    - name: pre-rel07-kyma-tools-docsbuilder
+      branches:
+      - release-0.7
+      <<: *job_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.7
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+    
 
 postsubmits:
   kyma-project/kyma:

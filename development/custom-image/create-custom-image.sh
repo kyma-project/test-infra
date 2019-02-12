@@ -15,6 +15,34 @@ cleanup() {
 
 RANDOM_ID=$(openssl rand -hex 4)
 DATE=$(date +v%Y%m%d)
+DEFAULT=false
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+
+    key="$1"
+
+    case ${key} in
+        --default)
+            DEFAULT=true
+            shift
+            ;;
+        --*)
+            echo "Unknown flag ${1}"
+            exit 1
+            ;;
+        *)    # unknown option
+            POSITIONAL+=("$1") # save it in an array for later
+            shift # past argument
+            ;;
+    esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+if [[ "$DEFAULT" == true ]]; then
+    LABELS=(--labels "default=yes")
+fi
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
@@ -39,7 +67,7 @@ for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --quiet --zone="${ZONE}" --recurse  ./install-deps-debian.sh "kyma-deps-image-vm-${RANDOM_ID}":~/ && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
+done
 
 
 shout "Running install-deps-debian.sh ..."
@@ -58,4 +86,5 @@ shout "Creating the new image kyma-deps-image-${DATE}..."
 gcloud compute images create "kyma-deps-image-${DATE}" \
   --source-disk "kyma-deps-image-vm-${RANDOM_ID}" \
   --source-disk-zone "${ZONE}" \
+  "${LABELS[@]}" \
   --family "custom-images"

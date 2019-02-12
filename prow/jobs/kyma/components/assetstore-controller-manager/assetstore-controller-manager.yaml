@@ -10,7 +10,7 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190204-44acc42
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
         securityContext:
           privileged: true
         command:
@@ -40,6 +40,17 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-rel07-kyma-components-assetstore-controller-manager
+      branches:
+        - release-0.7
+      <<: *job_template
+      run_if_changed: "^components/assetstore-controller-manager/"
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.7
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

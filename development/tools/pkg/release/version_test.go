@@ -52,6 +52,20 @@ func TestParseVersion(t *testing.T) {
 
 		})
 
+		Convey("should return true and no error if case of multiple versions of the same pre-release", func() {
+
+			//given
+			version := "0.0.3-rc8"
+
+			//when
+			isPreRel, err := parseVersion(version)
+
+			//then
+			So(err, ShouldBeNil)
+			So(isPreRel, ShouldBeTrue)
+
+		})
+
 		Convey("should return an error if the provided version is not in line with SemVer specification", func() {
 
 			//given

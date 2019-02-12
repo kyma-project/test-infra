@@ -12,8 +12,8 @@
     "internal/version",
     "storage"
   ]
-  revision = "0ebda48a7f143b1cce9eb37a8c1106ac762a3430"
-  version = "v0.34.0"
+  revision = "c9474f2f8deb81759839474b6bd1726bbfe1c1c4"
+  version = "v0.36.0"
 
 [[projects]]
   branch = "master"
@@ -85,8 +85,8 @@
 [[projects]]
   name = "github.com/google/go-github"
   packages = ["github"]
-  revision = "a5cb647b1fac8ba77e1cf25af2f9526658ab63e3"
-  version = "v21.0.0"
+  revision = "56cb1dd99043eba2e21c91aa8417d3ba2329259a"
+  version = "v21.0.1"
 
 [[projects]]
   name = "github.com/google/go-querystring"
@@ -102,10 +102,7 @@
 
 [[projects]]
   name = "github.com/googleapis/gax-go"
-  packages = [
-    ".",
-    "v2"
-  ]
+  packages = ["v2"]
   revision = "c8a15bac9b9fe955bd9f900272f9a306465d28cf"
   version = "v2.0.3"
 
@@ -150,13 +147,13 @@
     ".",
     "diskcache"
   ]
-  revision = "c63ab54fda8f77302f8d414e19933f2b6026a089"
+  revision = "7a902570cb17174de4ac788094f8ebedec136f57"
 
 [[projects]]
   name = "github.com/imdario/mergo"
   packages = ["."]
-  revision = "9f23e2d6bd2a77f959b2bf6acdbefd708a83a4a4"
-  version = "v0.3.6"
+  revision = "7c29201646fa3de8506f701213473dd407f19646"
+  version = "v0.3.7"
 
 [[projects]]
   name = "github.com/json-iterator/go"
@@ -218,8 +215,8 @@
 [[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -237,17 +234,17 @@
   branch = "master"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
-  revision = "5c3871d89910bfb32f5fcab2aa4b9ec68e65a99f"
+  revision = "fd36f4220a901265f90734c3183c5f0c91daa0b8"
 
 [[projects]]
-  branch = "master"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
     "internal/bitbucket.org/ww/goautoneg",
     "model"
   ]
-  revision = "67670fe90761d7ff18ec1d640135e53b9198328f"
+  revision = "cfeb6f9992ffa54aaa4f2170ade4067ee478b250"
+  version = "v0.2.0"
 
 [[projects]]
   branch = "master"
@@ -258,13 +255,13 @@
     "nfs",
     "xfs"
   ]
-  revision = "1dc9a6cbc91aacc3e8b2d63db4d2e957a5394ac4"
+  revision = "f8d8b3f739bd91a7c0462cb55235ef63c79c9abc"
 
 [[projects]]
   branch = "master"
   name = "github.com/shurcooL/githubv4"
   packages = ["."]
-  revision = "b89dc648a159d80f3c3be4a5e637b22097b7f9a6"
+  revision = "d9689b59501712371c702f54e9573531888d52fe"
 
 [[projects]]
   branch = "master"
@@ -279,8 +276,8 @@
 [[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
-  version = "v1.2.0"
+  revision = "e1e72e9de974bd926e5c56f83753fba2df402ce5"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/smartystreets/assertions"
@@ -321,8 +318,8 @@
     "mock",
     "require"
   ]
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   name = "go.opencensus.io"
@@ -342,14 +339,14 @@
     "trace/propagation",
     "trace/tracestate"
   ]
-  revision = "b7bf3cdb64150a8c8c53b769fdeb2ba581bd4d4b"
-  version = "v0.18.0"
+  revision = "2b5032d79456124f42db6b7eb19ac6c155449dc2"
+  version = "v0.19.0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
+  revision = "193df9c0f06f8bb35fba505183eaf0acc0136505"
 
 [[projects]]
   branch = "master"
@@ -364,7 +361,7 @@
     "internal/timeseries",
     "trace"
   ]
-  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
+  revision = "65e2d4e15006aab9813ff8769e768bbf4bb667a0"
 
 [[projects]]
   branch = "master"
@@ -376,7 +373,7 @@
     "jws",
     "jwt"
   ]
-  revision = "d668ce993890a79bda886613ee587a69dd5da7a6"
+  revision = "99b60b757ec124ebb7d6b7e97f153b19c10ce163"
 
 [[projects]]
   branch = "master"
@@ -385,7 +382,7 @@
     "unix",
     "windows"
   ]
-  revision = "9a3f9b0469bbc6b8802087ae5c0af9f61502de01"
+  revision = "3b5209105503162ded1863c307ac66fec31120dd"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -429,9 +426,10 @@
     "imports",
     "internal/fastwalk",
     "internal/gopathwalk",
+    "internal/module",
     "internal/semver"
   ]
-  revision = "d00ac6d27372a4273825635281f2dc360d4be563"
+  revision = "3744606dbb67b99c60d3f11cb10bd3f9e6dad472"
 
 [[projects]]
   branch = "master"
@@ -440,6 +438,7 @@
     "cloudkms/v1",
     "compute/v1",
     "container/v1",
+    "dns/v1",
     "gensupport",
     "googleapi",
     "googleapi/internal/uritemplates",
@@ -451,7 +450,7 @@
     "transport/http",
     "transport/http/internal/propagation"
   ]
-  revision = "f26a60c56f148a32e87f3f4591c8ebf834b5561f"
+  revision = "79ec8f5f46d61513818cd7d39d07d460af35efdf"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -479,7 +478,7 @@
     "googleapis/rpc/code",
     "googleapis/rpc/status"
   ]
-  revision = "bd9b4fb69e2ffd37621a6caa54dcbead29b546f2"
+  revision = "4b09977fb92221987e99d190c8f88f2c92727a29"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -516,8 +515,8 @@
     "status",
     "tap"
   ]
-  revision = "df014850f6dee74ba2fc94874043a9f3f75fbfd8"
-  version = "v1.17.0"
+  revision = "a02b0774206b209466313a0b525d2c738fe407eb"
+  version = "v1.18.0"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -571,7 +570,7 @@
     "storage/v1alpha1",
     "storage/v1beta1"
   ]
-  revision = "2dd39edadc55ab8a4ab2b27b84a9ed1b467ef47e"
+  revision = "912cbe2bfef3d832db29f9d3125307fe907102e9"
 
 [[projects]]
   branch = "release-1.11"
@@ -616,7 +615,7 @@
     "third_party/forked/golang/json",
     "third_party/forked/golang/reflect"
   ]
-  revision = "3d8ee2261517413977a62256b7d79644d7ffdc43"
+  revision = "1a579f8a7b42cff1430fca587b8745f209fc78da"
 
 [[projects]]
   name = "k8s.io/client-go"
@@ -716,7 +715,7 @@
   branch = "master"
   name = "k8s.io/kube-openapi"
   packages = ["pkg/util/proto"]
-  revision = "0317810137be915b9cf888946c6e115c1bfac693"
+  revision = "d7c86cdc46e3a4fcf892b32dd7bc3aa775e0870e"
 
 [[projects]]
   name = "k8s.io/test-infra"
@@ -751,6 +750,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2467ba7052889a638baed72823eb166ca37bb5d8c4856306047e96defe454c71"
+  inputs-digest = "e85b76e1a596eaf589dbd6803d33bda9349d922b49e7aca2d36c2b129be0c260"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -98,6 +98,16 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.6
+  - name: pre-rel07-kyma-integration
+    branches:
+    - release-0.7
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.7
 
   - name: pre-master-kyma-gke-integration
     branches:
@@ -124,6 +134,20 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.6
+
+  - name: pre-rel07-kyma-gke-integration
+    branches:
+    - release-0.7
+    <<: *gke_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.7
 
   - name: pre-master-kyma-gke-upgrade
     branches:
@@ -289,6 +313,28 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
+- name: orphaned-dns-cleaner
+  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+  labels:
+    preset-sa-gke-kyma-integration: "true"
+    preset-gc-project-env: "true"
+    preset-gc-compute-envs: "true"
+  decorate: true
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
 
 - name: kyma-gke-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
@@ -306,10 +352,18 @@ periodics:
   - <<: *kyma_ref
     base_ref: master
   spec:
+    volumes:
+    - name: sa-stability-fluentd-storage-writer
+      secret:
+        secretName: sa-stability-fluentd-storage-writer
     containers:
     - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
       securityContext:
         privileged: true
+      volumeMounts:
+      - name: sa-stability-fluentd-storage-writer
+        mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+        readOnly: true
       command:
       - "bash"
       env:
@@ -320,7 +374,7 @@ periodics:
       - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
         value: "#c4core-kyma-ci-force"
       - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-        value: "developers,cluster-access"
+        value: "cluster-access"
       - name: KYMA_ALERTS_SLACK_API_URL
         valueFrom:
           secretKeyRef:
@@ -352,10 +406,18 @@ periodics:
     - <<: *kyma_ref
       base_ref: master
   spec:
+    volumes:
+      - name: sa-stability-fluentd-storage-writer
+        secret:
+          secretName: sa-stability-fluentd-storage-writer
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
         securityContext:
           privileged: true
+        volumeMounts:
+          - name: sa-stability-fluentd-storage-writer
+            mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+            readOnly: true
         command:
           - "bash"
         env:
@@ -366,7 +428,7 @@ periodics:
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
             value: "#c4core-kyma-ci-force"
           - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-            value: "developers,cluster-access"
+            value: "cluster-access"
           - name: KYMA_ALERTS_SLACK_API_URL
             valueFrom:
               secretKeyRef:
@@ -377,64 +439,6 @@ periodics:
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-# TODO: remove the kyma-gke-fluentd job
-- name: kyma-gke-fluentd
-  cron: "0 3 * * 1-5" # "At 03:00 on every day-of-week from Monday through Friday"
-  labels:
-    preset-build-master: "true"
-    preset-stability-checker-slack-notifications: "true"
-    preset-weekly-github-integration: "true"
-    <<: *gke_job_labels_template
-  decorate: true
-  extra_refs:
-    - org: piotrmiskiewicz
-      repo: test-infra
-      base_ref: fluentd-for-stability-checker
-      path_alias: github.com/kyma-project/test-infra
-    - org: kyma-project
-      repo: kyma
-      base_ref: add-fluentd-to-stability-checker
-      path_alias: github.com/kyma-project/kyma
-  spec:
-    volumes:
-          - name: sa-stability-fluentd-storage-writer
-            secret:
-              secretName: sa-stability-fluentd-storage-writer
-
-    containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-        securityContext:
-          privileged: true
-        volumeMounts:
-         - name: sa-stability-fluentd-storage-writer
-           mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-           readOnly: true
-        command:
-          - "bash"
-        env:
-          - name: INPUT_CLUSTER_NAME
-            value: "fluentd"
-          - name: TEST_RESULT_WINDOW_TIME
-            value: "120h"
-          - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-            value: "#c4core-kyma-ci-force-fake"
-          - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-            value: developers
-          - name: KYMA_ALERTS_SLACK_API_URL
-            valueFrom:
-              secretKeyRef:
-                name: kyma-alerts-slack-api-url
-                key: secret
-          - name: KYMA_ALERTS_CHANNEL
-            value: "#c4core-kyma-ci-force"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-fluentd.sh"
         resources:
           requests:
             memory: 200Mi

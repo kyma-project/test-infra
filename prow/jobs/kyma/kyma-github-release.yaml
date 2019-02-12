@@ -16,7 +16,7 @@ job_template: &job_template
       - "bash"
       args:
       - "-c"
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=release-0.6 -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=release-0.7 -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"
       resources:
         requests:
           memory: 1Gi
@@ -35,6 +35,16 @@ postsubmits:
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.6 
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+  - name: post-rel07-kyma-github-release
+    branches:
+    - release-0.7
+    <<: *job_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.7 
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
