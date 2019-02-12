@@ -41,7 +41,7 @@ func TestEndToEndBackupRstoreTestJobsPostsubmit(t *testing.T) {
 	expName := "post-master-tests-end-to-end-backup-restore-test"
 	assert.Equal(t, expName, actualPost.Name)
 	require.NotNil(t, actualPost)
-	assert.True(t, actualPost.SkipReport)
+
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
