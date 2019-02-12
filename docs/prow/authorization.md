@@ -38,3 +38,9 @@ Following roles exist on Prow cluster:
 ## User permissions on GitHub
 
 ## Authorization decisions enforced by Prow
+
+Action on Prow can be only triggered by webhooks. To configure them you need to provide two secrets:
+- hmac-token - used to validate webhook
+- oauth-token - GitHub bot access token
+
+For more details see [Prow documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-github-secrets).
