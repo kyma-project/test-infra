@@ -2,7 +2,7 @@
 
 ## Required GCP Permissions
 
-Every Prow cluster should be deployed in its own GCP project. You need an owner access to deploy Prow and configure it properly. In order to deploy a Prow cluster, configure the following service accounts in the GCP project you own.
+To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
 
 | Service account name          | Description                                                      | Required roles                                                                                       |
 | :---------------------------- | :--------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- |
