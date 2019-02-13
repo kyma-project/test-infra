@@ -465,6 +465,9 @@ periodics:
         privileged: true
       command:
       - "bash"
+      env:
+      - name: INPUT_CLUSTER_NAME
+        value: "e2etest"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"

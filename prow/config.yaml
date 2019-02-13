@@ -175,6 +175,10 @@ presets:
     env:
       - name: KYMA_BACKUP_RESTORE_BUCKET
         value: gs://kyma-backup-restore
+      - name: SA_KYMA_BACKUP_NAME
+        value: sa-kyma-backup-restore
+      - name: SA_KYMA_BACKUP_ROLE
+        value: roles/storage.objectAdmin
   - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
