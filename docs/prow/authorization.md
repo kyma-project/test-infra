@@ -4,13 +4,13 @@
 
 To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
 
-| Service account name          | Usage                                                      | Required roles                                                                                       |
-| :---------------------------- | :--------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------- |
+| Service account name          | Usage                                                      | Required roles |
+| :---------------------------- | :----------------------------------------------------------| :------------- |
 | **sa-gcs-plank**              | Used by Prow plan microservice | `Storage Object Admin`
 | **sa-gke-kyma-integration**   | Running integration tests on GKE cluster | `Compute Admin`, `Kubernetes Engine Admin`, `Kubernetes Engine Cluster Admin`, `DNS Administrator`, `Service Account User`, `Storage Admin`
 | **sa-kyma-artifacts**         | Saving release artifacts to the GCS bucket | `Storage Object Admin`
 | **sa-vm-kyma-integration**    | Running integration tests on minikube | `Compute Instance Admin (beta)`, `Compute OS Admin Login`, `Service Account User`
-| **sa-gcr-push-kyma-project**  | Publish docker images | `Storage Admin`
+| **sa-gcr-push-kyma-project**  | Publishing docker images | `Storage Admin`
 
 ## Kubernetes RBAC rules on Prow cluster
 
