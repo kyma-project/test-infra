@@ -4,7 +4,6 @@
 # - kyma-installer image
 # - kyma-config-cluster.yaml
 # - kyma-installer-cluster.yaml
-# - kyma-config-local.yaml
 # - is-installed.sh
 # Yaml files, as well as is-installed.sh script are stored on GCS.
 
@@ -40,9 +39,6 @@ make -C /home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer ci-c
 
 gsutil cp "${ARTIFACTS}/kyma-config-cluster.yaml" "${KYMA_ONDEMAND_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-cluster.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_ONDEMAND_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster.yaml"
-#
-gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_ONDEMAND_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-local.yaml"
-gsutil cp "${ARTIFACTS}/kyma-installer-local.yaml" "${KYMA_ONDEMAND_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-local.yaml"
 
 gsutil cp /home/prow/go/src/github.com/kyma-project/kyma/installation/scripts/is-installed.sh "${KYMA_ONDEMAND_ARTIFACTS_BUCKET}/${DOCKER_TAG}/is-installed.sh"
 
