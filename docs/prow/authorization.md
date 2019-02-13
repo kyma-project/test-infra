@@ -30,14 +30,14 @@ The `cluster-admin` kubernetes role is granted to `Tiller` service account.
 
 Following roles exist on Prow cluster:
 
-| Role name      | Description                                                      |
-| :------------- | :--------------------------------------------------------------- |
-| **deck**       | Role allowing to get, list `prowjobs.prow.k8s.io` resources and to get `pods/log` resources|
-| **horologium** | Role allowing to delete, list `prowjobs.prow.k8s.io` resources and to delete, list `pods` resources |
-| **plank**      | Role allowing to create, list, update `prowjobs.prow.k8s.io` resources and to create, delete, list` pods` resources |
-| **sinker**     | Role allowing to delete, list `prowjobs.prow.k8s.io` resources and to delete, list `pods` resources |
-| **hook**       | Role allowing to create, get `prowjobs.prow.k8s.io` resources and to update, get `configmaps` resources |
-| **tide**       | Role allowing to create, list `prowjobs.prow.k8s.io` resources | 
+| Role name   | managed resources | available verbs |
+| :---------- | :---------------- | :-------------- |
+| **deck** | - `prowjobs.prow.k8s.io`  <br> - `pods/log` | get, list <br> get |
+| **horologium** | - `prowjobs.prow.k8s.io`  <br> - `pods` | delete, list <br> delete, list |
+| **plank** | - `prowjobs.prow.k8s.io` <br> - `pods` | create, list, update <br> create, list, delete |
+| **sinker** | - `prowjobs.prow.k8s.io` <br> - `pods` | delete, list <br> delete, list |
+| **hook** | - `prowjobs.prow.k8s.io` <br> - `configmaps` | create, get <br> get, update |
+| **tide** | - `prowjobs.prow.k8s.io` |  create, list  |
 
 ## User permissions on GitHub
 
