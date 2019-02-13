@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Prow Addons Controller Manager contains all custom controller extension for Prow infrastructure. This project is bootstrapped by Kubebuilder. Check the official [Kubebuilder](https://github.com/kubernetes-sigs/kubebuilder/tree/v1.0.7) documentation to find out how to work with the project. 
+The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure. This project is bootstrapped by Kubebuilder. Check the official [Kubebuilder](https://github.com/kubernetes-sigs/kubebuilder/tree/v1.0.7) documentation to find out how to work with the project. 
 
 ## Prerequisites
 
