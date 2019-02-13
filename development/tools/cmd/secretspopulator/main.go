@@ -186,7 +186,7 @@ func (s *SecretsPopulator) logSecretAction(secret *corev1.Secret, action string)
 	for k := range secret.Data {
 		keys = append(keys, k)
 	}
-	s.logger.Infof("%s Secret [%s] with key(s) [%s]",action, secret.Name, strings.Join(keys, ", "))
+	s.logger.Infof("%s Secret [%s] with key(s) [%s]", action, secret.Name, strings.Join(keys, ", "))
 }
 
 // RequiredSecretsData represents secrets required by Prow cluster
