@@ -21,12 +21,11 @@ func TestPresubmitOnDemandKymaArtifacts(t *testing.T) {
 	assert.False(t, job.AlwaysRun)
 	tester.AssertThatJobRunIfChanged(t, job, "tools/watch-pods")
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr, tester.PresetDockerPushRepo)
+	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr, tester.PresetDockerPushRepo, "preset-kyma-ondemands")
 	assert.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
 	assert.Equal(t, tester.ImageBootstrap20181204, cont.Image)
 	assert.Len(t, cont.Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-ondemand-kyma-artifacts.sh", cont.Command[0])
 	tester.AssertThatContainerHasEnv(t, cont, "KYMA_INSTALLER_PUSH_DIR", "pr/")
-	tester.AssertThatContainerHasEnv(t, cont, "KYMA_ONDEMAND_ARTIFACTS_BUCKET", "gs://kyma-ondemand-artifacts")
 }

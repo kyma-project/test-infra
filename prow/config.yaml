@@ -206,6 +206,11 @@ presets:
           secretKeyRef:
             name: weekly-github-integration-app-client-secret
             key: client-secret
+  - labels:
+      preset-kyma-ondemands: "true"
+    env:
+      - name: KYMA_ONDEMAND_ARTIFACTS_BUCKET
+        value: "gs://kyma-ondemand-artifacts"
 
 branch-protection:
   enforce_admins: false

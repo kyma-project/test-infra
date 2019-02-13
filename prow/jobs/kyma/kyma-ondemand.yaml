@@ -17,8 +17,6 @@ job_template: &job_template
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-ondemand-kyma-artifacts.sh"
       env:
-        - name: KYMA_ONDEMAND_ARTIFACTS_BUCKET
-          value: "gs://kyma-ondemand-artifacts"
         - name: KYMA_INSTALLER_PUSH_DIR
           value: "pr/"
       resources:
@@ -30,6 +28,7 @@ job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-docker-push-repository: "true"
   preset-build-pr: "true"
+  preset-kyma-ondemands: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
