@@ -15,7 +15,7 @@ Secrets are stored in Google Cloud Storage (GCS) in a dedicated bucket and are e
 
 > **NOTE:** For more information about Secret management, read the [Prow Secret Management](./prow-secrets-management.md) document.
 
-## Internal components
+## Components
 Prow components access the RBAC-protected API server using dedicated service accounts and are communicating without having TLS enabled.
 
 ### Deck
@@ -35,6 +35,12 @@ Sinker scans for jobs older than one day and cleans up their Pods.
 
 ### Branch Protector
 Branch Protector is a Prow component that is responsible for defining branch protection settings on GitHub repositories. It updates protection settings on GitHub repositories every 30 minutes. It takes configuration from the `config.yaml` file on the cluster.
+
+### Prow Addons Controller Manager
+
+The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure, such as the Notifier controller. Notifier watches all ProwJobs and sends notifications to a given Slack channel. Find detailed documentation [here](../../development/prow-addons-ctrl-manager/README.md).
+
+>**NOTE:** Unlike other Prow components, the Prow Addons Controller Manager is a tool developed in Kyma.
 
 ## Plugins
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.
