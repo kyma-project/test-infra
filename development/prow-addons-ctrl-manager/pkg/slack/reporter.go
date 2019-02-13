@@ -25,8 +25,8 @@ type ConfigReporter struct {
 	ActOnProwJobType  []prowapi.ProwJobType  `envconfig:"default=periodic;postsubmit"`
 	ActOnProwJobState []prowapi.ProwJobState `envconfig:"default=failure;error"`
 	Channel           string
-	UserIconEmoji     string `envconfig:":prow:"`
-	Username          string `envconfig:"prow-notifier"`
+	UserIconEmoji     string `envconfig:"default=:prow:"`
+	Username          string `envconfig:"default=prow-notifier"`
 }
 
 // SlackSender sends messages to Slack
