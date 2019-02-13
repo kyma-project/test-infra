@@ -16,7 +16,7 @@ Use the following tools and configuration:
 - Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
-  - `sap-slack-bot-token` which is a token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot)
+  - `sap-slack-bot-token` which is a token for publishing messages in the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).
 - Two buckets on Google Cloud Storage (GCS), one for storing Secrets and the second for storing logs
 - GCP configuration that includes:
   - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `kyma-prow-status` name
