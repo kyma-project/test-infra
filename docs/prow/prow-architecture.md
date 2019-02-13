@@ -43,6 +43,10 @@ Prow plugins applied for the Kyma project include:
 - **cat** that checks if there is a new GitHub event for a `/meow` comment on a PR. If it finds it, it adds a cat image to the related PR. For that purpose, it uses the GitHub token available as a Kubernetes Secret.
 - **config-updater** that reads the configuration from `config.yaml`, `plugins.yaml`, and the `jobs` folder, and updates it on the production cluster after the merge to the `master` branch. This plugin is only configured for the `test-infra` repository.
 
+## Prow Addons Controller Manager
+
+The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure. Currently it contains only the Notifier controller. Notifier watches all ProwJobs and sends notifications to a given Slack channel. Find detailed documentation [here](../../development/prow-addons-ctrl-manager/README.md)
+
 ## ProwJobs
 Different build jobs are specified in the `jobs` folder per repository. Each of them uses different kind of trigger conditions. Depending on the trigger, a component becomes active to create a Prow-specific ProwJob resource that represents a given job execution. At a later time, a real Pod gets created by the Plank based on the Pod specification provided in the `jobs` folder. Inside the Pod, a container executes the actual build logic. When the process is finished, the Sinker component cleans up the Pod.
 
