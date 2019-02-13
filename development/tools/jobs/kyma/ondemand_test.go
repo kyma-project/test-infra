@@ -19,7 +19,6 @@ func TestPresubmitOnDemandKymaArtifacts(t *testing.T) {
 
 	assert.True(t, job.SkipReport)
 	assert.False(t, job.AlwaysRun)
-	tester.AssertThatJobRunIfChanged(t, job, "tools/watch-pods")
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr, tester.PresetDockerPushRepo, "preset-kyma-ondemands")
 	assert.Len(t, job.Spec.Containers, 1)
