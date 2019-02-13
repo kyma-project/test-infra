@@ -10,7 +10,7 @@ import (
 
 func TestPresubmitOnDemandKymaArtifacts(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-ondemand.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-development-artifacts.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -20,11 +20,12 @@ func TestPresubmitOnDemandKymaArtifacts(t *testing.T) {
 	assert.True(t, job.SkipReport)
 	assert.False(t, job.AlwaysRun)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr, tester.PresetDockerPushRepo, "preset-kyma-ondemands")
+	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr, tester.PresetDockerPushRepo, "preset-kyma-ondemands", tester.PresetGcrPush)
 	assert.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrap20181204, cont.Image)
+	assert.Equal(t, , cont.Image)
 	assert.Len(t, cont.Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-ondemand-kyma-artifacts.sh", cont.Command[0])
 	tester.AssertThatContainerHasEnv(t, cont, "KYMA_INSTALLER_PUSH_DIR", "pr/")
+
 }
