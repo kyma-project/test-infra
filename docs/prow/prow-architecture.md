@@ -45,7 +45,7 @@ Prow plugins applied for the Kyma project include:
 
 ## Prow Addons Controller Manager
 
-The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure developed by Kyma developer. Currently it contains only the Notifier controller. Notifier watches all ProwJobs and sends notifications to a given Slack channel. Find detailed documentation [here](../../development/prow-addons-ctrl-manager/README.md).
+The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure, such as the Notifier controller. Notifier watches all ProwJobs and sends notifications to a given Slack channel. Find detailed documentation [here](../../development/prow-addons-ctrl-manager/README.md).
 
 ## ProwJobs
 Different build jobs are specified in the `jobs` folder per repository. Each of them uses different kind of trigger conditions. Depending on the trigger, a component becomes active to create a Prow-specific ProwJob resource that represents a given job execution. At a later time, a real Pod gets created by the Plank based on the Pod specification provided in the `jobs` folder. Inside the Pod, a container executes the actual build logic. When the process is finished, the Sinker component cleans up the Pod.
