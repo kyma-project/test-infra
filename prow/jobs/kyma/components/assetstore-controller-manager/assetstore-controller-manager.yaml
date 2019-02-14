@@ -44,7 +44,7 @@ presubmits: # runs on PRs
       branches:
         - release-0.7
       <<: *job_template
-      run_if_changed: "^components/assetstore-controller-manager/"
+      always_run: true
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.7
