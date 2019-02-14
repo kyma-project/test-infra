@@ -154,7 +154,6 @@ presubmits: # runs on PRs
     - master
     <<: *gke_upgrade_job_template
     run_if_changed: "^(resources|installation)"
-    optional: true
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"
@@ -202,11 +201,9 @@ postsubmits:
 
   - name: post-master-kyma-gke-upgrade
     <<: *gke_upgrade_job_template
-    optional: true
     branches:
     - master
     labels:
-      prow.kyma-project.io/slack.skipReport: "true"
       preset-bot-github-token: "true"
       preset-build-master: "true"
       <<: *gke_job_labels_template
