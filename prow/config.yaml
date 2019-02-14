@@ -180,6 +180,14 @@ presets:
       - name: SA_KYMA_BACKUP_ROLE
         value: roles/storage.objectAdmin
   - labels:
+      preset-kyma-backup-credentials: "true"
+    env:
+    - name: KYMA_BACKUP_CREDENTIALS
+      valueFrom:
+        secretKeyRef:
+          name: kyma-backup-credentials
+          key: token
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL

@@ -449,6 +449,7 @@ periodics:
     preset-build-master: "true"
     preset-weekly-github-integration: "true"
     preset-kyma-backup-restore-bucket: "true"
+    preset-kyma-backup-credentials: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
