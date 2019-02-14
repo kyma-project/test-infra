@@ -12,10 +12,12 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 | **sa-vm-kyma-integration**    | Running integration tests on minikube | `Compute Instance Admin (beta)`, `Compute OS Admin Login`, `Service Account User`
 | **sa-gcr-push-kyma-project**  | Publishing docker images | `Storage Admin`
 
-## Kubernetes RBAC rules on Prow cluster
+## Kubernetes RBAC roles on Prow cluster
 
-Following cluster roles exist on Prow cluster:
-- cert-manager - is able to manage following resources:
+### Cluster Roles
+
+The `cert-manager` Cluster Role is the only Cluster Role required to deploy a Prow cluster. It manages the following resources:
+
     - `certificates.certmanager.k8s.io` 
     - `issuers.certmanager.k8s.io`
     - `clusterissuers.certmanager.k8s.io`
@@ -26,7 +28,9 @@ Following cluster roles exist on Prow cluster:
     - `pods`
     - `ingresses.extensions`
 
-The `cluster-admin` kubernetes role is granted to `Tiller` service account.  
+> **NOTE:** There is no separate Cluster Role for Tiller. Instead, the `cluster-admin` Kubernetes role is granted to Tiller's service account.
+
+### Roles
 
 Following roles exist on Prow cluster:
 
@@ -53,8 +57,8 @@ All users that are not members of the `kyma-project` organization are considered
 
 ## Authorization decisions enforced by Prow
 
-Actions on Prow can be triggered only by webhooks. To configure them you must provide two secrets:
+Actions on Prow can be triggered only by webhooks. To configure them you must create two Github Secrets on your Prow cluster:
 - `hmac-token` - used to validate webhook
 - `oauth-token` - stores the access token used by the GitHub bot
 
-For more details see [Prow documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-github-secrets).
+Follow the official [Prow documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-github-secrets) to learn how create the secrets.
