@@ -45,15 +45,15 @@ Following roles exist on Prow cluster:
 
 ## User permissions on GitHub
 
-Prow starts tests when triggered by certain Github events. For security reasons, the `trigger` plugin ensures that the test jobs are run only on pull requests created or verified by trusted users.
+Prow starts tests when triggered by certain Github events. For security reasons, the `trigger` plugin ensures that the test jobs are run only on pull requests (PR) created or verified by trusted users.
 
 ### Trusted users
-All members of the `kyma-project` organization are considered trusted users. The `trigger` plugin starts jobs automatically when a trusted user opens a PR or commits changes to a PR branch. Alternatively, trusted collaborators can start jobs manually through the `/test all`, `/test {JOB_NAME}` and `/retest` commands, even if a particular pull request was created by an external user. 
+All members of the `kyma-project` organization are considered trusted users. The `trigger` plugin starts jobs automatically when a trusted user opens a PR or commits changes to a PR branch. Alternatively, trusted collaborators can start jobs manually through the `/test all`, `/test {JOB_NAME}` and `/retest` commands, even if a particular PR was created by an external user. 
 
 ### External contributors
-All users that are not members of the `kyma-project` organization are considered external contributors. The `trigger` plugin does not automatically start test jobs on PRs created by external contributors. Furthermore, external contributors are not allowed to manually run tests on their own pull requests.
+All users that are not members of the `kyma-project` organization are considered external contributors. The `trigger` plugin does not automatically start test jobs on PRs created by external contributors. Furthermore, external contributors are not allowed to manually run tests on their own PRs.
 
-> **NOTE:** External contributors can still trigger tests on pull requests created by trusted users.
+> **NOTE:** External contributors can still trigger tests on PRs created by trusted users.
 
 ## Authorization decisions enforced by Prow
 
