@@ -30,7 +30,7 @@ The `cluster-admin` kubernetes role is granted to `Tiller` service account.
 
 Following roles exist on Prow cluster:
 
-| Role name   | managed resources | available verbs |
+| Role name   | Managed resources | Available actions |
 | :---------- | :---------------- | :-------------- |
 | **deck** | - `prowjobs.prow.k8s.io`  <br> - `pods/log` | get, list <br> get |
 | **horologium** | - `prowjobs.prow.k8s.io`  <br> - `pods` | delete, list <br> delete, list |
@@ -41,20 +41,20 @@ Following roles exist on Prow cluster:
 
 ## User permissions on GitHub
 
-Prow is responsible for starting tests in reaction to certain Github events. For security reasons, the `trigger` plugin ensures that test jobs are run only on pull requests created or verified by trusted users.
+Prow starts tests when triggered by certain Github events. For security reasons, the `trigger` plugin ensures that the test jobs are run only on pull requests created or verified by trusted users.
 
 ### Trusted users
-Members of the `kyma-project` organization are considered trusted users. Trigger starts jobs automatically when a trusted user opens a pull request or commits changes to a pull request branch. Alternatively, trusted collaborators can start jobs manually via the `/test all`, `/test {JOB_NAME}` and `/retest` commands, even if a particular pull request was created by an external user. 
+All members of the `kyma-project` organization are considered trusted users. The `trigger` plugin starts jobs automatically when a trusted user opens a PR or commits changes to a PR branch. Alternatively, trusted collaborators can start jobs manually through the `/test all`, `/test {JOB_NAME}` and `/retest` commands, even if a particular pull request was created by an external user. 
 
 ### External contributors
-External contributors are users outside the `kyma-project` organization. Trigger does not automatically start test jobs on pull requests created by external contributors. Furthermore, external contributors are not allowed to manually run tests on their own pull requests.
+All users that are not members of the `kyma-project` organization are considered external contributors. The `trigger` plugin does not automatically start test jobs on PRs created by external contributors. Furthermore, external contributors are not allowed to manually run tests on their own pull requests.
 
 > **NOTE:** External contributors can still trigger tests on pull requests created by trusted users.
 
 ## Authorization decisions enforced by Prow
 
-Action on Prow can be only triggered by webhooks. To configure them you need to provide two secrets:
-- hmac-token - used to validate webhook
-- oauth-token - GitHub bot access token
+Actions on Prow can be triggered only by webhooks. To configure them you must provide two secrets:
+- `hmac-token` - used to validate webhook
+- `oauth-token` - stores the access token used by the GitHub bot
 
 For more details see [Prow documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-github-secrets).
