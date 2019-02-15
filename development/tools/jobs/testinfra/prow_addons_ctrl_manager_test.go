@@ -26,7 +26,7 @@ func TestProwAddonsCtrlManagerJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^development/prow-addons-ctrl-manager/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -43,9 +43,9 @@ func TestProwAddonsCtrlManagerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 	assert.True(t, actualPostsubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPostsubmit.PathAlias)
-	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^development/prow-addons-ctrl-manager/", actualPostsubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager"}, actualPostsubmit.Spec.Containers[0].Args)
 }

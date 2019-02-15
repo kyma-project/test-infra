@@ -32,7 +32,7 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/bootstrap/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/bootstrap/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -57,7 +57,7 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/bootstrap/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -85,7 +85,7 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/bootstrap-helm/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/bootstrap-helm/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -110,7 +110,7 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/bootstrap-helm/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -138,7 +138,7 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/buildpack-golang/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/buildpack-golang/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -163,7 +163,7 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-golang/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -191,7 +191,7 @@ func TestBuildpackGolangKubebuilderJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/buildpack-golang-kubebuilder/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/buildpack-golang-kubebuilder/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -216,7 +216,7 @@ func TestBuildpackGolangKubebuilderJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-golang-kubebuilder/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -236,7 +236,7 @@ func TestKymaClusterInfraPresubmit(t *testing.T) {
 	assert.Len(t, actualPresubmit.Spec.Containers, 1)
 	actualContainer := actualPresubmit.Spec.Containers[0]
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be", actualContainer.Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualContainer.Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualContainer.Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"}, actualContainer.Args)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 }
@@ -256,7 +256,7 @@ func TestKymaClusterInfraPostsubmit(t *testing.T) {
 	assert.Len(t, actualPostsubmit.Spec.Containers, 1)
 	actualContainer := actualPostsubmit.Spec.Containers[0]
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be", actualContainer.Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualContainer.Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualContainer.Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"}, actualContainer.Args)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPostsubmit.JobBase)
 }
@@ -285,7 +285,7 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/buildpack-node/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/buildpack-node/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -310,7 +310,7 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-node-chromium/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -338,7 +338,7 @@ func TestBuildpackNodeChromiumPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/buildpack-node-chromium/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/buildpack-node-chromium/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -363,7 +363,7 @@ func TestBuildpackNodeChromiumPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/buildpack-node/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"}, actualPost.Spec.Containers[0].Args)
 }
 
@@ -391,7 +391,7 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^prow/images/cleaner/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/cleaner/Dockerfile")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
@@ -416,6 +416,6 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
 	assert.Equal(t, "^prow/images/cleaner/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-infra.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"}, actualPost.Spec.Containers[0].Args)
 }
