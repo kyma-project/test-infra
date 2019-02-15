@@ -22,11 +22,9 @@
     "autorest/adal",
     "autorest/azure",
     "autorest/date",
-    "logger",
     "version"
   ]
-  revision = "4b7f49dc5db2e1e6d528524d269b4181981a7ebf"
-  version = "v11.1.1"
+  revision = "bca49d5b51a50dc5bb17bbf6204c711c6dbded06"
 
 [[projects]]
   name = "github.com/bazelbuild/buildtools"
@@ -717,6 +715,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2ad7cfa0dcd557dd73112bf6c322595f97d49da0561c21ad7bbe8360e915f6fc"
+  inputs-digest = "e84d471189ceb36948bc5e2ae7b91dbf3fdbb8c013575777ab2049a6248064d8"
   solver-name = "gps-cdcl"
   solver-version = 1
