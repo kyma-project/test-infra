@@ -79,8 +79,8 @@ fi
 
 shout "Create development artifacts for PR"
 # INPUTS:
-# - KYMA_INSTALLER_PUSH_DIR - (optional) directory where kyma-installer docker image is pushed, if specified should ends with a slash (/)
-# - KYMA_INSTALLER_VERSION - version (image tag) of kyma-installer
+# - KYMA_INSTALLER_PUSH_DIR
+# - KYMA_INSTALLER_VERSION
 #  These variables are used to calculate installer version: eu.gcr.io/kyma-project/${KYMA_INSTALLER_PUSH_DIR}kyma-installer:${KYMA_INSTALLER_VERSION}
 # - ARTIFACTS_DIR - path to directory where artifacts will be stored
 env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_PATH}/installation/scripts/release-generate-kyma-installer-artifacts.sh"
