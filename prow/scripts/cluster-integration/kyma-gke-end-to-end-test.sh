@@ -49,11 +49,6 @@ cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
-
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
@@ -147,9 +142,6 @@ INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
-#Used to detect errors for logging purposes
-ERROR_LOGGING_GUARD="true"
-
 shout "Authenticate"
 date
 init
@@ -161,6 +153,11 @@ if [[ "$BUILD_TYPE" != "release" ]]; then
     CLEANUP_DOCKER_IMAGE="true"
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 fi
+
+CLEANUP_CLUSTER="true"
+CLEANUP_GATEWAY_DNS_RECORD="true"
+CLEANUP_REMOTEENVS_DNS_RECORD="true"
+CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 
 shout "Cleanup"
 date
@@ -180,7 +177,6 @@ echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 shout "Create DNS Record for Ingressgateway IP"
 date
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_GATEWAY_DNS_RECORD="true"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
@@ -188,14 +184,12 @@ shout "Reserve IP Address for Remote Environments"
 date
 REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
 REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 
 
 shout "Create DNS Record for Remote Environments IP"
 date
 REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_REMOTEENVS_DNS_RECORD="true"
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
@@ -208,7 +202,7 @@ fi
 if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
-CLEANUP_CLUSTER="true"
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
 shout "Install Tiller"
@@ -257,6 +251,3 @@ date
 "${KYMA_SCRIPTS_DIR}"/e2e-testing.sh
 
 shout "Success"
-
-#!!! Must be at the end of the script !!!
-ERROR_LOGGING_GUARD="false"
