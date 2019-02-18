@@ -2,7 +2,7 @@
 
 This document describes the procedure for defining release jobs for Kyma components.
 
->**NOTE:** Before you follow the steps in this guide, read the [**Component jobs**](./component-jobs.md) document to learn how to create a standard component job. To read about the release process in Kyma, read the [**Release process**](https://github.com/kyma-project/community/blob/master/guidelines/releases/release-process.md) document that guides you through the steps required to prepare and execute a Kyma release.
+>**NOTE:** Before you follow the steps in this guide, read the [**Component jobs**](./component-jobs.md) document to learn how to create a standard component job. To learn about the release process, read the [**Release process**](https://github.com/kyma-project/community/blob/master/guidelines/releases/release-process.md) document that guides you through the steps required to prepare and execute a Kyma release.
 
 ## Steps
 
