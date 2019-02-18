@@ -18,7 +18,6 @@ Read the documents to learn how to:
 Find out more about:
 
 - [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
-- [Release process](./release-process.md) that guides you through the steps required to prepare and execute a Kyma release.
 - [Offboarding steps](offboarding-checklist.md) to perform when someone leaves the project.
 - [Presets](./presets.md) you can use to define ProwJobs.
 - [Authorization](./authorization.md) concepts employed in a Prow cluster
