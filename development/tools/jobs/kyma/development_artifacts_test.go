@@ -1,0 +1,61 @@
+package kyma
+
+import (
+	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestPresubmitDevelopmentArtifacts(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-development-artifacts.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	job := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
+	require.NotNil(t, job)
+
+	assert.True(t, job.SkipReport)
+	assert.False(t, job.AlwaysRun)
+	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
+	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildPr)
+	assert.Len(t, job.Spec.Containers, 1)
+	cont := job.Spec.Containers[0]
+	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be", cont.Image)
+	assert.Len(t, cont.Command, 1)
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-development-artifacts.sh", cont.Command[0])
+	assert.Len(t, job.Spec.Volumes, 1)
+	assert.Equal(t, "sa-kyma-artifacts", job.Spec.Volumes[0].Name)
+	assert.NotNil(t, job.Spec.Volumes[0].Secret)
+	assert.Equal(t, "sa-kyma-artifacts", job.Spec.Volumes[0].Secret.SecretName)
+	assert.Len(t, cont.VolumeMounts, 1)
+	assert.Equal(t, "sa-kyma-artifacts", cont.VolumeMounts[0].Name)
+	assert.Equal(t, "/etc/credentials/sa-kyma-artifacts", cont.VolumeMounts[0].MountPath)
+}
+
+func TestPostsubmitDevelopmentArtifcts(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-development-artifacts.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	job := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-development-artifacts", "master")
+	require.NotNil(t, job)
+
+	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
+	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildMaster)
+	assert.Len(t, job.Spec.Containers, 1)
+	cont := job.Spec.Containers[0]
+	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be", cont.Image)
+	assert.Len(t, cont.Command, 1)
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-development-artifacts.sh", cont.Command[0])
+	assert.Len(t, job.Spec.Volumes, 1)
+	assert.Equal(t, "sa-kyma-artifacts", job.Spec.Volumes[0].Name)
+	assert.NotNil(t, job.Spec.Volumes[0].Secret)
+	assert.Equal(t, "sa-kyma-artifacts", job.Spec.Volumes[0].Secret.SecretName)
+	assert.Len(t, cont.VolumeMounts, 1)
+	assert.Equal(t, "sa-kyma-artifacts", cont.VolumeMounts[0].Name)
+	assert.Equal(t, "/etc/credentials/sa-kyma-artifacts", cont.VolumeMounts[0].MountPath)
+}
