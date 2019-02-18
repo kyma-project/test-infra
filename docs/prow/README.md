@@ -13,11 +13,12 @@ Read the documents to learn how to:
 - [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
 - [Create, modify, and remove standard component jobs](./component-jobs.md) for the Prow pipeline.
-- [Prow jobs](./prow-jobs.md) for details on prow jobs.
 
 Find out more about:
 
 - [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
+- [Release process](./release-process.md) that guides you through the steps required to prepare and execute a Kyma release.
+- [Prow jobs](./prow-jobs.md) for details on prow jobs.
 - [Offboarding steps](offboarding-checklist.md) to perform when someone leaves the project.
 - [Presets](./presets.md) you can use to define ProwJobs.
 - [Authorization](./authorization.md) concepts employed in a Prow cluster
