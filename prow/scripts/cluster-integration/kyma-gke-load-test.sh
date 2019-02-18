@@ -242,11 +242,10 @@ function installKyma() {
 
 function waitUntilHPATestIsDone {
     local succeeded='false'
-    local logs=''
     while true; do
         hpa_test_status=$(kubectl get po -n kyma-system load-test -ojsonpath="{.status.phase}")
-        if [ $hpa_test_status != 'Running' ]; then
-            if [ $hpa_test_status == 'Succeeded' ]; then
+        if [ "${hpa_test_status}" != "Running" ]; then
+            if [ "${hpa_test_status}" == "Succeeded" ]; then
                 succeeded='true'
             fi
             break
@@ -275,7 +274,7 @@ function checkPodIsRunning {
             break
         fi
         sleep 2
-        time_spent=$(( $time_spent + 2 ))
+        time_spent=$(( time_spent + 2 ))
         if [[ $time_spent -gt $POD_CHECK_TIMEOUT ]]; then
             echo "Timed out! pod: load-test is not running!"
             echo "Description:"
@@ -299,7 +298,7 @@ function installLoadTest() {
 				--set slackClientChannelId="${LOAD_TEST_SLACK_CLIENT_CHANNEL_ID}" \
 				--set loadTestExecutionTimeout="${LT_TIMEOUT}" \
 				--set reqsPerRoutine="${LT_REQS_PER_ROUTINE}" \
-				${LT_FOLDER_CHART} \
+				"${LT_FOLDER_CHART}" \
 				--namespace=kyma-system \
 				--name=load-test
 
