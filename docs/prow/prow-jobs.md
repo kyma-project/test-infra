@@ -2,7 +2,7 @@
 
 This document provides an overview of Prow jobs.  
 
-### Jobs directory structure
+## Jobs directory structure
 
 Prow jobs reside in the `prow/jobs` directory in the `test-infra` repository. The structure of the `/jobs` directory reflects the Kyma repository structure to make it easier fo you to find jobs you are looking for. 
 
@@ -43,7 +43,7 @@ Jobs can be required or optional. Setting the **optional** parameter to `true` m
 The presubmit and postsubmit jobs for a PR run in random order, and their number for a PR depends on the configuration in the `yaml` file. You can check the job status on`https://status.build.kyma-project.io/`.
 
 
-### Naming convention 
+## Naming convention 
 
 When you define jobs for Prow, the **name** parameter of the job must follow one of these patterns:
 
