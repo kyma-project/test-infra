@@ -54,49 +54,13 @@ Its structure looks as follows:
 
 ## Installation
 
-Read the [`docs`](../docs/prow/README.md) to lean how to configure the production Prow or install it on your forked repository for development and testing.
+Read the [`docs`](../docs/prow/README.md) to learn how to configure the production Prow or install it on your forked repository for development and testing.
 
 ## Development
 
-Read about the conventions for organizing and naming jobs in the `prow` subdirectories and Prow configuration.
+### Prow jobs
 
-### Strategy for organizing jobs
-
-The `jobs/{repository_name}` directories have subdirectories which represent each component and contain job definitions. Each file must have a unique name. Job definitions not connected to a particular component, like integration jobs, are defined directly under the `jobs/{repository_name}` directory.
-
-For example:
-
-```
-...
-prow
-|- cluster
-| |- starter.yaml
-|- images
-|- jobs
-| |- kyma
-| | |- components
-| | | |- environments
-| | | | |- environments.yaml
-| | |- kyma.integration.yaml
-|- scripts
-|- config.yaml
-|- plugins.yaml
-...
-```
-
-### Convention for naming jobs
-
-When you define jobs for Prow, the **name** parameter of the job must follow one of these patterns:
-
-  - `{prefix}-{repository-name}-{component-name}-{job-name}` for components
-  - `{prefix}-{repository-name}-{job-name}` for jobs not connected to a particular component
-
-Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
-- `pre-master` for presubmit jobs that run against the `master` branch.
-- `post-master` for postsubmit jobs that run against the `master` branch.
-- `pre-rel{release-number}` for presubmit jobs that run against the release branches. For example, write `pre-rel06-kyma-components-api-controller`.
-
-In both cases, `{job_name}` must reflect the job's responsibility.
+Read [this](../docs/prow/prow-jobs.md) document to learn more about Prow job definitions.
 
 ### Upload configuration to the production Prow cluster
 
