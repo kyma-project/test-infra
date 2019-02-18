@@ -9,9 +9,6 @@ Prow jobs reside in the `prow/jobs` directory in the `test-infra` repository. Th
 Job definitions are inluded in `yaml` files, and can be connected to specific components or be more general, like integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directory. Jobs linked to a particular component are available in `jobs/{repository_name}`directory, which includes subdirectories representing each component and containing job definitions. 
 
 
-> **NOTE:** All `yaml` files in the whole `jobs` structure need to have unique names.
-
-
 For example:
 
 ```
@@ -31,16 +28,19 @@ prow
 |- plugins.yaml
 ...
 ```
+> **NOTE:** All `yaml` files in the whole `jobs` structure need to have unique names.
 
 ## Job types
 
 You can configure the following job types:
 
-* **Presubmit** jobs run on pull requests (PRs). They validate changes against the target repository. You can 
+* **Presubmit** jobs run on pull requests (PRs). They validate changes against the target repository. By default, all presubmit jobs are required. If you set the **optional** parameter to `true`, it becomes optional and you can still merge your PR, even if the job fails. 
 * **Postsubmit** jobs are almost the same as the already defined presubmit jobs, but they run after the PR is merged. You can notice the difference in labels, as the postsubmit job uses **preset-build-master** instead of **preset-build-pr**.
 * **Periodic** jobs run at a specified time, regardless of modifying or merging a PR.
 
-The presubmit and postsubmit jobs for a PR run in random order, and their number depends on the configuration in the `yaml` file. You can check their status on`https://status.build.kyma-project.io/`.
+Jobs can be required or optional. Setting the **optional** parameter to `true` means that even if the job fails, 
+
+The presubmit and postsubmit jobs for a PR run in random order, and their number for a PR depends on the configuration in the `yaml` file. You can check the job status on`https://status.build.kyma-project.io/`.
 
 
 ### Naming convention 
