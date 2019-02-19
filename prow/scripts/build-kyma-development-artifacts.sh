@@ -59,25 +59,19 @@ export_variables
 #   DOCKER_TAG - calculated in export_variables
 #   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
-#
-#
-# TODO
 export KYMA_PATH="/home/prow/go/src/github.com/kyma-project/kyma"
 
+buildTarget="ci-master"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Build installer for PR"
-    make -C "${KYMA_PATH}/components/installer" ci-pr
-    shout "Build kyma-installer for PR"
-    make -C "${KYMA_PATH}/tools/kyma-installer" ci-pr
-
-else
-    shout "Build installer for master branch"
-    make -C "${KYMA_PATH}/components/installer" ci-master
-    shout "Build kyma-installer"
-    make -C "${KYMA_PATH}/tools/kyma-installer" ci-master
+	buildTarget="ci-pr"
 fi
 
-shout "Create development artifacts for PR"
+shout "Build installer with target ${buildTarget}"
+make -C "${KYMA_PATH}/components/installer" ${buildTarget}
+shout "Build kyma-installer with target ${buildTarget}"
+make -C "${KYMA_PATH}/tools/kyma-installer" ${buildTarget}
+
+shout "Create development artifacts"
 # INPUTS:
 # - KYMA_INSTALLER_PUSH_DIR
 # - KYMA_INSTALLER_VERSION
@@ -93,12 +87,14 @@ shout "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
 authenticate
 
+shout "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kyma-config-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-config-cluster.yaml"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster.yaml"
 gsutil cp  "${KYMA_PATH}/installation/scripts/is-installed.sh" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
 
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
+  shout "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/kyma-config-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-config-cluster.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster.yaml"
   gsutil cp  "${KYMA_PATH}/installation/scripts/is-installed.sh" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
