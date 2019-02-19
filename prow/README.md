@@ -60,7 +60,7 @@ Read the [`docs`](../docs/prow/README.md) to learn how to configure the producti
 
 ### Prow jobs
 
-Read [this](../docs/prow/prow-jobs.md) document to learn more about Prow job definitions.
+Read [this](../docs/prow/prow-jobs.md) document to learn more about ProwJob definitions.
 
 ### Upload configuration to the production Prow cluster
 
