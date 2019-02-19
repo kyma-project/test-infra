@@ -21,6 +21,12 @@ for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_FULL_NAME IP_ADDRESS
     fi
 done
 
+shout "CLOUDSDK_CORE_PROJECT: ${CLOUDSDK_CORE_PROJECT}"
+shout "CLOUDSDK_DNS_ZONE_NAME: ${CLOUDSDK_DNS_ZONE_NAME}"
+shout "DNS_FULL_NAME: ${DNS_FULL_NAME}"
+shout "IP_ADDRESS: ${IP_ADDRESS}"
+
+
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi

@@ -315,7 +315,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, backupRestorePeriodic.JobBase)
 	assert.Len(t, backupRestorePeriodic.Spec.Containers[0].Env, 3)
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "e2etest")
-	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[1], "REPO_OWNER_GIT", "kyma-project")
-	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[2], "REPO_NAME_GIT", "kyma")
+	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_OWNER_GIT", "kyma-project")
+	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_NAME_GIT", "kyma")
 
 }
