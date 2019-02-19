@@ -1,10 +1,10 @@
 # Prow jobs
 
-This document provides an overview of Prow jobs.  
+This document provides an overview of ProwJobs.  
 
 ## Directory structure
 
-Prow jobs reside in the `prow/jobs` directory in the `test-infra` repository. Job definitions are configured in `yaml` files, and can be connected to specific components or be more general, like for integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directory. Jobs configured for components are available in `jobs/{repository_name}`directory which includes subdirectories representing each component and containing job definitions. 
+ProwJobs reside in the `prow/jobs` directory in the `test-infra` repository. Job definitions are configured in `yaml` files, and can be connected to specific components or be more general, like for integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directory. Jobs configured for components are available in `jobs/{repository_name}`directory which includes subdirectories representing each component and containing job definitions. 
 
 
 This is a sample directory structure:
@@ -36,15 +36,16 @@ You can configure the following job types:
 - **Postsubmit** jobs are almost the same as the already defined presubmit jobs, but they run after the PR is merged. You can notice the difference in labels, as the postsubmit job uses **preset-build-master** instead of **preset-build-pr**.
 - **Periodic** jobs run automatically at a scheduled time. You don't need to modify or merge the PR to trigger them. 
 
-The presubmit and postsubmit jobs for a PR run in random order, and their number for a PR depends on the configuration in the `yaml` file. You can check the job status on`https://status.build.kyma-project.io/`.
+The presubmit and postsubmit jobs for a PR run in random order, and their number for a PR depends on the configuration in the `yaml` file. You can check the job status on [`https://status.build.kyma-project.io/`](https://status.build.kyma-project.io/).
 
 
 ## Naming convention 
 
 When you define jobs for Prow, the **name** parameter of the job must follow one of these patterns:
 
-- `{prefix}-{repository-name}-{component-name}-{job-name}` for components
+- `{prefix}-{repository-name}-{path-to-component}-{job-name}` for components
 - `{prefix}-{repository-name}-{job-name}` for jobs not connected to a particular component
+
 
 Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
 - `pre-master` for presubmit jobs that run against the `master` branch.
@@ -59,7 +60,7 @@ In both cases, `{job_name}` must reflect the job's responsibility.
 Prow runs presubmit and postsubmit jobs based on the following parameters: 
 
 - `always_run: true` for the job to run automatically at all times.
-- `run_if_changed: true` for the job to run automatically when you modify files matching the conditions defined in the `yaml` configuration file. 
+- `run_if_changed: {regular expression}` for the job to run if a PR modifies files matching the pattern. If a PR does not modify the files, this job sends a notification to GitHub with the information that it is skipped.
 
 If you set the **always_run** parameter to `false` to and leave `run_if_changed` without any value, the job won't run unless you trigger it manually.
 
@@ -80,5 +81,8 @@ If you want to trigger your job again, add a comment on the PR for your componen
 ## Create jobs
 
 For details on how to create jobs see:
-* [Create component jobs](./component-jobs.md)
-* [Create release jobs](./release-jobs.md)
+
+- [Create component jobs](./component-jobs.md)
+- [Create release jobs](./release-jobs.md)
+
+For further details of ProwJobs see [this](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md) document.
