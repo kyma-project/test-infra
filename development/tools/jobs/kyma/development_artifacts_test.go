@@ -17,8 +17,9 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 	job := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 
-	assert.True(t, job.SkipReport)
-	assert.False(t, job.AlwaysRun)
+	assert.False(t, job.SkipReport)
+	assert.True(t, job.AlwaysRun)
+	assert.True(t, job.Optional)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildPr)
 	require.Len(t, job.Spec.Containers, 1)
