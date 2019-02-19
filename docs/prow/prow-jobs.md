@@ -1,4 +1,4 @@
-# Prow jobs
+# ProwJobs
 
 This document provides an overview of ProwJobs.  
 
@@ -85,4 +85,4 @@ For details on how to create jobs see:
 - [Create component jobs](./component-jobs.md)
 - [Create release jobs](./release-jobs.md)
 
-For further details of ProwJobs see [this](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md) document.
+For further reference, read a more technical insight into the Kubernetes [ProwJobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
