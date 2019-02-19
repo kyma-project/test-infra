@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET KYMA_BACKUP_RESTORE_BUCKET KYMA_BACKUP_CREDENTIALS; do
+for var in INPUT_CLUSTER_NAME REPO_OWNER_GIT REPO_NAME_GIT DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET KYMA_BACKUP_RESTORE_BUCKET KYMA_BACKUP_CREDENTIALS `CLOUDSDK_COMPUTE_ZONE`; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -29,8 +29,8 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 export BACKUP_CREDENTIALS="${KYMA_BACKUP_CREDENTIALS}"
 export BACKUP_RESTORE_BUCKET="${KYMA_BACKUP_RESTORE_BUCKET}"
 
-readonly REPO_OWNER="kyma-project"
-readonly REPO_NAME="kyma"
+readonly REPO_OWNER=$(echo "${REPO_OWNER_GIT}" | tr "[:upper:]" "[:lower:]")
+readonly REPO_NAME_GIT=$(echo "${REPO_NAME_GIT}" | tr "[:upper:]" "[:lower:]")
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
@@ -124,12 +124,6 @@ function cleanup() {
     fi
 
 }
-
-# Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-export REPO_NAME
 
 # As is a periodic job executed on master, operate on triggering commit id
 readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)

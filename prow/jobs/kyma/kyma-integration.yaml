@@ -469,6 +469,10 @@ periodics:
       env:
       - name: INPUT_CLUSTER_NAME
         value: "e2etest"
+      - name: REPO_OWNER_GIT
+        value: "kyma-project"
+      - name: REPO_NAME_GIT
+        value: "kyma"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
