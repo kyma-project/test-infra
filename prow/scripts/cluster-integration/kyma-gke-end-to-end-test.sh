@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET KYMA_BACKUP_RESTORE_BUCKET SA_KYMA_BACKUP_NAME SA_KYMA_BACKUP_ROLE KYMA_BACKUP_CREDENTIALS; do
+for var in INPUT_CLUSTER_NAME REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET KYMA_BACKUP_RESTORE_BUCKET KYMA_BACKUP_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -26,8 +26,6 @@ export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 ### For generate-cluster-backup-config.sh
-export SA_BACKUP_NAME="${SA_KYMA_BACKUP_NAME}"
-export SA_BACKUP_ROLE="${SA_KYMA_BACKUP_ROLE}"
 export BACKUP_CREDENTIALS="${KYMA_BACKUP_CREDENTIALS}"
 export BACKUP_RESTORE_BUCKET="${KYMA_BACKUP_RESTORE_BUCKET}"
 
@@ -44,75 +42,66 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanup EXIT
 
-#!Put cleanup code in this function!
-cleanup() {
-    #!!! Must be at the beginning of this function !!!
-    EXIT_STATUS=$?
-
+removeCluster() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
+    EXIT_STATUS=$?
 
-        #save disk names while the cluster still exists to remove them later
-        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        export DISKS
+    shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
 
-        #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-        #Delete orphaned disks
-        shout "Delete orphaned PVC disks..."
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+    shout "Deprovision cluster: \"${CLUSTER_NAME}\""
+    date
 
-    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-        shout "Delete Gateway DNS Record"
-        date
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+    #save disk names while the cluster still exists to remove them later
+    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+    export DISKS
 
-    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        shout "Release Gateway IP Address"
-        date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+    #Delete cluster
+    shout "Delete cluster $CLUSTER_NAME"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-    if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
-        shout "Delete Remote Environments DNS Record"
-        date
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+    #Delete orphaned disks
+    shout "Delete orphaned PVC disks..."
+    date
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-disks.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-    if [ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]; then
-        shout "Release Remote Environments IP Address"
-        date
-        IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
 
-    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+    shout "Delete Gateway DNS Record"
+    date
+    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
+    shout "Release Gateway IP Address"
+    date
+    IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Delete Remote Environments DNS Record"
+    date
+    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Release Remote Environments IP Address"
+    date
+    IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    shout "Delete temporary Kyma-Installer Docker image"
+    date
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+    TMP_STATUS=$?
+    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -121,6 +110,19 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+function cleanup() {
+    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
+    CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
+    if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
+	    shout "Delete old cluster"
+	    date
+	    for CLUSTER in $OLD_CLUSTERS; do
+		    removeCluster "${CLUSTER}"
+	    done
+    fi
+
 }
 
 # Enforce lowercase
@@ -155,10 +157,6 @@ if [[ "$BUILD_TYPE" != "release" ]]; then
 fi
 
 CLEANUP_CLUSTER="true"
-CLEANUP_GATEWAY_DNS_RECORD="true"
-CLEANUP_REMOTEENVS_DNS_RECORD="true"
-CLEANUP_REMOTEENVS_IP_ADDRESS="true"
-
 shout "Cleanup"
 date
 cleanup
@@ -177,6 +175,7 @@ echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 shout "Create DNS Record for Ingressgateway IP"
 date
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+CLEANUP_GATEWAY_DNS_RECORD="true"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
@@ -184,12 +183,14 @@ shout "Reserve IP Address for Remote Environments"
 date
 REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
 REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+CLEANUP_REMOTEENVS_IP_ADDRESS="true"
 echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 
 
 shout "Create DNS Record for Remote Environments IP"
 date
 REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+CLEANUP_REMOTEENVS_DNS_RECORD="true"
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
