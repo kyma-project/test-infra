@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-set -vx
+
+set -o errexit
+set -o pipefail  # Fail a pipe if any sub-command fails.
+
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 shout "Create a Secret for Ark"
 
