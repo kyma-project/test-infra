@@ -3,6 +3,18 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
+discoverUnsetVar=false
+
+for var in KYMA_RESOURCES_DIR TEST_INFRA_SOURCES_DIR BUCKET BACKUP_RESTORE_BUCKET BACKUP_CREDENTIALS KYMA_SCRIPTS_DIR; do
+    if [ -z "${!var}" ] ; then
+        echo "ERROR: $var is not set"
+        discoverUnsetVar=true
+    fi
+done
+if [ "${discoverUnsetVar}" = true ] ; then
+    exit 1
+fi
+
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 shout "Create a Secret for Ark"
