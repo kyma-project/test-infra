@@ -11,7 +11,7 @@ import (
 func TestKubelessImagesNodeJSReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images-nodejs.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-kubeless-images-nodejs", currentRelease), currentRelease)
@@ -29,7 +29,7 @@ func TestKubelessImagesNodeJSReleases(t *testing.T) {
 
 func TestKubelessImagesNodeJSJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images-nodejs.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-kubeless-images-nodejs", "master")
@@ -49,7 +49,7 @@ func TestKubelessImagesNodeJSJobsPresubmit(t *testing.T) {
 
 func TestKubelessImagesNodeJSJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images-nodejs.yaml")
 	// THEN
 	require.NoError(t, err)
 
