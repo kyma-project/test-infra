@@ -40,6 +40,7 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
+
 removeCluster() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
@@ -59,14 +60,12 @@ removeCluster() {
     TMP_STATUS=$?
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-
-    if [ ! -z "${GATEWAY_IP_ADDRESS}" ] && [ ! -z "${GATEWAY_DNS_FULL_NAME}" ]; then
-        shout "Delete Gateway DNS Record"
-        date
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+	shout "Delete Gateway DNS Record"
+	date
+	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
+	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 
     if [ ! -z "${GATEWAY_IP_ADDRESS_NAME}" ]; then
@@ -77,13 +76,12 @@ removeCluster() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ ! -z "${REMOTEENVS_IP_ADDRESS}" ] && [ ! -z "${REMOTEENVS_DNS_FULL_NAME}" ]; then
-        shout "Delete Remote Environments DNS Record"
-        date
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+	shout "Delete Remote Environments DNS Record"
+	date
+	REMOTEENVS_IP_ADDRESS=$(gcloud compute addresses describe "remoteenvs-${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
+	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
     if [ ! -z "${REMOTEENVS_IP_ADDRESS_NAME}" ]; then
         shout "Release Remote Environments IP Address"
@@ -137,6 +135,11 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
+GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
+
 shout "Cleanup"
 date
 cleanup
@@ -150,27 +153,23 @@ date
 
 shout "Reserve IP Address for Ingressgateway"
 date
-GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
 shout "Create DNS Record for Ingressgateway IP"
 date
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
 shout "Reserve IP Address for Remote Environments"
 date
-REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
 REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
 echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 
 
 shout "Create DNS Record for Remote Environments IP"
 date
-REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
