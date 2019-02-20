@@ -15,7 +15,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+source "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/library.sh
 
 shout "Create a Secret for Ark"
 
