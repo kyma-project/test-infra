@@ -50,7 +50,7 @@ const (
 	PresetGCProjectEnv = "preset-gc-project-env"
 	// PresetKymaBackupRestoreBucket means the bucket used for backups and restore in Kyma
 	PresetKymaBackupRestoreBucket = "preset-kyma-backup-restore-bucket"
-	// PresetKymaBackupRestoreBucket means the credentials for the service account
+	// PresetKymaBackupCredentials means the credentials for the service account
 	PresetKymaBackupCredentials = "preset-kyma-backup-credentials"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
