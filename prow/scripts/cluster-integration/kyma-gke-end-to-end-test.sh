@@ -60,7 +60,7 @@ removeCluster() {
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 
-    if [ -v "${GATEWAY_IP_ADDRESS}" ] && [ -v "${GATEWAY_DNS_FULL_NAME}" ]; then
+    if [ ! -z "${GATEWAY_IP_ADDRESS}" ] && [ ! -z "${GATEWAY_DNS_FULL_NAME}" ]; then
         shout "Delete Gateway DNS Record"
         date
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
@@ -69,7 +69,7 @@ removeCluster() {
     fi
 
 
-    if [ -v "${GATEWAY_IP_ADDRESS_NAME}" ]; then
+    if [ ! -z "${GATEWAY_IP_ADDRESS_NAME}" ]; then
         shout "Release Gateway IP Address"
         date
         IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh
@@ -77,7 +77,7 @@ removeCluster() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ -v "${REMOTEENVS_IP_ADDRESS}" ] && [ -v "${REMOTEENVS_DNS_FULL_NAME}" ]; then
+    if [ ! -z "${REMOTEENVS_IP_ADDRESS}" ] && [ ! -z "${REMOTEENVS_DNS_FULL_NAME}" ]; then
         shout "Delete Remote Environments DNS Record"
         date
         IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
@@ -85,7 +85,7 @@ removeCluster() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ -v "${REMOTEENVS_IP_ADDRESS_NAME}" ]; then
+    if [ ! -z "${REMOTEENVS_IP_ADDRESS_NAME}" ]; then
         shout "Release Remote Environments IP Address"
         date
         IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh
