@@ -222,12 +222,18 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
-#shout "Test Kyma"
-#date
-#"${KYMA_SCRIPTS_DIR}"/testing.sh
+shout "Success cluster created"
 
 shout "End To End Test"
 date
 "${KYMA_SCRIPTS_DIR}"/e2e-testing.sh
+TEST_STATUS=$?
+if [ ${TEST_STATUS} -ne 0 ]
+then
+    exit 1
+else
+    shout "Cleanup"
+    date
+    cleanup
+fi
 
-shout "Success"
