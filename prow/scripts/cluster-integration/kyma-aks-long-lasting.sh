@@ -64,69 +64,69 @@ function cleanup() {
     shout "Cleanup"
     date
 
-    CLUSTER_RS_GROUP="$(az aks show -g $RS_GROUP -n $CLUSTER_NAME --query nodeResourceGroup -o tsv)"
+    CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
     echo "Remove DNS Record for Ingressgateway"
     GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
     GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-    GATEWAY_IP_ADDRESS="$(az network public-ip show -g $CLUSTER_RS_GROUP -n $GATEWAY_IP_ADDRESS_NAME --query ipAddress -o tsv)"
+    GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
 
     echo "Remove DNS Record for Remote Environments IP"
     REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
     REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-    REMOTEENVS_IP_ADDRESS="$(az network public-ip show -g $CLUSTER_RS_GROUP -n $REMOTEENVS_IP_NAME --query ipAddress -o tsv)"
+    REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
     IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
 
     echo "Remove Cluster, IP Address for Ingressgateway, IP Address for Remote Environments"
-    "az aks delete -g ${RS_GROUP} -n ${CLUSTER_NAME} -y"
+    az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
 
     echo "Remove group"
-    "az group delete -n ${RS_GROUP} -y"
+    az group delete -n "${RS_GROUP}" -y
 }
 
 function createGroup() {
     shout "Create Azure group"
     date
 
-    "az group create --name ${RS_GROUP} --location ${REGION}"
+    az group create --name "${RS_GROUP}" --location "${REGION}"
 }
 
 function installCluster() {
     shout "Install Kubernetes on Azure"
     date
 
-    "az aks create \
-      --resource-group ${RS_GROUP} \
-      --name ${CLUSTER_NAME} \
+    az aks create \
+      --resource-group "${RS_GROUP}" \
+      --name "${CLUSTER_NAME}" \
       --node-count 3 \
-      --node-vm-size ${CLUSTER_SIZE} \
-      --kubernetes-version ${CLUSTER_K8S_VERSION} \
-      --enable-addons ${CLUSTER_ADDONS} \
-      --service-principal ${AZURE_SUBSCRIPTION_APP_ID} \
-      --client-secret ${AZURE_SUBSCRIPTION_SECRET} \
-      --generate-ssh-keys"
+      --node-vm-size "${CLUSTER_SIZE}" \
+      --kubernetes-version "${CLUSTER_K8S_VERSION}" \
+      --enable-addons "${CLUSTER_ADDONS}" \
+      --service-principal "${AZURE_SUBSCRIPTION_APP_ID}" \
+      --client-secret "${AZURE_SUBSCRIPTION_SECRET}" \
+      --generate-ssh-keys
 }
 
 function azureAuthenticating() {
     shout "Authenticating to azure"
     date
 
-    "az login --service-principal -u ${AZURE_SUBSCRIPTION_APP_ID} -p ${AZURE_SUBSCRIPTION_SECRET} --tenant ${AZURE_SUBSCRIPTION_TENANT}"
-    "az account set --subscription ${AZURE_SUBSCRIPTION_ID}"
+    az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
+    az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
 function createPublicIPandDNS() {
-    CLUSTER_RS_GROUP="$(az aks show -g ${RS_GROUP} -n ${CLUSTER_NAME} --query nodeResourceGroup -o tsv)"
+    CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
     # IP address and DNS for Ingressgateway
     shout "Reserve IP Address for Ingressgateway"
 	date
 
     GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-    "az network public-ip create -g ${CLUSTER_RS_GROUP} -n ${GATEWAY_IP_ADDRESS_NAME} -l ${REGION} --allocation-method static"
+    az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static
 
-    GATEWAY_IP_ADDRESS="$(az network public-ip show -g ${CLUSTER_RS_GROUP} -n ${GATEWAY_IP_ADDRESS_NAME} --query ipAddress -o tsv)"
+    GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
     echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
     shout "Create DNS Record for Ingressgateway IP"
@@ -140,9 +140,9 @@ function createPublicIPandDNS() {
 	date
 
     REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-    "az network public-ip create -g ${CLUSTER_RS_GROUP} -n ${REMOTEENVS_IP_NAME} -l ${REGION} --allocation-method static"
+    az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" -l "${REGION}" --allocation-method static
 
-    REMOTEENVS_IP_ADDRESS="$(az network public-ip show -g ${CLUSTER_RS_GROUP} -n ${REMOTEENVS_IP_NAME} --query ipAddress -o tsv)"
+    REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
     echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 
     shout "Create DNS Record for Remote Environments IP"
@@ -181,15 +181,15 @@ function generateAndExportLetsEncryptCert() {
         --dns-google-propagation-seconds=600 \
         -d "*.${DOMAIN}"
 
-    export TLS_CERT="$(base64 -i ./letsencrypt/live/${DOMAIN}/fullchain.pem | tr -d '\n')"
-    export TLS_KEY="$(base64 -i ./letsencrypt/live/${DOMAIN}/privkey.pem   | tr -d '\n')"
+    export TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    export TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 }
 
 function setupKubeconfig() {
     shout "Setup kubeconfig and create ClusterRoleBinding"
     date
 
-    "az aks get-credentials --resource-group ${RS_GROUP} --name ${CLUSTER_NAME}"
+    az aks get-credentials --resource-group "${RS_GROUP}" --name "${CLUSTER_NAME}"
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(az account show | jq -r .user.name)"
 }
 
