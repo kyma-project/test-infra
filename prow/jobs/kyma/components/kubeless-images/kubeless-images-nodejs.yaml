@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-components-kubeless-images
+    - name: pre-master-kyma-components-kubeless-images-nodejs
       branches:
         - master
       <<: *job_template
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel06-kyma-components-kubeless-images
+    - name: pre-rel06-kyma-components-kubeless-images-nodejs
       branches:
       - release-0.6
       <<: *job_template
@@ -51,7 +51,7 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel07-kyma-components-kubeless-images
+    - name: pre-rel07-kyma-components-kubeless-images-nodejs
       branches:
       - release-0.7
       <<: *job_template
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-components-kubeless-images
+    - name: post-master-kyma-components-kubeless-images-nodejs
       branches:
         - master
       <<: *job_template
