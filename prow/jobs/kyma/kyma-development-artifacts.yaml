@@ -5,7 +5,6 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   optional: true
-  always_run: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -38,6 +37,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-development-artifacts
+    run_if_changed: "^installation|^resources|^components/installer|^tools/kyma-installer"
     branches:
     - master
     <<: *job_template

@@ -63,3 +63,16 @@ Prow in Kyma uses the Docker-in-Docker (dind) approach to build a Docker image a
 
 ## Build logs on GCS
 Build logs are archived by Plank on GCS in a dedicated bucket. The bucket is configured to have a Secret with a dedicated Google service account for GCS.
+
+## Generate development artifacts
+Two jobs `pre-master-kyma-development-artifacts` and `post-master-kyma-development-artifacts` defined in `prow/jobs/kyma/kyma-development-artifacts.yaml`
+generate artifacts that allow installing Kyma on a cluster from `master` branch or from Pull Request changes. 
+For Pull Requests, the job is executed only if introduced changes have an impact on an installed Kyma. 
+Artifacts are stored in the publicly available bucket: `gs://kyma-development-artifacts/`. The bucket has defined lifecycle management rule to automatically delete files older than 60 days. 
+For a Pull Request, artifacts are stored in the following location: `gs://kyma-development-artifacts/PR-<number>`.
+For changes to the `master` branch, artifacts are stored in the following location: `gs://kyma-development-artifacts/master-<commit_sha>`
+In addition to that, artifacts related to the latest changes in the master branch, are available in the following location:  `gs://kyma-development-artifacts/master`.
+In a directory with artifacts, following files can be found:
+- `is-installed.sh`
+- `kyma-config-cluster.yaml`
+- `kyma-installer-cluster.yaml`
