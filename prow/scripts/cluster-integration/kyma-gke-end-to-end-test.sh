@@ -141,13 +141,13 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-shout "Build Kyma-Installer Docker image"
-date
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-
 shout "Cleanup"
 date
 cleanup
+
+shout "Build Kyma-Installer Docker image"
+date
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 
 shout "Create new cluster"
 date
