@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in KYMA_RESOURCES_DIR TEST_INFRA_SOURCES_DIR BACKUP_CREDENTIALS BACKUP_RESTORE_BUCKET BACKUP_CREDENTIALS KYMA_SCRIPTS_DIR; do
+for var in KYMA_RESOURCES_DIR TEST_INFRA_SOURCES_DIR BACKUP_RESTORE_BUCKET BACKUP_CREDENTIALS KYMA_SCRIPTS_DIR; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
