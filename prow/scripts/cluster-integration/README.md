@@ -25,7 +25,8 @@ The structure of the folder looks as follows:
 ├── helpers # This directory contains helper scripts used by pipeline jobs.
 ├── kyma-gke-integration.sh # This script installs and tests Kyma on a real GKE cluster.
 ├── kyma-gke-nightly.sh # This script creates a long-lived GKE cluster from the master branch. This cluster should be recreated once a day. 
-└── kyma-gke-upgrade.sh # This script installs the last Kyma release on a GKE cluster and upgrades it with current changes from the PR, master, or release branch. It also triggers the Kyma testing script.
+├── kyma-gke-upgrade.sh # This script installs the last Kyma release on a GKE cluster and upgrades it with current changes from the PR, master, or release branch. It also triggers the Kyma testing script. 
+└── kyma-gke-end-to-end-test.sh # This script installs and execute Kyma End-to-End tests on a real GKE cluster.
 ```
 
 The scripts at the root of the `cluster-integration` directory are used for Prow pipelines. The pipeline uses a toolset from the `Bootstrap` image defined in this repository.
@@ -45,6 +46,8 @@ The following environment variables are required:
 - **CLOUDSDK_COMPUTE_REGION** is a GCP compute region.
 - **CLOUDSDK_DNS_ZONE_NAME** is a GCP zone name which is different from the DNS name.
 - **GOOGLE_APPLICATION_CREDENTIALS** is the path to the GCP service account key file.
+- **KYMA_BACKUP_CREDENTIALS** is a secret containing a GCP service account credentials json file. It is needed for configuring Ark (Velero) so the Ark server will have all the permission to write and read to the GCP bucket used for backups.
+- **KYMA_BACKUP_RESTORE_BUCKET** represents a bucket in GCP used to storage kyma backups.
 
 ### Required permissions
 
