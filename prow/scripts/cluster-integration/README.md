@@ -46,8 +46,8 @@ The following environment variables are required:
 - **CLOUDSDK_COMPUTE_REGION** is a GCP compute region.
 - **CLOUDSDK_DNS_ZONE_NAME** is a GCP zone name which is different from the DNS name.
 - **GOOGLE_APPLICATION_CREDENTIALS** is the path to the GCP service account key file.
-- **KYMA_BACKUP_CREDENTIALS** is a secret containing a JSON file with GCP service account credentials. When you configure Ark (Velero), use the credentials to grant the Ark server the write and read permissions to the GCP bucket used for backups.
-- **KYMA_BACKUP_RESTORE_BUCKET** is a bucket in GCP used to store Kyma backups.
+- **KYMA_BACKUP_CREDENTIALS** is a secret containing a JSON file with GCP service account credentials. When you configure Ark (Velero), use the credentials to grant the Ark server the write and read permissions for the GCP bucket used for backups.
+- **KYMA_BACKUP_RESTORE_BUCKET** is a bucket in GCP used to store Kyma's backups.
 
 ### Required permissions
 
