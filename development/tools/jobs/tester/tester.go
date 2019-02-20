@@ -53,7 +53,6 @@ const (
 	// PresetKymaBackupRestoreBucket means the credentials for the service account
 	PresetKymaBackupCredentials = "preset-kyma-backup-credentials"
 
-
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
 	// ImageGolangBuildpack1_11 means Golang buildpack image with Go 1.11.*
