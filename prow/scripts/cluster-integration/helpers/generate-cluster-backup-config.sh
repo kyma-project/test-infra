@@ -36,9 +36,8 @@ bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${ARK_SECRET_OUTPUT_PA
 
 bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${ARK_SECRET_OUTPUT_PATH}" --placeholder "__CLOUD_CREDENTIALS_FILE_CONTENT_BASE64__" --value "${BASE64_CLOUD_CREDENTIALS_FILE_CONTENT_BASE64}"
 
-sed -e "s/__.*__//g" "${ARK_SECRET_OUTPUT_PATH}"
-
 echo -e "\nApplying secret for Ark"
-kubectl apply -f "${ARK_SECRET_OUTPUT_PATH}"
+
+sed -e "s/__.*__//g" "${ARK_SECRET_OUTPUT_PATH}" | kubectl apply -f-
 
 rm "${ARK_SECRET_OUTPUT_PATH}"
