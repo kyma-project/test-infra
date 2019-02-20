@@ -21,4 +21,4 @@ Find out more about:
 - [ProwJobs](./prow-jobs.md) for details on ProwJobs.
 - [Offboarding steps](offboarding-checklist.md) to perform when someone leaves the project.
 - [Presets](./presets.md) you can use to define ProwJobs.
-- [Authorization](./authorization.md) concepts employed in a Prow cluster.
+- [Authorization](./authorization.md) concepts employed in Prow.
