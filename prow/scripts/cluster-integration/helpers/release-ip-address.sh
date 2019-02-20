@@ -23,4 +23,4 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-gcloud compute addresses delete "${IP_ADDRESS_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --quiet
+gcloud compute addresses delete "${IP_ADDRESS_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}"
