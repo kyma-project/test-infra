@@ -227,9 +227,9 @@ date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
-shout "Test Kyma"
-date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+#shout "Test Kyma"
+#date
+#"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 shout "End To End Test"
 date
