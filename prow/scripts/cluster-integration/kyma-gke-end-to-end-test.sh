@@ -230,6 +230,7 @@ date
 TEST_STATUS=$?
 if [ ${TEST_STATUS} -ne 0 ]
 then
+    shout "Success End to End test"
     exit 1
 else
     shout "Cleanup"
