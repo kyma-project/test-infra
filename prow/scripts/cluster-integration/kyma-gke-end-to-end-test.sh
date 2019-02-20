@@ -63,13 +63,6 @@ removeCluster() {
     TMP_STATUS=$?
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-    #Delete orphaned disks
-    shout "Delete orphaned PVC disks..."
-    date
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-disks.sh
-    TMP_STATUS=$?
-    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
 
     if [ -v "${GATEWAY_IP_ADDRESS}" ] && [ -v "${GATEWAY_DNS_FULL_NAME}" ]; then
         shout "Delete Gateway DNS Record"
