@@ -225,8 +225,6 @@ function installKyma() {
 		| sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
 		| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
 		| sed -e "s/__VERSION__/0.0.1/g" \
-		| sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
-		| sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
