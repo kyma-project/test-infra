@@ -115,8 +115,6 @@ removeCluster() {
     shout "Job is finished ${MSG}"
     date
     set -e
-
-    exit "${EXIT_STATUS}"
 }
 
 function cleanup() {
@@ -139,7 +137,7 @@ export KYMA_INSTALLER_IMAGE
 
 #Local variables
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
