@@ -43,16 +43,17 @@ The presubmit and postsubmit jobs for a PR run in a random order. Their number i
 
 When you define jobs for Prow, the **name** parameter of the job must follow one of these patterns:
 
-- `{prefix}-{repository-name}-{path-to-component}-{job-name}` for components
-- `{prefix}-{repository-name}-{job-name}` for jobs not connected to a particular component
+- `{prefix}-{repository-name}-{path-to-component}` for components
+- `{prefix}-{repository-name}` for jobs not connected to a particular component
 
+You can extend the name of the job with a suffix to indicate the job's purpose. For example, write `pre-master-kyma-integration`.
 
 Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
 - `pre-master` for presubmit jobs that run against the `master` branch.
 - `post-master` for postsubmit jobs that run against the `master` branch.
 - `pre-rel{release-number}` for presubmit jobs that run against the release branches. For example, write `pre-rel06-kyma-components-api-controller`.
 
-In both cases, `{job_name}` must reflect the job's responsibility.
+
 
 
 ## Triggers
