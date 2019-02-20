@@ -254,6 +254,7 @@ function installStabilityChecker() {
 	kubectl exec stability-test-provisioner -n kyma-system --  mkdir -p /home/input
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
+	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
     # create a secret with service account used for storing logs

@@ -33,7 +33,7 @@ func TestLogUIJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^log-ui/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "log-ui/some_random_file.js")
-	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageNodeChromiumBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/log-ui"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -61,7 +61,7 @@ func TestLogUIJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildConsoleMaster)
 	assert.Equal(t, "^log-ui/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageNodeChromiumBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/log-ui"}, actualPost.Spec.Containers[0].Args)
 }

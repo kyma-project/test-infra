@@ -13,9 +13,10 @@ Use the following tools and configuration:
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
 - [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-cluster)
-- Two Secrets in the Kubernetes cluster:
+- Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
+  - `sap-slack-bot-token` which is a token for publishing messages in the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).
 - Two buckets on Google Cloud Storage (GCS), one for storing Secrets and the second for storing logs
 - GCP configuration that includes:
   - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `kyma-prow-status` name
@@ -72,6 +73,7 @@ Use the following tools and configuration:
    - Deploy Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
    - Deploy the Cert Manager.
    - Deploy secure Ingress.
+   - Deploy the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md).
    - Remove insecure Ingress.
 
 5. Verify the installation.

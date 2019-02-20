@@ -81,5 +81,8 @@ kubectl apply -f cluster/06-pushgateway_deployment.yaml
 # Install PodDisruptionBudgets
 kubectl apply -f cluster/07-kube-system_poddisruptionbudgets.yaml
 
+# Install prow-addons-ctrl-manager
+kubectl apply -f cluster/08-prow-addons-ctrl-manager.yaml
+
 # Remove Insecure ingress 
 kubectl delete ingress ing

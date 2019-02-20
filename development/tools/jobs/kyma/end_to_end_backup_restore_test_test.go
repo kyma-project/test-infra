@@ -18,7 +18,7 @@ func TestEndToEndBackupRstoreTestJobsPresubmit(t *testing.T) {
 	expName := "pre-master-kyma-tests-end-to-end-backup-restore-test"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	require.NotNil(t, actualPresubmit)
-	assert.True(t, actualPresubmit.SkipReport)
+	assert.False(t, actualPresubmit.SkipReport)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
