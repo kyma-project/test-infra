@@ -2,10 +2,9 @@
 
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
-
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN LT_TIMEOUT LT_REQS_PER_ROUTINE LOAD_TEST_SLACK_CLIENT_CHANNEL_ID DNS_NAME; do
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN LT_TIMEOUT LT_REQS_PER_ROUTINE LOAD_TEST_SLACK_CLIENT_CHANNEL_ID; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -319,21 +318,9 @@ function cleanup() {
 
 }
 
-# function addGithubDexConnector() {
-#     shout "Add Github Dex Connector"
-#     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-#     dep ensure -v -vendor-only
-#     popd
-#     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
-#     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-# }
-
-
 shout "Authenticate"
 date
 init
-
-# addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
@@ -348,6 +335,10 @@ createCluster
 
 shout "Install tiller"
 date
+
+shout "Account is:"
+gcloud config get-value account
+
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
