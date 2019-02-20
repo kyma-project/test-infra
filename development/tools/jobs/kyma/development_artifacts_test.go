@@ -17,8 +17,12 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 	job := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 
+	tester.AssertThatJobRunIfChanged(t, job, "resources/helm-broker/values.yaml")
+	tester.AssertThatJobRunIfChanged(t, job, "installation/scripts/concat-yamls.sh")
+	tester.AssertThatJobRunIfChanged(t, job, "components/installer/Makefile")
+	tester.AssertThatJobRunIfChanged(t, job, "tools/kyma-installer/kyma.Dockerfile")
 	assert.False(t, job.SkipReport)
-	assert.True(t, job.AlwaysRun)
+	assert.False(t, job.AlwaysRun)
 	assert.True(t, job.Optional)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildPr)
@@ -44,7 +48,7 @@ func TestPostsubmitDevelopmentArtifcts(t *testing.T) {
 
 	job := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
-
+	assert.Empty(t, job.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildMaster)
 	require.Len(t, job.Spec.Containers, 1)
