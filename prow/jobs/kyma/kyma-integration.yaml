@@ -482,6 +482,7 @@ periodics:
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
   labels:
     preset-build-master: "true"
+    preset-sap-slack-bot-token: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
