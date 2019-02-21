@@ -6,7 +6,7 @@ function installKyma() {
 
 	kymaUnsetVar=false
 
-	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP; do
+	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP DOMAIN; do
     	if [ -z "${!var}" ] ; then
         	echo "ERROR: $var is not set"
         	kymaUnsetVar=true
@@ -28,8 +28,6 @@ function installKyma() {
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	
 
-	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-	export DOMAIN
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-TLS-cert.sh
 
 	shout "Apply Kyma config"

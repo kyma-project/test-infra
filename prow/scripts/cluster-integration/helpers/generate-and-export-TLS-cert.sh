@@ -2,31 +2,38 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
 
-    mkdir letsencrypt
-    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
+kymaUnsetVar=false
+for var in DOMAIN; do
+    if [ -z "${!var}" ] ; then
+        echo "ERROR: $var is not set"
+        kymaUnsetVar=true
+    fi
+done
+if [ "${kymaUnsetVar}" = true ] ; then
+    exit 1
+fi
 
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-    export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-    export TLS_KEY
+shout "Generate lets encrypt certificate"
+date
 
-}
+mkdir letsencrypt
+cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+docker run  --name certbot \
+    --rm  \
+    -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+    certbot/dns-google \
+    certonly \
+    -m "kyma.bot@sap.com" \
+    --agree-tos \
+    --no-eff-email \
+    --dns-google \
+    --dns-google-credentials /etc/letsencrypt/service-account.json \
+    --server https://acme-v02.api.letsencrypt.org/directory \
+    --dns-google-propagation-seconds=600 \
+    -d "*.${DOMAIN}"
 
-generateAndExportLetsEncryptCert
+TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+export TLS_CERT
+TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+export TLS_KEY
