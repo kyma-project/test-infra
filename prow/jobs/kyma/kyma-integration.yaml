@@ -442,8 +442,9 @@ periodics:
   extra_refs:
     - org: kyma-project
       repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+      # TODO: change base_ref to 'master' and path_alias to 'github.com/kyma-project/test-infra'
+      base_ref: kyma-nightly-on-aks
+      path_alias: github.com/jasiu001/test-infra
     - <<: *kyma_ref
       base_ref: master
   spec:
@@ -452,7 +453,8 @@ periodics:
         secret:
           secretName: sa-stability-fluentd-storage-writer
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      # TODO: change image to 'eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2'
+      - image: eu.gcr.io/kyma-project/develop/nightly-aks/kyma-project/kyma/kyma-cluster-infra:0.1
         securityContext:
           privileged: true
         volumeMounts:
@@ -488,6 +490,8 @@ periodics:
 - name: kyma-aks-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
+    # TODO: remove label prow.kyma-project.io/slack.skipReport
+    prow.kyma-project.io/slack.skipReport: "true"
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-nightly-github-integration: "true"
