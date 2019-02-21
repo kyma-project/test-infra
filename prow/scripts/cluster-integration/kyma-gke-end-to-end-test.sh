@@ -231,7 +231,7 @@ cd "${KYMA_SCRIPTS_DIR}"
 TEST_STATUS=$?
 if [ ${TEST_STATUS} -ne 0 ]
 then
-    shout "Success End to End test"
+    shout "End to End test Failed"
     exit 1
 else
     shout "Cleanup"
