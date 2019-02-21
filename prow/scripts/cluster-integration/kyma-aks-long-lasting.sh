@@ -308,7 +308,8 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --pr
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 addGithubDexConnector
-cleanup
+# TODO: uncomment cleanup
+#cleanup
 
 createGroup
 installCluster
