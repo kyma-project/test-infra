@@ -318,7 +318,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_OWNER_GIT", "kyma-project")
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_NAME_GIT", "kyma")
 
-	expName = "kyma-gke-load-test"
+	expName = "kyma-load-tests-weekly"
 	loadTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, loadTestPeriodic)
 	assert.Equal(t, expName, loadTestPeriodic.Name)
