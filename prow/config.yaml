@@ -171,6 +171,19 @@ presets:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
   - labels:
+      preset-kyma-backup-restore-bucket: "true"
+    env:
+      - name: KYMA_BACKUP_RESTORE_BUCKET
+        value: gs://kyma-backup-restore
+  - labels:
+      preset-kyma-backup-credentials: "true"
+    env:
+    - name: KYMA_BACKUP_CREDENTIALS
+      valueFrom:
+        secretKeyRef:
+          name: kyma-backup-credentials
+          key: token
+  - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
@@ -326,7 +339,7 @@ deck:
     header_color: "#0b74de" # Kyma color
     logo: "extensions/logo.svg"
     favicon: "extensions/favicon.png"
-    
+
 sinker:
   max_pod_age: 5h
 

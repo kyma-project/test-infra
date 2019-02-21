@@ -48,6 +48,10 @@ const (
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable
 	PresetGCProjectEnv = "preset-gc-project-env"
+	// PresetKymaBackupRestoreBucket means the bucket used for backups and restore in Kyma
+	PresetKymaBackupRestoreBucket = "preset-kyma-backup-restore-bucket"
+	// PresetKymaBackupCredentials means the credentials for the service account
+	PresetKymaBackupCredentials = "preset-kyma-backup-credentials"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
