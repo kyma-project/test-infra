@@ -261,27 +261,6 @@ function waitUntilHPATestIsDone {
     fi
 }
 
-function checkPodIsRunning {
-    local POD_CHECK_TIMEOUT=700
-    local time_spent=0
-    while true; do
-        pod_status=$(kubectl get po -n kyma-system load-test -ojsonpath="{.status.phase}")
-        if [ "$pod_status" == "Running" ]; then
-            echo "Pod: load-test is running!"
-            break
-        fi
-        sleep 2
-        time_spent=$(( time_spent + 2 ))
-        if [[ $time_spent -gt $POD_CHECK_TIMEOUT ]]; then
-            echo "Timed out! pod: load-test is not running!"
-            shout "Description:"
-            kubectl describe pod load-test -n kyma-system
-            exit 1
-        fi
-    done
-
-}
-
 function installLoadTest() {
 	LT_FOLDER=${KYMA_SOURCES_DIR}/tools/load-test
 	LT_FOLDER_CHART=${LT_FOLDER}'/deploy/chart/load-test'
@@ -295,9 +274,9 @@ function installLoadTest() {
 				--set reqsPerRoutine="${LT_REQS_PER_ROUTINE}" \
 				"${LT_FOLDER_CHART}" \
 				--namespace=kyma-system \
-				--name=load-test
-
-	checkPodIsRunning
+				--name=load-test \
+				--timeout=700 \
+				--wait 
 
 	waitUntilHPATestIsDone
 	
