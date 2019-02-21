@@ -29,7 +29,7 @@ func TestClusterUsersTestJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/cluster-users-test"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestConnectorServiceTestsJobPostsubmit(t *testing.T) {
+func TestClusterUsersTestJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/cluster-users-test/cluster-users-test.yaml")
 	// THEN
