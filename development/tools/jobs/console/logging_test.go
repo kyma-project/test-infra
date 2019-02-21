@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLogUIJobPresubmit(t *testing.T) {
+func TestLoggingJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/logging/logging-ui.yaml")
 	// THEN
