@@ -252,11 +252,11 @@ function waitUntilHPATestIsDone {
     done
 
     if [ $succeeded == 'true' ]; then
-        echo "Load test successfully completed!"
+        shout "Load test successfully completed!"
     else
         kubectl describe pod load-test -n kyma-system
-        echo 'Load test failed!'
-        echo 'Please check logs by executing: kubectl logs -n kyma-system load-test'
+        shout "Load test failed!"
+        shout "Please check logs by executing: kubectl logs -n kyma-system load-test"
         exit 1
     fi
 }
@@ -274,7 +274,7 @@ function checkPodIsRunning {
         time_spent=$(( time_spent + 2 ))
         if [[ $time_spent -gt $POD_CHECK_TIMEOUT ]]; then
             echo "Timed out! pod: load-test is not running!"
-            echo "Description:"
+            shout "Description:"
             kubectl describe pod load-test -n kyma-system
             exit 1
         fi
@@ -286,11 +286,9 @@ function installLoadTest() {
 	LT_FOLDER=${KYMA_SOURCES_DIR}/tools/load-test
 	LT_FOLDER_CHART=${LT_FOLDER}'/deploy/chart/load-test'
 
-	echo "---------------------------------------"
-	echo "- Executing load tests..."
-	echo "---------------------------------------"
+	shout "Executing load tests..."
 
-	echo "Installing helm chart..."
+	shout "Installing helm chart..."
 	helm install --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
 				--set slackClientChannelId="${LOAD_TEST_SLACK_CLIENT_CHANNEL_ID}" \
 				--set loadTestExecutionTimeout="${LT_TIMEOUT}" \
