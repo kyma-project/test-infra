@@ -10,7 +10,7 @@ import (
 
 func TestLogUIJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/logging/logging.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/logging/logging-ui.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -40,7 +40,7 @@ func TestLogUIJobPresubmit(t *testing.T) {
 
 func TestLogUIJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/logging/logging.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/logging/logging-ui.yaml")
 	// THEN
 	require.NoError(t, err)
 
