@@ -6,7 +6,7 @@ function installKyma() {
 
 	kymaUnsetVar=false
 
-	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS ; do
+	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP; do
     	if [ -z "${!var}" ] ; then
         	echo "ERROR: $var is not set"
         	kymaUnsetVar=true
@@ -21,8 +21,8 @@ function installKyma() {
 	shout "Build Kyma-Installer Docker image"
 	date
 	KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
-
-	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+	# shellcheck disable=SC2153
+    KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"

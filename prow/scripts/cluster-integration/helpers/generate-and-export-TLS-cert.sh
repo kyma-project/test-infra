@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"

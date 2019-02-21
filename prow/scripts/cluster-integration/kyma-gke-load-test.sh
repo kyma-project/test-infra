@@ -94,10 +94,12 @@ export DNS_DOMAIN
 
 shout "Cleanup"
 date
+# shellcheck disable=SC1090
 source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/cleanup-cluster.sh
 
 shout "Create new cluster"
 date
+# shellcheck disable=SC1090
 source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-cluster.sh
 
 shout "Install tiller"
