@@ -1,6 +1,6 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^log-ui/"
+  run_if_changed: "^logging/"
   decorate: true
   path_alias: github.com/kyma-project/console
   max_concurrency: 10
@@ -17,7 +17,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/log-ui"
+          - "/home/prow/go/src/github.com/kyma-project/console/logging"
         resources:
           requests:
             memory: 1.5Gi
@@ -30,7 +30,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: pre-master-console-log-ui
+    - name: pre-master-console-logging
       branches:
         - master
       labels:
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/console:
-    - name: post-master-console-log-ui
+    - name: post-master-console-logging
       branches:
         - master
       <<: *job_template
