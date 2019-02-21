@@ -17,11 +17,12 @@ VARIABLES=(
     CLOUDSDK_CORE_PROJECT
     KYMA_ALERTS_CHANNEL
     KYMA_ALERTS_SLACK_API_URL
-    KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
     SLACK_CLIENT_WEBHOOK_URL
     STABILITY_SLACK_CLIENT_CHANNEL_ID
     SLACK_CLIENT_TOKEN
     TEST_RESULT_WINDOW_TIME
+    DOCKER_PUSH_REPOSITORY
+    DOCKER_PUSH_DIRECTORY
 )
 
 discoverUnsetVar=false
@@ -64,25 +65,30 @@ function cleanup() {
     shout "Cleanup"
     date
 
-    CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
+    CHECK_GROUP=$(az group list --query '[?name==`'"${RS_GROUP}"'`].name' -otsv)
+    if [ "${CHECK_GROUP}" = "${RS_GROUP}" ]; then
+        CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
-    echo "Remove DNS Record for Ingressgateway"
-    GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-    GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-    GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
-    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+        echo "Remove DNS Record for Ingressgateway"
+        GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
+        GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+        GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
 
-    echo "Remove DNS Record for Remote Environments IP"
-    REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
-    REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-    REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
-    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+        echo "Remove DNS Record for Remote Environments IP"
+        REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
+        REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
+        REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
+        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
 
-    echo "Remove Cluster, IP Address for Ingressgateway, IP Address for Remote Environments"
-    az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
+        echo "Remove Cluster, IP Address for Ingressgateway, IP Address for Remote Environments"
+        az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
 
-    echo "Remove group"
-    az group delete -n "${RS_GROUP}" -y
+        echo "Remove group"
+        az group delete -n "${RS_GROUP}" -y
+    else
+        echo "Azure group does not exist, skip cleanup process"
+    fi
 }
 
 function createGroup() {
@@ -237,11 +243,13 @@ function installKyma() {
     date
 
     echo "Prepare installation yaml files"
-    mkdir kyma-installer
-    INSTALLER_YAML="kyma-installer/installer.yaml"
-    INSTALLER_CONFIG="kyma-installer/config.yaml"
-    gsutil cp "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster.yaml" "${INSTALLER_YAML}"
-    gsutil cp "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-config-cluster.yaml" "${INSTALLER_CONFIG}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
+
+    KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
+	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
     echo "Apply Azure crb for healthz"
     kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
@@ -263,6 +271,7 @@ function installKyma() {
 
     waitUntilInstallerApiAvailable
 
+    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     kubectl label installation/kyma-installation action=install
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
@@ -308,8 +317,7 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --pr
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 addGithubDexConnector
-# TODO: uncomment cleanup
-#cleanup
+cleanup
 
 createGroup
 installCluster
