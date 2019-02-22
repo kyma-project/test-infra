@@ -19,8 +19,8 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager"
         resources:
           requests:
-            memory: 2Gi
-            cpu: 1.5
+            memory: 2.5Gi
+            cpu: 2
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
