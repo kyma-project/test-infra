@@ -11,13 +11,6 @@ set -o pipefail
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
-# install node
-curl -sL https://deb.nodesource.com/setup_8.x | bash -
-apt-get install -y nodejs
-
-# install snyk CLI app
-npm install -g snyk
-
 # authenticate to snyk
 snyk auth "${SNYK_TOKEN}"
 
