@@ -482,7 +482,7 @@ periodics:
 
 - name: kyma-vulnerabilites-scan
   cron: "0 7-16 * * 1-5" # “At minute 0 past every hour from 7 through 16 on every day-of-week from Monday through Friday.” - only for testing
-  #cron: "0 7 * * 1" # "At 07:00 on Monday." - the proper cron
+  #cron: "0 7 * * 1" # "At 07:00 on Monday." - the proper cron - remember to change it also in tests!!!
   labels:
     preset-sap-slack-bot-token: "true"
   decorate: true
