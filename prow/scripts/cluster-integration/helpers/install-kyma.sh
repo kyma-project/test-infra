@@ -27,12 +27,11 @@ function installKyma() {
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-TLS-cert.sh
+	# shellcheck disable=SC1090
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-TLS-cert.sh
 
 	shout "Apply Kyma config"
 	date
-
 	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
 		| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
 		| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
