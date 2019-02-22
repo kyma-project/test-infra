@@ -123,4 +123,5 @@ installLoadTest
 
 shout "Cleanup after load test"
 date
-cleanup
+# shellcheck disable=SC1090
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/cleanup-cluster.sh
