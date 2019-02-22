@@ -492,7 +492,7 @@ periodics:
   labels:
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
-    preset-nightly-github-integration: "true"
+    preset-nightly-aks-github-integration: "true"
     preset-creds-aks-kyma-integration: "true"
     <<: *gke_job_labels_template
   decorate: true
