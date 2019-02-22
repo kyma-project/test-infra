@@ -616,3 +616,31 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+
+- name: kyma-components-version
+  decorate: true
+  cron: "0 4 * * 1" # At 04:00 on every Monday
+  labels:
+    preset-stability-checker-slack-notifications: "true"
+  extra_refs:
+    - org: kyma-project
+      repo: kyma
+      base_ref: master
+      path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        command:
+        - "bash"
+        args:
+        - "-c"
+        - "development/run-component-synchronizer.sh"
+        env:
+          - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+            value: "#test-alert-channel"
+          - name: OUT_OF_DATE_DAYS
+            value: "3"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
