@@ -19,7 +19,7 @@ apt-get install -y nodejs
 npm install -g snyk
 
 # authenticate to snyk
-snyk auth ${SNYK_TOKEN}
+snyk auth "${SNYK_TOKEN}"
 
 # test components with snyk
 for dir in ${KYMA_SOURCES_DIR}/components/*/
@@ -27,26 +27,26 @@ do
   echo "processing ${dir}"
   for file in ${dir}*
   do
-    export filename=${file##*/} # cut file name
+    filename=${file##*/} # cut file name
     if [[ ${filename} == "Gopkg.lock" ]]; then
       # fetch dependencies
       echo " ├── fetches dependencies..."
-      cd ${dir}
+      cd "${dir}"
       dep ensure
       # scan for vulnerabilities
       echo " ├── scanning for vulnerabilities..."
-      export affectedComponent=${dir%*/} # cut last '/' in dir path
-      export affectedComponent=${affectedComponent##*/} # cut the path, leave only dir name
-      export resultsURI=$(snyk monitor --org=kyma-project --project-name="${affectedComponent}" --json | jq -r '.uri')
+      affectedComponent=${dir%*/} # cut last '/' in dir path
+      affectedComponent=${affectedComponent##*/} # cut the path, leave only dir name
+      resultsURI=$(snyk monitor --org=kyma-project --project-name="${affectedComponent}" --json | jq -r '.uri')
       # test for high severity vulnerabilities only
       set +e # snyk test return 1 if it find any vulnerabilities, so we need to ignore that
       snyk test --severity-threshold=high --json > snyk-out.json
       set -e
       # send notifications to slack if vulnerabilities was found
-      export ok=$(cat snyk-out.json | jq '.ok')
+      ok=$(jq '.ok' < snyk-out.json)
       if [[ ${ok} == "false" ]]; then
         echo " ├── sending notifications to slack..."
-        export data='
+        data='
         {
           "channel": "#kyma-snyk-test",
           "text": "Vulnerabilities of high severity detected!",
@@ -66,42 +66,43 @@ do
           ]
         }'
 
-        for vulnerability in $(cat snyk-out.json | jq -c -r '.vulnerabilities | group_by(.id) | map({id:.[0].id,title:.[0].title,packageName:.[0].packageName,semver:.[0].semver}) | .[] | @base64'); do
-          export vulnerabilityDecoded=$(printf '%s' "${vulnerability}" | base64 --decode )
-          export title=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.title')
-          export packageName=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.packageName')
-          export issueID=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.id')
-          export affectedVersions=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.semver.vulnerable | .[0]')
-          export newVulnerability=$( echo '
+        for vulnerability in $(jq -c -r '.vulnerabilities | group_by(.id) | map({id:.[0].id,title:.[0].title,packageName:.[0].packageName,semver:.[0].semver}) | .[] | @base64' < snyk-out.json)
+        do
+          vulnerabilityDecoded=$(printf '%s' "${vulnerability}" | base64 --decode )
+          title=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.title')
+          packageName=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.packageName')
+          issueID=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.id')
+          affectedVersions=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.semver.vulnerable | .[0]')
+          newVulnerability='
           {
             "pretext": "Vulnerability: ",
             "color": "#cc3300",
-            "title": "'${title}'",
-            "title_link": "https://snyk.io/vuln/'${issueID}'",
+            "title": "'"${title}"'",
+            "title_link": "https://snyk.io/vuln/'"${issueID}"'",
             "fields": [
               {
                 "title": "Package",
-                "value": "'${packageName}'",
+                "value": "'"${packageName}"'",
                 "short": true
               },
               {
                 "title": "Issue ID",
-                "value": "'${issueID}'",
+                "value": "'"${issueID}"'",
                 "short": true
               },
               {
                 "title": "Affected versions",
-                "value": "'${affectedVersions}'",
+                "value": "'"${affectedVersions}"'",
                 "short": true
               }
             ]
-          }')
-          export newVulnerability=$(printf '%s' "$newVulnerability" | jq -r -c ".")
-          export data=$(echo $data | jq -c '.attachments += ['"${newVulnerability}"']')
+          }'
+          newVulnerability=$(printf '%s' "${newVulnerability}" | jq -r -c ".")
+          data=$(echo "${data}" | jq -c '.attachments += ['"${newVulnerability}"']')
         done
 
         curl -s -X POST \
-        -H 'Authorization: Bearer '${SLACK_TOKEN} \
+        -H 'Authorization: Bearer '"${SLACK_TOKEN}" \
         -H 'Content-type: application/json' \
         -H 'cache-control: no-cache' \
         --data "${data}" \
