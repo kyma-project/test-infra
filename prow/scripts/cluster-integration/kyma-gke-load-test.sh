@@ -70,7 +70,7 @@ function installLoadTest() {
 	shout "Executing load tests..."
 
 	shout "Installing helm chart..."
-	helm install --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
+	helm install --set slackClientToken="${SAP_SLACK_BOT_TOKEN}" \
 				--set slackClientChannelId="${LOAD_TEST_SLACK_CLIENT_CHANNEL_ID}" \
 				--set loadTestExecutionTimeout="${LT_TIMEOUT}" \
 				--set reqsPerRoutine="${LT_REQS_PER_ROUTINE}" \
