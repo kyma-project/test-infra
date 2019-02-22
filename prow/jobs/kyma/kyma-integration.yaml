@@ -490,8 +490,6 @@ periodics:
 - name: kyma-aks-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
-    # TODO: remove label prow.kyma-project.io/slack.skipReport
-    prow.kyma-project.io/slack.skipReport: "true"
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-nightly-github-integration: "true"
@@ -528,7 +526,8 @@ periodics:
           - name: INPUT_CLUSTER_NAME
             value: "nightly-aks"
           - name: TEST_RESULT_WINDOW_TIME
-            value: "6h"
+            # TODO: change to 6h
+            value: "1h"
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
             value: "#c4core-kyma-ci-force"
           - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
