@@ -256,6 +256,7 @@ function installKyma() {
 
     shout "Apply Kyma config"
     "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
+        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
         | sed -e "s/__PROXY_EXCLUDE_IP_RANGES__/10.0.0.1/g" \
         | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
         | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
