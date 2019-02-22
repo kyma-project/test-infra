@@ -441,3 +441,37 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+
+- name: kyma-vulnerabilites-scan
+  cron: "0 7-16 * * 1-5" # “At minute 0 past every hour from 7 through 16 on every day-of-week from Monday through Friday.” - only for testing
+  #cron: "0 7 * * 1" # "At 07:00 on Monday." - the proper cron
+  labels:
+    preset-sap-slack-bot-token: true
+  decorate: true
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *kyma_ref
+      base_ref: master
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        command:
+          - "bash"
+        env:
+          - name: SNYK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: kyma-snyk-token
+                key: secret
+          - name: KYMA_PROJECT_DIR
+            "/home/prow/go/src/github.com/kyma-project"
+          - name: GOPATH
+            "/home/prow/go"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/development/vulnerabilities-scanner.sh"
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 50m
