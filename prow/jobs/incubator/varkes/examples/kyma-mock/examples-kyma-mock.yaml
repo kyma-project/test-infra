@@ -1,8 +1,8 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^log-ui/"
+  run_if_changed: "^examples/kyma-mock/"
   decorate: true
-  path_alias: github.com/kyma-project/console
+  path_alias: github.com/kyma-incubator/varkes
   max_concurrency: 10
   extra_refs:
     - org: kyma-project
@@ -11,13 +11,13 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/log-ui"
+          - "/home/prow/go/src/github.com/kyma-incubator/varkes/examples/kyma-mock"
         resources:
           requests:
             memory: 1.5Gi
@@ -26,24 +26,25 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
-  preset-docker-push-repository: "true"
+  preset-docker-push-repository-incubator: "true"
 
 presubmits: # runs on PRs
-  kyma-project/console:
-    - name: pre-master-console-log-ui
+  kyma-incubator/varkes:
+    - name: pre-master-varkes-examples-kyma-mock
       branches:
         - master
+      <<: *job_template
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-      <<: *job_template
 
 postsubmits:
-  kyma-project/console:
-    - name: post-master-console-log-ui
+  kyma-incubator/varkes:
+    - name: post-master-varkes-examples-kyma-mock
       branches:
         - master
       <<: *job_template
       labels:
         <<: *job_labels_template
-        preset-build-console-master: "true"
+        preset-build-master: "true"
+        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter

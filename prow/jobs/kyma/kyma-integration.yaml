@@ -441,6 +441,44 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+            
+- name: kyma-gke-end-to-end-test-backup-restore
+  cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  labels:
+    preset-build-master: "true"
+    preset-weekly-github-integration: "true"
+    preset-kyma-backup-restore-bucket: "true"
+    preset-kyma-backup-credentials: "true"
+    <<: *gke_job_labels_template
+  decorate: true
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      env:
+      - name: INPUT_CLUSTER_NAME
+        value: "e2etest"
+      - name: REPO_OWNER_GIT
+        value: "kyma-project"
+      - name: REPO_NAME_GIT
+        value: "kyma"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
 
 - name: kyma-vulnerabilites-scan
   cron: "0 7-16 * * 1-5" # “At minute 0 past every hour from 7 through 16 on every day-of-week from Monday through Friday.” - only for testing
