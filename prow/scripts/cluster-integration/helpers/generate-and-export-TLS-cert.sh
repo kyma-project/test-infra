@@ -3,14 +3,8 @@
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-kymaUnsetVar=false
-for var in DOMAIN; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        kymaUnsetVar=true
-    fi
-done
-if [ "${kymaUnsetVar}" = true ] ; then
+if [ -z "${DOMAIN}" ] ; then
+    echo "ERROR: DOMAIN is not set"
     exit 1
 fi
 
