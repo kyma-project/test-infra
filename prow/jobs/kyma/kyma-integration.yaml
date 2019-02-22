@@ -503,9 +503,9 @@ periodics:
                 name: kyma-snyk-token
                 key: secret
           - name: KYMA_PROJECT_DIR
-            "/home/prow/go/src/github.com/kyma-project"
+            value: "/home/prow/go/src/github.com/kyma-project"
           - name: GOPATH
-            "/home/prow/go"
+            value: "/home/prow/go"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/development/vulnerabilities-scanner.sh"
