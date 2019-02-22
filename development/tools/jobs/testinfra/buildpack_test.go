@@ -419,3 +419,56 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"}, actualPost.Spec.Containers[0].Args)
 }
+
+func TestVulnerabilityScannerJobPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	assert.Len(t, jobConfig.Presubmits, 1)
+	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.True(t, ex)
+
+	expName := "pre-test-infra-vulnerability-scanner"
+	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	require.NotNil(t, actualPresubmit)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+	assert.True(t, actualPresubmit.Decorate)
+	assert.False(t, actualPresubmit.Optional)
+	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildPr)
+	assert.Equal(t, "^prow/images/vulnerability-scanner/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "prow/images/cleaner/Dockerfile")
+	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"}, actualPresubmit.Spec.Containers[0].Args)
+}
+
+func TestVulnerabilityScannerJobPostsubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	assert.Len(t, jobConfig.Postsubmits, 1)
+	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.True(t, ex)
+
+	expName := "post-test-infra-vulnerability-scanner"
+	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	require.NotNil(t, actualPost)
+	assert.Equal(t, expName, actualPost.Name)
+	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, 10, actualPost.MaxConcurrency)
+	assert.True(t, actualPost.Decorate)
+	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoTestInfra, tester.PresetGcrPush, tester.PresetBuildRelease)
+	assert.Equal(t, "^prow/images/vulnerability-scanner/", actualPost.RunIfChanged)
+	assert.Equal(t, tester.ImageBootstrapLatest, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"}, actualPost.Spec.Containers[0].Args)
+}
