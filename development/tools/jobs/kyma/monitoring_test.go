@@ -57,11 +57,11 @@ func TestMonitoringJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/monitoring"}, actualPost.Spec.Containers[0].Args)
 }
 
-func TestLoggingMonitoringTestSetupReleases(t *testing.T) {
+func TestMonitoringSetupReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/test-logging-monitoring/test-logging-monitoring.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/monitoring/monitoring.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-test-logging-monitoring", currentRelease), currentRelease)
