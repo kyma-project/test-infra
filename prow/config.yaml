@@ -174,7 +174,7 @@ presets:
       preset-kyma-backup-restore-bucket: "true"
     env:
       - name: KYMA_BACKUP_RESTORE_BUCKET
-        value: gs://kyma-backup-restore
+        value: kyma-backup-restore
   - labels:
       preset-kyma-backup-credentials: "true"
     env:
