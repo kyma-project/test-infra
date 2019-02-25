@@ -440,11 +440,12 @@ periodics:
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
-    - org: kyma-project
+    # TODO change 'org' to kyma-project
+    - org: jasiu001
       repo: test-infra
-      # TODO: change base_ref to 'master' and path_alias to 'github.com/kyma-project/test-infra'
+      # TODO: change base_ref to 'master'
       base_ref: kyma-nightly-on-aks
-      path_alias: github.com/jasiu001/test-infra
+      path_alias: github.com/kyma-project/test-infra
     - <<: *kyma_ref
       base_ref: master
   spec:

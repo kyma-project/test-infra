@@ -168,28 +168,39 @@ function addGithubDexConnector() {
 }
 
 function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
+#	shout "Generate lets encrypt certificate"
+#	date
+#
+#    mkdir letsencrypt
+#    cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
+#    docker run  --name certbot \
+#        --rm  \
+#        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+#        certbot/dns-google \
+#        certonly \
+#        -m "kyma.bot@sap.com" \
+#        --agree-tos \
+#        --no-eff-email \
+#        --dns-google \
+#        --dns-google-credentials /etc/letsencrypt/service-account.json \
+#        --server https://acme-v02.api.letsencrypt.org/directory \
+#        --dns-google-propagation-seconds=600 \
+#        -d "*.${DOMAIN}"
+#
+#    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+#    export TLS_CERT
+#    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+#    export TLS_KEY
 
-    mkdir letsencrypt
-    cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
+    #TODO: remove after test, use above
+    shout "Generate self-signed certificate"
+    date
 
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+
     export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
 }
 
