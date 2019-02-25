@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+#Description: Generates and exports LetsEncrypt TLS certificates
+#
+#Expected vars:
+# - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 

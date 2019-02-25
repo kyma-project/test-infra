@@ -1,9 +1,29 @@
 #!/usr/bin/env bash
 
+#Description: Creates a GKE cluster
+#
+#Expected vars:
+# - TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS: absolute path for test-infra/prow/scripts/cluster-integration/helpers directory 
+# - STANDARIZED_NAME:
+# - TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS: absolute path for test-infra/prow/scripts/cluster-integration/helpers directory
+# - DNS_SUBDOMAIN: name of the GCP managed zone
+# - DNS_DOMAIN: name of the cluster
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function createCluster() {
+	discoverUnsetVar=false
+
+	for var in STANDARIZED_NAME TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS DNS_SUBDOMAIN DNS_DOMAIN; do
+		if [ -z "${!var}" ] ; then
+			echo "ERROR: $var is not set"
+			discoverUnsetVar=true
+		fi
+	done
+	if [ "${discoverUnsetVar}" = true ] ; then
+		exit 1
+	fi
 	shout "Reserve IP Address for Ingressgateway"
 	date
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"

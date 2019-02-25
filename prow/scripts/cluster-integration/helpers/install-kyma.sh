@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+#Description: Installs Kyma in a given GKE cluster
+#
+#Expected vars:
+# - REMOTEENVS_IP_ADDRESS: static IP for remote env
+# - GATEWAY_IP_ADDRESS: static IP for gateway
+# - DOCKER_PUSH_REPOSITORY: name of the docker registry where images are pushed
+# - KYMA_SOURCES_DIR: absolute path for kyma sources directory
+# - DOCKER_PUSH_DIRECTORY: directory for docker images where it should be pushed
+# - STANDARIZED_NAME: a variation of cluster name
+# - REPO_OWNER: Kyma repository owner
+# - REPO_NAME: name of the Kyma repository
+# - CURRENT_TIMESTAMP: Current timestamp which is computed as $(date +%Y%m%d) 
+# - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 function installKyma() {
@@ -28,7 +42,7 @@ function installKyma() {
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	
 	# shellcheck disable=SC1090
-    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-TLS-cert.sh
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
 	shout "Apply Kyma config"
 	date

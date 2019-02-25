@@ -1,8 +1,29 @@
 #!/usr/bin/env bash
 
+#Description: Deletes a GKE cluster if exists along with DNS_RECORDS and STATIC IPs etc.
+#
+#Expected vars:
+# - CLUSTER_NAME: name of the GKE cluster
+# - TEST_INFRA_SOURCES_DIR: absolute path for test-infra/ directory 
+# - TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS: absolute path for test-infra/prow/scripts/cluster-integration/helpers directory 
+# - CLOUDSDK_COMPUTE_REGION: region where the GKE cluster is e.g. europe-west1-b
+#
+#Permissions: In order to run this script you need to use a service account with "Compute Admin,DNS Administrator, Kubernetes Engine Admin, Kubernetes Engine Cluster Admin, Service Account User, Storage Admin" role
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 function cleanup() {
+	discoverUnsetVar=false
+
+	for var in CLUSTER_NAME TEST_INFRA_SOURCES_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS CLOUDSDK_COMPUTE_REGION; do
+		if [ -z "${!var}" ] ; then
+			echo "ERROR: $var is not set"
+			discoverUnsetVar=true
+		fi
+	done
+	if [ "${discoverUnsetVar}" = true ] ; then
+		exit 1
+	fi
     OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
