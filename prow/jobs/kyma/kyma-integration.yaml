@@ -538,7 +538,8 @@ periodics:
                 name: kyma-alerts-slack-api-url
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
-            value: "#c4core-kyma-ci-force"
+            # TODO: change to "#c4core-kyma-ci-force"
+            value: "#test-alert-channel"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
