@@ -1,6 +1,6 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^service-catalog-tester/"
+  always_run: true
   decorate: true
   path_alias: github.com/kyma-incubator/service-catalog-tester
   max_concurrency: 10
