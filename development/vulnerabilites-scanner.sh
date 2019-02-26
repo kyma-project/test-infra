@@ -8,6 +8,18 @@
 set -e
 set -o pipefail
 
+discoverUnsetVar=false
+
+for var in KYMA_PROJECT_DIR SNYK_TOKEN SLACK_TOKEN; do
+    if [ -z "${!var}" ] ; then
+        echo "ERROR: $var is not set"
+        discoverUnsetVar=true
+    fi
+done
+if [ "${discoverUnsetVar}" = true ] ; then
+    exit 1
+fi
+
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
@@ -20,6 +32,7 @@ function sendSlackNotification() {
   affectedComponent="$1"
   resultsURI="$2"
 
+  # TODO: replace hardcoded channel value with env
   data='
   {
     "channel": "#kyma-snyk-test",
@@ -40,7 +53,9 @@ function sendSlackNotification() {
     ]
   }'
 
-  for vulnerability in $(jq -c -r '.vulnerabilities | group_by(.id) | map({id:.[0].id,title:.[0].title,packageName:.[0].packageName,semver:.[0].semver}) | .[] | @base64' < snyk-out.json)
+# TODO: check if that works
+  vulnerabilities=$(jq -c -r '.vulnerabilities | group_by(.id) | map({id:.[0].id,title:.[0].title,packageName:.[0].packageName,semver:.[0].semver}) | .[] | @base64' < snyk-out.json)
+  for vulnerability in ${vulnerabilities}
   do
     vulnerabilityDecoded=$(printf '%s' "${vulnerability}" | base64 --decode )
     title=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.title')
@@ -88,6 +103,7 @@ function testComponents() {
   for dir in ${KYMA_SOURCES_DIR}/components/*/
   do
     echo "processing ${dir}"
+    # TODO: replace for with if with -e flag
     manifestFileFound=false
     for file in ${dir}*
     do
