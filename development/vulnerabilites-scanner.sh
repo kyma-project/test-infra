@@ -112,7 +112,7 @@ function testComponents() {
       # fetch dependencies
       echo " ├── fetching dependencies..."
       cd "${DIR}"
-      dep ensure
+      dep ensure --vendor-only
 
       # scan for vulnerabilities
       echo " ├── scanning for vulnerabilities..."
