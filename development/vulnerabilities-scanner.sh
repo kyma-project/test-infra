@@ -3,14 +3,14 @@
 # Expected vars:
 # - KYMA_PROJECT_DIR - directory of kyma-project sources
 # - SNYK_TOKEN - API token used to authenticate in snyk CLI
-# - SLACK_TOKEN - Token for Slack bot for which the vulnerabilities reports will be sent
+# - SAP_SLACK_BOT_TOKEN - Token for Slack bot for which the vulnerabilities reports will be sent
 
 set -e
 set -o pipefail
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR SNYK_TOKEN SLACK_TOKEN; do
+for var in KYMA_PROJECT_DIR SNYK_TOKEN SAP_SLACK_BOT_TOKEN; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -91,7 +91,7 @@ function sendSlackNotification() {
   done
 
   curl -s -X POST \
-  -H 'Authorization: Bearer '"${SLACK_TOKEN}" \
+  -H 'Authorization: Bearer '"${SAP_SLACK_BOT_TOKEN}" \
   -H 'Content-type: application/json' \
   -H 'cache-control: no-cache' \
   --data "${DATA}" \
