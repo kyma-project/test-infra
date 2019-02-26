@@ -29,109 +29,104 @@ function authenticate() {
 
 function sendSlackNotification() {
 
-  affectedComponent="$1"
-  resultsURI="$2"
+  AFFECTED_COMPONENT="$1"
+  KYMA_PROJECT="kyma-project"
+  RESULTS_URI=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${AFFECTED_COMPONENT}" --json | jq -r '.uri')
+  SLACK_CHANNEL="#kyma-snyk-test"
 
-  # TODO: replace hardcoded channel value with env
   data='
   {
-    "channel": "#kyma-snyk-test",
+    "channel": "'${SLACK_CHANNEL}'",
     "text": "Vulnerabilities of high severity detected!",
     "attachments": [
       {
         "color": "#66ffff",
         "title": "affected component: ",
-        "text": "'${affectedComponent}'",
+        "text": "'${AFFECTED_COMPONENT}'",
         "actions": [
           {
             "type": "button",
             "text": "Show in snyk.io",
-            "url": "'${resultsURI}'"
+            "url": "'${RESULTS_URI}'"
           }
         ]
       }
     ]
   }'
 
-# TODO: check if that works
-  vulnerabilities=$(jq -c -r '.vulnerabilities | group_by(.id) | map({id:.[0].id,title:.[0].title,packageName:.[0].packageName,semver:.[0].semver}) | .[] | @base64' < snyk-out.json)
-  for vulnerability in ${vulnerabilities}
+  VULNERABILITIES=$(jq -c -r '.vulnerabilities | group_by(.id) | map({id:.[0].id,title:.[0].title,packageName:.[0].packageName,semver:.[0].semver}) | .[] | @base64' < snyk-out.json)
+  for VULNERABILITY in ${VULNERABILITIES}
   do
-    vulnerabilityDecoded=$(printf '%s' "${vulnerability}" | base64 --decode )
-    title=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.title')
-    packageName=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.packageName')
-    issueID=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.id')
-    affectedVersions=$(printf '%s' "${vulnerabilityDecoded}" | jq -r '.semver.vulnerable | .[0]')
-    newVulnerability='
+    VULNERABILITY_DECODED=$(printf '%s' "${VULNERABILITY}" | base64 --decode )
+    TITLE=$(printf '%s' "${VULNERABILITY_DECODED}" | jq -r '.title')
+    PACKAGE_NAME=$(printf '%s' "${VULNERABILITY_DECODED}" | jq -r '.packageName')
+    ISSUE_ID=$(printf '%s' "${VULNERABILITY_DECODED}" | jq -r '.id')
+    AFFECTED_VERSIONS=$(printf '%s' "${VULNERABILITY_DECODED}" | jq -r '.semver.vulnerable | .[0]')
+    NEWV_ULNERABILITY='
     {
       "pretext": "Vulnerability: ",
       "color": "#cc3300",
-      "title": "'"${title}"'",
-      "title_link": "https://snyk.io/vuln/'"${issueID}"'",
+      "title": "'"${TITLE}"'",
+      "title_link": "https://snyk.io/vuln/'"${ISSUE_ID}"'",
       "fields": [
         {
           "title": "Package",
-          "value": "'"${packageName}"'",
+          "value": "'"${PACKAGE_NAME}"'",
           "short": true
         },
         {
           "title": "Issue ID",
-          "value": "'"${issueID}"'",
+          "value": "'"${ISSUE_ID}"'",
           "short": true
         },
         {
           "title": "Affected versions",
-          "value": "'"${affectedVersions}"'",
+          "value": "'"${AFFECTED_VERSIONS}"'",
           "short": true
         }
       ]
     }'
-    newVulnerability=$(printf '%s' "${newVulnerability}" | jq -r -c ".")
-    data=$(echo "${data}" | jq -c '.attachments += ['"${newVulnerability}"']')
+    NEWV_ULNERABILITY=$(printf '%s' "${NEWV_ULNERABILITY}" | jq -r -c ".")
+    DATA=$(echo "${DATA}" | jq -c '.attachments += ['"${NEWV_ULNERABILITY}"']')
   done
 
   curl -s -X POST \
   -H 'Authorization: Bearer '"${SLACK_TOKEN}" \
   -H 'Content-type: application/json' \
   -H 'cache-control: no-cache' \
-  --data "${data}" \
+  --data "${DATA}" \
   https://slack.com/api/chat.postMessage \
   > /dev/null # do not show any output
+
 }
 
 function testComponents() {
-  for dir in ${KYMA_SOURCES_DIR}/components/*/
+  for DIR in ${KYMA_SOURCES_DIR}/components/*/
   do
-    echo "processing ${dir}"
-    # TODO: replace for with if with -e flag
-    manifestFileFound=false
-    for file in ${dir}*
-    do
-      filename=${file##*/} # cut file name
-      if [[ ${filename} == "Gopkg.lock" ]]; then
-        manifestFileFound=true
-        break
-      fi
-    done
-    if [[ ${manifestFileFound} == "true" ]]; then
+
+    echo "processing ${DIR}"
+
+    GOPKG_FILE_NAME="${DIR}"Gopkg.lock
+
+    if [ -f "${GOPKG_FILE_NAME}" ]; then
       # fetch dependencies
-      echo " ├── fetches dependencies..."
-      cd "${dir}"
+      echo " ├── fetching dependencies..."
+      cd "${DIR}"
       dep ensure
+
       # scan for vulnerabilities
       echo " ├── scanning for vulnerabilities..."
-      affectedComponent=${dir%*/} # cut last '/' in dir path
-      affectedComponent=${affectedComponent##*/} # cut the path, leave only dir name
-      resultsURI=$(snyk monitor --org=kyma-project --project-name="${affectedComponent}" --json | jq -r '.uri')
-      # test for high severity vulnerabilities only
-      set +e # snyk test return 1 if it find any vulnerabilities, so we need to ignore that
+      set +e
       snyk test --severity-threshold=high --json > snyk-out.json
       set -e
+
       # send notifications to slack if vulnerabilities was found
-      ok=$(jq '.ok' < snyk-out.json)
-      if [[ ${ok} == "false" ]]; then
+      OK=$(jq '.ok' < snyk-out.json)
+      if [[ ${OK} == "false" ]]; then
         echo " ├── sending notifications to slack..."
-        sendSlackNotification "${affectedComponent}" "${resultsURI}"
+
+        COMPONENT_TO_TEST=$(basename ${DIR})
+        sendSlackNotification "${COMPONENT_TO_TEST}"
       fi
       echo " └── finished"
     fi
