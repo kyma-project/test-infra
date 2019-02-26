@@ -194,7 +194,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 10)
+	assert.Len(t, periodics, 9)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -317,22 +317,4 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "e2etest")
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_OWNER_GIT", "kyma-project")
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_NAME_GIT", "kyma")
-
-	expName = "kyma-vulnerabilites-scan"
-	vulnerabilitesScanPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, vulnerabilitesScanPeriodic)
-	assert.Equal(t, expName, vulnerabilitesScanPeriodic.Name)
-	assert.True(t, vulnerabilitesScanPeriodic.Decorate)
-	assert.Equal(t, "0 7-16 * * 1-5", vulnerabilitesScanPeriodic.Cron)
-	tester.AssertThatHasPresets(t, vulnerabilitesScanPeriodic.JobBase, "preset-sap-slack-bot-token")
-	tester.AssertThatHasExtraRefs(t, vulnerabilitesScanPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", vulnerabilitesScanPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, vulnerabilitesScanPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/development/vulnerabilities-scanner.sh"}, vulnerabilitesScanPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, vulnerabilitesScanPeriodic.JobBase)
-	assert.Len(t, vulnerabilitesScanPeriodic.Spec.Containers[0].Env, 3)
-	tester.AssertThatContainerHasEnvFromSecret(t, vulnerabilitesScanPeriodic.Spec.Containers[0], "SNYK_TOKEN", "kyma-snyk-token", "secret")
-	tester.AssertThatContainerHasEnv(t, vulnerabilitesScanPeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
-	tester.AssertThatContainerHasEnv(t, vulnerabilitesScanPeriodic.Spec.Containers[0], "GOPATH", "/home/prow/go")
-
 }
