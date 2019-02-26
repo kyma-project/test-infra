@@ -22,6 +22,25 @@ job_template: &job_template
             memory: 1.5Gi
             cpu: 0.8
 
+job_template_rel06_rel07: &job_template_rel06_rel07
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/test-logging-monitoring"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
@@ -43,7 +62,7 @@ presubmits: # runs on PRs
     - name: pre-rel06-kyma-tests-test-logging-monitoring
       branches:
         - release-0.6
-      <<: *job_template
+      <<: *job_template_rel06_rel07
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
@@ -54,7 +73,7 @@ presubmits: # runs on PRs
     - name: pre-rel07-kyma-tests-test-logging-monitoring
       branches:
         - release-0.7
-      <<: *job_template
+      <<: *job_template_rel06_rel07
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
