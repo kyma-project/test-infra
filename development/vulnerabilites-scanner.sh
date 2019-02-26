@@ -34,7 +34,7 @@ function sendSlackNotification() {
   RESULTS_URI=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${AFFECTED_COMPONENT}" --json | jq -r '.uri')
   SLACK_CHANNEL="#kyma-snyk-test"
 
-  data='
+  DATA='
   {
     "channel": "'${SLACK_CHANNEL}'",
     "text": "Vulnerabilities of high severity detected!",
@@ -125,7 +125,7 @@ function testComponents() {
       if [[ ${OK} == "false" ]]; then
         echo " ├── sending notifications to slack..."
 
-        COMPONENT_TO_TEST=$(basename ${DIR})
+        COMPONENT_TO_TEST=$(basename "${DIR}")
         sendSlackNotification "${COMPONENT_TO_TEST}"
       fi
       echo " └── finished"
