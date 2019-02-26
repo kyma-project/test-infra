@@ -41,7 +41,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/service-catalog-tester:
     - name: post-master-service-catalog-tester
-      always_run: true
       branches:
         - master
       <<: *job_template
