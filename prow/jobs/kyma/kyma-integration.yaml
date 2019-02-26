@@ -527,8 +527,7 @@ periodics:
           - name: INPUT_CLUSTER_NAME
             value: "nightly-aks"
           - name: TEST_RESULT_WINDOW_TIME
-            # TODO: change to 6h
-            value: "1h"
+            value: "6h"
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
             value: "#c4core-kyma-ci-force"
           - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
@@ -540,7 +539,7 @@ periodics:
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             # TODO: change to "#c4core-kyma-ci-force"
-            value: "#test-alert-channel"
+            value: ""
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
