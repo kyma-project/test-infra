@@ -15,5 +15,5 @@ The structure of the folder looks as follows:
   ├── bootstrap-helm        # The image that contains gcloud, Docker, and Helm
   ├── buildpack-golang      # The image for building Golang components
   ├── buildpack-node        # The image for building Node.js components
-  └── cleaner               # The image with a script for cleaning SSH keys on service accounts in Google Cloud Storage
+  └── cleaner               # The image with a script for cleaning SSH keys on service accounts in Google Cloud Storage  
 ```
