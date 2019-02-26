@@ -539,7 +539,7 @@ periodics:
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             # TODO: change to "#c4core-kyma-ci-force"
-            value: ""
+            value: "#test-nonexistent"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
