@@ -28,6 +28,7 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/service-catalog-tester", actualPresubmit.PathAlias)
 	assert.True(t, actualPresubmit.AlwaysRun)
+	assert.Empty(t, actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, actualPresubmit, "service-catalog-tester/runner_worker.go")
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
@@ -58,6 +59,7 @@ func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
+	assert.Empty(t, actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPost.Spec.Containers[0].Args)
 }
