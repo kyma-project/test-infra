@@ -1,6 +1,5 @@
 job_template: &job_template
   skip_report: false
-  always_run: true
   decorate: true
   path_alias: github.com/kyma-incubator/service-catalog-tester
   max_concurrency: 10
@@ -31,6 +30,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/service-catalog-tester:
     - name: pre-master-service-catalog-tester
+      always_run: true
       branches:
         - master
       <<: *job_template
@@ -41,6 +41,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/service-catalog-tester:
     - name: post-master-service-catalog-tester
+      always_run: true
       branches:
         - master
       <<: *job_template
