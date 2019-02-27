@@ -68,6 +68,26 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           memory: 200Mi
           cpu: 80m
 
+gke_central_job_template: &gke_central_job_template
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_labels_template: &gke_job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
@@ -148,6 +168,18 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.7
+
+  - name: pre-master-kyma-gke-central
+    branches:
+    - master
+    <<: *gke_central_job_template
+    run_if_changed: "^(resources|installation)"
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
 
   - name: pre-master-kyma-gke-upgrade
     branches:
