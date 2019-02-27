@@ -265,6 +265,17 @@ postsubmits:
     - <<: *test_infra_ref
       base_ref: master
 
+  - name: post-master-kyma-gke-central
+    <<: *gke_central_job_template
+    branches:
+    - master
+    labels:
+      preset-build-master: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+
   - name: post-master-kyma-gke-upgrade
     <<: *gke_upgrade_job_template
     branches:
