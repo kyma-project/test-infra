@@ -69,27 +69,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           cpu: 80m
 
 gke_central_job_template: &gke_central_job_template
-  skip_report: true
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
-gke_central_job_template: &gke_central_job_template
-  skip_report: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -189,18 +169,6 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.7
 
-  - name: pre-master-kyma-gke-central
-    branches:
-    - master
-    <<: *gke_central_job_template
-    run_if_changed: "^(resources|installation)"
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-
   - name: pre-master-kyma-gke-upgrade
     branches:
     - master
@@ -232,15 +200,13 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_central_job_template
-    always_run: false
+    run_if_changed: "^(resources|installation)"
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - org: crabtree
-      repo: test-infra
-      base_ref: kyma-gke-central
-      path_alias: github.com/kyma-project/test-infra
+    - <<: *test_infra_ref
+      base_ref: master
 
 postsubmits:
   kyma-project/kyma:
@@ -265,7 +231,7 @@ postsubmits:
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: post-master-kyma-gke-central
+  - name: post-master-kyma-gke-central-connector
     <<: *gke_central_job_template
     branches:
     - master
