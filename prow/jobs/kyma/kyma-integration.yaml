@@ -440,11 +440,9 @@ periodics:
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
-    # TODO change 'org' to kyma-project
-    - org: jasiu001
+    - org: kyma-project
       repo: test-infra
-      # TODO: change base_ref to 'master'
-      base_ref: kyma-nightly-on-aks
+      base_ref: master
       path_alias: github.com/kyma-project/test-infra
     - <<: *kyma_ref
       base_ref: master
@@ -454,8 +452,7 @@ periodics:
         secret:
           secretName: sa-stability-fluentd-storage-writer
     containers:
-      # TODO: change image to 'eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2'
-      - image: eu.gcr.io/kyma-project/develop/nightly-aks/kyma-project/kyma/kyma-cluster-infra:0.1
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190227-a4164f9
         securityContext:
           privileged: true
         volumeMounts:
@@ -538,7 +535,7 @@ periodics:
                 name: kyma-alerts-slack-api-url
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
-            # TODO: change to "#c4core-kyma-ci-force"
+            # TODO: change to "#c4core-kyma-ci-force" when PR from https://github.com/kyma-project/kyma/issues/2873 will be merge
             value: "#test-nonexistent"
         args:
           - "-c"
@@ -585,6 +582,7 @@ periodics:
         requests:
           memory: 200Mi
           cpu: 80m
+
 - name: kyma-load-tests-weekly
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
   labels:
