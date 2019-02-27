@@ -55,7 +55,8 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_DS2_v2"
-export CLUSTER_K8S_VERSION="1.10.9"
+# set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
+export CLUSTER_K8S_VERSION="1.11"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
 
 # shellcheck disable=SC1090
@@ -102,12 +103,16 @@ function installCluster() {
     shout "Install Kubernetes on Azure"
     date
 
+    echo "Find latest cluster version"
+    CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_K8S_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
+    echo "Latest available verion is: ${CLUSTER_VERSION}"
+
     az aks create \
       --resource-group "${RS_GROUP}" \
       --name "${CLUSTER_NAME}" \
       --node-count 3 \
       --node-vm-size "${CLUSTER_SIZE}" \
-      --kubernetes-version "${CLUSTER_K8S_VERSION}" \
+      --kubernetes-version "${CLUSTER_VERSION}" \
       --enable-addons "${CLUSTER_ADDONS}" \
       --service-principal "${AZURE_SUBSCRIPTION_APP_ID}" \
       --client-secret "${AZURE_SUBSCRIPTION_SECRET}" \
@@ -307,8 +312,8 @@ azureAuthenticating
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
-addGithubDexConnector
 cleanup
+addGithubDexConnector
 
 createGroup
 installCluster
