@@ -1,3 +1,6 @@
+# The following job has been deprecated
+# New version of this job can be found here: prow/jobs/test-infra/stability-checker.yaml
+
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -29,17 +32,6 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-tools-stability-checker
-    branches:
-    - master
-    <<: *job_template
-    run_if_changed: "^tools/stability-checker/"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      <<: *job_labels_template
-      preset-build-pr: "true"
   - name: pre-rel06-kyma-tools-stability-checker
     branches:
     - release-0.6
@@ -62,17 +54,3 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
-
-postsubmits:
-  kyma-project/kyma:
-  - name: post-master-kyma-tools-stability-checker
-    branches:
-    - master
-    <<: *job_template
-    run_if_changed: "^tools/stability-checker/"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      <<: *job_labels_template
-      preset-build-master: "true"

@@ -1,12 +1,7 @@
-test_infra_ref: &test_infra_ref
-  org: kyma-project
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 job_template: &job_template
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-project/kyma
+  path_alias: github.com/kyma-project/test-infra
   max_concurrency: 10
   spec:
     containers:
@@ -16,7 +11,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/watch-pods"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
         resources:
           requests:
             memory: 1.5Gi
@@ -28,51 +23,31 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pre-master-kyma-tools-watch-pods
+  kyma-project/test-infra:
+    - name: pre-master-watch-pods
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tools/watch-pods/"
-      extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
+      run_if_changed: "^watch-pods/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel06-kyma-tools-watch-pods
+    - name: pre-rel08-kyma-tools-watch-pods
       branches:
-      - release-0.6
+      - release-0.8
       <<: *job_template
       always_run: true
-      extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.6
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-    - name: pre-rel07-kyma-tools-watch-pods
-      branches:
-      - release-0.7
-      <<: *job_template
-      always_run: true
-      extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.7
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
 
 postsubmits:
-  kyma-project/kyma:
-    - name: post-master-kyma-tools-watch-pods
+  kyma-project/test-infra:
+    - name: post-master-watch-pods
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tools/watch-pods/"
-      extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
+      run_if_changed: "^watch-pods/"
       labels:
         <<: *job_labels_template
         preset-build-master: "true"

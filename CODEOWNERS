@@ -27,3 +27,10 @@
 
 # All .md files
 *.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc
+
+# Stability checker
+/tools/stability-checker/ @aszecowka @PK85 @mszostok @piotrmiskiewicz @polskikiel @jasiu001 @adamwalach
+
+# The watch-pods directory
+/tools/watch-pods/ @suleymanakbas91 @clebs @a-thaler @lilitgh
+
