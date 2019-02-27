@@ -91,16 +91,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 			expJobImage: tester.ImageBootstrapHelm20181121,
 		},
-		"Should contains the gke-central job": {
-			givenJobName: "pre-master-kyma-gke-central",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildPr,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
-		},
 	}
 
 	for tn, tc := range tests {
@@ -165,16 +155,6 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 				"preset-bot-github-token",
-			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
-		},
-		"Should contains the gke-central job": {
-			givenJobName: "post-master-kyma-gke-central",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 			expJobImage: tester.ImageBootstrapHelm20181121,
 		},
