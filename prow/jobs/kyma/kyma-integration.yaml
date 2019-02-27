@@ -173,7 +173,7 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_central_job_template
-    run_if_changed: "^resources/application-connector"
+    run_if_changed: "^(resources|installation)"
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
