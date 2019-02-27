@@ -69,7 +69,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           cpu: 80m
 
 gke_central_job_template: &gke_central_job_template
-  skip_report: false
+  skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -196,7 +196,6 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-0.7
 
-  crabtree/kyma:
   - name: pre-master-kyma-gke-central-connector
     branches:
     - master
@@ -206,8 +205,10 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - org: crabtree
+      repo: test-infra
+      base_ref: kyma-gke-central
+      path-alias: github.com/kyma-project/test-infra
 
 postsubmits:
   kyma-project/kyma:
@@ -244,7 +245,6 @@ postsubmits:
     - <<: *test_infra_ref
       base_ref: master
 
-  crabtree/kyma:
   - name: post-master-kyma-gke-central-connector
     <<: *gke_central_job_template
     branches:
@@ -253,8 +253,10 @@ postsubmits:
       preset-build-master: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - org: crabtree
+      repo: test-infra
+      base_ref: kyma-gke-central
+      path-alias: github.com/kyma-project/test-infra
 
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
