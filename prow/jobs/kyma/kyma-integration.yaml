@@ -69,7 +69,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           cpu: 80m
 
 gke_central_job_template: &gke_central_job_template
-  skip_report: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -173,7 +173,7 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_central_job_template
-    run_if_changed: "^(resources|installation)"
+    run_if_changed: "^resources/application-connector"
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template

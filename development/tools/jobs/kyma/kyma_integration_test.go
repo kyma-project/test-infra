@@ -57,9 +57,10 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
-		givenJobName string
-		expPresets   []tester.Preset
-		expJobImage  string
+		givenJobName       string
+		expPresets         []tester.Preset
+		expJobImage        string
+		expJobRunIfChanged string
 	}{
 		"Should contains the kyma-integration job": {
 			givenJobName: "pre-master-kyma-integration",
@@ -68,7 +69,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
 			},
 
-			expJobImage: tester.ImageBootstrap001,
+			expJobImage:        tester.ImageBootstrap001,
+			expJobRunIfChanged: "^(resources|installation)",
 		},
 		"Should contains the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
@@ -78,7 +80,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:        tester.ImageBootstrapHelm20181121,
+			expJobRunIfChanged: "^(resources|installation)",
 		},
 		"Should contains the gke-upgrade job": {
 			givenJobName: "pre-master-kyma-gke-upgrade",
@@ -89,7 +92,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 				"preset-bot-github-token",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:        tester.ImageBootstrapHelm20181121,
+			expJobRunIfChanged: "^(resources|installation)",
 		},
 		"Should contains the gke-central job": {
 			givenJobName: "pre-master-kyma-gke-central",
@@ -99,7 +103,8 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:        tester.ImageBootstrapHelm20181121,
+			expJobRunIfChanged: "^resources/application-connector",
 		},
 	}
 
@@ -116,7 +121,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// then
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+			assert.Equal(t, tc.expJobRunIfChanged, actualJob.RunIfChanged)
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 			assert.True(t, actualJob.Decorate)
