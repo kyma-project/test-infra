@@ -208,7 +208,7 @@ presubmits: # runs on PRs
     - org: crabtree
       repo: test-infra
       base_ref: kyma-gke-central
-      path-alias: github.com/kyma-project/test-infra
+      path_alias: github.com/kyma-project/test-infra
 
 postsubmits:
   kyma-project/kyma:
