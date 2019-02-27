@@ -1,5 +1,6 @@
 FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be
 
+# Install packages required by az
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
     lsb-release \
@@ -15,6 +16,8 @@ RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-
 RUN helm init --client-only
 
 # Install az
+# If you receive error related to recv-keys please make sure you have latest signing key
+# https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#signingKey
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(lsb_release -cs)" main" | \
     tee /etc/apt/sources.list.d/azure-cli.list && \
     apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
