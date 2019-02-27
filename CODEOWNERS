@@ -10,5 +10,20 @@
 # The `/prow/scripts/` directory
 /prow/scripts/ @kyma-project/developers
 
+# The `/prow/images/` directory
+/prow/images/ @kyma-project/developers
+
+# The `/prow/jobs/` directory
+/prow/jobs/ @kyma-project/developers
+
+# The `/prow/jobs/test-infra/` directory
+/prow/jobs/test-infra/ @kyma-project/wg-prow
+
+# The `/development/tools/jobs/` directory
+/development/tools/jobs/ @kyma-project/developers
+
+# The `/development/tools/jobs/testinfra/` directory
+/development/tools/jobs/testinfra/ @kyma-project/wg-prow
+
 # All .md files
 *.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc
