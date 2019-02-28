@@ -10,7 +10,7 @@ import (
 
 func TestKubelessIntegrationTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/kubeless-integration/kubeless-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -33,7 +33,7 @@ func TestKubelessIntegrationTestsJobsPresubmit(t *testing.T) {
 
 func TestKubelessIntegrationTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/kubeless-integration/kubeless-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
