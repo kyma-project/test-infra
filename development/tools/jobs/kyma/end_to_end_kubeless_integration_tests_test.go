@@ -16,7 +16,7 @@ func TestKubelessIntegrationTestsJobsPresubmit(t *testing.T) {
 
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-end-to-end-kubeless-integration", "master")
 
-	expName := "pre-master-kyma-tests-kubeless-integration"
+	expName := "pre-master-kyma-tests-end-to-end-kubeless-integration"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -25,7 +25,7 @@ func TestKubelessIntegrationTestsJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^tests/kubeless-integration/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tests/end-to-end/kubeless-integration/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/kubeless-integration"}, actualPresubmit.Spec.Containers[0].Args)
@@ -52,7 +52,7 @@ func TestKubelessIntegrationTestsJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^tests/kubeless-integration/", actualPost.RunIfChanged)
+	assert.Equal(t, "^tests/end-to-end/kubeless-integration/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/kubeless-integration"}, actualPost.Spec.Containers[0].Args)
