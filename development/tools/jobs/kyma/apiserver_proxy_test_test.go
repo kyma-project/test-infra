@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestClusterUsersTestJobsPresubmit(t *testing.T) {
+func TestApiserverProxyTestJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml")
 	///Users/i500678/go/src/github.com/kyma-project/test-infra/prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml
@@ -30,7 +30,7 @@ func TestClusterUsersTestJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/apiserver-proxy-tests"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestClusterUsersTestJobPostsubmit(t *testing.T) {
+func TestApiserverProxyTestJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml")
 	// THEN
