@@ -15,6 +15,7 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-sa-vm-kyma-integration**  | It injects credentials for the service account to run integration tests on virtual machines (VMs).                                                              |
 | **preset-sa-gke-kyma-integration** | It injects credentials for the service account to run integration tests on a Google Cloud Engine (GKE) cluster.                                                 |
 | **preset-creds-aks-kyma-integration** | It injects credentials to run integration tests on an Azure Kubernetes Service (AKS) cluster. |
+| **preset-nightly-aks-github-integration** | It injects github application credentials to enable github authentication via dex for AKS cluster |
 | **preset-bot-npm-token**           | It provides an environment variable with a token for publishing npm packages.
 | **preset-sa-kyma-artifacts** | It sets up the service account that has write permissions to the Kyma's artifacts bucket.                     |
 | **preset-docker-push-repository-gke-integration** | It provides the environment variable with the location of the directory in the GCR repository for storing temporary Docker images for the Kyma Installer.                     |
