@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/kubeless-integration"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/kubeless-integration"
         resources:
           requests:
             memory: 1.5Gi
@@ -35,7 +35,7 @@ job_template_rel06_rel07: &job_template_rel06_rel07
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/kubeless-integration"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/kubeless-integration"
         resources:
           requests:
             memory: 1.5Gi
