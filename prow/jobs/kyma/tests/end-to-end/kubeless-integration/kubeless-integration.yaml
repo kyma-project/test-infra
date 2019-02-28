@@ -48,11 +48,11 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-tests-kubeless-integration
+    - name: pre-master-kyma-tests-end-to-end-kubeless-integration
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/kubeless-integration/"
+      run_if_changed: "^tests/end-to-end/kubeless-integration/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -84,11 +84,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-tests-kubeless-integration
+    - name: post-master-kyma-tests-end-to-end-kubeless-integration
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/kubeless-integration/"
+      run_if_changed: "^tests/end-to-end/kubeless-integration/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
