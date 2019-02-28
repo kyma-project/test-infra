@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -o errexit
+set -o errexit   # Exit immediately if a command exits with a non-zero status.
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 VARIABLES=(
@@ -43,9 +43,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-
-export DOCKER_PUSH_PROJECT="kyma-installer"
-export DOCKER_PUSH_PROJECT_TAG="master-c8d0adb0"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
@@ -105,7 +102,7 @@ function installCluster() {
 
     echo "Find latest cluster version"
     CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_K8S_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-    echo "Latest available verion is: ${CLUSTER_VERSION}"
+    echo "Latest available version is: ${CLUSTER_VERSION}"
 
     az aks create \
       --resource-group "${RS_GROUP}" \
@@ -303,7 +300,8 @@ function installStabilityChecker() {
 	        --set testResultWindowTime="${TEST_RESULT_WINDOW_TIME}" \
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
-	        --name=stability-checker
+	        --name=stability-checker \
+	        --wait
 }
 
 init

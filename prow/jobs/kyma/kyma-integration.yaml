@@ -440,19 +440,17 @@ periodics:
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
-    - <<: *kyma_ref
-      base_ref: master
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master
   spec:
     volumes:
       - name: sa-stability-fluentd-storage-writer
         secret:
           secretName: sa-stability-fluentd-storage-writer
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190227-a4164f9
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
         securityContext:
           privileged: true
         volumeMounts:
@@ -495,27 +493,23 @@ periodics:
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
-    - <<: *kyma_ref
-      base_ref: master
+  - <<: *test_infra_ref
+    base_ref: master
+  - <<: *kyma_ref
+    base_ref: master
   spec:
     volumes:
       - name: sa-stability-fluentd-storage-writer
         secret:
           secretName: sa-stability-fluentd-storage-writer
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190227-a4164f9
         securityContext:
           privileged: true
         volumeMounts:
           - name: sa-stability-fluentd-storage-writer
             mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
             readOnly: true
-        command:
-          - "bash"
         env:
           - name: RS_GROUP
             value: "kyma-nightly-aks"
@@ -537,6 +531,8 @@ periodics:
           - name: KYMA_ALERTS_CHANNEL
             # TODO: change to "#c4core-kyma-ci-force" when PR from https://github.com/kyma-project/kyma/issues/2873 will be merge
             value: "#test-nonexistent"
+        command:
+          - "bash"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
