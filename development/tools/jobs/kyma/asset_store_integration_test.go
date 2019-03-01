@@ -8,13 +8,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAssetUploadServiceJobPresubmit(t *testing.T) {
+func TestAssetStoreIntegrationJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/asset-store/asset-store.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	expName := "pre-master-kyma-components-asset-upload-service"
+	expName := "pre-master-kyma-tests-asset-store"
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -23,19 +23,19 @@ func TestAssetUploadServiceJobPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.False(t, actualPresubmit.Optional)
+	assert.True(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/asset-upload-service/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/asset-upload-service/some_random_file.go")
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-upload-service")
+	assert.Equal(t, "^tests/asset-store/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/asset-store/some_random_file.go")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/tests/asset-store")
 }
 
-func TestAssetUploadServiceJobPostsubmit(t *testing.T) {
+func TestAssetStoreIntegrationJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/asset-store/asset-store.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -44,7 +44,7 @@ func TestAssetUploadServiceJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 
-	expName := "post-master-kyma-components-asset-upload-service"
+	expName := "post-master-kyma-tests-asset-store"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
@@ -55,7 +55,7 @@ func TestAssetUploadServiceJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^components/asset-upload-service/", actualPost.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/asset-upload-service/some_random_file.go")
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-upload-service")
+	assert.Equal(t, "^tests/asset-store/", actualPost.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPost, "tests/asset-store/some_random_file.go")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/tests/asset-store")
 }

@@ -6,6 +6,7 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   skip_report: false
   decorate: true
+  optional: true #Temporary
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
@@ -16,7 +17,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-upload-service"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/asset-store"
         resources:
           requests:
             memory: 2Gi
@@ -29,11 +30,11 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-components-asset-upload-service
+    - name: pre-master-kyma-tests-asset-store
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^components/asset-upload-service/"
+      run_if_changed: "^tests/asset-store/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
@@ -43,11 +44,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-components-asset-upload-service
+    - name: post-master-kyma-tests-asset-store
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^components/asset-upload-service/"
+      run_if_changed: "^tests/asset-store/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
