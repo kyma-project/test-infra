@@ -247,7 +247,7 @@ function installStabilityChecker() {
 	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '([0-9A-Za-z_-]+)' was successful"}
 	STATS_ENABLED="true"
 
-	SC_DIR=${KYMA_SOURCES_DIR}/tools/stability-checker
+	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
 	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
 	bash "${SC_DIR}/local/helpers/isready.sh" kyma-system app  stability-test-provisioner
