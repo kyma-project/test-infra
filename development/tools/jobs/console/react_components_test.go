@@ -14,13 +14,8 @@ func TestReactComponentsJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/console"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
-
 	expName := "pre-master-console-react-components"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
@@ -44,13 +39,8 @@ func TestReactComponentsJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/console"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPost, 1)
-
 	expName := "post-master-console-react-components"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
