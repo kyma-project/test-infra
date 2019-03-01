@@ -5,6 +5,7 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   skip_report: false
+  optional: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -35,8 +36,8 @@ presubmits: # runs on PRs
       <<: *job_template
       run_if_changed: "^components/asset-upload-service/"
       extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -49,8 +50,8 @@ postsubmits:
       <<: *job_template
       run_if_changed: "^components/asset-upload-service/"
       extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
