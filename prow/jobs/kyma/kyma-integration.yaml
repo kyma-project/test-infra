@@ -623,10 +623,10 @@ periodics:
   labels:
     preset-stability-checker-slack-notifications: "true"
   extra_refs:
-    - org: kyma-project
-      repo: kyma
+    - <<: *test_infra_ref
       base_ref: master
-      path_alias: github.com/kyma-project/kyma
+    - <<: *kyma_ref
+      base_ref: master
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
@@ -637,7 +637,7 @@ periodics:
         - "development/run-component-synchronizer.sh"
         env:
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-            value: "#test-alert-channel"
+            value: "#c4core-kyma-ci-force"
           - name: OUT_OF_DATE_DAYS
             value: "3"
         resources:
