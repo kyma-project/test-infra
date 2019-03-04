@@ -5,6 +5,7 @@ import (
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// lol
 type configMapClient interface {
 	Get(name string, options metaV1.GetOptions) (*v1.ConfigMap, error)
 }

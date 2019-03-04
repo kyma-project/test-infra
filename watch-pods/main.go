@@ -25,6 +25,7 @@ func main() {
 	ignoreNsPattern := flag.String("ignoreNsPattern", "", "Regexp for namespace that containers will be ignored")
 	ignoreContainerPattern := flag.String("ignoreContainersPattern", "", "Regexp for namespaces that containers will be ignored")
 
+	// parse
 	flag.Parse()
 
 	// use the current context in kubeconfig
