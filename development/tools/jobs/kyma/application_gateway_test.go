@@ -10,7 +10,9 @@ import (
 
 func TestApplicationGatewayReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	unsupportedReleases := []string{"release-0.6", "release-0.7"}
+
+	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-gateway/application-gateway.yaml")
 			// THEN
@@ -73,4 +75,26 @@ func TestApplicationGatewayJobPostsubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/application-gateway"}, actualPost.Spec.Containers[0].Args)
+}
+
+func getSupportedReleases(unsupportedReleases []string) []string {
+	var supportedReleases []string
+
+	for _, rel := range tester.GetAllKymaReleaseBranches() {
+		if !contains(unsupportedReleases, rel) {
+			supportedReleases = append(supportedReleases, rel)
+		}
+	}
+
+	return supportedReleases
+}
+
+func contains(array []string, str string) bool {
+	for _, e := range array {
+		if str == e {
+			return true
+		}
+	}
+
+	return false
 }
