@@ -16,8 +16,8 @@ type Message interface {
 
 var (
 	username      = "Component Alert"
-	messageHeader = "*Kyma components are out of date*"
-	description   = "Below components are out of date:"
+	messageHeader = "*The component's version diverges from the version of the latest commit.*"
+	description   = "These components' versions are out-of-date:"
 	icon          = ":kyma2:"
 	barColor      = "#D96459"
 )

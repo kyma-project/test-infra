@@ -25,8 +25,8 @@ func (r Report) GetValue() string {
 	return r.message
 }
 
-// GenerateMessage generates message about out of date components
-func GenerateMessage(components []*Component) []Report {
+// GenerateReport generates message about out of date components
+func GenerateReport(components []*Component) []Report {
 	var reports []Report
 
 	log.Printf("There are %d components \n", len(components))
@@ -52,13 +52,15 @@ func prettyComponentName(name string) string {
 func prettyMessage(c *Component) string {
 	var parts []string
 
-	parts = append(parts, fmt.Sprint("Version component in values file: "))
 	for _, version := range c.Versions {
 		parts = append(parts, fmt.Sprintf(
-			"  _%q_ has value *%s*", version.VersionPath, version.Version))
+			"The version of the _%q_ component is *%s*", version.VersionPath, version.Version))
 	}
-	parts = append(parts, fmt.Sprintf("current commit of component is *%s*", c.GitHash[:8]))
-	parts = append(parts, prettyTime(c.CommitDate))
+	parts = append(parts, fmt.Sprintf(
+		"The version of the current commit from _%s_ is *%s*",
+		prettyTime(c.CommitDate),
+		c.GitHash[:8],
+	))
 
 	return strings.Join(parts, "\n")
 }
@@ -72,10 +74,11 @@ func currentVersionLog(c *Component) string {
 	return fmt.Sprintf(
 		"Component %q is not expired. \n "+
 			"Component hash: %s, component %s \n "+
-			prettyTime(c.CommitDate)+
+			"Last commit was made: %s "+
 			prettyFilesExstensionList(c.Versions),
 		c.Name,
 		c.GitHash,
+		prettyTime(c.CommitDate),
 		strings.Join(versionMsg, ","),
 	)
 }
@@ -84,7 +87,7 @@ func prettyTime(unix string) string {
 	i, _ := strconv.ParseInt(unix, 10, 64)
 	tm := time.Unix(i, 0)
 
-	return fmt.Sprintf("last commit was made: %s ", tm.String())
+	return fmt.Sprintf("%d %s %d %d:%d:%d", tm.Day(), tm.Month(), tm.Year(), tm.Hour(), tm.Minute(), tm.Second())
 }
 
 func prettyFilesExstensionList(versions []*ComponentVersions) string {

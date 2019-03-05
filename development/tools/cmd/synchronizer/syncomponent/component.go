@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-const defaultOutOfDateDays = 3
-
 // Component represents the element for which version will be checked
 type Component struct {
 	Name       string
@@ -47,51 +45,40 @@ func NewSynComponent(componentPath string, versionPaths []string) *Component {
 	}
 }
 
-// SetOutOfDate determines whether a given component is not expired
-func (c *Component) SetOutOfDate(outOfDateDays int) {
+// CheckIsOutOfDate determines whether a given component is not expired
+func (c *Component) CheckIsOutOfDate(outOfDateDays int) {
 	days := daysDelta(c.CommitDate, time.Now().Unix())
-	if outOfDateDays == 0 {
-		outOfDateDays = defaultOutOfDateDays
-	}
 	if days <= outOfDateDays {
 		log.Printf("Component %q does not achive the limit of days %d (limit is %d)", c.Name, days, outOfDateDays)
 		return
 	}
 
 	for _, ver := range c.Versions {
-		ver.setOutOfDate(c.GitHash)
+		ver.checkIsOutOfDate(c.GitHash)
 		c.outOfDate = ver.outOfDate
 	}
 }
 
-func (cv *ComponentVersions) setOutOfDate(hash string) {
+func (cv *ComponentVersions) checkIsOutOfDate(hash string) {
 	cut := hash[:len(cv.Version)]
 	if cut == cv.Version {
 		return
 	}
 
-	followedFiles := false
+	foundSourceCodeFiles := false
 	regexPatterrn := regexp.MustCompile(`^.*\.(md|png|svg|dia)$`)
 	for _, file := range cv.ModifiedFiles {
 		if !regexPatterrn.Match([]byte(file)) {
-			followedFiles = true
+			foundSourceCodeFiles = true
 			break
 		}
 	}
 	// if files like .md or images were modified then skip
-	if !followedFiles {
+	if !foundSourceCodeFiles {
 		return
 	}
 
 	cv.outOfDate = true
-}
-
-// RelativePathToComponent returns path to directory exclude root path
-func RelativePathToComponent(mainPath string, componenthPath string) string {
-	re := regexp.MustCompile(mainPath)
-	componentPath := re.ReplaceAllLiteralString(componenthPath, "")
-
-	return strings.Trim(componentPath, "/")
 }
 
 func daysDelta(unixString string, unixToday int64) int {

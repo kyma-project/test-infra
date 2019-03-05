@@ -15,15 +15,16 @@ import (
 )
 
 const (
-	envKymaProjectDir  = "KYMA_PROJECT_DIR"
-	slackClientToken   = "SLACK_CLIENT_TOKEN"
-	slackClientChannel = "STABILITY_SLACK_CLIENT_CHANNEL_ID"
-	outOfDate          = "OUT_OF_DATE_DAYS"
-	pathToVersionFile  = "Makefile"
-	varsionPathCommand = "version-path"
+	envKymaProjectDir     = "KYMA_PROJECT_DIR"
+	envSlackClientToken   = "SLACK_CLIENT_TOKEN"
+	envSlackClientChannel = "STABILITY_SLACK_CLIENT_CHANNEL_ID"
+	envOutOfDateThreshold = "OUT_OF_DATE_DAYS"
+	defaultOutOfDateDays  = 3
+	pathToVersionFile     = "Makefile"
+	varsionPathCommand    = "version-path"
 )
 
-// ComponentStorage inludes pack of components
+// ComponentStorage includes pack of components
 type ComponentStorage struct {
 	components []*sc.Component
 }
@@ -35,30 +36,31 @@ func (cs *ComponentStorage) AddComponent(comp *sc.Component) {
 
 func main() {
 	rootDir := os.Getenv(envKymaProjectDir)
-	slackToken := os.Getenv(slackClientToken)
-	slackChannel := os.Getenv(slackClientChannel)
-	outOfDateDays, err := strconv.Atoi(os.Getenv(outOfDate))
+	slackToken := os.Getenv(envSlackClientToken)
+	slackChannel := os.Getenv(envSlackClientChannel)
+	outOfDateDays, err := strconv.Atoi(os.Getenv(envOutOfDateThreshold))
 
 	if err != nil {
-		log.Printf("Cannot tranform %s env to integer, default value will be used", outOfDate)
-		outOfDateDays = 0
+		log.Printf("Cannot tranform %s env to integer, default value '%d' will be used", envOutOfDateThreshold, defaultOutOfDateDays)
+		outOfDateDays = defaultOutOfDateDays
 	}
 	if rootDir == "" {
 		log.Fatalf("missing env: %s", envKymaProjectDir)
 	}
 	if slackToken == "" {
-		log.Fatalf("missing env: %s", slackClientToken)
+		log.Fatalf("missing env: %s", envSlackClientToken)
 	}
 	if slackChannel == "" {
-		log.Fatalf("missing env: %s", slackClientChannel)
+		log.Fatalf("missing env: %s", envSlackClientChannel)
 	}
 
-	storage := &ComponentStorage{}
-
-	findComponents(rootDir, storage)
+	storage, err := generateComponentStorage(rootDir)
+	if err != nil {
+		log.Fatalf("Cannot generate component storage: %s", err.Error())
+	}
 	fillComponentStorage(rootDir, storage, outOfDateDays)
 
-	reports := sc.GenerateMessage(storage.components)
+	reports := sc.GenerateReport(storage.components)
 	alertAmount := len(reports)
 	log.Printf("There are %d components with alerts \n", alertAmount)
 	if alertAmount == 0 {
@@ -75,7 +77,9 @@ func main() {
 	}
 }
 
-func findComponents(dir string, storage *ComponentStorage) {
+func generateComponentStorage(dir string) (*ComponentStorage, error) {
+	storage := &ComponentStorage{}
+
 	runner := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -106,14 +110,21 @@ func findComponents(dir string, storage *ComponentStorage) {
 			return nil
 		}
 
-		synComponent := sc.NewSynComponent(sc.RelativePathToComponent(dir, componentDir), versionPaths)
+		path, err = filepath.Rel(dir, componentDir)
+		if err != nil {
+			return errors.Wrapf(err, "while trying get relative path from %q", componentDir)
+		}
+
+		synComponent := sc.NewSynComponent(path, versionPaths)
 		storage.AddComponent(synComponent)
 		return nil
 	}
 
 	if err := filepath.Walk(dir, runner); err != nil {
-		log.Fatalf("Cannot walk for %q directory: %s", dir, err)
+		return nil, errors.Wrapf(err, "while walking for %q directory: %s")
 	}
+
+	return storage, nil
 }
 
 func fillComponentStorage(dir string, storage *ComponentStorage, expiryDays int) {
@@ -146,7 +157,7 @@ func fillComponentStorage(dir string, storage *ComponentStorage, expiryDays int)
 			}
 			version.ModifiedFiles = files
 		}
-		component.SetOutOfDate(expiryDays)
+		component.CheckIsOutOfDate(expiryDays)
 	}
 }
 

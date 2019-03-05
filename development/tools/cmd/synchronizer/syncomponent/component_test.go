@@ -2,6 +2,7 @@ package syncomponent
 
 import (
 	"fmt"
+	"path/filepath"
 	"strconv"
 	"testing"
 	"time"
@@ -9,17 +10,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_RelativePathToComponent(t *testing.T) {
+const testOutOfDateDays = 3
+
+func TestNewSynComponent(t *testing.T) {
 	// Given
-	path := "/this/is/main/path/this/is/subpath"
+	path := "/this/is/main/path/this/is/comp-name"
+	mainPath := "/this/is/main/path"
+	componentPath, _ := filepath.Rel(mainPath, path)
 
 	// When
-	result := RelativePathToComponent("/this/is/main/path", path)
+	component := NewSynComponent(componentPath, []string{"/path/to/resource"})
 
 	// Then
-	if result != "this/is/subpath" {
-		t.Fatalf("Subpath to component is incorrect: %q", result)
-	}
+	assert.Equal(t, "comp_name", component.Name)
+	assert.Equal(t, "this/is/comp-name", component.Path)
+	assert.Equal(t, "/path/to/resource", component.Versions[0].VersionPath)
 }
 
 func Test_daysDelta(t *testing.T) {
@@ -28,10 +33,10 @@ func Test_daysDelta(t *testing.T) {
 		unixTime   int64
 		expected   int
 	}{
-		{unixTimeAsString(3), time.Now().Unix(), 3},
-		{unixTimeAsString(2), time.Now().Unix(), 2},
-		{unixTimeAsString(0), time.Now().Unix(), 0},
-		{unixTimeAsString(6), time.Now().Unix(), 6},
+		{subtractDays(3), time.Now().Unix(), 3},
+		{subtractDays(2), time.Now().Unix(), 2},
+		{subtractDays(0), time.Now().Unix(), 0},
+		{subtractDays(6), time.Now().Unix(), 6},
 	}
 
 	for _, tu := range ts {
@@ -64,15 +69,15 @@ func Test_versionIsOutOfDate(t *testing.T) {
 
 	// Then
 	for hash, cv := range tsFalse {
-		cv.setOutOfDate(hash)
+		cv.checkIsOutOfDate(hash)
 		assert.False(t, cv.outOfDate)
 	}
 	for hash, cv := range tsFilesFalse {
-		cv.setOutOfDate(hash)
+		cv.checkIsOutOfDate(hash)
 		assert.False(t, cv.outOfDate)
 	}
 	for hash, cv := range tsTrue {
-		cv.setOutOfDate(hash)
+		cv.checkIsOutOfDate(hash)
 		assert.True(t, cv.outOfDate)
 	}
 }
@@ -82,7 +87,7 @@ func Test_isOutOfDate(t *testing.T) {
 	tsTrue := []Component{
 		{
 			GitHash:    "bc120200aa3d0d42b1vca21d4f13fa9853529ec0",
-			CommitDate: unixTimeAsString((defaultOutOfDateDays + 1)),
+			CommitDate: subtractDays((testOutOfDateDays + 1)),
 			Versions: []*ComponentVersions{
 				{
 					Version:       "b28250b7",
@@ -92,7 +97,7 @@ func Test_isOutOfDate(t *testing.T) {
 		},
 		{
 			GitHash:    "06e635f865fc473049e453245e2122dc8f17c532",
-			CommitDate: unixTimeAsString((defaultOutOfDateDays + 1)),
+			CommitDate: subtractDays((testOutOfDateDays + 1)),
 			Versions: []*ComponentVersions{
 				{
 					Version:       "06e635f8",
@@ -110,7 +115,7 @@ func Test_isOutOfDate(t *testing.T) {
 		{
 			// is not out of date because component not achive expired date
 			GitHash:    "86d0ddac3df8e7c4ef77f09158c68fa06566537d",
-			CommitDate: unixTimeAsString(defaultOutOfDateDays),
+			CommitDate: subtractDays(testOutOfDateDays),
 			Versions: []*ComponentVersions{
 				{
 					Version:       "b28250b7",
@@ -121,7 +126,7 @@ func Test_isOutOfDate(t *testing.T) {
 		{
 			// is not out of date because hashes are equal
 			GitHash:    "a30ed000cb1fe91640376f6d6aac64bf1e2bd080",
-			CommitDate: unixTimeAsString((defaultOutOfDateDays + 3)),
+			CommitDate: subtractDays((testOutOfDateDays + 3)),
 			Versions: []*ComponentVersions{
 				{
 					Version:       "a30ed000",
@@ -132,7 +137,7 @@ func Test_isOutOfDate(t *testing.T) {
 		{
 			//is not out of date because only md file was changed
 			GitHash:    "289eb8ea3ec73367581ae3a6860981b771495b83",
-			CommitDate: unixTimeAsString((defaultOutOfDateDays + 3)),
+			CommitDate: subtractDays((testOutOfDateDays + 3)),
 			Versions: []*ComponentVersions{
 				{
 					Version:       "289eb8ea",
@@ -144,16 +149,16 @@ func Test_isOutOfDate(t *testing.T) {
 
 	// Then
 	for _, comp := range tsTrue {
-		comp.SetOutOfDate(defaultOutOfDateDays)
+		comp.CheckIsOutOfDate(testOutOfDateDays)
 		assert.True(t, comp.outOfDate)
 	}
 	for _, comp := range tsFalse {
-		comp.SetOutOfDate(defaultOutOfDateDays)
+		comp.CheckIsOutOfDate(testOutOfDateDays)
 		assert.False(t, comp.outOfDate, fmt.Sprintf("Component with hash %q", comp.GitHash))
 	}
 }
 
-func unixTimeAsString(subDays int) string {
+func subtractDays(subDays int) string {
 	if subDays > 0 {
 		return strconv.FormatInt(time.Now().AddDate(0, 0, -(subDays)).Unix(), 10)
 	}
