@@ -10,7 +10,7 @@ All Secret used in the Prow production cluster must be changed every six months.
 
 ## Preventive measures
 
-Do not include any Secrets in jobs as this can lead to severe security issues.
+Make sure that jobs do not include any Secrets that are available in the output as this can lead to severe security issues.
 
 ## Offboarding checklist
 
