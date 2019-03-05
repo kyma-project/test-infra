@@ -15,7 +15,7 @@ Creating a CI pipeline is a two-step process:
 - You need to define a ProwJob according to steps defined in this section.
 - You need to add the job to a release from which you want it to be available. This requires some modifications to the created ProwJob. For details on how to do that, see [this](./release-jobs.md) document which explains how to work with the release jobs.
 
-> **NOTE:** Do not write jobs that emit secrets to the output! This can lead to severe problems.
+> **NOTE:** Make sure that jobs do not include any Secrets that are available in the output as this can lead to severe security issues.
 
 ### Create a presubmit job
 
