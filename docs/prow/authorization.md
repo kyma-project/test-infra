@@ -6,11 +6,12 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 
 | Service account name          | Usage                                                      | Required roles |
 | :---------------------------- | :----------------------------------------------------------| :------------- |
-| **sa-gcs-plank**              | Used by Prow plan microservice | `Storage Object Admin`
-| **sa-gke-kyma-integration**   | Running integration tests on GKE cluster | `Compute Admin`, `Kubernetes Engine Admin`, `Kubernetes Engine Cluster Admin`, `DNS Administrator`, `Service Account User`, `Storage Admin`
-| **sa-kyma-artifacts**         | Saving release artifacts to the GCS bucket | `Storage Object Admin`
-| **sa-vm-kyma-integration**    | Running integration tests on minikube | `Compute Instance Admin (beta)`, `Compute OS Admin Login`, `Service Account User`
-| **sa-gcr-push-kyma-project**  | Publishing docker images | `Storage Admin`
+| **sa-gcs-plank**              | Used by Prow plank microservice. | `Storage Object Admin` (`roles/storage.objectAdmin`) in the `kyma-prow-logs` bucket
+| **sa-gke-kyma-integration**   | Runs integration tests on a GKE cluster. | `Compute Admin` (`roles/compute.admin`), `Kubernetes Engine Admin` (`roles/container.admin`), `Kubernetes Engine Cluster Admin` (`roles/container.clusterAdmin`), `DNS Administrator` (`roles/dns.admin`), `Service Account User` (`roles/iam.serviceAccountUser`), `Storage Admin` (`roles/storage.admin`)
+| **sa-kyma-artifacts**         | Saves release and development artifacts to the GCS bucket. | `Storage Object Admin` (`roles/storage.objectAdmin`)
+| **sa-vm-kyma-integration**    | Runs integration tests on Minikube. | `Compute Instance Admin (beta)` (`roles/compute.instanceAdmin`), `Compute OS Admin Login` (`roles/compute.osAdminLogin`), `Service Account User` (`roles/iam.serviceAccountUser`)
+| **sa-gcr-push-kyma-project**  | Publishes Docker images. | `Storage Object Creator` (`roles/storage.objectCreator`) in the `eu.artifacts.kyma-project.appspot.com` and `artifacts.kyma-project.appspot.com` buckets
+
 
 ## Kubernetes RBAC roles on Prow cluster
 

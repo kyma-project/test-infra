@@ -62,25 +62,16 @@ For the purpose of the installation, you must have a set of service accounts and
 
 2. Create the following service accounts, role bindings, and private keys. Encrypt them using Key Management Service (KMS), and upload them to your Secret storage bucket:
 
-   - **sa-gke-kyma-integration** with roles that allow the account to manage Kubernetes clusters and their resources:
-    - Compute Admin (`roles/compute.admin`)
-    - Kubernetes Engine Admin (`roles/container.admin`)
-    - Kubernetes Engine Cluster Admin (`roles/container.clusterAdmin`)
-    - DNS Administrator (`roles/dns.admin`)
-    - Service Account User (`roles/iam.serviceAccountUser`)
-    - Storage Admin (`roles/storage.admin`)
- - **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines:
-    - Compute Instance Admin (beta) (`roles/compute.instanceAdmin`)
-    - Compute OS Admin Login (`roles/compute.osAdminLogin`)
-    - Service Account User (`roles/iam.serviceAccountUser`)
- - **sa-gcs-plank** with the role that allows the account to store objects in a bucket:
-    - Storage Object Admin (`roles/storage.objectAdmin`)
- - **sa-gcr-push-kyma-project** with the role that allows the account to push images to Google Container Repository in the `kyma-project` GCP project:
-    - Storage Admin (`roles/storage.admin`)
- - **kyma-bot-npm-token** which is a token for publishing npm packages
+ - **sa-gke-kyma-integration** with roles that allow the account to manage Kubernetes clusters and their resources.
+ - **sa-vm-kyma-integration** with roles that allow the account to provision virtual machines.
+ - **sa-gcs-plank** with the role that allows the account to store objects in a bucket.
+ - **sa-gcr-push-kyma-project** with the role that allows the account to push images to Google Container Repository in the `kyma-project` GCP project.
+ - **kyma-bot-npm-token** which is a token for publishing npm packages.
  - **sap-slack-bot-token** which is a token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).
- - **sa-kyma-artifacts** service account with role that allows the account to store objects in a bucket:
-    - Storage Object Admin (`roles/storage.objectAdmin`)
+ - **sa-kyma-artifacts** service account with the role that allows the account to store objects in a bucket.
+    
+For more information about roles, read [this](./authorization.md) document.
+
 
 ## Install Prow
 
