@@ -18,6 +18,6 @@ Find out more about:
 
 - [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
 - [ProwJobs](./prow-jobs.md) for details on ProwJobs.
-- [Offboarding steps](offboarding-checklist.md) to perform when someone leaves the project.
+- [Security mitigations](security-mitigations.md) for production Prow cluster.
 - [Presets](./presets.md) you can use to define ProwJobs.
 - [Authorization](./authorization.md) concepts employed in Prow.
