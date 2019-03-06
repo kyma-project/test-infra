@@ -90,9 +90,10 @@ shout "Copying Kyma to the instance"
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-   gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
-     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
 shout "Triggering the installation"
+
 gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
