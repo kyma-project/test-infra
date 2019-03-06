@@ -18,12 +18,12 @@ func TestVarkesJobMasterPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	varkesPresubmits, ex := jobConfig.Presubmits["kyma-incubator/varkes"]
 	assert.True(t, ex)
-	assert.Len(t, varkesPresubmits, 2)
+	assert.Len(t, varkesPresubmits, 1)
 
 	masterPresubmit := tester.FindPresubmitJobByName(varkesPresubmits, jobName, "master")
 	expName := jobName
 	assert.Equal(t, expName, masterPresubmit.Name)
-	assert.Equal(t, []string{"master"}, masterPresubmit.Branches)
+	assert.Equal(t, []string{"master", "release"}, masterPresubmit.Branches)
 	assert.Equal(t, 10, masterPresubmit.MaxConcurrency)
 	assert.False(t, masterPresubmit.SkipReport)
 	assert.True(t, masterPresubmit.Decorate)
@@ -34,6 +34,7 @@ func TestVarkesJobMasterPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, masterPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, masterPresubmit.Spec.Containers[0].Args)
 }
+
 func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	// WHEN
 	const jobName = "post-master-varkes"
@@ -59,31 +60,7 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, masterPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, masterPostsubmit.Spec.Containers[0].Args)
 }
-func TestVarkesJobReleasePreSumbit(t *testing.T) {
-	const jobName = "pre-release-varkes"
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/varkes.yaml")
-	// THEN
-	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	varkesPresubmits, ex := jobConfig.Presubmits["kyma-incubator/varkes"]
-	assert.True(t, ex)
-	assert.Len(t, varkesPresubmits, 2)
-
-	releasePresubmit := tester.FindPresubmitJobByName(varkesPresubmits, jobName, "release")
-	expName := jobName
-	assert.Equal(t, expName, releasePresubmit.Name)
-	assert.Equal(t, []string{"release"}, releasePresubmit.Branches)
-	assert.Equal(t, 10, releasePresubmit.MaxConcurrency)
-	assert.False(t, releasePresubmit.SkipReport)
-	assert.True(t, releasePresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/varkes", releasePresubmit.PathAlias)
-	tester.AssertThatHasExtraRefTestInfra(t, releasePresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, releasePresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, tester.ImageNodeBuildpackLatest, releasePresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, releasePresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, releasePresubmit.Spec.Containers[0].Args)
-}
 func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	// WHEN
 	const jobName = "post-release-varkes"
