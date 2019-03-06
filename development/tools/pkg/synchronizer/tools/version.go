@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	sc "github.com/kyma-project/test-infra/development/tools/cmd/synchronizer/syncomponent"
+	sc "github.com/kyma-project/test-infra/development/tools/pkg/synchronizer/syncomponent"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
@@ -43,29 +43,30 @@ func (v *Components) UnmarshalYAML(unmarshal func(interface{}) error) error {
 func FindComponentVersion(rootDir string, component *sc.Component) error {
 	for _, version := range component.Versions {
 		yamlContent, err := valueYamlContent(rootDir, version.VersionPath, versionFile)
-		err = findVersion(yamlContent, component.Name, version)
+		versionValue, err := findVersion(yamlContent, component.Name)
 		if err != nil {
 			return errors.Wrapf(err, "while find component version in %s/%s", version.VersionPath, versionFile)
 		}
+		version.Version = versionValue
 	}
 
 	return nil
 }
 
-func findVersion(yamlContent []byte, name string, version *sc.ComponentVersions) error {
+func findVersion(yamlContent []byte, name string) (string, error) {
 	var val Values
 	err := yaml.Unmarshal(yamlContent, &val)
 	if err != nil {
-		return errors.Wrapf(err, "while unmarshal file %s/%s", version.VersionPath, versionFile)
+		return "", errors.Wrapf(err, "while unmarshal file %s", versionFile)
 	}
 
 	for componentName, componentValue := range val.Global.element {
 		if name == componentName {
-			version.Version = componentValue.Version
+			return componentValue.Version, nil
 		}
 	}
 
-	return nil
+	return "", errors.Errorf("component %q not exist for the indicated version file path", name)
 }
 
 func valueYamlContent(rootDir, path, file string) ([]byte, error) {

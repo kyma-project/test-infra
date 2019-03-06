@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	sc "github.com/kyma-project/test-infra/development/tools/cmd/synchronizer/syncomponent"
-	t "github.com/kyma-project/test-infra/development/tools/cmd/synchronizer/tools"
+	sc "github.com/kyma-project/test-infra/development/tools/pkg/synchronizer/syncomponent"
+	t "github.com/kyma-project/test-infra/development/tools/pkg/synchronizer/tools"
 	"github.com/pkg/errors"
 )
 
@@ -47,11 +47,14 @@ func main() {
 	if rootDir == "" {
 		log.Fatalf("missing env: %s", envKymaProjectDir)
 	}
+	sendMessageToSlack := true
 	if slackToken == "" {
-		log.Fatalf("missing env: %s", envSlackClientToken)
+		sendMessageToSlack = false
+		log.Printf("missing env: %s, alert message will not be sent to slack", envSlackClientToken)
 	}
 	if slackChannel == "" {
-		log.Fatalf("missing env: %s", envSlackClientChannel)
+		sendMessageToSlack = false
+		log.Printf("missing env: %s, alert message will not be sent to slack", envSlackClientChannel)
 	}
 
 	storage, err := generateComponentStorage(rootDir)
@@ -67,13 +70,19 @@ func main() {
 		return
 	}
 
-	messages := make([]t.Message, alertAmount)
-	for i := range reports {
-		messages[i] = reports[i]
+	for _, report := range reports {
+		log.Printf("Component %q is out of date: \n%s \n", report.GetTitle(), report.GetValue())
 	}
-	err = t.SendMessage(slackToken, strings.Trim(slackChannel, "#"), messages)
-	if err != nil {
-		log.Fatal(err.Error())
+
+	if sendMessageToSlack {
+		messages := make([]t.Message, alertAmount)
+		for i := range reports {
+			messages[i] = reports[i]
+		}
+		err = t.SendMessage(slackToken, strings.Trim(slackChannel, "#"), messages)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 	}
 }
 
@@ -136,12 +145,12 @@ func fillComponentStorage(dir string, storage *ComponentStorage, expiryDays int)
 		}
 		component.GitHash = hash
 
-		// find component date commit
-		date, err := t.FindCommitDate(dir, component.Path)
+		// find component git hashes and commits date
+		gitHistory, err := t.FetchCommitsHistory(dir, component.Path, expiryDays)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
-		component.CommitDate = date
+		component.GitHashHistory = gitHistory
 
 		// find component versions
 		err = t.FindComponentVersion(dir, component)
@@ -149,15 +158,16 @@ func fillComponentStorage(dir string, storage *ComponentStorage, expiryDays int)
 			log.Fatal(err.Error())
 		}
 
-		// find modified files beetwen versions and hash
+		// find modified files beetwen versions and the oldest allowed hash
 		for _, version := range component.Versions {
-			files, err := t.FindFileDifference(dir, component.Path, component.GitHash, version.Version)
+			files, err := t.FindFileDifference(dir, component.Path, component.GetOldest(), version.Version)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 			version.ModifiedFiles = files
 		}
-		component.CheckIsOutOfDate(expiryDays)
+
+		component.CheckIsOutOfDate()
 	}
 }
 

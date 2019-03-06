@@ -3,7 +3,7 @@ package tools
 import (
 	"testing"
 
-	sc "github.com/kyma-project/test-infra/development/tools/cmd/synchronizer/syncomponent"
+	sc "github.com/kyma-project/test-infra/development/tools/pkg/synchronizer/syncomponent"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -62,14 +62,16 @@ func TestFindVersion(t *testing.T) {
 	}
 
 	// When
-	findVersion([]byte(testYaml), ts.Name, ts.Versions[0])
+	ver, err := findVersion([]byte(testYaml), ts.Name)
 
 	// Then
-	assert.Equal(t, "1a1a1a1a", ts.Versions[0].Version)
+	assert.Equal(t, "1a1a1a1a", ver)
+	assert.Empty(t, err)
 
 	// When
-	findVersion([]byte(wrongYaml), ts.Name, ts.Versions[1])
+	verEmpty, err := findVersion([]byte(wrongYaml), ts.Name)
 
 	// Then
-	assert.Equal(t, "", ts.Versions[1].Version)
+	assert.Equal(t, "", verEmpty)
+	assert.NotEmpty(t, err)
 }

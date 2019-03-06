@@ -1,21 +1,19 @@
 package syncomponent
 
 import (
-	"log"
+	"math"
 	"regexp"
-	"strconv"
 	"strings"
-	"time"
 )
 
 // Component represents the element for which version will be checked
 type Component struct {
-	Name       string
-	Path       string
-	GitHash    string
-	CommitDate string
-	outOfDate  bool
-	Versions   []*ComponentVersions
+	Name           string
+	Path           string
+	GitHash        string
+	GitHashHistory map[int64]string
+	outOfDate      bool
+	Versions       []*ComponentVersions
 }
 
 // ComponentVersions is a part of Component which includes information about version
@@ -38,31 +36,51 @@ func NewSynComponent(componentPath string, versionPaths []string) *Component {
 	nameDash := nameElements[len(nameElements)-1]
 	name := strings.Replace(nameDash, "-", "_", -1)
 
+	history := make(map[int64]string)
+
 	return &Component{
-		Name:     name,
-		Path:     componentPath,
-		Versions: componentVersions,
+		Name:           name,
+		Path:           componentPath,
+		GitHashHistory: history,
+		Versions:       componentVersions,
 	}
 }
 
-// CheckIsOutOfDate determines whether a given component is not expired
-func (c *Component) CheckIsOutOfDate(outOfDateDays int) {
-	days := daysDelta(c.CommitDate, time.Now().Unix())
-	if days <= outOfDateDays {
-		log.Printf("Component %q does not achive the limit of days %d (limit is %d)", c.Name, days, outOfDateDays)
-		return
+// GetOldest returns the oldest allowed hash commit of component
+func (c Component) GetOldest() string {
+	if len(c.GitHashHistory) == 0 {
+		return c.GitHash
 	}
 
+	oldest := int64(math.MaxInt64)
+	for key := range c.GitHashHistory {
+		if oldest > key {
+			oldest = key
+		}
+	}
+
+	return c.GitHashHistory[oldest]
+}
+
+// CheckIsOutOfDate determines whether a given component is not expired
+func (c *Component) CheckIsOutOfDate() {
 	for _, ver := range c.Versions {
-		ver.checkIsOutOfDate(c.GitHash)
+		ver.checkIsOutOfDate(c.GitHash, c.GitHashHistory)
 		c.outOfDate = ver.outOfDate
 	}
 }
 
-func (cv *ComponentVersions) checkIsOutOfDate(hash string) {
-	cut := hash[:len(cv.Version)]
+func (cv *ComponentVersions) checkIsOutOfDate(currentHash string, hashHistory map[int64]string) {
+	cut := currentHash[:len(cv.Version)]
 	if cut == cv.Version {
 		return
+	}
+
+	for _, hash := range hashHistory {
+		cut = hash[:len(cv.Version)]
+		if cv.Version == cut {
+			return
+		}
 	}
 
 	foundSourceCodeFiles := false
@@ -79,13 +97,4 @@ func (cv *ComponentVersions) checkIsOutOfDate(hash string) {
 	}
 
 	cv.outOfDate = true
-}
-
-func daysDelta(unixString string, unixToday int64) int {
-	unixHashCommit, err := strconv.ParseInt(unixString, 10, 64)
-	if err != nil {
-		log.Fatalf("Cannot convert hash commit date %q to unix time: %s", unixString, err)
-	}
-
-	return int((unixToday - unixHashCommit) / (60 * 60 * 24))
 }

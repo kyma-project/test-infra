@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -57,8 +56,7 @@ func prettyMessage(c *Component) string {
 			"The version of the _%q_ component is *%s*", version.VersionPath, version.Version))
 	}
 	parts = append(parts, fmt.Sprintf(
-		"The version of the current commit from _%s_ is *%s*",
-		prettyTime(c.CommitDate),
+		"The current component commit is *%s*",
 		c.GitHash[:8],
 	))
 
@@ -72,20 +70,46 @@ func currentVersionLog(c *Component) string {
 	}
 
 	return fmt.Sprintf(
-		"Component %q is not expired. \n "+
-			"Component hash: %s, component %s \n "+
-			"Last commit was made: %s "+
+		"Component %q is not expired. \n"+
+			"Component hash: %s, component %s"+
+			prettyVersionContainsGitHistory(c)+
 			prettyFilesExstensionList(c.Versions),
 		c.Name,
 		c.GitHash,
-		prettyTime(c.CommitDate),
 		strings.Join(versionMsg, ","),
 	)
 }
 
-func prettyTime(unix string) string {
-	i, _ := strconv.ParseInt(unix, 10, 64)
-	tm := time.Unix(i, 0)
+func prettyVersionContainsGitHistory(c *Component) string {
+	parts := []string{}
+
+	for _, ver := range c.Versions {
+		cut := c.GitHash[:len(ver.Version)]
+		if cut == ver.Version {
+			continue
+		}
+		for date, hash := range c.GitHashHistory {
+			cut = hash[:len(ver.Version)]
+			if ver.Version == cut {
+				parts = append(parts, fmt.Sprintf(
+					"The version %q is included in the permitted log history: %s from %s",
+					ver.Version,
+					cut,
+					prettyTime(date),
+				))
+			}
+		}
+	}
+
+	if len(parts) == 0 {
+		return ""
+	}
+
+	return fmt.Sprintf("(%s)", strings.Join(parts, ","))
+}
+
+func prettyTime(unix int64) string {
+	tm := time.Unix(unix, 0)
 
 	return fmt.Sprintf("%d %s %d %d:%d:%d", tm.Day(), tm.Month(), tm.Year(), tm.Hour(), tm.Minute(), tm.Second())
 }
