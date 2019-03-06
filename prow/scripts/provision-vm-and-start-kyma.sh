@@ -13,6 +13,14 @@ cleanup() {
     exit $ARG
 }
 
+function testCustomImage() {
+    CUSTOM_IMAGE="$1"
+    IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
+    if [[ -z "$IMAGE_EXISTS" ]]; then
+        shout "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
+    fi
+}
+
 authenticate
 
 RANDOM_ID=$(openssl rand -hex 4)
@@ -33,6 +41,7 @@ do
     case ${key} in
         --image)
             IMAGE="$2"
+            testCustomImage "${IMAGE}"
             shift
             shift
             ;;
@@ -48,12 +57,6 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
-IMAGE_EXISTS=$(gcloud compute images list --filter "${IMAGE}" | tail -n +2 | awk '{print $1}')
-
-if [[ -z "$IMAGE_EXISTS" ]]; then
-    shout "${IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
-fi
 
 if [[ -z "$IMAGE" ]]; then
     shout "Provisioning vm using the latest default custom image ..."   
@@ -87,10 +90,9 @@ shout "Copying Kyma to the instance"
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+   gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
+     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
 shout "Triggering the installation"
-
 gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
