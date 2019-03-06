@@ -10,7 +10,7 @@ import (
 
 func TestVarkesJobMasterPresubmit(t *testing.T) {
 	// WHEN
-	const jobName = "pre-master-varkes"
+	const jobName = "pre-varkes"
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/varkes.yaml")
 	// THEN
 	require.NoError(t, err)

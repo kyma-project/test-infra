@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/varkes:
-    - name: pre-master-varkes
+    - name: pre-varkes
       branches:
         - master
         - release
