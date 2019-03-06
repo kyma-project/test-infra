@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/etcd-backup"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/etcd-backup-job"
         resources:
           requests:
             memory: 1.5Gi
@@ -29,11 +29,11 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-tools-etcd-backup
+    - name: pre-master-kyma-components-etcd-backup-job
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tools/etcd-backup/"
+      run_if_changed: "^components/etcd-backup-job/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
@@ -65,11 +65,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-tools-etcd-backup
+    - name: post-master-kyma-components-etcd-backup-job
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tools/etcd-backup/"
+      run_if_changed: "^components/etcd-backup-job/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
