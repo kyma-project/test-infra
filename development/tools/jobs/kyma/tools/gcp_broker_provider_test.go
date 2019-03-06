@@ -83,3 +83,15 @@ func TestGCPBrokerProviderJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/gcp-broker-provider"}, actualPost.Spec.Containers[0].Args)
 }
+
+func getSupportedReleases(unsupportedReleases []string) []string {
+	var supportedReleases []string
+
+	for _, rel := range tester.GetAllKymaReleaseBranches() {
+		if !contains(unsupportedReleases, rel) {
+			supportedReleases = append(supportedReleases, rel)
+		}
+	}
+
+	return supportedReleases
+}
