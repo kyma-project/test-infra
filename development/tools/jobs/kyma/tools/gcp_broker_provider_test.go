@@ -95,3 +95,13 @@ func getSupportedReleases(unsupportedReleases []string) []string {
 
 	return supportedReleases
 }
+
+func contains(array []string, str string) bool {
+	for _, e := range array {
+		if str == e {
+			return true
+		}
+	}
+
+	return false
+}
