@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestVarkesJobMasterPresubmit(t *testing.T) {
+func TestVarkesJobPresubmit(t *testing.T) {
 	// WHEN
 	const jobName = "pre-varkes"
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/varkes/varkes.yaml")
