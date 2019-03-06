@@ -71,6 +71,7 @@ postsubmits:
       branches:
         - master
       <<: *job_template
+      run_if_changed: "^tools/gcp-broker-provider/"
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
