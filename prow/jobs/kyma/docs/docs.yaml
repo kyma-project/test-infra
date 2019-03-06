@@ -73,6 +73,7 @@ presubmits: # runs on PRs
       - <<: *website_ref
       labels:
         <<: *job_labels_template
+        preset-build-release: "true"
     - name: pre-rel08-kyma-docs
       branches:
       - release-0.8

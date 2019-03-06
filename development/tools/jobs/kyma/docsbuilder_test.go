@@ -17,7 +17,7 @@ func TestDocsBuilderJobPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 2)
+	assert.Len(t, kymaPresubmits, 3)
 
 	expName := "pre-master-kyma-tools-docsbuilder"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
