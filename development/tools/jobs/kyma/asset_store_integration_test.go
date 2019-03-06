@@ -14,7 +14,7 @@ func TestAssetStoreIntegrationReleases(t *testing.T) {
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/asset-store/asset-store.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/asset-store/asset-store.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-asset-store", currentRelease), currentRelease)
@@ -25,7 +25,7 @@ func TestAssetStoreIntegrationReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest,           "/home/prow/go/src/github.com/kyma-project/kyma/tests/asset-store")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/asset-store")
 		})
 	}
 }

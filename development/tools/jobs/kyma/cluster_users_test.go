@@ -14,7 +14,7 @@ func TestClusterUsersTestReleases(t *testing.T) {
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/cluster-users-test/cluster-users-test.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/cluster-users-test/cluster-users-test.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-cluster-users-test", currentRelease), currentRelease)

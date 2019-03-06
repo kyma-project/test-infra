@@ -14,7 +14,7 @@ func TestEndToEndBackupRstoreTestReleases(t *testing.T) {
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/end-to-end/backup-restore-test/backup-restore-test.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/end-to-end/backup-restore-test/backup-restore-test.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-end-to-end-backup-restore-test", currentRelease), currentRelease)
@@ -29,7 +29,6 @@ func TestEndToEndBackupRstoreTestReleases(t *testing.T) {
 		})
 	}
 }
-
 
 func TestEndToEndBackupRstoreTestJobsPresubmit(t *testing.T) {
 	// WHEN

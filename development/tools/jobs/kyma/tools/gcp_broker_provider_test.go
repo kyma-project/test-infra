@@ -7,13 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
 func TestGCPBrokerProviderReleases(t *testing.T) {
 	// WHEN
 	unsupportedReleases := []string{"release-0.6"}
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tools-gcp-broker-provider", currentRelease), currentRelease)

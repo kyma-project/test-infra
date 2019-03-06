@@ -7,13 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
 func TestAssetUploadServiceReleases(t *testing.T) {
 	// WHEN
 	unsupportedReleases := []string{"release-0.6", "release-0.7"}
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-asset-upload-service", currentRelease), currentRelease)

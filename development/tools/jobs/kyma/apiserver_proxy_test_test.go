@@ -14,7 +14,7 @@ func TestApiserverProxyTestReleases(t *testing.T) {
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-apiserver-proxy-test", currentRelease), currentRelease)

@@ -99,7 +99,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 	allDNSRecords, err := gc.listDNSRecords(project, managedZone)
 
 	if err != nil {
-		log.Error("listing DNS Records for project \"%s\" and zone \"%s\", %v", project, managedZone, err)
+		log.Errorf("listing DNS Records for project \"%s\" and zone \"%s\", %v", project, managedZone, err)
 		return false, err
 	}
 

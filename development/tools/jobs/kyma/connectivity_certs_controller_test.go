@@ -14,7 +14,7 @@ func TestConnectivityCertsControllerReleases(t *testing.T) {
 
 	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-            jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/connectivity-certs-controller/connectivity-certs-controller.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/connectivity-certs-controller/connectivity-certs-controller.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-connectivity-certs-controller", currentRelease), currentRelease)
