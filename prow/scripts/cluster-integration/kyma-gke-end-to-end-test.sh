@@ -232,6 +232,7 @@ shout "Success cluster created"
 shout "End To End Test"
 date
 cd "${KYMA_SCRIPTS_DIR}"
+set +e
 ./e2e-testing.sh
 TEST_STATUS=$?
 if [ ${TEST_STATUS} -ne 0 ]
