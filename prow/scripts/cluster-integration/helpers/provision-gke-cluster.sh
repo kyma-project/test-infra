@@ -36,7 +36,7 @@ fi
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
 NUM_NODES_PARAM="--num-nodes=3"
-CLUSTER_IPV4_CIDR="--cluster-ipv4-cidr=10.0.0.0/24"
+CLUSTER_IPV4_CIDR="--cluster-ipv4-cidr=10.0.0.0/19"
 
 if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
 if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
