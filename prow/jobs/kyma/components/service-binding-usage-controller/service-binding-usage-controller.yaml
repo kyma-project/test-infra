@@ -10,17 +10,17 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/etcd-tls-setup"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
+    - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-project/kyma/components/service-binding-usage-controller"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -29,18 +29,18 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-tools-etcd-tls-setup
+  - name: pre-master-kyma-components-service-binding-usage-controller
     branches:
-      - master
+    - master
     <<: *job_template
-    run_if_changed: "^tools/etcd-tls-setup/"
+    run_if_changed: "^components/service-binding-usage-controller/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel06-kyma-tools-etcd-tls-setup
+  - name: pre-rel06-kyma-components-binding-usage-controller
     branches:
     - release-0.6
     <<: *job_template
@@ -51,7 +51,7 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
-  - name: pre-rel07-kyma-tools-etcd-tls-setup
+  - name: pre-rel07-kyma-components-binding-usage-controller
     branches:
     - release-0.7
     <<: *job_template
@@ -65,11 +65,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-  - name: post-master-kyma-tools-etcd-tls-setup
+  - name: post-master-kyma-components-service-binding-usage-controller
     branches:
-      - master
+    - master
     <<: *job_template
-    run_if_changed: "^tools/etcd-tls-setup/"
+    run_if_changed: "^components/service-binding-usage-controller/"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
