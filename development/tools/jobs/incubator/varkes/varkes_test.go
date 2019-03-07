@@ -54,7 +54,6 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"master"}, masterPostsubmit.Branches)
 	assert.Equal(t, 10, masterPostsubmit.MaxConcurrency)
 	assert.True(t, masterPostsubmit.Decorate)
-	assert.True(t, masterPostsubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-incubator/varkes", masterPostsubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPostsubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, masterPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
@@ -79,7 +78,6 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	expName := jobName
 	assert.Equal(t, expName, releasePostsubmit.Name)
 	assert.Equal(t, []string{"release"}, releasePostsubmit.Branches)
-	assert.True(t, releasePostsubmit.AlwaysRun)
 	assert.Equal(t, 10, releasePostsubmit.MaxConcurrency)
 	assert.True(t, releasePostsubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/varkes", releasePostsubmit.PathAlias)
