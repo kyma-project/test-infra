@@ -576,7 +576,7 @@ periodics:
             cpu: 80m
 
 - name: kyma-gke-end-to-end-test-backup-restore
-  cron: "0 * * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  cron: "0 * * * 5" # "At 05:00 on every day-of-week from Monday through Friday."
   labels:
     preset-build-master: "true"
     preset-weekly-github-integration: "true"
