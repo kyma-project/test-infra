@@ -237,7 +237,9 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
+    - org: crabtree
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
       base_ref: network-test
 
 postsubmits:
