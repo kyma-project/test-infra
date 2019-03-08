@@ -46,6 +46,8 @@ func main() {
 	}
 	if rootDir == "" {
 		log.Fatalf("missing env: %s", envKymaProjectDir)
+	} else {
+		rootDir = strings.TrimRight(rootDir, "/") + "/kyma"
 	}
 	sendMessageToSlack := true
 	if slackToken == "" {
@@ -121,7 +123,7 @@ func generateComponentStorage(dir string) (*ComponentStorage, error) {
 	}
 
 	if err := filepath.Walk(dir, runner); err != nil {
-		return nil, errors.Wrapf(err, "while walking for %q directory: %s")
+		return nil, errors.Wrapf(err, "while walking for %q directory.", dir)
 	}
 
 	return storage, nil

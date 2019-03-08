@@ -636,6 +636,8 @@ periodics:
         - "-c"
         - "${KYMA_PROJECT_DIR}/test-infra/development/tools/scripts/synchronizer-entrypoint.sh ${KYMA_PROJECT_DIR}/test-infra/development"
         env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
             value: "#c4core-kyma-ci-force"
           - name: OUT_OF_DATE_DAYS
