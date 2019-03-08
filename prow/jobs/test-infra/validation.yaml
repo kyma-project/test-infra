@@ -52,3 +52,59 @@ presubmits:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+     - name: Cert-delme
+    #cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    branches:
+    - master
+    always_run: true
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+      preset-stability-checker-slack-notifications: "false"
+      preset-nightly-github-integration: "false"
+    decorate: true
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+    spec:
+      volumes:
+      - name: sa-stability-fluentd-storage-writer
+        secret:
+          secretName: sa-stability-fluentd-storage-writer
+      containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: sa-stability-fluentd-storage-writer
+          mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+          readOnly: true
+        command:
+        - "bash"
+        env:
+        - name: INPUT_CLUSTER_NAME
+          value: "nightly"
+        - name: TEST_RESULT_WINDOW_TIME
+          value: "6h"
+        - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+          value: "#c4core-kyma-ci-force"
+        - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+          value: "cluster-access"
+        - name: KYMA_ALERTS_SLACK_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: kyma-alerts-slack-api-url
+              key: secret
+        - name: KYMA_ALERTS_CHANNEL
+          value: "#c4core-kyma-ci-force"
+        args:
+        - "-c"
+        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
