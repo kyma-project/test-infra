@@ -412,7 +412,7 @@ periodics:
           cpu: 400m
 
 - name: kyma-gke-nightly
-  cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+  cron: "10 0-23 * * *" # "Every 10 mintutes"
   labels:
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
