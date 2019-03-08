@@ -63,6 +63,13 @@ removeCluster() {
     TMP_STATUS=$?
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
+    if [ -n "${CLEANUP_NETWORK}" ]; then
+        shout "Delete network"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    fi
+
 	shout "Delete Gateway DNS Record"
 	date
 	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
@@ -172,6 +179,14 @@ echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
 shout "Create DNS Record for Remote Environments IP"
 date
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+
+
+export GCLOUD_NETWORK_NAME="net-${CLUSTER_NAME}"
+export GCLOUD_SUBNET_NAME="subnet-${CLUSTER_NAME}"
+shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+date
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+CLEANUP_NETWORK="true"
 
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""

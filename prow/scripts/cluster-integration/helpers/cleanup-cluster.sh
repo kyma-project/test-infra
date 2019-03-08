@@ -15,7 +15,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 function cleanup() {
 	discoverUnsetVar=false
 
-	for var in CLUSTER_NAME TEST_INFRA_SOURCES_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS CLOUDSDK_COMPUTE_REGION; do
+	for var in GCLOUD_NETWORK_NAME GCLOUD_SUBNET_NAME CLUSTER_NAME TEST_INFRA_SOURCES_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS CLOUDSDK_COMPUTE_REGION; do
 		if [ -z "${!var}" ] ; then
 			echo "ERROR: $var is not set"
 			discoverUnsetVar=true
@@ -51,6 +51,11 @@ function removeCluster() {
 
 	shout "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+	shout "Delete network"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
