@@ -1,0 +1,41 @@
+#!/bin/bash
+# Source development/prow/set-up-workload-cluster.sh
+set -o errexit
+
+### 
+readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly KUBECONFIG=${KUBECONFIG:-"${HOME}/.kube/config"}
+readonly PROW_WORKLOAD_CLUSTER_DIR="$( cd "${CURRENT_DIR}/workload-cluster" && pwd )"
+
+if [ -z "$BUCKET_NAME" ]; then
+      echo "\$BUCKET_NAME is empty"
+      exit 1
+fi
+
+if [ -z "$KEYRING_NAME" ]; then
+      echo "\$KEYRING_NAME is empty"
+      exit 1
+fi
+
+if [ -z "$ENCRYPTION_KEY_NAME" ]; then
+      echo "\$ENCRYPTION_KEY_NAME is empty"
+      exit 1
+fi
+
+if [ -z "${LOCATION}" ]; then
+    LOCATION="global"
+fi
+
+# requried by secretspopulator
+if [ -z "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
+      echo "\$GOOGLE_APPLICATION_CREDENTIALS is empty"
+      exit 1
+fi
+
+if [ -z "$PROJECT" ]; then
+      echo "\$PROJECT is empty"
+      exit 1
+fi
+
+# Create secrets
+go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_WORKLOAD_CLUSTER_DIR}/required-secrets.yaml"
