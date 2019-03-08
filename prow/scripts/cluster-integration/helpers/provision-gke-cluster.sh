@@ -14,6 +14,7 @@
 # - MACHINE_TYPE - the type of machine to use for nodes
 # - NUM_NODES - the number of nodes to be created
 # - ADDITIONAL_LABELS - labels applied on the cluster
+# - GCLOUD_NETWORK_NAME - netowrk name for the cluster
 #
 # REQUIREMENTS:
 # - gcloud
@@ -36,10 +37,12 @@ fi
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
 NUM_NODES_PARAM="--num-nodes=3"
+NETWORK_PARAM="--network=default"
 
 if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
 if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
 if [ "${NUM_NODES}" ]; then NUM_NODES_PARAM="--num-nodes=${NUM_NODES}"; fi
+if [ "${GCLOUD_NETWORK_NAME}" ]; then GCLOUD_NETWORK_NAME="--network=${GCLOUD_NETWORK_NAME}"; fi
 
 APPENDED_LABELS=""
 if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
@@ -51,4 +54,4 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-gcloud container clusters create "${CLUSTER_NAME}" "${CLUSTER_VERSION_PARAM}" "${MACHINE_TYPE_PARAM}" "${NUM_NODES_PARAM}" "${LABELS_PARAM[@]}"
+gcloud container clusters create "${CLUSTER_NAME}" "${CLUSTER_VERSION_PARAM}" "${MACHINE_TYPE_PARAM}" "${NUM_NODES_PARAM}" "${NETWORK_PARAM}" "${LABELS_PARAM[@]}"
