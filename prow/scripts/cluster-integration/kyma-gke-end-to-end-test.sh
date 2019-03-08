@@ -48,7 +48,7 @@ removeCluster() {
     EXIT_STATUS=$?
 
     shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}"  --format=json | jq --raw-output '.createTime' | cut -f1 -d"T" | sed "s/-//g")
 
     shout "Deprovision cluster: \"${CLUSTER_NAME}\""
     date
@@ -232,6 +232,7 @@ shout "Success cluster created"
 shout "End To End Test"
 date
 cd "${KYMA_SCRIPTS_DIR}"
+set +e
 ./e2e-testing.sh
 TEST_STATUS=$?
 if [ ${TEST_STATUS} -ne 0 ]
