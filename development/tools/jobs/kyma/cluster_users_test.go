@@ -25,7 +25,7 @@ func TestClusterUsersTestReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/cluster-users-test")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageBootstrapLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/cluster-users-test")
 		})
 	}
 }
