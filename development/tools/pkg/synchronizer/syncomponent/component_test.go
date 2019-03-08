@@ -1,7 +1,6 @@
 package syncomponent
 
 import (
-	"fmt"
 	"path/filepath"
 	"testing"
 	"time"
@@ -44,13 +43,12 @@ func TestComponent_AddGitHashHistory(t *testing.T) {
 	component.GitHashHistory = history
 
 	// Then
-	assert.Equal(t, "a1a1a1a1", component.GetOldest())
+	assert.Equal(t, "a1a1a1a1", component.GetOldestAllowed())
 }
 
 func Test_isOutOfDate(t *testing.T) {
-	// Given
-	tsTrue := []Component{
-		{
+	t.Run("component should be out of date beacuse version is not equal to current hash and not contains in git history", func(t *testing.T) {
+		component := Component{
 			GitHash: "c33e5390",
 			GitHashHistory: map[int64]string{
 				subtractDaysFromToday(5): "4e1e6950",
@@ -61,8 +59,13 @@ func Test_isOutOfDate(t *testing.T) {
 					ModifiedFiles: []string{"/path/to/file.go"},
 				},
 			},
-		},
-		{
+		}
+		component.CheckIsOutOfDate()
+		assert.True(t, component.outOfDate)
+	})
+
+	t.Run("component should be out of date beacuse beacuse one of the version is not equal to current hash and not contains in git history", func(t *testing.T) {
+		component := Component{
 			GitHash: "06e635f8",
 			GitHashHistory: map[int64]string{
 				subtractDaysFromToday(2): "06e635f8",
@@ -78,13 +81,14 @@ func Test_isOutOfDate(t *testing.T) {
 					ModifiedFiles: []string{"/path/to/file"},
 				},
 			},
-		},
-	}
+		}
+		component.CheckIsOutOfDate()
+		assert.True(t, component.outOfDate)
+	})
 
-	tsFalse := []Component{
-		{
-			// is not out of date because component version contained in history logs
-			GitHash: "c33e5390",
+	t.Run("component should not be out of date because component version contained in history logs", func(t *testing.T) {
+		component := Component{
+			GitHash: "86d0ddac",
 			GitHashHistory: map[int64]string{
 				subtractDaysFromToday(0): "86d0ddac3df8e7c4ef77f09158c68fa06566537d",
 				subtractDaysFromToday(1): "b28250b72854bae58398fa599990a70d3844ec8f",
@@ -96,11 +100,16 @@ func Test_isOutOfDate(t *testing.T) {
 					ModifiedFiles: []string{"/path/to/file.go"},
 				},
 			},
-		},
-		{
-			// is not out of date because currrent hash is equal to version
+		}
+		component.CheckIsOutOfDate()
+		assert.False(t, component.outOfDate)
+	})
+
+	t.Run("component should not be out of date because currrent hash is equal to version", func(t *testing.T) {
+		component := Component{
 			GitHash: "a30ed000",
 			GitHashHistory: map[int64]string{
+				subtractDaysFromToday(0): "a30ed000a1b34d21d6812fc5fcd080701c042563",
 				subtractDaysFromToday(1): "fc74b6ed1764c178db8ba0f78736dd9830625b37",
 			},
 			Versions: []*ComponentVersions{
@@ -109,9 +118,13 @@ func Test_isOutOfDate(t *testing.T) {
 					ModifiedFiles: []string{},
 				},
 			},
-		},
-		{
-			//is not out of date because only md file was changed
+		}
+		component.CheckIsOutOfDate()
+		assert.False(t, component.outOfDate)
+	})
+
+	t.Run("component should not be out of date because only md file was changed", func(t *testing.T) {
+		component := Component{
 			GitHash: "8a0d7777",
 			GitHashHistory: map[int64]string{
 				subtractDaysFromToday(0): "6cc6a96358f654bc7a71752efec60f4fb3211c26",
@@ -124,18 +137,10 @@ func Test_isOutOfDate(t *testing.T) {
 					ModifiedFiles: []string{"/path/to/file.md"},
 				},
 			},
-		},
-	}
-
-	// Then
-	for _, comp := range tsTrue {
-		comp.CheckIsOutOfDate()
-		assert.True(t, comp.outOfDate, fmt.Sprintf("Component with hash %q", comp.GitHash))
-	}
-	for _, comp := range tsFalse {
-		comp.CheckIsOutOfDate()
-		assert.False(t, comp.outOfDate, fmt.Sprintf("Component with hash %q", comp.GitHash))
-	}
+		}
+		component.CheckIsOutOfDate()
+		assert.False(t, component.outOfDate)
+	})
 }
 
 func subtractDaysFromToday(subDays int) int64 {

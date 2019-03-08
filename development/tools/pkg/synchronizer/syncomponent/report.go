@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 )
@@ -34,12 +35,14 @@ func GenerateReport(components []*Component) []Report {
 			log.Println(currentVersionLog(c))
 			continue
 		}
+		log.Println(outOfDateVersionLog(c))
 
 		reports = append(reports, Report{
 			componentName: prettyComponentName(c.Name),
 			message:       prettyMessage(c),
 		})
 	}
+	log.Printf("There are %d components with alerts \n", len(reports))
 
 	return reports
 }
@@ -63,21 +66,69 @@ func prettyMessage(c *Component) string {
 	return strings.Join(parts, "\n")
 }
 
-func currentVersionLog(c *Component) string {
+type componentLog struct {
+	elements map[int]string
+}
+
+func newComponentLog() *componentLog {
+	return &componentLog{
+		elements: make(map[int]string),
+	}
+}
+
+func (cl *componentLog) addElement(order int, element string) {
+	cl.elements[order] = element
+}
+
+func (cl componentLog) log() string {
+	var keys []int
+	for k := range cl.elements {
+		keys = append(keys, k)
+	}
+	sort.Ints(keys)
+
+	response := ""
+	for _, k := range keys {
+		response += cl.elements[k] + "\n"
+	}
+
+	return response
+}
+
+func (cl *componentLog) addCurrentHashMessage(order int, c *Component) {
 	var versionMsg []string
 	for _, ver := range c.Versions {
 		versionMsg = append(versionMsg, fmt.Sprintf("versions: %s", ver.Version))
 	}
+	versionMessage := strings.Join(versionMsg, ",")
 
-	return fmt.Sprintf(
-		"Component %q is not expired. \n"+
-			"Component hash: %s, component %s"+
-			prettyVersionContainsGitHistory(c)+
-			prettyFilesExstensionList(c.Versions),
-		c.Name,
-		c.GitHash,
-		strings.Join(versionMsg, ","),
-	)
+	cl.addElement(order, fmt.Sprintf("Component hash: %s, component %s", c.GitHash, versionMessage))
+}
+
+func currentVersionLog(c *Component) string {
+	cLog := newComponentLog()
+	cLog.addElement(1, fmt.Sprintf("Component %q is not expired.", c.Name))
+	cLog.addCurrentHashMessage(2, c)
+
+	gitHistoryLog := prettyVersionContainsGitHistory(c)
+	// if information about contains in git history log is not empty print it
+	// if is empty print information about commited files
+	if gitHistoryLog != "" {
+		cLog.addElement(3, gitHistoryLog)
+	} else {
+		cLog.addElement(4, prettyFilesExstensionList(c.Versions))
+	}
+
+	return cLog.log()
+}
+
+func outOfDateVersionLog(c *Component) string {
+	cLog := newComponentLog()
+	cLog.addElement(1, fmt.Sprintf("Component %q is out of date.", c.Name))
+	cLog.addCurrentHashMessage(2, c)
+	cLog.addElement(3, prettyFilesExstensionList(c.Versions))
+
+	return cLog.log()
 }
 
 func prettyVersionContainsGitHistory(c *Component) string {
@@ -108,19 +159,25 @@ func prettyVersionContainsGitHistory(c *Component) string {
 	return fmt.Sprintf("(%s)", strings.Join(parts, ","))
 }
 
-func prettyTime(unix int64) string {
-	tm := time.Unix(unix, 0)
-
-	return fmt.Sprintf("%d %s %d %d:%d:%d", tm.Day(), tm.Month(), tm.Year(), tm.Hour(), tm.Minute(), tm.Second())
-}
-
 func prettyFilesExstensionList(versions []*ComponentVersions) string {
 	data := make(map[string][]string, len(versions))
 
 	ext := func(files []string) []string {
+		keys := map[string]bool{}
 		resp := []string{}
 		for _, file := range files {
-			resp = append(resp, filepath.Ext(file))
+			ext := filepath.Ext(file)
+			if ext == "" {
+				ext = filepath.Base(file)
+			}
+			if _, value := keys[ext]; value {
+				continue
+			}
+			keys[ext] = true
+			if ext == "." {
+				continue
+			}
+			resp = append(resp, ext)
 		}
 		return resp
 	}
@@ -132,15 +189,21 @@ func prettyFilesExstensionList(versions []*ComponentVersions) string {
 	var response string
 	printMsg := false
 	for name, files := range data {
-		extensions := strings.Join(files, ",")
+		extensions := strings.Join(files, ", ")
 		if extensions != "" {
 			printMsg = true
 		}
-		response += fmt.Sprintf("for version in resource %q: [%s]", name, extensions)
+		response += fmt.Sprintf("\n for version in resource %q: [%s]", name, extensions)
 	}
 
 	if !printMsg {
 		return ""
 	}
-	return fmt.Sprintf("\n File extensions that have been changed: %s \n", response)
+	return fmt.Sprintf("File extensions that have been changed since last allowed commit: %s", response)
+}
+
+func prettyTime(unix int64) string {
+	tm := time.Unix(unix, 0)
+
+	return fmt.Sprintf("%d %s %d %d:%d:%d", tm.Day(), tm.Month(), tm.Year(), tm.Hour(), tm.Minute(), tm.Second())
 }

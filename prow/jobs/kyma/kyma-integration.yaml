@@ -617,7 +617,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
-- name: kyma-components-version
+- name: kyma-components-use-recent-versions
   decorate: true
   cron: "0 4 * * 1" # At 04:00 on every Monday
   labels:

@@ -379,7 +379,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
 
-	expName = "kyma-components-version"
+	expName = "kyma-components-use-recent-versions"
 	verTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	assert.Equal(t, expName, verTestPeriodic.Name)
 	assert.True(t, verTestPeriodic.Decorate)

@@ -46,8 +46,8 @@ func NewSynComponent(componentPath string, versionPaths []string) *Component {
 	}
 }
 
-// GetOldest returns the oldest allowed hash commit of component
-func (c Component) GetOldest() string {
+// GetOldestAllowed returns the oldest allowed hash commit of component
+func (c Component) GetOldestAllowed() string {
 	if len(c.GitHashHistory) == 0 {
 		return c.GitHash
 	}

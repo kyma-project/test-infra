@@ -31,7 +31,7 @@ func Test_generateHistoryFromCommandResult(t *testing.T) {
 	assert.Empty(t, resultWrong)
 }
 
-func Test_limitGitHistory(t *testing.T) {
+func Test_limitGitHistoryTimePeriod(t *testing.T) {
 	// Given
 	history := map[int64]string{
 		subtractDaysFromToday(1): "a1a1a1a1",
@@ -44,15 +44,19 @@ func Test_limitGitHistory(t *testing.T) {
 	}
 
 	// When
-	result := limitGitHistory(history, 4)
+	result := limitGitHistoryTimePeriod(history, 4)
 
 	// Then
-	assert.Equal(t, 5, len(result))
+	assert.Len(t, result, 5)
 	values := []string{}
 	for _, val := range result {
 		values = append(values, val)
 	}
-	assert.True(t, equalSlicesContent([]string{"a1a1a1a1", "b2b2b2b2", "c3c3c3c3", "f6f6f6f6", "g7g7g7g7"}, values))
+	assert.Contains(t, values, "a1a1a1a1")
+	assert.Contains(t, values, "b2b2b2b2")
+	assert.Contains(t, values, "c3c3c3c3")
+	assert.Contains(t, values, "f6f6f6f6")
+	assert.Contains(t, values, "g7g7g7g7")
 }
 
 func subtractDaysFromToday(subDays int) int64 {
@@ -61,26 +65,4 @@ func subtractDaysFromToday(subDays int) int64 {
 	}
 
 	return time.Now().Unix()
-}
-
-func equalSlicesContent(pattern, matcher []string) bool {
-	if len(pattern) != len(matcher) {
-		return false
-	}
-
-	containsElement := func(data []string, element string) bool {
-		for _, value := range data {
-			if value == element {
-				return true
-			}
-		}
-		return false
-	}
-
-	response := false
-	for _, val := range pattern {
-		response = containsElement(matcher, val)
-	}
-
-	return response
 }

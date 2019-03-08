@@ -21,7 +21,7 @@ const (
 	envOutOfDateThreshold = "OUT_OF_DATE_DAYS"
 	defaultOutOfDateDays  = 3
 	pathToVersionFile     = "Makefile"
-	varsionPathCommand    = "version-path"
+	varsionPathCommand    = "path-to-referenced-charts"
 )
 
 // ComponentStorage includes pack of components
@@ -64,18 +64,9 @@ func main() {
 	fillComponentStorage(rootDir, storage, outOfDateDays)
 
 	reports := sc.GenerateReport(storage.components)
-	alertAmount := len(reports)
-	log.Printf("There are %d components with alerts \n", alertAmount)
-	if alertAmount == 0 {
-		return
-	}
-
-	for _, report := range reports {
-		log.Printf("Component %q is out of date: \n%s \n", report.GetTitle(), report.GetValue())
-	}
 
 	if sendMessageToSlack {
-		messages := make([]t.Message, alertAmount)
+		messages := make([]t.Message, len(reports))
 		for i := range reports {
 			messages[i] = reports[i]
 		}
@@ -115,7 +106,7 @@ func generateComponentStorage(dir string) (*ComponentStorage, error) {
 		}
 		// skip walk if path to values.yaml is empty, component has no info about version
 		if len(versionPaths) == 0 {
-			log.Printf("File %s in %q has no %q command", pathToVersionFile, path, varsionPathCommand)
+			log.Printf("%s %q has no %q target", pathToVersionFile, path, varsionPathCommand)
 			return nil
 		}
 
@@ -160,7 +151,7 @@ func fillComponentStorage(dir string, storage *ComponentStorage, expiryDays int)
 
 		// find modified files beetwen versions and the oldest allowed hash
 		for _, version := range component.Versions {
-			files, err := t.FindFileDifference(dir, component.Path, component.GetOldest(), version.Version)
+			files, err := t.FindFileDifference(dir, component.Path, component.GetOldestAllowed(), version.Version)
 			if err != nil {
 				log.Fatal(err.Error())
 			}

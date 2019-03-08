@@ -18,7 +18,7 @@ func FindCommitHash(dir string, componentPath string) (string, error) {
 	out, err := cmd.CombinedOutput()
 	result := string(out)
 	if err != nil {
-		return "", errors.Wrap(err, "during run 'git log -1' with single hash parameter")
+		return "", errors.Wrap(err, "while run 'git log -1' with single hash parameter")
 	}
 	if result == "" {
 		return "", errors.Errorf("Result for git log command in %q directory is empty\n", componentPath)
@@ -36,7 +36,7 @@ func FetchCommitsHistory(dir string, componentPath string, daysLimit int) (map[i
 	out, err := cmd.CombinedOutput()
 	result := string(out)
 	if err != nil {
-		return nil, errors.Wrap(err, "during run git command")
+		return nil, errors.Wrap(err, "while run git command")
 	}
 	if result == "" {
 		return nil, errors.Errorf("Result for git log command in with format %q in %q directory is empty\n", format, componentPath)
@@ -44,10 +44,10 @@ func FetchCommitsHistory(dir string, componentPath string, daysLimit int) (map[i
 
 	history, err := generateHistoryFromCommandResult(result)
 	if err != nil {
-		return nil, errors.Wrap(err, "during transform git result command to result map")
+		return nil, errors.Wrap(err, "while transform git result command to result map")
 	}
 
-	return limitGitHistory(history, daysLimit), nil
+	return limitGitHistoryTimePeriod(history, daysLimit), nil
 }
 
 func generateHistoryFromCommandResult(result string) (map[int64]string, error) {
@@ -81,7 +81,7 @@ func generateHistoryFromCommandResult(result string) (map[int64]string, error) {
 	return history, nil
 }
 
-func limitGitHistory(history map[int64]string, outOfDateDays int) map[int64]string {
+func limitGitHistoryTimePeriod(history map[int64]string, outOfDateDays int) map[int64]string {
 	output := make(map[int64]string)
 
 	timeLimit := time.Now().AddDate(0, 0, -(outOfDateDays)).Unix()
@@ -103,7 +103,7 @@ func FindFileDifference(dir, componentPath, hashFrom, hashTo string) ([]string, 
 	out, err := cmd.CombinedOutput()
 	result := string(out)
 	if err != nil {
-		return []string{}, errors.Wrap(err, "during run git command")
+		return []string{}, errors.Wrap(err, "while run git command")
 	}
 
 	result = strings.Trim(result, "\n")
