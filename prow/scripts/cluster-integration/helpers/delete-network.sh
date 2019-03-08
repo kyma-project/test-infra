@@ -20,5 +20,5 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-gcloud compute networks delete ${GCLOUD_NETWORK_NAME} \
- --project=${GCLOUD_PROJECT_NAME}
+gcloud compute networks delete "${GCLOUD_NETWORK_NAME}" \
+ --project="${GCLOUD_PROJECT_NAME}"
