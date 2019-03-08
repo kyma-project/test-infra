@@ -179,7 +179,7 @@ function generateAndExportLetsEncryptCert() {
     mkdir letsencrypt
     cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
 	gsutil cp gs://kyma-prow-secrets/nightly-aks-github-integration-app-client-id.encrypted .
-	ls night* | wc -l
+	find night* | wc -l
     # docker run  --name certbot \
     #     --rm  \
     #     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
