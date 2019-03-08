@@ -384,7 +384,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, verTestPeriodic.Name)
 	assert.True(t, verTestPeriodic.Decorate)
 	assert.Equal(t, "0 4 * * 1", verTestPeriodic.Cron)
-	tester.AssertThatHasPresets(t, verTestPeriodic.JobBase, "preset-stability-checker-slack-notifications")
+	tester.AssertThatHasPresets(t, verTestPeriodic.JobBase, "preset-sap-slack-bot-token")
 	tester.AssertThatHasExtraRefs(t, verTestPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be", verTestPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, verTestPeriodic.Spec.Containers[0].Command)

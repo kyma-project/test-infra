@@ -16,7 +16,7 @@ import (
 
 const (
 	envKymaProjectDir     = "KYMA_PROJECT_DIR"
-	envSlackClientToken   = "SLACK_CLIENT_TOKEN"
+	envSlackClientToken   = "SAP_SLACK_BOT_TOKEN"
 	envSlackClientChannel = "STABILITY_SLACK_CLIENT_CHANNEL_ID"
 	envOutOfDateThreshold = "OUT_OF_DATE_DAYS"
 	defaultOutOfDateDays  = 3

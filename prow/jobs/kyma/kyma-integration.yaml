@@ -621,7 +621,7 @@ periodics:
   decorate: true
   cron: "0 4 * * 1" # At 04:00 on every Monday
   labels:
-    preset-stability-checker-slack-notifications: "true"
+    preset-sap-slack-bot-token: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
