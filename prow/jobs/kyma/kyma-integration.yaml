@@ -634,7 +634,7 @@ periodics:
         - "bash"
         args:
         - "-c"
-        - "development/tools/scripts/synchronizer-entrypoint.sh"
+        - "${KYMA_PROJECT_DIR}/test-infra/development/tools/scripts/synchronizer-entrypoint.sh ${KYMA_PROJECT_DIR}/test-infra/development"
         env:
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
             value: "#c4core-kyma-ci-force"

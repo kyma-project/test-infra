@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-readonly DEVELOPMENT_DIR="$( cd "../../$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly DEVELOPMENT_DIR=$1
 
 echo "----------------------------------------------"
 echo "## Check component version synchroznization ##"
