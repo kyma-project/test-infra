@@ -9,13 +9,12 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-
-	"github.com/sirupsen/logrus"
-
-	"github.com/ghodss/yaml"
+	"strings"
 
 	"cloud.google.com/go/storage"
+	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/cloudkms/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -30,21 +29,19 @@ import (
 const fileNameExtension = "encrypted"
 
 func main() {
-	argBucket := flag.String("bucket", "", "")
-	argKeyring := flag.String("keyring", "", "")
-	argKey := flag.String("key", "", "")
-	argLocation := flag.String("location", "", "")
-	argKubeconfigPath := flag.String("kubeconfig", "", "")
-	argProject := flag.String("project", "", "")
-	argSecretsDefFile := flag.String("secrets-def-file", "", "")
+	var (
+		argBucket         = flag.String("bucket", "", "")
+		argKeyring        = flag.String("keyring", "", "")
+		argKey            = flag.String("key", "", "")
+		argLocation       = flag.String("location", "", "")
+		argKubeconfigPath = flag.String("kubeconfig", "", "")
+		argProject        = flag.String("project", "", "")
+		argSecretsDefFile = flag.String("secrets-def-file", "", "")
+	)
 	flag.Parse()
-	fatalOnMissingArg("bucket", argBucket)
-	fatalOnMissingArg("keyring", argKeyring)
-	fatalOnMissingArg("key", argKey)
-	fatalOnMissingArg("location", argLocation)
-	fatalOnMissingArg("kubeconfig", argKubeconfigPath)
-	fatalOnMissingArg("project", argProject)
-	fatalOnMissingArg("secrets-def-file", argSecretsDefFile)
+
+	err := checkRequiredFlags(flag.CommandLine, "bucket", "keyring", "key", "location", "kubeconfig", "project", "secrets-def-file")
+	fatalOnError(err)
 
 	logger := logrus.StandardLogger()
 
@@ -126,7 +123,7 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 		project, location, keyring, key)
 
 	for _, sec := range secrets {
-		name := fmt.Sprintf("%s.%s", sec.Prefix, fileNameExtension)
+		name := fmt.Sprintf("%s.%s", sec.Name, fileNameExtension)
 		s.logger.Infof("Reading object [%s] from bucket [%s]", name, bucket)
 		r, err := s.storageReader.Read(ctx, bucket, name)
 		if err != nil {
@@ -148,33 +145,48 @@ func (s *SecretsPopulator) PopulateSecrets(ctx context.Context, project string, 
 			return err
 		}
 
-		curr, err := s.secretsClient.Get(sec.Prefix, metav1.GetOptions{})
+		curr, err := s.secretsClient.Get(sec.Name, metav1.GetOptions{})
 		switch {
 		case err == nil:
-			s.logger.Infof("Updating k8s secret [%s]", curr.Name)
+			if bytes.Equal(curr.Data[sec.Key], decoded) {
+				s.logSecretAction(curr, "Unchanged")
+				continue
+			}
+
 			curr.Data[sec.Key] = decoded
 			if _, err = s.secretsClient.Update(curr); err != nil {
 				return errors.Wrap(err, "while updating secret")
 			}
+			s.logSecretAction(curr, "Updated")
 
 		case k8serrors.IsNotFound(err):
-			s.logger.Infof("Creating k8s secret [%s] with key [%s]", sec.Prefix, sec.Key)
-			if _, err := s.secretsClient.Create(&corev1.Secret{
+			curr, err := s.secretsClient.Create(&corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: sec.Prefix,
+					Name: sec.Name,
 				},
 				Data: map[string][]byte{
 					sec.Key: decoded,
 				},
-			}); err != nil {
-				return errors.Wrapf(err, "while creating secret [%s]", sec.Prefix)
+			})
+			if err != nil {
+				return errors.Wrapf(err, "while creating secret [%s]", sec.Name)
 			}
+			s.logSecretAction(curr, "Created")
 		default:
-			return errors.Wrapf(err, "while getting secret [%s]", sec.Prefix)
+			return errors.Wrapf(err, "while getting secret [%s]", sec.Name)
 		}
 
 	}
 	return nil
+}
+
+// logSecretAction receives a Secret, formats it and logs.
+func (s *SecretsPopulator) logSecretAction(secret *corev1.Secret, action string) {
+	var keys []string
+	for k := range secret.Data {
+		keys = append(keys, k)
+	}
+	s.logger.Infof("%s Secret [%s] with key(s) [%s]", action, secret.Name, strings.Join(keys, ", "))
 }
 
 // RequiredSecretsData represents secrets required by Prow cluster
@@ -196,18 +208,18 @@ type GenericSecret struct {
 
 // SecretModel defines secret to be stored in k8s
 type SecretModel struct {
-	Prefix string
-	Key    string
+	Name string
+	Key  string
 }
 
 // SecretsFromData converts input data to SecretModels
 func SecretsFromData(data RequiredSecretsData) []SecretModel {
 	out := make([]SecretModel, 0)
 	for _, sa := range data.ServiceAccounts {
-		out = append(out, SecretModel{Prefix: sa.Prefix, Key: "service-account.json"})
+		out = append(out, SecretModel{Name: sa.Prefix, Key: "service-account.json"})
 	}
 	for _, g := range data.Generics {
-		out = append(out, SecretModel{Prefix: g.Prefix, Key: g.Key})
+		out = append(out, SecretModel{Name: g.Prefix, Key: g.Key})
 	}
 	return out
 }
@@ -235,8 +247,26 @@ func fatalOnError(err error) {
 		logrus.Fatal(err)
 	}
 }
-func fatalOnMissingArg(argName string, val *string) {
-	if val == nil || *val == "" {
-		logrus.Fatalf("missing argument [%s]", argName)
+
+func checkRequiredFlags(flags *flag.FlagSet, requiredFlags ...string) error {
+	required := map[string]struct{}{}
+	for _, name := range requiredFlags {
+		required[name] = struct{}{}
 	}
+
+	var unSetFlags []string
+
+	flags.VisitAll(func(flag *flag.Flag) {
+		_, flagRequired := required[flag.Name]
+
+		if flagRequired && flag.Value.String() == "" {
+			unSetFlags = append(unSetFlags, flag.Name)
+		}
+	})
+
+	if len(unSetFlags) > 0 {
+		return fmt.Errorf(`missing required flag(s): "%s"`, strings.Join(unSetFlags, `", "`))
+	}
+
+	return nil
 }

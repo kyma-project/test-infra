@@ -19,6 +19,7 @@ The structure of the folder looks as follows:
   ├── 05-tiller.yaml                    # The definition of the Tiller that is used for Helm integration
   ├── 06-pushgateway_deployment.yaml    # The definition of the Pushgateway that is used for monitoring
   ├── 07-kube-system_poddisruptionbudgets.yaml # The definition of Pod Disruption Budgets for Pods in the  `kube-system` Namespace, used to unblock the node autoscaler.
+  ├── 08-prow-addons-ctrl-manager.yaml #  The definition of the prow addons controller manager resources, required i.a. to send Slack notification about ProwJob.
   ├── starter.yaml                      # The basic definition of Prow, including ConfigMaps, Deployments, and CustomResourceDefinitions
   └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket
 ```

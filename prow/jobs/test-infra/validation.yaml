@@ -1,7 +1,7 @@
 presubmits:
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
-      run_if_changed: "/*.sh$"
+      run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
       decorate: true
       skip_report: false
       spec:

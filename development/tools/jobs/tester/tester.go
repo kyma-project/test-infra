@@ -48,13 +48,17 @@ const (
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable
 	PresetGCProjectEnv = "preset-gc-project-env"
+	// PresetKymaBackupRestoreBucket means the bucket used for backups and restore in Kyma
+	PresetKymaBackupRestoreBucket = "preset-kyma-backup-restore-bucket"
+	// PresetKymaBackupCredentials means the credentials for the service account
+	PresetKymaBackupCredentials = "preset-kyma-backup-credentials"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
 	// ImageGolangBuildpack1_11 means Golang buildpack image with Go 1.11.*
 	ImageGolangBuildpack1_11 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11"
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
-	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190204-44acc42"
+	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageNodeBuildpackLatest means Node.js buildpack image
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
 	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
@@ -83,7 +87,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
-	return []string{"release-0.6"}
+	return []string{"release-0.6", "release-0.7"}
 }
 
 // ReadJobConfig reads job configuration from file
@@ -134,6 +138,15 @@ func GetReleaseJobName(moduleName, releaseBranch string) string {
 	rel = strings.Replace(rel, "-", "", -1)
 
 	return fmt.Sprintf("pre-%s-%s", rel, moduleName)
+}
+
+// GetReleasePostSubmitJobName returns name of postsubmit job based on branch name
+func GetReleasePostSubmitJobName(moduleName, releaseBranch string) string {
+	rel := strings.Replace(releaseBranch, "release", "rel", -1)
+	rel = strings.Replace(rel, ".", "", -1)
+	rel = strings.Replace(rel, "-", "", -1)
+
+	return fmt.Sprintf("post-%s-%s", rel, moduleName)
 }
 
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list

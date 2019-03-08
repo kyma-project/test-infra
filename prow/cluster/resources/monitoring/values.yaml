@@ -14,20 +14,7 @@ prometheus-operator:
           send_resolved: true
           api_url: {SLACK_URL}
           text: "<!channel> \nDescription: {{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
-      route:
-        group_by:
-        - job
-        group_interval: 30m
-        group_wait: 30s
-        receiver: "null"
-        repeat_interval: 12h
-        routes:
-        - match:
-            alertname: KymaIntegration
-          receiver: "slack"
-        - match:
-            alertname: KymaGKEIntegration
-          receiver: "slack"
+
   grafana:
     env:
       GF_AUTH_ANONYMOUS_ENABLED: true

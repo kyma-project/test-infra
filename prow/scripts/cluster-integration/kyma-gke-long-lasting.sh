@@ -56,6 +56,13 @@ function removeCluster() {
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
+    if [ -n "${CLEANUP_NETWORK}" ]; then
+        shout "Delete network"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    fi
+
 	shout "Delete Gateway DNS Record"
 	date
 	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
@@ -126,6 +133,13 @@ function createCluster() {
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
+
+	export GCLOUD_NETWORK_NAME="net-${CLUSTER_NAME}"
+	export GCLOUD_SUBNET_NAME="subnet-${CLUSTER_NAME}"
+	shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+	date
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+	CLEANUP_NETWORK="true"
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
@@ -247,16 +261,21 @@ function installStabilityChecker() {
 	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '([0-9A-Za-z_-]+)' was successful"}
 	STATS_ENABLED="true"
 
-	SC_DIR=${KYMA_SOURCES_DIR}/tools/stability-checker
+	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
 	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
 	bash "${SC_DIR}/local/helpers/isready.sh" kyma-system app  stability-test-provisioner
 	kubectl exec stability-test-provisioner -n kyma-system --  mkdir -p /home/input
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
+	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
+    # create a secret with service account used for storing logs
+    kubectl create secret generic sa-stability-fluentd-storage-writer --from-file=service-account.json=/etc/credentials/sa-stability-fluentd-storage-writer/service-account.json -n kyma-system
+
 	helm install --set clusterName="${CLUSTER_NAME}" \
+	        --set logsPersistence.enabled=true \
 	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
 	        --set slackClientChannelId="${STABILITY_SLACK_CLIENT_CHANNEL_ID}" \
 	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \

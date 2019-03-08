@@ -72,9 +72,8 @@ func TestValidateScriptsPresubmit(t *testing.T) {
 	sut := tester.FindPresubmitJobByName(testInfraPresubmits, "pre-test-infra-validate-scripts", "master")
 	require.NotNil(t, sut)
 
-	tester.AssertThatJobRunIfChanged(t, *sut, "ala.sh")
+	tester.AssertThatJobRunIfChanged(t, *sut, "development/ala.sh")
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/ela.sh")
-	tester.AssertThatJobRunIfChanged(t, *sut, "helga/skrypta.sh")
 
 	assert.False(t, sut.SkipReport)
 

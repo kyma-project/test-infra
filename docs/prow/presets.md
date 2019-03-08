@@ -14,6 +14,8 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-gc-compute-envs**         | It provides environment variables with the GCP compute zone and the GCP compute region.                                                                   |
 | **preset-sa-vm-kyma-integration**  | It injects credentials for the service account to run integration tests on virtual machines (VMs).                                                              |
 | **preset-sa-gke-kyma-integration** | It injects credentials for the service account to run integration tests on a Google Cloud Engine (GKE) cluster.                                                 |
+| **preset-creds-aks-kyma-integration** | It injects credentials to run integration tests on an Azure Kubernetes Service (AKS) cluster. |
+| **preset-nightly-aks-github-integration** | It injects GitHub application credentials which enable GitHub authentication for an AKS cluster using Dex. |
 | **preset-bot-npm-token**           | It provides an environment variable with a token for publishing npm packages.
 | **preset-sa-kyma-artifacts** | It sets up the service account that has write permissions to the Kyma's artifacts bucket.                     |
 | **preset-docker-push-repository-gke-integration** | It provides the environment variable with the location of the directory in the GCR repository for storing temporary Docker images for the Kyma Installer.                     |
@@ -25,3 +27,7 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-bot-github-ssh** | It connects the ssh key of the bot account to your job and sets the value with the path to this key.                    |
 | **preset-kyma-artifacts-bucket** | It defines the environment variable for the Kyma's artifact bucket.                     |
 | **preset-stability-checker-slack-notifications** | It defines a webhook URL and a client token required for the Slack integration.                 |
+| **preset-sap-slack-bot-token** | It sets the environment variable for the Slack token of the bot account in the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).|
+| **preset-kyma-backup-credentials** | It sets the environment variable for the JSON file with the credentials for the service account. The file contains write and read permissions for the GCP bucket used for backups.|
+| **preset-kyma-backup-restore-bucket** | It defines the environment variable for the Kyma's backups bucket.|
+| **preset-kyma-ondemands** | It defines the environment variable for the Kyma's on-demand artifacts bucket. |

@@ -29,17 +29,6 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-components-application-proxy
-    branches:
-    - master
-    <<: *job_template
-    run_if_changed: "^components/application-proxy/"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      <<: *job_labels_template
-      preset-build-pr: "true"
   - name: pre-rel06-kyma-components-application-proxy
     branches:
     - release-0.6
@@ -51,17 +40,16 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
-
-postsubmits:
-  kyma-project/kyma:
-  - name: post-master-kyma-components-application-proxy
+  - name: pre-rel07-kyma-components-application-proxy
     branches:
-    - master
+    - release-0.7
     <<: *job_template
-    run_if_changed: "^components/application-proxy/"
+    always_run: true
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: release-0.7
     labels:
       <<: *job_labels_template
-      preset-build-master: "true"
+      preset-build-release: "true"
+
+# Component no longer exists, do not create jobs for new releases

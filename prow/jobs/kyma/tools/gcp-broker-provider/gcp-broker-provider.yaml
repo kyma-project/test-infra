@@ -1,3 +1,8 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 job_template: &job_template
   skip_report: false
   run_if_changed: "^tools/gcp-broker-provider/"
@@ -34,6 +39,16 @@ presubmits: # runs on PRs
       branches:
         - master
       <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
+    - name: pre-rel07-kyma-tools-gcp-broker-provider
+      branches:
+        - release-0.7
+      <<: *job_template
+      extra_refs:
+       - <<: *test_infra_ref
+         base_ref: release-0.7
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"

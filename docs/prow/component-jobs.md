@@ -15,6 +15,8 @@ Creating a CI pipeline is a two-step process:
 - You need to define a ProwJob according to steps defined in this section.
 - You need to add the job to a release from which you want it to be available. This requires some modifications to the created ProwJob. For details on how to do that, see [this](./release-jobs.md) document which explains how to work with the release jobs.
 
+> **NOTE:** Make sure that jobs do not include any Secrets that are available in the output as this can lead to severe security issues.
+
 ### Create a presubmit job
 
 Presubmit jobs are jobs that run on pull requests (PRs). They validate changes against the target repository.
@@ -82,7 +84,7 @@ The table contains the list of all fields in the `yaml` file with their descript
 
 | Field                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **name**                    | The job name. It should clearly identify the job. For reference, see the [convention](./../../prow/README.md#convention-for-naming-jobs) for naming jobs. Add the `pre-master-` prefix in front of presubmit job names and the `post-master-` prefix in front if postsubmit job names for all jobs that run against the `master` branch.                                                                                                                                                                                                                                                                                                                             |
+| **name**                    | The job name. It should clearly identify the job. For reference, see the convention for naming jobs. Add the `pre-master-` prefix in front of presubmit job names and the `post-master-` prefix in front if postsubmit job names for all jobs that run against the `master` branch.                                                                                                                                                                                                                                                                                                                             |
 | **run_if_changed**          | A regular expression. Define the component for which changes in a PR must trigger the job. If a PR does not modify the component, this job sends a notification to GitHub with the information that it is skipped.                                                                                                                                                                                                                                                                    |
 | **always_run**              | A parameter that defines if a PR must trigger the job automatically. **always_run** and **run_if_changed** are mutually exclusive. If you do not set one of them, you can only trigger the job manually by adding a comment to a PR.                                                                 |
 | **branches**                | A list of base branches against which you want the job to run in the PR.                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -245,7 +247,7 @@ postsubmits:
 
 ### Define tests for presubmit and postsubmit jobs
 
-To check if your configuration is correct, write a Go test. See the `development/tools/jobs/binding_usage_controller_test.go` file for reference.
+To check if your configuration is correct, write a Go test. See the `development/tools/jobs/kyma/binding_usage_controller_test.go` file for reference.
 Place your new test under `development/tools/jobs` for the `test-infra-test-jobs-yaml-definitions` presubmit job to execute it.
 If you have access to the Prow cluster, there is an option to test a ProwJob on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
