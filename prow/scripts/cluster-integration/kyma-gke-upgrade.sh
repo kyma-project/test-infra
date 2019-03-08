@@ -221,6 +221,7 @@ function generateAndExportCerts() {
 function createNetwork() {
     export GCLOUD_NETWORK_NAME="net-${CLUSTER_NAME}"
     export GCLOUD_SUBNET_NAME="subnet-${CLUSTER_NAME}"
+    export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
     shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
     date
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
