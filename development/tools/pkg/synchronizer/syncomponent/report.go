@@ -56,7 +56,7 @@ func prettyMessage(c *Component) string {
 
 	for _, version := range c.Versions {
 		parts = append(parts, fmt.Sprintf(
-			"The version of the _%q_ component is *%s*", version.VersionPath, version.Version))
+			"The version of the component in the _%q_ chart is *%s*", version.VersionPath, version.Version))
 	}
 	parts = append(parts, fmt.Sprintf(
 		"The current component commit is *%s*",

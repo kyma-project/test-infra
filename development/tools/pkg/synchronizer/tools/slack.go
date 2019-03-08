@@ -16,7 +16,7 @@ type Message interface {
 var (
 	username      = "Component Alert"
 	messageHeader = "*The component's version diverges from the version of the latest commit.*"
-	description   = "These components' versions are out-of-date:"
+	description   = "These components versions are out-of-date:"
 	icon          = ":kyma2:"
 	barColor      = "#D96459"
 )
