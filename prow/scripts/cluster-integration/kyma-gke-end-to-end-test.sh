@@ -48,7 +48,7 @@ removeCluster() {
     EXIT_STATUS=$?
 
     shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}"  --format=json | jq --raw-output '.createTime' | cut -f1 -d"T" | sed "s/-//g")
 
     shout "Deprovision cluster: \"${CLUSTER_NAME}\""
     date
@@ -62,6 +62,13 @@ removeCluster() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
     TMP_STATUS=$?
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
+    if [ -n "${CLEANUP_NETWORK}" ]; then
+        shout "Delete network"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    fi
 
 	shout "Delete Gateway DNS Record"
 	date
@@ -174,6 +181,14 @@ date
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
+export GCLOUD_NETWORK_NAME="net-${CLUSTER_NAME}"
+export GCLOUD_SUBNET_NAME="subnet-${CLUSTER_NAME}"
+shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+date
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+CLEANUP_NETWORK="true"
+
+
 shout "Provision cluster: \"${CLUSTER_NAME}\""
 date
 
@@ -232,6 +247,7 @@ shout "Success cluster created"
 shout "End To End Test"
 date
 cd "${KYMA_SCRIPTS_DIR}"
+set +e
 ./e2e-testing.sh
 TEST_STATUS=$?
 if [ ${TEST_STATUS} -ne 0 ]
