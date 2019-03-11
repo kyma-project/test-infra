@@ -47,17 +47,6 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel08-kyma-development-artifacts
-    always_run: true
-    branches:
-    - release-0.8
-    <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.8
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
