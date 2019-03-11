@@ -214,7 +214,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 11)
+	assert.Len(t, periodics, 12)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -378,4 +378,20 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LOAD_TEST_SLACK_CLIENT_CHANNEL_ID", "#c4-xf-load-test")
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
+
+	expName = "kyma-components-use-recent-versions"
+	verTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	assert.Equal(t, expName, verTestPeriodic.Name)
+	assert.True(t, verTestPeriodic.Decorate)
+	assert.Equal(t, "0 4 * * 1", verTestPeriodic.Cron)
+	tester.AssertThatHasPresets(t, verTestPeriodic.JobBase, "preset-sap-slack-bot-token")
+	tester.AssertThatHasExtraRefs(t, verTestPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be", verTestPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, verTestPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/development/tools/scripts/synchronizer-entrypoint.sh ${KYMA_PROJECT_DIR}/test-infra/development"}, verTestPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, verTestPeriodic.JobBase)
+	assert.Len(t, verTestPeriodic.Spec.Containers[0].Env, 3)
+	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-ci-force")
+	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "OUT_OF_DATE_DAYS", "3")
 }
