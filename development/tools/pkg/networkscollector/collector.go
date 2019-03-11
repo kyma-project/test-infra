@@ -10,6 +10,8 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
+//go:generate mockery -name=NetworkAPI -output=automock -outpkg=automock -case=underscore
+
 // NetworkAPI abstracts access to Network Compute API in GCP
 type NetworkAPI interface {
 	ListNetworks(project string) ([]*compute.Network, error)
