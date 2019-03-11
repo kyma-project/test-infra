@@ -43,6 +43,7 @@ presubmits: # runs on PRs
       branches:
       - release-0.7
       <<: *job_template
+      always_run: true
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.7
@@ -53,6 +54,7 @@ presubmits: # runs on PRs
       branches:
       - release-0.8
       <<: *job_template
+      always_run: true
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.8
