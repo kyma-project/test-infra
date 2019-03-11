@@ -5,7 +5,6 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^tools/load-test/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -39,6 +38,7 @@ presubmits: # runs on PRs
       branches:
         - master
       <<: *job_template
+      run_if_changed: "^tools/load-test/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
