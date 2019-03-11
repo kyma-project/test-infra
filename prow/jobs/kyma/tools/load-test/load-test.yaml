@@ -35,10 +35,10 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-tools-load-test
+      run_if_changed: "^tools/load-test/"
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tools/load-test/"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -68,6 +68,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tools-load-test
+      run_if_changed: "^tools/load-test/"
       branches:
         - master
       <<: *job_template
