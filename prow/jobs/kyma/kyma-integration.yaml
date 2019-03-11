@@ -88,26 +88,6 @@ gke_central_job_template: &gke_central_job_template
           memory: 200Mi
           cpu: 80m
 
-gke_central_job_template: &gke_network_test_job_template
-  skip_report: true
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-network-test.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
 gke_job_labels_template: &gke_job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
@@ -227,20 +207,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
-  - name: pre-master-kyma-gke-network-test
-    branches:
-    - master
-    <<: *gke_network_test_job_template
-    always_run: false
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: crabtree
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: network-test
 
 postsubmits:
   kyma-project/kyma:
