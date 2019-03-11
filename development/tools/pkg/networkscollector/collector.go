@@ -106,11 +106,6 @@ func DefaultNetworkRemovalPredicate(networkNameRegexp *regexp.Regexp, ageInHours
 
 		nameMatches := networkNameRegexp.MatchString(network.Name)
 
-		// isVolatileCluster := false
-		// if cluster.ResourceLabels != nil && cluster.ResourceLabels[volatileLabelName] == "true" {
-		// 	isVolatileCluster = true
-		// }
-
 		var ageMatches bool
 
 		networkCreationTime, err := time.Parse(time.RFC3339, network.CreationTimestamp)
