@@ -8,7 +8,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  run_if_changed: "^tools/docsbuilder/"
   extra_refs:
     - org: kyma-project
       repo: test-infra
@@ -42,13 +41,26 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *job_template
+      run_if_changed: "^tools/docsbuilder/"
     - name: pre-rel07-kyma-tools-docsbuilder
       branches:
       - release-0.7
       <<: *job_template
+      always_run: true
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.7
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+    - name: pre-rel08-kyma-tools-docsbuilder
+      branches:
+      - release-0.8
+      <<: *job_template
+      always_run: true
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.8
       labels:
         <<: *job_labels_template
         preset-build-release: "true"

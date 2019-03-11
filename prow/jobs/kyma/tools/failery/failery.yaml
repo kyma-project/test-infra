@@ -8,7 +8,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  run_if_changed: "^tools/failery/"
   extra_refs:
     - org: kyma-project
       repo: test-infra
@@ -36,6 +35,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-tools-failery
       branches:
         - master
+      run_if_changed: "^tools/failery/"
       labels:
         preset-build-pr: "true"
       <<: *job_template
@@ -43,9 +43,21 @@ presubmits: # runs on PRs
       branches:
       - release-0.7
       <<: *job_template
+      always_run: true
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.7
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+    - name: pre-rel08-kyma-tools-failery
+      branches:
+      - release-0.8
+      <<: *job_template
+      always_run: true
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.8
       labels:
         <<: *job_labels_template
         preset-build-release: "true"

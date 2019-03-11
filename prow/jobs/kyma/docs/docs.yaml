@@ -74,6 +74,18 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
+    - name: pre-rel08-kyma-docs
+      branches:
+      - release-0.8
+      <<: *job_template
+      always_run: true
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.8
+      - <<: *website_ref
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

@@ -129,6 +129,17 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-0.7
 
+  - name: pre-rel08-kyma-integration
+    branches:
+    - release-0.8
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.8
+
   - name: pre-master-kyma-gke-integration
     branches:
     - master
@@ -168,6 +179,19 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.7
+  - name: pre-rel08-kyma-gke-integration
+    branches:
+    - release-0.8
+    <<: *gke_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.8
 
   - name: pre-master-kyma-gke-upgrade
     branches:
@@ -195,6 +219,18 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.7
+  - name: pre-rel08-kyma-gke-upgrade
+    branches:
+    - release-0.8
+    <<: *gke_upgrade_job_template
+    always_run: false
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.8
 
   - name: pre-master-kyma-gke-central-connector
     branches:

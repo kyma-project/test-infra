@@ -10,7 +10,7 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
         securityContext:
           privileged: true
         command:
@@ -40,6 +40,17 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
+  - name: pre-rel08-kyma-tests-end-to-end-backup-restore-test
+    branches:
+      - release-0.8
+    <<: *job_template
+    always_run: true
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.8
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
