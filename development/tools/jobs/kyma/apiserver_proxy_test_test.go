@@ -12,7 +12,7 @@ func TestApiserverProxyTestReleases(t *testing.T) {
 	// WHEN
 	unsupportedReleases := []string{"release-0.6", "release-0.7"}
 
-	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml")
 			// THEN

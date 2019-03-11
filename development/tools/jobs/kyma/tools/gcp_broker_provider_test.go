@@ -12,7 +12,7 @@ func TestGCPBrokerProviderReleases(t *testing.T) {
 	// WHEN
 	unsupportedReleases := []string{"release-0.6"}
 
-	for _, currentRelease := range getSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
 			// THEN
@@ -83,26 +83,4 @@ func TestGCPBrokerProviderJobPostsubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/gcp-broker-provider"}, actualPost.Spec.Containers[0].Args)
-}
-
-func getSupportedReleases(unsupportedReleases []string) []string {
-	var supportedReleases []string
-
-	for _, rel := range tester.GetAllKymaReleaseBranches() {
-		if !contains(unsupportedReleases, rel) {
-			supportedReleases = append(supportedReleases, rel)
-		}
-	}
-
-	return supportedReleases
-}
-
-func contains(array []string, str string) bool {
-	for _, e := range array {
-		if str == e {
-			return true
-		}
-	}
-
-	return false
 }

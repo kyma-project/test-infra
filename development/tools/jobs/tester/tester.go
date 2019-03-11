@@ -90,6 +90,29 @@ func GetAllKymaReleaseBranches() []string {
 	return []string{"release-0.6", "release-0.7", "release-0.8"}
 }
 
+// GetSupportedReleases filters all available releases by given unsupported ones
+func GetSupportedReleases(unsupportedReleases []string) []string {
+	var supportedReleases []string
+
+	for _, rel := range GetAllKymaReleaseBranches() {
+		if !contains(unsupportedReleases, rel) {
+			supportedReleases = append(supportedReleases, rel)
+		}
+	}
+
+	return supportedReleases
+}
+
+func contains(array []string, str string) bool {
+	for _, e := range array {
+		if str == e {
+			return true
+		}
+	}
+
+	return false
+}
+
 // ReadJobConfig reads job configuration from file
 func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	f, err := os.Open(fileName)
