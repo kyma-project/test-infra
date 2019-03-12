@@ -63,30 +63,59 @@ function cleanup() {
     shout "Cleanup"
     date
 
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
+    EXIT_STATUS=$?
+
     CHECK_GROUP=$(az group list --query '[?name==`'"${RS_GROUP}"'`].name' -otsv)
     if [ "${CHECK_GROUP}" = "${RS_GROUP}" ]; then
         CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         echo "Remove DNS Record for Ingressgateway"
         GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
         GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+
         GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         echo "Remove DNS Record for Remote Environments IP"
         REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
         REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
+
         REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
         IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         echo "Remove Cluster, IP Address for Ingressgateway, IP Address for Remote Environments"
         az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         echo "Remove group"
         az group delete -n "${RS_GROUP}" -y
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     else
         echo "Azure group does not exist, skip cleanup process"
     fi
+
+    MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+    echo "Cleanup function is finished ${MSG}"
+
+    # Turn on exit-on-error
+    set -e
 }
 
 function createGroup() {
