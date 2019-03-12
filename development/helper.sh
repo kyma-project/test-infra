@@ -1,60 +1,71 @@
 #!/bin/bash
 
 # Adjust clustername if you want, this should not collide with any cluster on GKE that already exists
-export CLUSTER_NAME=prow-`whoami`
+CLUSTER_NAME=prow-`whoami`
 
 # temporary secret store location, should be deleted after installing the cluster
-export SECRET_FOLDER=.secrets
+SECRET_FOLDER=.secrets
 
-export OAUTH="FILL_ME_IN"
-export PROJECT="FILL_ME_IN"
-export ZONE="FILL_ME_IN"
-export LOCATION="FILL_ME_IN" # key locations for KMS
-export BUCKET_NAME="FILL_ME_IN"
-export KEYRING_NAME="FILL_ME_IN"
-export ENCRYPTION_KEY_NAME="FILL_ME_IN"
-export KUBECONFIG="FILL_ME_IN" # e.g. /Users/sample-user/.kube/config
+OAUTH="FILL_ME_IN"
+PROJECT="FILL_ME_IN"
+ZONE="FILL_ME_IN"
+LOCATION="FILL_ME_IN" # key locations for KMS
+BUCKET_NAME="FILL_ME_IN"
+KEYRING_NAME="FILL_ME_IN"
+ENCRYPTION_KEY_NAME="FILL_ME_IN"
+KUBECONFIG="FILL_ME_IN" # e.g. /Users/sample-user/.kube/config
 
 ####
 #### DO NOT CHANGE ANYTHING BELOW THIS LINE
 ####
+export CLUSTER_NAME
+export SECRET_FOLDER
 
-if [ $PROJECT -eq "FILL_ME_IN" ]; then
+export OAUTH
+export PROJECT
+export ZONE
+export LOCATION
+export BUCKET_NAME
+export KEYRING_NAME
+export ENCRYPTION_KEY_NAME
+export KUBECONFIG
+
+if [ $PROJECT = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $ZONE -eq "FILL_ME_IN" ]; then
+if [ $ZONE = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $LOCATION -eq "FILL_ME_IN" ]; then
+if [ $LOCATION = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $OAUTH -eq "FILL_ME_IN" ]; then
+if [ $OAUTH = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $BUCKET_NAME -eq "FILL_ME_IN" ]; then
+if [ $BUCKET_NAME = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $KEYRING_NAME -eq "FILL_ME_IN" ]; then
+if [ $KEYRING_NAME = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $ENCRYPTION_KEY_NAME -eq "FILL_ME_IN" ]; then
+if [ $ENCRYPTION_KEY_NAME = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
 
-if [ $KUBECONFIG -eq "FILL_ME_IN" ]; then
+if [ $KUBECONFIG = "FILL_ME_IN" ]; then
     echo "Please edit development/helper.sh and change variables with FILL_ME_IN to reflect your needs."
     exit 1
 fi
@@ -71,5 +82,5 @@ check_and_trim() {
             fi
         done
     fi
-    echo $str
+    echo "$str"
 }
