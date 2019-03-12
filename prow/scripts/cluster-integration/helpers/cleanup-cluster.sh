@@ -54,11 +54,6 @@ function removeCluster() {
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-	shout "Delete network"
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
 	shout "Delete Gateway DNS Record"
 	date
 	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')

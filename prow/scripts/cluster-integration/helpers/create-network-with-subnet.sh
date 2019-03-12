@@ -27,4 +27,4 @@ gcloud compute networks create "${GCLOUD_NETWORK_NAME}" \
 
 gcloud compute networks subnets create "${GCLOUD_SUBNET_NAME}" \
  --network="${GCLOUD_NETWORK_NAME}" \
- --range=10.0.0.0/24
+ --range=10.0.0.0/22
