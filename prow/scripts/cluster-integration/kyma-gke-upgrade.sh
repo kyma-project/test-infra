@@ -226,8 +226,8 @@ function generateAndExportCerts() {
 
 function createNetwork() {
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-    NETWORK_EXISTS=$(${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh)
-    if [ $NETWORK_EXISTS -gt 0 ]; then
+    NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
+    if [ "$NETWORK_EXISTS" -gt 0 ]; then
         shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
