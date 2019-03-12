@@ -372,8 +372,8 @@ plank:
   max_concurrency: 50 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_config:
-    timeout: 7200000000000 # 2h
-    grace_period: 15000000000 # 15s
+    timeout: 2h
+    grace_period: 10m
     utility_images:
       clonerefs: "gcr.io/k8s-prow/clonerefs:v20181019-08e9d55c9"
       initupload: "gcr.io/k8s-prow/initupload:v20181019-08e9d55c9"
