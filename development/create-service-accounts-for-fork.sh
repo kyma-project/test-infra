@@ -35,7 +35,7 @@ if [ -z "$LOCATION" ]; then
     LOCATION="global"
 fi
 
-mkdir -p $SECRET_FOLDER
+mkdir -p "$SECRET_FOLDER"
 
 ####
 #### Read short identifier from user input to go on with the script
@@ -44,7 +44,7 @@ mkdir -p $SECRET_FOLDER
 ident_regexp="^[-0-9A-Za-z]{1,10}$"
 
 while : ; do
-    read -p "Enter a short handle for the cluster [10 characters, only alphanumeric, numbers and '-' allowed]: " SHORT_IDENTIFIER
+    read -r -p "Enter a short handle for the cluster [10 characters, only alphanumeric, numbers and '-' allowed]: " SHORT_IDENTIFIER
 
     if [[ ! $SHORT_IDENTIFIER =~ $ident_regexp ]]; then
         echo "Can only contain numbers, alphanumeric characters and '-', should be less than 10 characters"
@@ -58,16 +58,16 @@ done
 ####
 
 export SA_REAL_NAME=sa-gcs-plank
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
 gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
 gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
 
-export ROLE="roles/storage.objectAdmin"
+ROLE="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
@@ -80,31 +80,31 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=sa-gke-kyma-integration
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
 gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
 gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
 
-export ROLE="roles/compute.admin"
+ROLE="roles/compute.admin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
-export ROLE="roles/container.admin"
+ROLE="roles/container.admin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
-export ROLE="roles/container.clusterAdmin"
+ROLE="roles/container.clusterAdmin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
-export ROLE="roles/dns.admin"
+ROLE="roles/dns.admin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
-export ROLE="roles/iam.serviceAccountUser"
+ROLE="roles/iam.serviceAccountUser"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
-export ROLE="roles/storage.admin"
+ROLE="roles/storage.admin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
@@ -117,26 +117,26 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=sa-vm-kyma-integration
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+gcloud iam service-accounts create "$SA_NAME" --display-name "$SA_DISPLAY_NAME"
+gcloud iam service-accounts keys create "$SECRET_FILE" --iam-account="$SA_NAME@$PROJECT.iam.gserviceaccount.com"
 
-export ROLE="roles/compute.instanceAdmin"
-gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
+ROLE="roles/compute.instanceAdmin"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com" --role="$ROLE"
 
-export ROLE="roles/compute.osAdminLogin"
-gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
+ROLE="roles/compute.osAdminLogin"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com" --role="$ROLE"
 
-export ROLE="roles/iam.serviceAccountUser"
-gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
+ROLE="roles/iam.serviceAccountUser"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com" --role="$ROLE"
 
-gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
-gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
+gcloud kms encrypt --location "$LOCATION" --keyring "$KEYRING_NAME" --key "$ENCRYPTION_KEY_NAME" --plaintext-file "$SECRET_FILE" --ciphertext-file "$SECRET_FILE.encrypted"
+gsutil cp "$SECRET_FILE.encrypted" "gs://$BUCKET_NAME/"
 
 ###
 read -n 1 -s -r -p "Press any key to continue"
@@ -145,16 +145,16 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=sa-gcr-push-kyma-project
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+gcloud iam service-accounts create "$SA_NAME" --display-name "$SA_DISPLAY_NAME"
+gcloud iam service-accounts keys create "$SECRET_FILE" --iam-account="$SA_NAME@$PROJECT.iam.gserviceaccount.com"
 
-export ROLE="roles/storage.objectCreator"
+ROLE="roles/storage.objectCreator"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
@@ -167,14 +167,14 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=kyma-bot-npm-token
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+gcloud iam service-accounts create "$SA_NAME" --display-name "$SA_DISPLAY_NAME"
+gcloud iam service-accounts keys create "$SECRET_FILE" --iam-account="$SA_NAME@$PROJECT.iam.gserviceaccount.com"
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
 gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
@@ -186,14 +186,14 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=sap-slack-bot-token
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+gcloud iam service-accounts create "$SA_NAME" --display-name "$SA_DISPLAY_NAME"
+gcloud iam service-accounts keys create "$SECRET_FILE" --iam-account="$SA_NAME@$PROJECT.iam.gserviceaccount.com"
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
 gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
@@ -205,16 +205,16 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=sa-kyma-artifacts
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+gcloud iam service-accounts create "$SA_NAME" --display-name "$SA_DISPLAY_NAME"
+gcloud iam service-accounts keys create "$SECRET_FILE" --iam-account="$SA_NAME@$PROJECT.iam.gserviceaccount.com"
 
-export ROLE="roles/storage.objectAdmin"
+ROLE="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
@@ -227,19 +227,19 @@ read -n 1 -s -r -p "Press any key to continue"
 ###
 
 export SA_REAL_NAME=sa-kms-storage
-export SA_NAME=`echo ${SA_REAL_NAME} | cut -c1-19`-$SHORT_IDENTIFIER
+export SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
 export SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 export SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
 
-SA_NAME=$(check_and_trim $SA_NAME 30)
+SA_NAME=$(check_and_trim "$SA_NAME" 30)
 
-gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
-gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+gcloud iam service-accounts create "$SA_NAME" --display-name "$SA_DISPLAY_NAME"
+gcloud iam service-accounts keys create "$SECRET_FILE" --iam-account="$SA_NAME@$PROJECT.iam.gserviceaccount.com"
 
-export ROLE="roles/storage.objectAdmin"
+ROLE="roles/storage.objectAdmin"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
-export ROLE="roles/cloudkms.cryptoKeyDecrypter"
+ROLE="roles/cloudkms.cryptoKeyDecrypter"
 gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
 
 gcloud kms encrypt --location $LOCATION --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
