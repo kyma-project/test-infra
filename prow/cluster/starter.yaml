@@ -1,6 +1,6 @@
 ###
 # Source file: https://github.com/kubernetes/test-infra/blob/master/prow/cluster/starter.yaml
-# Source commit: b9a576b397892c55487e495721d23b3a52ac9472
+# Source commit: 4faaf685958cd79ea5b5a376fadabd8a9d1b4123
 #
 # Changes:
 # - add get verb for configmaps resource in hook role
@@ -102,7 +102,7 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
       - name: hook
-        image: gcr.io/k8s-prow/hook:v20181129-31c544b
+        image: gcr.io/k8s-prow/hook:v20190312-abfe0e0
         imagePullPolicy: Always
         args:
         - --dry-run=false
@@ -174,7 +174,7 @@ spec:
       serviceAccountName: "plank"
       containers:
       - name: plank
-        image: gcr.io/k8s-prow/plank:v20181129-31c544b
+        image: gcr.io/k8s-prow/plank:v20190312-abfe0e0
         args:
         - --dry-run=false
         - --job-config-path=/etc/job-config
@@ -216,7 +216,7 @@ spec:
       serviceAccountName: "sinker"
       containers:
       - name: sinker
-        image: gcr.io/k8s-prow/sinker:v20181129-31c544b
+        image: gcr.io/k8s-prow/sinker:v20190312-abfe0e0
         args:
         - --job-config-path=/etc/job-config
         volumeMounts:
@@ -257,7 +257,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: deck
-        image: gcr.io/k8s-prow/deck:v20181129-31c544b
+        image: gcr.io/k8s-prow/deck:v20190312-abfe0e0
         args:
         - --tide-url=http://tide/
         - --hook-url=http://hook:8888/plugin-help
@@ -314,7 +314,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: horologium
-        image: gcr.io/k8s-prow/horologium:v20181129-31c544b
+        image: gcr.io/k8s-prow/horologium:v20190312-abfe0e0
         args:
         - --job-config-path=/etc/job-config
         volumeMounts:
@@ -351,7 +351,7 @@ spec:
       serviceAccountName: "tide"
       containers:
       - name: tide
-        image: gcr.io/k8s-prow/tide:v20181129-31c544b
+        image: gcr.io/k8s-prow/tide:v20190312-abfe0e0
         args:
         - --dry-run=false
         - --job-config-path=/etc/job-config
