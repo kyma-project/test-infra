@@ -8,6 +8,28 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestGCPBrokerProviderReleases(t *testing.T) {
+	// WHEN
+	unsupportedReleases := []string{"release-0.6"}
+
+	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tools-gcp-broker-provider", currentRelease), currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tools/gcp-broker-provider")
+		})
+	}
+}
+
 func TestGCPBrokerProviderJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
@@ -17,7 +39,7 @@ func TestGCPBrokerProviderJobsPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 2)
+	assert.Len(t, kymaPresubmits, 3)
 
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-kyma-tools-gcp-broker-provider"

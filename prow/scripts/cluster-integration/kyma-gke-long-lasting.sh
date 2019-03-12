@@ -32,6 +32,8 @@ readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:low
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
+export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
+export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 
@@ -126,6 +128,15 @@ function createCluster() {
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
+
+	NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
+	if [ "$NETWORK_EXISTS" -gt 0 ]; then
+		shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+		date
+		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+	else
+		shout "Network ${GCLOUD_NETWORK_NAME} exists"
+	fi
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date

@@ -31,6 +31,8 @@ readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:low
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
+export GCLOUD_NETWORK_NAME="load-test-net"
+export GCLOUD_SUBNET_NAME="load-test-subnet"
 export STANDARIZED_NAME
 export REPO_OWNER
 export REPO_NAME

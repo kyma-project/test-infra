@@ -129,6 +129,17 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-0.7
 
+  - name: pre-rel08-kyma-integration
+    branches:
+    - release-0.8
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.8
+
   - name: pre-master-kyma-gke-integration
     branches:
     - master
@@ -168,6 +179,19 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.7
+  - name: pre-rel08-kyma-gke-integration
+    branches:
+    - release-0.8
+    <<: *gke_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: release-0.8
 
   - name: pre-master-kyma-gke-upgrade
     branches:
@@ -195,6 +219,18 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.7
+  - name: pre-rel08-kyma-gke-upgrade
+    branches:
+    - release-0.8
+    <<: *gke_upgrade_job_template
+    always_run: false
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-0.8
 
   - name: pre-master-kyma-gke-central-connector
     branches:
@@ -307,7 +343,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -clusterNameRegexp='^gke(int|-upgrade)[-](pr|commit|rel)[-].*'"
+      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -clusterNameRegexp='^gke(int|-upgrade|-central)[-](pr|commit|rel)[-].*'"
       resources:
         requests:
           memory: 1Gi
@@ -542,7 +578,7 @@ periodics:
             cpu: 80m
 
 - name: kyma-gke-end-to-end-test-backup-restore
-  cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  cron: "0 5 * * 5" # "At 05:00 on every day-of-week from Monday through Friday."
   labels:
     preset-build-master: "true"
     preset-weekly-github-integration: "true"
@@ -616,3 +652,33 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+
+- name: kyma-components-use-recent-versions
+  decorate: true
+  cron: "0 4 * * 1" # At 04:00 on every Monday
+  labels:
+    preset-sap-slack-bot-token: "true"
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *kyma_ref
+      base_ref: master
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be
+        command:
+        - "bash"
+        args:
+        - "-c"
+        - "${KYMA_PROJECT_DIR}/test-infra/development/tools/scripts/synchronizer-entrypoint.sh ${KYMA_PROJECT_DIR}/test-infra/development"
+        env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+            value: "#c4core-kyma-ci-force"
+          - name: OUT_OF_DATE_DAYS
+            value: "3"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m

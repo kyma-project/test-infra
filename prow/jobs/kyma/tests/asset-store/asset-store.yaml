@@ -6,7 +6,6 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   skip_report: false
   decorate: true
-  optional: true #Temporary
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
@@ -41,6 +40,17 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-rel08-kyma-tests-asset-store
+      branches:
+        - release-0.8
+      <<: *job_template
+      always_run: true
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.8
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

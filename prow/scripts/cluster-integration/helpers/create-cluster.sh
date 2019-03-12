@@ -15,7 +15,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 function createCluster() {
 	discoverUnsetVar=false
 
-	for var in STANDARIZED_NAME TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS DNS_SUBDOMAIN DNS_DOMAIN; do
+	for var in GCLOUD_NETWORK_NAME GCLOUD_SUBNET_NAME CLUSTER_NAME STANDARIZED_NAME TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS DNS_SUBDOMAIN DNS_DOMAIN; do
 		if [ -z "${!var}" ] ; then
 			echo "ERROR: $var is not set"
 			discoverUnsetVar=true
@@ -45,6 +45,15 @@ function createCluster() {
 	date
 	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
+
+	NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
+	if [ "$NETWORK_EXISTS" -gt 0 ]; then
+		shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+		date
+		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+	else
+		shout "Network ${GCLOUD_NETWORK_NAME} exists"
+	fi
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date

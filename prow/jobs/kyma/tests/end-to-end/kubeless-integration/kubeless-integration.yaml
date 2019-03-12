@@ -59,6 +59,7 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+
     - name: pre-rel06-kyma-tests-kubeless-integration
       branches:
         - release-0.6
@@ -70,6 +71,7 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
+
     - name: pre-rel07-kyma-tests-kubeless-integration
       branches:
         - release-0.7
@@ -78,6 +80,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-0.7
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
+    - name: pre-rel08-kyma-tests-kubeless-integration
+      branches:
+        - release-0.8
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-0.8
       labels:
         <<: *job_labels_template
         preset-build-release: "true"

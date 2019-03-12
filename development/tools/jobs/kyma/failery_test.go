@@ -17,7 +17,7 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 2)
+	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "pre-master-kyma-tools-failery"
 	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
@@ -61,6 +61,7 @@ func TestFaileryJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, "^tools/failery/", actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"}, actualPost.Spec.Containers[0].Args)
 }

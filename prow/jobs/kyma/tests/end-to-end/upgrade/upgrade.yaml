@@ -1,23 +1,22 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^examples/kyma-mock/"
   decorate: true
-  path_alias: github.com/kyma-incubator/varkes
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/varkes/examples/kyma-mock"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/upgrade"
         resources:
           requests:
             memory: 1.5Gi
@@ -26,25 +25,32 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
-  preset-docker-push-repository-incubator: "true"
+  preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-incubator/varkes:
-    - name: pre-master-varkes-examples-kyma-mock
+  kyma-project/kyma:
+    - name: pre-master-kyma-tests-end-to-end-upgrade
       branches:
         - master
       <<: *job_template
+      run_if_changed: "^tests/end-to-end/upgrade/"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
 
 postsubmits:
-  kyma-incubator/varkes:
-    - name: post-master-varkes-examples-kyma-mock
+  kyma-project/kyma:
+    - name: post-master-kyma-tests-end-to-end-upgrade
       branches:
         - master
       <<: *job_template
+      run_if_changed: "^tests/end-to-end/upgrade/"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
-        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter

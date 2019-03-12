@@ -51,5 +51,4 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
-
-# Component no longer exists, do not create jobs for new releases
+  # Component no longer exists, do not create jobs for new releases

@@ -5,7 +5,6 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^tools/gcp-broker-provider/"
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -36,6 +35,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-tools-gcp-broker-provider
+      run_if_changed: "^tools/gcp-broker-provider/"
       branches:
         - master
       <<: *job_template
@@ -46,12 +46,24 @@ presubmits: # runs on PRs
       branches:
         - release-0.7
       <<: *job_template
+      always_run: true
       extra_refs:
        - <<: *test_infra_ref
          base_ref: release-0.7
       labels:
         <<: *job_labels_template
-        preset-build-pr: "true"
+        preset-build-release: "true"
+    - name: pre-rel08-kyma-tools-gcp-broker-provider
+      branches:
+        - release-0.8
+      <<: *job_template
+      always_run: true
+      extra_refs:
+       - <<: *test_infra_ref
+         base_ref: release-0.8
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
@@ -59,6 +71,7 @@ postsubmits:
       branches:
         - master
       <<: *job_template
+      run_if_changed: "^tools/gcp-broker-provider/"
       labels:
         <<: *job_labels_template
         preset-build-master: "true"

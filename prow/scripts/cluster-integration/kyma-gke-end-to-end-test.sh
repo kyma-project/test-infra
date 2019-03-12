@@ -37,6 +37,9 @@ readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:low
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 
+export GCLOUD_NETWORK_NAME="gke-e2etest-net"
+export GCLOUD_SUBNET_NAME="gke-e2etest-subnet"
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -48,7 +51,7 @@ removeCluster() {
     EXIT_STATUS=$?
 
     shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}"  --format=json | jq --raw-output '.createTime' | cut -f1 -d"T" | sed "s/-//g")
 
     shout "Deprovision cluster: \"${CLUSTER_NAME}\""
     date
@@ -174,6 +177,16 @@ date
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
+NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
+if [ "$NETWORK_EXISTS" -gt 0 ]; then
+    shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+    date
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+else
+    shout "Network ${GCLOUD_NETWORK_NAME} exists"
+fi
+
+
 shout "Provision cluster: \"${CLUSTER_NAME}\""
 date
 
@@ -232,6 +245,7 @@ shout "Success cluster created"
 shout "End To End Test"
 date
 cd "${KYMA_SCRIPTS_DIR}"
+set +e
 ./e2e-testing.sh
 TEST_STATUS=$?
 if [ ${TEST_STATUS} -ne 0 ]

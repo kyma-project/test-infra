@@ -27,6 +27,7 @@
 #  - DNS Administrator
 #  - Service Account User
 #  - Storage Admin
+#  - Compute Network Admin
 
 set -o errexit
 
@@ -128,6 +129,13 @@ cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
+    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+        shout "Delete Apiserver proxy DNS Record"
+        date
+        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+        TMP_STATUS=$?
+        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    fi
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -144,21 +152,27 @@ function generateAndExportClusterName() {
     readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
     if [[ "$BUILD_TYPE" == "pr" ]]; then
+        readonly COMMON_NAME_PREFIX="gke-upgrade-pr"
         # In case of PR, operate on PR number
-        COMMON_NAME=$(echo "gke-upgrade-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     elif [[ "$BUILD_TYPE" == "release" ]]; then
+        readonly COMMON_NAME_PREFIX="gke-upgrade-rel"
         readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
         readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
         shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-        COMMON_NAME=$(echo "gke-upgrade-rel-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     else
         # Otherwise (master), operate on triggering commit id
+        readonly COMMON_NAME_PREFIX="gke-upgrade-commit"
         COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        COMMON_NAME=$(echo "gke-upgrade-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     fi
 
     ### Cluster name must be less than 40 characters!
     export CLUSTER_NAME="${COMMON_NAME}"
+
+    export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
+    export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 }
 
 function reserveIPsAndCreateDNSRecords() {
@@ -208,6 +222,18 @@ function generateAndExportCerts() {
     export TLS_CERT
     TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
     export TLS_KEY
+}
+
+function createNetwork() {
+    export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+    NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
+    if [ "$NETWORK_EXISTS" -gt 0 ]; then
+        shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+    else
+        shout "Network ${GCLOUD_NETWORK_NAME} exists"
+    fi
 }
 
 function createCluster() {
@@ -320,6 +346,16 @@ function upgradeKyma() {
     date
     kubectl label installation/kyma-installation action=install
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+
+
+    if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+        shout "Create DNS Record for Apiserver proxy IP"
+        date
+        APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+        CLEANUP_APISERVER_DNS_RECORD="true"
+        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+    fi
 }
 
 function testKyma() {
@@ -336,6 +372,8 @@ generateAndExportClusterName
 reserveIPsAndCreateDNSRecords
 
 generateAndExportCerts
+
+createNetwork
 
 createCluster
 
