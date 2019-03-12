@@ -37,6 +37,9 @@ readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:low
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 
+export GCLOUD_NETWORK_NAME="gke-e2etest-net"
+export GCLOUD_SUBNET_NAME="gke-e2etest-subnet"
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -62,13 +65,6 @@ removeCluster() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
     TMP_STATUS=$?
     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-    if [ -n "${CLEANUP_NETWORK}" ]; then
-        shout "Delete network"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
 
 	shout "Delete Gateway DNS Record"
 	date
@@ -181,12 +177,14 @@ date
 IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
-export GCLOUD_NETWORK_NAME="net-${CLUSTER_NAME}"
-export GCLOUD_SUBNET_NAME="subnet-${CLUSTER_NAME}"
-shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-date
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-CLEANUP_NETWORK="true"
+NETWORK_EXISTS=$(${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh)
+if [ $NETWORK_EXISTS -gt 0 ]; then
+    shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+    date
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+else
+    shout "Network ${GCLOUD_NETWORK_NAME} exists"
+fi
 
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""

@@ -89,13 +89,6 @@ cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-    if [ -n "${CLEANUP_NETWORK}" ]; then
-        shout "Delete network"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-network-with-subnet.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
-
     if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
         shout "Delete Gateway DNS Record"
         date
@@ -159,21 +152,27 @@ function generateAndExportClusterName() {
     readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
     if [[ "$BUILD_TYPE" == "pr" ]]; then
+        readonly COMMON_NAME_PREFIX="gke-upgrade-pr"
         # In case of PR, operate on PR number
-        COMMON_NAME=$(echo "gke-upgrade-pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     elif [[ "$BUILD_TYPE" == "release" ]]; then
+        readonly COMMON_NAME_PREFIX="gke-upgrade-rel"
         readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
         readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
         shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-        COMMON_NAME=$(echo "gke-upgrade-rel-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     else
         # Otherwise (master), operate on triggering commit id
+        readonly COMMON_NAME_PREFIX="gke-upgrade-commit"
         COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        COMMON_NAME=$(echo "gke-upgrade-commit-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     fi
 
     ### Cluster name must be less than 40 characters!
     export CLUSTER_NAME="${COMMON_NAME}"
+
+    export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
+    export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 }
 
 function reserveIPsAndCreateDNSRecords() {
@@ -226,13 +225,15 @@ function generateAndExportCerts() {
 }
 
 function createNetwork() {
-    export GCLOUD_NETWORK_NAME="net-${CLUSTER_NAME}"
-    export GCLOUD_SUBNET_NAME="subnet-${CLUSTER_NAME}"
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-    shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    date
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-    CLEANUP_NETWORK="true"
+    NETWORK_EXISTS=$(${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh)
+    if [ $NETWORK_EXISTS -gt 0 ]; then
+        shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+    else
+        shout "Network ${GCLOUD_NETWORK_NAME} exists"
+    fi
 }
 
 function createCluster() {
