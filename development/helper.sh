@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Adjust clustername if you want, this should not collide with any cluster on GKE that already exists
-CLUSTER_NAME=prow-`whoami`
+CLUSTER_NAME=prow-$(whoami)
 
 # temporary secret store location, should be deleted after installing the cluster
 SECRET_FOLDER=.secrets
