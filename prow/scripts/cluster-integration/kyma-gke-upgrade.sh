@@ -50,6 +50,11 @@ export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="15m"
+export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
+export UPGRADE_TEST_HELM_TIMEOUT=10000
+export UPGRADE_TEST_TIMEOUT=30
+export UPGRADE_TEST_NAMESPACE="upgrade-e2e-test"
+export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -309,6 +314,58 @@ function installKyma() {
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
+function checkTestPodTerminated() {
+    local retry=0
+    local runningPods=0
+    local completedPods=0
+
+    while [ "${retry}" -lt "${UPGRADE_TEST_TIMEOUT}" ]; do
+        for podName in $(kubectl get pods -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}" -o json | jq -sr '.[]|.items[].metadata.name')
+        do
+            runningPods=$((runningPods + 1))
+            phase=$(kubectl get pod "${podName}" -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq '.status.phase')
+
+            if [[ "${phase}" == *"Succeeded"* ]] || [[ "${phase}" == *"Failed"* ]]
+            then
+              echo "Test pod '${podName}' has not terminated, pod phase: ${phase}"
+              completedPods=$((completedPods + 1))
+            fi
+        done
+
+        if [ "${runningPods}" == "${completedPods}" ]
+        then
+            echo "All pods in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase"
+            return 1
+        fi
+
+        echo "Not all pods in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
+        runningPods=0
+        completedPods=0
+        retry=$((retry + 1))
+        sleep 1
+    done
+}
+
+createTestResources() {
+    shout "Create test e2e resources"
+    date
+
+    release=$(basename "${UPGRADE_TEST_PATH}")
+    export release
+
+    helm install "${UPGRADE_TEST_PATH}" \
+        --name "${release}" \
+        --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --timeout "${UPGRADE_TEST_HELM_TIMEOUT}" \
+        --wait
+    prepareResult=$?
+
+    checkTestPodTerminated
+    echo "Exit status for prepare upgrade e2e tests: ${prepareResult}"
+    echo "Test pods logs: "
+    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}" | jq -s '.[]|.log|select(.message | contains("CreateResources")) |.message'
+}
+
 function upgradeKyma() {
     shout "Delete the kyma-installation CR"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
@@ -362,6 +419,17 @@ function testKyma() {
     shout "Test Kyma"
     date
     "${KYMA_SCRIPTS_DIR}"/testing.sh
+
+    shout "Test Kyma e2e"
+    date
+
+    helm test "${release}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT}"
+    testResult=$?
+
+    checkTestPodTerminated
+    echo "Exit status for test upgrade e2e tests: ${testResult}"
+    echo "Test pods logs: "
+    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}" | jq -s '.[]|.log|select(.message | contains("TestResources")) |.message'
 }
 
 # Used to detect errors for logging purposes
@@ -378,6 +446,8 @@ createNetwork
 createCluster
 
 installKyma
+
+createTestResources
 
 upgradeKyma
 
