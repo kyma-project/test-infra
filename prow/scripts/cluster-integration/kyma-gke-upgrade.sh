@@ -54,7 +54,7 @@ export KYMA_UPDATE_TIMEOUT="15m"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-trap cleanup EXIT
+trap cleanup EXIT INT
 
 cleanup() {
     ## Save status of failed script execution
