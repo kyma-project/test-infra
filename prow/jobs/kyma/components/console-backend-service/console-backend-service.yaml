@@ -16,11 +16,30 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/ui-api-layer-acceptance-tests"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/console-backend-service"
         resources:
           requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            memory: 2Gi
+            cpu: 1.5
+
+old_job_template: &old_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer"
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 1.5
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -29,21 +48,21 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-tests-ui-api-layer-acceptance-tests
+    - name: pre-master-kyma-components-console-backend-service
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/ui-api-layer-acceptance-tests/"
+      run_if_changed: "^components/console-backend-service/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel06-kyma-tests-ui-api-layer-acceptance-tests
+    - name: pre-rel06-kyma-components-console-backend-service
       branches:
       - release-0.6
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
       - <<: *test_infra_ref
@@ -51,10 +70,10 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel07-kyma-tests-ui-api-layer-acceptance-tests
+    - name: pre-rel07-kyma-components-console-backend-service
       branches:
       - release-0.7
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
       - <<: *test_infra_ref
@@ -62,10 +81,10 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel08-kyma-tests-ui-api-layer-acceptance-tests
+    - name: pre-rel08-kyma-components-console-backend-service
       branches:
       - release-0.8
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
       - <<: *test_infra_ref
@@ -76,11 +95,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-tests-ui-api-layer-acceptance-tests
+    - name: post-master-kyma-components-console-backend-service
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/ui-api-layer-acceptance-tests/"
+      run_if_changed: "^components/console-backend-service/"
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
