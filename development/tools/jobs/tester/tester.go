@@ -275,3 +275,14 @@ func AssertThatContainerHasEnvFromSecret(t *testing.T, cont kube.Container, expN
 	}
 	assert.Fail(t, fmt.Sprintf("Container [%s] does not have environment variable [%s] with value from secret [name: %s, key: %s]", cont.Name, expName, expSecretName, expSecretKey))
 }
+
+// HasOneOfSuffixes checks if a string has one of provided prefixes
+func HasOneOfSuffixes(str string, prefixes ...string) bool {
+	for _, prefix := range prefixes {
+		if strings.HasSuffix(str, prefix) {
+			return true
+		}
+	}
+
+	return false
+}
