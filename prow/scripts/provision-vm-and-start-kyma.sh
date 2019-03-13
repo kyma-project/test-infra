@@ -87,7 +87,7 @@ for ZONE in ${EU_ZONES}; do
     shout "Could not create machine in zone ${ZONE}"
 done || exit 1
 
-trap cleanup exit
+trap cleanup exit INT
 
 shout "Copying Kyma to the instance"
 
