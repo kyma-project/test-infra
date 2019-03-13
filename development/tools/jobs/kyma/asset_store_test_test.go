@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAssetStoreIntegrationReleases(t *testing.T) {
+func TestAssetStoreReleases(t *testing.T) {
 	// WHEN
 	unsupportedReleases := []string{"release-0.6", "release-0.7"}
 
@@ -30,7 +30,7 @@ func TestAssetStoreIntegrationReleases(t *testing.T) {
 	}
 }
 
-func TestAssetStoreIntegrationJobPresubmit(t *testing.T) {
+func TestAssetStoreJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/asset-store/asset-store.yaml")
 	// THEN
