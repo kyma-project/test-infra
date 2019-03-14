@@ -48,6 +48,17 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
+    - name: pre-master-kyma-components-assetstore-controller-manager
+      branches:
+        - master
+      <<: *old_job_template
+      run_if_changed: "^components/assetstore-controller-manager/"
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
     - name: pre-master-kyma-components-asset-store-controller-manager
       branches:
         - master
