@@ -23,7 +23,7 @@ if [[ "${BOT_GITHUB_TOKEN}" == "" ]]; then
 fi
 
 #generate release changelog
-docker run --rm -v "${KYMA_DIR}":/repository -w /repository -e FROM_TAG="${PENULTIMATE}" -e NEW_RELEASE_TITLE="${RELEASE_VERSION}" -e GITHUB_AUTH="${BOT_GITHUB_TOKEN}" -e CONFIG_FILE=tools/changelog-generator/package.json eu.gcr.io/kyma-project/changelog-generator:0.2.0 sh /app/generate-release-changelog.sh;
+docker run --rm -v "${KYMA_DIR}":/repository -w /repository -e FROM_TAG="${PENULTIMATE}" -e NEW_RELEASE_TITLE="${RELEASE_VERSION}" -e GITHUB_AUTH="${BOT_GITHUB_TOKEN}" -e CONFIG_FILE=.github/package.json eu.gcr.io/kyma-project/changelog-generator:0.2.0 sh /app/generate-release-changelog.sh;
 
 #copy changelog file to KYMA_ARTIFACTS_BUCKET destination
 cp "${KYMA_DIR}/.changelog/release-changelog.md" "${ARTIFACTS}/release-changelog.md"
