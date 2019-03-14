@@ -51,10 +51,15 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="15m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
-export UPGRADE_TEST_HELM_TIMEOUT=10000
-export UPGRADE_TEST_TIMEOUT=30
-export UPGRADE_TEST_NAMESPACE="upgrade-e2e-test"
+# timeout in sec for helm operation install/test
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
+# timeout in sec for e2e upgrade test pods until they reach the terminating state
+export UPGRADE_TEST_TIMEOUT_SEC=30
+export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
+export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
+export UPGRADE_TEST_RESOURCE_LABEL_PREPARE="prepareData"
+export UPGRADE_TEST_RESOURCE_LABEL_EXECUTE="executeTests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -315,55 +320,80 @@ function installKyma() {
 }
 
 function checkTestPodTerminated() {
+    set +e
     local retry=0
     local runningPods=0
-    local completedPods=0
+    local succeededPods=0
+    local failedPods=0
 
-    while [ "${retry}" -lt "${UPGRADE_TEST_TIMEOUT}" ]; do
-        for podName in $(kubectl get pods -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}" -o json | jq -sr '.[]|.items[].metadata.name')
+    while [ "${retry}" -lt "${UPGRADE_TEST_TIMEOUT_SEC}" ]; do
+        # check status phase for each testing pods
+        for podName in $(kubectl get pods -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq -sr '.[]|.items[].metadata.name')
         do
             runningPods=$((runningPods + 1))
             phase=$(kubectl get pod "${podName}" -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq '.status.phase')
+            echo "Test pod '${podName}' has phase: ${phase}"
 
-            if [[ "${phase}" == *"Succeeded"* ]] || [[ "${phase}" == *"Failed"* ]]
+            if [[ "${phase}" == *"Succeeded"* ]]
             then
-              echo "Test pod '${podName}' has not terminated, pod phase: ${phase}"
-              completedPods=$((completedPods + 1))
+                succeededPods=$((succeededPods + 1))
+            fi
+
+            if [[ "${phase}" == *"Failed"* ]]; then
+                failedPods=$((failedPods + 1))
             fi
         done
 
-        if [ "${runningPods}" == "${completedPods}" ]
+        # exit permanently if one of cluster has failed status
+        if [ "${failedPods}" -gt 0 ]
         then
-            echo "All pods in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase"
+            echo "More than one pod has failed status"
             return 1
         fi
 
+        # exit from function if each pod has succeeded status
+        if [ "${runningPods}" == "${succeededPods}" ]
+        then
+            echo "All pods in ${UPGRADE_TEST_NAMESPACE} namespace have succeeded phase"
+            return 0
+        fi
+
+        # reset all counters and rerun checking
         echo "Not all pods in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
         runningPods=0
-        completedPods=0
+        succeededPods=0
         retry=$((retry + 1))
         sleep 1
     done
+
+    echo "The maximum number of attempts: ${retry} has been reached"
+    return 1
+    set -e
 }
 
 createTestResources() {
     shout "Create test e2e resources"
     date
 
-    release=$(basename "${UPGRADE_TEST_PATH}")
-    export release
-
     helm install "${UPGRADE_TEST_PATH}" \
-        --name "${release}" \
+        --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
-        --timeout "${UPGRADE_TEST_HELM_TIMEOUT}" \
+        --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
         --wait
     prepareResult=$?
+    if [ "${prepareResult}" != 0 ]; then
+        echo "Helm install operation failed: ${prepareResult}"
+        exit "${prepareResult}"
+    fi
 
     checkTestPodTerminated
-    echo "Exit status for prepare upgrade e2e tests: ${prepareResult}"
-    echo "Test pods logs: "
-    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}" | jq -s '.[]|.log|select(.message | contains("CreateResources")) |.message'
+    prepareTestResult=$?
+    echo "Logs for prepare data operation to test e2e upgrade: "
+    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_RESOURCE_LABEL_PREPARE}"
+    if [ "${prepareTestResult}" != 0 ]; then
+        echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
+        exit "${prepareTestResult}"
+    fi
 }
 
 function upgradeKyma() {
@@ -420,16 +450,24 @@ function testKyma() {
     date
     "${KYMA_SCRIPTS_DIR}"/testing.sh
 
-    shout "Test Kyma e2e"
+    shout "Test Kyma end-to-end upgrade scenarios"
     date
 
-    helm test "${release}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT}"
-    testResult=$?
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}"
+    testEndToEndResult=$?
+    if [ "${testEndToEndResult}" != 0 ]; then
+        echo "Helm test operation failed: ${testEndToEndResult}"
+        exit "${testEndToEndResult}"
+    fi
 
     checkTestPodTerminated
-    echo "Exit status for test upgrade e2e tests: ${testResult}"
-    echo "Test pods logs: "
-    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}" | jq -s '.[]|.log|select(.message | contains("TestResources")) |.message'
+    executeTestResult=$?
+    echo "Test e2e upgrade logs: "
+    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_RESOURCE_LABEL_EXECUTE}"
+    if [ "${executeTestResult}" != 0 ]; then
+        echo "Exit status for execute upgrade e2e tests: ${executeTestResult}"
+        exit "${executeTestResult}"
+    fi
 }
 
 # Used to detect errors for logging purposes
