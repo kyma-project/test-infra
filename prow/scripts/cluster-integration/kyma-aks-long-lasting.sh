@@ -206,6 +206,16 @@ function addGithubDexConnector() {
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 
+function genSelfSignedCert() {
+    shout "Generate self-signed certificate"
+    date
+    DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+    export DOMAIN
+    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+}
+
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
 	date
@@ -302,7 +312,7 @@ function installKyma() {
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     kubectl label installation/kyma-installation action=install
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 60m
 
     if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
         shout "Create DNS Record for Apiserver proxy IP"
@@ -362,7 +372,7 @@ createGroup
 installCluster
 
 createPublicIPandDNS
-generateAndExportLetsEncryptCert
+genSelfSignedCert
 
 setupKubeconfig
 installTiller
