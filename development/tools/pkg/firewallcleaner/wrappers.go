@@ -7,8 +7,6 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-// DUPLICATE CODE, multiple folders
-
 //ComputeServiceWrapper A wrapper for compute API service connections.
 type ComputeServiceWrapper struct {
 	Context context.Context

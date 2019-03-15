@@ -10,8 +10,6 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 )
 
-// DUPLICATE CODE together with github.go in release folder, consolidate
-
 // GithubAPI exposes functions to interact with Github releases
 type GithubAPI interface {
 	ClosedPullRequests(ctx context.Context) []*github.PullRequest
