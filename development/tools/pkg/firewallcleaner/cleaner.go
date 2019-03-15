@@ -3,7 +3,9 @@ package firewallcleaner
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	compute "google.golang.org/api/compute/v1"
 )
 
@@ -45,10 +47,19 @@ func NewCleaner(computeAPI ComputeAPI, githubAPI GithubAPI) *Cleaner {
 //Run the main find&destroy function
 func (c *Cleaner) Run(dryRun bool, project string) {
 	ctx := context.Background()
-	pulls := c.githubAPI.OpenPullRequests(ctx)
+	pulls := c.githubAPI.ClosedPullRequests(ctx)
 
+	rules, err := c.computeAPI.LookupGlobalForwardingRule(project)
+	if err != nil {
+		fmt.Println(err)
+	}
 	for _, p := range pulls {
-		timeClosed := p.GetClosedAt()
-		fmt.Println("closed at: ", timeClosed)
+		common.ShoutFirst("PR #%d: \"%s\" is %s\n", p.GetNumber(), p.GetTitle(), p.GetState())
+		for _, r := range rules {
+			if strings.Contains(r.Name, fmt.Sprintf("-pr-%d", p.GetNumber())) {
+				// c.computeAPI.DeleteGlobalForwardingRule(project, r.Name)
+				common.Shout("If I were serious, I'd delete the rule for the above PR here. Rule name: %s", r.Name)
+			}
+		}
 	}
 }
