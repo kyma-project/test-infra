@@ -76,7 +76,7 @@ func TestAssetControllerPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	kymaPost, ex := jobConfig.Postsubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPost, 2)
+	assert.Len(t, kymaPost, 1)
 
 	expName := "post-master-kyma-components-asset-store-controller-manager"
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
