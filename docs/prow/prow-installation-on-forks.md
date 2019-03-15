@@ -128,7 +128,7 @@ After Prow installs successfully, you must [configure the webhook](https://suppo
 
 ## Configure Prow
 
-When you use the [`install-prow.sh`](../../development/provision-cluster.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files, and adding job definitions to the `jobs` directory.
+When you use the [`install-prow.sh`](../../development/install-prow.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files, and adding job definitions to the `jobs` directory.
 
 ### The config.yaml file
 
