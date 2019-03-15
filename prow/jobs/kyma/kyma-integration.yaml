@@ -674,8 +674,9 @@ periodics:
         env:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
+          #TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-            value: "#c4core-kyma-ci-force"
+            value: "#c4core-kyma-gopher-pr"
           - name: OUT_OF_DATE_DAYS
             value: "3"
         resources:
