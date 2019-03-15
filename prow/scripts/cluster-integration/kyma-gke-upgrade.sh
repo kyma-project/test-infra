@@ -54,12 +54,12 @@ export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upg
 # timeout in sec for helm operation install/test
 export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
 # timeout in sec for e2e upgrade test pods until they reach the terminating state
-export UPGRADE_TEST_TIMEOUT_SEC=30
+export UPGRADE_TEST_TIMEOUT_SEC=600
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
-export UPGRADE_TEST_RESOURCE_LABEL_PREPARE="prepareData"
-export UPGRADE_TEST_RESOURCE_LABEL_EXECUTE="executeTests"
+export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
+export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -320,7 +320,6 @@ function installKyma() {
 }
 
 function checkTestPodTerminated() {
-    set +e
     local retry=0
     local runningPods=0
     local succeededPods=0
@@ -347,7 +346,7 @@ function checkTestPodTerminated() {
         # exit permanently if one of cluster has failed status
         if [ "${failedPods}" -gt 0 ]
         then
-            echo "More than one pod has failed status"
+            echo "${failedPods} pod(s) has failed status"
             return 1
         fi
 
@@ -359,20 +358,20 @@ function checkTestPodTerminated() {
         fi
 
         # reset all counters and rerun checking
-        echo "Not all pods in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
+        delta=$((runningPods-succeededPods))
+        echo "${delta} pod(s) in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
         runningPods=0
         succeededPods=0
         retry=$((retry + 1))
-        sleep 1
+        sleep 5
     done
 
     echo "The maximum number of attempts: ${retry} has been reached"
     return 1
-    set -e
 }
 
 createTestResources() {
-    shout "Create test e2e resources"
+    shout "Create e2e upgrade test resources"
     date
 
     helm install "${UPGRADE_TEST_PATH}" \
@@ -386,10 +385,13 @@ createTestResources() {
         exit "${prepareResult}"
     fi
 
+    set +o errexit
     checkTestPodTerminated
     prepareTestResult=$?
+    set -o errexit
+
     echo "Logs for prepare data operation to test e2e upgrade: "
-    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_RESOURCE_LABEL_PREPARE}"
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}"
     if [ "${prepareTestResult}" != 0 ]; then
         echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
         exit "${prepareTestResult}"
@@ -460,14 +462,8 @@ function testKyma() {
         exit "${testEndToEndResult}"
     fi
 
-    checkTestPodTerminated
-    executeTestResult=$?
     echo "Test e2e upgrade logs: "
-    kubectl logs -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_RESOURCE_LABEL_EXECUTE}"
-    if [ "${executeTestResult}" != 0 ]; then
-        echo "Exit status for execute upgrade e2e tests: ${executeTestResult}"
-        exit "${executeTestResult}"
-    fi
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
 }
 
 # Used to detect errors for logging purposes
