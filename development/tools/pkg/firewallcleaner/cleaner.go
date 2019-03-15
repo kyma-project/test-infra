@@ -15,22 +15,8 @@ const sleepFactor = 2
 
 //ComputeAPI interface logic for Google cloud API
 type ComputeAPI interface {
-	DeleteHTTPProxy(project string, httpProxy string)
-	DeleteURLMap(project string, urlMap string)
-	DeleteBackendService(project string, backendService string)
-	DeleteInstanceGroup(project string, zone string, instanceGroup string)
-	DeleteHealthChecks(project string, names []string)
-	DeleteForwardingRule(project string, name string, region string)
-	DeleteGlobalForwardingRule(project string, name string)
-	DeleteTargetPool(project string, name string, region string)
-	LookupURLMaps(project string) ([]*compute.UrlMap, error)
-	LookupBackendServices(project string) ([]*compute.BackendService, error)
-	LookupInstanceGroup(project string, zone string) ([]string, error)
-	LookupTargetPools(project string) ([]*compute.TargetPool, error)
-	LookupZones(project, pattern string) ([]string, error)
-	LookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error)
-	LookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error)
-	CheckInstance(project string, zone string, name string) bool
+	ListFirewallRules(project string) ([]*compute.Firewall, error)
+	DeleteFirewallRule(project, firewall string)
 }
 
 //Cleaner Element holding the firewall cleaning logic
@@ -49,16 +35,29 @@ func (c *Cleaner) Run(dryRun bool, project string) {
 	ctx := context.Background()
 	pulls := c.githubAPI.ClosedPullRequests(ctx)
 
-	rules, err := c.computeAPI.LookupGlobalForwardingRule(project)
+	fwRules, err := c.computeAPI.ListFirewallRules(project)
+
 	if err != nil {
 		fmt.Println(err)
 	}
 	for _, p := range pulls {
 		common.ShoutFirst("PR #%d: \"%s\" is %s\n", p.GetNumber(), p.GetTitle(), p.GetState())
-		for _, r := range rules {
-			if strings.Contains(r.Name, fmt.Sprintf("-pr-%d", p.GetNumber())) {
-				// c.computeAPI.DeleteGlobalForwardingRule(project, r.Name)
-				common.Shout("If I were serious, I'd delete the rule for the above PR here. Rule name: %s", r.Name)
+		for _, r := range fwRules {
+			prStr := fmt.Sprintf("-pr-%d", p.GetNumber())
+			if strings.Contains(r.Name, prStr) {
+				// c.computeAPI.DeleteFirewallRule(project, r.Name)
+				common.Shout("If I were serious, I'd delete the rule for the above PR here because of the name. Rule name: %s", r.Name)
+			}
+
+			//
+			// TODO: Is this necessary? Do target tags get updated, if there's one rule for multiple targets and one target gets deleted?
+			// If target tags don't get updated workflow should be, check if target tag is the last one remaining, if not, remove this rules target tag from all rules found
+			// If target tags shouldn't be considered, delete this codeblock below
+			for _, t := range r.TargetTags {
+				if strings.Contains(t, prStr) {
+					// c.computeAPI.DeleteFirewallRule(project, r.Name)
+					common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", r.Name, t)
+				}
 			}
 		}
 	}
