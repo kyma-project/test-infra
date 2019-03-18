@@ -2,7 +2,8 @@ package firewallcleaner
 
 import (
 	"context"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	compute "google.golang.org/api/compute/v1"
 )

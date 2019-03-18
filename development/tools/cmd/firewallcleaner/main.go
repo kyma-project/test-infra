@@ -7,8 +7,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/firewallcleaner"
 	"golang.org/x/oauth2/google"
@@ -16,11 +17,8 @@ import (
 )
 
 var (
-	project           = flag.String("project", "", "Project ID [Required]")
-	dryRun            = flag.Bool("dryRun", true, "Dry Run enabled")
-	githubRepoOwner   = flag.String("githubRepoOwner", "", "Github repository owner [Required]")
-	githubRepoName    = flag.String("githubRepoName", "", "Github repository name [Required]")
-	githubAccessToken = flag.String("githubAccessToken", "", "Github access token [Required]")
+	project = flag.String("project", "", "Project ID [Required]")
+	dryRun  = flag.Bool("dryRun", true, "Dry Run enabled")
 )
 
 func main() {
@@ -32,28 +30,8 @@ func main() {
 		os.Exit(2)
 	}
 
-	if *githubRepoOwner == "" {
-		fmt.Fprintln(os.Stderr, "missing -githubRepoOwner flag")
-		flag.Usage()
-		os.Exit(2)
-	}
-
-	if *githubRepoName == "" {
-		fmt.Fprintln(os.Stderr, "missing -githubRepoName flag")
-		flag.Usage()
-		os.Exit(2)
-	}
-
-	if *githubAccessToken == "" {
-		fmt.Fprintln(os.Stderr, "missing -githubAccessToken flag")
-		flag.Usage()
-		os.Exit(2)
-	}
-
 	log.Printf("Running with arguments: project: \"%s\", dryRun: \"%t\"", *project, *dryRun)
 	ctx := context.Background()
-
-	ga := firewallcleaner.NewGithubAPI(ctx, *githubAccessToken, *githubRepoOwner, *githubRepoName)
 
 	connenction, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
 	if err != nil {
@@ -66,6 +44,9 @@ func main() {
 	}
 
 	computeServiceWrapper := &firewallcleaner.ComputeServiceWrapper{Context: ctx, Compute: svc}
-	cleaner := firewallcleaner.NewCleaner(computeServiceWrapper, ga)
-	cleaner.Run(*dryRun, *project)
+	cleaner := firewallcleaner.NewCleaner(computeServiceWrapper)
+	cleanerErr := cleaner.Run(*dryRun, *project)
+	if cleanerErr != nil {
+		log.Println(cleanerErr)
+	}
 }
