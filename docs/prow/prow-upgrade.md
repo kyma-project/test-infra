@@ -39,7 +39,7 @@ To update a Prow cluster follow these steps:
    ```
    ./update-config.sh ../prow/config.yaml
    ```
-12. Check that everything is working as intended. E.g. that `kubectl get pods` doesn't show errors on your updated test cluster and the dashboard is still reachable.
+10. Make sure that the update was successful. For example, run `kubectl get pods` to check if it doesn't show errors on the updated test cluster and the dashboard is still reachable.
 11. Create a pull request.
 
 ## Troubleshooting
