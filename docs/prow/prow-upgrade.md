@@ -42,7 +42,7 @@ To update a Prow cluster follow these steps:
 12. Check that everything is working as intended. E.g. that `kubectl get pods` doesn't show errors on your updated test cluster and the dashboard is still reachable.
 11. Create a pull request.
 
-# Worst case rollback
+## Troubleshooting
 
 In case something goes wrong with the upgrade and pods are not starting anymore, check out the old commit before the update happened and change the deployments back to what they were via:
 ```bash
