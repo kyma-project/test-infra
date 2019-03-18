@@ -48,7 +48,7 @@ In case something goes wrong with the upgrade and pods are not starting anymore,
 ```bash
 kubectl apply -f prow/cluster/starter.yaml
 ```
-Then change back to config to what it was via:
+2. Use the following command to bring the previous config back:
 ```
 ./update-config.sh ../prow/config.yaml
 ```
