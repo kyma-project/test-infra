@@ -4,7 +4,7 @@ In order to get improved/newer versions of prow we need to upgrade prow. The kub
 
 ## Update process
 
-In general the update process is pretty straight forward and can be rolled back pretty easily.
+To update a Prow cluster follow these steps:
 
 1. Follow prow-installation-on-forks.md to setup your own prow cluster. Make sure that it's working.
 2. In the [kubernetes/test-infra](https://github.com/kubernetes/test-infra/) project select the commit that is going to be your the one the prow cluster should be upgraded to. E.g. [2c8e0dbb96b4c1a86d42275dfbed5474a6d05def](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
