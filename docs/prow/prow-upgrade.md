@@ -15,17 +15,9 @@ To update a Prow cluster follow these steps:
     * gcr.io/k8s-prow/deck
     * gcr.io/k8s-prow/horologium
     * gcr.io/k8s-prow/tide
-4. Copy over new labels for the following containers:
-    * gcr.io/k8s-prow/hook
-    * gcr.io/k8s-prow/plank
-    * gcr.io/k8s-prow/sinker
-    * gcr.io/k8s-prow/deck
-    * gcr.io/k8s-prow/horologium
-    * gcr.io/k8s-prow/tide
-5. Copy commit id into comment on top of the file to keep track of the current release used for the deployments (due to prow not having any releases)
-6. Check with a diff tool for other meaningful changes that need to be taken into account and copied over.
-7. Open [config.yaml (local)](../../prow/config.yaml) in current project as well as on the commit [config.yaml (remote)](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/config.yaml)
-8. Copy over new labels for the following containers:
+4. Copy commit id into comment on top of the file to keep track of the current release used for the deployments (due to prow not having any releases)
+5. Check with a diff tool for other meaningful changes that need to be taken into account and copied over.
+6. Open both [`config.yaml`](../../prow/config.yaml) in the current project and [`config.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/config.yaml) in the Kubernetes project and copy new labels for these containers:
     * gcr.io/k8s-prow/clonerefs
     * gcr.io/k8s-prow/initupload
     * gcr.io/k8s-prow/entrypoint
