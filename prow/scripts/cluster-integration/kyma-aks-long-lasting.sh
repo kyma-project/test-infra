@@ -356,7 +356,7 @@ function installStabilityChecker() {
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
 	        --name=stability-checker \
-	        --wait
+	        --wait \
 	        --timeout=600
 }
 
