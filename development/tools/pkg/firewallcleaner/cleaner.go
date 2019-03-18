@@ -46,6 +46,8 @@ func (c *Cleaner) Run(dryRun bool, project string) error {
 		return err
 	}
 
+	common.Shout("Cleaner ran without errors")
+
 	return nil
 }
 
