@@ -2,7 +2,7 @@
 
 In order to get improved/newer versions of prow we need to upgrade prow. The kubernetes prow instance is getting updated via a shell script that is very limiting in the versions that you can choose from and is probably not good enough for cherrypicking updates we like. In the meantime though we can't not update the cluster and will have to describe a way to do updates. This document aims to provide a description of such an upgrade.
 
-## Upgrade process
+## Update process
 
 In general the update process is pretty straight forward and can be rolled back pretty easily.
 
