@@ -22,12 +22,12 @@ To update a Prow cluster follow these steps:
     * gcr.io/k8s-prow/initupload
     * gcr.io/k8s-prow/entrypoint
     * gcr.io/k8s-prow/sidecar
-9. Check with a diff tool for other meaningful changes that need to be taken into account and copied over.
-10. Update prow deployments
+7. Use a diff tool to find other meaningful changes and copy the items you need.
+8. Run this command to update Prow deployments:
     ```bash
     kubectl apply -f prow/cluster/starter.yaml
     ```
-11. Update prow config. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
+9. Use the `update-config.sh {file_path}` script to apply the Prow configuration on a cluster. Run the following command:
    ```
    ./update-config.sh ../prow/config.yaml
    ```
@@ -36,13 +36,12 @@ To update a Prow cluster follow these steps:
 
 ## Troubleshooting
 
-In case something goes wrong with the upgrade and pods are not starting anymore, check out the old commit before the update happened and change the deployments back to what they were via:
-```bash
-kubectl apply -f prow/cluster/starter.yaml
-```
+1. In case something goes wrong with the upgrade and pods are not starting anymore, check out the old commit before the update happened and change the deployments back to what they were via:
+    ```bash
+    kubectl apply -f prow/cluster/starter.yaml
+    ```
 2. Use the following command to bring the previous config back:
-```
-./update-config.sh ../prow/config.yaml
-```
-
-Monitor to see the pods coming up via `kubectl get pods`
+    ```
+    ./update-config.sh ../prow/config.yaml
+    ```
+3. Use `kubectl get pods` to monitor if the pods start.
