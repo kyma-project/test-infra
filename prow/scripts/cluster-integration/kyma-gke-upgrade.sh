@@ -50,6 +50,16 @@ export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="15m"
+export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
+# timeout in sec for helm operation install/test
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
+# timeout in sec for e2e upgrade test pods until they reach the terminating state
+export UPGRADE_TEST_TIMEOUT_SEC=600
+export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
+export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
+export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
+export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
+export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -309,6 +319,85 @@ function installKyma() {
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
+function checkTestPodTerminated() {
+    local retry=0
+    local runningPods=0
+    local succeededPods=0
+    local failedPods=0
+
+    while [ "${retry}" -lt "${UPGRADE_TEST_TIMEOUT_SEC}" ]; do
+        # check status phase for each testing pods
+        for podName in $(kubectl get pods -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq -sr '.[]|.items[].metadata.name')
+        do
+            runningPods=$((runningPods + 1))
+            phase=$(kubectl get pod "${podName}" -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq '.status.phase')
+            echo "Test pod '${podName}' has phase: ${phase}"
+
+            if [[ "${phase}" == *"Succeeded"* ]]
+            then
+                succeededPods=$((succeededPods + 1))
+            fi
+
+            if [[ "${phase}" == *"Failed"* ]]; then
+                failedPods=$((failedPods + 1))
+            fi
+        done
+
+        # exit permanently if one of cluster has failed status
+        if [ "${failedPods}" -gt 0 ]
+        then
+            echo "${failedPods} pod(s) has failed status"
+            return 1
+        fi
+
+        # exit from function if each pod has succeeded status
+        if [ "${runningPods}" == "${succeededPods}" ]
+        then
+            echo "All pods in ${UPGRADE_TEST_NAMESPACE} namespace have succeeded phase"
+            return 0
+        fi
+
+        # reset all counters and rerun checking
+        delta=$((runningPods-succeededPods))
+        echo "${delta} pod(s) in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
+        runningPods=0
+        succeededPods=0
+        retry=$((retry + 1))
+        sleep 5
+    done
+
+    echo "The maximum number of attempts: ${retry} has been reached"
+    return 1
+}
+
+createTestResources() {
+    shout "Create e2e upgrade test resources"
+    date
+
+    helm install "${UPGRADE_TEST_PATH}" \
+        --name "${UPGRADE_TEST_RELEASE_NAME}" \
+        --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
+        --wait
+    prepareResult=$?
+    if [ "${prepareResult}" != 0 ]; then
+        echo "Helm install operation failed: ${prepareResult}"
+        exit "${prepareResult}"
+    fi
+
+    set +o errexit
+    checkTestPodTerminated
+    prepareTestResult=$?
+    set -o errexit
+
+    echo "Logs for prepare data operation to test e2e upgrade: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}"
+    if [ "${prepareTestResult}" != 0 ]; then
+        echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
+        exit "${prepareTestResult}"
+    fi
+}
+
 function upgradeKyma() {
     shout "Delete the kyma-installation CR"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
@@ -362,6 +451,19 @@ function testKyma() {
     shout "Test Kyma"
     date
     "${KYMA_SCRIPTS_DIR}"/testing.sh
+
+    shout "Test Kyma end-to-end upgrade scenarios"
+    date
+
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}"
+    testEndToEndResult=$?
+    if [ "${testEndToEndResult}" != 0 ]; then
+        echo "Helm test operation failed: ${testEndToEndResult}"
+        exit "${testEndToEndResult}"
+    fi
+
+    echo "Test e2e upgrade logs: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
 }
 
 # Used to detect errors for logging purposes
@@ -378,6 +480,8 @@ createNetwork
 createCluster
 
 installKyma
+
+createTestResources
 
 upgradeKyma
 
