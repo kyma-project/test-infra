@@ -550,7 +550,7 @@ periodics:
           - name: RS_GROUP
             value: "kyma-nightly-aks"
           - name: REGION
-            value: "westeurope"
+            value: "northeurope"
           - name: INPUT_CLUSTER_NAME
             value: "nightly-aks"
           - name: TEST_RESULT_WINDOW_TIME
