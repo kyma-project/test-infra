@@ -47,12 +47,12 @@ func (csw *ComputeServiceWrapper) LookupGlobalForwardingRule(project string) ([]
 }
 
 //LookupForwardingRule ???
-func (csw *ComputeServiceWrapper) LookupForwardingRule(project, region string) ([]*compute.ForwardingRule, error) {
-	call := csw.Compute.ForwardingRules.List(project, region)
+func (csw *ComputeServiceWrapper) LookupForwardingRule(project string) ([]*compute.ForwardingRule, error) {
+	call := csw.Compute.ForwardingRules.AggregatedList(project)
 	var items []*compute.ForwardingRule
-	f := func(page *compute.ForwardingRuleList) error {
+	f := func(page *compute.ForwardingRuleAggregatedList) error {
 		for _, list := range page.Items {
-			items = append(items, list)
+			items = append(items, list.ForwardingRules...)
 		}
 		return nil
 	}
@@ -62,13 +62,13 @@ func (csw *ComputeServiceWrapper) LookupForwardingRule(project, region string) (
 	return items, nil
 }
 
-//LookupRegion ???
-func (csw *ComputeServiceWrapper) LookupRegion(project string) ([]*compute.Region, error) {
-	call := csw.Compute.Regions.List(project)
-	var items []*compute.Region
-	f := func(page *compute.RegionList) error {
+//LookupInstances ???
+func (csw *ComputeServiceWrapper) LookupInstances(project string) ([]*compute.Instance, error) {
+	call := csw.Compute.Instances.AggregatedList(project)
+	var items []*compute.Instance
+	f := func(page *compute.InstanceAggregatedList) error {
 		for _, list := range page.Items {
-			items = append(items, list)
+			items = append(items, list.Instances...)
 		}
 		return nil
 	}

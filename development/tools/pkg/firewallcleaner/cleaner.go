@@ -15,8 +15,8 @@ const sleepFactor = 2
 type ComputeAPI interface {
 	LookupFirewallRule(project string) ([]*compute.Firewall, error)
 	LookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error)
-	LookupForwardingRule(project, region string) ([]*compute.ForwardingRule, error)
-	LookupRegion(project string) ([]*compute.Region, error)
+	LookupForwardingRule(project string) ([]*compute.ForwardingRule, error)
+	LookupInstances(project string) ([]*compute.Instance, error)
 	DeleteFirewallRule(project, firewall string)
 	DeleteForwardingRule(project, name, region string)
 	DeleteGlobalForwardingRule(project, name string)
@@ -54,11 +54,21 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string) error {
 	if err != nil {
 		return err
 	}
-	for _, r := range rules {
-		for _, t := range r.TargetTags {
-			if strings.Contains(t, "test") {
+	instances, err := c.computeAPI.LookupInstances(project)
+	if err != nil {
+		return err
+	}
+	for _, rule := range rules {
+		for _, target := range rule.TargetTags {
+			exist := false
+			for _, instance := range instances {
+				if instance.Name == target {
+					exist = true
+				}
+			}
+			if !exist {
 				// c.computeAPI.DeleteFirewallRule(project, r.Name)
-				common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", r.Name, t)
+				common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", rule.Name, target)
 			}
 		}
 	}
@@ -70,30 +80,44 @@ func (c *Cleaner) checkAndDeleteGlobalForwardingRules(project string) error {
 	if err != nil {
 		return err
 	}
-	for _, r := range rules {
-		if strings.Contains(r.Target, "test") {
+	instances, err := c.computeAPI.LookupInstances(project)
+	if err != nil {
+		return err
+	}
+	for _, rule := range rules {
+		exist := false
+		for _, instance := range instances {
+			if instance.Name == rule.Target {
+				exist = true
+			}
+		}
+		if !exist {
 			// c.computeAPI.DeleteGlobalForwardingRule(project, r.Name)
-			common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", r.Name, r.Target)
+			common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", rule.Name, rule.Target)
 		}
 	}
 	return nil
 }
 
 func (c *Cleaner) checkAndDeleteForwardingRules(project string) error {
-	regions, err := c.computeAPI.LookupRegion(project)
+	rules, err := c.computeAPI.LookupForwardingRule(project)
 	if err != nil {
 		return err
 	}
-	for _, region := range regions {
-		rules, err := c.computeAPI.LookupForwardingRule(project, region.Name)
-		if err != nil {
-			return err
-		}
-		for _, r := range rules {
-			if strings.Contains(r.Target, "test") {
-				// c.computeAPI.DeleteForwardingRule(project, r.Name)
-				common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", r.Name, r.Target)
+	instances, err := c.computeAPI.LookupInstances(project)
+	if err != nil {
+		return err
+	}
+	for _, rule := range rules {
+		exist := false
+		for _, instance := range instances {
+			if instance.Name == rule.Target && strings.Contains(instance.Zone, rule.Region) {
+				exist = true
 			}
+		}
+		if !exist {
+			// c.computeAPI.DeleteForwardingRule(project, r.Name)
+			common.Shout("If I were serious, I'd delete the rule for the above PR here, because of the target tag. Rule name: %s, TargetTag: %s", rule.Name, rule.Target)
 		}
 	}
 	return nil
