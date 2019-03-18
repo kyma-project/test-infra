@@ -8,7 +8,13 @@ To update a Prow cluster follow these steps:
 
 1. Follow [this](./prow-installation-on-forks.md) prow-installation-on-forks.md) document for details to set up a Prow cluster.
 2. In the [kubernetes/test-infra](https://github.com/kubernetes/test-infra/) project select the commit that is going to be your the one the prow cluster should be upgraded to. E.g. [2c8e0dbb96b4c1a86d42275dfbed5474a6d05def](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
-3. Open [starter.yaml (local)](../../prow/cluster/starter.yaml) in current project as well as on the commit [starter.yaml (remote)](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml)
+3. Open both [`starter.yaml`](../../prow/cluster/starter.yaml) in the current project and [`starter.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml) in the Kubernetes project and copy new lables for these containers:
+    * gcr.io/k8s-prow/hook
+    * gcr.io/k8s-prow/plank
+    * gcr.io/k8s-prow/sinker
+    * gcr.io/k8s-prow/deck
+    * gcr.io/k8s-prow/horologium
+    * gcr.io/k8s-prow/tide
 4. Copy over new labels for the following containers:
     * gcr.io/k8s-prow/hook
     * gcr.io/k8s-prow/plank
