@@ -302,7 +302,7 @@ function installKyma() {
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     kubectl label installation/kyma-installation action=install
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 80m
 
     if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
         shout "Create DNS Record for Apiserver proxy IP"
@@ -346,7 +346,8 @@ function installStabilityChecker() {
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
 	        --name=stability-checker \
-	        --wait
+	        --wait \
+	        --timeout=600
 }
 
 init
