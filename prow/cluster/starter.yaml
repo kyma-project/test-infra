@@ -271,6 +271,7 @@ spec:
             - --hook-url=http://hook:8888/plugin-help
             - --job-config-path=/etc/job-config
             - --spyglass
+            - --build-cluster=/etc/cluster/cluster.yaml
           ports:
             - name: http
               containerPort: 8080
@@ -281,6 +282,9 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
+              readOnly: true
       volumes:
         - name: config
           configMap:
@@ -288,6 +292,10 @@ spec:
         - name: job-config
           configMap:
             name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster
 ---
 apiVersion: v1
 kind: Service
