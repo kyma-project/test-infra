@@ -206,16 +206,6 @@ function addGithubDexConnector() {
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 
-function genSelfSignedCert() {
-    shout "Generate self-signed certificate"
-    date
-    DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-    export DOMAIN
-    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
-    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-}
-
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
 	date
@@ -373,7 +363,7 @@ createGroup
 installCluster
 
 createPublicIPandDNS
-genSelfSignedCert
+generateAndExportLetsEncryptCert
 
 setupKubeconfig
 installTiller
