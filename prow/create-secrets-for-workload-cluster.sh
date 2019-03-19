@@ -24,7 +24,7 @@ if [ -z "$GOPATH" ]; then
 fi
 
 ### Cloning k8s.io/test-infra is a prerequisite here
-git clone "git@github.com:kubernetes/test-infra.git" "${GOPATH}/src/k8s.io/test-infra" || cd $GOPATH/src/k8s.io/test-infra/prow
+git clone "git@github.com:kubernetes/test-infra.git" "${GOPATH}/src/k8s.io/test-infra" || cd "${GOPATH}/src/k8s.io/test-infra/prow"
 
 ### Reference: https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkbuild-cluster#usage
 bazel run //prow/cmd/mkbuild-cluster -- \
