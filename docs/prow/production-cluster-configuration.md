@@ -60,7 +60,7 @@ Use the following tools and configuration:
    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
    ```
 
-4. Run the following script to create a secret to make workload luster accessible for Prow cluster:
+4. Run the following script to create a secret to make workload cluster accessible for Prow cluster:
 
     ```bash
     ./create-secrets-for-workload-cluster.sh
