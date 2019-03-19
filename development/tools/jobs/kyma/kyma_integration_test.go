@@ -80,17 +80,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 			expJobImage: tester.ImageBootstrapHelm20181121,
 		},
-		"Should contains the gke-upgrade job": {
-			givenJobName: "pre-master-kyma-gke-upgrade",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildPr,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-				"preset-bot-github-token",
-			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
-		},
 		"Should contains the gke-central job": {
 			givenJobName: "pre-master-kyma-gke-central-connector",
 
@@ -130,6 +119,36 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 		})
 	}
+}
+
+func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-upgrade", "master")
+	require.NotNil(t, actualJob)
+
+	// then
+	// the common expectation
+	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+	assert.Equal(t, "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)", actualJob.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+	assert.True(t, actualJob.Decorate)
+	assert.False(t, actualJob.SkipReport)
+	assert.Equal(t, 10, actualJob.MaxConcurrency)
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+
+	// the job specific expectation
+	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
+		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+		"preset-bot-github-token")
 }
 
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {

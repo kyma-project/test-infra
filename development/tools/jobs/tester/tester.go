@@ -234,6 +234,11 @@ func AssertThatJobRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
 
+// AssertThatJobDoesNotRunIfChanged checks if job that has specified run_if_changed parameter will not be triggered by changes in specified file.
+func AssertThatJobDoesNotRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
+	assert.False(t, p.RunsAgainstChanges([]string{changedFile}), "triggered by changed file [%s]", changedFile)
+}
+
 // AssertThatHasCommand checks if job has
 func AssertThatHasCommand(t *testing.T, command []string) {
 	assert.Equal(t, []string{BuildScriptDir}, command)
