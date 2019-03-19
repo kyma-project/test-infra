@@ -131,7 +131,6 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	require.NotNil(t, actualJob)
 
 	// then
-	// the common expectation
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
@@ -142,8 +141,6 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-
-	// the job specific expectation
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
 		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
