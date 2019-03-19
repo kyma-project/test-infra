@@ -50,7 +50,7 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 		return errors.Wrap(err, fmt.Sprintf("call to LookupInstances failed for project '%s'", project))
 	}
 	for _, rule := range rules {
-		for _, target := range rule.TargetTags {
+		for _, target := range rule.TargetTags { // If no targetTags are specified, the firewall rule applies to all instances on the specified network. ref: https://cloud.google.com/compute/docs/reference/rest/v1/firewalls/list
 			exist := false
 			for _, instance := range instances {
 				if instance.Name == target {
