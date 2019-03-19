@@ -390,6 +390,27 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
+- name: firewall-cleaner
+  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+  labels:
+    preset-sa-gke-kyma-integration: "true"
+    preset-gc-project-env: "true"
+  decorate: true
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
 - name: orphaned-dns-cleaner
   cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
   labels:

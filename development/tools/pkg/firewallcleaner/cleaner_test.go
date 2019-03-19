@@ -155,4 +155,30 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 		secondErr := c.Run(false, testProject)
 		assert.Nil(t, secondErr)
 	})
+	t.Run("Cleaner.Run() Should delete no firewall-rules, because dryRun is true", func(t *testing.T) {
+		computeAPI := &automock.ComputeAPI{}
+		firewalls := []*compute.Firewall{
+			{Name: "firewall-one", TargetTags: []string{"instance-one"}},
+			{Name: "firewall-two", TargetTags: []string{"instance-two"}},
+			{Name: "firewall-three", TargetTags: []string{"instance-three"}},
+			{Name: "firewall-four", TargetTags: []string{}},
+			{Name: "firewall-four"},
+		}
+		instances := []*compute.Instance{
+			{Name: "instance-one"},
+			{Name: "instance-two"},
+		}
+		defer computeAPI.AssertExpectations(t)
+
+		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
+		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+
+		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
+
+		c := NewCleaner(computeAPI)
+
+		// dryRun true
+		err := c.Run(true, testProject)
+		assert.Nil(t, err)
+	})
 }
