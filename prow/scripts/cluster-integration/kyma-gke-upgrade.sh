@@ -49,7 +49,7 @@ export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_INSTALL_TIMEOUT="30m"
-export KYMA_UPDATE_TIMEOUT="15m"
+export KYMA_UPDATE_TIMEOUT="25m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
 # timeout in sec for helm operation install/test
 export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000

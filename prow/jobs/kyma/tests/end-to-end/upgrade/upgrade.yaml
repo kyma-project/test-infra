@@ -33,7 +33,9 @@ presubmits: # runs on PRs
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/end-to-end/upgrade/"
+      # run against all changes in `upgrade/*` folder except
+      # changes made inside the`upgrade/chart/*`
+      run_if_changed: "^tests/end-to-end/upgrade/[^chart]"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -47,7 +49,9 @@ postsubmits:
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/end-to-end/upgrade/"
+      # run against all changes in `upgrade/*` folder except
+      # changes made inside the`upgrade/chart/*`
+      run_if_changed: "^tests/end-to-end/upgrade/[^chart]"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
