@@ -205,13 +205,13 @@ function generateAndExportLetsEncryptCert() {
 	gcloud kms encrypt --location global \
 	--keyring kyma-prow \
 	--key projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption\
-	--plaintext-file "./letsencrypt/live/"${DOMAIN}"/fullchain.pem"  \
+	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
 	--ciphertext-file "nightly-aks-tls-integration-app-client-cert.encrypted"
 	#encrypt the tls private key
 	gcloud kms encrypt --location global \
 	--keyring kyma-prow \
 	--key projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption\
-	--plaintext-file "./letsencrypt/live/"${DOMAIN}"/privkey.pem"  \
+	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem  \
 	--ciphertext-file "nightly-aks-tls-integration-app-client-tls.encrypted"
 
 	#copy the privite key
