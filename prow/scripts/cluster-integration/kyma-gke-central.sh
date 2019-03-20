@@ -74,63 +74,47 @@ cleanup() {
 
         #Delete cluster
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         #Delete orphaned disks
         shout "Delete orphaned PVC disks..."
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         shout "Delete Gateway DNS Record"
         date
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         shout "Release Gateway IP Address"
         date
         IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
         shout "Delete Remote Environments DNS Record"
         date
         IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]; then
         shout "Release Remote Environments IP Address"
         date
         IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         shout "Delete Apiserver proxy DNS Record"
         date
         IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
 

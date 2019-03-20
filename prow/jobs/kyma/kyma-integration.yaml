@@ -294,7 +294,7 @@ periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
 - name: utilities-kyma-integration-cleaner
-  cron: "0 7 * * 1-5" # "At 07:00 on every day-of-week from Monday through Friday."
+  cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
     preset-sa-vm-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -307,7 +307,7 @@ periodics:
           cpu: 50m
 
 - name: orphaned-disks-cleaner
-  cron: "15 */2 * * 1-5" # "At minute 15 past every 2nd hour from Monday through Friday"
+  cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -328,7 +328,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-clusters-cleaner
-  cron: "0 */4 * * 1-5" # "Every four hours from Monday through Friday"
+  cron: "0 * * * *" # "At 0 minute every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -349,7 +349,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-vms-cleaner
-  cron: "30 */4 * * 1-5" # "At minute 30 past every 4th hour from Monday through Friday"
+  cron: "0 * * * *" # "At minute 0 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -370,7 +370,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-loadbalancer-cleaner
-  cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
+  cron: "15 * * * *" # "At 15 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -391,7 +391,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-dns-cleaner
-  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+  cron: "30 * * * *" # "At minute 30 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
