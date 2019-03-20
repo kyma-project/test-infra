@@ -115,8 +115,6 @@ cleanup() {
         shout "Delete Apiserver proxy DNS Record"
         date
         IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
 
