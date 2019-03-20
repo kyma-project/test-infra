@@ -410,6 +410,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/sync"
+  packages = ["semaphore"]
+  revision = "e225da77a7e68af35c70ccbf71af2b83e6acac3c"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = [
     "unix",
@@ -717,6 +723,7 @@
 [[projects]]
   name = "k8s.io/test-infra"
   packages = [
+    "ghproxy/ghcache",
     "prow/apis/prowjobs",
     "prow/apis/prowjobs/v1",
     "prow/client/clientset/versioned",
@@ -795,9 +802,10 @@
     "prow/sidecar",
     "prow/slack",
     "testgrid/metadata",
+    "testgrid/metadata/junit",
     "testgrid/util/gcs"
   ]
-  revision = "2c8e0dbb96b4c1a86d42275dfbed5474a6d05def"
+  revision = "4faaf685958cd79ea5b5a376fadabd8a9d1b4123"
 
 [[projects]]
   name = "sigs.k8s.io/yaml"
@@ -805,9 +813,15 @@
   revision = "fd68e9863619f6ec2fdd8625fe1f02e7c877e480"
   version = "v1.1.0"
 
+[[projects]]
+  branch = "master"
+  name = "vbom.ml/util"
+  packages = ["sortorder"]
+  revision = "efcd4e0f97874370259c7d93e12aad57911dea81"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2bae35cf42eb3b9792320950070dee53c4ca80116cb473d98ae1af00925557b1"
+  inputs-digest = "eca2032f2c1f70014363c70282c63b3be997ddcd011b84cb3cd96a8d3704db8e"
   solver-name = "gps-cdcl"
   solver-version = 1
