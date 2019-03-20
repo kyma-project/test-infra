@@ -197,7 +197,7 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_upgrade_job_template
-    run_if_changed: "^(resources|installation)"
+    run_if_changed: "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)"
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"
