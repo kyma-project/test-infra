@@ -90,7 +90,7 @@ function removeCluster() {
 
 	echo "Remove DNS Record for Apiserver Proxy IP"
 	APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone=${CLOUDSDK_DNS_ZONE_NAME} --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
 		IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
 		TMP_STATUS=$?
