@@ -25,7 +25,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 attempts=10
-retryTimeInSec="10"
+retryTimeInSec=$((1 + RANDOM % 10))
 function deleteDNSWithRetries() {
     set +e
 
