@@ -349,7 +349,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-vms-cleaner
-  cron: "0 */1 * * *" # "At minute 0 past every hour"
+  cron: "0 * * * *" # "At minute 0 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -370,7 +370,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-loadbalancer-cleaner
-  cron: "15 */1 * * *" # "At 15 past every hour"
+  cron: "15 * * * *" # "At 15 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -391,7 +391,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-dns-cleaner
-  cron: "30 */1 * * *" # "At minute 30 past every hour"
+  cron: "30 * * * *" # "At minute 30 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
