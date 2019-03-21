@@ -233,15 +233,15 @@ function generateAndExportLetsEncryptCert() {
     export TLS_KEY
     #encrypt the tls cert
 	gcloud kms encrypt --location global \
-	--keyring ${KYMA_KEYRING} \
-	--key ${KYMA_ENCRYPTION_KEY}
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}"
 	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
 	--ciphertext-file "nightly-aks-tls-integration-app-client-cert.encrypted"
 	
 	#encrypt the private cert
 	gcloud kms encrypt --location global \
-	--keyring ${KYMA_KEYRING} \
-	--key ${KYMA_ENCRYPTION_KEY}
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}"
 	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
 	--ciphertext-file "nightly-aks-tls-integration-app-client-key.encrypted"
 	#copy the cert
