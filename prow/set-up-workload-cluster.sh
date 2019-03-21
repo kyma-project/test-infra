@@ -40,6 +40,9 @@ fi
 # Set up ClusterRoleBinding for User: Client which plank needs to operate on this cluster
 kubectl apply -f "${PROW_WORKLOAD_CLUSTER_DIR}/00-clusterrolebinding.yaml"
 
+# Install PodDisruptionBudgets
+kubectl apply -f "${PROW_WORKLOAD_CLUSTER_DIR}/07-kube-system_poddisruptionbudgets.yaml"
+
 # Create secrets
 go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_WORKLOAD_CLUSTER_DIR}/required-secrets.yaml"
 

@@ -15,9 +15,9 @@ spec:
   tls:
     - secretName: prow-tls
       hosts:
-        - status.build.kyma-project.io
+        - statusv2.build.kyma-project.io
   rules:
-    - host: status.build.kyma-project.io
+    - host: statusv2.build.kyma-project.io
       http:
         paths:
           - path: /*
