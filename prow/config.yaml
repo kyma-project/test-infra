@@ -268,6 +268,12 @@ presets:
     env:
       - name: KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
         value: "gs://kyma-development-artifacts"
+  - labels:
+     preset-kyma-encryption-key: "true"
+    env:
+      - name: KYMA_ENCRYPTION_KEY
+        value: projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption\
+
 
 branch-protection:
   enforce_admins: false

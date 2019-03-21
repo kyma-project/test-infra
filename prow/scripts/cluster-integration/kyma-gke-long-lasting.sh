@@ -203,20 +203,22 @@ function generateAndExportLetsEncryptCert() {
     export TLS_KEY
 	#encrypt the tls cert
 	gcloud kms encrypt --location global \
-	--keyring kyma-prow \
-	--key projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption\
+	--keyring ${KYMA_KEYRING} \
+	--key ${KYMA_ENCRYPTION_KEY}
 	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
-	--ciphertext-file "nightly-aks-tls-integration-app-client-cert.encrypted"
-	#encrypt the tls private key
+	--ciphertext-file "nightly-gke-tls-integration-app-client-cert.encrypted"
+	
+	#encrypt the private cert
 	gcloud kms encrypt --location global \
-	--keyring kyma-prow \
-	--key projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption\
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem  \
-	--ciphertext-file "nightly-aks-tls-integration-app-client-tls.encrypted"
+	--keyring ${KYMA_KEYRING} \
+	--key ${KYMA_ENCRYPTION_KEY}
+	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
+	--ciphertext-file "nightly-gke-tls-integration-app-client-key.encrypted"
+	#copy the cert
+	gsutil cp nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
+    #copy the private key
+	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
 
-	#copy the privite key
-	gsutil cp nightly-aks-tls-integration-app-client-secret.encrypted gs://kyma-prow-secrets/
-	go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 
 }
 
