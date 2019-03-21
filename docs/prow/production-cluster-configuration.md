@@ -60,13 +60,30 @@ Use the following tools and configuration:
    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
    ```
 
-4. Run the following script to create a secret to make workload cluster accessible for Prow cluster:
+4. Prepare workload cluster before installing Prow
 
+    ```bash
+      export WORKLOAD_CLUSTER_NAME=kyma-prow-workload
+      export ZONE=europe-west3-a
+      export PROJECT=sap-kyma-prow
+
+      ### In GKE get KUBECONFIG for cluster kyma-prow-workload
+      gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+
+      ./set-up-workload-cluster.sh
+    ```
+
+    This script performs the following steps:
+    - Create a ClusterRoleBinding used to give access to Prow cluster to run/monitor jobs in the workload cluster
+    - Create secrets in k8s cluster by fetching from GCP bucket
+
+5. Run the following script to create a secret to make workload cluster accessible for Prow cluster:
+> Prerequisite: The workload cluster should have been created before and the local kubeconfig for the Prow admin should contain the context for this cluster. However, the current kubeconfig should point to the Prow cluster
     ```bash
     ./create-secrets-for-workload-cluster.sh
     ```
 
-5. Run the following script to start the installation process:
+6. Run the following script to start the installation process:
 
    ```bash
    ./install-prow.sh
@@ -82,7 +99,7 @@ Use the following tools and configuration:
    - Deploy the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md).
    - Remove insecure Ingress.
 
-6. Verify the installation.
+7. Verify the installation.
 
    To check if the installation is successful, perform the following steps:
 
@@ -91,23 +108,6 @@ Use the following tools and configuration:
    - Check if the Deck is accessible from outside of the cluster:
      `kubectl get ingress tls-ing`
    - Copy the address of the `tls-ing` Ingress and open it in a browser to display the Prow status on the dashboard.
-
-7. Prepare workload cluster
-
-    ```bash
-      export CLUSTER_NAME=kyma-prow-workload
-      export ZONE=europe-west3-a
-      export PROJECT=sap-kyma-prow
-
-      ### In GKE get KUBECONFIG for cluster kyma-prow-workload
-      gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
-
-      ./set-up-workload-cluster.sh
-    ```
-
-    This script performs the following steps:
-    - Create a ClusterRoleBinding used to give access to Prow cluster to run/monitor jobs in the workload cluster
-    - Create secrets in k8s cluster by fetching from GCP bucket
 
 ## Configure Prow
 

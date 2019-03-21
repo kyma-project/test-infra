@@ -13,8 +13,8 @@ if [ -z "$GCLOUD_COMPUTE_ZONE" ]; then
       exit 1
 fi
 
-if [ -z "$CLUSTER_NAME" ]; then
-      echo "\$CLUSTER_NAME is empty"
+if [ -z "$WORKLOAD_CLUSTER_NAME" ]; then
+      echo "\$WORKLOAD_CLUSTER_NAME is empty"
       exit 1
 fi
 
@@ -28,5 +28,5 @@ git clone "git@github.com:kubernetes/test-infra.git" "${GOPATH}/src/k8s.io/test-
 
 ### Reference: https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkbuild-cluster#usage
 bazel run //prow/cmd/mkbuild-cluster -- \
-  --project="${PROJECT}" --zone="${GCLOUD_COMPUTE_ZONE}" --cluster="${CLUSTER_NAME}" --alias default --change-context --print-entry | tee cluster.yaml
+  --project="${PROJECT}" --zone="${GCLOUD_COMPUTE_ZONE}" --cluster="${WORKLOAD_CLUSTER_NAME}" --alias default --change-context --print-entry | tee cluster.yaml
 kubectl create secret generic workload-cluster --from-file=cluster.yaml

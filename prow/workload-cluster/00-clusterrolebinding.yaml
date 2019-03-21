@@ -3,7 +3,6 @@ kind: ClusterRoleBinding
 metadata:
   annotations:
     rbac.authorization.kubernetes.io/autoupdate: "true"
-  creationTimestamp: "2019-03-18T14:43:08Z"
   labels:
     kubernetes.io/bootstrapping: rbac-defaults
   name: prow-client
