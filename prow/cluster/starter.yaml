@@ -227,12 +227,16 @@ spec:
           image: gcr.io/k8s-prow/sinker:v20181129-31c544b
           args:
             - --job-config-path=/etc/job-config
+            - --build-cluster=/etc/cluster/cluster.yaml
           volumeMounts:
             - name: config
               mountPath: /etc/config
               readOnly: true
             - name: job-config
               mountPath: /etc/job-config
+              readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
               readOnly: true
       volumes:
         - name: config
@@ -241,6 +245,10 @@ spec:
         - name: job-config
           configMap:
             name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
