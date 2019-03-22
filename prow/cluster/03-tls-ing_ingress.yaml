@@ -6,7 +6,7 @@ kind: Ingress
 metadata:
   name: tls-ing
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: kyma-prow2-status
+    kubernetes.io/ingress.global-static-ip-name: kyma-prow-status
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     certmanager.k8s.io/acme-http01-edit-in-place: "true"
@@ -15,9 +15,9 @@ spec:
   tls:
     - secretName: prow-tls
       hosts:
-        - statusv2.build.kyma-project.io
+        - status.build.kyma-project.io
   rules:
-    - host: statusv2.build.kyma-project.io
+    - host: status.build.kyma-project.io
       http:
         paths:
           - path: /*
