@@ -26,8 +26,9 @@ function export_variables() {
         if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
             DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
             echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
+        else 
+            DOCKER_TAG="${PULL_BASE_REF}"
         fi
-        DOCKER_TAG="${PULL_BASE_REF}"       
     else
         echo "Not supported build type - ${BUILD_TYPE}"
         exit 1
