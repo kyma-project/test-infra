@@ -10,7 +10,7 @@ import (
 
 func TestConnectionTokenHandlerReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetSupportedReleases([]string{"release-0.6", "release-0.7", "release-0.8"}) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/connection-token-handler/connection-token-handler.yaml")
 			// THEN
