@@ -131,7 +131,7 @@ function getHelmCerts() {
     RETRY_COUNT=3
     RETRY_TIME_SEC=5
 
-    for (( i = 0; i < ${RETRY_COUNT}; i++ )); do
+    for (( i = 0; i < $RETRY_COUNT; i++ )); do
         mkdir -p "$(helm home)"
 
         echo "---> Get Helm secrets and put then into $(helm home)"
