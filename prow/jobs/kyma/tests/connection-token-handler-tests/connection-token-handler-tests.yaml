@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits:
   kyma-project/kyma:
-  - name: pre-master-kyma-components-connection-token-handler-tests
+  - name: pre-master-kyma-tests-connection-token-handler-tests
     branches:
     - master
     <<: *job_template
@@ -43,7 +43,7 @@ presubmits:
 
 postsubmits:
   kyma-project/kyma:
-  - name: post-master-kyma-components-connection-token-handler-tests
+  - name: post-master-kyma-tests-connection-token-handler-tests
     branches:
     - master
     <<: *job_template
