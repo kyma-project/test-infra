@@ -20,9 +20,9 @@ config_updater:
       name: plugins
 
 triggers:
-  - repos:
-      - sayanh
-      - kyma-incubator
-    trusted_org: sayanh
-    only_org_members: true
-    ignore_ok_to_test: true
+- repos:
+  - kyma-project
+  - kyma-incubator
+  trusted_org: kyma-project
+  only_org_members: true
+  ignore_ok_to_test: true
