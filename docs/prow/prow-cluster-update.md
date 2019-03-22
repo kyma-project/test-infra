@@ -1,13 +1,13 @@
 # Prow cluster update
 
-In order to get improved/newer versions of prow we need to update prow. The kubernetes teams' prow instance is getting updated via a shell script. This shell script offers a small list of the last pushed container tags. This could reflect only containers of a single day, due to how many times the kubernetes team is actually running their pipeline. This limits us in the versions we can choose from, as we usually don't go from finding out about a new version, to deploying it, within one day. To cherrypick updates, we will need a different process. By monitoring [prow announcements](https://github.com/kubernetes/test-infra/blob/master/prow/ANNOUNCEMENTS.md) we can see when fixes or important changes are merged into the kubernetes teams' repository and start looking into applying these changes to our prow cluster. This document aims to provide a description of how to perform such an update.
+Updating a Prow cluster requires an improved Prow version. The Kubernetes Prow instance gets updated via a shell script. The shell script offers only a short list of the last pushed container tags and as a result, limits the versions to choose from. To cherry-pick updates, monitor [Prow announcements](https://github.com/kubernetes/test-infra/blob/master/prow/ANNOUNCEMENTS.md) to see when fixes or important changes are merged into the Kubernetes repository. This document describes how to update a Prow cluster using a cherry-picked Prow version.
 
 ## Update process
 
 To update a Prow cluster follow these steps:
 
 1. Follow [this](./prow-installation-on-forks.md) document for details to set up a Prow cluster.
-2. Go to the [`kubernetes/test-infra`](https://github.com/kubernetes/test-infra/) project and select a commit with the desired update for the Prow cluster. For example, use [2c8e0dbb96b4c1a86d42275dfbed5474a6d05def](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
+2. Go to the [`kubernetes/test-infra`](https://github.com/kubernetes/test-infra/) project and select a commit with the desired update for the Prow cluster. For example, use [`2c8e0dbb96b4c1a86d42275dfbed5474a6d05def`](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
 3. Open both [`starter.yaml`](../../prow/cluster/starter.yaml) in the current project and [`starter.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml) in the Kubernetes project and copy new tags for these containers:
     * gcr.io/k8s-prow/hook
     * gcr.io/k8s-prow/plank
