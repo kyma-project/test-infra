@@ -210,10 +210,8 @@ presets:
       preset-kyma-backup-credentials: "true"
     env:
     - name: KYMA_BACKUP_CREDENTIALS
-      valueFrom:
-        secretKeyRef:
-          name: kyma-backup-credentials
-          key: token
+      secret:
+        secretName: sa-kyma-backup-restore
   - labels:
       preset-stability-checker-slack-notifications: "true"
     env:

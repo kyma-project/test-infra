@@ -69,7 +69,8 @@ For the purpose of the installation, you must have a set of service accounts and
  - **kyma-bot-npm-token** which is a token for publishing npm packages.
  - **sap-slack-bot-token** which is a token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).
  - **sa-kyma-artifacts** service account with the role that allows the account to store objects in a bucket.
-    
+ - **sa-kyma-backup-restore** service account with the role that allows the account to store objects in the bucket used for backup and restore tests.
+
 For more information about roles, read [this](./authorization.md) document.
 
 
