@@ -272,7 +272,7 @@ presets:
      preset-kyma-encryption-key: "true"
     env:
       - name: KYMA_ENCRYPTION_KEY
-        value: projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption\
+        value: projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption
 
 
 branch-protection:

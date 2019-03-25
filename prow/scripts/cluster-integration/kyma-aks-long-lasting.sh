@@ -242,7 +242,7 @@ function generateAndExportLetsEncryptCert() {
 	gcloud kms encrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}"
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
+	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem \
 	--ciphertext-file "nightly-aks-tls-integration-app-client-key.encrypted"
 	#copy the cert
 	gsutil cp nightly-aks-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
