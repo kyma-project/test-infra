@@ -13,7 +13,7 @@ The structure of the folder looks as follows:
 ```
   ├── 00-clusterrolebinding.yaml                # The enabled Prow cluster to access workload cluster and run all jobs.
   ├── 02-kube-system_poddisruptionbudgets.yaml  # The definition of Pod Disruption Budgets for Pods in the  `kube-system` Namespace, used to unblock the node autoscaler.
-  └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket
+  └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket.
 ```
 
 ## Required Secrets structure
