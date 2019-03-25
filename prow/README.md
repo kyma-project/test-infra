@@ -50,7 +50,7 @@ Its structure looks as follows:
   ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
   ├── install-prow.sh       # The script for the production cluster installation
   └── plugins.yaml          # The file with Prow plugins configuration
-  └── create-secrets-for-workload-cluster.sh  # This script creates a secret in Prow cluster which is used to access workload-cluster
+  └── create-secrets-for-workload-cluster.sh  # This script creates a Secret in the Prow cluster, which is used to access the workload cluster.
   └── set-up-workload-cluster.sh  # This script prepares the workload cluster to be used by the Prow cluster.
 ```
 
