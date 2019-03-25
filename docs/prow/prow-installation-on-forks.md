@@ -71,7 +71,7 @@ For the purpose of the installation, you must have a set of service accounts and
  - **sa-kyma-artifacts** service account with the role that allows the account to store objects in a bucket.
  - **sa-kyma-backup-restore** service account with the role that allows the account to store objects in the bucket used for backup and restore tests.
 
-3. Create a secret for the workload cluster in Prow Cluster
+3. Create a Secret for the workload cluster in the Prow Cluster:
 
     ```bash
         export PROJECT={project-name}
