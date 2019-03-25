@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains files related to the configuration of the Prow workload cluster that are used during the cluster provisioning.
+This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
 
 ## Project structure
 
