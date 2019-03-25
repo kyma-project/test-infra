@@ -8,7 +8,7 @@ This folder contains files related to the configuration of the Prow workload clu
 
 <!-- Update the folder structure each time you modify it. -->
 
-The structure of the folder looks as follows:
+The folder structure looks as follows:
 
 ```
   ├── 00-clusterrolebinding.yaml                # The enabled Prow cluster to access workload cluster and run all jobs.
