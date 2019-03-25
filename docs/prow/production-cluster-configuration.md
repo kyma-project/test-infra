@@ -80,7 +80,6 @@ Use the following tools and configuration:
 5. >**NOTE:**: Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow cluster.
 
 Run the following script to create a Secret. This way you allow the Prow cluster to access the workload cluster: 
-> Prerequisite: The workload cluster should have been created before and the local kubeconfig for the Prow admin should contain the context for this cluster. However, the current kubeconfig should point to the Prow cluster
     ```bash
     ./create-secrets-for-workload-cluster.sh
     ```
