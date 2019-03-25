@@ -83,7 +83,7 @@ Use the following tools and configuration:
     ```bash
     ./create-secrets-for-workload-cluster.sh
     ```
-
+>**NOTE:** Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow cluster.
 6. Run the following script to start the installation process:
 
    ```bash
