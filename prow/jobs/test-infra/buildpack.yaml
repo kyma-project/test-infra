@@ -283,6 +283,6 @@ postsubmits: # runs on master
       <<: *vulnerability_scanner_job_template
     - name: post-test-infra-kubectl
       labels:
-        preset-build-pr: "true"
+        preset-build-release: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
