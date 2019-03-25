@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains a minimal docker image that might be used for cluster control. 
+This folder contains a minimal Docker image used to control the cluster.
 
 This image consists of:
 
