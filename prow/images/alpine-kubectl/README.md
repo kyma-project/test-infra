@@ -10,7 +10,7 @@ This image consists of:
 - openssl
 - curl
 - base64
-- kubectl (latest)
+- kubectl (1.13)
 - helm (2.10)
 
 ## Installation
