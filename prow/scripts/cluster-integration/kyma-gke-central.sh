@@ -304,6 +304,7 @@ metadata:
 data:
   connector-service.deployment.args.central: "true"
   connector-service.tests.central: "true"
+  connection-token-handler.tests.central: "true"
 EOF
 
 shout "Trigger installation"
