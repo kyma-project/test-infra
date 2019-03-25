@@ -51,7 +51,7 @@ Its structure looks as follows:
   ├── install-prow.sh       # The script for the production cluster installation
   └── plugins.yaml          # The file with Prow plugins configuration
   └── create-secrets-for-workload-cluster.sh  # This script creates a secret in Prow cluster which is used to access workload-cluster
-  └── set-up-workload-cluster.sh  # This script prepares a workload cluster to be used by the Prow cluster
+  └── set-up-workload-cluster.sh  # This script prepares the workload cluster to be used by the Prow cluster.
 ```
 
 ## Installation
