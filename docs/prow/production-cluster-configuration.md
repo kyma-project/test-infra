@@ -60,7 +60,7 @@ Use the following tools and configuration:
    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
    ```
 
-4. Prepare workload cluster before installing Prow
+4. Prepare the workload cluster before installing Prow by running:
 
     ```bash
       export WORKLOAD_CLUSTER_NAME=kyma-prow-workload
