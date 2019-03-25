@@ -77,7 +77,9 @@ Use the following tools and configuration:
     - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
     - Create secrets in k8s cluster by fetching from GCP bucket
 
-5. Run the following script to create a secret to make workload cluster accessible for Prow cluster:
+5. >**NOTE:**: Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow cluster.
+
+Run the following script to create a Secret. This way you allow the Prow cluster to access the workload cluster: 
 > Prerequisite: The workload cluster should have been created before and the local kubeconfig for the Prow admin should contain the context for this cluster. However, the current kubeconfig should point to the Prow cluster
     ```bash
     ./create-secrets-for-workload-cluster.sh
