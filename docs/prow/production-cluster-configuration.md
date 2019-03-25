@@ -79,6 +79,7 @@ Use the following tools and configuration:
 
 
 5. Run the following script to create a Secret. This way you allow the Prow cluster to access the workload cluster: 
+    
     ```bash
     ./create-secrets-for-workload-cluster.sh
     ```
