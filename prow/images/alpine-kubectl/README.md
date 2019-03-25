@@ -18,5 +18,5 @@ This image consists of:
 To build the Docker image, run this command:
 
 ```bash
-docker build alpine-kubectl .
+docker build -t alpine-kubectl .
 ```
