@@ -24,4 +24,4 @@ You can define two kinds of Secrets:
 
 The `secretspopulator` function looks for a `{prefix}.encrypted` object in a bucket and creates a Kubernetes Secret with a `{prefix}` name.
 For service accounts, the Secret key is `service-account.json`. For generic Secrets, you must provide a key.
-For more details about the syntax of this file, see the `RequiredSecretsData` type in `development/tools/cmd/secretspopulator/secretspopulator`.
+For details on the file syntax, see the `RequiredSecretsData` type in [`secretspopulator`](https://github.com/kyma-project/test-infra/tree/master/development/tools/cmd/secretspopulator).
