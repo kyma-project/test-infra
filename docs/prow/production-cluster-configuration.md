@@ -74,7 +74,7 @@ Use the following tools and configuration:
     ```
 
     This script performs the following steps:
-    - Create a ClusterRoleBinding used to give access to Prow cluster to run/monitor jobs in the workload cluster
+    - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
     - Create secrets in k8s cluster by fetching from GCP bucket
 
 5. Run the following script to create a secret to make workload cluster accessible for Prow cluster:
