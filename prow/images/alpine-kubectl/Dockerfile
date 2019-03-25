@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-LABEL source=git@github.com:kyma-project/kyma.git
+LABEL source=git@github.com:kyma-project/test-infra.git
 
 ENV HELM_VERSION="v2.10.0"
 ENV KUBECTL_VERSION="v1.13.0"
