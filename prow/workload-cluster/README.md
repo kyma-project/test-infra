@@ -4,7 +4,7 @@
 
 This folder contains files related to the configuration of the Prow workload cluster that are used during the cluster provisioning.
 
-### Project structure
+## Project structure
 
 <!-- Update the folder structure each time you modify it. -->
 
