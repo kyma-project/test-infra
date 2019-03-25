@@ -501,7 +501,7 @@ func TestKubectlJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestBootstrapJobPostsubmit(t *testing.T) {
+func TestKubectlJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
 	// THEN
