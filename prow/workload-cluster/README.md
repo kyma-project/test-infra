@@ -16,7 +16,7 @@ The folder structure looks as follows:
   └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket.
 ```
 
-## Required Secrets structure
+## Required Secrets
 The `required-secrets.yaml` file is read by `secretspopulator` and consists of required Secrets stored in a Google Cloud Storage (GCS) bucket.
 You can define two kinds of Secrets:
 - Service accounts
