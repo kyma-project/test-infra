@@ -13,7 +13,7 @@ Use the following tools and configuration:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
-- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-cluster)
+- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-prow-main-cluster)
 - Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
@@ -81,16 +81,12 @@ Use the following tools and configuration:
   ```
 
 5. Run the following script to create a Kubernetes Secret resource in Prow main cluster. This way you allow the Prow main cluster to access the workload cluster:
-  
+>**NOTE:** Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow main cluster.
+
   ```bash
     ./create-secrets-for-workload-cluster.sh
-<<<<<<< HEAD
-    ```
->**NOTE:** Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow cluster.
-=======
   ```
 
->>>>>>> Fixes based on review comments
 6. Run the following script to start the installation process:
 
   ```bash
