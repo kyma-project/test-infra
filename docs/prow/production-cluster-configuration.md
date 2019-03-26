@@ -3,6 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
+> Note: This prow installation is compatible with commit SHA of `b9a576b397892c55487e495721d23b3a52ac9472` of github.com/k8s.io/test-infra repository
 
 ## Prerequisites
 
@@ -22,31 +23,49 @@ Use the following tools and configuration:
   - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `kyma-prow-status` name
   - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `kyma-prow-status` address
 
+    
 ## Installation
 
-1. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project.
+1. Prepare the workload cluster:
 
-   Export the **PROJECT** variable and run this command:
+  ```bash
+    export WORKLOAD_CLUSTER_NAME=kyma-prow-workload
+    export ZONE=europe-west3-a
+    export PROJECT=sap-kyma-prow
 
-   ```
-   gcloud config set project $PROJECT
-   ```
+    ### In GKE get KUBECONFIG for cluster kyma-prow-workload
+    gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
 
-2. Make sure that kubectl points to the correct cluster.
+    ./set-up-workload-cluster.sh
+  ```
 
-   Export these variables:
+  This script performs the following steps:
+  - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
+  - Creates Kubernetes `Secrets` resources out of Secrets fetched from the GCP bucket.
 
-   ```
-   export CLUSTER_NAME=kyma-prow
-   export ZONE=europe-west3-a
-   export PROJECT=sap-kyma-prow
-   ```
+2. Set the context to your Google Cloud project.
+
+    Export the **PROJECT** variable and run this command:
+
+  ```bash
+    gcloud config set project $PROJECT
+  ```
+
+3. Make sure that kubectl points to the prow main cluster.
+
+  Export these variables:
+
+  ```bash
+    export CLUSTER_NAME=kyma-prow
+    export ZONE=europe-west3-a
+    export PROJECT=sap-kyma-prow
+  ```
 
    For GKE, run the following command:
 
-   ```
-   gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
-   ```
+  ```bash
+    gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+  ```
 
 3. Export these environment variables, where:
 
@@ -54,41 +73,28 @@ Use the following tools and configuration:
    - **KEYRING_NAME** is the KMS key ring.
    - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
-   ```
-   export BUCKET_NAME=kyma-prow-secrets
-   export KEYRING_NAME=kyma-prow
-   export ENCRYPTION_KEY_NAME=kyma-prow-encryption
-   ```
+  ```bash
+    export BUCKET_NAME=kyma-prow-secrets
+    export KEYRING_NAME=kyma-prow
+    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
+  ```
 
-4. Prepare the workload cluster before installing Prow:
-
-    ```bash
-      export WORKLOAD_CLUSTER_NAME=kyma-prow-workload
-      export ZONE=europe-west3-a
-      export PROJECT=sap-kyma-prow
-
-      ### In GKE get KUBECONFIG for cluster kyma-prow-workload
-      gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
-
-      ./set-up-workload-cluster.sh
-    ```
-
-    This script performs the following steps:
-    - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
-    - Creates Kubernetes `Secrets` resources out of Secrets fetched from the GCP bucket.
-
-
-5. Run the following script to create a Secret. This way you allow the Prow cluster to access the workload cluster: 
-    
-    ```bash
+4. Run the following script to create a Secret. This way you allow the Prow cluster to access the workload cluster: 
+  
+  ```bash
     ./create-secrets-for-workload-cluster.sh
+<<<<<<< HEAD
     ```
 >**NOTE:** Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow cluster.
+=======
+  ```
+
+>>>>>>> Fixes based on review comments
 6. Run the following script to start the installation process:
 
-   ```bash
-   ./install-prow.sh
-   ```
+  ```bash
+    ./install-prow.sh
+  ```
 
    The installation script performs the following steps to install Prow:
 
