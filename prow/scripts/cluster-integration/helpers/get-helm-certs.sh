@@ -1,6 +1,4 @@
-#!/usr/bin/env bash -e
-
-CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+#!/usr/bin/env bash
 
 # Description: Waits for the cluster to generate Helm Client Certs and downloads them into HELM_HOME
 
