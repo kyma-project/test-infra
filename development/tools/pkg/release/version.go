@@ -49,7 +49,7 @@ func parseVersion(releaseVersion string) (bool, error) {
 		return false, err
 	}
 
-	if !r.MatchString(releaseVersion) {
+	if !r.MatchString(strings.TrimSpace(releaseVersion)) {
 		return false, errors.New("Kyma version provided in the RELEASE_VERSION file is malformed")
 	}
 
