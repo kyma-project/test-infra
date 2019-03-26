@@ -234,6 +234,11 @@ func AssertThatJobRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
 
+// AssertThatJobDoesNotRunIfChanged checks if job that has specified run_if_changed parameter will not be triggered by changes in specified file.
+func AssertThatJobDoesNotRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
+	assert.False(t, p.RunsAgainstChanges([]string{changedFile}), "triggered by changed file [%s]", changedFile)
+}
+
 // AssertThatHasCommand checks if job has
 func AssertThatHasCommand(t *testing.T, command []string) {
 	assert.Equal(t, []string{BuildScriptDir}, command)
@@ -274,4 +279,15 @@ func AssertThatContainerHasEnvFromSecret(t *testing.T, cont kube.Container, expN
 		}
 	}
 	assert.Fail(t, fmt.Sprintf("Container [%s] does not have environment variable [%s] with value from secret [name: %s, key: %s]", cont.Name, expName, expSecretName, expSecretKey))
+}
+
+// HasOneOfSuffixes checks if a string has one of provided prefixes
+func HasOneOfSuffixes(str string, prefixes ...string) bool {
+	for _, prefix := range prefixes {
+		if strings.HasSuffix(str, prefix) {
+			return true
+		}
+	}
+
+	return false
 }
