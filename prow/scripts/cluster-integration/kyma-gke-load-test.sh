@@ -118,6 +118,7 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Install kyma"
 date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/install-kyma.sh
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Install load-test"
 date
