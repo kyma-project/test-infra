@@ -8,8 +8,8 @@ if [ -z "$PROJECT" ]; then
       exit 1
 fi
 
-if [ -z "$GCLOUD_COMPUTE_ZONE" ]; then
-      echo "\$GCLOUD_COMPUTE_ZONE is empty"
+if [ -z "$ZONE" ]; then
+      echo "\$ZONE is empty"
       exit 1
 fi
 
@@ -31,5 +31,7 @@ git reset b9a576b397892c55487e495721d23b3a52ac9472 --hard
 
 ### Reference: https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkbuild-cluster#usage
 go run "${GOPATH}/src/k8s.io/test-infra/prow/cmd/mkbuild-cluster/main.go" \
-  --project="${PROJECT}" --zone="${GCLOUD_COMPUTE_ZONE}" --cluster="${WORKLOAD_CLUSTER_NAME}" --alias default --change-context --print-entry | tee cluster.yaml
+  --project="${PROJECT}" --zone="${GCLOUD_COMPUTE_ZONE}" \
+  --cluster="${WORKLOAD_CLUSTER_NAME}" --alias default \
+  --change-context --print-entry | tee cluster.yaml
 kubectl create secret generic workload-cluster --from-file=cluster.yaml

@@ -51,7 +51,7 @@ Use the following tools and configuration:
     gcloud config set project $PROJECT
   ```
 
-3. Make sure that kubectl points to the prow main cluster.
+3. Make sure that kubectl points to the Prow main cluster.
 
   Export these variables:
 
@@ -67,7 +67,7 @@ Use the following tools and configuration:
     gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
   ```
 
-3. Export these environment variables, where:
+4. Export these environment variables, where:
 
    - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
    - **KEYRING_NAME** is the KMS key ring.
@@ -77,9 +77,10 @@ Use the following tools and configuration:
     export BUCKET_NAME=kyma-prow-secrets
     export KEYRING_NAME=kyma-prow
     export ENCRYPTION_KEY_NAME=kyma-prow-encryption
+    export GOPATH=$GOPATH ### Ensure GOPATH is set
   ```
 
-4. Run the following script to create a Secret. This way you allow the Prow cluster to access the workload cluster: 
+5. Run the following script to create a Kubernetes Secret resource in Prow main cluster. This way you allow the Prow main cluster to access the workload cluster:
   
   ```bash
     ./create-secrets-for-workload-cluster.sh
@@ -142,8 +143,8 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 To check if the `plugins.yaml`, `config.yaml`, and `jobs` configuration files are correct, run the `validate-config.sh {plugins_file_path} {config_file_path} {jobs_dir_path}` script. For example, run:
 
-```
-./validate-config.sh ../prow/plugins.yaml ../prow/config.yaml ../prow/jobs
+```bash
+  ./validate-config.sh ../prow/plugins.yaml ../prow/config.yaml ../prow/jobs
 ```
 
 ### Upload the configuration on a cluster
@@ -152,19 +153,19 @@ If the files are configured correctly, upload the files on a cluster.
 
 1. Use the `update-plugins.sh {file_path}` script to apply plugin changes on a cluster.
 
-   ```
+   ```bash
    ./update-plugins.sh ../prow/plugins.yaml
    ```
 
 2. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
 
-   ```
+   ```bash
    ./update-config.sh ../prow/config.yaml
    ```
 
 3. Use the `update-jobs.sh {jobs_dir_path}` script to apply jobs configuration on a cluster.
 
-   ```
+   ```bash
    ./update-jobs.sh ../prow/jobs
    ```
 
@@ -174,6 +175,6 @@ After you complete the required configuration, you can test the uploaded plugins
 
 To clean up everything created by the installation script, run the removal script:
 
-```
+```bash
 ./remove-prow.sh
 ```
