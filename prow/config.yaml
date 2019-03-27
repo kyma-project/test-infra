@@ -210,10 +210,15 @@ presets:
       preset-kyma-backup-credentials: "true"
     env:
     - name: KYMA_BACKUP_CREDENTIALS
-      valueFrom:
-        secretKeyRef:
-          name: kyma-backup-credentials
-          key: token
+      value: /etc/credentials/sa-kyma-backup-restore/service-account.json
+    volumes:
+      - name: sa-kyma-backup-restore
+        secret:
+          secretName: sa-kyma-backup-restore
+    volumeMounts:
+      - name: sa-kyma-backup-restore
+        mountPath: /etc/credentials/sa-kyma-backup-restore
+        readOnly: true
   - labels:
       preset-stability-checker-slack-notifications: "true"
     env:

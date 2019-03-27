@@ -28,7 +28,7 @@ CLOUD_PROVIDER="gcp"
 
 BASE64_CLOUD_PROVIDER=$(echo -n "${CLOUD_PROVIDER}" | base64 | tr -d '\n')
 BASE64_BUCKET=$(echo -n "${BACKUP_RESTORE_BUCKET}" | base64 | tr -d '\n')
-BASE64_CLOUD_CREDENTIALS_FILE_CONTENT_BASE64=$(echo -n "${BACKUP_CREDENTIALS}" | base64 | tr -d '\n')
+BASE64_CLOUD_CREDENTIALS_FILE_CONTENT_BASE64=$(< "${BACKUP_CREDENTIALS}" | base64 | tr -d '\n')
 
 
 bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${ARK_SECRET_OUTPUT_PATH}" --placeholder "__CLOUD_PROVIDER__" --value "${BASE64_CLOUD_PROVIDER}"
