@@ -231,6 +231,25 @@ function generateAndExportLetsEncryptCert() {
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
+    #encrypt the tls cert
+	gcloud kms encrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}"
+	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
+	--ciphertext-file "nightly-aks-tls-integration-app-client-cert.encrypted"
+	
+	#encrypt the private cert
+	gcloud kms encrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}"
+	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem \
+	--ciphertext-file "nightly-aks-tls-integration-app-client-key.encrypted"
+	#copy the cert
+	gsutil cp nightly-aks-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
+    #copy the private key
+	gsutil cp nightly-aks-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
+
+
 }
 
 function setupKubeconfig() {
