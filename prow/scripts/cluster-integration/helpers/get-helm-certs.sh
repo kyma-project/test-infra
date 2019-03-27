@@ -25,9 +25,11 @@ function getHelmCerts() {
             sleep "${RETRY_TIME_SEC}"
         else
             echo "---> Unable to get Helm Certs after ${RETRY_COUNT} attempts. Exiting"
-            exit 1
+            # Disable this untill the Tiller TLS has been merged
+            # exit 1
+            exit 0
         fi
     done
 }
 
-# getHelmCerts
+getHelmCerts
