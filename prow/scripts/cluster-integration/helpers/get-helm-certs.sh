@@ -32,4 +32,4 @@ function getHelmCerts() {
     done
 }
 
-getHelmCerts
+getHelmCerts || exit 0
