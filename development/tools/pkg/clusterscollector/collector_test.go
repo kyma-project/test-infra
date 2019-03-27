@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 	"testing"
 	"time"
 
@@ -19,17 +20,21 @@ const sampleClusterNameRegexp = "^gkeint[-](pr|commit)[-].*"
 const sampleClusterName = "gkeint-pr-2991-abc"
 const volatileLabel = "true"
 const sampleStatus = "RUNNING"
+const ttlLabel = "1" // max ttl of a cluster in hours
 
 var (
-	clusterNameRegexp        = regexp.MustCompile(sampleClusterNameRegexp)
-	filterFunc               = DefaultClusterRemovalPredicate(clusterNameRegexp, 1) //age is 1 hour
-	timeNow                  = time.Now()
-	timeNowFormatted         = timeNow.Format(time.RFC3339Nano)
-	timeTwoHoursAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
-	timeTwoHoursAgoFormatted = timeTwoHoursAgo.Format(time.RFC3339Nano)
+	clusterNameRegexp       = regexp.MustCompile(sampleClusterNameRegexp)
+	filterFunc              = DefaultClusterRemovalPredicate(clusterNameRegexp, 1) //age is 1 hour
+	labelFilterFunc         = TimeBasedClusterRemovalPredicate()
+	timeNow                 = time.Now()
+	timeNowFormatted        = timeNow.Format(time.RFC3339Nano)
+	timeNowUnix             = strconv.FormatInt(timeNow.Unix(), 10)
+	timeOneHourAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
+	timeOneHourAgoFormatted = timeOneHourAgo.Format(time.RFC3339Nano)
+	timeOneHourAgoUnix      = strconv.FormatInt(timeOneHourAgo.Unix(), 10)
 )
 
-func TestNewClusterRemovalPredicate(t *testing.T) {
+func TestDefaultClusterRemovalPredicate(t *testing.T) {
 
 	//given
 	var testCases = []struct {
@@ -43,13 +48,13 @@ func TestNewClusterRemovalPredicate(t *testing.T) {
 		{name: "Should filter matching cluster",
 			expectedFilterValue: true,
 			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeTwoHoursAgoFormatted,
+			clusterCreateTime:   timeOneHourAgoFormatted,
 			volatileLabelValue:  volatileLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster with non matching name",
 			expectedFilterValue: false,
 			clusterName:         "otherName",
-			clusterCreateTime:   timeTwoHoursAgoFormatted,
+			clusterCreateTime:   timeOneHourAgoFormatted,
 			volatileLabelValue:  volatileLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster recently created",
@@ -61,13 +66,13 @@ func TestNewClusterRemovalPredicate(t *testing.T) {
 		{name: "Should skip cluster with invalid label",
 			expectedFilterValue: false,
 			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeTwoHoursAgoFormatted,
+			clusterCreateTime:   timeOneHourAgoFormatted,
 			volatileLabelValue:  "no",
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster in STOPPING status",
 			expectedFilterValue: false,
 			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeTwoHoursAgoFormatted,
+			clusterCreateTime:   timeOneHourAgoFormatted,
 			volatileLabelValue:  volatileLabel,
 			clusterStatus:       "STOPPING"},
 	}
@@ -75,7 +80,7 @@ func TestNewClusterRemovalPredicate(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			cluster := createCluster(testCase.clusterName, testCase.clusterCreateTime, testCase.volatileLabelValue, testCase.clusterStatus)
+			cluster := createCluster(testCase.clusterName, testCase.clusterCreateTime, testCase.volatileLabelValue, "", "", testCase.clusterStatus)
 			collected, err := filterFunc(cluster)
 
 			//then
@@ -97,13 +102,105 @@ func TestNewClusterRemovalPredicate(t *testing.T) {
 	})
 }
 
+func TestTimeBasedClusterRemovalPredicate(t *testing.T) {
+	//given
+	var testCases = []struct {
+		name                string
+		expectedFilterValue bool
+		volatileLabelValue  string
+		createdAtLabelValue string
+		ttlLabelValue       string
+		clusterStatus       string
+	}{
+		{name: "Should filter matching cluster",
+			expectedFilterValue: true,
+			volatileLabelValue:  volatileLabel,
+			createdAtLabelValue: timeOneHourAgoUnix,
+			ttlLabelValue:       ttlLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster recently created",
+			expectedFilterValue: false,
+			volatileLabelValue:  volatileLabel,
+			createdAtLabelValue: timeNowUnix,
+			ttlLabelValue:       ttlLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster with invalid label 1/?",
+			expectedFilterValue: false,
+			volatileLabelValue:  volatileLabel,
+			createdAtLabelValue: timeNowUnix,
+			ttlLabelValue:       "",
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster with invalid label 2/?",
+			expectedFilterValue: false,
+			volatileLabelValue:  volatileLabel,
+			createdAtLabelValue: "",
+			ttlLabelValue:       ttlLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster with invalid label 3/?",
+			expectedFilterValue: false,
+			volatileLabelValue:  "no",
+			createdAtLabelValue: timeNowUnix,
+			ttlLabelValue:       ttlLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in STOPPING status",
+			expectedFilterValue: false,
+			volatileLabelValue:  volatileLabel,
+			createdAtLabelValue: timeOneHourAgoUnix,
+			ttlLabelValue:       ttlLabel,
+			clusterStatus:       "STOPPING"},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			//when
+			cluster := createCluster("", "", testCase.volatileLabelValue, testCase.createdAtLabelValue, testCase.ttlLabelValue, testCase.clusterStatus)
+			collected, err := labelFilterFunc(cluster)
+
+			//then
+			require.NoError(t, err)
+			assert.Equal(t, testCase.expectedFilterValue, collected)
+		})
+	}
+	var errorMessageTestCases = []struct {
+		name                string
+		expectedFilterValue bool
+		expectedErrorValue  string
+		createdAtLabelValue string
+		ttlLabelValue       string
+	}{
+		{name: "Should return error on invalid created-at label value",
+			expectedFilterValue: false,
+			expectedErrorValue:  "invalid timestamp value",
+			createdAtLabelValue: "@@@",
+			ttlLabelValue:       "1"},
+		{name: "Should return error on invalid ttl label value",
+			expectedFilterValue: false,
+			expectedErrorValue:  "invalid ttl value",
+			createdAtLabelValue: "1",
+			ttlLabelValue:       "@@@"},
+	}
+	for _, errorTestCase := range errorMessageTestCases {
+		t.Run(errorTestCase.name, func(t *testing.T) {
+			//given
+			cluster := &container.Cluster{
+				ResourceLabels: map[string]string{createdAtLabelName: errorTestCase.createdAtLabelValue, ttlLabelName: errorTestCase.ttlLabelValue},
+			}
+
+			//test
+			_, err := labelFilterFunc(cluster)
+			assert.Contains(t, err.Error(), errorTestCase.expectedErrorValue)
+		})
+	}
+
+}
+
 func TestClustersGarbageCollector(t *testing.T) {
 
-	clusterMatching1 := createCluster(sampleClusterName+"1", timeTwoHoursAgoFormatted, volatileLabel, sampleStatus)       //matches removal filter
-	clusterNonMatchingName := createCluster("otherName"+"2", timeTwoHoursAgoFormatted, volatileLabel, sampleStatus)       //non matching name
-	clusterNonMatchingLabel := createCluster(sampleClusterName+"3", timeTwoHoursAgoFormatted, "otherLabel", sampleStatus) //non matching label
-	clusterCreatedTooRecently := createCluster(sampleClusterName+"4", timeNowFormatted, volatileLabel, sampleStatus)      //not old enough
-	clusterMatching2 := createCluster(sampleClusterName+"5", timeTwoHoursAgoFormatted, volatileLabel, sampleStatus)       //matches removal filter
+	clusterMatching1 := createCluster(sampleClusterName+"1", timeOneHourAgoFormatted, volatileLabel, timeOneHourAgoUnix, "", sampleStatus)       //matches removal filter
+	clusterNonMatchingName := createCluster("otherName"+"2", timeOneHourAgoFormatted, volatileLabel, timeOneHourAgoUnix, "", sampleStatus)       //non matching name
+	clusterNonMatchingLabel := createCluster(sampleClusterName+"3", timeOneHourAgoFormatted, "otherLabel", timeOneHourAgoUnix, "", sampleStatus) //non matching label
+	clusterCreatedTooRecently := createCluster(sampleClusterName+"4", timeNowFormatted, volatileLabel, timeNowUnix, "", sampleStatus)            //not old enough
+	clusterMatching2 := createCluster(sampleClusterName+"5", timeOneHourAgoFormatted, volatileLabel, timeOneHourAgoUnix, "", sampleStatus)       //matches removal filter
 
 	t.Run("list() should select two clusters out of five", func(t *testing.T) {
 
@@ -204,12 +301,12 @@ func TestClustersGarbageCollector(t *testing.T) {
 	})
 }
 
-func createCluster(name, createTime, jobLabelValue, status string) *container.Cluster {
+func createCluster(name, createTime, volatileValue, createdAtValue, ttlValue, status string) *container.Cluster {
 	return &container.Cluster{
 		Name:           name,
 		Zone:           name + "-zone",
 		CreateTime:     createTime,
-		ResourceLabels: map[string]string{volatileLabelName: jobLabelValue},
+		ResourceLabels: map[string]string{volatileLabelName: volatileValue, createdAtLabelName: createdAtValue, ttlLabelName: ttlValue},
 		Status:         status,
 	}
 }

@@ -36,12 +36,13 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
+readonly TTL_HOURS="3"
 
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM=(--network=default)
-ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}"
+ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP},ttl=${TTL_HOURS}"
 
 if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
 if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
