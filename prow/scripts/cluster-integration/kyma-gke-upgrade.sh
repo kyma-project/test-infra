@@ -388,7 +388,6 @@ function upgradeKyma() {
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
     kubectl delete Installation -n default kyma-installation
-    kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
 
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
@@ -407,6 +406,9 @@ function upgradeKyma() {
         KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
         INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
         INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+        shout "Update tiller"
+        kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
 
         shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
         "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
