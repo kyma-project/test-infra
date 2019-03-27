@@ -341,7 +341,6 @@ function addGithubDexConnector() {
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 
-
 shout "Authenticate"
 date
 init
@@ -367,6 +366,7 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Install kyma"
 date
 installKyma
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Install stability-checker"
 date

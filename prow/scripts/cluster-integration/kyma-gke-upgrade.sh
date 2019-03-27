@@ -388,6 +388,7 @@ function upgradeKyma() {
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
     kubectl delete Installation -n default kyma-installation
+    kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
 
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
@@ -468,6 +469,8 @@ installKyma
 createTestResources
 
 upgradeKyma
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 testKyma
 

@@ -370,6 +370,7 @@ function installStabilityChecker() {
 	        --timeout=600
 }
 
+
 init
 azureAuthenticating
 
@@ -388,5 +389,6 @@ generateAndExportLetsEncryptCert
 setupKubeconfig
 installTiller
 installKyma
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 installStabilityChecker

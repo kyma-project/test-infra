@@ -238,6 +238,7 @@ shout "Manual concatenating yamls"
 shout "Trigger installation"
 date
 kubectl label installation/kyma-installation action=install
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 shout "Success cluster created"
