@@ -30,4 +30,4 @@ function getHelmCerts() {
     done
 }
 
-getHelmCerts
+# getHelmCerts
