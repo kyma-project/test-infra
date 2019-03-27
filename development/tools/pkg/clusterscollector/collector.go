@@ -3,6 +3,7 @@ package clusterscollector
 import (
 	"errors"
 	"regexp"
+	"strconv"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -12,6 +13,7 @@ import (
 )
 
 const volatileLabelName = "volatile"
+const createdAtLabelName = "created-at"
 
 //go:generate mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
 
@@ -114,6 +116,18 @@ func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, ageInHours
 			isVolatileCluster = true
 		}
 
+		isPastAgeMark := false
+		if cluster.ResourceLabels != nil && cluster.ResourceLabels[createdAtLabelName] != "" {
+			i, err := strconv.ParseInt(cluster.ResourceLabels[createdAtLabelName], 10, 64)
+			if err != nil {
+				return false, errors.New("invalid timestamp on field")
+			}
+			tm := time.Unix(i, 0)
+			if time.Now().Add(time.Duration(ageInHours) * time.Hour).Before(tm) {
+				isPastAgeMark = true
+			}
+		}
+
 		var ageMatches bool
 
 		clusterCreationTime, err := time.Parse(time.RFC3339, cluster.CreateTime)
@@ -125,7 +139,7 @@ func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, ageInHours
 		clusterAgeThreshold := time.Since(clusterCreationTime).Hours() - float64(ageInHours)
 		ageMatches = clusterAgeThreshold > 0
 
-		if nameMatches && isVolatileCluster && ageMatches {
+		if nameMatches && isVolatileCluster && (ageMatches || isPastAgeMark) {
 			//Filter out clusters that are being deleted at this moment
 			if cluster.Status == "STOPPING" {
 				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime)
