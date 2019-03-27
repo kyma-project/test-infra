@@ -22,6 +22,7 @@ const defaultClusterNameRegexp = "^gkeint[-](pr|commit|rel)[-].*"
 var (
 	project           = flag.String("project", "", "Project ID [Required]")
 	dryRun            = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	strategy          = flag.String("strategy", "default", "Change cluster filter strategy. Current options are 'default' and 'time'.")
 	ageInHours        = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
 	clusterNameRegexp = flag.String("clusterNameRegexp", defaultClusterNameRegexp, "Cluster name regexp pattern. Matching clusters are subject to removal.")
 )
@@ -60,7 +61,15 @@ func main() {
 
 	clusterAPI := &clusterscollector.ClusterAPIWrapper{Context: ctx, Service: clustersService}
 
-	clusterFilter := clusterscollector.DefaultClusterRemovalPredicate(clusterNameRx, uint(*ageInHours))
+	var clusterFilter clusterscollector.ClusterRemovalPredicate
+
+	if *strategy == "time" {
+		clusterFilter = clusterscollector.TimeBasedClusterRemovalPredicate()
+		log.Infof("Using time based filter strategy. Clusters will be filtered based on TTL, volatility, created-at timestamp and status\n")
+	} else {
+		log.Infof("Using default filter strategy. Clusters will be filtered based on cluster name, age in hours (passed), volatility and status\n")
+		clusterFilter = clusterscollector.DefaultClusterRemovalPredicate(clusterNameRx, uint(*ageInHours))
+	}
 	gc := clusterscollector.NewClustersGarbageCollector(clusterAPI, clusterFilter)
 
 	allSucceeded, err := gc.Run(*project, !(*dryRun))

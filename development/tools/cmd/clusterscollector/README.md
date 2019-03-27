@@ -8,14 +8,19 @@ The `kyma-gke-integration` job creates a GKE cluster to install and test Kyma.
 Usually, the job also cleans up the cluster.
 It can happen, however, that the job is terminated before its clean-up finishes.
 This causes a resource leak that generates unwanted costs.
-The garbage collector finds and removes such clusters.
+The garbage collector finds and removes such clusters based on two different strategies, specified by the caller.
 
-There are three conditions used to find clusters for removal:
+In the 'default' filter strategy, there are three conditions used to find clusters for removal:
 - The cluster name pattern that is specific for the `kyma-gke-integration` job
 - The value of a `volatile` label the cluster is annotated with
 - The cluster `createTime` value that is used to find clusters existing at least for a preconfigured number of hours
 
-Clusters that meet these conditions are subject to removal.
+In the 'time' filter strategy, there are three conditions used to find clusters for removal:
+- The label value of `volatile` that the cluster is annotated with
+- The label value of `created-at`, which holds the unix timestamp of when the cluster was created
+- The label value of `ttl`, which specifies the clusters maximum intended runtime in hours
+
+Clusters that meet these conditions in the specified strategy are subject to removal.
 
 ## Usage
 
@@ -41,8 +46,9 @@ See the list of available flags:
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--project**             |   Yes    | GCP project name
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
-| **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`.
-| **--clusterNameRegexp**   |    No    | The string value with a valid Golang regexp. It is used to match clusters by their name. It defaults to `^gkeint[-](pr|commit)[-].*`.
+| **--strategy**            |    No    | The cluster filter strategy. Defaults to `default`, can be switched to `time`.
+| **--ageInHours**          |    No    | The integer value for the number of hours. It only matches clusters older than `now()-ageInHours`. It defaults to `3`. [Only honored in `default` strategy]
+| **--clusterNameRegexp**   |    No    | The string value with a valid Golang regexp. It is used to match clusters by their name. It defaults to `^gkeint[-](pr|commit)[-].*`. [Only honored in `default` strategy]
 
 ### Environment variables
 
