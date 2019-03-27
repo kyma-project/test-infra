@@ -13,16 +13,14 @@ Install the following tools:
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - OpenSSL
 
-## Provision a cluster
-
+## Provision a workload cluster
 1. Export these variables:
 
    ```
    export PROJECT={project-name}
-   export CLUSTER_NAME={cluster-name}
+   export WORKLOAD_CLUSTER_NAME={workload-cluster-name}
    export ZONE={zone-name}
    ```
-
 2. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project. Run this command:
 
    ```
@@ -30,6 +28,22 @@ Install the following tools:
    ```
 
 3. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on GKE. Make sure that kubectl points to the correct cluster. For GKE, run the following command:
+
+   ```
+   gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+   ```
+
+## Provision a Prow main cluster
+
+1. Export these variables:
+
+   ```
+   export PROJECT={project-name}
+   export CLUSTER_NAME={prow-main-cluster-name}
+   export ZONE={zone-name}
+   ```
+
+2. Run the [`provision-cluster.sh`](../../development/provision-cluster.sh) script or follow [this](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-cluster) instruction to provision a new cluster on GKE. Make sure that kubectl points to the correct cluster. For GKE, run the following command:
 
    ```
    gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
@@ -70,6 +84,18 @@ For the purpose of the installation, you must have a set of service accounts and
  - **sap-slack-bot-token** which is a token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).
  - **sa-kyma-artifacts** service account with the role that allows the account to store objects in a bucket.
  - **sa-kyma-backup-restore** service account with the role that allows the account to store objects in the bucket used for backup and restore tests.
+
+3. Create a Secret for the workload cluster in the Prow main Cluster:
+
+    ```bash
+        export PROJECT={project-name}
+        export WORKLOAD_CLUSTER_NAME={workload-cluster-name}
+        export CLUSTER_NAME={prow-main-cluster-name}
+        export ZONE={zone-name}
+        gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+
+        ./create-secrets-for-workload-cluster.sh
+    ```
 
 For more information about roles, read [this](./authorization.md) document.
 
