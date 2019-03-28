@@ -256,8 +256,6 @@ function getLastReleaseVersion() {
 }
 
 function installKyma() {
-    shout "Install Tiller"
-    date
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 
     shout "Apply Kyma config from latest release - pre releases are omitted"
@@ -268,6 +266,7 @@ function installKyma() {
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
     shout "Install Tiller from ${LAST_RELEASE_VERSION}"
+    date
     kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
     "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
