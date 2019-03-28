@@ -36,7 +36,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
-MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
+MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM=(--network=default)
 
