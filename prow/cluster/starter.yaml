@@ -139,7 +139,7 @@ spec:
       terminationGracePeriodSeconds: 180
       containers:
         - name: hook
-          image: gcr.io/k8s-prow/hook:v20190206-b01b288
+          image: gcr.io/k8s-prow/hook:v20190312-abfe0e0
           imagePullPolicy: Always
           args:
             - --dry-run=false
@@ -211,7 +211,7 @@ spec:
       serviceAccountName: "plank"
       containers:
         - name: plank
-          image: gcr.io/k8s-prow/plank:v20190206-b01b288
+          image: gcr.io/k8s-prow/plank:v20190312-abfe0e0
           args:
             - --dry-run=false
             - --job-config-path=/etc/job-config
@@ -261,7 +261,7 @@ spec:
       serviceAccountName: "sinker"
       containers:
         - name: sinker
-          image: gcr.io/k8s-prow/plank:v20190206-b01b288
+          image: gcr.io/k8s-prow/plank:v20190312-abfe0e0
           args:
             - --job-config-path=/etc/job-config
             - --build-cluster=/etc/cluster/cluster.yaml
@@ -311,7 +311,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: deck
-          image: gcr.io/k8s-prow/deck:v20190206-b01b288
+          image: gcr.io/k8s-prow/deck:v20190312-abfe0e0
           args:
             - --tide-url=http://tide/
             - --hook-url=http://hook:8888/plugin-help
@@ -331,6 +331,19 @@ spec:
             - name: cluster
               mountPath: /etc/cluster
               readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 600
       volumes:
         - name: config
           configMap:
@@ -376,7 +389,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: horologium
-          image: gcr.io/k8s-prow/horologium:v20190206-b01b288
+          image: gcr.io/k8s-prow/horologium:v20190312-abfe0e0
           args:
             - --job-config-path=/etc/job-config
             - --dry-run=false
@@ -414,7 +427,7 @@ spec:
       serviceAccountName: "tide"
       containers:
         - name: tide
-          image: gcr.io/k8s-prow/tide:v20190206-b01b288
+          image: gcr.io/k8s-prow/tide:v20190312-abfe0e0
           args:
             - --dry-run=false
             - --job-config-path=/etc/job-config
