@@ -1,0 +1,57 @@
+job_template: &job_template
+  skip_report: true
+  decorate: true
+  path_alias: github.com/kyma-incubator/octopus
+  max_concurrency: 10
+
+periodics:
+  - name: test-octopus-with-kyma
+    cron: "0 3 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    <<: *job_template
+    labels:
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-compute-envs: "true"
+      preset-gc-project-env: "true"
+      preset-docker-push-repository-gke-integration: "true"
+      preset-dind-enabled: "true"
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+
+    decorate: true
+    extra_refs:
+      - org: aszecowka
+        repo: test-infra
+        base_ref: test-octopus-stability
+        path_alias: github.com/kyma-project/test-infra
+      - org: sjanota
+        repo: kyma
+        path_alias: github.com/kyma-project/kyma
+        base_ref: octopus-poc
+      - org: aszecowka
+        repo: octopus
+        path_alias: github.com/kyma-incubator/octopus
+        base_ref: testing-octopus
+    spec:
+      volumes:
+        - name: sa-stability-fluentd-storage-writer
+          secret:
+            secretName: sa-stability-fluentd-storage-writer
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: sa-stability-fluentd-storage-writer
+              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+              readOnly: true
+          command:
+            - "bash"
+          env:
+            - name: INPUT_CLUSTER_NAME
+              value: "octopus-with-kyma"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting-octopus.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
