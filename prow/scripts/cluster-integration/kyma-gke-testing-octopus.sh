@@ -271,10 +271,6 @@ function cleanup() {
 }
 
 function installStabilityChecker() {
-	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'([0-9A-Za-z_-]+)' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
-	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '([0-9A-Za-z_-]+)' was successful"}
-	STATS_ENABLED="true"
-
 	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
 	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
