@@ -282,6 +282,18 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
+  - name: pre-rel09-kyma-gke-central-connector
+    branches:
+      - release-0.9
+    <<: *gke_central_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.9
+
 postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-integration
