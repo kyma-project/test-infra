@@ -9,7 +9,7 @@ presubmits:
   kyma-project/kyma:
     - name: pre-master-test-octopus-with-kyma
       branches:
-        master
+      - master
       <<: *job_template
       labels:
         preset-sa-gke-kyma-integration: "true"
