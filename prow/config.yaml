@@ -325,6 +325,14 @@ branch-protection:
                 - pre-rel08-kyma-gke-integration
                 - pre-rel08-kyma-artifacts
                 - pre-rel08-kyma-installer
+            release-0.9:
+              protect: true
+              required_status_checks:
+                contexts:
+                  - pre-rel08-kyma-integration
+                  - pre-rel08-kyma-gke-integration
+                  - pre-rel08-kyma-artifacts
+                  - pre-rel08-kyma-installer
         website:
           branches:
             master:
