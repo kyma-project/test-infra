@@ -27,15 +27,10 @@ func TestEnd2EndUpgradeTestsJobsReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-			assert.Equal(t, "^tests/end-to-end/upgrade/[^chart]", actualPresubmit.RunIfChanged)
-			tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/end-to-end/upgrade/main.go")
-			tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/end-to-end/upgrade/internal/pkg/pkg.go")
-			tester.AssertThatJobDoesNotRunIfChanged(t, *actualPresubmit, "tests/end-to-end/upgrade/chart/readme.md")
-			tester.AssertThatJobDoesNotRunIfChanged(t, *actualPresubmit, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+			assert.True(t, actualPresubmit.AlwaysRun)
 			assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPresubmit.Spec.Containers[0].Image)
 			assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 			assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/upgrade"}, actualPresubmit.Spec.Containers[0].Args)
-
 		})
 	}
 }

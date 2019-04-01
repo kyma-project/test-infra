@@ -31,7 +31,7 @@ func TestConsoleBackendServiceTestJobReleases(t *testing.T) {
 				}
 			} else {
 				args = []string{
-					"/home/prow/go/src/github.com/kyma-project/kyma/components/console-backend-service",
+					"/home/prow/go/src/github.com/kyma-project/kyma/tests/console-backend-service",
 				}
 			}
 

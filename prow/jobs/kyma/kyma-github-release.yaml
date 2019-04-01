@@ -61,6 +61,17 @@ postsubmits:
       <<: *job_labels_template
       preset-build-release: "true"
       preset-target-commit-0.8: "true"
+  - name: post-rel09-kyma-github-release
+    branches:
+      - release-0.9
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.9
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-0.8: "true"
 
 presets:
   - labels:
