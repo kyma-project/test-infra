@@ -108,16 +108,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  - name: pre-rel06-kyma-integration
-    branches:
-    - release-0.6
-    always_run: false
-    <<: *vm_job_template
-    labels:
-      <<: *vm_job_labels_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.6
   - name: pre-rel07-kyma-integration
     branches:
     - release-0.7
@@ -162,20 +152,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
-  - name: pre-rel06-kyma-gke-integration
-    branches:
-    - release-0.6
-    <<: *gke_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: release-0.6
 
   - name: pre-rel07-kyma-gke-integration
     branches:

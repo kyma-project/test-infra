@@ -10,7 +10,7 @@ import (
 
 func TestGCPBrokerProviderReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []string{"release-0.6"}
+	var unsupportedReleases []string
 
 	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {

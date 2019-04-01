@@ -59,17 +59,6 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel06-kyma-components-console-backend-service
-      branches:
-      - release-0.6
-      <<: *old_job_template
-      always_run: true
-      extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.6
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
     - name: pre-rel07-kyma-components-console-backend-service
       branches:
       - release-0.7

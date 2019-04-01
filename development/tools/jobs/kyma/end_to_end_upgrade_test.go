@@ -11,7 +11,7 @@ import (
 const e2eTestUpgradeJobPath = "./../../../../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade.yaml"
 
 func TestEnd2EndUpgradeTestsJobsReleases(t *testing.T) {
-	unsupportedReleases := []string{"release-0.6", "release-0.7", "release-0.8"}
+	unsupportedReleases := []string{"release-0.7", "release-0.8"}
 
 	// when
 	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {

@@ -27,18 +27,7 @@ job_labels_template: &job_labels_template
   preset-bot-github-token: "true"
 
 postsubmits: 
-  kyma-project/kyma: 
-  - name: post-rel06-kyma-github-release
-    branches:
-    - release-0.6
-    <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.6 
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-0.6: "true"
+  kyma-project/kyma:
   - name: post-rel07-kyma-github-release
     branches:
     - release-0.7
@@ -74,12 +63,6 @@ postsubmits:
       preset-target-commit-0.8: "true"
 
 presets:
-  - labels:
-      preset-target-commit-0.6: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-0.6
-
   - labels:
       preset-target-commit-0.7: "true"
     env:
