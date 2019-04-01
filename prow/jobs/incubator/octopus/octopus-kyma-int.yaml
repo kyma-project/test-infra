@@ -7,6 +7,7 @@ job_template: &job_template
 
 presubmits:
   kyma-project/kyma:
+      # this is temporary job to validate that Octopus can be used in Kyma
     - name: pre-master-test-octopus-with-kyma
       branches:
       - master
