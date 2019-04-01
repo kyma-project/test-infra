@@ -329,10 +329,10 @@ branch-protection:
               protect: true
               required_status_checks:
                 contexts:
-                  - pre-rel08-kyma-integration
-                  - pre-rel08-kyma-gke-integration
-                  - pre-rel08-kyma-artifacts
-                  - pre-rel08-kyma-installer
+                  - pre-rel09-kyma-integration
+                  - pre-rel09-kyma-gke-integration
+                  - pre-rel09-kyma-artifacts
+                  - pre-rel09-kyma-installer
         website:
           branches:
             master:
