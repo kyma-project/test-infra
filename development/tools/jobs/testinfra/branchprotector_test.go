@@ -65,7 +65,13 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
-			assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
+
+			if tester.HasOneOfSuffixes(relBranch, "-0.6", "-0.7", "-0.8") {
+				assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
+			} else {
+				assert.Len(t, p.RequiredStatusChecks.Contexts, 7)
+			}
+
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
