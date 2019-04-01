@@ -269,7 +269,7 @@ presets:
             name: nightly-aks-github-integration-app-client-secret
             key: client-secret
   - labels:
-      preset-kyma-encryption-key: "true"
+      preset-kyma-keyring: "true"
     env:
       - name: KYMA_KEYRING
         value: "kyma-prow"
