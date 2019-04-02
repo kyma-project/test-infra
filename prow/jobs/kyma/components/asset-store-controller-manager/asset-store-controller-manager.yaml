@@ -19,8 +19,8 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager"
         resources:
           requests:
-            memory: 2.5Gi
-            cpu: 2
+            memory: 4Gi # Temporary for checking if this is a problem with resources
+            cpu: 3 # Temporary for checking if this is a problem with resources
 
 old_job_template: &old_job_template
   skip_report: false
@@ -38,8 +38,8 @@ old_job_template: &old_job_template
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager"
         resources:
           requests:
-            memory: 4Gi # Temporary for checking if this is a problem with resources
-            cpu: 4 # Temporary for checking if this is a problem with resources
+            memory: 2.5Gi
+            cpu: 2
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
