@@ -10,19 +10,20 @@ import (
 	"os"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	"github.com/kyma-project/test-infra/development/tools/pkg/iprelease"
+	ipcleaner "github.com/kyma-project/test-infra/development/tools/pkg/longlastingipcleaner"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
 	"google.golang.org/api/container/v1"
 )
 
-const defaultClusterNameRegexp = "^gkeint[-](pr|commit|rel)[-].*"
-
 var (
-	project = flag.String("project", "", "Project ID [Required]")
-	ipName  = flag.String("ipname", "", "IP resource name [Required]")
-	dryRun  = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	project     = flag.String("project", "", "Project ID [Required]")
+	ipName      = flag.String("ipname", "", "IP resource name [Required]")
+	region      = flag.String("region", "", "Region name [Required]")
+	maxAttempts = flag.Uint("attempts", 3, "Maximal number of attempts until scripts stops trying to delete IP (default: 3)")
+	timeout     = flag.Uint("timeout", 5, "Timeout in seconds, will increase over time to reduce API calls (default: 5)")
+	dryRun      = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 )
 
 func main() {
@@ -35,7 +36,13 @@ func main() {
 	}
 
 	if *ipName == "" {
-		fmt.Fprintln(os.Stderr, "missing -project flag")
+		fmt.Fprintln(os.Stderr, "missing -ipname flag")
+		flag.Usage()
+		os.Exit(2)
+	}
+
+	if *region == "" {
+		fmt.Fprintln(os.Stderr, "missing -region flag")
 		flag.Usage()
 		os.Exit(2)
 	}
@@ -53,16 +60,18 @@ func main() {
 		log.Fatalf("Could not initialize compute API client: %v", err)
 	}
 
-	computeAPI := &iprelease.ComputeAPIWrapper{Context: ctx, Service: computeSvc}
+	computeAPI := &ipcleaner.ComputeAPIWrapper{Context: ctx, Service: computeSvc}
 
-	allSucceeded, err := computeAPI.Run(*project, ipName, !(*dryRun))
+	ipr := ipcleaner.NewIPRemover(computeAPI)
+
+	success, err := ipr.Run(*project, *region, *ipName, *maxAttempts, *timeout, !(*dryRun))
 
 	if err != nil {
 		log.Fatalf("Cluster collector error: %v", err)
 	}
 
-	if !allSucceeded {
-		log.Warn("Some operations failed.")
+	if !success {
+		log.Warn("Operation failed.")
 	}
 
 	common.Shout("Finished")

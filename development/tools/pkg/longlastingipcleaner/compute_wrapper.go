@@ -1,7 +1,8 @@
-package iprelease
+package ipcleaner
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	compute "google.golang.org/api/compute/v1"
@@ -13,15 +14,16 @@ type ComputeAPIWrapper struct {
 	Service *compute.Service
 }
 
-// RemoveIP delegates to Service.Addresses.Delete(project, region, name) function
+// RemoveIP delegates to Compute.Service.Addresses.Delete(project, region, name) function
 func (caw *ComputeAPIWrapper) RemoveIP(project, region, name string) (bool, error) {
 	resp, err := caw.Service.Addresses.Delete(project, region, name).Do()
+	retryStatus := (resp.HTTPStatusCode != http.StatusAccepted)
 	if err != nil {
-		return false, err
+		return retryStatus, err
 	}
 	if resp.HTTPStatusCode == http.StatusTooManyRequests {
-		return true, err
+		return retryStatus, errors.New("Quota reached")
 	}
 
-	return false, nil
+	return retryStatus, nil
 }
