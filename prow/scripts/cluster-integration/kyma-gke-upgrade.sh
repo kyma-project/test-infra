@@ -443,15 +443,18 @@ function testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
+    set +o errexit
     helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}"
     testEndToEndResult=$?
+
+    echo "Test e2e upgrade logs: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+
     if [ "${testEndToEndResult}" != 0 ]; then
         echo "Helm test operation failed: ${testEndToEndResult}"
         exit "${testEndToEndResult}"
     fi
-
-    echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+    set -o errexit
 }
 
 # Used to detect errors for logging purposes
