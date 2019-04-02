@@ -23,7 +23,7 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
-        if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
+        if [[ "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ]]; then
             DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
             echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
         else 
