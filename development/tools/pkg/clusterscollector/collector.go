@@ -3,6 +3,7 @@ package clusterscollector
 import (
 	"errors"
 	"regexp"
+	"strconv"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -12,6 +13,8 @@ import (
 )
 
 const volatileLabelName = "volatile"
+const createdAtLabelName = "created-at"
+const ttlLabelName = "ttl"
 
 //go:generate mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
 
@@ -128,7 +131,60 @@ func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, ageInHours
 		if nameMatches && isVolatileCluster && ageMatches {
 			//Filter out clusters that are being deleted at this moment
 			if cluster.Status == "STOPPING" {
-				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime)
+				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\", label createdAt: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime, cluster.ResourceLabels[createdAtLabelName])
+				return false, nil
+			}
+			return true, nil
+		}
+
+		return false, nil
+	}
+}
+
+// TimeBasedClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on label "volatile", "created-at", "ttl" and status
+func TimeBasedClusterRemovalPredicate() ClusterRemovalPredicate {
+	return func(cluster *container.Cluster) (bool, error) {
+		var timestamp int64
+		var ageInHours uint64
+		var err error
+
+		isVolatileCluster := false
+		if cluster.ResourceLabels != nil && cluster.ResourceLabels[volatileLabelName] == "true" {
+			isVolatileCluster = true
+		}
+
+		isPastAgeMark := false
+		if cluster.ResourceLabels != nil && cluster.ResourceLabels[createdAtLabelName] != "" {
+			timestamp, err = strconv.ParseInt(cluster.ResourceLabels[createdAtLabelName], 10, 64)
+			if err != nil {
+				return false, errors.New("invalid timestamp value")
+			}
+		}
+
+		if timestamp == 0 { // old cluster, does not have timestamp label, skip
+			log.Warnf("Cluster does not have 'created-at' label, skipping. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
+			return false, nil
+		}
+
+		hasTTL := false
+		if cluster.ResourceLabels != nil && cluster.ResourceLabels[ttlLabelName] != "" {
+			ageInHours, err = strconv.ParseUint(cluster.ResourceLabels[ttlLabelName], 10, 64)
+			if err != nil {
+				return false, errors.New("invalid ttl value")
+			}
+			hasTTL = true
+		}
+
+		createdAtTime := time.Unix(timestamp, 0)
+
+		oneHourAgo := time.Now().Add(time.Duration(-ageInHours) * time.Hour)
+		if oneHourAgo.After(createdAtTime) {
+			isPastAgeMark = true
+		}
+		if hasTTL && isVolatileCluster && isPastAgeMark {
+			//Filter out clusters that are being deleted at this moment
+			if cluster.Status == "STOPPING" {
+				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\", label createdAt: \"%s\", ttl: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime, cluster.ResourceLabels[createdAtLabelName], cluster.ResourceLabels[ttlLabelName])
 				return false, nil
 			}
 			return true, nil

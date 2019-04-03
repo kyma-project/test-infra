@@ -35,10 +35,15 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+readonly CURRENT_TIMESTAMP_PARAM=$(date +%Y%m%d)
+
+TTL_HOURS_PARAM="3"
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM=(--network=default)
+if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi
+CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},ttl=${TTL_HOURS_PARAM}"
 
 if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
 if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
@@ -47,7 +52,7 @@ if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then NETWORK_PAR
 
 APPENDED_LABELS=""
 if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
-LABELS_PARAM=(--labels="job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]}")
+LABELS_PARAM=(--labels="job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
 
 command -v gcloud
 
