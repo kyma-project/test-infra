@@ -63,7 +63,7 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 					common.Shout("Deleting rule '%s' because there's no target '%s' running (%d TargetTags)", rule.Name, target, len(rule.TargetTags))
 					time.Sleep(sleepFactor * time.Second)
 				} else {
-					common.Shout("dryrun, not deleting")
+					common.Shout("[DRY RUN] Deleting rule '%s' because there's no target '%s' running (%d TargetTags)", rule.Name, target, len(rule.TargetTags))
 				}
 			}
 		}
