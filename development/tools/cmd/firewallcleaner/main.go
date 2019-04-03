@@ -13,7 +13,8 @@ import (
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/firewallcleaner"
 	"golang.org/x/oauth2/google"
-	compute "google.golang.org/api/compute/v1"
+	"google.golang.org/api/compute/v1"
+	"google.golang.org/api/container/v1"
 )
 
 var (
@@ -38,12 +39,17 @@ func main() {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	svc, err := compute.New(connenction)
+	computeSvc, err := compute.New(connenction)
 	if err != nil {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}
 
-	computeServiceWrapper := &firewallcleaner.ComputeServiceWrapper{Context: ctx, Compute: svc}
+	containerSvc, err := container.New(connenction)
+	if err != nil {
+		log.Fatalf("Could not initialize gke client: %v", err)
+	}
+
+	computeServiceWrapper := &firewallcleaner.ComputeServiceWrapper{Context: ctx, Compute: computeSvc, Container: containerSvc}
 	cleaner := firewallcleaner.NewCleaner(computeServiceWrapper)
 	cleanerErr := cleaner.Run(*dryRun, *project)
 	if cleanerErr != nil {

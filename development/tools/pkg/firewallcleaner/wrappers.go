@@ -7,12 +7,14 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	compute "google.golang.org/api/compute/v1"
+	container "google.golang.org/api/container/v1"
 )
 
 //ComputeServiceWrapper A wrapper for compute API service connections.
 type ComputeServiceWrapper struct {
-	Context context.Context
-	Compute *compute.Service
+	Context   context.Context
+	Compute   *compute.Service
+	Container *container.Service
 }
 
 //LookupFirewallRule List of all available firewall rules for a project
@@ -45,6 +47,20 @@ func (csw *ComputeServiceWrapper) LookupInstances(project string) ([]*compute.In
 		return nil, errors.Wrap(err, "LookupInstances page switch failed")
 	}
 	return items, nil
+}
+
+//LookupNodePools ???
+func (csw *ComputeServiceWrapper) LookupNodePools(project string) ([]*container.NodePool, error) {
+	clusters, err := csw.Container.Projects.Zones.Clusters.List(project, "-").Do() // "-" will get clusters in all zones
+	if err != nil {
+		return nil, err
+	}
+
+	allClustersPools := []*container.NodePool{}
+	for _, cluster := range clusters.Clusters {
+		allClustersPools = append(allClustersPools, cluster.NodePools...)
+	}
+	return allClustersPools, nil
 }
 
 //DeleteFirewallRule Delete firewall rule base on name in specifiec project

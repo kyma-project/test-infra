@@ -8,6 +8,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/firewallcleaner/automock"
 	"github.com/stretchr/testify/assert"
 	compute "google.golang.org/api/compute/v1"
+	container "google.golang.org/api/container/v1"
 )
 
 var (
@@ -21,6 +22,7 @@ func TestFirewallcleaner(t *testing.T) {
 
 		computeAPI.On("LookupFirewallRule", testProject).Return([]*compute.Firewall{}, nil)
 		computeAPI.On("LookupInstances", testProject).Return([]*compute.Instance{}, nil)
+		computeAPI.On("LookupNodePools", testProject).Return([]*container.NodePool{}, nil)
 
 		c := NewCleaner(computeAPI)
 
@@ -67,6 +69,28 @@ func TestFirewallcleaner(t *testing.T) {
 		assert.True(t, strings.Contains(secondErr.Error(), expectedError))
 		assert.True(t, strings.Contains(secondErr.Error(), "LookupInstances"))
 	})
+	t.Run("Cleaner.Run() Should throw an error when nodepool call fails", func(t *testing.T) {
+		computeAPI := &automock.ComputeAPI{}
+		expectedError := "Something went wrong"
+		defer computeAPI.AssertExpectations(t)
+
+		computeAPI.On("LookupFirewallRule", testProject).Return([]*compute.Firewall{}, nil)
+		computeAPI.On("LookupInstances", testProject).Return([]*compute.Instance{}, nil)
+		computeAPI.On("LookupNodePools", testProject).Return([]*container.NodePool{}, errors.New(expectedError))
+
+		c := NewCleaner(computeAPI)
+
+		// dryRun true
+		firstErr := c.Run(true, testProject)
+		assert.True(t, strings.Contains(firstErr.Error(), expectedError))
+		assert.True(t, strings.Contains(firstErr.Error(), "LookupNodePools"))
+
+		// dryRun false
+		secondErr := c.Run(false, testProject)
+		assert.NotNil(t, secondErr)
+		assert.True(t, strings.Contains(secondErr.Error(), expectedError))
+		assert.True(t, strings.Contains(secondErr.Error(), "LookupNodePools"))
+	})
 }
 
 func TestFirewallcleanerRuleInteraction(t *testing.T) {
@@ -80,10 +104,14 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 		instances := []*compute.Instance{
 			{Name: "instance-one"},
 		}
+		nodePools := []*container.NodePool{
+			{Name: "nodepool-one"},
+		}
 		defer computeAPI.AssertExpectations(t)
 
 		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
 		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
 
 		// computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 1)
 
@@ -99,7 +127,39 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 		secondErr := c.Run(false, testProject)
 		assert.Nil(t, secondErr)
 	})
-	t.Run("Cleaner.Run() Should delete all firewall-rules, because no instances exist", func(t *testing.T) {
+	t.Run("Cleaner.Run() Should delete one firewall-rule, because the referenced nodepool does not exist", func(t *testing.T) {
+		computeAPI := &automock.ComputeAPI{}
+		firewalls := []*compute.Firewall{
+			{Name: "firewall-one", TargetTags: []string{"nodepool-one-default-pool-abcdefg01-grp"}},
+			{Name: "firewall-two", TargetTags: []string{"nodepool-two-default-pool-abcdefg09-grp"}},
+		}
+		instances := []*compute.Instance{
+			{Name: "instance-one"},
+		}
+		nodePools := []*container.NodePool{
+			{Name: "nodepool-one"},
+		}
+		defer computeAPI.AssertExpectations(t)
+
+		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
+		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
+
+		// computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 1)
+
+		// computeAPI.On("DeleteFirewallRule", testProject, firewalls[1].Name).Times(1)
+
+		c := NewCleaner(computeAPI)
+
+		// dryRun true
+		firstErr := c.Run(true, testProject)
+		assert.Nil(t, firstErr)
+
+		// dryRun false
+		secondErr := c.Run(false, testProject)
+		assert.Nil(t, secondErr)
+	})
+	t.Run("Cleaner.Run() Should delete all firewall-rules, because no instances or node pools exist", func(t *testing.T) {
 		computeAPI := &automock.ComputeAPI{}
 		firewalls := []*compute.Firewall{
 			{Name: "firewall-one", TargetTags: []string{}},
@@ -107,10 +167,12 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 			{Name: "firewall-three"},
 		}
 		instances := []*compute.Instance{}
+		nodePools := []*container.NodePool{}
 		defer computeAPI.AssertExpectations(t)
 
 		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
 		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
 
 		// computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 3)
 
@@ -128,20 +190,27 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 		secondErr := c.Run(false, testProject)
 		assert.Nil(t, secondErr)
 	})
-	t.Run("Cleaner.Run() Should delete no firewall-rules, because all instances exist", func(t *testing.T) {
+	t.Run("Cleaner.Run() Should delete no firewall-rules, because all instances or nodepools exist", func(t *testing.T) {
 		computeAPI := &automock.ComputeAPI{}
 		firewalls := []*compute.Firewall{
 			{Name: "firewall-one", TargetTags: []string{"instance-one"}},
 			{Name: "firewall-two", TargetTags: []string{"instance-two"}},
+			{Name: "firewall-three", TargetTags: []string{"nodepool-one-default-pool-abcdefg01-grp"}},
+			{Name: "firewall-four", TargetTags: []string{"nodepool-two-default-pool-abcdefg09-grp"}},
 		}
 		instances := []*compute.Instance{
 			{Name: "instance-one"},
 			{Name: "instance-two"},
 		}
+		nodePools := []*container.NodePool{
+			{Name: "nodepool-one"},
+			{Name: "nodepool-two"},
+		}
 		defer computeAPI.AssertExpectations(t)
 
 		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
 		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
 
 		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
 
@@ -162,16 +231,24 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 			{Name: "firewall-two", TargetTags: []string{"instance-two"}},
 			{Name: "firewall-three", TargetTags: []string{"instance-three"}},
 			{Name: "firewall-four", TargetTags: []string{}},
-			{Name: "firewall-four"},
+			{Name: "firewall-five"},
+			{Name: "firewall-six", TargetTags: []string{"nodepool-one-default-pool-abcdefg01-grp"}},
+			{Name: "firewall-seven", TargetTags: []string{"nodepool-two-default-pool-abcdefg09-grp"}},
+			{Name: "firewall-eight", TargetTags: []string{"nodepool-three-default-pool-abcdefg02-grp"}},
 		}
 		instances := []*compute.Instance{
 			{Name: "instance-one"},
 			{Name: "instance-two"},
 		}
+		nodePools := []*container.NodePool{
+			{Name: "nodepool-one"},
+			{Name: "nodepool-two"},
+		}
 		defer computeAPI.AssertExpectations(t)
 
 		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
 		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
 
 		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
 
@@ -180,5 +257,70 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 		// dryRun true
 		err := c.Run(true, testProject)
 		assert.Nil(t, err)
+	})
+}
+
+func TestCurrentLimitation(t *testing.T) {
+	t.Run("Cleaner.Run() Should delete no firewall-rules starting with \"k8s-\"", func(t *testing.T) {
+		computeAPI := &automock.ComputeAPI{}
+		firewalls := []*compute.Firewall{
+			{Name: "k8s-firewall-rule-one"},
+			{Name: "k8s-firewall-rule-two", TargetTags: []string{}},
+			{Name: "k8s-firewall-rule-three", TargetTags: []string{"instance-one"}},
+			{Name: "k8s-firewall-rule-four", TargetTags: []string{"nodepool-one-default-pool-abcdefg01-grp"}},
+		}
+		instances := []*compute.Instance{
+			{Name: "instance-one"},
+		}
+		nodePools := []*container.NodePool{
+			{Name: "nodepool-one"},
+		}
+		defer computeAPI.AssertExpectations(t)
+
+		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
+		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
+
+		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
+
+		c := NewCleaner(computeAPI)
+
+		// dryRun true
+		firstErr := c.Run(true, testProject)
+		assert.Nil(t, firstErr)
+
+		// dryRun false
+		secondErr := c.Run(false, testProject)
+		assert.Nil(t, secondErr)
+	})
+	t.Run("Cleaner.Run() Should delete no firewall-rules that have no targetTags", func(t *testing.T) {
+		computeAPI := &automock.ComputeAPI{}
+		firewalls := []*compute.Firewall{
+			{Name: "k8s-firewall-rule-one"},
+			{Name: "k8s-firewall-rule-two", TargetTags: []string{}},
+		}
+		instances := []*compute.Instance{
+			{Name: "instance-one"},
+		}
+		nodePools := []*container.NodePool{
+			{Name: "nodepool-one"},
+		}
+		defer computeAPI.AssertExpectations(t)
+
+		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
+		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupNodePools", testProject).Return(nodePools, nil)
+
+		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
+
+		c := NewCleaner(computeAPI)
+
+		// dryRun true
+		firstErr := c.Run(true, testProject)
+		assert.Nil(t, firstErr)
+
+		// dryRun false
+		secondErr := c.Run(false, testProject)
+		assert.Nil(t, secondErr)
 	})
 }

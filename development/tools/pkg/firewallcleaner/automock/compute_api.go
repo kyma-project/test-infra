@@ -3,6 +3,7 @@
 package automock
 
 import compute "google.golang.org/api/compute/v1"
+import container "google.golang.org/api/container/v1"
 
 import mock "github.com/stretchr/testify/mock"
 
@@ -49,6 +50,29 @@ func (_m *ComputeAPI) LookupInstances(project string) ([]*compute.Instance, erro
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*compute.Instance)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(project)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// LookupNodePools provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupNodePools(project string) ([]*container.NodePool, error) {
+	ret := _m.Called(project)
+
+	var r0 []*container.NodePool
+	if rf, ok := ret.Get(0).(func(string) []*container.NodePool); ok {
+		r0 = rf(project)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*container.NodePool)
 		}
 	}
 
