@@ -359,11 +359,17 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
     helm install "${UPGRADE_TEST_PATH}" \
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait
+        --wait \
+        "${HELM_ARGS}"
+
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
         echo "Helm install operation failed: ${prepareResult}"
@@ -443,8 +449,12 @@ function testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}"
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" "${HELM_ARGS}"
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "
