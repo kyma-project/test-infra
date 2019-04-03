@@ -399,6 +399,7 @@ function upgradeKyma() {
         echo "Use released artifacts"
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
 
+        kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${RELEASE_VERSION}/installation/resources/tiller.yaml"
         kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
     else
         shout "Build Kyma Installer Docker image"
