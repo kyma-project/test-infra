@@ -210,10 +210,15 @@ presets:
       preset-kyma-backup-credentials: "true"
     env:
     - name: KYMA_BACKUP_CREDENTIALS
-      valueFrom:
-        secretKeyRef:
-          name: kyma-backup-credentials
-          key: token
+      value: /etc/credentials/sa-kyma-backup-restore/service-account.json
+    volumes:
+      - name: sa-kyma-backup-restore
+        secret:
+          secretName: sa-kyma-backup-restore
+    volumeMounts:
+      - name: sa-kyma-backup-restore
+        mountPath: /etc/credentials/sa-kyma-backup-restore
+        readOnly: true
   - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
@@ -264,10 +269,21 @@ presets:
             name: nightly-aks-github-integration-app-client-secret
             key: client-secret
   - labels:
+      preset-kyma-keyring: "true"
+    env:
+      - name: KYMA_KEYRING
+        value: "kyma-prow"
+  - labels:
       preset-kyma-development-artifacts-bucket: "true"
     env:
       - name: KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
         value: "gs://kyma-development-artifacts"
+  - labels:
+     preset-kyma-encryption-key: "true"
+    env:
+      - name: KYMA_ENCRYPTION_KEY
+        value: projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption
+
 
 branch-protection:
   enforce_admins: false
@@ -290,14 +306,6 @@ branch-protection:
           branches:
             master:
               protect: true
-            release-0.6:
-              protect: true
-              required_status_checks:
-                contexts:
-                  - pre-rel06-kyma-integration
-                  - pre-rel06-kyma-gke-integration
-                  - pre-rel06-kyma-artifacts
-                  - pre-rel06-kyma-installer
             release-0.7: # Already defined to ensure that check is defined for the new upgrade job
               protect: true
               required_status_checks:
@@ -314,6 +322,16 @@ branch-protection:
                 - pre-rel08-kyma-gke-integration
                 - pre-rel08-kyma-artifacts
                 - pre-rel08-kyma-installer
+            release-0.9:
+              protect: true
+              required_status_checks:
+                contexts:
+                  - pre-rel09-kyma-integration
+                  - pre-rel09-kyma-gke-integration
+                  - pre-rel09-kyma-gke-upgrade
+                  - pre-rel09-kyma-gke-central-connector
+                  - pre-rel09-kyma-artifacts
+                  - pre-rel09-kyma-installer
         website:
           branches:
             master:
@@ -373,12 +391,12 @@ plank:
   pod_pending_timeout: 60m
   default_decoration_config:
     timeout: 7200000000000 # 2h
-    grace_period: 15000000000 # 15s
+    grace_period: 600000000000 # 10min
     utility_images:
-      clonerefs: "gcr.io/k8s-prow/clonerefs:v20181019-08e9d55c9"
-      initupload: "gcr.io/k8s-prow/initupload:v20181019-08e9d55c9"
-      entrypoint: "gcr.io/k8s-prow/entrypoint:v20181019-08e9d55c9"
-      sidecar: "gcr.io/k8s-prow/sidecar:v20181019-08e9d55c9"
+      clonerefs: "gcr.io/k8s-prow/clonerefs:v20190312-abfe0e0"
+      initupload: "gcr.io/k8s-prow/initupload:v20190312-abfe0e0"
+      entrypoint: "gcr.io/k8s-prow/entrypoint:v20190312-abfe0e0"
+      sidecar: "gcr.io/k8s-prow/sidecar:v20190312-abfe0e0"
     gcs_configuration:
       bucket: kyma-prow-logs
       path_strategy: "explicit"
@@ -388,9 +406,12 @@ deck:
   spyglass:
     size_limit: 500000000 # 500MB
     viewers:
-      "started.json|finished.json": ["metadata-viewer"]
-      "build-log.txt": ["build-log-viewer"]
-      "artifacts/junit.*\\.xml": ["junit-viewer"]
+      "started.json|finished.json":
+      - "metadata"
+      "build-log.txt":
+      - "buildlog"
+      "artifacts/junit.*\\.xml":
+      - "junit"
   branding:
     header_color: "#0b74de" # Kyma color
     logo: "extensions/logo.svg"

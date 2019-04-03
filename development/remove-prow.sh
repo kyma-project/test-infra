@@ -13,5 +13,6 @@ kubectl delete secret sa-gcs-plank
 kubectl delete secret sa-gcr-push
 kubeclt delete secret kyma-bot-npm-token
 kubeclt delete secret sa-kyma-artifacts
+kubeclt delete secret workload-cluster
 kubectl delete clusterrolebinding cluster-admin-binding
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml

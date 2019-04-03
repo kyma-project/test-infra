@@ -108,16 +108,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  - name: pre-rel06-kyma-integration
-    branches:
-    - release-0.6
-    always_run: false
-    <<: *vm_job_template
-    labels:
-      <<: *vm_job_labels_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.6
   - name: pre-rel07-kyma-integration
     branches:
     - release-0.7
@@ -140,6 +130,17 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-0.8
 
+  - name: pre-rel09-kyma-integration
+    branches:
+      - release-0.9
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.9
+
   - name: pre-master-kyma-gke-integration
     branches:
     - master
@@ -151,20 +152,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
-  - name: pre-rel06-kyma-gke-integration
-    branches:
-    - release-0.6
-    <<: *gke_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: release-0.6
 
   - name: pre-rel07-kyma-gke-integration
     branches:
@@ -179,6 +166,7 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.7
+
   - name: pre-rel08-kyma-gke-integration
     branches:
     - release-0.8
@@ -193,11 +181,25 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/test-infra
       base_ref: release-0.8
 
+  - name: pre-rel09-kyma-gke-integration
+    branches:
+      - release-0.9
+    <<: *gke_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: release-0.9
+
   - name: pre-master-kyma-gke-upgrade
     branches:
     - master
     <<: *gke_upgrade_job_template
-    run_if_changed: "^(resources|installation)"
+    run_if_changed: "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)"
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"
@@ -231,6 +233,18 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-0.8
+  - name: pre-rel09-kyma-gke-upgrade
+    branches:
+      - release-0.9
+    <<: *gke_upgrade_job_template
+    always_run: false
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.9
 
   - name: pre-master-kyma-gke-central-connector
     branches:
@@ -243,6 +257,18 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+
+  - name: pre-rel09-kyma-gke-central-connector
+    branches:
+      - release-0.9
+    <<: *gke_central_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-0.9
 
 postsubmits:
   kyma-project/kyma:
@@ -270,31 +296,31 @@ postsubmits:
   - name: post-master-kyma-gke-central-connector
     <<: *gke_central_job_template
     branches:
-    - master
+      - master
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
 
   - name: post-master-kyma-gke-upgrade
     <<: *gke_upgrade_job_template
     branches:
-    - master
+      - master
     labels:
       preset-bot-github-token: "true"
       preset-build-master: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+      - <<: *test_infra_ref
+        base_ref: master
 
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
 - name: utilities-kyma-integration-cleaner
-  cron: "0 7 * * 1-5" # "At 07:00 on every day-of-week from Monday through Friday."
+  cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
     preset-sa-vm-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -307,7 +333,7 @@ periodics:
           cpu: 50m
 
 - name: orphaned-disks-cleaner
-  cron: "15 */2 * * 1-5" # "At minute 15 past every 2nd hour from Monday through Friday"
+  cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -328,7 +354,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-clusters-cleaner
-  cron: "0 */4 * * 1-5" # "Every four hours from Monday through Friday"
+  cron: "0 * * * *" # "At 0 minute every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -349,7 +375,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-vms-cleaner
-  cron: "30 */4 * * 1-5" # "At minute 30 past every 4th hour from Monday through Friday"
+  cron: "0 * * * *" # "At minute 0 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -370,7 +396,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-loadbalancer-cleaner
-  cron: "30 7 * * 1-5" # "At 07:30 on every day-of-week from Monday through Friday."
+  cron: "15 * * * *" # "At 15 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -391,7 +417,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: orphaned-dns-cleaner
-  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+  cron: "30 * * * *" # "At minute 30 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -550,7 +576,7 @@ periodics:
           - name: RS_GROUP
             value: "kyma-nightly-aks"
           - name: REGION
-            value: "westeurope"
+            value: "northeurope"
           - name: INPUT_CLUSTER_NAME
             value: "nightly-aks"
           - name: TEST_RESULT_WINDOW_TIME
@@ -674,8 +700,9 @@ periodics:
         env:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
+          #TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
           - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-            value: "#c4core-kyma-ci-force"
+            value: "#c4core-kyma-gopher-pr"
           - name: OUT_OF_DATE_DAYS
             value: "3"
         resources:

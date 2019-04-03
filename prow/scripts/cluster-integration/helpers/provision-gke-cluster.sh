@@ -39,7 +39,7 @@ readonly CURRENT_TIMESTAMP_PARAM=$(date +%Y%m%d)
 
 TTL_HOURS_PARAM="3"
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
-MACHINE_TYPE_PARAM="--machine-type=n1-standard-2"
+MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM=(--network=default)
 if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi

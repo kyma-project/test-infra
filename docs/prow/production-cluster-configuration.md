@@ -3,6 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
+> Note: This prow installation is compatible with commit SHA of `b9a576b397892c55487e495721d23b3a52ac9472` of github.com/k8s.io/test-infra repository
 
 ## Prerequisites
 
@@ -12,7 +13,7 @@ Use the following tools and configuration:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
-- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-cluster)
+- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-prow-main-cluster)
 - Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
@@ -22,49 +23,75 @@ Use the following tools and configuration:
   - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `kyma-prow-status` name
   - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `kyma-prow-status` address
 
+    
 ## Installation
 
-1. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project.
+1. Prepare the workload cluster:
 
-   Export the **PROJECT** variable and run this command:
+  ```bash
+    export WORKLOAD_CLUSTER_NAME=kyma-prow-workload
+    export ZONE=europe-west3-a
+    export PROJECT=sap-kyma-prow
 
-   ```
-   gcloud config set project $PROJECT
-   ```
+    ### In GKE get KUBECONFIG for cluster kyma-prow-workload
+    gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
 
-2. Make sure that kubectl points to the correct cluster.
+    ./set-up-workload-cluster.sh
+  ```
 
-   Export these variables:
+  This script performs the following steps:
+  - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
+  - Creates Kubernetes `Secrets` resources out of Secrets fetched from the GCP bucket.
 
-   ```
-   export CLUSTER_NAME=kyma-prow
-   export ZONE=europe-west3-a
-   export PROJECT=sap-kyma-prow
-   ```
+2. Set the context to your Google Cloud project.
+
+    Export the **PROJECT** variable and run this command:
+
+  ```bash
+    gcloud config set project $PROJECT
+  ```
+
+3. Make sure that kubectl points to the Prow main cluster.
+
+  Export these variables:
+
+  ```bash
+    export CLUSTER_NAME=kyma-prow
+    export ZONE=europe-west3-a
+    export PROJECT=sap-kyma-prow
+  ```
 
    For GKE, run the following command:
 
-   ```
-   gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
-   ```
+  ```bash
+    gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
+  ```
 
-3. Export these environment variables, where:
+4. Export these environment variables, where:
 
    - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
    - **KEYRING_NAME** is the KMS key ring.
    - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
-   ```
-   export BUCKET_NAME=kyma-prow-secrets
-   export KEYRING_NAME=kyma-prow
-   export ENCRYPTION_KEY_NAME=kyma-prow-encryption
-   ```
+  ```bash
+    export BUCKET_NAME=kyma-prow-secrets
+    export KEYRING_NAME=kyma-prow
+    export ENCRYPTION_KEY_NAME=kyma-prow-encryption
+    export GOPATH=$GOPATH ### Ensure GOPATH is set
+  ```
 
-4. Run the following script to start the installation process:
+5. Run the following script to create a Kubernetes Secret resource in Prow main cluster. This way you allow the Prow main cluster to access the workload cluster:
+>**NOTE:** Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow main cluster.
 
-   ```bash
-   ./install-prow.sh
-   ```
+  ```bash
+    ./create-secrets-for-workload-cluster.sh
+  ```
+
+6. Run the following script to start the installation process:
+
+  ```bash
+    ./install-prow.sh
+  ```
 
    The installation script performs the following steps to install Prow:
 
@@ -76,7 +103,7 @@ Use the following tools and configuration:
    - Deploy the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md).
    - Remove insecure Ingress.
 
-5. Verify the installation.
+7. Verify the installation.
 
    To check if the installation is successful, perform the following steps:
 
@@ -112,8 +139,8 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 To check if the `plugins.yaml`, `config.yaml`, and `jobs` configuration files are correct, run the `validate-config.sh {plugins_file_path} {config_file_path} {jobs_dir_path}` script. For example, run:
 
-```
-./validate-config.sh ../prow/plugins.yaml ../prow/config.yaml ../prow/jobs
+```bash
+  ./validate-config.sh ../prow/plugins.yaml ../prow/config.yaml ../prow/jobs
 ```
 
 ### Upload the configuration on a cluster
@@ -122,19 +149,19 @@ If the files are configured correctly, upload the files on a cluster.
 
 1. Use the `update-plugins.sh {file_path}` script to apply plugin changes on a cluster.
 
-   ```
+   ```bash
    ./update-plugins.sh ../prow/plugins.yaml
    ```
 
 2. Use the `update-config.sh {file_path}` script to apply Prow configuration on a cluster.
 
-   ```
+   ```bash
    ./update-config.sh ../prow/config.yaml
    ```
 
 3. Use the `update-jobs.sh {jobs_dir_path}` script to apply jobs configuration on a cluster.
 
-   ```
+   ```bash
    ./update-jobs.sh ../prow/jobs
    ```
 
@@ -144,6 +171,6 @@ After you complete the required configuration, you can test the uploaded plugins
 
 To clean up everything created by the installation script, run the removal script:
 
-```
+```bash
 ./remove-prow.sh
 ```

@@ -23,8 +23,12 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
-        DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
-        echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
+        if [[ "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ]]; then
+            DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+            echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
+        else 
+            DOCKER_TAG="${PULL_BASE_REF}"
+        fi
     else
         echo "Not supported build type - ${BUILD_TYPE}"
         exit 1
@@ -42,12 +46,14 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 elif [[ "${BUILD_TYPE}" == "master" ]]; then
     make -C "${SOURCES_DIR}" ci-master
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    NEXT_RELEASE=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
-    echo "Checking if ${NEXT_RELEASE} was already published on github..."
-    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/"${NEXT_RELEASE}")
-    if [[ $RESPONSE != 404* ]]; then
-        echo "The ${NEXT_RELEASE} is already published on github. Stopping."
-        exit 1
+    if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
+        NEXT_RELEASE=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+        echo "Checking if ${NEXT_RELEASE} was already published on github..."
+        RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/"${NEXT_RELEASE}")
+        if [[ $RESPONSE != 404* ]]; then
+            echo "The ${NEXT_RELEASE} is already published on github. Stopping."
+            exit 1
+        fi
     fi
     make -C "${SOURCES_DIR}" ci-release
 else

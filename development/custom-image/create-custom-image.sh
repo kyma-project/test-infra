@@ -54,7 +54,7 @@ for ZONE in ${EU_ZONES}; do
         --image-family debian-9 \
         --image-project debian-cloud \
         --zone "${ZONE}" \
-        --boot-disk-size 20 \
+        --boot-disk-size 30 \
         --metadata-from-file startup-script=./machine-id-clean-up.sh  &&\
     shout "Created kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE}" && break
     shout "Could not create machine in zone ${ZONE}"

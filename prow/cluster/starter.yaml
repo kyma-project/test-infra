@@ -1,6 +1,6 @@
 ###
 # Source file: https://github.com/kubernetes/test-infra/blob/master/prow/cluster/starter.yaml
-# Source commit: b9a576b397892c55487e495721d23b3a52ac9472
+# Source commit: 4faaf685958cd79ea5b5a376fadabd8a9d1b4123
 #
 # Changes:
 # - add get verb for configmaps resource in hook role
@@ -51,21 +51,21 @@ spec:
             type:
               type: string
               enum:
-              - "presubmit"
-              - "postsubmit"
-              - "periodic"
-              - "batch"
+                - "presubmit"
+                - "postsubmit"
+                - "periodic"
+                - "batch"
         status:
           properties:
             state:
               type: string
               enum:
-              - "triggered"
-              - "pending"
-              - "success"
-              - "failure"
-              - "aborted"
-              - "error"
+                - "triggered"
+                - "pending"
+                - "success"
+                - "failure"
+                - "aborted"
+                - "error"
           anyOf:
           - not:
               properties:
@@ -78,6 +78,43 @@ spec:
                   - "aborted"
           - required:
             - completionTime
+  additionalPrinterColumns:
+  - name: Job
+    type: string
+    description: The name of the job being run.
+    JSONPath: .spec.job
+  - name: BuildId
+    type: string
+    description: The ID of the job being run.
+    JSONPath: .status.build_id
+  - name: Type
+    type: string
+    description: The type of job being run.
+    JSONPath: .spec.type
+  - name: Org
+    type: string
+    description: The org for which the job is running.
+    JSONPath: .spec.refs.org
+  - name: Repo
+    type: string
+    description: The repo for which the job is running.
+    JSONPath: .spec.refs.repo
+  - name: Pulls
+    type: string
+    description: The pulls for which the job is running.
+    JSONPath: ".spec.refs.pulls[*].number"
+  - name: StartTime
+    type: date
+    description: When the job started running.
+    JSONPath: .status.startTime
+  - name: CompletionTime
+    type: date
+    description: When the job finished running.
+    JSONPath: .status.completionTime
+  - name: State
+    description: The state of the job.
+    type: string
+    JSONPath: .status.state
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -101,47 +138,47 @@ spec:
       serviceAccountName: "hook"
       terminationGracePeriodSeconds: 180
       containers:
-      - name: hook
-        image: gcr.io/k8s-prow/hook:v20181129-31c544b
-        imagePullPolicy: Always
-        args:
-        - --dry-run=false
-        - --job-config-path=/etc/job-config
-        ports:
-          - name: http
-            containerPort: 8888
-        volumeMounts:
-        - name: hmac
-          mountPath: /etc/webhook
-          readOnly: true
-        - name: oauth
-          mountPath: /etc/github
-          readOnly: true
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: plugins
-          mountPath: /etc/plugins
-          readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        - name: hook
+          image: gcr.io/k8s-prow/hook:v20190312-abfe0e0
+          imagePullPolicy: Always
+          args:
+            - --dry-run=false
+            - --job-config-path=/etc/job-config
+          ports:
+            - name: http
+              containerPort: 8888
+          volumeMounts:
+            - name: hmac
+              mountPath: /etc/webhook
+              readOnly: true
+            - name: oauth
+              mountPath: /etc/github
+              readOnly: true
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: plugins
+              mountPath: /etc/plugins
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
       volumes:
-      - name: hmac
-        secret:
-          secretName: hmac-token
-      - name: oauth
-        secret:
-          secretName: oauth-token
-      - name: config
-        configMap:
-          name: config
-      - name: plugins
-        configMap:
-          name: plugins
-      - name: job-config
-        configMap:
-          name: job-config
+        - name: hmac
+          secret:
+            secretName: hmac-token
+        - name: oauth
+          secret:
+            secretName: oauth-token
+        - name: config
+          configMap:
+            name: config
+        - name: plugins
+          configMap:
+            name: plugins
+        - name: job-config
+          configMap:
+            name: job-config
 ---
 apiVersion: v1
 kind: Service
@@ -152,7 +189,7 @@ spec:
   selector:
     app: hook
   ports:
-  - port: 8888
+    - port: 8888
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
@@ -173,31 +210,39 @@ spec:
     spec:
       serviceAccountName: "plank"
       containers:
-      - name: plank
-        image: gcr.io/k8s-prow/plank:v20181129-31c544b
-        args:
-        - --dry-run=false
-        - --job-config-path=/etc/job-config
-        volumeMounts:
-        - name: oauth
-          mountPath: /etc/github
-          readOnly: true
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        - name: plank
+          image: gcr.io/k8s-prow/plank:v20190312-abfe0e0
+          args:
+            - --dry-run=false
+            - --job-config-path=/etc/job-config
+            - --build-cluster=/etc/cluster/cluster.yaml
+          volumeMounts:
+            - name: oauth
+              mountPath: /etc/github
+              readOnly: true
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
+              readOnly: true
       volumes:
-      - name: oauth
-        secret:
-          secretName: oauth-token
-      - name: config
-        configMap:
-          name: config
-      - name: job-config
-        configMap:
-          name: job-config
+        - name: oauth
+          secret:
+            secretName: oauth-token
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -215,24 +260,33 @@ spec:
     spec:
       serviceAccountName: "sinker"
       containers:
-      - name: sinker
-        image: gcr.io/k8s-prow/sinker:v20181129-31c544b
-        args:
-        - --job-config-path=/etc/job-config
-        volumeMounts:
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        - name: sinker
+          image: gcr.io/k8s-prow/sinker:v20190312-abfe0e0
+          args:
+            - --job-config-path=/etc/job-config
+            - --build-cluster=/etc/cluster/cluster.yaml
+            - --dry-run=false
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
+              readOnly: true
       volumes:
-      - name: config
-        configMap:
-          name: config
-      - name: job-config
-        configMap:
-          name: job-config
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -256,30 +310,51 @@ spec:
       serviceAccountName: "deck"
       terminationGracePeriodSeconds: 30
       containers:
-      - name: deck
-        image: gcr.io/k8s-prow/deck:v20181129-31c544b
-        args:
-        - --tide-url=http://tide/
-        - --hook-url=http://hook:8888/plugin-help
-        - --job-config-path=/etc/job-config
-        - --spyglass
-        ports:
-          - name: http
-            containerPort: 8080
-        volumeMounts:
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        - name: deck
+          image: gcr.io/k8s-prow/deck:v20190312-abfe0e0
+          args:
+            - --tide-url=http://tide/
+            - --hook-url=http://hook:8888/plugin-help
+            - --job-config-path=/etc/job-config
+            - --spyglass
+            - --build-cluster=/etc/cluster/cluster.yaml
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 600
       volumes:
-      - name: config
-        configMap:
-          name: config
-      - name: job-config
-        configMap:
-          name: job-config
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster
 ---
 apiVersion: v1
 kind: Service
@@ -290,8 +365,8 @@ spec:
   selector:
     app: deck
   ports:
-  - port: 80
-    targetPort: 8080
+    - port: 80
+      targetPort: 8080
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
@@ -313,24 +388,25 @@ spec:
       serviceAccountName: "horologium"
       terminationGracePeriodSeconds: 30
       containers:
-      - name: horologium
-        image: gcr.io/k8s-prow/horologium:v20181129-31c544b
-        args:
-        - --job-config-path=/etc/job-config
-        volumeMounts:
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        - name: horologium
+          image: gcr.io/k8s-prow/horologium:v20190312-abfe0e0
+          args:
+            - --job-config-path=/etc/job-config
+            - --dry-run=false
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
       volumes:
-      - name: config
-        configMap:
-          name: config
-      - name: job-config
-        configMap:
-          name: job-config
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -350,34 +426,34 @@ spec:
     spec:
       serviceAccountName: "tide"
       containers:
-      - name: tide
-        image: gcr.io/k8s-prow/tide:v20181129-31c544b
-        args:
-        - --dry-run=false
-        - --job-config-path=/etc/job-config
-        ports:
-          - name: http
-            containerPort: 8888
-        volumeMounts:
-        - name: oauth
-          mountPath: /etc/github
-          readOnly: true
-        - name: config
-          mountPath: /etc/config
-          readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        - name: tide
+          image: gcr.io/k8s-prow/tide:v20190312-abfe0e0
+          args:
+            - --dry-run=false
+            - --job-config-path=/etc/job-config
+          ports:
+            - name: http
+              containerPort: 8888
+          volumeMounts:
+            - name: oauth
+              mountPath: /etc/github
+              readOnly: true
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
       volumes:
-      - name: oauth
-        secret:
-          secretName: oauth-token
-      - name: config
-        configMap:
-          name: config
-      - name: job-config
-        configMap:
-          name: job-config
+        - name: oauth
+          secret:
+            secretName: oauth-token
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
 ---
 apiVersion: v1
 kind: Service
@@ -388,8 +464,8 @@ spec:
   selector:
     app: tide
   ports:
-  - port: 80
-    targetPort: 8888
+    - port: 80
+      targetPort: 8888
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
@@ -402,16 +478,16 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: deck
-          servicePort: 80
-      - path: /hook
-        backend:
-          serviceName: hook
-          servicePort: 8888
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: deck
+              servicePort: 80
+          - path: /hook
+            backend:
+              serviceName: hook
+              servicePort: 8888
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -429,8 +505,8 @@ roleRef:
   kind: Role
   name: "deck"
 subjects:
-- kind: ServiceAccount
-  name: "deck"
+  - kind: ServiceAccount
+    name: "deck"
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -482,8 +558,8 @@ roleRef:
   kind: Role
   name: "horologium"
 subjects:
-- kind: ServiceAccount
-  name: "horologium"
+  - kind: ServiceAccount
+    name: "horologium"
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -510,6 +586,7 @@ rules:
     resources:
       - prowjobs
     verbs:
+      - get
       - create
       - list
       - update
@@ -524,8 +601,8 @@ roleRef:
   kind: Role
   name: "plank"
 subjects:
-- kind: ServiceAccount
-  name: "plank"
+  - kind: ServiceAccount
+    name: "plank"
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -564,8 +641,8 @@ roleRef:
   kind: Role
   name: "sinker"
 subjects:
-- kind: ServiceAccount
-  name: "sinker"
+  - kind: ServiceAccount
+    name: "sinker"
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -604,8 +681,8 @@ roleRef:
   kind: Role
   name: "hook"
 subjects:
-- kind: ServiceAccount
-  name: "hook"
+  - kind: ServiceAccount
+    name: "hook"
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -637,5 +714,5 @@ roleRef:
   kind: Role
   name: "tide"
 subjects:
-- kind: ServiceAccount
-  name: "tide"
+  - kind: ServiceAccount
+    name: "tide"

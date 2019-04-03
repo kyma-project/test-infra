@@ -9,7 +9,7 @@ import (
 )
 
 func TestWatchPodsReleases(t *testing.T) {
-	for _, currentRelease := range []string{"release-0.6", "release-0.7"} {
+	for _, currentRelease := range []string{"release-0.7"} {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tools/watch-pods/watch-pods-deprecated.yaml")
 			// THEN
