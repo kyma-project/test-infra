@@ -369,7 +369,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -clusterNameRegexp='^gke(int|-upgrade|-central)[-](pr|commit|rel)[-].*'"
+      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -strategy=time"
       resources:
         requests:
           memory: 1Gi
