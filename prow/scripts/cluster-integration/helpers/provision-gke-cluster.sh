@@ -35,7 +35,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-readonly CURRENT_TIMESTAMP_PARAM=$(date +%Y%m%d)
+readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
+readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
 
 TTL_HOURS_PARAM="3"
 CLUSTER_VERSION_PARAM="--cluster-version=1.12"
@@ -43,7 +44,7 @@ MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM=(--network=default)
 if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi
-CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},ttl=${TTL_HOURS_PARAM}"
+CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},created-at-readable=${CURRENT_TIMESTAMP_READABLE_PARAM},ttl=${TTL_HOURS_PARAM}"
 
 if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
 if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
