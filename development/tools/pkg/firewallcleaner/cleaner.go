@@ -37,15 +37,23 @@ func NewCleaner(computeAPI ComputeAPI) *Cleaner {
 
 //Run the main find&destroy function
 func (c *Cleaner) Run(dryRun bool, project string) error {
+	dryRunPrefix := ""
+	if dryRun {
+		dryRunPrefix = "[DRY RUN] "
+	}
 	if err := c.checkAndDeleteFirewallRules(project, dryRun); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("checkAndDeleteFirewallRules failed for project '%s'", project))
 	}
-	common.Shout("Cleaner ran without errors")
+	common.Shout("%sCleaner ran without errors", dryRunPrefix)
 
 	return nil
 }
 
 func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error {
+	dryRunPrefix := ""
+	if dryRun {
+		dryRunPrefix = "[DRY RUN] "
+	}
 	rules, firewallErr := c.computeAPI.LookupFirewallRule(project)
 	if firewallErr != nil {
 		return errors.Wrap(firewallErr, fmt.Sprintf("call to LookupFirewallRule failed for project '%s'", project))
@@ -82,7 +90,7 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 		}
 	}
 
-	common.Shout("Collected %d rules, %d instances and %d node pools", len(rules), len(instances), len(nodePools))
+	common.Shout("%sCollected %d rules, %d instances and %d node pools", dryRunPrefix, len(rules), len(instances), len(nodePools))
 
 	count := 0
 	for _, rule := range rules {
@@ -117,6 +125,6 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 			}
 		}
 	}
-	common.Shout("Checked %d rules, deleted %d", len(rules), count)
+	common.Shout("%sChecked %d rules, deleted %d", dryRunPrefix, len(rules), count)
 	return nil
 }
