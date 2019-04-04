@@ -36,25 +36,23 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 	if maxAttempts < 1 {
 		maxAttempts = 1
 	}
-	if makeChanges {
-		for {
-			entry, retryable, lookupErr := der.dnsAPI.LookupDNSEntry(project, zone, dnsName, dnsAddress, recordType, recordTTL)
-			if entry != nil {
-				recordSet = entry
-				break
-			}
-			attempts = attempts + 1
-			if attempts < maxAttempts && retryable {
-				time.Sleep(time.Duration(timeout) * time.Second)
-				timeout = timeout * 2
-			} else {
-				getErr = lookupErr
-				break
-			}
+	for {
+		entry, retryable, lookupErr := der.dnsAPI.LookupDNSEntry(project, zone, dnsName, dnsAddress, recordType, recordTTL)
+		if entry != nil {
+			recordSet = entry
+			break
 		}
-		if recordSet == nil {
-			return false, getErr
+		attempts = attempts + 1
+		if attempts < maxAttempts && retryable {
+			time.Sleep(time.Duration(timeout) * time.Second)
+			timeout = timeout * 2
+		} else {
+			getErr = lookupErr
+			break
 		}
+	}
+	if recordSet == nil {
+		return false, getErr
 	}
 
 	common.Shout("Trying to delete DNS retrieved record set with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
