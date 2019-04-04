@@ -42,7 +42,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, clusterNameRegexp: \"%s\"", *project, *dryRun, *ageInHours, *clusterNameRegexp)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, strategy: %s, ageInHours: %d, clusterNameRegexp: \"%s\"", *project, *dryRun, *strategy, *ageInHours, *clusterNameRegexp)
 	ctx := context.Background()
 
 	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
