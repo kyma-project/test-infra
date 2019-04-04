@@ -20,7 +20,8 @@ const sleepFactor = 2
 type ComputeAPI interface {
 	LookupFirewallRule(project string) ([]*compute.Firewall, error)
 	LookupInstances(project string) ([]*compute.Instance, error)
-	LookupNodePools(project string) ([]*container.NodePool, error)
+	LookupNodePools(clusters []*container.Cluster) ([]*container.NodePool, error)
+	LookupClusters(project string) ([]*container.Cluster, error)
 	DeleteFirewallRule(project, firewall string)
 }
 
@@ -45,18 +46,23 @@ func (c *Cleaner) Run(dryRun bool, project string) error {
 }
 
 func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error {
-	rules, err := c.computeAPI.LookupFirewallRule(project)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("call to LookupFirewallRule failed for project '%s'", project))
+	rules, firewallErr := c.computeAPI.LookupFirewallRule(project)
+	if firewallErr != nil {
+		return errors.Wrap(firewallErr, fmt.Sprintf("call to LookupFirewallRule failed for project '%s'", project))
 	}
-	instances, err := c.computeAPI.LookupInstances(project)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("call to LookupInstances failed for project '%s'", project))
+	instances, instanceErr := c.computeAPI.LookupInstances(project)
+	if instanceErr != nil {
+		return errors.Wrap(instanceErr, fmt.Sprintf("call to LookupInstances failed for project '%s'", project))
 	}
 
-	nodePools, err := c.computeAPI.LookupNodePools(project)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("call to LookupNodePools failed for project '%s'", project))
+	clusters, clusterErr := c.computeAPI.LookupClusters(project)
+	if clusterErr != nil {
+		return errors.Wrap(clusterErr, fmt.Sprintf("call to LookupClusters failed for project '%s'", project))
+	}
+
+	nodePools, nodePoolErr := c.computeAPI.LookupNodePools(clusters)
+	if nodePoolErr != nil {
+		return errors.Wrap(nodePoolErr, fmt.Sprintf("call to LookupNodePools failed for project '%s'", project))
 	}
 	poolNames := []string{}
 	for _, pool := range nodePools {
@@ -88,15 +94,17 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 					break
 				}
 			}
+			for _, cluster := range clusters { // takes care of 'k8s-' rules
+				if strings.HasPrefix(target, cluster.Name) {
+					exist = true
+				}
+			}
 		}
 		for _, poolName := range poolNames {
 			if strings.Contains(rule.Name, poolName) {
 				exist = true
 				break
 			}
-		}
-		if strings.HasPrefix(rule.Name, "k8s-") {
-			exist = true // ignore this rule
 		}
 		if !exist && len(rule.TargetTags) > 0 {
 			count = count + 1

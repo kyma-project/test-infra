@@ -50,17 +50,22 @@ func (csw *ComputeServiceWrapper) LookupInstances(project string) ([]*compute.In
 }
 
 //LookupNodePools ???
-func (csw *ComputeServiceWrapper) LookupNodePools(project string) ([]*container.NodePool, error) {
-	clusters, err := csw.Container.Projects.Zones.Clusters.List(project, "-").Do() // "-" will get clusters in all zones
-	if err != nil {
-		return nil, err
-	}
+func (csw *ComputeServiceWrapper) LookupNodePools(clusters []*container.Cluster) ([]*container.NodePool, error) {
 
 	allClustersPools := []*container.NodePool{}
-	for _, cluster := range clusters.Clusters {
+	for _, cluster := range clusters {
 		allClustersPools = append(allClustersPools, cluster.NodePools...)
 	}
 	return allClustersPools, nil
+}
+
+//LookupClusters ???
+func (csw *ComputeServiceWrapper) LookupClusters(project string) ([]*container.Cluster, error) {
+	resp, err := csw.Container.Projects.Zones.Clusters.List(project, "-").Do() // "-" will get clusters in all zones
+	if err != nil {
+		return nil, err
+	}
+	return resp.Clusters, nil
 }
 
 //DeleteFirewallRule Delete firewall rule base on name in specifiec project
