@@ -17,6 +17,29 @@ func (_m *ComputeAPI) DeleteFirewallRule(project string, firewall string) {
 	_m.Called(project, firewall)
 }
 
+// LookupClusters provides a mock function with given fields: project
+func (_m *ComputeAPI) LookupClusters(project string) ([]*container.Cluster, error) {
+	ret := _m.Called(project)
+
+	var r0 []*container.Cluster
+	if rf, ok := ret.Get(0).(func(string) []*container.Cluster); ok {
+		r0 = rf(project)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*container.Cluster)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(project)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // LookupFirewallRule provides a mock function with given fields: project
 func (_m *ComputeAPI) LookupFirewallRule(project string) ([]*compute.Firewall, error) {
 	ret := _m.Called(project)
@@ -63,13 +86,13 @@ func (_m *ComputeAPI) LookupInstances(project string) ([]*compute.Instance, erro
 	return r0, r1
 }
 
-// LookupNodePools provides a mock function with given fields: project
-func (_m *ComputeAPI) LookupNodePools(project string) ([]*container.NodePool, error) {
-	ret := _m.Called(project)
+// LookupNodePools provides a mock function with given fields: clusters
+func (_m *ComputeAPI) LookupNodePools(clusters []*container.Cluster) ([]*container.NodePool, error) {
+	ret := _m.Called(clusters)
 
 	var r0 []*container.NodePool
-	if rf, ok := ret.Get(0).(func(string) []*container.NodePool); ok {
-		r0 = rf(project)
+	if rf, ok := ret.Get(0).(func([]*container.Cluster) []*container.NodePool); ok {
+		r0 = rf(clusters)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*container.NodePool)
@@ -77,8 +100,8 @@ func (_m *ComputeAPI) LookupNodePools(project string) ([]*container.NodePool, er
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(project)
+	if rf, ok := ret.Get(1).(func([]*container.Cluster) error); ok {
+		r1 = rf(clusters)
 	} else {
 		r1 = ret.Error(1)
 	}
