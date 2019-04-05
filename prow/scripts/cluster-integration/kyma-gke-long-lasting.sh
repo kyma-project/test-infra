@@ -179,30 +179,37 @@ function waitUntilInstallerApiAvailable() {
 }
 
 function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
+#	shout "Generate lets encrypt certificate"
+#	date
+#
+#    mkdir letsencrypt
+#    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+#    docker run  --name certbot \
+#        --rm  \
+#        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+#        certbot/dns-google \
+#        certonly \
+#        -m "kyma.bot@sap.com" \
+#        --agree-tos \
+#        --no-eff-email \
+#        --dns-google \
+#        --dns-google-credentials /etc/letsencrypt/service-account.json \
+#        --server https://acme-v02.api.letsencrypt.org/directory \
+#        --dns-google-propagation-seconds=600 \
+#        -d "*.${DOMAIN}"
+#
+#    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+#    export TLS_CERT
+#    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+#    export TLS_KEY
 
-    mkdir letsencrypt
-    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
-
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    shout "Generate self-signed certificate"
+    date
+    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
     export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
     export TLS_KEY
-
 }
 
 function installKyma() {
@@ -316,7 +323,6 @@ function cleanup() {
 }
 
 function addGithubDexConnector() {
-    shout "Add Github Dex Connector"
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
@@ -328,6 +334,8 @@ shout "Authenticate"
 date
 init
 
+shout "Add Github Dex Connector"
+date
 addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"

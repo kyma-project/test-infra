@@ -200,6 +200,7 @@ function createPublicIPandDNS() {
 
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
+    date
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
@@ -300,6 +301,9 @@ function installKyma() {
         | kubectl apply -f-
 
     waitUntilInstallerApiAvailable
+
+	shout "Trigger installation"
+	date
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     kubectl label installation/kyma-installation action=install
