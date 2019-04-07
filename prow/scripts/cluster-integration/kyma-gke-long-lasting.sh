@@ -179,28 +179,36 @@ function waitUntilInstallerApiAvailable() {
 }
 
 function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
+#	shout "Generate lets encrypt certificate"
+#	date
+#
+#    mkdir letsencrypt
+#    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+#    docker run  --name certbot \
+#        --rm  \
+#        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+#        certbot/dns-google \
+#        certonly \
+#        -m "kyma.bot@sap.com" \
+#        --agree-tos \
+#        --no-eff-email \
+#        --dns-google \
+#        --dns-google-credentials /etc/letsencrypt/service-account.json \
+#        --server https://acme-v02.api.letsencrypt.org/directory \
+#        --dns-google-propagation-seconds=600 \
+#        -d "*.${DOMAIN}"
+#
+#    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+#    export TLS_CERT
+#    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+#    export TLS_KEY
 
-    mkdir letsencrypt
-    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
-
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    shout "Generate self-signed certificate"
+    date
+    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
     export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
     export TLS_KEY
 }
 
@@ -282,11 +290,7 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
-
-	kubectl exec stability-test-provisioner -n kyma-system --  mkdir -p /root/.helm
-    kubectl cp "$(helm home)/ca.pem"   stability-test-provisioner:/root/.helm/ -n kyma-system
-    kubectl cp "$(helm home)/cert.pem" stability-test-provisioner:/root/.helm/ -n kyma-system
-    kubectl cp "$(helm home)/key.pem"  stability-test-provisioner:/root/.helm/ -n kyma-system
+    kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
     # create a secret with service account used for storing logs
