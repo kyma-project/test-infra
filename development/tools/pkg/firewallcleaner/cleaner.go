@@ -99,19 +99,20 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 			for _, instance := range instances {
 				if instance.Name == target {
 					exist = true
-					break
+					continue
 				}
 			}
 			for _, cluster := range clusters { // takes care of 'k8s-' rules
 				if strings.HasPrefix(target, cluster.Name) {
 					exist = true
+					continue
 				}
 			}
 		}
 		for _, poolName := range poolNames {
 			if strings.Contains(rule.Name, poolName) {
 				exist = true
-				break
+				continue
 			}
 		}
 		if !exist && len(rule.TargetTags) > 0 {
