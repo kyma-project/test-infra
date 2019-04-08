@@ -53,10 +53,10 @@ spec:
           image: alpine:3.9
           command: ['/bin/sh', '-c', 'cp /config-volume/* /etc/fluentd']
           volumeMounts:
-            - name: fluentconfig
-              mountPath: /config-volume
-            - name: config
-              mountPath: /etc/fluentd
+          - name: fluentconfig
+            mountPath: /config-volume
+          - name: config
+            mountPath: /etc/fluentd
       {{ end }}
 
       containers:
