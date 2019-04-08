@@ -117,7 +117,7 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 		if !exist && len(rule.TargetTags) > 0 {
 			count = count + 1
 			if !dryRun {
-				// c.computeAPI.DeleteFirewallRule(project, rule.Name)
+				c.computeAPI.DeleteFirewallRule(project, rule.Name)
 				common.Shout("Deleting rule '%s' because there's no target running (%d TargetTags)", rule.Name, len(rule.TargetTags))
 				time.Sleep(sleepFactor * time.Second)
 			} else {
