@@ -87,6 +87,7 @@ spec:
       {{ end }}
       # The container name is hardcoded in the stability checker, do not change it
       - name: stability-checker
+        command: ['/bin/sh', '-c', './data/input/pre-start-scripts.sh && ./root/stability-checker']
         image: "{{ .Values.containerRegistry.path }}/develop/stability-checker:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
 

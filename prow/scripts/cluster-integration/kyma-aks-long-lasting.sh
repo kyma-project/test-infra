@@ -200,6 +200,7 @@ function createPublicIPandDNS() {
 
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
+    date
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
@@ -301,6 +302,9 @@ function installKyma() {
 
     waitUntilInstallerApiAvailable
 
+	shout "Trigger installation"
+	date
+
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     kubectl label installation/kyma-installation action=install
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 80m
@@ -330,6 +334,7 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
+    kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
     # create a secret with service account used for storing logs
@@ -348,7 +353,8 @@ function installStabilityChecker() {
 	        --namespace=kyma-system \
 	        --name=stability-checker \
 	        --wait \
-	        --timeout=600
+	        --timeout=600 \
+	        --tls
 }
 
 

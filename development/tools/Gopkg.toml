@@ -9,7 +9,7 @@ required = [
   non-go = true
 
 [[constraint]]
-  version = "v8.0.0"
+  version = "kubernetes-1.11.2"
   name = "k8s.io/client-go"
 
 [[constraint]]
@@ -43,6 +43,16 @@ required = [
 [[constraint]]
   name = "github.com/smartystreets/goconvey"
   version = "1.6.3"
+
+# github.com/Huang-Wei/shared-loadbalancer/vendor/k8s.io/client-go/plugin/pkg/client/auth/azure
+# Fix vendor/k8s.io/client-go/plugin/pkg/client/auth/azure/azure.go:246:4: cannot use expiresIn (type string) as type json.Number in field value
+# Fix vendor/k8s.io/client-go/plugin/pkg/client/auth/azure/azure.go:247:4: cannot use expiresOn (type string) as type json.Number in field value
+# Fix vendor/k8s.io/client-go/plugin/pkg/client/auth/azure/azure.go:248:4: cannot use expiresOn (type string) as type json.Number in field value
+# Fix vendor/k8s.io/client-go/plugin/pkg/client/auth/azure/azure.go:265:23: cannot use token.token.ExpiresIn (type json.Number) as type string in assignment
+# Fix vendor/k8s.io/client-go/plugin/pkg/client/auth/azure/azure.go:266:23: cannot use token.token.ExpiresOn (type json.Number) as type string in assignment
+[[override]]
+name = "github.com/Azure/go-autorest"
+revision = "bca49d5b51a50dc5bb17bbf6204c711c6dbded06"
 
 # Need override because release-1.11 and kubernetes-1.11.0 are not semver compliant
 [[override]]

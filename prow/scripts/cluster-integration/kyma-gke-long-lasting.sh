@@ -202,7 +202,6 @@ function generateAndExportLetsEncryptCert() {
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
-
 }
 
 function installKyma() {
@@ -283,6 +282,7 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
+    kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
     # create a secret with service account used for storing logs
@@ -299,7 +299,8 @@ function installStabilityChecker() {
 	        --set testResultWindowTime="${TEST_RESULT_WINDOW_TIME}" \
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
-	        --name=stability-checker
+	        --name=stability-checker \
+	        --tls
 }
 
 function cleanup() {
@@ -316,7 +317,6 @@ function cleanup() {
 }
 
 function addGithubDexConnector() {
-    shout "Add Github Dex Connector"
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
@@ -328,6 +328,8 @@ shout "Authenticate"
 date
 init
 
+shout "Add Github Dex Connector"
+date
 addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
