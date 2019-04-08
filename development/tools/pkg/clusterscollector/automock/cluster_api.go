@@ -33,13 +33,13 @@ func (_m *ClusterAPI) ListClusters(project string) ([]*container.Cluster, error)
 	return r0, r1
 }
 
-// RemoveCluster provides a mock function with given fields: name, project, zone
-func (_m *ClusterAPI) RemoveCluster(name string, project string, zone string) error {
-	ret := _m.Called(name, project, zone)
+// RemoveCluster provides a mock function with given fields: project, zone, name
+func (_m *ClusterAPI) RemoveCluster(project string, zone string, name string) error {
+	ret := _m.Called(project, zone, name)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string, string, string) error); ok {
-		r0 = rf(name, project, zone)
+		r0 = rf(project, zone, name)
 	} else {
 		r0 = ret.Error(0)
 	}

@@ -32,6 +32,9 @@ var (
 	timeOneHourAgo          = timeNow.Add(time.Duration(-1) * time.Hour)
 	timeOneHourAgoFormatted = timeOneHourAgo.Format(time.RFC3339Nano)
 	timeOneHourAgoUnix      = strconv.FormatInt(timeOneHourAgo.Unix(), 10)
+	timeWellOver            = timeNow.Add(time.Duration(-24) * time.Hour)
+	timeWellOverFormatted   = timeWellOver.Format(time.RFC3339Nano)
+	timeWellOverUnix        = strconv.FormatInt(timeWellOver.Unix(), 10)
 )
 
 func TestDefaultClusterRemovalPredicate(t *testing.T) {
@@ -75,6 +78,30 @@ func TestDefaultClusterRemovalPredicate(t *testing.T) {
 			clusterCreateTime:   timeOneHourAgoFormatted,
 			volatileLabelValue:  volatileLabel,
 			clusterStatus:       "STOPPING"},
+		{name: "Should skip cluster in with name kyma-prow",
+			expectedFilterValue: false,
+			clusterName:         "kyma-prow",
+			clusterCreateTime:   timeWellOverFormatted,
+			volatileLabelValue:  volatileLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in with name workload-kyma-prow",
+			expectedFilterValue: false,
+			clusterName:         "workload-kyma-prow",
+			clusterCreateTime:   timeWellOverFormatted,
+			volatileLabelValue:  volatileLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in with name nightly",
+			expectedFilterValue: false,
+			clusterName:         "nightly",
+			clusterCreateTime:   timeWellOverFormatted,
+			volatileLabelValue:  volatileLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in with name weekly",
+			expectedFilterValue: false,
+			clusterName:         "weekly",
+			clusterCreateTime:   timeWellOverFormatted,
+			volatileLabelValue:  volatileLabel,
+			clusterStatus:       sampleStatus},
 	}
 
 	for _, testCase := range testCases {
@@ -107,6 +134,7 @@ func TestTimeBasedClusterRemovalPredicate(t *testing.T) {
 	var testCases = []struct {
 		name                string
 		expectedFilterValue bool
+		clusterName         string
 		volatileLabelValue  string
 		createdAtLabelValue string
 		ttlLabelValue       string
@@ -115,45 +143,75 @@ func TestTimeBasedClusterRemovalPredicate(t *testing.T) {
 		{name: "Should filter matching cluster",
 			expectedFilterValue: true,
 			volatileLabelValue:  volatileLabel,
+			clusterName:         sampleClusterName,
 			createdAtLabelValue: timeOneHourAgoUnix,
 			ttlLabelValue:       ttlLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster recently created",
 			expectedFilterValue: false,
 			volatileLabelValue:  volatileLabel,
+			clusterName:         sampleClusterName,
 			createdAtLabelValue: timeNowUnix,
 			ttlLabelValue:       ttlLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster with invalid label 1/?",
 			expectedFilterValue: false,
 			volatileLabelValue:  volatileLabel,
+			clusterName:         sampleClusterName,
 			createdAtLabelValue: timeNowUnix,
 			ttlLabelValue:       "",
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster with invalid label 2/?",
 			expectedFilterValue: false,
 			volatileLabelValue:  volatileLabel,
+			clusterName:         sampleClusterName,
 			createdAtLabelValue: "",
 			ttlLabelValue:       ttlLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster with invalid label 3/?",
 			expectedFilterValue: false,
 			volatileLabelValue:  "no",
+			clusterName:         sampleClusterName,
 			createdAtLabelValue: timeNowUnix,
 			ttlLabelValue:       ttlLabel,
 			clusterStatus:       sampleStatus},
 		{name: "Should skip cluster in STOPPING status",
 			expectedFilterValue: false,
 			volatileLabelValue:  volatileLabel,
+			clusterName:         sampleClusterName,
 			createdAtLabelValue: timeOneHourAgoUnix,
 			ttlLabelValue:       ttlLabel,
 			clusterStatus:       "STOPPING"},
+		{name: "Should skip cluster in with name kyma-prow",
+			expectedFilterValue: false,
+			clusterName:         "kyma-prow",
+			createdAtLabelValue: timeWellOverUnix,
+			volatileLabelValue:  "no",
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in with name workload-kyma-prow",
+			expectedFilterValue: false,
+			clusterName:         "workload-kyma-prow",
+			createdAtLabelValue: timeWellOverUnix,
+			volatileLabelValue:  "no",
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in with name nightly",
+			expectedFilterValue: false,
+			clusterName:         "nightly",
+			createdAtLabelValue: timeWellOverUnix,
+			volatileLabelValue:  volatileLabel,
+			clusterStatus:       sampleStatus},
+		{name: "Should skip cluster in with name weekly",
+			expectedFilterValue: false,
+			clusterName:         "weekly",
+			createdAtLabelValue: timeWellOverUnix,
+			volatileLabelValue:  volatileLabel,
+			clusterStatus:       sampleStatus},
 	}
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			//when
-			cluster := createCluster("", "", testCase.volatileLabelValue, testCase.createdAtLabelValue, testCase.ttlLabelValue, testCase.clusterStatus)
+			cluster := createCluster(testCase.clusterName, "", testCase.volatileLabelValue, testCase.createdAtLabelValue, testCase.ttlLabelValue, testCase.clusterStatus)
 			collected, err := labelFilterFunc(cluster)
 
 			//then

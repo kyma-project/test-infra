@@ -348,7 +348,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-(gkeint|gke-upgrade).*[-]pvc[-]'"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true -diskNameRegex='^gke-(gkeint|gke-upgrade).*[-]pvc[-]'"
       resources:
         requests:
           memory: 1Gi
