@@ -25,6 +25,7 @@ The `development` folder has the following structure:
   ├── vms-cleanup.sh           # This script invokes the tool for cleaning orphaned VM instances created by the "kyma-gke-integration" job.
   ├── disks-cleanup.sh         # This script invokes the tool for cleaning orphaned disks created by the "kyma-gke-integration" job.
   ├── loadbalancer-cleanup.sh  # This script invokes the tool for cleaning orphaned load balancers created by the "kyma-gke-integration" job.
+  ├── firewall-cleanup.sh      # This script invokes the tool for cleaning orphaned firewall rules.
   └── resources-cleanup.sh     # This script is a generic resource cleanup tool launcher.
 
 ```
