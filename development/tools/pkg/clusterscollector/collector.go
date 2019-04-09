@@ -16,6 +16,13 @@ const volatileLabelName = "volatile"
 const createdAtLabelName = "created-at"
 const ttlLabelName = "ttl"
 
+var whitelistClusterNames = map[string]bool{
+	"kyma-prow":          true,
+	"workload-kyma-prow": true,
+	"nightly":            true,
+	"weekly":             true,
+}
+
 //go:generate mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
 
 // ClusterAPI abstracts access to Cluster Container API in GCP
@@ -147,6 +154,10 @@ func TimeBasedClusterRemovalPredicate() ClusterRemovalPredicate {
 		var timestamp int64
 		var ageInHours uint64
 		var err error
+		if _, ok := whitelistClusterNames[cluster.Name]; ok {
+			log.Warnf("Cluster is whitelisted, deletion will be skipped. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
+			return false, nil
+		}
 
 		isVolatileCluster := false
 		if cluster.ResourceLabels != nil && cluster.ResourceLabels[volatileLabelName] == "true" {
