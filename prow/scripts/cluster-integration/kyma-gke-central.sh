@@ -49,6 +49,8 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
+
 trap cleanup EXIT INT
 
 #!Put cleanup code in this function!
@@ -274,6 +276,8 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
         | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
 else
@@ -286,6 +290,8 @@ else
     | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
     | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
     | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+    | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+    | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-

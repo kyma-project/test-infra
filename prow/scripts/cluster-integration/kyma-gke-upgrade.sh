@@ -61,6 +61,8 @@ export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -283,6 +285,8 @@ function installKyma() {
             | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
             | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
             | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
             | sed -e "s/__.*__//g" \
             | kubectl apply -f-
     else
@@ -294,6 +298,8 @@ function installKyma() {
             | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
             | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
             | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
             | sed -e "s/__.*__//g" \
             | kubectl apply -f-
     fi
