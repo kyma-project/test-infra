@@ -19,7 +19,7 @@ func TestValidateProwPresubmit(t *testing.T) {
 	require.NotNil(t, sut)
 
 	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/cmd/configuploader/main.go")
-	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/jobs/ui-api-layer_test.go")
+	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/jobs/console_backend_module_test.go")
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/config.yaml")
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/plugins.yaml")
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/jobs/random/job.yaml")

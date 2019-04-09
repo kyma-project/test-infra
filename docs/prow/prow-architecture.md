@@ -9,7 +9,7 @@ See an overview of the Prow production cluster, its components, and interactions
 ![Prow architecture overview](./assets/prow-architecture.svg)
 
 ## Provisioning and Secrets
-The cluster gets provisioned by the [install-prow.sh](../../prow/install-prow.sh) script that the Prow administrator executes manually. The script reads the full configuration from the `test-infra` repository. Based on that, the administrator can recreate the cluster at any time. That is why, when you make any changes to the cluster configuration, apply them directly on the repository instead of the runtime. Only the Prow administration team needs access to the runtime. All others should contribute changes through the repository with the review process in place. Any new configuration is uploaded on the cluster by administrators.
+The [set-up-workload-cluster.sh](../../prow/set-up-workload-cluster.sh) script provisions the cluster where Prow runs its workload Pods. To enable the Prow cluster to schedule jobs in the workload cluster, you must create a Secret using [create-secrets-for-workload-cluster.sh](../../prow/create-secrets-for-workload-cluster.sh) script. The Prow main cluster gets provisioned by the [install-prow.sh](../../prow/install-prow.sh) script that the Prow administrator executes manually. The script reads the full configuration from the `test-infra` repository. Based on that, the administrator can recreate the clusters at any time. That is why, when you make any changes to the cluster configuration, apply them directly on the repository instead of the runtime. Only the Prow administration team needs access to the runtime. All others should contribute changes through the repository with the review process in place. The administrators upload any new configuration to the cluster.
 
 Secrets are stored in Google Cloud Storage (GCS) in a dedicated bucket and are encrypted by Key Management Service (KMS). At the time of provisioning, the provisioning script reads all Secrets from GCS and installs them as Kubernetes Secrets on the cluster. The script uses a dedicated service account to access cloud storage. This account is not present as a Secret at runtime.
 
@@ -83,3 +83,4 @@ A directory with artifacts consists of the following files:
 - `kyma-installer-cluster.yaml` to deploy Kyma installer
 - `kyma-config-cluster.yaml` to configure Kyma installation
 - `is-installed.sh` to verify if Kyma installation process is finished
+- `tiller.yaml` to install Tiller

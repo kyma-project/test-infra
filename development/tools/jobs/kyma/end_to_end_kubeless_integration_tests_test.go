@@ -62,8 +62,8 @@ func TestKubelessIntegrationReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			// Retaining the behavior for release-0.6 and release-0.7
-			if currentRelease == "release-0.6" || currentRelease == "release-0.7" {
+			// Retaining the behavior for release-0.7
+			if currentRelease == "release-0.7" {
 				jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration.yaml")
 				// THEN
 				require.NoError(t, err)

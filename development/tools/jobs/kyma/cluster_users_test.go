@@ -10,7 +10,7 @@ import (
 
 func TestClusterUsersTestReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []string{"release-0.6", "release-0.7"}
+	unsupportedReleases := []string{"release-0.7"}
 
 	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {

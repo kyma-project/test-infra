@@ -33,13 +33,26 @@ presubmits: # runs on PRs
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/end-to-end/upgrade/"
+      # run against all changes in `upgrade/*` folder except
+      # changes made inside the`upgrade/chart/*`
+      run_if_changed: "^tests/end-to-end/upgrade/[^chart]"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-rel09-kyma-tests-end-to-end-upgrade
+      branches:
+        - release-0.9
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-0.9
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
@@ -47,7 +60,9 @@ postsubmits:
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^tests/end-to-end/upgrade/"
+      # run against all changes in `upgrade/*` folder except
+      # changes made inside the`upgrade/chart/*`
+      run_if_changed: "^tests/end-to-end/upgrade/[^chart]"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master

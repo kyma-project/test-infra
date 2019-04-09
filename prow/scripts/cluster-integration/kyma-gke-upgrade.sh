@@ -49,12 +49,22 @@ export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_INSTALL_TIMEOUT="30m"
-export KYMA_UPDATE_TIMEOUT="15m"
+export KYMA_UPDATE_TIMEOUT="25m"
+export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
+# timeout in sec for helm operation install/test
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
+# timeout in sec for e2e upgrade test pods until they reach the terminating state
+export UPGRADE_TEST_TIMEOUT_SEC=600
+export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
+export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
+export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
+export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
+export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-trap cleanup EXIT
+trap cleanup EXIT INT
 
 cleanup() {
     ## Save status of failed script execution
@@ -78,63 +88,47 @@ cleanup() {
 
         #Delete cluster
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
         #Delete orphaned disks
         shout "Delete orphaned PVC disks..."
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
         shout "Delete Gateway DNS Record"
         date
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [[ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]]; then
         shout "Release Gateway IP Address"
         date
         IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [[ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]]; then
         shout "Delete Remote Environments DNS Record"
         date
         IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [[ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]]; then
         shout "Release Remote Environments IP Address"
         date
         IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         shout "Delete Apiserver proxy DNS Record"
         date
         IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
     MSG=""
@@ -262,18 +256,19 @@ function getLastReleaseVersion() {
 }
 
 function installKyma() {
-    shout "Install Tiller"
-    date
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-    "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
     shout "Apply Kyma config from latest release - pre releases are omitted"
     date
     mkdir -p /tmp/kyma-gke-upgradeability
 
-
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
+
+    shout "Install Tiller from ${LAST_RELEASE_VERSION}"
+    date
+    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
+    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
     NEW_INSTALL_PROCEDURE_SINCE="0.7.0"
     if [[ "$(printf '%s\n' "$NEW_INSTALL_PROCEDURE_SINCE" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_INSTALL_PROCEDURE_SINCE" ]]; then
@@ -309,6 +304,91 @@ function installKyma() {
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
+function checkTestPodTerminated() {
+    local retry=0
+    local runningPods=0
+    local succeededPods=0
+    local failedPods=0
+
+    while [ "${retry}" -lt "${UPGRADE_TEST_TIMEOUT_SEC}" ]; do
+        # check status phase for each testing pods
+        for podName in $(kubectl get pods -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq -sr '.[]|.items[].metadata.name')
+        do
+            runningPods=$((runningPods + 1))
+            phase=$(kubectl get pod "${podName}" -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq '.status.phase')
+            echo "Test pod '${podName}' has phase: ${phase}"
+
+            if [[ "${phase}" == *"Succeeded"* ]]
+            then
+                succeededPods=$((succeededPods + 1))
+            fi
+
+            if [[ "${phase}" == *"Failed"* ]]; then
+                failedPods=$((failedPods + 1))
+            fi
+        done
+
+        # exit permanently if one of cluster has failed status
+        if [ "${failedPods}" -gt 0 ]
+        then
+            echo "${failedPods} pod(s) has failed status"
+            return 1
+        fi
+
+        # exit from function if each pod has succeeded status
+        if [ "${runningPods}" == "${succeededPods}" ]
+        then
+            echo "All pods in ${UPGRADE_TEST_NAMESPACE} namespace have succeeded phase"
+            return 0
+        fi
+
+        # reset all counters and rerun checking
+        delta=$((runningPods-succeededPods))
+        echo "${delta} pod(s) in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
+        runningPods=0
+        succeededPods=0
+        retry=$((retry + 1))
+        sleep 5
+    done
+
+    echo "The maximum number of attempts: ${retry} has been reached"
+    return 1
+}
+
+createTestResources() {
+    shout "Create e2e upgrade test resources"
+    date
+
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
+    helm install "${UPGRADE_TEST_PATH}" \
+        --name "${UPGRADE_TEST_RELEASE_NAME}" \
+        --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
+        --wait ${HELM_ARGS} \
+        --set global.domainName="${DOMAIN}"
+
+    prepareResult=$?
+    if [ "${prepareResult}" != 0 ]; then
+        echo "Helm install operation failed: ${prepareResult}"
+        exit "${prepareResult}"
+    fi
+
+    set +o errexit
+    checkTestPodTerminated
+    prepareTestResult=$?
+    set -o errexit
+
+    echo "Logs for prepare data operation to test e2e upgrade: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}"
+    if [ "${prepareTestResult}" != 0 ]; then
+        echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
+        exit "${prepareTestResult}"
+    fi
+}
+
 function upgradeKyma() {
     shout "Delete the kyma-installation CR"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
@@ -319,7 +399,12 @@ function upgradeKyma() {
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
 
+        shout "Update tiller"
+        kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
+
+        shout "Update kyma installer"
         kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
     else
         shout "Build Kyma Installer Docker image"
@@ -333,6 +418,9 @@ function upgradeKyma() {
         KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
         INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
         INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+        shout "Update tiller"
+        kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
 
         shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
         "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
@@ -362,6 +450,26 @@ function testKyma() {
     shout "Test Kyma"
     date
     "${KYMA_SCRIPTS_DIR}"/testing.sh
+
+    shout "Test Kyma end-to-end upgrade scenarios"
+    date
+
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
+    set +o errexit
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    testEndToEndResult=$?
+
+    echo "Test e2e upgrade logs: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+
+    if [ "${testEndToEndResult}" != 0 ]; then
+        echo "Helm test operation failed: ${testEndToEndResult}"
+        exit "${testEndToEndResult}"
+    fi
+    set -o errexit
 }
 
 # Used to detect errors for logging purposes
@@ -379,7 +487,11 @@ createCluster
 
 installKyma
 
+createTestResources
+
 upgradeKyma
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 testKyma
 
