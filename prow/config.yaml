@@ -3,7 +3,7 @@ presets:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west3-b"
+        value: "europe-west3-a"
       - name: CLOUDSDK_COMPUTE_REGION
         value: "europe-west3"
   - labels:
@@ -306,14 +306,6 @@ branch-protection:
           branches:
             master:
               protect: true
-            release-0.6:
-              protect: true
-              required_status_checks:
-                contexts:
-                  - pre-rel06-kyma-integration
-                  - pre-rel06-kyma-gke-integration
-                  - pre-rel06-kyma-artifacts
-                  - pre-rel06-kyma-installer
             release-0.7: # Already defined to ensure that check is defined for the new upgrade job
               protect: true
               required_status_checks:
@@ -330,6 +322,16 @@ branch-protection:
                 - pre-rel08-kyma-gke-integration
                 - pre-rel08-kyma-artifacts
                 - pre-rel08-kyma-installer
+            release-0.9:
+              protect: true
+              required_status_checks:
+                contexts:
+                  - pre-rel09-kyma-integration
+                  - pre-rel09-kyma-gke-integration
+                  - pre-rel09-kyma-gke-upgrade
+                  - pre-rel09-kyma-gke-central-connector
+                  - pre-rel09-kyma-artifacts
+                  - pre-rel09-kyma-installer
         website:
           branches:
             master:

@@ -9,7 +9,7 @@ import (
 )
 
 func TestStabilityCheckerReleases(t *testing.T) {
-	for _, currentRelease := range []string{"release-0.6", "release-0.7"} {
+	for _, currentRelease := range []string{"release-0.7"} {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tools/stability-checker/stability-checker-deprecated.yaml")
 			// THEN

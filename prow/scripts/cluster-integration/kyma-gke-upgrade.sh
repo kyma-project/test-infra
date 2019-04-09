@@ -359,11 +359,17 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
     helm install "${UPGRADE_TEST_PATH}" \
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait
+        --wait ${HELM_ARGS} \
+        --set global.domainName="${DOMAIN}"
+
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
         echo "Helm install operation failed: ${prepareResult}"
@@ -393,7 +399,12 @@ function upgradeKyma() {
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
 
+        shout "Update tiller"
+        kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
+
+        shout "Update kyma installer"
         kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
     else
         shout "Build Kyma Installer Docker image"
@@ -443,15 +454,22 @@ function testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}"
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
+    set +o errexit
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
     testEndToEndResult=$?
+
+    echo "Test e2e upgrade logs: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+
     if [ "${testEndToEndResult}" != 0 ]; then
         echo "Helm test operation failed: ${testEndToEndResult}"
         exit "${testEndToEndResult}"
     fi
-
-    echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+    set -o errexit
 }
 
 # Used to detect errors for logging purposes
@@ -469,11 +487,11 @@ createCluster
 
 installKyma
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
 createTestResources
 
 upgradeKyma
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 testKyma
 

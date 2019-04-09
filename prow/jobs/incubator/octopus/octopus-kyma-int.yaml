@@ -2,7 +2,7 @@ job_template: &job_template
   skip_report: true
   always_run: false
   decorate: true
-  path_alias: github.com/kyma-incubator/octopus
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
 
 presubmits:
@@ -20,7 +20,6 @@ presubmits:
         preset-dind-enabled: "true"
         prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
 
-      decorate: true
       extra_refs:
         - org: aszecowka
           repo: test-infra

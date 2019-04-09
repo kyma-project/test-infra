@@ -60,8 +60,8 @@ func TestMonitoringJobPostsubmit(t *testing.T) {
 func TestMonitoringTestSetupReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		// Retaining the behavior for release-0.6 and release-0.7
-		if currentRelease == "release-0.6" || currentRelease == "release-0.7" {
+		// Retaining the behavior for release-0.7
+		if currentRelease == "release-0.7" {
 			t.Run(currentRelease, func(t *testing.T) {
 				jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/monitoring/monitoring.yaml")
 				// THEN

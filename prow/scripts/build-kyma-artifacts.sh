@@ -31,4 +31,6 @@ gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/$
 gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-local.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-local.yaml"
 
+gsutil cp "/home/prow/go/src/github.com/kyma-project/kyma/installation/resources/tiller.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/tiller.yaml"
+
 "${SCRIPT_DIR}"/changelog-generator.sh

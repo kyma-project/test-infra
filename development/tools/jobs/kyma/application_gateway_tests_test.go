@@ -10,7 +10,7 @@ import (
 
 func TestApplicationGatewayTestsReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []string{"release-0.6", "release-0.7", "release-0.8"}
+	unsupportedReleases := []string{"release-0.7", "release-0.8"}
 
 	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
 

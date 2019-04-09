@@ -3,7 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
-> Note: This prow installation is compatible with commit SHA of `b9a576b397892c55487e495721d23b3a52ac9472` of github.com/k8s.io/test-infra repository
+> Note: This prow installation is compatible with commit SHA of `4faaf685958cd79ea5b5a376fadabd8a9d1b4123` of github.com/k8s.io/test-infra repository
 
 ## Prerequisites
 

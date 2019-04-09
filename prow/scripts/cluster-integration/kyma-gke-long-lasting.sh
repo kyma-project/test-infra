@@ -181,6 +181,7 @@ function waitUntilInstallerApiAvailable() {
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
 	date
+
     mkdir letsencrypt
     cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
     docker run  --name certbot \
@@ -196,30 +197,11 @@ function generateAndExportLetsEncryptCert() {
         --server https://acme-v02.api.letsencrypt.org/directory \
         --dns-google-propagation-seconds=600 \
         -d "*.${DOMAIN}"
-	
+
     TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
-	#encrypt the tls cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
-	--ciphertext-file "nightly-gke-tls-integration-app-client-cert.encrypted"
-	
-	#encrypt the private cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem  \
-	--ciphertext-file "nightly-gke-tls-integration-app-client-key.encrypted"
-	#copy the cert
-	gsutil cp nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
-    #copy the private key
-	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
-
-
 }
 
 function installKyma() {
@@ -300,6 +282,7 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
+    kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
     # create a secret with service account used for storing logs
@@ -316,7 +299,8 @@ function installStabilityChecker() {
 	        --set testResultWindowTime="${TEST_RESULT_WINDOW_TIME}" \
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
-	        --name=stability-checker
+	        --name=stability-checker \
+	        --tls
 }
 
 function cleanup() {
@@ -333,7 +317,6 @@ function cleanup() {
 }
 
 function addGithubDexConnector() {
-    shout "Add Github Dex Connector"
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
@@ -345,6 +328,8 @@ shout "Authenticate"
 date
 init
 
+shout "Add Github Dex Connector"
+date
 addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"

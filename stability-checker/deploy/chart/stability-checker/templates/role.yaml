@@ -20,3 +20,7 @@ rules:
 - apiGroups: [""]
   resources: ["pods/log"]
   verbs: ["get"]
+
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]

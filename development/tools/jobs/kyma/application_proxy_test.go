@@ -10,7 +10,7 @@ import (
 
 func TestApplicationProxyReleases(t *testing.T) {
 	// WHEN
-	supportedReleases := []string{"release-0.6", "release-0.7"}
+	supportedReleases := []string{"release-0.7"}
 
 	for _, currentRelease := range supportedReleases {
 		t.Run(currentRelease, func(t *testing.T) {

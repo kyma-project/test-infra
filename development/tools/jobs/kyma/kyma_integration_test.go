@@ -148,6 +148,31 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 		"preset-bot-github-token")
 }
 
+func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-central-connector", "master")
+	require.NotNil(t, actualJob)
+
+	// then
+	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+	assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+	assert.True(t, actualJob.Decorate)
+	assert.False(t, actualJob.SkipReport)
+	assert.Equal(t, 10, actualJob.MaxConcurrency)
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
+		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
+}
+
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
@@ -230,7 +255,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 12)
+	assert.Len(t, periodics, 13)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -255,7 +280,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, clustersCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", clustersCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, clustersCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -clusterNameRegexp='^gke(int|-upgrade|-central)[-](pr|commit|rel)[-].*'"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true -strategy=time"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, clustersCleanerPeriodic.JobBase)
 
 	expName = "orphaned-vms-cleaner"
@@ -283,6 +308,19 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
+
+	expName = "firewall-cleaner"
+	firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, firewallCleanerPeriodic)
+	assert.Equal(t, expName, firewallCleanerPeriodic.Name)
+	assert.True(t, firewallCleanerPeriodic.Decorate)
+	assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
+	tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
+	tester.AssertThatHasExtraRefs(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd", firewallCleanerPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
 
 	expName = "orphaned-dns-cleaner"
 	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
