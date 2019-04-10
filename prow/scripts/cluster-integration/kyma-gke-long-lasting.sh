@@ -177,7 +177,7 @@ function waitUntilInstallerApiAvailable() {
         sleep 3
     done
 }
-function getLetsEncryptCertificate(){
+function getLetsEncryptCertificate() {
 
 	 echo "\nChecking if certificate is already in GCP Bucket."
   
@@ -285,6 +285,7 @@ echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app
     generateAndExportLetsEncryptCert
   gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
   gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
+fi
 }
 
 function installKyma() {
