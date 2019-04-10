@@ -197,30 +197,25 @@ function getLetsEncryptCertificate(){
   --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
 	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
 	
-#decrypt key
-echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-keys.encrypted"
-  gcloud kms decrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
-  --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
-
- 
-    
+	#decrypt key
+	echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-keys.encrypted"
+	gcloud kms decrypt --location global \
+		--keyring "${KYMA_KEYRING}" \
+		--key "${KYMA_ENCRYPTION_KEY}" \
+		--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
+	--plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
     else
     echo -e "Generating Certificates"
     #Generate the certs
     generateAndExportLetsEncryptCert
   fi
-
-
 }
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
 
     mkdir letsencrypt
     cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    else
+    
 	docker run  --name certbot \
         --rm  \
         -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
