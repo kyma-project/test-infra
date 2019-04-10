@@ -178,10 +178,10 @@ function waitUntilInstallerApiAvailable() {
     done
 }
 function getLetsEncryptCertificate() {
-
+local GEN_CERT_COUNT=0
 	 printf "\nChecking if certificate is already in GCP Bucket."
   
- if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
+ if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) && GEN_CERT -lt 2]];
  then
     printf "\nCertificate/privatekey exists in vault. Downloading..."
     mkdir -p ./letsencrypt/live/"${DOMAIN}"
@@ -217,7 +217,7 @@ function getLetsEncryptCertificate() {
 }
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
-
+	
     mkdir letsencrypt
     cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
     
@@ -256,11 +256,10 @@ function generateAndExportLetsEncryptCert() {
     #copy the private key
 	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
 
-    generateAndExportLetsEncryptCert
   gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
   gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
 
-fi
+GEN_CERT_COUNT++
 }
 
 function installKyma() {
