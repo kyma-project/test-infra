@@ -173,13 +173,13 @@ function waitUntilInstallerApiAvailable() {
             exit 1
         fi
 
-        echo "Sleep for 3 seconds"
+        printf "Sleep for 3 seconds"
         sleep 3
     done
 }
 function getLetsEncryptCertificate() {
 
-	 echo "\nChecking if certificate is already in GCP Bucket."
+	 printf "\nChecking if certificate is already in GCP Bucket."
   
  if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
  then
@@ -189,23 +189,28 @@ function getLetsEncryptCertificate() {
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
  #decrypt cert
- printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
+ printf "decrypting nightly-gke-tls-integration-app-client-cert.encrypted"
  sleep 2
     gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
-  --ciphertext-file letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted \
+  --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
 	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
 	
 	#decrypt key
-	echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-keys.encrypted"
+	printf "decrypting nightly-gke-tls-integration-app-client-keys.encrypted"
 	gcloud kms decrypt --location global \
 		--keyring "${KYMA_KEYRING}" \
 		--key "${KYMA_ENCRYPTION_KEY}" \
 		--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
 	--plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
+  
+    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    export TLS_CERT
+    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+    export TLS_KEY
     else
-    echo -e "Generating Certificates"
+    printf "Generating Certificates"
     #Generate the certs
     generateAndExportLetsEncryptCert
   fi
@@ -250,41 +255,11 @@ function generateAndExportLetsEncryptCert() {
 	gsutil cp nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
     #copy the private key
 	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
-	#set max age
- printf "\nChecking if certificate is already in GCP Bucket."
-  
- if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
- then
-    printf "\nCertificate/privatekey exists in vault. Downloading..."
-    mkdir -p ./letsencrypt/live/"${DOMAIN}"
-  #copy the files
-    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
-    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
- #decrypt cert
-printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
- sleep 2
-    gcloud kms decrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-  --ciphertext-file letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted \
-	--plaintext-file letsencrypt/live/${DOMAIN}/fullchain.pem  
-	
-#decrypt key
-printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-keys.encrypted"
-  gcloud kms decrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
-  --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
 
- 
-    
-    else
-    echo -e "Generating Certificates"
-    #Generate the certs
     generateAndExportLetsEncryptCert
   gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
   gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
+
 fi
 }
 
