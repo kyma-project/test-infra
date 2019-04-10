@@ -177,14 +177,51 @@ function waitUntilInstallerApiAvailable() {
         sleep 3
     done
 }
+function getLetsEncryptCertificate(){
 
+	 echo "\nChecking if certificate is already in GCP Bucket."
+  
+ if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
+ then
+    echo -e "\nCertificate/privatekey exists in vault. Downloading..."
+    mkdir -p ./letsencrypt/live/"${DOMAIN}"
+  #copy the files
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
+ #decrypt cert
+ echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted"
+ sleep 2
+    gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+  --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
+	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
+	
+#decrypt key
+echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-keys.encrypted"
+  gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
+  --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
+
+ 
+    
+    else
+    echo -e "Generating Certificates"
+    #Generate the certs
+    generateAndExportLetsEncryptCert
+  fi
+
+
+}
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
-	date
 
     mkdir letsencrypt
     cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
+    else
+	docker run  --name certbot \
         --rm  \
         -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
         certbot/dns-google \
@@ -218,7 +255,41 @@ function generateAndExportLetsEncryptCert() {
 	gsutil cp nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
     #copy the private key
 	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
+	#set max age
+ echo "\nChecking if certificate is already in GCP Bucket."
+  
+ if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
+ then
+    echo -e "\nCertificate/privatekey exists in vault. Downloading..."
+    mkdir -p ./letsencrypt/live/"${DOMAIN}"
+  #copy the files
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
+ #decrypt cert
+ echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted"
+ sleep 2
+    gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+  --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
+	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
+	
+#decrypt key
+echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-keys.encrypted"
+  gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
+  --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
 
+ 
+    
+    else
+    echo -e "Generating Certificates"
+    #Generate the certs
+    generateAndExportLetsEncryptCert
+  gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
+  gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
 }
 
 function installKyma() {
@@ -249,7 +320,8 @@ function installKyma() {
 
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 	export DOMAIN
-    generateAndExportLetsEncryptCert
+	#certs 
+    getLetsEncryptCertificate
 
 	shout "Apply Kyma config"
 	date
