@@ -12,13 +12,17 @@ For safety reasons, the dry-run mode is the default one.
 To run it, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
-    --project={gcloud project name}
+    --project={gcloud project name} \
+    --ipname={gcloud resource name} \
+    --region={gcloud region}
 ```
 
 To turn the dry-run mode off, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
     --project={gcloud project name} \
+    --ipname={gcloud resource name} \
+    --region={gcloud region} \
     --dryRun=false
 ```
 
@@ -30,6 +34,9 @@ See the list of available flags:
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--project**             |   Yes    | GCP project name
 | **--ipname**              |   Yes    | GCP IP resource name
+| **--region**              |   Yes    | GCP region name
+| **--maxAttempts**         |    No    | Maximum number of retries in the backoff, default: 3
+| **--timeout**             |    No    | Timeout in seconds for the initial retry, will increase after this, default: 5
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 
 ### Environment variables

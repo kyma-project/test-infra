@@ -23,7 +23,7 @@ var (
 	name        = flag.String("name", "", "DNS resource name [Required]")
 	address     = flag.String("address", "", "DNS resource's attached IP [Required]")
 	rtype       = flag.String("type", "A", "DNS Type to search for (default: \"A\"")
-	ttl         = flag.Int64("ttl", 300, "TTL of the cluster to search for (default: 300)")
+	ttl         = flag.Int64("ttl", 300, "TTL of the resource to search for (default: 300)")
 	maxAttempts = flag.Uint("attempts", 3, "Maximal number of attempts until scripts stops trying to delete IP (default: 3)")
 	timeout     = flag.Uint("timeout", 5, "Timeout in seconds, will increase over time to reduce API calls (default: 5)")
 	dryRun      = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
