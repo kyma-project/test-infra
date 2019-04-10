@@ -183,18 +183,18 @@ function getLetsEncryptCertificate() {
   
  if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
  then
-    echo -e "\nCertificate/privatekey exists in vault. Downloading..."
+    printf "\nCertificate/privatekey exists in vault. Downloading..."
     mkdir -p ./letsencrypt/live/"${DOMAIN}"
   #copy the files
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
  #decrypt cert
- echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted"
+ printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
  sleep 2
     gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
-  --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
+  --ciphertext-file letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted \
 	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
 	
 	#decrypt key
@@ -251,26 +251,26 @@ function generateAndExportLetsEncryptCert() {
     #copy the private key
 	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
 	#set max age
- echo "\nChecking if certificate is already in GCP Bucket."
+ printf "\nChecking if certificate is already in GCP Bucket."
   
  if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
  then
-    echo -e "\nCertificate/privatekey exists in vault. Downloading..."
+    printf "\nCertificate/privatekey exists in vault. Downloading..."
     mkdir -p ./letsencrypt/live/"${DOMAIN}"
   #copy the files
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
  #decrypt cert
- echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted"
+printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
  sleep 2
     gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
-  --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
-	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
+  --ciphertext-file letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted \
+	--plaintext-file letsencrypt/live/${DOMAIN}/fullchain.pem  
 	
 #decrypt key
-echo -e "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-keys.encrypted"
+printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-keys.encrypted"
   gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
