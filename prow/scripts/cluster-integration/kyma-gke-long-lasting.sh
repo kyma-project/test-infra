@@ -178,33 +178,21 @@ function waitUntilInstallerApiAvailable() {
     done
 }
 function getLetsEncryptCertificate() {
-local GEN_CERT_COUNT=0
-	 printf "\nChecking if certificate is already in GCP Bucket."
-  
- if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) && GEN_CERT -lt 2]];
+
+ printf "\nChecking if certificate is already in GCP Bucket."
+      mkdir -p ./letsencrypt/live/"${DOMAIN}"
+ if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
  then
     printf "\nCertificate/privatekey exists in vault. Downloading..."
-    mkdir -p ./letsencrypt/live/"${DOMAIN}"
+
+    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
   #copy the files
-    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted ./letsencrypt/live/"${DOMAIN}" 
-    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted ./letsencrypt/live/"${DOMAIN}" 
- #decrypt cert
- printf "decrypting nightly-gke-tls-integration-app-client-cert.encrypted"
- sleep 2
-    gcloud kms decrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-  --ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
-	--plaintext-file letsencrypt/live/"${DOMAIN}"/fullchain.pem  
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted "./letsencrypt/live/${DOMAIN}" 
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted "./letsencrypt/live/${DOMAIN}" 
 	
-	#decrypt key
-	printf "decrypting nightly-gke-tls-integration-app-client-keys.encrypted"
-	gcloud kms decrypt --location global \
-		--keyring "${KYMA_KEYRING}" \
-		--key "${KYMA_ENCRYPTION_KEY}" \
-		--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
-	--plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
-  
+ #decrypt key and cert
+	printf "decrypting certs"
+	decryptCerts
     TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
@@ -218,7 +206,6 @@ local GEN_CERT_COUNT=0
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
 	
-    mkdir letsencrypt
     cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
     
 	docker run  --name certbot \
@@ -239,29 +226,50 @@ function generateAndExportLetsEncryptCert() {
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
-	--ciphertext-file "nightly-gke-tls-integration-app-client-cert.encrypted"
+    sleep 2
+	#encrypt the files
+     encryptCert
+	#copy the cert to cloud
+	gsutil cp ./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
+    #copy the private key to cloud
+    gsutil cp ./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
 
-	#encrypt the private cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem  \
-	--ciphertext-file "nightly-gke-tls-integration-app-client-key.encrypted"
-	#copy the cert
-	gsutil cp nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
-    #copy the private key
-	gsutil cp nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
+    gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
+  	gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
 
-  gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
-  gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
-
-GEN_CERT_COUNT++
 }
+function encryptCerts(){
+printf "encrypting nightly-gke-tls-integration-app-client-key.encrypted"
+  gcloud kms encrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--plaintext-file "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+ 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted"
 
+printf "encrypting nightly-gke-tls-integration-app-client-cert.encrypted"
+  	gcloud kms encrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--plaintext-file "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+	--ciphertext-file "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
+}
+function decryptCerts(){
+  printf "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted"
+  local KYMA_KEYRING="kyma-prow"
+  local KYMA_ENCRYPTION_KEY="projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption"
+    gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
+  --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
+
+printf "decrypting letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted"
+   gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
+  --plaintext-file "./letsencrypt/live/${DOMAIN}/fullchain.pem"
+}
 function installKyma() {
 
 	kymaUnsetVar=false
