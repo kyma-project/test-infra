@@ -254,7 +254,7 @@ printf "encrypting nightly-gke-tls-integration-app-client-cert.encrypted"
 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
 }
 function decryptCerts(){
-  printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted"
+  printf "decrypting nightly-gke-tls-integration-app-client-key.encrypted"
   local KYMA_KEYRING="kyma-prow"
   local KYMA_ENCRYPTION_KEY="projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption"
     gcloud kms decrypt --location global \
@@ -263,7 +263,7 @@ function decryptCerts(){
 	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
   --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
 
-printf "decrypting letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
+printf "decrypting nightly-gke-tls-integration-app-client-cert.encrypted"
    gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \

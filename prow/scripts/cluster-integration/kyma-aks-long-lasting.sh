@@ -207,7 +207,28 @@ function addGithubDexConnector() {
     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
+function getLetsEncryptCertificate {
 
+  printf "\nChecking if certificate is already in GCP Bucket."
+      mkdir -p ./letsencrypt/live/"${DOMAIN}"
+ if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
+ then
+    printf "\nCertificate/privatekey exists in vault. Downloading..."
+
+    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+  #copy the files
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted "./letsencrypt/live/${DOMAIN}" 
+    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted "./letsencrypt/live/${DOMAIN}" 
+#decrypt key and cert
+printf "decrypting certs"
+decryptCerts
+    else
+    printf "Generating Certificates"
+    #Generate the certs
+    generateAndExportLetsEncryptCert
+  fi
+
+}
 function generateAndExportLetsEncryptCert() {
 	shout "Generate lets encrypt certificate"
 	date
@@ -228,30 +249,63 @@ function generateAndExportLetsEncryptCert() {
         --dns-google-propagation-seconds=600 \
         -d "*.${DOMAIN}"
 
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+       TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
-     #encrypt the tls cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
-	--ciphertext-file "nightly-aks-tls-integration-app-client-cert.encrypted"
-
+    sleep 2
 	#encrypt the private cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem \
-	--ciphertext-file "nightly-aks-tls-integration-app-client-key.encrypted"
-	#copy the cert
-	gsutil cp nightly-aks-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
-    #copy the private key
-	gsutil cp nightly-aks-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
+    encryptCerts
+
+	#copy the cert to cloud
+	gsutil cp ./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
+    #copy the private key to cloud
+    gsutil cp ./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
+
+    gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
+    gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
+
 
 }
+function decryptCerts(){
+   local DOMAIN="Nightly"
+  local KYMA_KEYRING="kyma-prow"
+  local KYMA_ENCRYPTION_KEY="projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption"
+  printf "nightly-gke-tls-integration-app-client-key.encrypted"
+  local KYMA_KEYRING="kyma-prow"
+  local KYMA_ENCRYPTION_KEY="projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption"
+    gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-key.encrypted \
+  --plaintext-file letsencrypt/live/"${DOMAIN}"/privkey.pem 
 
+printf "decrypting nightly-gke-tls-integration-app-client-cert.encrypted"
+   gcloud kms decrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--ciphertext-file letsencrypt/live/"${DOMAIN}"/nightly-gke-tls-integration-app-client-cert.encrypted \
+  --plaintext-file "./letsencrypt/live/${DOMAIN}/fullchain.pem"
+}
+function encryptCerts(){
+   local DOMAIN="Nightly"
+  local KYMA_KEYRING="kyma-prow"
+  local KYMA_ENCRYPTION_KEY="projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption"
+	
+printf "encrypting nightly-gke-tls-integration-app-client-key.encrypted"
+  gcloud kms encrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--plaintext-file "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+ 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted"
+
+printf "encrypting nightly-gke-tls-integration-app-client-cert.encrypted"
+  	gcloud kms encrypt --location global \
+	--keyring "${KYMA_KEYRING}" \
+	--key "${KYMA_ENCRYPTION_KEY}" \
+	--plaintext-file "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+	--ciphertext-file "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted"
+}
 function setupKubeconfig() {
     shout "Setup kubeconfig and create ClusterRoleBinding"
     date
@@ -389,7 +443,7 @@ createGroup
 installCluster
 
 createPublicIPandDNS
-generateAndExportLetsEncryptCert
+getLetsEncryptCertificate
 
 setupKubeconfig
 installTiller
