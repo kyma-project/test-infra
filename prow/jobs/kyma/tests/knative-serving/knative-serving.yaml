@@ -11,7 +11,7 @@ job_template: &job_template_pre_1_0
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-        securitycontext:
+        securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
@@ -30,7 +30,7 @@ job_template: &job_template
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-        securitycontext:
+        securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
