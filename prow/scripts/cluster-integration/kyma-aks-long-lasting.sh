@@ -258,9 +258,9 @@ function generateAndExportLetsEncryptCert() {
     encryptCerts
 
 	#copy the cert to cloud
-	gsutil cp ./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
+	gsutil cp "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/"
     #copy the private key to cloud
-    gsutil cp ./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
+    gsutil cp "./letsencrypt/live/${DOMAIN}/nightly-gke-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/"
 
     gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted
     gsutil setmeta  -h "Cache-Control:public, max-age=60" gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-client.encrypted
