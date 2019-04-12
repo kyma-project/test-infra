@@ -314,12 +314,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, firewallCleanerPeriodic)
 	assert.Equal(t, expName, firewallCleanerPeriodic.Name)
 	assert.True(t, firewallCleanerPeriodic.Decorate)
-	assert.Equal(t, "45 */1 * * 1-5", firewallCleanerPeriodic.Cron)
+	assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd", firewallCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
 
 	expName = "orphaned-dns-cleaner"
