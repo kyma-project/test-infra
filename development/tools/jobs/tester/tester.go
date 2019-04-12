@@ -87,7 +87,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []string {
-	return []string{"release-0.7", "release-0.8", "release-0.9"}
+	return []string{"release-0.7", "release-0.8", "release-0.9", "release-1.0"}
 }
 
 // GetSupportedReleases filters all available releases by given unsupported ones
