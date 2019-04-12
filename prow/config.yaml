@@ -3,7 +3,7 @@ presets:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west3-b"
+        value: "europe-west3-a"
       - name: CLOUDSDK_COMPUTE_REGION
         value: "europe-west3"
   - labels:
@@ -268,6 +268,11 @@ presets:
           secretKeyRef:
             name: nightly-aks-github-integration-app-client-secret
             key: client-secret
+  - labels:
+      preset-kyma-keyring: "true"
+    env:
+      - name: KYMA_KEYRING
+        value: "kyma-prow"
   - labels:
       preset-kyma-development-artifacts-bucket: "true"
     env:

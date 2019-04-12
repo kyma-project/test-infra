@@ -32,7 +32,7 @@
 /watch-pods/ @suleymanakbas91 @clebs @a-thaler @lilitgh
 
 # The changelog-generator directory
-/changelog-generator/ @akucharska @michal-hudy @pkosiec @mjasinski5 @aerfio @tgorgol @magicmatatjahu
+/changelog-generator/ @akucharska @michal-hudy @pkosiec @aerfio @tgorgol @magicmatatjahu
 
 # All .md files
 *.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc @mmitoraj

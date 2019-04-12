@@ -40,6 +40,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/go-yaml/yaml"
+  packages = ["."]
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
+
+[[projects]]
   name = "github.com/gogo/protobuf"
   packages = [
     "proto",
@@ -335,6 +341,12 @@
   ]
   revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
   version = "v1.3.0"
+
+[[projects]]
+  name = "github.com/vrischmann/envconfig"
+  packages = ["."]
+  revision = "7a443243d539c9595dd8aa7f03a6f68707b80e66"
+  version = "v1.1.0"
 
 [[projects]]
   name = "go.opencensus.io"
@@ -723,8 +735,8 @@
     "util/integer",
     "util/jsonpath"
   ]
-  revision = "7d04d0e2a0a1a4d4a1cd6baa432a2301492e4e65"
-  version = "v8.0.0"
+  revision = "1f13a808da65775f22cbf47862c4e5898d8f4ca1"
+  version = "kubernetes-1.11.2"
 
 [[projects]]
   branch = "master"
@@ -765,6 +777,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9e47942899b004e0340ea08f2e2cd508f03540541c2f6a12e4a932126749809a"
+  inputs-digest = "40592fd623c72a08f4b3c9792609153e5a95ce10cc18c4c9381668e8fe63a974"
   solver-name = "gps-cdcl"
   solver-version = 1

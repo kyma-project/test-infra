@@ -56,6 +56,8 @@ export CLUSTER_SIZE="Standard_DS2_v2"
 export CLUSTER_K8S_VERSION="1.11"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
 
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -200,6 +202,7 @@ function createPublicIPandDNS() {
 
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
+    date
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
@@ -231,25 +234,6 @@ function generateAndExportLetsEncryptCert() {
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
-    #encrypt the tls cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/fullchain.pem  \
-	--ciphertext-file "nightly-aks-tls-integration-app-client-cert.encrypted"
-	
-	#encrypt the private cert
-	gcloud kms encrypt --location global \
-	--keyring "${KYMA_KEYRING}" \
-	--key "${KYMA_ENCRYPTION_KEY}" \
-	--plaintext-file ./letsencrypt/live/"${DOMAIN}"/privkey.pem \
-	--ciphertext-file "nightly-aks-tls-integration-app-client-key.encrypted"
-	#copy the cert
-	gsutil cp nightly-aks-tls-integration-app-client-cert.encrypted gs://kyma-prow-secrets/
-    #copy the private key
-	gsutil cp nightly-aks-tls-integration-app-client-key.encrypted gs://kyma-prow-secrets/
-
-
 }
 
 function setupKubeconfig() {
@@ -312,6 +296,8 @@ function installKyma() {
         | sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
         | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__VERSION__/0.0.1/g" \
         | sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
         | sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
@@ -319,6 +305,9 @@ function installKyma() {
         | kubectl apply -f-
 
     waitUntilInstallerApiAvailable
+
+	shout "Trigger installation"
+	date
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     kubectl label installation/kyma-installation action=install
@@ -349,6 +338,7 @@ function installStabilityChecker() {
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
 	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
+    kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
     # create a secret with service account used for storing logs
@@ -367,7 +357,8 @@ function installStabilityChecker() {
 	        --namespace=kyma-system \
 	        --name=stability-checker \
 	        --wait \
-	        --timeout=600
+	        --timeout=600 \
+	        --tls
 }
 
 
