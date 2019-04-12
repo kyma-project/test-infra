@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-readonly DEVELOPMENT_DIR="$( cd "$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)/../../../../development" && pwd )"
+readonly DEVELOPMENT_DIR="$( cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../../development" && pwd )"
 
 readonly TOOL_DIR=longlastingdnscleaner
 readonly OBJECT_NAME="Long lasting cluster DNS cleaner"
