@@ -19,7 +19,7 @@ import (
 
 var (
 	project     = flag.String("project", "", "Project ID [Required]")
-	zone        = flag.String("zone", "", "Region name [Required]")
+	zone        = flag.String("zone", "", "zone name [Required]")
 	name        = flag.String("name", "", "DNS resource name [Required]")
 	address     = flag.String("address", "", "DNS resource's attached IP [Required]")
 	rtype       = flag.String("type", "A", "DNS Type to search for (default: \"A\"")
