@@ -24,7 +24,7 @@ func TestApplicationBrokerReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.AlwaysRun)
 
 			var imgVer string
-			if tester.HasOneOfSuffixes(currentRelease, "-0.7", "-0.8", "-0.9") {
+			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08, tester.Release09) {
 				imgVer = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
 			} else {
 				imgVer = tester.ImageGolangBuildpack1_11

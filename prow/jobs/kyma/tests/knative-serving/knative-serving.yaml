@@ -3,7 +3,7 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-job_template: &job_template_pre_1_0
+job_template_pre_1_0: &job_template_pre_1_0
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma

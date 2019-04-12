@@ -10,9 +10,7 @@ import (
 
 func TestGCPBrokerProviderReleases(t *testing.T) {
 	// WHEN
-	var unsupportedReleases []string
-
-	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
 			// THEN
