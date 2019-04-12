@@ -81,21 +81,46 @@ const (
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
 )
 
+// SupportedRelease defines supported releases
+type SupportedRelease = string
+
+// List of currently supported releases
+// Please always make it up to date
+// When we removing support for given version, there remove
+// its entry also here.
+const (
+	Release07 SupportedRelease = "release-0.7"
+	Release08 SupportedRelease = "release-0.8"
+	Release09 SupportedRelease = "release-0.9"
+)
+
+// Release allows you to execute checks on given release
+type Release string
+
+// Matches checks if given releases contains the tested one.
+func (s Release) Matches(rel ...SupportedRelease) bool {
+	if contains(rel, SupportedRelease(s)) {
+		return true
+	}
+
+	return false
+}
+
 type jobRunner interface {
 	RunsAgainstChanges([]string) bool
 }
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
-func GetAllKymaReleaseBranches() []string {
-	return []string{"release-0.7", "release-0.8", "release-0.9"}
+func GetAllKymaReleaseBranches() []SupportedRelease {
+	return []SupportedRelease{Release07, Release08, Release09}
 }
 
-// GetSupportedReleases filters all available releases by given unsupported ones
-func GetSupportedReleases(unsupportedReleases []string) []string {
+// GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones
+func GetKymaReleaseBranchesBesides(absentInReleases []SupportedRelease) []string {
 	var supportedReleases []string
 
 	for _, rel := range GetAllKymaReleaseBranches() {
-		if !contains(unsupportedReleases, rel) {
+		if !contains(absentInReleases, rel) {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -103,7 +128,7 @@ func GetSupportedReleases(unsupportedReleases []string) []string {
 	return supportedReleases
 }
 
-func contains(array []string, str string) bool {
+func contains(array []SupportedRelease, str SupportedRelease) bool {
 	for _, e := range array {
 		if str == e {
 			return true
@@ -279,15 +304,4 @@ func AssertThatContainerHasEnvFromSecret(t *testing.T, cont kube.Container, expN
 		}
 	}
 	assert.Fail(t, fmt.Sprintf("Container [%s] does not have environment variable [%s] with value from secret [name: %s, key: %s]", cont.Name, expName, expSecretName, expSecretKey))
-}
-
-// HasOneOfSuffixes checks if a string has one of provided prefixes
-func HasOneOfSuffixes(str string, prefixes ...string) bool {
-	for _, prefix := range prefixes {
-		if strings.HasSuffix(str, prefix) {
-			return true
-		}
-	}
-
-	return false
 }
