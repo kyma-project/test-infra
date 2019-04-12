@@ -66,7 +66,7 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
 
-			if tester.HasOneOfSuffixes(relBranch, "-0.6", "-0.7", "-0.8") {
+			if tester.Release(relBranch).Matches(tester.Release07, tester.Release08) {
 				assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
 			} else {
 				assert.Len(t, p.RequiredStatusChecks.Contexts, 7)

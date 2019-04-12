@@ -9,7 +9,8 @@ import (
 )
 
 func TestWatchPodsReleases(t *testing.T) {
-	for _, currentRelease := range []string{"release-0.8"} {
+	unsupportedReleases := []tester.SupportedRelease{tester.Release07}
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
 			// THEN

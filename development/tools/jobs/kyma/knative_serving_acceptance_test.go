@@ -54,13 +54,21 @@ func TestKnativeServingAcceptanceJobPostsubmit(t *testing.T) {
 
 func TestKnativeServingAcceptanceReleases(t *testing.T) {
 	// WHEN
-	pre10Releases := []string{"release-0.7", "release-0.8", "release-0.9"}
-	for _, currentRelease := range pre10Releases {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml")
 			// THEN
+			var moduleName, execArg string
+			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08, tester.Release09) {
+				moduleName = "kyma-tests-knative-serving-acceptance"
+				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance"
+			} else {
+				moduleName = "kyma-tests-knative-serving"
+				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving"
+			}
+
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-knative-serving-acceptance", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName(moduleName, currentRelease), currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -69,30 +77,9 @@ func TestKnativeServingAcceptanceReleases(t *testing.T) {
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.JobBase.Spec.Containers, 1)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, execArg)
 			assert.Len(t, actualPresubmit.JobBase.Spec.Containers[0].Command, 1)
 			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Command[0], "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh")
-			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Args, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance"})
-		})
-	}
-	for _, currentRelease := range tester.GetSupportedReleases(pre10Releases) {
-		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml")
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-knative-serving", currentRelease), currentRelease)
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
-			assert.True(t, actualPresubmit.AlwaysRun)
-			assert.Len(t, actualPresubmit.JobBase.Spec.Containers, 1)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving")
-			assert.Len(t, actualPresubmit.JobBase.Spec.Containers[0].Command, 1)
-			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Command[0], "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh")
-			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Args, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving"})
 		})
 	}
 }
