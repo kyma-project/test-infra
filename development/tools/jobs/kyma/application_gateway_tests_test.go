@@ -10,9 +10,9 @@ import (
 
 func TestApplicationGatewayTestsReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []string{"release-0.7", "release-0.8"}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release07, tester.Release08}
 
-	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests.yaml")

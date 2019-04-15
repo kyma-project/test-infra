@@ -10,9 +10,9 @@ import (
 
 func TestClusterUsersTestReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []string{"release-0.7"}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release07}
 
-	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/cluster-users-test/cluster-users-test.yaml")
 			// THEN

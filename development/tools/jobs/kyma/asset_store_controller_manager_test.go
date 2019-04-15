@@ -10,9 +10,7 @@ import (
 
 func TestAssetControllerReleases(t *testing.T) {
 	// WHEN
-	var unsupportedReleases []string
-
-	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml")
 			// THEN
@@ -27,7 +25,7 @@ func TestAssetControllerReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.AlwaysRun)
 
 			var args []string
-			if tester.HasOneOfSuffixes(currentRelease, "-0.7", "-0.8") {
+			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08) {
 				args = []string{
 					"/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager",
 				}
