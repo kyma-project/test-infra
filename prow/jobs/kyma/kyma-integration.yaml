@@ -93,7 +93,7 @@ gke_xip_job_template: &gke_xip_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  always_run: "false"
+  always_run: false
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
