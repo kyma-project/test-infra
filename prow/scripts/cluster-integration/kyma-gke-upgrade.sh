@@ -452,10 +452,6 @@ function upgradeKyma() {
 }
 
 function testKyma() {
-    shout "Test Kyma"
-    date
-    "${KYMA_SCRIPTS_DIR}"/testing.sh
-
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
@@ -477,6 +473,10 @@ function testKyma() {
         exit "${testEndToEndResult}"
     fi
     set -o errexit
+
+    shout "Test Kyma"
+    date
+    "${KYMA_SCRIPTS_DIR}"/testing.sh
 }
 
 # Used to detect errors for logging purposes
