@@ -389,6 +389,7 @@ createTestResources() {
 
     echo "Logs for prepare data operation to test e2e upgrade: "
     kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}"
+    if [ "${prepareTestResult}" != 0 ]; then
         echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
         exit "${prepareTestResult}"
     fi
