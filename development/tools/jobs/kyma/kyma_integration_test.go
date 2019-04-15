@@ -164,10 +164,10 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
-	tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
+		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 		"preset-bot-github-token")
-
 }
 
 func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
