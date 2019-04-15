@@ -5,13 +5,13 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 discoverUnsetVar=false
 
 for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SAP_SLACK_BOT_TOKEN LT_TIMEOUT LT_REQS_PER_ROUTINE LOAD_TEST_SLACK_CLIENT_CHANNEL_ID; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
+	if [ -z "${!var}" ] ; then
+		echo "ERROR: $var is not set"
+		discoverUnsetVar=true
+	fi
 done
 if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
+	exit 1
 fi
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -42,27 +42,27 @@ export CURRENT_TIMESTAMP
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function waitUntilHPATestIsDone {
-    local succeeded='false'
-    while true; do
-        hpa_test_status=$(kubectl get po -n kyma-system load-test -ojsonpath="{.status.phase}")
-        if [ "${hpa_test_status}" != "Running" ]; then
-            if [ "${hpa_test_status}" == "Succeeded" ]; then
-                succeeded='true'
-            fi
-            break
-        fi
-        sleep 5
-        echo "HPA tests are in progress..."
-    done
+	local succeeded='false'
+	while true; do
+		hpa_test_status=$(kubectl get po -n kyma-system load-test -ojsonpath="{.status.phase}")
+		if [ "${hpa_test_status}" != "Running" ]; then
+			if [ "${hpa_test_status}" == "Succeeded" ]; then
+				succeeded='true'
+			fi
+			break
+		fi
+		sleep 5
+		echo "HPA tests are in progress..."
+	done
 
-    if [ $succeeded == 'true' ]; then
-        shout "Load test successfully completed!"
-    else
-        kubectl describe pod load-test -n kyma-system
-        shout "Load test failed!"
-        shout "Please check logs by executing: kubectl logs -n kyma-system load-test"
-        exit 1
-    fi
+	if [ $succeeded == 'true' ]; then
+		shout "Load test successfully completed!"
+	else
+		kubectl describe pod load-test -n kyma-system
+		shout "Load test failed!"
+		shout "Please check logs by executing: kubectl logs -n kyma-system load-test"
+		exit 1
+	fi
 }
 
 function installLoadTest() {
@@ -81,7 +81,7 @@ function installLoadTest() {
 				--name=load-test \
 				--timeout=700 \
 				--wait \
-                --tls
+				--tls
 
 	waitUntilHPATestIsDone
 	
