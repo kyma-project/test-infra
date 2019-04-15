@@ -92,7 +92,7 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel10-kyma-tests-knative-serving-acceptance
+    - name: pre-rel10-kyma-tests-knative-serving
       branches:
         - release-1.0
       <<: *job_template
