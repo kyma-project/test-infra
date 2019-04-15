@@ -134,7 +134,7 @@ func TestKymaGKEXipJobPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
-	assert.False(t, actualPresubmit.AlwaysRun)
+	assert.False(t, actualJob.AlwaysRun)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
