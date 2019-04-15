@@ -62,7 +62,7 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
-  - name: pre-rel09-kyma-installer
+  - name: pre-rel10-kyma-installer
     branches:
       - release-1.0
     <<: *job_template
