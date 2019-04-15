@@ -80,7 +80,8 @@ function installLoadTest() {
 				--namespace=kyma-system \
 				--name=load-test \
 				--timeout=700 \
-				--wait 
+				--wait \
+                --tls
 
 	waitUntilHPATestIsDone
 	
