@@ -302,6 +302,7 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: master
     trigger: "/test pre-master-kyma-xip-integration"
+    rerun_command: "/retest pre-master-kyma-xip-integration"
 
 postsubmits:
   kyma-project/kyma:
