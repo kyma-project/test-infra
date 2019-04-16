@@ -95,7 +95,7 @@ presubmits: # runs on PRs
     - name: pre-rel10-kyma-components-application-broker
       branches:
         - release-1.0
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
