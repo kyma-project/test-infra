@@ -41,6 +41,9 @@ function installKyma() {
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
+	MINIO_PERSISTENCE_ENABLED="true"
+	MINIO_GCS_GATEWAY_ENABLED="false"
+
 	# shellcheck disable=SC1090
     source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
@@ -58,6 +61,8 @@ function installKyma() {
 		| sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
 		| sed -e "s/__VERSION__/0.0.1/g" \
 		| sed -e "s/__.*__//g" \
+		| sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
+		| sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
 		| kubectl apply -f-
 
 	waitUntilInstallerApiAvailable

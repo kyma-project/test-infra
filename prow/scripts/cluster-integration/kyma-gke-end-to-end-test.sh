@@ -111,6 +111,11 @@ removeCluster() {
 }
 
 function cleanup() {
+    if [[ "$MINIO_GCS_GATEWAY_ENABLED" == "true" ]]; then
+        shout "Cleanup assetstore content"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-assetstore-content.sh"
+    fi
+
     OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
@@ -214,6 +219,10 @@ export DOMAIN
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+MINIO_PERSISTENCE_ENABLED="true"
+MINIO_GCS_GATEWAY_ENABLED="false"
+MINIO_GCS_GATEWAY_GCS_KEY_SECRET="assetstore-gcs-credentials"
+MINIO_GCS_GATEWAY_PROJECT_ID="kyma-project"
 
 shout "Apply Kyma config"
 date
@@ -237,7 +246,20 @@ shout "Manual concatenating yamls"
 | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
 | sed -e "s/__VERSION__/0.0.1/g" \
 | sed -e "s/__.*__//g" \
+| sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
+| sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
+| sed -e "s/__MINIO_GCS_GATEWAY_GCS_KEY_SECRET__/${MINIO_GCS_GATEWAY_GCS_KEY_SECRET}/g" \
+| sed -e "s/__MINIO_GCS_GATEWAY_PROJECT_ID__/${MINIO_GCS_GATEWAY_PROJECT_ID}/g" \
 | kubectl apply -f-
+
+if [[ "$MINIO_GCS_GATEWAY_ENABLED" == "true" ]]; then
+    shout "Create kyma-system namespace"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-kyma-system-namespace.sh"
+
+    shout "Create assetstore secret for credentials"
+    # shellcheck disable=SC1090
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-assetstore-gcs-credentials.sh"
+fi
 
 shout "Trigger installation"
 date

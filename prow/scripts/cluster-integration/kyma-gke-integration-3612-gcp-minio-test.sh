@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#This script will be used to test switching minio to gateway mode (#3612)
 #Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
 #
 #
@@ -263,8 +264,8 @@ export DOMAIN
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-MINIO_PERSISTENCE_ENABLED="true"
-MINIO_GCS_GATEWAY_ENABLED="false"
+MINIO_PERSISTENCE_ENABLED="false"
+MINIO_GCS_GATEWAY_ENABLED="true"
 MINIO_GCS_GATEWAY_GCS_KEY_SECRET="assetstore-gcs-credentials"
 MINIO_GCS_GATEWAY_PROJECT_ID="kyma-project"
 
@@ -308,8 +309,6 @@ else
     | sed -e "s/__.*__//g" \
     | sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
     | sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
-    | sed -e "s/__MINIO_GCS_GATEWAY_GCS_KEY_SECRET__/${MINIO_GCS_GATEWAY_GCS_KEY_SECRET}/g" \
-    | sed -e "s/__MINIO_GCS_GATEWAY_PROJECT_ID__/${MINIO_GCS_GATEWAY_PROJECT_ID}/g" \
     | kubectl apply -f-
 fi
 
