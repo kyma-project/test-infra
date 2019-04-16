@@ -8,14 +8,14 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-// DNSAPIWrapper abstracts GCP DNS Service API
-type DNSAPIWrapper struct {
+// dnsAPIWrapper abstracts GCP DNS Service API
+type dnsAPIWrapper struct {
 	Context context.Context
 	Service *dns.Service
 }
 
 // LookupDNSEntry delegates to DNS.Service.ResourceRecordSets.List(project, zone, name, address, recordType, recordTTL) function
-func (daw *DNSAPIWrapper) LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, bool, error) {
+func (daw *dnsAPIWrapper) LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, bool, error) {
 	listResp, listErr := daw.Service.ResourceRecordSets.List(project, zone).Name(name).Do()
 	if listErr != nil {
 		return nil, false, listErr
@@ -38,7 +38,7 @@ func (daw *DNSAPIWrapper) LookupDNSEntry(project, zone, name, address, recordTyp
 }
 
 // RemoveDNSEntry delegates to DNS.Service.Changes.Create(project, zone, *record) function
-func (daw *DNSAPIWrapper) RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) (bool, error) {
+func (daw *dnsAPIWrapper) RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) (bool, error) {
 	proposedChange := &dns.Change{}
 	proposedChange.Deletions = append(proposedChange.Deletions, record)
 

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/longlastingipcleaner/automock"
+	"github.com/kyma-project/test-infra/development/tools/pkg/ipcleaner/automock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +16,7 @@ var (
 	testRegion              = "testRegion"
 )
 
-func TestIPRemover(t *testing.T) {
+func TestNew(t *testing.T) {
 	t.Run("Should delete IP", func(t *testing.T) {
 		mockAddressAPI := &automock.ComputeAPI{}
 		defer mockAddressAPI.AssertExpectations(t)
@@ -25,8 +25,8 @@ func TestIPRemover(t *testing.T) {
 		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(false, nil)
 
 		//When
-		ipr := NewIPRemover(mockAddressAPI)
-		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName, 5, 20, true)
+		ipr := New(mockAddressAPI, 5, 20, true)
+		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName)
 
 		//Then
 		mockAddressAPI.AssertCalled(t, "RemoveIP", testProject, testRegion, shouldDeleteIPByName)
@@ -43,8 +43,8 @@ func TestIPRemover(t *testing.T) {
 		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldNotDeleteIPByName).Return(false, errors.New("testError"))
 
 		//When
-		ipr := NewIPRemover(mockAddressAPI)
-		success, err := ipr.Run(testProject, testRegion, shouldNotDeleteIPByName, 5, 20, true)
+		ipr := New(mockAddressAPI, 5, 20, true)
+		success, err := ipr.Run(testProject, testRegion, shouldNotDeleteIPByName)
 
 		//Then
 		mockAddressAPI.AssertNumberOfCalls(t, "RemoveIP", 1)
@@ -60,8 +60,8 @@ func TestIPRemover(t *testing.T) {
 		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldNotDeleteIPByName).Return(true, errors.New("testError")).Times(3)
 
 		//When
-		ipr := NewIPRemover(mockAddressAPI)
-		success, err := ipr.Run(testProject, testRegion, shouldNotDeleteIPByName, 3, 2, true)
+		ipr := New(mockAddressAPI, 3, 2, true)
+		success, err := ipr.Run(testProject, testRegion, shouldNotDeleteIPByName)
 
 		//Then
 		mockAddressAPI.AssertNumberOfCalls(t, "RemoveIP", 3)
@@ -78,8 +78,8 @@ func TestIPRemover(t *testing.T) {
 		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(false, nil)
 
 		//When
-		ipr := NewIPRemover(mockAddressAPI)
-		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName, 3, 2, true)
+		ipr := New(mockAddressAPI, 3, 2, true)
+		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName)
 
 		//Then
 		mockAddressAPI.AssertNumberOfCalls(t, "RemoveIP", 3)
@@ -92,8 +92,8 @@ func TestIPRemover(t *testing.T) {
 		defer mockAddressAPI.AssertExpectations(t)
 
 		//When
-		ipr := NewIPRemover(mockAddressAPI)
-		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName, 3, 2, false)
+		ipr := New(mockAddressAPI, 3, 2, false)
+		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName)
 
 		//Then
 		mockAddressAPI.AssertNumberOfCalls(t, "RemoveIP", 0)

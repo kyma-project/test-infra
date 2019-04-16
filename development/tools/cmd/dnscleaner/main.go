@@ -71,7 +71,7 @@ func main() {
 
 	dnsAPI := &dnscleaner.DNSAPIWrapper{Context: ctx, Service: dnsSvc}
 
-	der := dnscleaner.NewDNSEntryRemover(dnsAPI)
+	der := dnscleaner.New(dnsAPI)
 
 	success, err := der.Run(*project, *zone, *name, *address, *rtype, *ttl, *maxAttempts, *timeout, !(*dryRun))
 

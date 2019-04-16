@@ -13,16 +13,18 @@ To run it, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
     --project={gcloud project name} \
-    --ipname={gcloud resource name} \
-    --region={gcloud region}
+    --zone={gcloud zone} \
+    --name={resource name} \
+    --address={address of the resource}
 ```
 
 To turn the dry-run mode off, use:
 ```bash
 env GOOGLE_APPLICATION_CREDENTIALS={path to service account file} go run main.go \
     --project={gcloud project name} \
-    --ipname={gcloud resource name} \
-    --region={gcloud region} \
+    --zone={gcloud zone} \
+    --name={resource name} \
+    --address={address of the resource} \
     --dryRun=false
 ```
 
@@ -33,10 +35,13 @@ See the list of available flags:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--project**             |   Yes    | GCP project name
-| **--ipname**              |   Yes    | GCP IP resource name
-| **--region**              |   Yes    | GCP region name
+| **--zone**                |   Yes    | GCP zone name
+| **--name**                |   Yes    | GCP DNS resource name
+| **--address**             |   Yes    | GCP resource's attached IP
+| **--rtype**               |    No    | DNS Record Type to search for, default: A
+| **--ttl**                 |    No    | TTL of the resource, default: 300
 | **--maxAttempts**         |    No    | Maximum number of retries in the backoff, default: 3
-| **--timeout**             |    No    | Timeout in seconds for the initial retry, will increase after this, default: 5
+| **--backoff**             |    No    | Initial backoff in seconds for the first retry, will increase after this, default: 5
 | **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
 
 ### Environment variables

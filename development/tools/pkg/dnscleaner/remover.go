@@ -16,26 +16,30 @@ type DNSAPI interface {
 	LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, bool, error)
 }
 
-// DNSEntryRemover deletes IPs provisioned by gke-long-lasting prow jobs.
-type DNSEntryRemover struct {
-	dnsAPI DNSAPI
+// dnsEntryRemover deletes IPs provisioned by gke-long-lasting prow jobs.
+type dnsEntryRemover struct {
+	dnsAPI      DNSAPI
+	maxAttempts uint
+	backoff     uint
+	makeChanges bool
 }
 
-// NewDNSEntryRemover returns a new instance of DNSEntryRemover
-func NewDNSEntryRemover(dnsAPI DNSAPI) *DNSEntryRemover {
-	return &DNSEntryRemover{dnsAPI}
-}
-
-// Run executes dns removal process for specified dns record-set
-func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64, maxAttempts, timeout uint, makeChanges bool) (bool, error) {
-	common.Shout("Trying to retrieve DNS entry with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
-
-	var getErr error
-	var recordSet *dns.ResourceRecordSet
-	attempts := uint(0)
+// New returns a new instance of dnsEntryRemover
+func New(dnsAPI DNSAPI, maxAttempts, backoff uint, makeChanges bool) *dnsEntryRemover {
 	if maxAttempts < 1 {
 		maxAttempts = 1
 	}
+	return &dnsEntryRemover{dnsAPI, maxAttempts, backoff, makeChanges}
+}
+
+// Run executes dns removal process for specified dns record-set
+func (der *dnsEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) (bool, error) {
+	common.Shout("Trying to retrieve DNS entry with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
+
+	attempts := uint(0)
+	backoff := der.backoff
+	var getErr error
+	var recordSet *dns.ResourceRecordSet
 	for {
 		entry, retryable, lookupErr := der.dnsAPI.LookupDNSEntry(project, zone, dnsName, dnsAddress, recordType, recordTTL)
 		if entry != nil {
@@ -43,9 +47,9 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 			break
 		}
 		attempts = attempts + 1
-		if attempts < maxAttempts && retryable {
-			time.Sleep(time.Duration(timeout) * time.Second)
-			timeout = timeout * 2
+		if attempts < der.maxAttempts && retryable {
+			time.Sleep(time.Duration(backoff) * time.Second)
+			backoff = backoff * 2
 		} else {
 			getErr = lookupErr
 			break
@@ -58,23 +62,21 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 	common.Shout("Trying to delete DNS retrieved record set with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
 
 	var msgPrefix string
-	if !makeChanges {
+	if !der.makeChanges {
 		msgPrefix = "[DRY RUN] "
 	}
 
 	var delErr error
 	succeeded := true
+	backoff = der.backoff
 	attempts = uint(0)
-	if maxAttempts < 1 {
-		maxAttempts = 1
-	}
-	if makeChanges {
+	if der.makeChanges {
 		for {
 			retryable, removalErr := der.dnsAPI.RemoveDNSEntry(project, zone, recordSet)
 			attempts = attempts + 1
-			if attempts < maxAttempts && retryable {
-				time.Sleep(time.Duration(timeout) * time.Second)
-				timeout = timeout * 2
+			if attempts < der.maxAttempts && retryable {
+				time.Sleep(time.Duration(backoff) * time.Second)
+				backoff = backoff * 2
 			} else {
 				delErr = removalErr
 				break
