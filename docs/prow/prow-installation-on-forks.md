@@ -33,7 +33,7 @@ This instruction provides the steps required to deploy your own Prow on a forked
    gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
    ```
 
-## Provision a Prow main cluster
+## Provision a main Prow cluster
 
 1. Export these variables:
 
@@ -85,7 +85,7 @@ For the purpose of the installation, you must have a set of service accounts and
  - **sa-kyma-artifacts** service account with the role that allows the account to store objects in a bucket.
  - **sa-kyma-backup-restore** service account with the role that allows the account to store objects in the bucket used for backup and restore tests.
 
-3. Create a Secret for the workload cluster in the Prow main cluster:
+3. Create a Secret for the workload cluster in the main Prow cluster:
 
     ```bash
         export PROJECT={project-name}

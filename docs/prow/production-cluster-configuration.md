@@ -76,17 +76,17 @@ Use the following tools and configuration:
     export GOPATH=$GOPATH ### Ensure GOPATH is set
   ```
 where: 
-   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets
-   - **KEYRING_NAME** is the KMS key ring
-   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption
+   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
+   - **KEYRING_NAME** is the KMS key ring.
+   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
-5. Run the following script to create a Kubernetes Secret resource in the Prow main cluster. This way the Prow main cluster can access the workload cluster:
+5. Run the following script to create a Kubernetes Secret resource in the main Prow cluster. This way the main Prow cluster can access the workload cluster:
 
   ```bash
     ./create-secrets-for-workload-cluster.sh
   ```
 
->**NOTE:** Create the workload cluster first and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow main cluster.
+>**NOTE:** Create the workload cluster first and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the main Prow cluster.
 
 6. Run the following script to start the installation process:
 

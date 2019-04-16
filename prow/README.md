@@ -47,11 +47,11 @@ Its structure looks as follows:
   ├── images                # Images for ProwJobs
   ├── jobs                  # Files with job definitions
   ├── scripts               # Scripts used by the test jobs
-  ├── config.yaml           # The main Prow configuration, without job definitions. For example, it contains Plank configuration and Preset definitions.
-  ├── install-prow.sh       # The script for the production cluster installation
+  ├── config.yaml           # The main Prow configuration without job definitions. For example, it contains Plank configuration and Preset definitions.
+  ├── install-prow.sh       # The script which installs the production cluster
   └── plugins.yaml          # The file with Prow plugins configuration
-  └── create-secrets-for-workload-cluster.sh  # The script for creating a Secret in the Prow cluster, used to access the workload cluster
-  └── set-up-workload-cluster.sh  # The script for preparing the workload cluster to be used by the Prow cluster
+  └── create-secrets-for-workload-cluster.sh  # The script which creates a Secret in the Prow cluster, used to access the workload cluster
+  └── set-up-workload-cluster.sh  # The script which prepares the workload cluster to be used by the Prow cluster
 ```
 
 ## Installation
