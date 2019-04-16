@@ -3,7 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
->**NOTE**: This prow installation is compatible with the [`4faaf685958cd79ea5b5a376fadabd8a9d1b4123`](https://github.com/kubernetes/test-infra/commit/4faaf685958cd79ea5b5a376fadabd8a9d1b4123) commit in the `kubernetes/test-infra` repository.
+>**NOTE**: This prow installation is compatible with the [`4faaf685958cd79ea5b5a376fadabd8a9d1b4123`](https://github.com/kubernetes/test-infra/commit/4faaf685958cd79ea5b5a376fadabd8a9d1b4123) revision in the `kubernetes/test-infra` repository.
 
 ## Prerequisites
 
@@ -76,9 +76,9 @@ Use the following tools and configuration:
     export GOPATH=$GOPATH ### Ensure GOPATH is set
   ```
 where: 
-   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
-   - **KEYRING_NAME** is the KMS key ring.
-   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
+   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets
+   - **KEYRING_NAME** is the KMS key ring
+   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption
 
 5. Run the following script to create a Kubernetes Secret resource in the Prow main cluster. This way the Prow main cluster can access the workload cluster:
 
@@ -96,13 +96,13 @@ where:
 
    The installation script performs the following steps to install Prow:
 
-   - Deploys the NGINX Ingress Controller.
-   - Creates a ClusterRoleBinding.
-   - Deploys Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
-   - Deploys the Cert Manager.
-   - Deploys secure Ingress.
-   - Deploys the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md).
-   - Removse insecure Ingress.
+   - Deploys the NGINX Ingress Controller
+   - Creates a ClusterRoleBinding
+   - Deploys Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision
+   - Deploys the Cert Manager
+   - Deploys secure Ingress
+   - Deploys the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md)
+   - Removes insecure Ingress
 
 7. Verify the installation.
 
