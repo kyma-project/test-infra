@@ -58,3 +58,13 @@ presubmits: # runs on PRs
         base_ref: release-0.9
     labels:
       <<: *job_labels_template
+  - name: pre-rel10-kyma-artifacts
+    branches:
+      - release-1.0
+    <<: *job_template
+    always_run: false
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.0
+    labels:
+      <<: *job_labels_template

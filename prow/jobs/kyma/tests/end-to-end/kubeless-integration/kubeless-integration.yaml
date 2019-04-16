@@ -96,6 +96,18 @@ presubmits: # runs on PRs
         <<: *job_labels_template
         preset-build-release: "true"
 
+    - name: pre-rel10-kyma-tests-kubeless-integration
+      branches:
+        - release-1.0
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.0
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tests-end-to-end-kubeless-integration
