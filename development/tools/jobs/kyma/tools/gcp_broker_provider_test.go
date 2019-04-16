@@ -10,9 +10,7 @@ import (
 
 func TestGCPBrokerProviderReleases(t *testing.T) {
 	// WHEN
-	var unsupportedReleases []string
-
-	for _, currentRelease := range tester.GetSupportedReleases(unsupportedReleases) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")
 			// THEN
@@ -39,7 +37,7 @@ func TestGCPBrokerProviderJobsPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 4)
+	assert.Len(t, kymaPresubmits, 5)
 
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-kyma-tools-gcp-broker-provider"

@@ -88,6 +88,27 @@ gke_central_job_template: &gke_central_job_template
           memory: 200Mi
           cpu: 80m
 
+gke_xip_job_template: &gke_xip_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  always_run: false
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_labels_template: &gke_job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
@@ -140,6 +161,17 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.9
+
+  - name: pre-rel10-kyma-integration
+    branches:
+      - release-1.0
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.0
 
   - name: pre-master-kyma-gke-integration
     branches:
@@ -195,6 +227,20 @@ presubmits: # runs on PRs
         path_alias: github.com/kyma-project/test-infra
         base_ref: release-0.9
 
+  - name: pre-rel10-kyma-gke-integration
+    branches:
+      - release-1.0
+    <<: *gke_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: release-1.0
+
   - name: pre-master-kyma-gke-upgrade
     branches:
     - master
@@ -245,6 +291,18 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.9
+  - name: pre-rel10-kyma-gke-upgrade
+    branches:
+      - release-1.0
+    <<: *gke_upgrade_job_template
+    always_run: false
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.0
 
   - name: pre-master-kyma-gke-central-connector
     branches:
@@ -269,6 +327,29 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.9
+        
+  - name: pre-master-kyma-xip-integration
+    branches:
+       - master
+    <<: *gke_xip_job_template
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+
+  - name: pre-rel10-kyma-gke-central-connector
+    branches:
+      - release-1.0
+    <<: *gke_central_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.0
 
 postsubmits:
   kyma-project/kyma:
@@ -369,7 +450,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true -strategy=time"
+      - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -strategy=time"
       resources:
         requests:
           memory: 1Gi
@@ -417,7 +498,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: firewall-cleaner
-  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+  cron: "45 */1 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -432,7 +513,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+      - "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"
       resources:
         requests:
           memory: 1Gi

@@ -1,6 +1,6 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^instances/"
+  run_if_changed: "(^instances/)|(^components/react/)"
   decorate: true
   path_alias: github.com/kyma-project/console
   max_concurrency: 10
