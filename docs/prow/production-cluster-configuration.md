@@ -3,7 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
->**NOTE**: This prow installation is compatible with the [`4faaf685958cd79ea5b5a376fadabd8a9d1b4123`](https://github.com/kubernetes/test-infra/commit/4faaf685958cd79ea5b5a376fadabd8a9d1b4123) revision in the `kubernetes/test-infra` repository.
+>**NOTE**: This Prow installation is compatible with the [`4faaf685958cd79ea5b5a376fadabd8a9d1b4123`](https://github.com/kubernetes/test-infra/commit/4faaf685958cd79ea5b5a376fadabd8a9d1b4123) revision in the `kubernetes/test-infra` repository.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ Use the following tools and configuration:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
-- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-prow-main-cluster)
+- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-main-prow-cluster)
 - Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
