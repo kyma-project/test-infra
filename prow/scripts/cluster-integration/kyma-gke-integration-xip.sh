@@ -182,7 +182,6 @@ ERROR_LOGGING_GUARD="true"
 shout "Authenticate"
 date
 init
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 if [[ "$BUILD_TYPE" != "release" ]]; then
     shout "Build Kyma-Installer Docker image"
@@ -229,10 +228,7 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
 
     kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 
-    sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-integration/downloaded-config.yaml \
-        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+    sed -e "s/__SKIP_SSL_VERIFY__/true/g"  /tmp/kyma-gke-integration/downloaded-config.yaml \
         | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
         | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__.*__//g" \
@@ -241,9 +237,6 @@ else
     echo "Manual concatenating yamls"
     "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
     | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
     | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
     | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
