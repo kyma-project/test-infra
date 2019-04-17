@@ -152,7 +152,7 @@ func TestKymaGKEXipUpgradeJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "gke_xip_upgrade_job_templat", "master")
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-xip-gke-upgrade", "master")
 	require.NotNil(t, actualJob)
 
 	// then
