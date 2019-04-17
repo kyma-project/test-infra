@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
  printf "\nChecking if certificate is already in GCP Bucket."
       mkdir -p ./letsencrypt/live/"${DOMAIN}"
  if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
