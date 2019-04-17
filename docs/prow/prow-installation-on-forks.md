@@ -2,16 +2,16 @@
 
 This instruction provides the steps required to deploy your own Prow on a forked repository for test and development purposes.
 
-> **NOTE:** The following instructions assume that you are signed in to the Google Cloud project with administrative rights and that you have the `$GOPATH` already set.
-
 ## Prerequisites
 
-Install the following tools:
+1. Install the following tools:
 
 - Kubernetes 1.10+ on Google Kubernetes Engine (GKE)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - OpenSSL
+
+2. Sign in to the Google Cloud project with administrative rights and make sure you have set the `$GOPATH`.
 
 ## Provision a workload cluster
 1. Export these variables:
@@ -21,7 +21,7 @@ Install the following tools:
    export WORKLOAD_CLUSTER_NAME={workload-cluster-name}
    export ZONE={zone-name}
    ```
-2. When you communicate for the first time with Google Cloud, set the context to your Google Cloud project. Run this command:
+2. When you communicate for the first time with the Google Cloud, set the context to your Google Cloud project. Run this command:
 
    ```
    gcloud config set project $PROJECT
@@ -33,7 +33,7 @@ Install the following tools:
    gcloud container clusters get-credentials $WORKLOAD_CLUSTER_NAME --zone=$ZONE --project=$PROJECT
    ```
 
-## Provision a Prow main cluster
+## Provision a main Prow cluster
 
 1. Export these variables:
 
@@ -85,7 +85,7 @@ For the purpose of the installation, you must have a set of service accounts and
  - **sa-kyma-artifacts** service account with the role that allows the account to store objects in a bucket.
  - **sa-kyma-backup-restore** service account with the role that allows the account to store objects in the bucket used for backup and restore tests.
 
-3. Create a Secret for the workload cluster in the Prow main Cluster:
+3. Create a Secret for the workload cluster in the main Prow cluster:
 
     ```bash
         export PROJECT={project-name}

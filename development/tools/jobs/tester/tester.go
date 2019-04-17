@@ -92,6 +92,7 @@ const (
 	Release07 SupportedRelease = "release-0.7"
 	Release08 SupportedRelease = "release-0.8"
 	Release09 SupportedRelease = "release-0.9"
+	Release10 SupportedRelease = "release-1.0"
 )
 
 // Release allows you to execute checks on given release
@@ -112,7 +113,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []SupportedRelease {
-	return []SupportedRelease{Release07, Release08, Release09}
+	return []SupportedRelease{Release07, Release08, Release09, Release10}
 }
 
 // GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones

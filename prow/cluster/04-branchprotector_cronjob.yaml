@@ -24,6 +24,8 @@ spec:
                 - --job-config-path=/etc/job-config
                 - --github-token-path=/etc/github/oauth
                 - --confirm
+                - --github-endpoint=http://ghproxy
+                - --github-endpoint=https://api.github.com
               volumeMounts:
                 - name: oauth
                   mountPath: /etc/github

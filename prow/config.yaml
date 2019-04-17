@@ -332,6 +332,16 @@ branch-protection:
                   - pre-rel09-kyma-gke-central-connector
                   - pre-rel09-kyma-artifacts
                   - pre-rel09-kyma-installer
+            release-1.0:
+              protect: true
+              required_status_checks:
+                contexts:
+                  - pre-rel10-kyma-integration
+                  - pre-rel10-kyma-gke-integration
+                  - pre-rel10-kyma-gke-upgrade
+                  - pre-rel10-kyma-gke-central-connector
+                  - pre-rel10-kyma-artifacts
+                  - pre-rel10-kyma-installer
         website:
           branches:
             master:

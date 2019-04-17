@@ -144,6 +144,8 @@ spec:
           args:
             - --dry-run=false
             - --job-config-path=/etc/job-config
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
           ports:
             - name: http
               containerPort: 8888
@@ -216,6 +218,8 @@ spec:
             - --dry-run=false
             - --job-config-path=/etc/job-config
             - --build-cluster=/etc/cluster/cluster.yaml
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
           volumeMounts:
             - name: oauth
               mountPath: /etc/github
@@ -431,6 +435,8 @@ spec:
           args:
             - --dry-run=false
             - --job-config-path=/etc/job-config
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
           ports:
             - name: http
               containerPort: 8888

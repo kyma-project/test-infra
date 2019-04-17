@@ -53,11 +53,17 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/ngin
 # Create secrets
 go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_CLUSTER_DIR}/required-secrets.yaml"
 
-# Deploy Prow
-kubectl apply -f cluster/starter.yaml
-
 # Create ConfigMap with Kyma images for deck
 kubectl create configmap branding --from-file "${CURRENT_DIR}/branding"
+
+# Deploy GCE SSD StorageClass
+kubectl apply -f cluster/09-gce-ssd-retain_storageclass.yaml
+
+# Deploy ghProxy
+kubectl apply -f cluster/10-ghproxy.yaml
+
+# Deploy Prow
+kubectl apply -f cluster/starter.yaml
 
 # Enable https redirection on deck
 kubectl patch deployment deck --patch "$(cat cluster/00-deck-patch.yaml)"
