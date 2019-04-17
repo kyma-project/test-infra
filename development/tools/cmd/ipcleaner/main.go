@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	ipcleaner "github.com/kyma-project/test-infra/development/tools/pkg/longlastingipcleaner"
+	"github.com/kyma-project/test-infra/development/tools/pkg/ipcleaner"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
@@ -22,7 +22,7 @@ var (
 	ipName      = flag.String("ipname", "", "IP resource name [Required]")
 	region      = flag.String("region", "", "Region name [Required]")
 	maxAttempts = flag.Uint("attempts", 3, "Maximal number of attempts until scripts stops trying to delete IP (default: 3)")
-	timeout     = flag.Uint("timeout", 5, "Timeout in seconds, will increase over time to reduce API calls (default: 5)")
+	backoff     = flag.Uint("backoff", 5, "Initial backoff in seconds for the first retry, will increase after this (default: 5)")
 	dryRun      = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 )
 
@@ -62,9 +62,9 @@ func main() {
 
 	computeAPI := &ipcleaner.ComputeAPIWrapper{Context: ctx, Service: computeSvc}
 
-	ipr := ipcleaner.NewIPRemover(computeAPI)
+	ipr := ipcleaner.New(computeAPI, *maxAttempts, *backoff, !(*dryRun))
 
-	success, err := ipr.Run(*project, *region, *ipName, *maxAttempts, *timeout, !(*dryRun))
+	success, err := ipr.Run(*project, *region, *ipName)
 
 	if err != nil {
 		log.Fatalf("Cluster collector error: %v", err)

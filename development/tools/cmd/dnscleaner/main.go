@@ -10,7 +10,7 @@ import (
 	"os"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
-	dnscleaner "github.com/kyma-project/test-infra/development/tools/pkg/longlastingdnscleaner"
+	"github.com/kyma-project/test-infra/development/tools/pkg/dnscleaner"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/container/v1"
@@ -25,7 +25,7 @@ var (
 	rtype       = flag.String("type", "A", "DNS Type to search for (default: \"A\"")
 	ttl         = flag.Int64("ttl", 300, "TTL of the resource to search for (default: 300)")
 	maxAttempts = flag.Uint("attempts", 3, "Maximal number of attempts until scripts stops trying to delete IP (default: 3)")
-	timeout     = flag.Uint("timeout", 5, "Timeout in seconds, will increase over time to reduce API calls (default: 5)")
+	backoff     = flag.Uint("backoff", 5, "Initial backoff in seconds for the first retry, will increase after this (default: 5)")
 	dryRun      = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 )
 
@@ -71,9 +71,9 @@ func main() {
 
 	dnsAPI := &dnscleaner.DNSAPIWrapper{Context: ctx, Service: dnsSvc}
 
-	der := dnscleaner.New(dnsAPI)
+	der := dnscleaner.New(dnsAPI, *maxAttempts, *backoff, !(*dryRun))
 
-	success, err := der.Run(*project, *zone, *name, *address, *rtype, *ttl, *maxAttempts, *timeout, !(*dryRun))
+	success, err := der.Run(*project, *zone, *name, *address, *rtype, *ttl)
 
 	if err != nil {
 		log.Fatalf("Cluster collector error: %v", err)
