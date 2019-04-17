@@ -174,6 +174,7 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -273,6 +274,8 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
         | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
         | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
 else
@@ -285,6 +288,8 @@ else
     | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
     | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
     | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+    | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+    | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-

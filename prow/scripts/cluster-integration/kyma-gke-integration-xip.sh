@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma with central connector-service plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster with central connector-service.
+#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
 #
 #
 #Expected vars:
@@ -48,8 +48,6 @@ export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 trap cleanup EXIT INT
 
@@ -106,7 +104,7 @@ cleanup() {
         date
         IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
     fi
-
+    
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
@@ -118,7 +116,6 @@ cleanup() {
         date
         IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
     fi
-
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -139,22 +136,22 @@ RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gke-central-pr"
+    readonly COMMON_NAME_PREFIX="gkeint-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-central-connector/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gke-central-rel"
+    readonly COMMON_NAME_PREFIX="gkeint-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gke-central-commit"
+    readonly COMMON_NAME_PREFIX="gkeint-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-central-connector/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
 
@@ -177,6 +174,7 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -184,7 +182,6 @@ ERROR_LOGGING_GUARD="true"
 shout "Authenticate"
 date
 init
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 if [[ "$BUILD_TYPE" != "release" ]]; then
     shout "Build Kyma-Installer Docker image"
@@ -192,36 +189,6 @@ if [[ "$BUILD_TYPE" != "release" ]]; then
     CLEANUP_DOCKER_IMAGE="true"
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 fi
-
-shout "Reserve IP Address for Ingressgateway"
-date
-GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-CLEANUP_GATEWAY_IP_ADDRESS="true"
-echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
-
-
-shout "Create DNS Record for Ingressgateway IP"
-date
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_GATEWAY_DNS_RECORD="true"
-IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-
-
-shout "Reserve IP Address for Remote Environments"
-date
-REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
-REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-CLEANUP_REMOTEENVS_IP_ADDRESS="true"
-echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-
-
-shout "Create DNS Record for Remote Environments IP"
-date
-REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_REMOTEENVS_DNS_RECORD="true"
-IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-
 
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 if [ "$NETWORK_EXISTS" -gt 0 ]; then
@@ -251,31 +218,17 @@ date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
-
-shout "Generate self-signed certificate"
-date
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-export DOMAIN
-CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
-TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-
 shout "Apply Kyma config"
 date
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-central/downloaded-config.yaml
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-integration/downloaded-config.yaml
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
 
-    kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
 
-    sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-central/downloaded-config.yaml \
-        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+    sed -e "s/__SKIP_SSL_VERIFY__/true/g"  /tmp/kyma-gke-integration/downloaded-config.yaml \
         | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
         | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__.*__//g" \
@@ -284,11 +237,6 @@ else
     echo "Manual concatenating yamls"
     "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-    | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-    | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
     | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
     | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
     | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
@@ -296,22 +244,6 @@ else
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 fi
-
-shout "Apply override for central connector-service"
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: connector-service-central-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  connector-service.deployment.args.central: "true"
-  connector-service.tests.central: "true"
-  connection-token-handler.tests.central: "true"
-EOF
 
 shout "Trigger installation"
 date
@@ -328,6 +260,7 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
 fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
 shout "Test Kyma"
 date
 "${KYMA_SCRIPTS_DIR}"/testing.sh

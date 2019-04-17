@@ -60,6 +60,9 @@ export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
+export TEST_CONTAINER_NAME="runner"
+
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -283,6 +286,8 @@ function installKyma() {
             | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
             | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
             | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
             | sed -e "s/__.*__//g" \
             | kubectl apply -f-
     else
@@ -294,6 +299,8 @@ function installKyma() {
             | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
             | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
             | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
             | sed -e "s/__.*__//g" \
             | kubectl apply -f-
     fi
@@ -382,7 +389,7 @@ createTestResources() {
     set -o errexit
 
     echo "Logs for prepare data operation to test e2e upgrade: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}"
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -c "${TEST_CONTAINER_NAME}"
     if [ "${prepareTestResult}" != 0 ]; then
         echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
         exit "${prepareTestResult}"
@@ -463,7 +470,7 @@ function testKyma() {
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
 
     if [ "${testEndToEndResult}" != 0 ]; then
         echo "Helm test operation failed: ${testEndToEndResult}"

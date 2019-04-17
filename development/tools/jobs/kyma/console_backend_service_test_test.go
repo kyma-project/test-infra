@@ -25,7 +25,7 @@ func TestConsoleBackendServiceTestJobReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.AlwaysRun)
 
 			var args []string
-			if tester.HasOneOfSuffixes(currentRelease, "-0.6", "-0.7", "-0.8") {
+			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08) {
 				args = []string{
 					"/home/prow/go/src/github.com/kyma-project/kyma/tests/ui-api-layer-acceptance-tests",
 				}
