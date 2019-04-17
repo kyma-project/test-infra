@@ -16,8 +16,8 @@ type DNSAPI interface {
 	LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error)
 }
 
-// dnsEntryRemover deletes IPs provisioned by gke-long-lasting prow jobs.
-type dnsEntryRemover struct {
+// DNSEntryRemover deletes IPs provisioned by gke-long-lasting prow jobs.
+type DNSEntryRemover struct {
 	dnsAPI      DNSAPI
 	maxAttempts uint
 	backoff     uint
@@ -25,15 +25,15 @@ type dnsEntryRemover struct {
 }
 
 // New returns a new instance of dnsEntryRemover
-func New(dnsAPI DNSAPI, maxAttempts, backoff uint, makeChanges bool) *dnsEntryRemover {
+func New(dnsAPI DNSAPI, maxAttempts, backoff uint, makeChanges bool) *DNSEntryRemover {
 	if maxAttempts < 1 {
 		maxAttempts = 1
 	}
-	return &dnsEntryRemover{dnsAPI, maxAttempts, backoff, makeChanges}
+	return &DNSEntryRemover{dnsAPI, maxAttempts, backoff, makeChanges}
 }
 
 // Run executes dns removal process for specified dns record-set
-func (der *dnsEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) (bool, error) {
+func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) (bool, error) {
 	common.Shout("Trying to retrieve DNS entry with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
 
 	backoff := der.backoff

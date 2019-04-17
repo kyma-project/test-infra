@@ -7,7 +7,7 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-// dnsAPIWrapper abstracts GCP DNS Service API
+// DNSAPIWrapper abstracts GCP DNS Service API
 type DNSAPIWrapper struct {
 	Context context.Context
 	Service *dns.Service

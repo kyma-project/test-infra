@@ -14,24 +14,24 @@ type ComputeAPI interface {
 	RemoveIP(project, region, name string) error
 }
 
-// ipRemover deletes IPs provisioned by gke-long-lasting prow jobs.
-type ipRemover struct {
+// IPRemover deletes IPs provisioned by gke-long-lasting prow jobs.
+type IPRemover struct {
 	computeAPI  ComputeAPI
 	maxAttempts uint
 	backoff     uint
 	makeChanges bool
 }
 
-// New returns a new instance of ipRemover
-func New(computeAPI ComputeAPI, maxAttempts, backoff uint, makeChanges bool) *ipRemover {
+// New returns a new instance of IPRemover
+func New(computeAPI ComputeAPI, maxAttempts, backoff uint, makeChanges bool) *IPRemover {
 	if maxAttempts < 1 {
 		maxAttempts = 1
 	}
-	return &ipRemover{computeAPI, maxAttempts, backoff, makeChanges}
+	return &IPRemover{computeAPI, maxAttempts, backoff, makeChanges}
 }
 
 // Run executes ip removal process for specified IP
-func (ipr *ipRemover) Run(project, region, ipName string) (bool, error) {
+func (ipr *IPRemover) Run(project, region, ipName string) (bool, error) {
 	common.Shout("Trying to delete IP with name \"%s\" in project \"%s\", available in region \"%s\"", ipName, project, region)
 
 	var msgPrefix string
