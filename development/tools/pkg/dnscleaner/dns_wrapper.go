@@ -8,13 +8,13 @@ import (
 )
 
 // dnsAPIWrapper abstracts GCP DNS Service API
-type dnsAPIWrapper struct {
+type DNSAPIWrapper struct {
 	Context context.Context
 	Service *dns.Service
 }
 
 // LookupDNSEntry delegates to DNS.Service.ResourceRecordSets.List(project, zone, name, address, recordType, recordTTL) function
-func (daw *dnsAPIWrapper) LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
+func (daw *DNSAPIWrapper) LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
 	listResp, listErr := daw.Service.ResourceRecordSets.List(project, zone).Name(name).Context(daw.Context).Do()
 	if listErr != nil {
 		return nil, listErr
@@ -34,7 +34,7 @@ func (daw *dnsAPIWrapper) LookupDNSEntry(project, zone, name, address, recordTyp
 }
 
 // RemoveDNSEntry delegates to DNS.Service.Changes.Create(project, zone, *record) function
-func (daw *dnsAPIWrapper) RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) error {
+func (daw *DNSAPIWrapper) RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) error {
 	proposedChange := &dns.Change{}
 	proposedChange.Deletions = append(proposedChange.Deletions, record)
 
