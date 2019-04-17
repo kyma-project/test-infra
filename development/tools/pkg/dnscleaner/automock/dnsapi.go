@@ -12,7 +12,7 @@ type DNSAPI struct {
 }
 
 // LookupDNSEntry provides a mock function with given fields: project, zone, name, address, recordType, recordTTL
-func (_m *DNSAPI) LookupDNSEntry(project string, zone string, name string, address string, recordType string, recordTTL int64) (*dns.ResourceRecordSet, bool, error) {
+func (_m *DNSAPI) LookupDNSEntry(project string, zone string, name string, address string, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
 	ret := _m.Called(project, zone, name, address, recordType, recordTTL)
 
 	var r0 *dns.ResourceRecordSet
@@ -24,40 +24,26 @@ func (_m *DNSAPI) LookupDNSEntry(project string, zone string, name string, addre
 		}
 	}
 
-	var r1 bool
-	if rf, ok := ret.Get(1).(func(string, string, string, string, string, int64) bool); ok {
-		r1 = rf(project, zone, name, address, recordType, recordTTL)
-	} else {
-		r1 = ret.Get(1).(bool)
-	}
-
-	var r2 error
-	if rf, ok := ret.Get(2).(func(string, string, string, string, string, int64) error); ok {
-		r2 = rf(project, zone, name, address, recordType, recordTTL)
-	} else {
-		r2 = ret.Error(2)
-	}
-
-	return r0, r1, r2
-}
-
-// RemoveDNSEntry provides a mock function with given fields: project, zone, record
-func (_m *DNSAPI) RemoveDNSEntry(project string, zone string, record *dns.ResourceRecordSet) (bool, error) {
-	ret := _m.Called(project, zone, record)
-
-	var r0 bool
-	if rf, ok := ret.Get(0).(func(string, string, *dns.ResourceRecordSet) bool); ok {
-		r0 = rf(project, zone, record)
-	} else {
-		r0 = ret.Get(0).(bool)
-	}
-
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, *dns.ResourceRecordSet) error); ok {
-		r1 = rf(project, zone, record)
+	if rf, ok := ret.Get(1).(func(string, string, string, string, string, int64) error); ok {
+		r1 = rf(project, zone, name, address, recordType, recordTTL)
 	} else {
 		r1 = ret.Error(1)
 	}
 
 	return r0, r1
+}
+
+// RemoveDNSEntry provides a mock function with given fields: project, zone, record
+func (_m *DNSAPI) RemoveDNSEntry(project string, zone string, record *dns.ResourceRecordSet) error {
+	ret := _m.Called(project, zone, record)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, *dns.ResourceRecordSet) error); ok {
+		r0 = rf(project, zone, record)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }

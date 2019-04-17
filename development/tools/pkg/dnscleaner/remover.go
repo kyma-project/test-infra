@@ -12,8 +12,8 @@ import (
 
 // DNSAPI abstracts access to DNS API in GCP
 type DNSAPI interface {
-	RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) (bool, error)
-	LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, bool, error)
+	RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) error
+	LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error)
 }
 
 // dnsEntryRemover deletes IPs provisioned by gke-long-lasting prow jobs.
@@ -36,23 +36,19 @@ func New(dnsAPI DNSAPI, maxAttempts, backoff uint, makeChanges bool) *dnsEntryRe
 func (der *dnsEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) (bool, error) {
 	common.Shout("Trying to retrieve DNS entry with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
 
-	attempts := uint(0)
 	backoff := der.backoff
 	var getErr error
 	var recordSet *dns.ResourceRecordSet
-	for {
-		entry, retryable, lookupErr := der.dnsAPI.LookupDNSEntry(project, zone, dnsName, dnsAddress, recordType, recordTTL)
+	for attempt := uint(0); attempt < der.maxAttempts; attempt = attempt + 1 {
+		entry, lookupErr := der.dnsAPI.LookupDNSEntry(project, zone, dnsName, dnsAddress, recordType, recordTTL)
 		if entry != nil {
 			recordSet = entry
 			break
 		}
-		attempts = attempts + 1
-		if attempts < der.maxAttempts && retryable {
+		if attempt < der.maxAttempts {
 			time.Sleep(time.Duration(backoff) * time.Second)
 			backoff = backoff * 2
-		} else {
 			getErr = lookupErr
-			break
 		}
 	}
 	if recordSet == nil {
@@ -69,17 +65,17 @@ func (der *dnsEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 	var delErr error
 	succeeded := true
 	backoff = der.backoff
-	attempts = uint(0)
 	if der.makeChanges {
-		for {
-			retryable, removalErr := der.dnsAPI.RemoveDNSEntry(project, zone, recordSet)
-			attempts = attempts + 1
-			if attempts < der.maxAttempts && retryable {
+		for attempt := uint(0); attempt < der.maxAttempts; attempt = attempt + 1 {
+			removalErr := der.dnsAPI.RemoveDNSEntry(project, zone, recordSet)
+			if removalErr == nil {
+				delErr = nil
+				break
+			}
+			if attempt < der.maxAttempts {
 				time.Sleep(time.Duration(backoff) * time.Second)
 				backoff = backoff * 2
-			} else {
 				delErr = removalErr
-				break
 			}
 		}
 	}

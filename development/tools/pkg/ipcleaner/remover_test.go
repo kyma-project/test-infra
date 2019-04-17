@@ -22,10 +22,10 @@ func TestNew(t *testing.T) {
 		defer mockAddressAPI.AssertExpectations(t)
 
 		//Given
-		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(false, nil)
+		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(nil)
 
 		//When
-		ipr := New(mockAddressAPI, 5, 20, true)
+		ipr := New(mockAddressAPI, 3, 2, true)
 		success, err := ipr.Run(testProject, testRegion, shouldDeleteIPByName)
 
 		//Then
@@ -40,14 +40,14 @@ func TestNew(t *testing.T) {
 		defer mockAddressAPI.AssertExpectations(t)
 
 		//Given
-		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldNotDeleteIPByName).Return(false, errors.New("testError"))
+		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldNotDeleteIPByName).Return(errors.New("testError"))
 
 		//When
-		ipr := New(mockAddressAPI, 5, 20, true)
+		ipr := New(mockAddressAPI, 3, 2, true)
 		success, err := ipr.Run(testProject, testRegion, shouldNotDeleteIPByName)
 
 		//Then
-		mockAddressAPI.AssertNumberOfCalls(t, "RemoveIP", 1)
+		mockAddressAPI.AssertNumberOfCalls(t, "RemoveIP", 3)
 		require.Error(t, err)
 		assert.Equal(t, success, false)
 	})
@@ -57,7 +57,7 @@ func TestNew(t *testing.T) {
 		defer mockAddressAPI.AssertExpectations(t)
 
 		//Given
-		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldNotDeleteIPByName).Return(true, errors.New("testError")).Times(3)
+		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldNotDeleteIPByName).Return(errors.New("testError")).Times(3)
 
 		//When
 		ipr := New(mockAddressAPI, 3, 2, true)
@@ -74,8 +74,8 @@ func TestNew(t *testing.T) {
 		defer mockAddressAPI.AssertExpectations(t)
 
 		//Given
-		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(true, errors.New("testError")).Twice()
-		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(false, nil)
+		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(errors.New("testError")).Twice()
+		mockAddressAPI.On("RemoveIP", testProject, testRegion, shouldDeleteIPByName).Return(nil)
 
 		//When
 		ipr := New(mockAddressAPI, 3, 2, true)

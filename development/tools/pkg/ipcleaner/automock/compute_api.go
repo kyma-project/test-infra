@@ -10,22 +10,15 @@ type ComputeAPI struct {
 }
 
 // RemoveIP provides a mock function with given fields: project, region, name
-func (_m *ComputeAPI) RemoveIP(project string, region string, name string) (bool, error) {
+func (_m *ComputeAPI) RemoveIP(project string, region string, name string) error {
 	ret := _m.Called(project, region, name)
 
-	var r0 bool
-	if rf, ok := ret.Get(0).(func(string, string, string) bool); ok {
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, string) error); ok {
 		r0 = rf(project, region, name)
 	} else {
-		r0 = ret.Get(0).(bool)
+		r0 = ret.Error(0)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, string) error); ok {
-		r1 = rf(project, region, name)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
