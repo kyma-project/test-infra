@@ -146,7 +146,7 @@ func TestKymaGKEXipJobPresubmit(t *testing.T) {
 
 }
 
-func TestKymaGKEXipJobPresubmit(t *testing.T) {
+func TestKymaGKEXipUpgradeJobsPresubmit(t *testing.T) {
 	// given
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 	require.NoError(t, err)

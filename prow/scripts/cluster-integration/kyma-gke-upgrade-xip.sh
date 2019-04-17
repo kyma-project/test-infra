@@ -69,6 +69,50 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanup EXIT INT
 
+cleanup() {
+    ## Save status of failed script execution
+    EXIT_STATUS=$?
+
+    if [[ "${ERROR_LOGGING_GUARD}" = "true" ]]; then
+        shout "AN ERROR OCCURED! Take a look at preceding log entries."
+        echo
+    fi
+
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
+
+    if [[ -n "${CLEANUP_CLUSTER}" ]]; then
+        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
+        date
+
+        #save disk names while the cluster still exists to remove them later
+        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        export DISKS
+
+        #Delete cluster
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+
+        #Delete orphaned disks
+        shout "Delete orphaned PVC disks..."
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+    fi
+
+    if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+    fi
+
+    MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+    shout "Job is finished ${MSG}"
+    date
+    set -e
+
+    exit "${EXIT_STATUS}"
+}
+
 function generateAndExportClusterName() {
     readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
     readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
@@ -96,18 +140,6 @@ function generateAndExportClusterName() {
 
     export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
     export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
-}
-
-
-function generateAndExportCerts() {
-    shout "Generate self-signed certificate"
-    date
-    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
-
-    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-    export TLS_CERT
-    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-    export TLS_KEY
 }
 
 function createNetwork() {
@@ -169,12 +201,7 @@ function installKyma() {
         kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
 
         curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-        sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-            | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-            | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-            | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-            | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-            | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        sed -e "s/__SKIP_SSL_VERIFY__/true/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
             | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
             | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
             | sed -e "s/__.*__//g" \
@@ -182,12 +209,7 @@ function installKyma() {
     else
         echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
         curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-        sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-            | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-            | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-            | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-            | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-            | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        sed -e "s/__SKIP_SSL_VERIFY__/true/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
             | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
             | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
             | sed -e "s/__.*__//g" \
