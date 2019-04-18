@@ -55,7 +55,7 @@ export CLUSTER_SIZE="Standard_DS2_v2"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
 export CLUSTER_K8S_VERSION="1.11"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
-
+PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -267,6 +267,8 @@ function installKyma() {
         | sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
         | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
+        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
+        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__VERSION__/0.0.1/g" \
         | sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
         | sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
