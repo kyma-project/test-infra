@@ -9,7 +9,12 @@
   #copy the files
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted "./letsencrypt/live/${DOMAIN}" 
     gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted "./letsencrypt/live/${DOMAIN}" 
-#decrypt key and cert
+
+      TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+    export TLS_CERT
+    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+    export TLS_KEY
+
 printf "decrypting certs"
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt-certs.sh"
     else
