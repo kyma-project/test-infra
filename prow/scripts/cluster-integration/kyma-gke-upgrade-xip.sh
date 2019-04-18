@@ -384,6 +384,10 @@ function testKyma() {
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
+shout "Authenticate with GCP"
+date
+init
+
 generateAndExportClusterName
 
 createNetwork
