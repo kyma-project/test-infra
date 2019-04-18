@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io"
 
+	"bufio"
+
 	"github.com/kyma-project/test-infra/stability-checker/internal/log"
 	"github.com/pkg/errors"
 )
@@ -56,7 +58,15 @@ loop:
 		case io.EOF:
 			break loop
 		default:
-			return nil, errors.Wrap(err, "while decoding stream")
+			stream, err = c.skipNonJSON(stream)
+			switch err {
+			case nil:
+			case io.EOF:
+				break loop
+			default:
+				return nil, errors.Wrap(err, "while decoding stream")
+			}
+			continue
 		}
 
 		_, contains := testIDMap[e.Log.TestRunID]
@@ -71,4 +81,29 @@ loop:
 	}
 
 	return aggregated.ToList(), nil
+}
+
+func (c *Service) skipNonJSON(stream *json.Decoder) (*json.Decoder, error) {
+	r := stream.Buffered()
+	br, ok := r.(*bufio.Reader)
+	if !ok {
+		br = bufio.NewReader(r)
+	}
+
+	for {
+		// read characters until an error or beginning of a new json
+		ch, _, err := br.ReadRune()
+		if err != nil {
+			return nil, err
+		}
+		if ch == '{' {
+			err := br.UnreadRune()
+			if err != nil {
+				return nil, err
+			}
+			stream = json.NewDecoder(br)
+			// returns new json decoder which start from the '{' character
+			return stream, nil
+		}
+	}
 }
