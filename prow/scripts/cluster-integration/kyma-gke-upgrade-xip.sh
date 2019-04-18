@@ -386,8 +386,6 @@ ERROR_LOGGING_GUARD="true"
 
 generateAndExportClusterName
 
-generateAndExportCerts
-
 createNetwork
 
 createCluster
