@@ -277,6 +277,8 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
+    DOMAIN="${COMMON_NAME}.xip.io"
+
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
     fi
