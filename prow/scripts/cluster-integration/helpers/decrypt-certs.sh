@@ -8,7 +8,7 @@
 # - KYMA_ENCRYPTION_KEY: encryption key name used to encrypt the files
 #
 
-#set -o errexit
+set -o errexit
 printf "decrypting nightly-gke-tls-integration-app-client-key.encrypted"
     gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
