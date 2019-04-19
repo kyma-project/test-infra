@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/pkg/jobguard"
-	"github.com/pkg/errors"
-	"github.com/vrischmann/envconfig"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/kyma-project/test-infra/development/tools/pkg/jobguard"
+	"github.com/pkg/errors"
+	"github.com/vrischmann/envconfig"
 )
 
 type config struct {
