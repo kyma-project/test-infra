@@ -3,11 +3,12 @@ package jobguard
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 // StatusState is state of a status (job)
@@ -52,8 +53,8 @@ func NewStatusFetcher(cfg StatusFetcherConfig, client *http.Client) *StatusFetch
 	return &StatusFetcher{cfg: cfg, client: client}
 }
 
-// TODO: Do we really need this? What about PULL_PULL_SHA env?
 // Init fetches pull request details and gathers essential pieces of information
+// TODO: Do we really need this? What about PULL_PULL_SHA env?
 func (f *StatusFetcher) Init() error {
 	prDetails, err := f.pullRequestDetails()
 	if err != nil {
