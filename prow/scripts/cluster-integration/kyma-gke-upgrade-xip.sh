@@ -277,7 +277,7 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
-    DOMAIN="${COMMON_NAME}.xip.io"
+    DOMAIN=$(kubectl get cm net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.domainName}')
 
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
