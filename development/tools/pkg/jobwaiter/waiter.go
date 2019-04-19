@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-func WaitAtMost(fn func() (bool, error), duration time.Duration) error {
+func WaitAtMost(fn func() (bool, error), tickTime time.Duration, duration time.Duration) error {
 	timeout := time.After(duration)
-	tick := time.Tick(5 * time.Second)
+	tick := time.Tick(tickTime)
 
 	for {
 		ok, err := fn()

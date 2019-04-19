@@ -16,20 +16,26 @@ type Config struct {
 	AuthorizationToken string `envconfig:"optional,BOT_GITHUB_TOKEN"`
 
 	JobFilterSubstring string `envconfig:"default=components"`
-	Timeout time.Duration `envconfig:"default=10m"`
+
+	InitialSleepTime time.Duration `envconfig:"default=1m"`
+	TickTime         time.Duration `envconfig:"default=15s"`
+	Timeout          time.Duration `envconfig:"default=15m"`
 }
 
 func main() {
-	log.Print("Starting job waiter...")
+	log.Print("Starting Job Waiter...")
 
 	var cfg Config
 	err := envconfig.Init(&cfg)
 	exitOnError(err, "while loading configuration")
 
 	client := jobwaiter.HTTPClient(cfg.AuthorizationToken)
-
 	statusFetcher := jobwaiter.NewStatusFetcher(cfg.StatusFetcher, client)
 
+	log.Printf("Sleeping for %.f minute(s)...", cfg.InitialSleepTime.Minutes())
+	time.Sleep(cfg.InitialSleepTime)
+
+	log.Print("Initializing...")
 	err = statusFetcher.Init()
 	exitOnError(err, "while initialization")
 
@@ -47,13 +53,13 @@ func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg Config) er
 		filteredStatuses := jobwaiter.FilterStatusByName(statuses, cfg.JobFilterSubstring)
 
 		if len(jobwaiter.FailedStatuses(filteredStatuses)) > 0 {
-			log.Fatalf("At least one job with substring %s failed. Exiting with error...", cfg.JobFilterSubstring)
+			log.Fatalf("At least one job with substring '%s' failed. Exiting with error...", cfg.JobFilterSubstring)
 		}
 
 		pendingStatuses := jobwaiter.PendingStatuses(filteredStatuses)
 		pendingStatusesLen := len(pendingStatuses)
 
-		if  pendingStatusesLen > 0 {
+		if pendingStatusesLen > 0 {
 			var jobNames strings.Builder
 			for _, pendingStatus := range pendingStatuses {
 				jobNames.WriteString(fmt.Sprintf("\t%s\n", pendingStatus.Name))
@@ -63,10 +69,10 @@ func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg Config) er
 			return false, nil
 		}
 
-		log.Printf("All jobs with substring %s finished.", cfg.JobFilterSubstring)
+		log.Printf("All jobs with substring '%s' finished.", cfg.JobFilterSubstring)
 
 		return true, nil
-	}, cfg.Timeout)
+	}, cfg.TickTime, cfg.Timeout)
 }
 
 func exitOnError(err error, context string) {
