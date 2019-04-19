@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
  printf "Checking if certificate is already in GCP Bucket."
       mkdir -p ./letsencrypt/live/"${DOMAIN}"
- if [[ $(gsutil ls gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted) ]];
+ if [[ $(gsutil ls gs://kyma-prow-secrets/${KYMA_NIGHTLY_CERT}) ]];
  then
     printf "\nCertificate/privatekey exists in vault. Downloading..."
   #copy the files
-    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-cert.encrypted "./letsencrypt/live/${DOMAIN}" 
-    gsutil cp gs://kyma-prow-secrets/nightly-gke-tls-integration-app-client-key.encrypted "./letsencrypt/live/${DOMAIN}" 
-
+    gsutil cp gs://kyma-prow-secrets/${KYMA_NIGHTLY_CERT} "./letsencrypt/live/${DOMAIN}" 
+    gsutil cp gs://kyma-prow-secrets/${KYMA_NIGHTLY_KEY} "./letsencrypt/live/${DOMAIN}" 
+printf "decrypting certs"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt-certs.sh"
       TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
     export TLS_CERT
     TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
     export TLS_KEY
-printf "<-------Cert--------->"
-echo $TLS_CERT
-printf "decrypting certs"
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt-certs.sh"
+
     else
     printf "Generating Certificates"
     #Generate the certs

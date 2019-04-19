@@ -283,6 +283,11 @@ presets:
     env:
       - name: KYMA_ENCRYPTION_KEY
         value: projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption
+  - labels:
+     preset-kyma-nightly-key: "true"
+    env:
+      - name: KYMA_NIGHTLY_KEY
+        value: nightly-gke-tls-integration-app-client-key.encrypted
 
 
 branch-protection:
