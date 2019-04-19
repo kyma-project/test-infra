@@ -2,6 +2,7 @@ package jobwaiter
 
 import "strings"
 
+// FilterStatusByName filters statuses by name
 func FilterStatusByName(in []Status, substring string) []Status {
 	var filteredStatuses []Status
 
@@ -16,11 +17,12 @@ func FilterStatusByName(in []Status, substring string) []Status {
 	return filteredStatuses
 }
 
+// FailedStatuses filters statuses by failed or error state
 func FailedStatuses(in []Status) []Status {
 	var filteredStatuses []Status
 
 	for _, s := range in {
-		if s.State != string(StatusStateError) || s.State != string(StatusStateFailure) {
+		if s.State != string(StatusStateError) && s.State != string(StatusStateFailure) {
 			continue
 		}
 
@@ -30,6 +32,7 @@ func FailedStatuses(in []Status) []Status {
 	return filteredStatuses
 }
 
+// PendingStatuses filters statuses by pending state
 func PendingStatuses(in []Status) []Status {
 	var filteredStatuses []Status
 
