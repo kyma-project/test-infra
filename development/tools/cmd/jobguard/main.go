@@ -13,7 +13,7 @@ import (
 type config struct {
 	StatusFetcher jobguard.StatusFetcherConfig
 
-	AuthorizationToken string `envconfig:"optional,BOT_GITHUB_TOKEN"`
+	AuthorizationToken string `envconfig:"optional,GITHUB_TOKEN"`
 
 	JobFilterSubstring string `envconfig:"default=components"`
 

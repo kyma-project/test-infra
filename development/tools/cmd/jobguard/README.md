@@ -28,8 +28,8 @@ Use the following environment variables to configure the application:
 | Name | Required | Default | Description |
 |------|----------|---------|-------------|
 | **PULL_NUMBER** | Yes | | The pull request number |
-| **BOT_GITHUB_TOKEN** | No | | The authorization token for GitHub API|
-| **JOB_FILTER_SUBSTRING** | No | | The substring that only dependant job contains in the status name |
+| **GITHUB_TOKEN** | No | | The authorization token for GitHub API|
+| **JOB_FILTER_SUBSTRING** | No | `components` | The substring that only dependant job contains in the status name |
 | **API_ORIGIN** | No | `https://api.github.com` | The origin of the GitHub API |
 | **REPO_OWNER** | No | `kyma-project` | Username or organization name, that owns the repository |
 | **REPO_NAME** | No | `kyma` | The name of the repository |
