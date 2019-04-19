@@ -41,9 +41,9 @@ TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 export TLS_KEY
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt-certs.sh"
 	#copy the cert to cloud
-	gsutil cp "./letsencrypt/live/${DOMAIN}/${KYMA_NIGHTLY_CERT} gs://kyma-prow-secrets/"
+	gsutil cp "ç gs://kyma-prow-secrets/"
     #copy the private key to cloud
  gsutil cp "./letsencrypt/live/${DOMAIN}/${KYMA_NIGHTLY_KEY} gs://kyma-prow-secrets/"
 
- gsutil setmeta  -h "max-age=60" gs://kyma-prow-secrets/${KYMA_NIGHTLY_KEY}
-  gsutil setmeta  -h "max-age=60" gs://kyma-prow-secrets/${KYMA_NIGHTLY_CERT}
+ gsutil setmeta  -h "max-age=60" "gs://kyma-prow-secrets/${KYMA_NIGHTLY_KEY}"
+  gsutil setmeta  -h "max-age=60" "gs://kyma-prow-secrets/${KYMA_NIGHTLY_CERT}"
