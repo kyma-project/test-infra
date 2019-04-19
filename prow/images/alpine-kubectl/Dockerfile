@@ -6,7 +6,7 @@ ENV HELM_VERSION="v2.10.0"
 ENV KUBECTL_VERSION="v1.13.0"
 
 RUN apk update &&\
-	apk add openssl coreutils curl bash jq &&\
+	apk add openssl coreutils curl bash &&\
 	curl -LO curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl &&\
 	chmod +x ./kubectl &&\
 	mv ./kubectl /usr/local/bin/kubectl &&\

@@ -8,7 +8,7 @@ import (
 
 func WaitAtMost(fn func() (bool, error), duration time.Duration) error {
 	timeout := time.After(duration)
-	tick := time.Tick(500 * time.Millisecond)
+	tick := time.Tick(5 * time.Second)
 
 	for {
 		ok, err := fn()
