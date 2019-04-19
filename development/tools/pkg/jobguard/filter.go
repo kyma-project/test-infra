@@ -1,4 +1,4 @@
-package jobwaiter
+package jobguard
 
 import "strings"
 

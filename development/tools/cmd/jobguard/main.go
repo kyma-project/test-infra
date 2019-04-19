@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/pkg/jobwaiter"
+	"github.com/kyma-project/test-infra/development/tools/pkg/jobguard"
 	"github.com/pkg/errors"
 	"github.com/vrischmann/envconfig"
 	"log"
@@ -11,7 +11,7 @@ import (
 )
 
 type config struct {
-	StatusFetcher jobwaiter.StatusFetcherConfig
+	StatusFetcher jobguard.StatusFetcherConfig
 
 	AuthorizationToken string `envconfig:"optional,BOT_GITHUB_TOKEN"`
 
@@ -23,14 +23,14 @@ type config struct {
 }
 
 func main() {
-	log.Print("Starting Job Waiter...")
+	log.Print("Starting Job Guard...")
 
 	var cfg config
 	err := envconfig.Init(&cfg)
 	exitOnError(err, "while loading configuration")
 
-	client := jobwaiter.HTTPClient(cfg.AuthorizationToken)
-	statusFetcher := jobwaiter.NewStatusFetcher(cfg.StatusFetcher, client)
+	client := jobguard.HTTPClient(cfg.AuthorizationToken)
+	statusFetcher := jobguard.NewStatusFetcher(cfg.StatusFetcher, client)
 
 	log.Printf("Sleeping for %.f minute(s)...", cfg.InitialSleepTime.Minutes())
 	time.Sleep(cfg.InitialSleepTime)
@@ -43,22 +43,22 @@ func main() {
 	exitOnError(err, "while waiting for success statuses")
 }
 
-func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg config) error {
-	return jobwaiter.WaitAtMost(func() (bool, error) {
+func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) error {
+	return jobguard.WaitAtMost(func() (bool, error) {
 		statuses, err := statusFetcher.Do()
 		if err != nil {
 			return false, err
 		}
 
-		filteredStatuses := jobwaiter.FilterStatusByName(statuses, cfg.JobFilterSubstring)
+		filteredStatuses := jobguard.FilterStatusByName(statuses, cfg.JobFilterSubstring)
 
-		failedStatuses := jobwaiter.FailedStatuses(filteredStatuses)
+		failedStatuses := jobguard.FailedStatuses(filteredStatuses)
 
 		if len(failedStatuses) > 0 {
 			log.Fatalf("[ERROR] At least one job with substring '%s' failed:\n%s", cfg.JobFilterSubstring, printJobNames(failedStatuses))
 		}
 
-		pendingStatuses := jobwaiter.PendingStatuses(filteredStatuses)
+		pendingStatuses := jobguard.PendingStatuses(filteredStatuses)
 		pendingStatusesLen := len(pendingStatuses)
 
 		if pendingStatusesLen > 0 {
@@ -72,7 +72,7 @@ func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg config) er
 	}, cfg.TickTime, cfg.Timeout)
 }
 
-func printJobNames(in []jobwaiter.Status) string {
+func printJobNames(in []jobguard.Status) string {
 	var jobNames strings.Builder
 	for _, status := range in {
 		jobNames.WriteString(fmt.Sprintf("\t%s\n", status.Name))

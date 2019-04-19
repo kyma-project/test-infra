@@ -1,10 +1,10 @@
-# Job Waiter 
+# Job Guard 
 
 ## Overview
 
-Job Waiter is a simple tool that fetches all statuses for GitHub pull requests and waits for some to finish.
+Job Guard is a simple tool that fetches all statuses for GitHub pull requests and waits for some to finish.
 
-The main purpose of the Job Waiter is to delay running integration jobs, which depend on components ones. The utility is run as a guard for integration tests.
+The main purpose of the Job Guard is to delay running integration jobs, which depend on components ones. The utility is run as a guard for integration tests.
 
 ## Usage
 
