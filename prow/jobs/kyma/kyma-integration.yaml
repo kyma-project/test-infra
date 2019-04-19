@@ -544,8 +544,8 @@ periodics:
 - name: kyma-gke-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
-    preset-kyma-nightly-key: "true"
-    preset-kyma-nightly-cert: "true"
+    preset-kyma-gke-nightly-key: "true"
+    preset-kyma-gke-nightly-cert: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
     preset-build-master: "true"
@@ -654,8 +654,8 @@ periodics:
 - name: kyma-aks-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
-    preset-kyma-nightly-key: "true"
-    preset-kyma-nightly-cert: "true"
+    preset-kyma-aks-nightly-key: "true"
+    preset-kyma-aks-nightly-cert: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
     preset-build-master: "true"

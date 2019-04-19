@@ -6,18 +6,22 @@
 #Expected vars:
 # - KYMA_KEYRING: kyma keyring name
 # - KYMA_ENCRYPTION_KEY: encryption key name used to encrypt the files
-#
+# - TEST_INFRA_SOURCES_DIR: Path for shout library
 
 set -o errexit
-printf "decrypting nightly-gke-tls-integration-app-client-key.encrypted"
-    gcloud kms decrypt --location global \
+
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+shout "Decrypting ${KYMA_NIGHTLY_KEY}"
+gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/${KYMA_NIGHTLY_KEY}" \
-  --plaintext-file "./letsencrypt/live/${DOMAIN}/privkey.pem "
+  --plaintext-file "./letsencrypt/live/${DOMAIN}/privkey.pem"
 
-	printf "decrypting nightly-gke-tls-integration-app-client-cert.encrypted"
-   gcloud kms decrypt --location global \
+shout "Decrypting ${KYMA_NIGHTLY_CERT}"
+gcloud kms decrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/${KYMA_NIGHTLY_CERT}" \

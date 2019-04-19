@@ -173,7 +173,7 @@ function waitUntilInstallerApiAvailable() {
             exit 1
         fi
 
-        printf "Sleep for 3 seconds"
+        echo "Sleep for 3 seconds"
         sleep 3
     done
 }

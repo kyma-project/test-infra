@@ -346,7 +346,7 @@ createGroup
 installCluster
 
 createPublicIPandDNS
- "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 setupKubeconfig
 installTiller
 installKyma
