@@ -52,27 +52,33 @@ func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg Config) er
 
 		filteredStatuses := jobwaiter.FilterStatusByName(statuses, cfg.JobFilterSubstring)
 
-		if len(jobwaiter.FailedStatuses(filteredStatuses)) > 0 {
-			log.Fatalf("At least one job with substring '%s' failed. Exiting with error...", cfg.JobFilterSubstring)
+		failedStatuses := jobwaiter.FailedStatuses(filteredStatuses)
+
+		if len(failedStatuses) > 0 {
+			log.Fatalf("[ERROR] At least one job with substring '%s' failed:\n%s", cfg.JobFilterSubstring, printJobNames(failedStatuses))
 		}
 
 		pendingStatuses := jobwaiter.PendingStatuses(filteredStatuses)
 		pendingStatusesLen := len(pendingStatuses)
 
 		if pendingStatusesLen > 0 {
-			var jobNames strings.Builder
-			for _, pendingStatus := range pendingStatuses {
-				jobNames.WriteString(fmt.Sprintf("\t%s\n", pendingStatus.Name))
-			}
-
-			log.Printf("Waiting for jobs to finish:\n%s", jobNames.String())
+			log.Printf("Waiting for jobs to finish:\n%s", printJobNames(pendingStatuses))
 			return false, nil
 		}
 
-		log.Printf("All jobs with substring '%s' finished.", cfg.JobFilterSubstring)
+		log.Printf("[SUCCESS] All jobs with substring '%s' finished.", cfg.JobFilterSubstring)
 
 		return true, nil
 	}, cfg.TickTime, cfg.Timeout)
+}
+
+func printJobNames(in []jobwaiter.Status) string {
+	var jobNames strings.Builder
+	for _, status := range in {
+		jobNames.WriteString(fmt.Sprintf("\t%s\n", status.Name))
+	}
+
+	return jobNames.String()
 }
 
 func exitOnError(err error, context string) {
