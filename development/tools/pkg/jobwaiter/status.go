@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -22,7 +23,7 @@ type Status struct {
 }
 
 type StatusFetcherConfig struct {
-	Origin            string `envconfig:"default=https://api.github.com"`
+	Origin            string `envconfig:"default=https://api.github.com,API_ORIGIN"`
 	Owner             string `envconfig:"default=kyma-project,REPO_OWNER"`
 	Repository        string `envconfig:"default=kyma,REPO_NAME"`
 	PullRequestNumber int    `envconfig:"PULL_NUMBER"`
@@ -83,7 +84,6 @@ func (f *StatusFetcher) pullRequestDetails() (map[string]interface{}, error) {
 	}
 	defer closeResponseBody(resp)
 
-
 	return result, nil
 }
 
@@ -102,27 +102,49 @@ func (f *StatusFetcher) pullRequestHeadSHA(prDetails map[string]interface{}) (st
 }
 
 type statusResponse struct {
-	Statuses []Status `json:"statuses"`
+	TotalCount int      `json:"total_count"`
+	Statuses   []Status `json:"statuses"`
 }
 
 func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/commits/%s/status", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, commmitSHA)
 
-	// TODO: Paginate!!!
+	var statuses []Status
 
-	resp, err := f.client.Get(url)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while doing request to %s", url)
+	pageNo := 1
+
+	for {
+		log.Printf("\tPaginating through statuses... Page number: %d\n", pageNo)
+		pageURL := fmt.Sprintf("%s?page=%d&per_page=100", url, pageNo)
+
+		resp, err := f.client.Get(pageURL)
+		if err != nil {
+			return nil, errors.Wrapf(err, "while doing request to %s", url)
+		}
+
+		var result statusResponse
+		err = json.NewDecoder(resp.Body).Decode(&result)
+		if err != nil {
+			return nil, errors.Wrapf(err, "while decoding response from request to %s", url)
+		}
+
+		if len(result.Statuses) == 0 {
+			return nil, fmt.Errorf("Error while paginating on pages. No statuses found on page %d", pageNo)
+		}
+
+		statuses = append(statuses, result.Statuses...)
+
+		closeResponseBody(resp)
+
+		log.Printf("\tFetched statuses: %d/%d\n", len(statuses), result.TotalCount)
+		if len(statuses) == result.TotalCount {
+			break
+		}
+
+		pageNo++
 	}
 
-	var result statusResponse
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while decoding response from request to %s", url)
-	}
-	defer closeResponseBody(resp)
-
-	return result.Statuses, nil
+	return statuses, nil
 }
 
 func closeResponseBody(resp *http.Response) {
