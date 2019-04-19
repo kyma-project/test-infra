@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type Config struct {
+type config struct {
 	StatusFetcher jobwaiter.StatusFetcherConfig
 
 	AuthorizationToken string `envconfig:"optional,BOT_GITHUB_TOKEN"`
@@ -25,7 +25,7 @@ type Config struct {
 func main() {
 	log.Print("Starting Job Waiter...")
 
-	var cfg Config
+	var cfg config
 	err := envconfig.Init(&cfg)
 	exitOnError(err, "while loading configuration")
 
@@ -43,7 +43,7 @@ func main() {
 	exitOnError(err, "while waiting for success statuses")
 }
 
-func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg Config) error {
+func waitForDependentJobs(statusFetcher *jobwaiter.StatusFetcher, cfg config) error {
 	return jobwaiter.WaitAtMost(func() (bool, error) {
 		statuses, err := statusFetcher.Do()
 		if err != nil {

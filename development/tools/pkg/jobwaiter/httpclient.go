@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// HTTPClient constructs a new HTTP client with custom RoundTripper
 func HTTPClient(token string) *http.Client {
 	return &http.Client{
 		Transport: newGhRoundTripper(token),
@@ -23,6 +24,7 @@ func newGhRoundTripper(token string) *ghRoundTripper {
 	}
 }
 
+// RoundTrip adds essential headers and launches original RoundTripper RoundTrip method
 func (t *ghRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.Header.Add("Accept", "application/vnd.github.v3+json")
 

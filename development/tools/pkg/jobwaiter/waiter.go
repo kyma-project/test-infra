@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// WaitAtMost executes a function periodically and waits maximum time to finish
 func WaitAtMost(fn func() (bool, error), tickTime time.Duration, duration time.Duration) error {
 	timeout := time.After(duration)
 	tick := time.Tick(tickTime)

@@ -10,18 +10,28 @@ import (
 	"net/http"
 )
 
+// StatusState is state of a status (job)
 type StatusState string
 
+// StatusStateSuccess represents success state of a status
 const StatusStateSuccess StatusState = "success"
+
+// StatusStatePending represents pending state of a status
 const StatusStatePending StatusState = "pending"
+
+// StatusStateError represents error state of a status
 const StatusStateError StatusState = "error"
+
+// StatusStateFailure represents failure state of a status
 const StatusStateFailure StatusState = "failure"
 
+// Status stores essential data for a status
 type Status struct {
 	Name  string `json:"context"`
 	State string `json:"state"`
 }
 
+// StatusFetcherConfig holds configuraiton for StatusFetcher
 type StatusFetcherConfig struct {
 	Origin            string `envconfig:"default=https://api.github.com,API_ORIGIN"`
 	Owner             string `envconfig:"default=kyma-project,REPO_OWNER"`
@@ -29,6 +39,7 @@ type StatusFetcherConfig struct {
 	PullRequestNumber int    `envconfig:"PULL_NUMBER"`
 }
 
+// StatusFetcher fetches all statuses for a pull request
 type StatusFetcher struct {
 	cfg    StatusFetcherConfig
 	client *http.Client
@@ -36,11 +47,13 @@ type StatusFetcher struct {
 	commitSHA string
 }
 
+// NewStatusFetcher constructs new StatusFetcher instance
 func NewStatusFetcher(cfg StatusFetcherConfig, client *http.Client) *StatusFetcher {
 	return &StatusFetcher{cfg: cfg, client: client}
 }
 
 // TODO: Do we really need this? What about PULL_PULL_SHA env?
+// Init fetches pull request details and gathers essential pieces of information
 func (f *StatusFetcher) Init() error {
 	prDetails, err := f.pullRequestDetails()
 	if err != nil {
@@ -56,6 +69,7 @@ func (f *StatusFetcher) Init() error {
 	return nil
 }
 
+// Do fetches statuses for a pull request
 func (f *StatusFetcher) Do() ([]Status, error) {
 	if f.commitSHA == "" {
 		return nil, errors.New("Commit SHA not fetched")
