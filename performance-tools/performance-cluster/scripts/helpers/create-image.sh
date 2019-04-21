@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 #Description: Builds Kyma-Installer image from Kyma sources and pushes it to the repository
 #
 #Expected vars:
@@ -23,6 +23,11 @@ fi
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
+echo "--------------------------------------------------------------------------------"
+echo
+DCONTENT=`ls "${KYMA_SOURCES_DIR}"/tools/kyma-installer/`
+echo "--------------------------------------------------------------------------------"
+echo "Dockerfile: ${DCONTENT}"
 echo "--------------------------------------------------------------------------------"
 echo
 docker build "${KYMA_SOURCES_DIR}" -f "${KYMA_SOURCES_DIR}"/tools/kyma-installer/kyma.Dockerfile -t "${KYMA_INSTALLER_IMAGE}"

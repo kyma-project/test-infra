@@ -20,7 +20,7 @@ shout "Generate lets encrypt certificate"
 date
 
 mkdir letsencrypt
-cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
 docker run  --name certbot \
     --rm  \
     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
