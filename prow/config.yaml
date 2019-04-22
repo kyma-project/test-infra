@@ -302,6 +302,14 @@ branch-protection:
           branches:
             master:
               protect: true
+            release-0.7:
+              protect: true
+            release-0.8:
+              protect: true
+            release-0.9:
+              protect: true
+            release-1.0:
+              protect: true
         kyma:
           branches:
             master:
