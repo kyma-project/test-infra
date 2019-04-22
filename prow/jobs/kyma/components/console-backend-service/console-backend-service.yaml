@@ -50,7 +50,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-components-console-backend-service
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^components/console-backend-service/"
       extra_refs:
@@ -108,7 +108,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-components-console-backend-service
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^components/console-backend-service/"
       extra_refs:

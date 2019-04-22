@@ -27,7 +27,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-tests-test-namespace-controller
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^tests/test-namespace-controller/"
       extra_refs:
@@ -85,7 +85,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tests-test-namespace-controller
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^tests/test-namespace-controller/"
       extra_refs:

@@ -228,7 +228,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-components-binding-usage-controller
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -238,7 +238,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-components-binding-usage-controller
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template

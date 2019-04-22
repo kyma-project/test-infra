@@ -33,7 +33,7 @@ presubmits:
     - name: pre-master-test-infra-validate-prow
       run_if_changed: "^(development/tools|prow)" # Also for any changes in prow directory
       branches:
-        - master
+        - ^master$
       max_concurrency: 10
       labels:
         preset-build-pr: "true"

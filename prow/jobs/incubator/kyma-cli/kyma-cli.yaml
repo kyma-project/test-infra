@@ -32,7 +32,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-cli
       always_run: true
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -42,7 +42,7 @@ postsubmits:
   kyma-incubator/kyma-cli:
     - name: post-master-kyma-cli
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template

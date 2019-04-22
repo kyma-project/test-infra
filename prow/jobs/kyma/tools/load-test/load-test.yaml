@@ -37,7 +37,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-tools-load-test
       run_if_changed: "^tools/load-test/"
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -92,7 +92,7 @@ postsubmits:
     - name: post-master-kyma-tools-load-test
       run_if_changed: "^tools/load-test/"
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template

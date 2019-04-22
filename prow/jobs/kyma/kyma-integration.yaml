@@ -161,7 +161,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-integration
     branches:
-    - master
+    - ^master$
     <<: *vm_job_template
     run_if_changed: "^(resources|installation)"
     labels:
@@ -215,7 +215,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-integration
     branches:
-    - master
+    - ^master$
     <<: *gke_job_template
     run_if_changed: "^(resources|installation)"
     labels:
@@ -283,7 +283,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-upgrade
     branches:
-    - master
+    - ^master$
     <<: *gke_upgrade_job_template
     run_if_changed: "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)"
     labels:
@@ -346,7 +346,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-central-connector
     branches:
-    - master
+    - ^master$
     <<: *gke_central_job_template
     run_if_changed: "^(resources|installation)"
     labels:
@@ -370,7 +370,7 @@ presubmits: # runs on PRs
         
   - name: pre-master-kyma-xip-integration
     branches:
-       - master
+       - ^master$
     <<: *gke_xip_job_template
     labels:
       preset-build-pr: "true"
@@ -381,7 +381,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
-    - master
+    - ^master$
     <<: *gke_xip_upgrade_job_template
     labels:
       preset-bot-github-token: "true"
@@ -393,7 +393,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-xip-gke-central-connector
     branches:
-    - master
+    - ^master$
     <<: *gke_xip_central_job_template
     labels:
       preset-build-pr: "true"
@@ -419,7 +419,7 @@ postsubmits:
   - name: post-master-kyma-integration
     <<: *vm_job_template
     branches:
-    - master
+    - ^master$
     labels:
       <<: *vm_job_labels_template
     extra_refs:
@@ -429,7 +429,7 @@ postsubmits:
   - name: post-master-kyma-gke-integration
     <<: *gke_job_template
     branches:
-    - master
+    - ^master$
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
@@ -440,7 +440,7 @@ postsubmits:
   - name: post-master-kyma-gke-central-connector
     <<: *gke_central_job_template
     branches:
-      - master
+      - ^master$
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
@@ -451,7 +451,7 @@ postsubmits:
   - name: post-master-kyma-gke-upgrade
     <<: *gke_upgrade_job_template
     branches:
-      - master
+      - ^master$
     labels:
       preset-bot-github-token: "true"
       preset-build-master: "true"

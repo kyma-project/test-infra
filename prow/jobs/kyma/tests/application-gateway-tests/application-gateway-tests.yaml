@@ -31,7 +31,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-tests-application-gateway-tests
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^tests/application-gateway-tests/"
     extra_refs:
@@ -67,7 +67,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-tests-application-gateway-tests
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^tests/application-gateway-tests/"
     extra_refs:

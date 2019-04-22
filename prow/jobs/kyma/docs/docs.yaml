@@ -40,7 +40,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-docs
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^docs/"
       extra_refs:
@@ -103,7 +103,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-docs
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^docs/"
       extra_refs:

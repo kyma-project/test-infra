@@ -32,7 +32,7 @@ presubmits: # runs on PRs
     - name: pre-master-vstudio-extension
       always_run: true
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -42,7 +42,7 @@ postsubmits:
   kyma-incubator/vstudio-extension:
     - name: post-master-vstudio-extension
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template

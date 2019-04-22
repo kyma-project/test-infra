@@ -31,7 +31,7 @@ presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-master-website-tools-content-loader
       branches:
-        - master
+        - ^master$
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -41,7 +41,7 @@ postsubmits:
   kyma-project/website:
     - name: post-master-website-tools-content-loader
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
