@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-#Description: encrypts cert files from gcloud
-# The purpose of the script is to encrypt the private key and cert for HTTPS in nightly builds.
+#Description: gets cert files from gcloud
+# The purpose of the script is to get the private key and cert for HTTPS in nightly builds, if they are valid and availble
 #
 #Expected vars:
 # - KYMA_NIGHTLY_CERT: kyma nighly cert
@@ -67,13 +67,13 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
     else
         shout "Generating Certificates because it's invalid"
         #Generate the certs
-        #generateLetsEncryptCert
+        generateLetsEncryptCert
 
     fi
 else
     shout "Generating Certificates because none exist"
     #Generate the certs
-    #generateLetsEncryptCert
+    generateLetsEncryptCert
 fi
 TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
 export TLS_CERT
