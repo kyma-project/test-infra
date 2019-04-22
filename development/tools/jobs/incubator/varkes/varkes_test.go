@@ -23,7 +23,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	masterPresubmit := tester.FindPresubmitJobByName(varkesPresubmits, jobName, "master")
 	expName := jobName
 	assert.Equal(t, expName, masterPresubmit.Name)
-	assert.Equal(t, []string{"master", "release"}, masterPresubmit.Branches)
+	assert.Equal(t, []string{"^master$", "release"}, masterPresubmit.Branches)
 	assert.Equal(t, 10, masterPresubmit.MaxConcurrency)
 	assert.False(t, masterPresubmit.SkipReport)
 	assert.True(t, masterPresubmit.Decorate)
@@ -51,7 +51,7 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	masterPostsubmit := tester.FindPostsubmitJobByName(varkesPostsubmits, jobName, "master")
 	expName := jobName
 	assert.Equal(t, expName, masterPostsubmit.Name)
-	assert.Equal(t, []string{"master"}, masterPostsubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, masterPostsubmit.Branches)
 	assert.Equal(t, 10, masterPostsubmit.MaxConcurrency)
 	assert.True(t, masterPostsubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/varkes", masterPostsubmit.PathAlias)

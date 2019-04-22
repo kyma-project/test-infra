@@ -62,7 +62,7 @@ func TestETCDBackupJobPostsubmit(t *testing.T) {
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
