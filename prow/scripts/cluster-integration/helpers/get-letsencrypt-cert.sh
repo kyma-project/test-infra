@@ -8,16 +8,7 @@
 # - DOMAIN: encryption key name used to encrypt the files
 # - KYMA_NIGHTLY_KEY: kyma nightly key
 # - TEST_INFRA_SOURCES_DIR: directory of scripts
-#!/usr/bin/env bash
 
-#Description: encrypts cert files from gcloud
-# The purpose of the script is to encrypt the private key and cert for HTTPS in nightly builds.
-#
-#Expected vars:
-# - KYMA_NIGHTLY_CERT: kyma nighly cert
-# - DOMAIN: encryption key name used to encrypt the files
-# - KYMA_NIGHTLY_KEY: kyma nightly key
-# - TEST_INFRA_SOURCES_DIR: directory of scripts
 
 set -o errexit
 
