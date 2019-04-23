@@ -169,7 +169,7 @@ function createCluster() {
     fi
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
-    CLEANUP_CLUSTER="true"
+    CLEANUP_CLUSTER="false"
 }
 
 function getLastReleaseVersion() {

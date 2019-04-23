@@ -4,6 +4,11 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+kk_test_ref: &kk_test_ref
+  org: kasiakepka
+  repo: test-infra
+  path_alias: github.com/kasiakepka/test-infra
+
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -381,15 +386,15 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
-    - master
+    - feature/xip-gke-upgrade
     <<: *gke_xip_upgrade_job_template
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - <<: *kk_test_ref
+      base_ref: feature/xip-gke-upgrade
 
   - name: pre-master-kyma-xip-gke-central-connector
     branches:
