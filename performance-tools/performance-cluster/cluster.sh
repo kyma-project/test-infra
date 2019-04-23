@@ -4,7 +4,8 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any
 #set -x
 export CURRENT_PATH="$PWD"
-export DOCKER_PUSH_REPOSITORY="eu.gcr.io/kyma-project"
+export DOCKER_REGESTRY="eu.gcr.io"
+export DOCKER_PUSH_REPOSITORY="eu.gcr.io/sap-kyma-prow"
 export DOCKER_PUSH_DIRECTORY="/develop"
 export KYMA_PROJECT_DIR="kyma-project"
 export CLOUDSDK_CORE_PROJECT="kyma-project"
@@ -14,15 +15,14 @@ export CLOUDSDK_DNS_ZONE_NAME="build-kyma" #GCloud DNS Zone Name (NOT it's DNS n
 export DOCKER_IN_DOCKER_ENABLED="false"
 export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"
-export ACTION=""
-export CLUSTER_GRADE=""
 export CLOUDSDK_PROJECT="kyma-project"
 
-# shellcheck disable=SC1090
 source "${CURRENT_PATH}/scripts/library.sh"
-export GOOGLE_APPLICATION_CREDENTIALS="${CURRENT_PATH}/sa-venturasr-cred.json"
-export INPUT_CLUSTER_NAME="venturasr"
 
+##################### REMOVE #######################################
+# export GOOGLE_APPLICATION_CREDENTIALS="${CURRENT_PATH}/sa-venturasr-cred.json"
+# export INPUT_CLUSTER_NAME="venturasr"
+##############################################################################
 
 if [ $# -lt "1" ]; then
         echo "Usage:  $0 --action (create or delete) --cluster-grade (production or development)"
@@ -58,7 +58,6 @@ do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
 if [[ "${CLUSTER_GRADE}" == "" ]] || [[ "${ACTION}" == "" ]]; then
     shoutFail "--action and --cluster-grade required"
     exit 0
@@ -83,13 +82,15 @@ if [[ "${CLUSTER_GRADE}" == "development" ]] && [[ ! -d "${GOPATH}/src/github.co
     exit 0
 fi
 
+export ACTION
+export CLUSTER_GRADE
+
 setupCluster() {
     # gcloud container clusters list --project $CLOUDSDK_PROJECT
     # atx-prow2          europe-west3-a  1.11.8-gke.6    35.198.132.189  n1-standard-1  1.11.7-gke.6 *   3          RUNNING
     # gcloud container clusters get-credentials atx-prow2 --zone $CLOUDSDK_COMPUTE_ZONE --project $CLOUDSDK_PROJECT
 
     set +o errexit
-    # shellcheck disable=SC1090
     source "scripts/kyma-gke-cluster.sh"
     set -o errexit
 

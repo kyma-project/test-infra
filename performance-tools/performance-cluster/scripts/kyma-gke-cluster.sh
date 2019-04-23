@@ -80,12 +80,14 @@ export REPO_OWNER
 export REPO_NAME
 export CURRENT_TIMESTAMP
 
-# shellcheck disable=SC1090
 source "${CURRENT_PATH}/scripts/library.sh"
 
 shout "Authenticate"
 date
 init
+
+date
+authenticateDocker
 
 if [[ "${ACTION}" == "delete" ]]; then
 
@@ -96,7 +98,7 @@ if [[ "${ACTION}" == "delete" ]]; then
 elif [[ "${ACTION}" == "create" ]]; then
     shout "Create new cluster"
     date
-    # shellcheck disable=SC1090
+
     source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-cluster.sh"
     shout "Install tiller"
     date
@@ -109,14 +111,13 @@ elif [[ "${ACTION}" == "create" ]]; then
 
     shout "Install kyma"
     date
-    # shellcheck disable=SC1090
+
     source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/install-kyma.sh"
-    # shellcheck disable=SC1090
+
     source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/get-helm-certs.sh"
 
     shout "Test Kyma"
     date
-    # shellcheck disable=SC1090
     "${KYMA_SCRIPTS_DIR}"/testing.sh
 else
    shoutFail "None of the actions met"

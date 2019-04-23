@@ -8,7 +8,6 @@
 # - DNS_SUBDOMAIN: name of the GCP managed zone
 # - DNS_DOMAIN: name of the cluster
 
-# shellcheck disable=SC1090
 source "${CURRENT_PATH}/scripts/library.sh"
 
 function createCluster() {
@@ -23,36 +22,7 @@ function createCluster() {
 	if [ "${discoverUnsetVar}" = true ] ; then
 		exit 1
 	fi
-#	shout "Reserve IP Address for Ingressgateway"
-#	date
-#	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-#	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}"/reserve-ip-address.sh)
-#	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
-#
-#	shout "Create DNS Record for Ingressgateway IP"
-#	date
-#	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-#	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}"/create-dns-record.sh
-#
-#	shout "Reserve IP Address for Remote Environments"
-#	date
-#	REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
-#	REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}"/reserve-ip-address.sh)
-#	echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-#
-#	shout "Create DNS Record for Remote Environments IP"
-#	date
-#	REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-#	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}"/create-dns-record.sh
-#
-#	NETWORK_EXISTS=$("${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/network-exists.sh")
-#	if [ "$NETWORK_EXISTS" -gt 0 ]; then
-#		shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-#		date
-#		"${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-network-with-subnet.sh"
-#	else
-#		shout "Network ${GCLOUD_NETWORK_NAME} exists"
-#	fi
+
 
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
@@ -65,8 +35,6 @@ function createCluster() {
 	fi
 	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}"/provision-gke-cluster.sh
 
-    #export REMOTEENVS_IP_ADDRESS
-    #export GATEWAY_IP_ADDRESS
 }
 
 createCluster

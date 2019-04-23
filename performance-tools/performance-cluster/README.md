@@ -1,11 +1,54 @@
 # Performance Cluster
 
+## Overview
 
-### Description: Kyma Upgradeability plan on GKE. The purpose of this script is to install last Kyma release on real GKE cluster, upgrade it with current changes and trigger testing.
+Are a set of scripts that deploy on demand a kyma cluster on GCP.
 
-## Expected vars:
+## Commands
 
-- INPUT_CLUSTER_NAME - name for the new cluster
+- `action`: It is a required command which indicates the action to be executed for the scripts. Possible action values are `create` or `delete`
+- `cluster-grade`: It is a required command which indicates the cluster grade of the kyma cluster. Possible action values are `production` or `development`
+
+
+## Usage
+
+Creates GKE cluster and install a  Kyma:
+
+- cluster grade development
+
+```bash
+
+./cluster.sh --action create --cluster-grade development
+
+```
+
+- cluster grade production
+
+Creates GKE cluster and install a  Kyma cluster grade production:
+
+```bash
+
+./cluster.sh --action create --cluster-grade production
+
+```
+
+Delete Kyma and remove GKE cluster:
+
+- cluster grade development
+
+```bash
+./cluster.sh --action delete --cluster-grade development
+```
+
+- cluster grade production
+
+```bash
+./cluster.sh --action delete --cluster-grade production
+```
+
+## Expected environment variables:
+
+- DOCKER_REGESTRY
 - DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. ""
 - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
 - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation.
@@ -20,6 +63,7 @@
 
 - MACHINE_TYPE (optional): GKE machine type
 - CLUSTER_VERSION (optional): GKE cluster version
+- INPUT_CLUSTER_NAME - name for the new cluster
 
 ### Permissions: 
 
@@ -31,3 +75,6 @@ In order to run this script you need to use a service account with permissions e
 - Service Account User
 - Storage Admin
 - Compute Network Admin
+
+> **NOTE**: Docker container regestry credentials are needed for executing `docker push`. [Authentication methods](https://cloud.google.com/container-registry/docs/advanced-authentication)
+

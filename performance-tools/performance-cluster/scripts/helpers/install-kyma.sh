@@ -14,8 +14,6 @@
 # - CURRENT_TIMESTAMP: Current timestamp which is computed as $(date +%Y%m%d) 
 # - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
-# shellcheck disable=SC1090
-# shellcheck disable=SC1090
 source "${CURRENT_PATH}/scripts/library.sh"
 function installKyma() {
 
@@ -38,8 +36,7 @@ function installKyma() {
     shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
     source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-image.sh"
 
-	# shellcheck disable=SC2153
-    KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
@@ -48,9 +45,6 @@ function installKyma() {
 
 	#export DOMAIN=$(kubectl get cm net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.domainName}')
 #export DNS_ZONE={YOUR_DNS_ZONE}
-
-	# shellcheck disable=SC1090
-    #source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
 	shout "Apply Kyma config"
 	date
@@ -94,4 +88,15 @@ function waitUntilInstallerApiAvailable() {
     done
 }
 
+function createConfigmap() {
+    shout "Creating Configmap"
+
+    # get kubeconfig
+    # gcloud container clusters get-credentials "${INPUT_CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_ZONE}" --project="${CLOUDSDK_CORE_PROJECT}"
+    # kubectl create configmap kyma-config --from-file="${HOME}/.kube/config"
+
+}
+
 installKyma
+
+createConfigmap
