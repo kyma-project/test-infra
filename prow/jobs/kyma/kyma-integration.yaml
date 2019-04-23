@@ -879,3 +879,26 @@ periodics:
           requests:
             memory: 1Gi
             cpu: 400m
+
+- name: kyma-minikube-verification
+  decorate: true
+  cron: "0 */2 * * 1-5" #At minute 0 past every 2nd hour on every day-of-week from Monday through Friday
+  labels:
+    <<: *vm_job_labels_template
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+      path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m  
+

@@ -328,7 +328,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 13)
+	assert.Len(t, periodics, 14)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -522,4 +522,19 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	//TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-gopher-pr")
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "OUT_OF_DATE_DAYS", "3")
+
+	expName = "kyma-minikube-verification"
+	minikubeVerification := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, minikubeVerification)
+	assert.Equal(t, expName, minikubeVerification.Name)
+	assert.True(t, minikubeVerification.Decorate)
+	assert.Equal(t, "0 */2 * * 1-5", minikubeVerification.Cron)
+	tester.AssertThatHasPresets(t, minikubeVerification.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
+	tester.AssertThatHasExtraRefs(t, minikubeVerification.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	testContainer := minikubeVerification.Spec.Containers[0]
+	assert.Equal(t, tester.ImageBootstrap001, testContainer.Image)
+	assert.Len(t, testContainer.Command, 1)
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh", testContainer.Command[0])
+	tester.AssertThatSpecifiesResourceRequests(t, minikubeVerification.JobBase)
+
 }
