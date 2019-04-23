@@ -4,11 +4,9 @@
 # The purpose of the script is to get the private key and cert for HTTPS in nightly builds, if they are valid and availble
 #
 #Expected vars:
-# - KYMA_NIGHTLY_CERT: kyma nighly cert
 # - DOMAIN: encryption key name used to encrypt the files
 # - KYMA_NIGHTLY_KEY: kyma nightly key
 # - TEST_INFRA_SOURCES_DIR: directory of scripts
-
 
 set -o errexit
 
@@ -16,34 +14,39 @@ set -o errexit
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function generateLetsEncryptCert() {
-    shout "Generate lets encrypt certificate"
-    date
+    # shout "Generate lets encrypt certificate"
+    # date
 
-    mkdir letsencrypt
-    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
+    # mkdir letsencrypt
+    # cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+    # docker run  --name certbot \
+    #     --rm  \
+    #     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+    #     certbot/dns-google \
+    #     certonly \
+    #     -m "kyma.bot@sap.com" \
+    #     --agree-tos \
+    #     --no-eff-email \
+    #     --dns-google \
+    #     --dns-google-credentials /etc/letsencrypt/service-account.json \
+    #     --server https://acme-v02.api.letsencrypt.org/directory \
+    #     --dns-google-propagation-seconds=600 \
+    #     -d "*.${DOMAIN}"
+    # shout "Encrypting certs"
+    # "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt-certs.sh"
+gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.cert.encrypted" "gs://kyma-prow-secrets/nightly/"     
+gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.key.encrypted" "gs://kyma-prow-secrets/nightly/"  
 
+echo "delme"
 }
 
 shout "Copying certificate if it is already in GCP Bucket."
 mkdir -p ./letsencrypt/live/"${DOMAIN}"
 
 set +e # temp disable fail on exit to retrieve error codes of stat
-gsutil -q stat "gs://kyma-prow-secrets/${KYMA_NIGHTLY_CERT}"
+gsutil -q stat "gs://kyma-prow-secrets/nightly/${DOMAIN}.build.kyma-project.io.cert.encrypted"
 VALID_CERT_FILE=$?
-gsutil -q stat "gs://kyma-prow-secrets/${KYMA_NIGHTLY_KEY}"
+gsutil -q stat "gs://kyma-prow-secrets/nightly/${DOMAIN}.build.kyma-project.io.key.encrypted"
 VALID_KEY_FILE=$?
 set -o errexit # reset to errexit
 
@@ -51,8 +54,8 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
     shout "Certificate exists in vault. Downloading Key"
     #copy the files
 
-    gsutil cp "gs://kyma-prow-secrets/${KYMA_NIGHTLY_CERT}" "./letsencrypt/live/${DOMAIN}" 
-    gsutil cp "gs://kyma-prow-secrets/${KYMA_NIGHTLY_KEY}" "./letsencrypt/live/${DOMAIN}"
+    gsutil cp "gs://kyma-prow-secrets/nightly/${DOMAIN}.build.kyma-project.io.cert.encrypted" "./letsencrypt/live/${DOMAIN}" 
+    gsutil cp "gs://kyma-prow-secrets/nightly/${DOMAIN}.build.kyma-project.io.key.encrypted" "./letsencrypt/live/${DOMAIN}"
 
     shout "Decrypting certs"
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt-certs.sh"

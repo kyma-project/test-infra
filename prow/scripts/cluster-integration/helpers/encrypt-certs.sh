@@ -13,16 +13,16 @@ set -o errexit
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-shout "Encrypting ${KYMA_NIGHTLY_KEY}"
+shout "Encrypting ${DOMAIN}.build.kyma-project.io.key.encrypted"
 gcloud kms encrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
 	--plaintext-file "./letsencrypt/live/${DOMAIN}/privkey.pem" \
- 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/${KYMA_NIGHTLY_KEY}"
+ 	--ciphertext-file "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.key.encrypted"
 
-shout "Encrypting ${KYMA_NIGHTLY_CERT}"
+shout "Encrypting ${DOMAIN}.build.kyma-project.io.cert.encrypted"
 gcloud kms encrypt --location global \
 	--keyring "${KYMA_KEYRING}" \
 	--key "${KYMA_ENCRYPTION_KEY}" \
 	--plaintext-file "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
-	--ciphertext-file "./letsencrypt/live/${DOMAIN}/${KYMA_NIGHTLY_CERT}"
+	--ciphertext-file "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.cert.encrypted"

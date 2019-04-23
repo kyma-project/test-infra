@@ -283,26 +283,6 @@ presets:
     env:
       - name: KYMA_ENCRYPTION_KEY
         value: projects/kyma-project/locations/global/keyRings/kyma-prow/cryptoKeys/kyma-prow-encryption
-  - labels:
-     preset-kyma-gke-nightly-key: "true"
-    env:
-      - name: KYMA_NIGHTLY_KEY
-        value: nightly-gke-tls-integration-app-client-key.encrypted
-  - labels:
-     preset-kyma-gke-nightly-cert: "true"
-    env:
-      - name: KYMA_NIGHTLY_CERT
-        value: nightly-gke-tls-integration-app-client-cert.encrypted 
-  - labels:
-     preset-kyma-aks-nightly-key: "true"
-    env:
-      - name: KYMA_NIGHTLY_KEY
-        value: nightly-aks-tls-integration-app-client-key.encrypted
-  - labels:
-     preset-kyma-aks-nightly-cert: "true"
-    env:
-      - name: KYMA_NIGHTLY_CERT
-        value: nightly-aks-tls-integration-app-client-cert.encrypted 
 
 
 branch-protection:
