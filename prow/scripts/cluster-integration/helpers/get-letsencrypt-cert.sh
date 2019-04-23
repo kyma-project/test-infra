@@ -14,26 +14,26 @@ set -o errexit
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function generateLetsEncryptCert() {
-    # shout "Generate lets encrypt certificate"
-    # date
+    shout "Generate lets encrypt certificate"
+    date
 
-    # mkdir letsencrypt
-    # cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    # docker run  --name certbot \
-    #     --rm  \
-    #     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-    #     certbot/dns-google \
-    #     certonly \
-    #     -m "kyma.bot@sap.com" \
-    #     --agree-tos \
-    #     --no-eff-email \
-    #     --dns-google \
-    #     --dns-google-credentials /etc/letsencrypt/service-account.json \
-    #     --server https://acme-v02.api.letsencrypt.org/directory \
-    #     --dns-google-propagation-seconds=600 \
-    #     -d "*.${DOMAIN}"
-    # shout "Encrypting certs"
-    # "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt-certs.sh"
+    mkdir letsencrypt
+    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+    docker run  --name certbot \
+        --rm  \
+        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+        certbot/dns-google \
+        certonly \
+        -m "kyma.bot@sap.com" \
+        --agree-tos \
+        --no-eff-email \
+        --dns-google \
+        --dns-google-credentials /etc/letsencrypt/service-account.json \
+        --server https://acme-v02.api.letsencrypt.org/directory \
+        --dns-google-propagation-seconds=600 \
+        -d "*.${DOMAIN}"
+    shout "Encrypting certs"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt-certs.sh"
 gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.cert.encrypted" "gs://kyma-prow-secrets/nightly/"     
 gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.key.encrypted" "gs://kyma-prow-secrets/nightly/"  
 
