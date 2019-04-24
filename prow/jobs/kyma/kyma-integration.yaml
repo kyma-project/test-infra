@@ -4,6 +4,12 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+kk_test_ref: &kk_test_ref
+  org: kasiakepka
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -109,6 +115,46 @@ gke_xip_job_template: &gke_xip_job_template
           memory: 200Mi
           cpu: 80m
 
+gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+gke_xip_central_job_template: &gke_xip_central_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_labels_template: &gke_job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
@@ -172,6 +218,41 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.0
+
+  # TODO this is temprary job to test PR-904
+  - name: pre-master-kyma-guard-job
+    branches:
+      - master
+    skip_report: true
+    decorate: true
+    always_run: true
+    optional: true
+    path_alias: github.com/kyma-project/kyma
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/cmd/jobguard/run.sh"
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aszecowka-github-token #secret was added manually
+                  key: token
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    extra_refs:
+      - org: pkosiec
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: wait-for-jobs
 
   - name: pre-master-kyma-gke-integration
     branches:
@@ -336,8 +417,31 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
+      - <<: *kk_test_ref
+        base_ref: feature/xip-gke-upgrade
+
+  - name: pre-master-kyma-xip-gke-upgrade
+    branches:
+    - master
+    <<: *gke_xip_upgrade_job_template
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *kk_test_ref
+      base_ref: feature/xip-gke-upgrade
+
+  - name: pre-master-kyma-xip-gke-central-connector
+    branches:
+    - master
+    <<: *gke_xip_central_job_template
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *kk_test_ref
+      base_ref: feature/xip-gke-upgrade
 
   - name: pre-rel10-kyma-gke-central-connector
     branches:
@@ -815,3 +919,26 @@ periodics:
           requests:
             memory: 1Gi
             cpu: 400m
+
+- name: kyma-minikube-verification
+  decorate: true
+  cron: "0 */1 * * 1-5" #At minute 0 past every hour on every day-of-week from Monday through Friday
+  labels:
+    <<: *vm_job_labels_template
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+      path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m  
+
