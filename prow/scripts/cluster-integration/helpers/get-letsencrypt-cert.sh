@@ -38,7 +38,7 @@ function generateLetsEncryptCert() {
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh"  \
         "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
-        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
+        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
 
     gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" "gs://kyma-prow-secrets/certificates/"
     gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" "gs://kyma-prow-secrets/certificates/"    
