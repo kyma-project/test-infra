@@ -50,8 +50,8 @@ func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) err
 		if err != nil {
 			return false, err
 		}
-
 		filteredStatuses := jobguard.Filter(statuses, byNames)
+		log.Printf("Got %d statuses, %d of them match name regexp\n", len(statuses), len(filteredStatuses))
 
 		failedStatuses := jobguard.Filter(filteredStatuses, jobguard.FailedStatusPredicate)
 
