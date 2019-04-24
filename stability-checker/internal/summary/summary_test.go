@@ -54,9 +54,10 @@ func fixReadCloser() *fakeReadCloser {
 	buff := bytes.NewBuffer(nil)
 	for _, e := range fixLogEntries() {
 		b, _ := json.Marshal(e)
-		buff.Write([]byte("---"))
+		buff.Write([]byte("---\n"))
 		buff.Write(b)
-		buff.Write([]byte("not json"))
+		buff.Write([]byte("\n"))
+		buff.Write([]byte("not json\n"))
 	}
 
 	out := &fakeReadCloser{

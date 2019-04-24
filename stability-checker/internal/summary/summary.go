@@ -42,30 +42,29 @@ func (c *Service) GetTestSummaryForExecutions(testIDs []string) ([]SpecificTestS
 		return nil, err
 	}
 	defer readCloser.Close()
-	stream := json.NewDecoder(readCloser)
+
+	br := bufio.NewReader(readCloser)
 
 	testIDMap := map[string]struct{}{}
 	for _, id := range testIDs {
 		testIDMap[id] = struct{}{}
 	}
-
 	aggregated := newStatsAggregator()
-loop:
-	for {
-		var e log.Entry
-		switch err := stream.Decode(&e); err {
+
+	end := false
+	for !end {
+		line, err := br.ReadBytes('\n')
+		switch err {
 		case nil:
 		case io.EOF:
-			break loop
+			end = true
 		default:
-			stream, err = c.skipNonJSON(stream)
-			switch err {
-			case nil:
-			case io.EOF:
-				break loop
-			default:
-				return nil, errors.Wrap(err, "while decoding stream")
-			}
+			return nil, errors.Wrap(err, "while scanning stream")
+		}
+
+		var e log.Entry
+		err = json.Unmarshal(line, &e)
+		if err != nil {
 			continue
 		}
 
@@ -77,33 +76,64 @@ loop:
 			}
 			aggregated.Merge(tm)
 		}
-
 	}
+
+	// create a buffered reader to skip non json part of the log
+	//	input := bufio.NewReader(readCloser)
+	//	stream := json.NewDecoder(input)
+	//
+	//	testIDMap := map[string]struct{}{}
+	//	for _, id := range testIDs {
+	//		testIDMap[id] = struct{}{}
+	//	}
+	//
+	//	aggregated := newStatsAggregator()
+	//loop:
+	//	for {
+	//		var e log.Entry
+	//		switch err := stream.Decode(&e); err {
+	//		case nil:
+	//		case io.EOF:
+	//			break loop
+	//		default:
+	//			e := c.skipNonJSON(input)
+	//			switch e {
+	//			case nil:
+	//				stream = json.NewDecoder(input)
+	//				stream.Buffered()
+	//			case io.EOF:
+	//				break loop
+	//			default:
+	//				return nil, errors.Wrap(err, "while decoding stream")
+	//			}
+	//			continue
+	//		}
+	//
+	//		_, contains := testIDMap[e.Log.TestRunID]
+	//		if contains {
+	//			tm, err := c.processor.Process([]byte(e.Log.Message))
+	//			if err != nil {
+	//				return nil, errors.Wrap(err, "while processing test output")
+	//			}
+	//			aggregated.Merge(tm)
+	//		}
+	//
+	//	}
 
 	return aggregated.ToList(), nil
 }
 
-func (c *Service) skipNonJSON(stream *json.Decoder) (*json.Decoder, error) {
-	r := stream.Buffered()
-	br, ok := r.(*bufio.Reader)
-	if !ok {
-		br = bufio.NewReader(r)
-	}
+func (c *Service) skipNonJSON(br *bufio.Reader) error {
 
 	for {
 		// read characters until an error or beginning of a new json
 		ch, _, err := br.ReadRune()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if ch == '{' {
 			err := br.UnreadRune()
-			if err != nil {
-				return nil, err
-			}
-			stream = json.NewDecoder(br)
-			// returns new json decoder which start from the '{' character
-			return stream, nil
+			return err
 		}
 	}
 }
