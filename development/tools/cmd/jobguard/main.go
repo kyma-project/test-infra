@@ -19,7 +19,7 @@ type config struct {
 	JobNamePattern string `envconfig:"default=components"`
 
 	InitialSleepTime time.Duration `envconfig:"default=1m"`
-	TickTime         time.Duration `envconfig:"default=15s"`
+	TickTime         time.Duration `envconfig:"default=15s"` // TODO rename
 	Timeout          time.Duration `envconfig:"default=15m"`
 }
 
@@ -50,6 +50,7 @@ func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) err
 		if err != nil {
 			return false, err
 		}
+		return false, errors.New("some error")
 		filteredStatuses := jobguard.Filter(statuses, byNames)
 		log.Printf("Got %d statuses, %d of them match name regexp\n", len(statuses), len(filteredStatuses))
 
