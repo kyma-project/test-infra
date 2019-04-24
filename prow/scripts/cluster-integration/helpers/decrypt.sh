@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-#Description: decrypts cert files from gcloud
+#Description: decrypts files from gcloud
 # The purpose of the script is to decrypt encrypted kyma files.
 #
 #Expected vars:
-# - PLAIN_TEXT - plain text file output
-# - CIPHER_TEXT - file to be decrypted
 # - KYMA_KEYRING: kyma keyring name
 # - KYMA_ENCRYPTION_KEY: encryption key name used to encrypt the files
 # - TEST_INFRA_SOURCES_DIR: Path for shout library

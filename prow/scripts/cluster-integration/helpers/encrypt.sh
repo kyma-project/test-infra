@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-#Description: encrypts cert files from gcloud
+#Description: encrypts files from gcloud
 # The purpose of the script is to encrypt plaintext files for kyma.
 #
 #Expected vars:
 # - KYMA_KEYRING: kyma keyring name
-# - PLAIN_TEXT - plain text input file
-# - CIPHER_TEXT - encrypted output file
 # - KYMA_ENCRYPTION_KEY: encryption key name used to encrypt the files
 # - TEST_INFRA_SOURCES_DIR: Path for shout library
 
@@ -14,8 +12,6 @@ set -o errexit
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-set -o errexit
 
 
 readonly PLAIN_TEXT="$1"
