@@ -17,12 +17,12 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 
 readonly PLAIN_TEXT="$1"
-if [ -p ${PLAIN_TEXT} ]; then
+if [ -p "$PLAIN_TEXT" ]; then
     echo "Plaintext variable is missing!"
 		exit 1
 fi
 readonly CIPHER_TEXT="$2"
-if [ -c ${CIPHER_TEXT} ]; then
+if [ -c "$CIPHER_TEXT" ]; then
     echo "Ciphertext variable is missing!"
 		exit 1
 fi
