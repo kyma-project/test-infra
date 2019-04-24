@@ -12,16 +12,17 @@ func WaitAtMost(fn func() (bool, error), tickTime time.Duration, duration time.D
 	tick := time.Tick(tickTime)
 
 	for {
-		ok, err := fn()
+
+		if ok, err := fn(); err != nil {
+			log.Println(err)
+		} else if ok {
+			return nil
+		}
+
 		select {
 		case <-timeout:
 			return fmt.Errorf("waiting for resource failed in given timeout %f second(s)", duration.Seconds())
 		case <-tick:
-			if err != nil {
-				log.Println(err)
-			} else if ok {
-				return nil
-			}
 		}
 	}
 }

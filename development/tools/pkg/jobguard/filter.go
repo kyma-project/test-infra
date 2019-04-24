@@ -1,48 +1,37 @@
 package jobguard
 
-import "strings"
+import (
+	"regexp"
+)
 
 // FilterStatusByName filters statuses by name
-func FilterStatusByName(in []Status, substring string) []Status {
-	var filteredStatuses []Status
 
-	for _, s := range in {
-		if !strings.Contains(s.Name, substring) {
-			continue
-		}
+type StatusPredicate func(in Status) bool
 
-		filteredStatuses = append(filteredStatuses, s)
+func NameRegexpPredicate(pattern string) (StatusPredicate, error) {
+	r, err := regexp.Compile(pattern)
+	if err != nil {
+		return nil, err
 	}
-
-	return filteredStatuses
+	return func(in Status) bool {
+		return r.MatchString(in.Name)
+	},nil
 }
 
-// FailedStatuses filters statuses by failed or error state
-func FailedStatuses(in []Status) []Status {
-	var filteredStatuses []Status
-
-	for _, s := range in {
-		if s.State != string(StatusStateError) && s.State != string(StatusStateFailure) {
-			continue
-		}
-
-		filteredStatuses = append(filteredStatuses, s)
-	}
-
-	return filteredStatuses
+func FailedStatusPredicate(in Status) bool {
+	return in.State == string(StatusStateError) || in.State == string(StatusStateFailure)
 }
 
-// PendingStatuses filters statuses by pending state
-func PendingStatuses(in []Status) []Status {
+func PendingStatusPredicate(in Status) bool {
+	return in.State == string(StatusStatePending)
+}
+func Filter(in []Status, pred StatusPredicate) []Status {
 	var filteredStatuses []Status
 
 	for _, s := range in {
-		if s.State != string(StatusStatePending) {
-			continue
+		if pred(s) {
+			filteredStatuses = append(filteredStatuses, s)
 		}
-
-		filteredStatuses = append(filteredStatuses, s)
 	}
-
 	return filteredStatuses
 }

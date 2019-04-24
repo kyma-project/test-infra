@@ -38,6 +38,7 @@ type StatusFetcherConfig struct {
 	Owner             string `envconfig:"default=kyma-project,REPO_OWNER"`
 	Repository        string `envconfig:"default=kyma,REPO_NAME"`
 	PullRequestNumber int    `envconfig:"PULL_NUMBER"`
+	PullSHA           string `envconfig:"PULL_SHA"`
 }
 
 // StatusFetcher fetches all statuses for a pull request
@@ -50,24 +51,7 @@ type StatusFetcher struct {
 
 // NewStatusFetcher constructs new StatusFetcher instance
 func NewStatusFetcher(cfg StatusFetcherConfig, client *http.Client) *StatusFetcher {
-	return &StatusFetcher{cfg: cfg, client: client}
-}
-
-// Init fetches pull request details and gathers essential pieces of information
-// TODO: Do we really need this? What about PULL_PULL_SHA env?
-func (f *StatusFetcher) Init() error {
-	prDetails, err := f.pullRequestDetails()
-	if err != nil {
-		return errors.Wrapf(err, "while getting pull request details for %d", f.cfg.PullRequestNumber)
-	}
-
-	commitSHA, err := f.pullRequestHeadSHA(prDetails)
-	if err != nil {
-		return errors.Wrapf(err, "while getting status URL for %d", f.cfg.PullRequestNumber)
-	}
-
-	f.commitSHA = commitSHA
-	return nil
+	return &StatusFetcher{cfg: cfg, client: client, commitSHA: cfg.PullSHA}
 }
 
 // Do fetches statuses for a pull request
@@ -78,42 +62,10 @@ func (f *StatusFetcher) Do() ([]Status, error) {
 
 	statuses, err := f.fetchStatuses(f.commitSHA)
 	if err != nil {
-		return nil, errors.Wrapf(err, "while fetching status for %d", f.cfg.PullRequestNumber)
+		return nil, errors.Wrapf(err, "while fetching status for PR %d with commit SHA %s", f.cfg.PullRequestNumber, f.commitSHA)
 	}
 
 	return statuses, nil
-}
-
-func (f *StatusFetcher) pullRequestDetails() (map[string]interface{}, error) {
-	prDetailsURL := fmt.Sprintf("%s/repos/%s/%s/pulls/%d", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, f.cfg.PullRequestNumber)
-
-	resp, err := f.client.Get(prDetailsURL)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while doing request to %s", prDetailsURL)
-	}
-
-	var result map[string]interface{}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while decoding response from request to %s", prDetailsURL)
-	}
-	defer closeResponseBody(resp)
-
-	return result, nil
-}
-
-func (f *StatusFetcher) pullRequestHeadSHA(prDetails map[string]interface{}) (string, error) {
-	head, ok := prDetails["head"].(map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("Incorrect type for head: %T", prDetails["head"])
-	}
-
-	sha, ok := head["sha"].(string)
-	if !ok {
-		return "", fmt.Errorf("Incorrect type for sha: %T", head["sha"])
-	}
-
-	return sha, nil
 }
 
 type statusResponse struct {
@@ -129,7 +81,6 @@ func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
 	pageNo := 1
 
 	for {
-		log.Printf("\tPaginating through statuses... Page number: %d\n", pageNo)
 		pageURL := fmt.Sprintf("%s?page=%d&per_page=100", url, pageNo)
 
 		resp, err := f.client.Get(pageURL)
@@ -137,25 +88,28 @@ func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
 			return nil, errors.Wrapf(err, "while doing request to %s", url)
 		}
 
+		if resp.StatusCode != http.StatusOK {
+			closeResponseBody(resp)
+			return nil, fmt.Errorf("returned unexpected status code, expected: [%d], got: [%d]", http.StatusOK, resp.StatusCode)
+		}
+
 		var result statusResponse
 		err = json.NewDecoder(resp.Body).Decode(&result)
+		closeResponseBody(resp)
 		if err != nil {
 			return nil, errors.Wrapf(err, "while decoding response from request to %s", url)
 		}
 
 		if len(result.Statuses) == 0 {
-			return nil, fmt.Errorf("Error while paginating on pages. No statuses found on page %d", pageNo)
+			return nil, fmt.Errorf("error while paginating on pages. No statuses found on page %d", pageNo)
 		}
 
 		statuses = append(statuses, result.Statuses...)
-
-		closeResponseBody(resp)
 
 		log.Printf("\tFetched statuses: %d/%d\n", len(statuses), result.TotalCount)
 		if len(statuses) == result.TotalCount {
 			break
 		}
-
 		pageNo++
 	}
 
@@ -164,5 +118,8 @@ func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
 
 func closeResponseBody(resp *http.Response) {
 	_, _ = io.Copy(ioutil.Discard, resp.Body)
-	_ = resp.Body.Close()
+	err := resp.Body.Close()
+	if err != nil {
+		log.Println("\tGot error on closing response body:", err)
+	}
 }

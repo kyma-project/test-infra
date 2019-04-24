@@ -16,7 +16,7 @@ type config struct {
 
 	AuthorizationToken string `envconfig:"optional,GITHUB_TOKEN"`
 
-	JobFilterSubstring string `envconfig:"default=components"`
+	JobNamePattern string `envconfig:"default=components"`
 
 	InitialSleepTime time.Duration `envconfig:"default=1m"`
 	TickTime         time.Duration `envconfig:"default=15s"`
@@ -33,33 +33,33 @@ func main() {
 	client := jobguard.HTTPClient(cfg.AuthorizationToken)
 	statusFetcher := jobguard.NewStatusFetcher(cfg.StatusFetcher, client)
 
-	log.Printf("Sleeping for %.f minute(s)...", cfg.InitialSleepTime.Minutes())
+	log.Printf("Sleeping for %v...", cfg.InitialSleepTime)
 	time.Sleep(cfg.InitialSleepTime)
-
-	log.Print("Initializing...")
-	err = statusFetcher.Init()
-	exitOnError(err, "while initialization")
 
 	err = waitForDependentJobs(statusFetcher, cfg)
 	exitOnError(err, "while waiting for success statuses")
 }
 
 func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) error {
+	byNames, err := jobguard.NameRegexpPredicate(cfg.JobNamePattern)
+	if err != nil {
+		return err
+	}
 	return jobguard.WaitAtMost(func() (bool, error) {
 		statuses, err := statusFetcher.Do()
 		if err != nil {
 			return false, err
 		}
 
-		filteredStatuses := jobguard.FilterStatusByName(statuses, cfg.JobFilterSubstring)
+		filteredStatuses := jobguard.Filter(statuses, byNames)
 
-		failedStatuses := jobguard.FailedStatuses(filteredStatuses)
+		failedStatuses := jobguard.Filter(filteredStatuses, jobguard.FailedStatusPredicate)
 
 		if len(failedStatuses) > 0 {
-			log.Fatalf("[ERROR] At least one job with substring '%s' failed:\n%s", cfg.JobFilterSubstring, printJobNames(failedStatuses))
+			log.Fatalf("[ERROR] At least one job with name matching pattern '%s' failed:\n%s", cfg.JobNamePattern, printJobNames(failedStatuses))
 		}
 
-		pendingStatuses := jobguard.PendingStatuses(filteredStatuses)
+		pendingStatuses := jobguard.Filter(filteredStatuses, jobguard.PendingStatusPredicate)
 		pendingStatusesLen := len(pendingStatuses)
 
 		if pendingStatusesLen > 0 {
@@ -67,7 +67,7 @@ func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) err
 			return false, nil
 		}
 
-		log.Printf("[SUCCESS] All jobs with substring '%s' finished.", cfg.JobFilterSubstring)
+		log.Printf("[SUCCESS] All jobs with name matching pattern '%s' finished.", cfg.JobNamePattern)
 
 		return true, nil
 	}, cfg.TickTime, cfg.Timeout)
