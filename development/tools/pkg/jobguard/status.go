@@ -37,7 +37,6 @@ type StatusFetcherConfig struct {
 	Origin            string `envconfig:"default=https://api.github.com,API_ORIGIN"`
 	Owner             string `envconfig:"default=kyma-project,REPO_OWNER"`
 	Repository        string `envconfig:"default=kyma,REPO_NAME"`
-	PullRequestNumber int    `envconfig:"PULL_NUMBER"`
 	PullSHA           string `envconfig:"PULL_SHA"`
 }
 
@@ -62,7 +61,7 @@ func (f *StatusFetcher) Do() ([]Status, error) {
 
 	statuses, err := f.fetchStatuses(f.commitSHA)
 	if err != nil {
-		return nil, errors.Wrapf(err, "while fetching status for PR %d with commit SHA %s", f.cfg.PullRequestNumber, f.commitSHA)
+		return nil, errors.Wrapf(err, "while fetching status for commit SHA %s", f.commitSHA)
 	}
 
 	return statuses, nil
