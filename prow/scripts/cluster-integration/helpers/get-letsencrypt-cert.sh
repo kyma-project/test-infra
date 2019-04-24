@@ -33,11 +33,17 @@ function generateLetsEncryptCert() {
         --dns-google-propagation-seconds=600 \
         -d "*.${DOMAIN}"
     shout "Encrypting certs"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt-certs.sh"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh" \
+    "./letsencrypt/live/${DOMAIN}/privkey.pem"  \
+    "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.key.encrypted"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh"  \
+"./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
+"./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.cert.encrypted"
+
 gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.cert.encrypted" "gs://kyma-prow-secrets/nightly/"     
 gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.key.encrypted" "gs://kyma-prow-secrets/nightly/"  
 
-echo "delme"
 }
 
 shout "Copying certificate if it is already in GCP Bucket."
@@ -58,8 +64,13 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
     gsutil cp "gs://kyma-prow-secrets/nightly/${DOMAIN}.build.kyma-project.io.key.encrypted" "./letsencrypt/live/${DOMAIN}"
 
     shout "Decrypting certs"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt-certs.sh"
-
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" \
+    "./letsencrypt/live/${DOMAIN}/privkey.pem"  \
+    "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.key.encrypted"
+    
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh"  \
+    "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
+    "./letsencrypt/live/${DOMAIN}/${DOMAIN}.build.kyma-project.io.cert.encrypted"
     set +e
     openssl x509 -checkend 86400 -noout -in "$(pwd)/letsencrypt/live/${DOMAIN}/fullchain.pem"
     VALID_CERT=$?
