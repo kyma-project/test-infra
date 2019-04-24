@@ -91,7 +91,3 @@ else
     #Generate the certs
     generateLetsEncryptCert
 fi
-TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-export TLS_CERT
-TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-export TLS_KEY
