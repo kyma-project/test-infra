@@ -219,6 +219,41 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.0
 
+  # TODO this is temprary job to test PR-904
+  - name: pre-master-kyma-guard-job
+    branches:
+      - master
+    skip_report: true
+    decorate: true
+    always_run: true
+    optional: true
+    path_alias: github.com/kyma-project/kyma
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/cmd/jobguard/run.sh"
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: aszecowka-github-token #secret was added manually
+                  key: token
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    extra_refs:
+      - org: pkosiec
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: wait-for-jobs
+
   - name: pre-master-kyma-gke-integration
     branches:
     - master
