@@ -55,9 +55,7 @@ export CLUSTER_SIZE="Standard_DS2_v2"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
 export CLUSTER_K8S_VERSION="1.11"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
-
 PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -209,33 +207,6 @@ function addGithubDexConnector() {
     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
-
-function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
-
-    mkdir letsencrypt
-    cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
-
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-    export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-    export TLS_KEY
-}
-
 function setupKubeconfig() {
     shout "Setup kubeconfig and create ClusterRoleBinding"
     date
@@ -335,8 +306,7 @@ createGroup
 installCluster
 
 createPublicIPandDNS
-generateAndExportLetsEncryptCert
-
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 setupKubeconfig
 installTiller
 installKyma

@@ -648,6 +648,8 @@ periodics:
 - name: kyma-gke-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-nightly-github-integration: "true"
@@ -754,6 +756,8 @@ periodics:
 - name: kyma-aks-nightly
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-nightly-aks-github-integration: "true"
