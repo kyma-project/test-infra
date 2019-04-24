@@ -15,6 +15,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function generateLetsEncryptCert() {
     shout "Generate lets encrypt certificate"
+    
+    mkdir -p ./letsencrypt
     cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
     docker run  --name certbot \
         --rm  \
@@ -45,7 +47,6 @@ function generateLetsEncryptCert() {
 }
 
 shout "Copying certificate if it is already in GCP Bucket."
-mkdir -p ./letsencrypt/live/"${DOMAIN}"
 
 set +e # temp disable fail on exit to retrieve error codes of stat
 gsutil -q stat "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted"
@@ -58,6 +59,7 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
     shout "Certificate exists in vault. Downloading Key"
 
     #copy the files
+    mkdir -p "./letsencrypt/live/${DOMAIN}"
     gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted" "./letsencrypt/live/${DOMAIN}" 
     gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.key.encrypted" "./letsencrypt/live/${DOMAIN}" 
 
