@@ -20,7 +20,6 @@ The `test-infra` repository has the following structure:
 
 ```
 
-
 ### Prow
 
 The `test-infra` repository contains the whole configuration of Prow. Its purpose is to replace the internal Continuous Integration (CI) tool in the `kyma-project` organization.
