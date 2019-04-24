@@ -4,6 +4,11 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+kk_test_ref: &kk_test_ref
+  org: kasiakepka
+  repo: test-infra
+  path_alias: github.com/kasiakepka/test-infra
+
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -83,6 +88,67 @@ gke_central_job_template: &gke_central_job_template
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+gke_xip_job_template: &gke_xip_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  always_run: false
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+gke_xip_central_job_template: &gke_xip_central_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"
       resources:
         requests:
           memory: 200Mi
@@ -306,6 +372,40 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.9
+        
+  - name: pre-master-kyma-xip-integration
+    branches:
+       - master
+    <<: *gke_xip_job_template
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *kk_test_ref
+        base_ref: feature/xip-gke-upgrade
+
+  - name: pre-master-kyma-xip-gke-upgrade
+    branches:
+    - master
+    <<: *gke_xip_upgrade_job_template
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *kk_test_ref
+      base_ref: feature/xip-gke-upgrade
+
+  - name: pre-master-kyma-xip-gke-central-connector
+    branches:
+    - master
+    <<: *gke_xip_central_job_template
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *kk_test_ref
+      base_ref: feature/xip-gke-upgrade
 
   - name: pre-rel10-kyma-gke-central-connector
     branches:
@@ -779,3 +879,26 @@ periodics:
           requests:
             memory: 1Gi
             cpu: 400m
+
+- name: kyma-minikube-verification
+  decorate: true
+  cron: "0 */2 * * 1-5" #At minute 0 past every 2nd hour on every day-of-week from Monday through Friday
+  labels:
+    <<: *vm_job_labels_template
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+      path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m  
+
