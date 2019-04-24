@@ -15,7 +15,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function generateLetsEncryptCert() {
     shout "Generate lets encrypt certificate"
-    mkdir letsencrypt
+    mkdir -p letsencrypt
     cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
     docker run  --name certbot \
         --rm  \

@@ -19,7 +19,7 @@ fi
 shout "Generate lets encrypt certificate"
 date
 
-mkdir letsencrypt
+mkdir -p letsencrypt
 cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
 docker run  --name certbot \
     --rm  \
