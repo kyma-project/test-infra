@@ -28,7 +28,7 @@ function generateLetsEncryptCert() {
         --no-eff-email \
         --dns-google \
         --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
+        --server https://acme-staging-v02.api.letsencrypt.org/directory \
         --dns-google-propagation-seconds=600 \
         -d "*.${DOMAIN}"
     shout "Encrypting certs"
