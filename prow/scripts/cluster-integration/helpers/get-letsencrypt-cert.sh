@@ -82,6 +82,7 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
     else
         shout "Generating Certificates because it's invalid"
         #Generate the certs
+        rm -rf "./letsencrypt/live"
         generateLetsEncryptCert
 
     fi
