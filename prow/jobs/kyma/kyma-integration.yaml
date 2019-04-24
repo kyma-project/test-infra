@@ -7,7 +7,8 @@ test_infra_ref: &test_infra_ref
 kk_test_ref: &kk_test_ref
   org: kasiakepka
   repo: test-infra
-  path_alias: github.com/kasiakepka/test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 
 kyma_ref: &kyma_ref
   org: kyma-project
