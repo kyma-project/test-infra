@@ -1,11 +1,9 @@
 package printer
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/kyma-project/test-infra/stability-checker/internal/log"
 	"github.com/kyma-project/test-infra/stability-checker/internal/runner"
@@ -20,7 +18,6 @@ const (
 type LogPrinter struct {
 	stream           *json.Decoder
 	requestedTestIDs map[string]struct{}
-	out              io.Writer
 }
 
 // New returns new instance of LogPrinter
@@ -36,7 +33,6 @@ func New(stream *json.Decoder, ids []string) *LogPrinter {
 	return &LogPrinter{
 		stream:           stream,
 		requestedTestIDs: mapped,
-		out:              os.Stdout,
 	}
 }
 
@@ -49,48 +45,18 @@ func (l *LogPrinter) PrintFailedTestOutput() error {
 		case io.EOF:
 			return nil
 		default:
-			switch skipErr := l.skipNonJSON(); skipErr {
-			case nil:
-			case io.EOF:
-				return nil
-			default:
-				return skipErr
-			}
-			continue
+			return err
 		}
 
 		if l.shouldSkipLogMsg(e) {
 			continue
 		}
 
-		msg := fmt.Sprintf("%s[%s] Output for test id %q %s\n %s \n", invertColor, e.Log.Time, e.Log.TestRunID, noColor, e.Log.Message)
-		if _, err := l.out.Write([]byte(msg)); err != nil {
-			return err
-		}
-	}
-}
+		fmt.Print(invertColor)
+		fmt.Printf("[%s] Output for test id %q", e.Log.Time, e.Log.TestRunID)
+		fmt.Print(noColor)
 
-func (l *LogPrinter) skipNonJSON() error {
-	r := l.stream.Buffered()
-	br, ok := r.(*bufio.Reader)
-	if !ok {
-		br = bufio.NewReader(r)
-	}
-
-	for {
-		// read characters until an error or beginning of a new json
-		ch, _, err := br.ReadRune()
-		if err != nil {
-			return err
-		}
-		if ch == '{' {
-			err := br.UnreadRune()
-			if err != nil {
-				return err
-			}
-			l.stream = json.NewDecoder(br)
-			return nil
-		}
+		fmt.Printf("\n %s \n", e.Log.Message)
 	}
 }
 
