@@ -310,7 +310,7 @@ fi
 
 shout "Apply Asset Store configuration"
 date
-GCS_KEY_JSON=$(< "${GOOGLE_APPLICATION_CREDENTIALS}" base64 | sed 's/ /\\ /g')
+GCS_KEY_JSON=$(< "${GOOGLE_APPLICATION_CREDENTIALS}" base64 | tr -d '\n')
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
