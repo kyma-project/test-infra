@@ -58,6 +58,7 @@ type statusResponse struct {
 	Statuses   []Status `json:"statuses"`
 }
 
+// Do fetches Github statuses
 func (f *GithubStatusFetcher) Do() ([]Status, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/commits/%s/status", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, f.cfg.CommitSHA)
 
