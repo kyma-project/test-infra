@@ -152,6 +152,7 @@ presets:
           secretKeyRef:
             name: kyma-bot-npm-token
             key: token
+  # Kyma-bot
   - labels:
       preset-bot-github-token: "true"
     env:
@@ -179,6 +180,35 @@ presets:
     volumeMounts:
       - name: kyma-bot-github-ssh
         mountPath: /etc/credentials/kyma-bot-github-ssh
+        readOnly: true
+  # Kyma-website-bot
+  - labels:
+      preset-website-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-website-bot-github-token
+            key: token
+  - labels:
+      preset-website-bot-github-identity: "true"
+    env:
+      - name: BOT_GITHUB_EMAIL
+        value: "kymaopensource@gmail.com"
+      - name: BOT_GITHUB_USER
+        value: "kyma-website-bot"
+  - labels:
+      preset-website-bot-github-ssh: "true"
+    env:
+      - name: BOT_GITHUB_SSH_PATH
+        value: /etc/credentials/kyma-website-bot-github-ssh/key.pem
+    volumes:
+      - name: kyma-website-bot-github-ssh
+        secret:
+          secretName: kyma-website-bot-github-ssh
+    volumeMounts:
+      - name: kyma-website-bot-github-ssh
+        mountPath: /etc/credentials/kyma-website-bot-github-ssh
         readOnly: true
   - labels:
       preset-kyma-snyk-token: "true"
