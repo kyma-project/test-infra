@@ -474,8 +474,6 @@ presubmits: # runs on PRs
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
       base_ref: sc-e2e-tests
-    - <<: *kyma_ref
-      base_ref: master
     spec:
       volumes:
       - name: sa-stability-fluentd-storage-writer
