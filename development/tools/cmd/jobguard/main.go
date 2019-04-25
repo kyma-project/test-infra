@@ -9,6 +9,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/jobguard"
 	"github.com/pkg/errors"
 	"github.com/vrischmann/envconfig"
+	prowCfg "k8s.io/test-infra/prow/config"
 )
 
 type config struct {
@@ -19,8 +20,12 @@ type config struct {
 	JobNamePattern string `envconfig:"default=components"`
 
 	InitialSleepTime time.Duration `envconfig:"default=1m"`
-	TickTime         time.Duration `envconfig:"default=15s"` // TODO rename
+	RetryDuration    time.Duration `envconfig:"default=15s"`
 	Timeout          time.Duration `envconfig:"default=15m"`
+	Prow             struct {
+		ConfigFile    string
+		JobsDirectory string
+	}
 }
 
 func main() {
@@ -36,11 +41,29 @@ func main() {
 	log.Printf("Sleeping for %v...", cfg.InitialSleepTime)
 	time.Sleep(cfg.InitialSleepTime)
 
-	err = waitForDependentJobs(statusFetcher, cfg)
+	repoName := fmt.Sprintf("%s/%s", cfg.StatusFetcher.Owner, cfg.StatusFetcher.Repository)
+	jobsNumber, err := getNumberOfJobs(cfg.Prow.ConfigFile, cfg.Prow.JobsDirectory, repoName)
+	exitOnError(err, "while calculating number of jobs")
+	err = waitForDependentJobs(statusFetcher, cfg, jobsNumber)
 	exitOnError(err, "while waiting for success statuses")
 }
 
-func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) error {
+func getNumberOfJobs(prowConfigFile, jobsDirectory, repoName string) (int, error) {
+	c, err := prowCfg.Load(prowConfigFile, jobsDirectory)
+	if err != nil {
+		return 0, err
+	}
+
+	matchingJobs := 0
+	for _, job := range c.Presubmits[repoName] {
+		if job.AlwaysRun || job.RunIfChanged != "" {
+			matchingJobs++
+		}
+	}
+	return matchingJobs, nil
+}
+
+func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config, totalNumberOfJobs int) error {
 	byNames, err := jobguard.NameRegexpPredicate(cfg.JobNamePattern)
 	if err != nil {
 		return err
@@ -49,6 +72,11 @@ func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) err
 		statuses, err := statusFetcher.Do()
 		if err != nil {
 			return false, err
+		}
+
+		if len(statuses) != totalNumberOfJobs {
+			log.Printf("Got %d statuses, expected %d", len(statuses), totalNumberOfJobs)
+			return false, nil
 		}
 		filteredStatuses := jobguard.Filter(statuses, byNames)
 		log.Printf("Got %d statuses, %d of them match name regexp\n", len(statuses), len(filteredStatuses))
@@ -70,7 +98,7 @@ func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config) err
 		log.Printf("[SUCCESS] All jobs with name matching pattern '%s' finished.", cfg.JobNamePattern)
 
 		return true, nil
-	}, cfg.TickTime, cfg.Timeout)
+	}, cfg.RetryDuration, cfg.Timeout)
 }
 
 func printJobNames(in []jobguard.Status) string {
