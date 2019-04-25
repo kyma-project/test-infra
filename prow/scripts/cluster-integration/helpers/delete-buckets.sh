@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Deletes remote resources created by Asset Store
+#Description: Deletes buckets created by Asset Store
 #
 #Expected vars:
 # - CLUSTER_BUCKETS: list of ClusterBuckets to remove
@@ -14,7 +14,7 @@ set +e
 
 function deleteBucket {
     echo "Delete Bucket: ${1}"
-    gsutil rm -r "gs://${1}"
+    # gsutil rm -r "gs://${1}" # temporary disable for testing
 }
 
 if [ -n "${UPLOADER_PRIVATE_BUCKET}" ]; then
