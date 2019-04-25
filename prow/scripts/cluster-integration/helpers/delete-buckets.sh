@@ -14,7 +14,7 @@ set +e
 
 function deleteBucket {
     echo "Delete Bucket: ${1}"
-    # gsutil rm -r "gs://${1}" # temporary disable for testing
+    gsutil rm -r "gs://${1}"
 }
 
 if [ -n "${UPLOADER_PRIVATE_BUCKET}" ]; then
