@@ -15,7 +15,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function generateLetsEncryptCert() {
     shout "Generate lets encrypt certificate"
-    mkdir letsencrypt
+    
+    mkdir -p ./letsencrypt
     cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
     docker run  --name certbot \
         --rm  \
@@ -38,7 +39,7 @@ function generateLetsEncryptCert() {
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh"  \
         "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
-        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
+        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
 
     gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" "gs://kyma-prow-secrets/certificates/"
     gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" "gs://kyma-prow-secrets/certificates/"    
@@ -46,7 +47,6 @@ function generateLetsEncryptCert() {
 }
 
 shout "Copying certificate if it is already in GCP Bucket."
-mkdir -p ./letsencrypt/live/"${DOMAIN}"
 
 set +e # temp disable fail on exit to retrieve error codes of stat
 gsutil -q stat "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted"
@@ -57,10 +57,11 @@ set -o errexit # reset to errexit
 
 if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
     shout "Certificate exists in vault. Downloading Key"
-    #copy the files
 
-gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted" "./letsencrypt/live/${DOMAIN}" 
-gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.key.encrypted" "./letsencrypt/live/${DOMAIN}" 
+    #copy the files
+    mkdir -p "./letsencrypt/live/${DOMAIN}"
+    gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted" "./letsencrypt/live/${DOMAIN}" 
+    gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.key.encrypted" "./letsencrypt/live/${DOMAIN}" 
 
 
     shout "Decrypting certs"
@@ -81,6 +82,7 @@ gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.key.encrypted" "./letse
     else
         shout "Generating Certificates because it's invalid"
         #Generate the certs
+        rm -rf "./letsencrypt/live"
         generateLetsEncryptCert
 
     fi
@@ -89,7 +91,3 @@ else
     #Generate the certs
     generateLetsEncryptCert
 fi
-TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-export TLS_CERT
-TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-export TLS_KEY
