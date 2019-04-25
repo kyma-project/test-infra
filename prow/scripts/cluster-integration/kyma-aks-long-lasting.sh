@@ -253,8 +253,6 @@ function installKyma() {
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-    MINIO_PERSISTENCE_ENABLED="true"
-    MINIO_GCS_GATEWAY_ENABLED="false"
 
     echo "Apply Azure crb for healthz"
     kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
@@ -275,8 +273,6 @@ function installKyma() {
         | sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
         | sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
         | sed -e "s/__.*__//g" \
-        | sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
-        | sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
         | kubectl apply -f-
 
     waitUntilInstallerApiAvailable

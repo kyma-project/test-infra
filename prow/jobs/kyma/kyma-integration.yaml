@@ -33,7 +33,7 @@ vm_job_labels_template: &vm_job_labels_template
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
-gke_job_template_3612_gcp_minio_test: &gke_job_template_3612_gcp_minio_test
+gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   optional: true
   skip_report: false
   decorate: true
@@ -48,7 +48,7 @@ gke_job_template_3612_gcp_minio_test: &gke_job_template_3612_gcp_minio_test
       - "bash"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-3612-gcp-minio-test.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
       resources:
         requests:
           memory: 200Mi
@@ -239,11 +239,12 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.0
   
-  - name: pre-master-kyma-gke-integration-3612-gcp-minio_test
+  - name: pre-master-kyma-gke-minio-gateway
     branches:
     - master
-    <<: *gke_job_template_3612_gcp_minio_test
-    run_if_changed: "^(resources|installation)"
+    <<: *gke_minio_gateway_job_template
+    #run_if_changed: "^(resources\/assetstore|installation)" # uncomment when stable
+    always_run: false # remove when stable
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
@@ -624,7 +625,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central'"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central|gke-minio'"
       resources:
         requests:
           memory: 1Gi

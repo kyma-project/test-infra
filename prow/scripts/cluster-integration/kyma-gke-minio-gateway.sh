@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-#This script will be used to test switching minio to gateway mode (#3612)
-#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
+#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster with Minio Gateway enabled.
 #
 #
 #Expected vars:
@@ -65,13 +64,16 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    if [[ "$MINIO_GCS_GATEWAY_ENABLED" == "true" ]]; then
-        shout "Cleanup assetstore content"
-        # shellcheck disable=SC1090
-        source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-assetstore-content.sh"
-    fi
-
     if [ -n "${CLEANUP_CLUSTER}" ]; then
+        shout "Collect buckets"
+        date
+
+        CLUSTER_BUCKETS=$(kubectl get clusterbuckets -o jsonpath="{.items[*].status.remoteName}" | xargs -n1 echo)
+        BUCKETS=$(kubectl get buckets --all-namespaces -o jsonpath="{.items[*].status.remoteName}" | xargs -n1 echo)
+        UPLOADER_PRIVATE_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.private}" | xargs -n1 echo)
+        UPLOADER_PUBLIC_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.public}" | xargs -n1 echo)
+        export CLUSTER_BUCKETS BUCKETS UPLOADER_PRIVATE_BUCKET UPLOADER_PUBLIC_BUCKET
+
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
 
@@ -86,6 +88,10 @@ cleanup() {
         shout "Delete orphaned PVC disks..."
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+
+        shout "Delete Buckets"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-buckets.sh"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
@@ -143,22 +149,22 @@ RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gkeint-pr"
+    readonly COMMON_NAME_PREFIX="gke-minio-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gkeint-rel"
+    readonly COMMON_NAME_PREFIX="gke-minio-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gkeint-commit"
+    readonly COMMON_NAME_PREFIX="gke-minio-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
 
@@ -264,10 +270,6 @@ export DOMAIN
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-MINIO_PERSISTENCE_ENABLED="false"
-MINIO_GCS_GATEWAY_ENABLED="true"
-MINIO_GCS_GATEWAY_GCS_KEY_SECRET="assetstore-gcs-credentials"
-MINIO_GCS_GATEWAY_PROJECT_ID="kyma-project"
 
 shout "Apply Kyma config"
 date
@@ -288,10 +290,6 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
         | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
         | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
         | sed -e "s/__.*__//g" \
-        | sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
-        | sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
-        | sed -e "s/__MINIO_GCS_GATEWAY_GCS_KEY_SECRET__/${MINIO_GCS_GATEWAY_GCS_KEY_SECRET}/g" \
-        | sed -e "s/__MINIO_GCS_GATEWAY_PROJECT_ID__/${MINIO_GCS_GATEWAY_PROJECT_ID}/g" \
         | kubectl apply -f-
 else
     echo "Manual concatenating yamls"
@@ -307,19 +305,29 @@ else
     | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
-    | sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
-    | sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
     | kubectl apply -f-
 fi
 
-if [[ "$MINIO_GCS_GATEWAY_ENABLED" == "true" ]]; then
-    shout "Create kyma-system namespace"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-kyma-system-namespace.sh"
-
-    shout "Create assetstore secret for credentials"
-    # shellcheck disable=SC1090
-    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-assetstore-gcs-credentials.sh"
-fi
+shout "Apply Asset Store configuration"
+date
+GCS_KEY_JSON=$(< "${GOOGLE_APPLICATION_CREDENTIALS}" base64 | sed 's/ /\\ /g')
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: asset-store-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: assetstore
+    kyma-project.io/installation: ""
+data:
+  minio.persistence.enabled: "false"
+  minio.gcsgateway.enabled: "true"
+  minio.defaultBucket.enabled: "false"
+  minio.gcsgateway.projectId: "${CLOUDSDK_CORE_PROJECT}"
+  minio.gcsgateway.gcsKeyJson: "${GCS_KEY_JSON}"
+EOF
 
 shout "Trigger installation"
 date

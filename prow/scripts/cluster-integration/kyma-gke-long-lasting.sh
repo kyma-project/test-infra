@@ -202,11 +202,7 @@ function installKyma() {
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-	MINIO_PERSISTENCE_ENABLED="true"
-	MINIO_GCS_GATEWAY_ENABLED="false"
-	MINIO_GCS_GATEWAY_GCS_KEY_SECRET="assetstore-gcs-credentials"
-	MINIO_GCS_GATEWAY_PROJECT_ID="kyma-project"
-
+	
 
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 	export DOMAIN
@@ -234,22 +230,9 @@ function installKyma() {
 		| sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
 		| sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
 		| sed -e "s/__.*__//g" \
-		| sed -e "s/__MINIO_PERSISTENCE_ENABLED__/${MINIO_PERSISTENCE_ENABLED}/g" \
-		| sed -e "s/__MINIO_GCS_GATEWAY_ENABLED__/${MINIO_GCS_GATEWAY_ENABLED}/g" \
-		| sed -e "s/__MINIO_GCS_GATEWAY_GCS_KEY_SECRET__/${MINIO_GCS_GATEWAY_GCS_KEY_SECRET}/g" \
-        | sed -e "s/__MINIO_GCS_GATEWAY_PROJECT_ID__/${MINIO_GCS_GATEWAY_PROJECT_ID}/g" \
 		| kubectl apply -f-
 
 	waitUntilInstallerApiAvailable
-
-	if [[ "$MINIO_GCS_GATEWAY_ENABLED" == "true" ]]; then
-		shout "Create kyma-system namespace"
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-kyma-system-namespace.sh"
-
-		shout "Create assetstore secret for credentials"
-		# shellcheck disable=SC1090
-		source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-assetstore-gcs-credentials.sh"
-	fi
 
 	shout "Trigger installation"
 	date
@@ -268,11 +251,6 @@ function installKyma() {
 }
 
 function cleanup() {
-	if [[ "$MINIO_GCS_GATEWAY_ENABLED" == "true" ]]; then
-        shout "Cleanup assetstore content"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-assetstore-content.sh"
-    fi
-
     OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
