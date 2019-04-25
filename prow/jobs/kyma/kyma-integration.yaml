@@ -861,8 +861,7 @@ periodics:
                 name: kyma-alerts-slack-api-url
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
-            # TODO: change to "#c4core-kyma-ci-force" when PR from https://github.com/kyma-project/kyma/issues/2873 will be merge
-            value: "#test-nonexistent"
+            value: "#c4core-kyma-ci-force"
         command:
           - "bash"
         args:
