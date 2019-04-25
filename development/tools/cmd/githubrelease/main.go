@@ -22,9 +22,9 @@ var (
 	kymaConfigLocal        = flag.String("kymaConfigLocal", "kyma-config-local.yaml", "Filename for local config artifact [Optional]")
 	kymaInstallerLocal     = flag.String("kymaInstallerLocal", "kyma-installer-local.yaml", "Filename for installer local artifact [Optional]")
 	kymaChangelog          = flag.String("kymaChangelog", "release-changelog.md", "Filename for release changelog [Optional]")
-	githubRepoOwner        = flag.String("githubRepoOwner", "", "Status repository owner [Required]")
-	githubRepoName         = flag.String("githubRepoName", "", "Status repository name [Required]")
-	githubAccessToken      = flag.String("githubAccessToken", "", "Status access token [Required]")
+	githubRepoOwner        = flag.String("githubRepoOwner", "", "Github repository owner [Required]")
+	githubRepoName         = flag.String("githubRepoName", "", "Github repository name [Required]")
+	githubAccessToken      = flag.String("githubAccessToken", "", "Github access token [Required]")
 	releaseVersionFilePath = flag.String("releaseVersionFilePath", "", "Full path to a file containing release version [Required]")
 )
 
@@ -77,7 +77,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Status release
+	// Github release
 	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaInstallerLocal, *kymaConfigCluster, *kymaInstallerCluster)
 	if err != nil {
 		log.Fatal(err)
