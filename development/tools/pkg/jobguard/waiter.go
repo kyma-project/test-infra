@@ -12,7 +12,6 @@ func WaitAtMost(fn func() (bool, error), tickTime time.Duration, duration time.D
 	tick := time.Tick(tickTime)
 
 	for {
-
 		if ok, err := fn(); err != nil {
 			log.Println(err)
 		} else if ok {

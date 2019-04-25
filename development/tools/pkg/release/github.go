@@ -15,13 +15,13 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 )
 
-// GithubAPI exposes functions to interact with Github releases
+// GithubAPI exposes functions to interact with Status releases
 type GithubAPI interface {
 	CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error)
 	UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error)
 }
 
-// githubAPIWrapper implements functions to interact with Github releases
+// githubAPIWrapper implements functions to interact with Status releases
 type githubAPIWrapper struct {
 	githubClient *github.Client
 	repoOwner    string
@@ -45,7 +45,7 @@ func NewGithubAPI(ctx context.Context, githubAccessToken, repoOwner, repoName st
 	}
 }
 
-// CreateGithubRelease creates a Github release
+// CreateGithubRelease creates a Status release
 func (gaw *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
 	common.Shout("Creating release %s in %s/%s repository", opts.Version, gaw.repoOwner, gaw.repoName)
 

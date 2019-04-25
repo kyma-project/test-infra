@@ -4,8 +4,6 @@ import (
 	"regexp"
 )
 
-// FilterStatusByName filters statuses by name
-
 type StatusPredicate func(in Status) bool
 
 func NameRegexpPredicate(pattern string) (StatusPredicate, error) {

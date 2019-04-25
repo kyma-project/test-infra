@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-//Options represents the query options to create a Github release
+//Options represents the query options to create a Status release
 type Options struct {
 	Version      string
 	Body         string

@@ -32,48 +32,34 @@ type Status struct {
 	State string `json:"state"`
 }
 
-// StatusFetcherConfig holds configuraiton for StatusFetcher
-type StatusFetcherConfig struct {
-	Origin            string `envconfig:"default=https://api.github.com,API_ORIGIN"`
-	Owner             string `envconfig:"default=kyma-project,REPO_OWNER"`
-	Repository        string `envconfig:"default=kyma,REPO_NAME"`
-	PullSHA           string `envconfig:"PULL_SHA"`
+// StatusConfig holds configuraiton for GithubStatusFetcher
+type StatusConfig struct {
+	Origin     string `envconfig:"default=https://api.github.com,API_ORIGIN"`
+	Owner      string `envconfig:"default=kyma-project,REPO_OWNER"`
+	Repository string `envconfig:"default=kyma,REPO_NAME"`
+	CommitSHA  string `envconfig:"COMMIT_SHA"`
 }
 
-// StatusFetcher fetches all statuses for a pull request
-type StatusFetcher struct {
-	cfg    StatusFetcherConfig
+// GithubStatusFetcher fetches all statuses for the given commit
+type GithubStatusFetcher struct {
+	cfg    StatusConfig
 	client *http.Client
 
-	commitSHA string
 }
 
-// NewStatusFetcher constructs new StatusFetcher instance
-func NewStatusFetcher(cfg StatusFetcherConfig, client *http.Client) *StatusFetcher {
-	return &StatusFetcher{cfg: cfg, client: client, commitSHA: cfg.PullSHA}
+// NewStatusFetcher constructs new GithubStatusFetcher instance
+func NewStatusFetcher(cfg StatusConfig, client *http.Client) *GithubStatusFetcher {
+	return &GithubStatusFetcher{cfg: cfg, client: client}
 }
 
-// Do fetches statuses for a pull request
-func (f *StatusFetcher) Do() ([]Status, error) {
-	if f.commitSHA == "" {
-		return nil, errors.New("Commit SHA not fetched")
-	}
-
-	statuses, err := f.fetchStatuses(f.commitSHA)
-	if err != nil {
-		return nil, errors.Wrapf(err, "while fetching status for commit SHA %s", f.commitSHA)
-	}
-
-	return statuses, nil
-}
 
 type statusResponse struct {
 	TotalCount int      `json:"total_count"`
 	Statuses   []Status `json:"statuses"`
 }
 
-func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/commits/%s/status", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, commmitSHA)
+func (f *GithubStatusFetcher) Do() ([]Status, error) {
+	url := fmt.Sprintf("%s/repos/%s/%s/commits/%s/status", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, f.cfg.CommitSHA)
 
 	var statuses []Status
 
@@ -88,13 +74,13 @@ func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
 		}
 
 		if resp.StatusCode != http.StatusOK {
-			closeResponseBody(resp)
+			f.closeResponseBody(resp)
 			return nil, fmt.Errorf("returned unexpected status code, expected: [%d], got: [%d]", http.StatusOK, resp.StatusCode)
 		}
 
 		var result statusResponse
 		err = json.NewDecoder(resp.Body).Decode(&result)
-		closeResponseBody(resp)
+		f.closeResponseBody(resp)
 		if err != nil {
 			return nil, errors.Wrapf(err, "while decoding response from request to %s", url)
 		}
@@ -115,7 +101,7 @@ func (f *StatusFetcher) fetchStatuses(commmitSHA string) ([]Status, error) {
 	return statuses, nil
 }
 
-func closeResponseBody(resp *http.Response) {
+func (f *GithubStatusFetcher) closeResponseBody(resp *http.Response) {
 	_, _ = io.Copy(ioutil.Discard, resp.Body)
 	err := resp.Body.Close()
 	if err != nil {

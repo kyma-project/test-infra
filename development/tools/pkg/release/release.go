@@ -6,12 +6,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Creator exposes a function to create complete Github releases
+// Creator exposes a function to create complete Status releases
 type Creator interface {
 	CreateNewRelease(ctx context.Context, relOpts *Options, artifactNames ...string) error
 }
 
-// creatorImpl provides functions to create a complete Github Release
+// creatorImpl provides functions to create a complete Status Release
 type creatorImpl struct {
 	github  GithubAPI
 	storage StorageAPI
@@ -31,7 +31,7 @@ func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, ar
 	//Release
 	release, _, err := c.github.CreateGithubRelease(ctx, relOpts)
 	if err != nil {
-		return errors.Wrap(err, "while creating Github release")
+		return errors.Wrap(err, "while creating Status release")
 	}
 
 	for _, artifact := range artifactNames {

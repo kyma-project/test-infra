@@ -13,15 +13,14 @@ import (
 )
 
 type config struct {
-	StatusFetcher jobguard.StatusFetcherConfig
-
-	AuthorizationToken string `envconfig:"optional,GITHUB_TOKEN"`
-
-	JobNamePattern string `envconfig:"default=components"`
-
 	InitialSleepTime time.Duration `envconfig:"default=1m"`
-	RetryDuration    time.Duration `envconfig:"default=15s"`
+	RetryInterval    time.Duration `envconfig:"default=15s"`
 	Timeout          time.Duration `envconfig:"default=15m"`
+
+	Status             jobguard.StatusConfig
+	AuthorizationToken string `envconfig:"optional,GITHUB_TOKEN"`
+	JobNamePattern     string `envconfig:"default=components"`
+
 	Prow             struct {
 		ConfigFile    string
 		JobsDirectory string
@@ -33,17 +32,20 @@ func main() {
 
 	var cfg config
 	err := envconfig.Init(&cfg)
-	exitOnError(err, "while loading configuration")
 
-	client := jobguard.HTTPClient(cfg.AuthorizationToken)
-	statusFetcher := jobguard.NewStatusFetcher(cfg.StatusFetcher, client)
+	exitOnError(err, "while loading configuration")
 
 	log.Printf("Sleeping for %v...", cfg.InitialSleepTime)
 	time.Sleep(cfg.InitialSleepTime)
 
-	repoName := fmt.Sprintf("%s/%s", cfg.StatusFetcher.Owner, cfg.StatusFetcher.Repository)
+	repoName := fmt.Sprintf("%s/%s", cfg.Status.Owner, cfg.Status.Repository)
 	jobsNumber, err := getNumberOfJobs(cfg.Prow.ConfigFile, cfg.Prow.JobsDirectory, repoName)
 	exitOnError(err, "while calculating number of jobs")
+	log.Printf("Expected number of jobs: %d", jobsNumber)
+
+	client := jobguard.HTTPClient(cfg.AuthorizationToken)
+	statusFetcher := jobguard.NewStatusFetcher(cfg.Status, client)
+
 	err = waitForDependentJobs(statusFetcher, cfg, jobsNumber)
 	exitOnError(err, "while waiting for success statuses")
 }
@@ -63,7 +65,7 @@ func getNumberOfJobs(prowConfigFile, jobsDirectory, repoName string) (int, error
 	return matchingJobs, nil
 }
 
-func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config, totalNumberOfJobs int) error {
+func waitForDependentJobs(statusFetcher *jobguard.GithubStatusFetcher, cfg config, totalNumberOfJobs int) error {
 	byNames, err := jobguard.NameRegexpPredicate(cfg.JobNamePattern)
 	if err != nil {
 		return err
@@ -98,7 +100,7 @@ func waitForDependentJobs(statusFetcher *jobguard.StatusFetcher, cfg config, tot
 		log.Printf("[SUCCESS] All jobs with name matching pattern '%s' finished.", cfg.JobNamePattern)
 
 		return true, nil
-	}, cfg.RetryDuration, cfg.Timeout)
+	}, cfg.RetryInterval, cfg.Timeout)
 }
 
 func printJobNames(in []jobguard.Status) string {
