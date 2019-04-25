@@ -491,7 +491,7 @@ presubmits: # runs on PRs
           readOnly: true
         env:
         - name: INPUT_CLUSTER_NAME
-          value: "sc-e2e-aks"
+          value: "sc-e2e"
         - name: TEST_RESULT_WINDOW_TIME
           value: "6h"
         - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
