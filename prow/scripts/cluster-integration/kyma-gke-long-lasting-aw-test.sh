@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This is work in progress for https://github.com/kyma-project/kyma/issues/3047
+# After this issue is solved changes from this file will be merged to kyma-gke-long-lasting.sh
+
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 

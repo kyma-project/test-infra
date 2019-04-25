@@ -9,11 +9,6 @@ kk_test_ref: &kk_test_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-aw_test_ref: &aw_test_ref
-  org: adamwalach
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -471,12 +466,13 @@ presubmits: # runs on PRs
       preset-kyma-encryption-key: "true"
       preset-build-master: "true"
       preset-stability-checker-slack-notifications: "true"
-      preset-nightly-aks-github-integration: "true"
-      preset-creds-aks-kyma-integration: "true"
+      preset-nightly-github-integration: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
-    - <<: *aw_test_ref
+    - org: adamwalach
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
       base_ref: sc-e2e-tests
     - <<: *kyma_ref
       base_ref: master
@@ -486,7 +482,7 @@ presubmits: # runs on PRs
         secret:
           secretName: sa-stability-fluentd-storage-writer
       containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190227-a4164f9
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
         securityContext:
           privileged: true
         volumeMounts:
@@ -494,10 +490,6 @@ presubmits: # runs on PRs
           mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
           readOnly: true
         env:
-        - name: RS_GROUP
-          value: "kyma-sc-e2e-aks"
-        - name: REGION
-          value: "northeurope"
         - name: INPUT_CLUSTER_NAME
           value: "sc-e2e-aks"
         - name: TEST_RESULT_WINDOW_TIME
@@ -512,13 +504,12 @@ presubmits: # runs on PRs
               name: kyma-alerts-slack-api-url
               key: secret
         - name: KYMA_ALERTS_CHANNEL
-          # TODO: change to "#c4core-kyma-ci-force" when PR from https://github.com/kyma-project/kyma/issues/2873 will be merge
-          value: "#test-nonexistent"
+          value: "#adam-slack-tests"
         command:
         - "bash"
         args:
         - "-c"
-        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting-aw-test.sh"
+        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting-aw-test.sh"
         resources:
           requests:
             memory: 200Mi
