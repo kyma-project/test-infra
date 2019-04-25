@@ -50,6 +50,8 @@ const (
 	PresetWebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
 	// PresetWebsiteBotGithubIdentity means github identity
 	PresetWebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
+	// PresetWebsiteBotZenHubToken means zenhub token
+	PresetWebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
 	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable

@@ -211,6 +211,14 @@ presets:
         mountPath: /etc/credentials/kyma-website-bot-github-ssh
         readOnly: true
   - labels:
+      preset-website-bot-zenhub-token: "true"
+    env:
+    - name: BOT_ZENHUB_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: kyma-website-bot-zenhub-token
+          key: token
+  - labels:
       preset-kyma-snyk-token: "true"
     env:
     - name: SNYK_TOKEN
