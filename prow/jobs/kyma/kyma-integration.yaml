@@ -9,7 +9,6 @@ kk_test_ref: &kk_test_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -454,6 +453,67 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.0
+
+  - name: kyma-service-catalog-e2e-tests
+    # this is work in progress for https://github.com/kyma-project/kyma/issues/3047
+    # cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    branches:
+    - master
+    always_run: false
+    optional: true
+    labels:
+      preset-kyma-keyring: "true"
+      preset-kyma-encryption-key: "true"
+      preset-build-master: "true"
+      preset-stability-checker-slack-notifications: "true"
+      preset-nightly-github-integration: "true"
+      <<: *gke_job_labels_template
+    decorate: true
+    extra_refs:
+    - org: adamwalach
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: sc-e2e-tests
+    - <<: *kyma_ref
+      base_ref: master
+    spec:
+      volumes:
+      - name: sa-stability-fluentd-storage-writer
+        secret:
+          secretName: sa-stability-fluentd-storage-writer
+      containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: sa-stability-fluentd-storage-writer
+          mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+          readOnly: true
+        env:
+        - name: INPUT_CLUSTER_NAME
+          value: "sc-e2e"
+        - name: TEST_RESULT_WINDOW_TIME
+          value: "6h"
+        - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+          value: "#adam-slack-tests"
+        - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+          value: "cluster-access"
+        - name: KYMA_ALERTS_SLACK_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: kyma-alerts-slack-api-url
+              key: secret
+        - name: KYMA_ALERTS_CHANNEL
+          value: "#adam-slack-tests"
+        command:
+        - "bash"
+        args:
+        - "-c"
+        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting-aw-test.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
 
 postsubmits:
   kyma-project/kyma:
