@@ -313,6 +313,19 @@ date
 GCS_KEY_JSON=$(< "${GOOGLE_APPLICATION_CREDENTIALS}" base64 | tr -d '\n')
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
+kind: Secret
+metadata:
+  name: asset-store-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: assetstore
+    kyma-project.io/installation: ""
+type: Opaque
+data:
+  minio.gcsgateway.gcsKeyJson: "${GCS_KEY_JSON}"
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: asset-store-overrides
@@ -326,8 +339,7 @@ data:
   minio.gcsgateway.enabled: "true"
   minio.defaultBucket.enabled: "false"
   minio.gcsgateway.projectId: "${CLOUDSDK_CORE_PROJECT}"
-  minio.gcsgateway.gcsKeyJson: "${GCS_KEY_JSON}"
-  minio.externalEndpoint: "https://storage.googleapis.com"
+  global.minio.externalEndpoint: "https://storage.googleapis.com"
 EOF
 
 shout "Trigger installation"
