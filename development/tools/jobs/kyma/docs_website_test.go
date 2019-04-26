@@ -2,9 +2,10 @@ package kyma_test
 
 import (
 	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWebsiteJobPostsubmit(t *testing.T) {
