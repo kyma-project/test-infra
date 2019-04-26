@@ -327,6 +327,7 @@ data:
   minio.defaultBucket.enabled: "false"
   minio.gcsgateway.projectId: "${CLOUDSDK_CORE_PROJECT}"
   minio.gcsgateway.gcsKeyJson: "${GCS_KEY_JSON}"
+  minio.externalEndpoint: "https://storage.googleapis.com"
 EOF
 
 shout "Trigger installation"
