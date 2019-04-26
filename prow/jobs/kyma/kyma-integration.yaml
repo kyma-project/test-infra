@@ -861,7 +861,8 @@ periodics:
                 name: kyma-alerts-slack-api-url
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
-            value: "#c4core-kyma-ci-force"
+            # TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
+            value: "#test-nonexistent"
         command:
           - "bash"
         args:
