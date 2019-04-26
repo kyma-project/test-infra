@@ -26,7 +26,7 @@ func TestWebsiteJobPostsubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/website", actualPost.PathAlias)
+	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasExtraRefs(t, actualPost.JobBase.UtilityConfig, []string{"website"})
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster, tester.PresetWebsiteBotGithubIdentity, tester.PresetWebsiteBotGithubSSH, tester.PresetWebsiteBotGithubToken, tester.PresetWebsiteBotZenHubToken)
