@@ -591,7 +591,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-(gkeint|gke-upgrade).*[-]pvc[-]'"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central'"
       resources:
         requests:
           memory: 1Gi
@@ -660,7 +660,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 - name: firewall-cleaner
-  cron: "45 */1 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -675,7 +675,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"
+      - "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
       resources:
         requests:
           memory: 1Gi
@@ -861,7 +861,8 @@ periodics:
                 name: kyma-alerts-slack-api-url
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
-            value: "#c4core-kyma-ci-force"
+            # TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
+            value: "#test-nonexistent"
         command:
           - "bash"
         args:
