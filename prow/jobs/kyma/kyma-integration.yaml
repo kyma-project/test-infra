@@ -986,11 +986,13 @@ periodics:
   labels:
     <<: *vm_job_labels_template
   extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - org: Demonsthere
+      repo: test-infra
       path_alias: github.com/kyma-project/test-infra
-    - <<: *kyma_ref
-      base_ref: master
+      base_ref: feature/minikube-debug
+    - org: Demonsthere
+      repo: kyma
+      base_ref: feature/minikube-debug
       path_alias: github.com/kyma-project/kyma
   spec:
     containers:
