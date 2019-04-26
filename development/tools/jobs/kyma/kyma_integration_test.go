@@ -530,7 +530,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.True(t, minikubeVerification.Decorate)
 	assert.Equal(t, "0 */1 * * 1-5", minikubeVerification.Cron)
 	tester.AssertThatHasPresets(t, minikubeVerification.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
-	tester.AssertThatHasExtraRefs(t, minikubeVerification.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	testContainer := minikubeVerification.Spec.Containers[0]
 	assert.Equal(t, tester.ImageBootstrap001, testContainer.Image)
 	assert.Len(t, testContainer.Command, 1)
