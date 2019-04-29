@@ -33,6 +33,27 @@ vm_job_labels_template: &vm_job_labels_template
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
+gke_minio_gateway_job_template: &gke_minio_gateway_job_template
+  optional: true
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_template: &gke_job_template
   skip_report: false
   decorate: true
@@ -217,6 +238,19 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.0
+  
+  - name: pre-master-kyma-gke-minio-gateway
+    branches:
+    - master
+    <<: *gke_minio_gateway_job_template
+    #run_if_changed: "^(resources\/assetstore|installation)" # uncomment when stable
+    always_run: false # remove when stable
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
 
   # TODO this is temprary job to test PR-904
   - name: pre-master-kyma-guard-job
@@ -591,7 +625,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central'"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central|gke-minio'"
       resources:
         requests:
           memory: 1Gi
