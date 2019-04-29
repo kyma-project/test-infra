@@ -9,10 +9,12 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
 cd ${ROOT_PATH} || exit 1
 
+dep ensure -v -vendor-only
+
 env GITHUB_TOKEN="${GITHUB_TOKEN}" \
-    INITIAL_SLEEP_TIME=1m \
+    INITIAL_SLEEP_TIME=2m \
     COMMIT_SHA="${PULL_PULL_SHA}" \
     JOB_NAME_PATTERN="(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)" \
     PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
     PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
-    ./job-guard
+    go run main.go

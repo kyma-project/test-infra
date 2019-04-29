@@ -16,12 +16,7 @@ To run the application, run this command:
 COMMIT_SHA={commit_sha} PROW_CONFIG_FILE={prow_config_file} PROW_JOBS_DIRECTORY={prow_jobs_directory} go run main.go
 ```
 
-Replace values in curly braces with proper details, where:
-- `{pullNumber}` is the pull request number.
-
-The service listens on port `3000`.
-
-### Environmental variables
+### Environment variables
 
 Use the following environment variables to configure the application:
 

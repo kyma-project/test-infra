@@ -63,12 +63,10 @@ func (f *GithubStatusFetcher) Do() ([]Status, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/commits/%s/status", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, f.cfg.CommitSHA)
 
 	var statuses []Status
-
 	pageNo := 1
 
 	for {
 		pageURL := fmt.Sprintf("%s?page=%d&per_page=100", url, pageNo)
-
 		resp, err := f.client.Get(pageURL)
 		if err != nil {
 			return nil, errors.Wrapf(err, "while doing request to %s", url)

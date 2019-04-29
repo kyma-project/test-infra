@@ -21,7 +21,7 @@ type config struct {
 	AuthorizationToken string `envconfig:"optional,GITHUB_TOKEN"`
 	JobNamePattern     string `envconfig:"default=components"`
 
-	Prow             struct {
+	Prow struct {
 		ConfigFile    string
 		JobsDirectory string
 	}
@@ -57,6 +57,7 @@ func getNumberOfJobs(prowConfigFile, jobsDirectory, repoName string) (int, error
 	}
 
 	matchingJobs := 0
+	// copied from prow/plugins/trigger/pull-request.go buildAll() method
 	for _, job := range c.Presubmits[repoName] {
 		if job.AlwaysRun || job.RunIfChanged != "" {
 			matchingJobs++
@@ -116,7 +117,6 @@ func exitOnError(err error, context string) {
 	if err == nil {
 		return
 	}
-
 	wrappedError := errors.Wrap(err, context)
 	log.Fatal(wrappedError)
 }
