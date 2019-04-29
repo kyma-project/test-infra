@@ -15,7 +15,7 @@ func NameRegexpPredicate(pattern string) (StatusPredicate, error) {
 	}
 	return func(in Status) bool {
 		return r.MatchString(in.Name)
-	},nil
+	}, nil
 }
 
 // FailedStatusPredicate returns true for Statuses that have Error of Failure state

@@ -7,7 +7,7 @@ echo "KYMA PROJECT DIR ${KYMA_PROJECT_DIR}"
 echo "COMMIT SHA: ${PULL_PULL_SHA}"
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-cd ${ROOT_PATH} || exit 1
+cd "${ROOT_PATH}" || exit 1
 
 dep ensure -v -vendor-only
 

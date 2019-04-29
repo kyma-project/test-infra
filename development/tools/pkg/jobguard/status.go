@@ -44,14 +44,12 @@ type StatusConfig struct {
 type GithubStatusFetcher struct {
 	cfg    StatusConfig
 	client *http.Client
-
 }
 
 // NewStatusFetcher constructs new GithubStatusFetcher instance
 func NewStatusFetcher(cfg StatusConfig, client *http.Client) *GithubStatusFetcher {
 	return &GithubStatusFetcher{cfg: cfg, client: client}
 }
-
 
 type statusResponse struct {
 	TotalCount int      `json:"total_count"`
