@@ -92,11 +92,11 @@ spec:
       {{ end }}
       # The container name is hardcoded in the stability checker, do not change it
       - name: stability-checker
+        # process the output of the pre-start-scripts.sh by the jq tool to get output as json
         command:
         - /bin/sh
         - -c
         - |-
-        # process the output of the pre-start-scripts.sh by the jq tool to get output as json
           ./data/input/pre-start-scripts.sh 2>&1 | jq --slurp --raw-input 'split("\n")[:-1] | map({level: "info", log: {message: .}})' | jq -c -M '.[]' && ./root/stability-checker
         image: "{{ .Values.containerRegistry.path }}/develop/stability-checker:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
