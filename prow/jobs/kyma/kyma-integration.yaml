@@ -488,7 +488,7 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.0
 
-  - name: kyma-service-catalog-e2e-tests
+  - name: kyma-gke-service-catalog-nightly
     # this is work in progress for https://github.com/kyma-project/kyma/issues/3047
     # cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     branches:
@@ -500,14 +500,14 @@ presubmits: # runs on PRs
       preset-kyma-encryption-key: "true"
       preset-build-master: "true"
       preset-stability-checker-slack-notifications: "true"
-      preset-nightly-github-integration: "true"
+      preset-service-catalog-nightly-github-integration: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
     - org: adamwalach
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
-      base_ref: sc-e2e-tests
+      base_ref: service-catalog-nightly
     spec:
       volumes:
       - name: sa-stability-fluentd-storage-writer
@@ -523,7 +523,7 @@ presubmits: # runs on PRs
           readOnly: true
         env:
         - name: INPUT_CLUSTER_NAME
-          value: "sc-e2e"
+          value: "service-catalog-nightly"
         - name: TEST_RESULT_WINDOW_TIME
           value: "6h"
         - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
