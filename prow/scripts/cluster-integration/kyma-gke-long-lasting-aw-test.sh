@@ -38,6 +38,10 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
+if [ -z "${SERVICE_CATALOG_CRD}" ]; then
+	export SERVICE_CATALOG_CRD="false"
+fi
+
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 # shellcheck disable=SC1090
@@ -235,7 +239,9 @@ function installKyma() {
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
-    applyServiceCatalogCRDOverride
+    if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
+        applyServiceCatalogCRDOverride
+    fi
 	waitUntilInstallerApiAvailable
 
 	shout "Trigger installation"
@@ -276,6 +282,8 @@ function addGithubDexConnector() {
 }
 
 function applyServiceCatalogCRDOverride(){
+    shout "Apply override for ServiceCatalog"
+
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
