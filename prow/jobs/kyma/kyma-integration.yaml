@@ -492,7 +492,7 @@ presubmits: # runs on PRs
         - name: TEST_RESULT_WINDOW_TIME
           value: "6h"
         - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-          value: "#adam-slack-tests"
+          value: "#c4core-kyma-sc-night"
         - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
           value: "cluster-access"
         - name: SERVICE_CATALOG_CRD
