@@ -490,7 +490,7 @@ presubmits: # runs on PRs
 
   - name: kyma-gke-service-catalog-nightly
     # this is work in progress for https://github.com/kyma-project/kyma/issues/3047
-    # cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    # cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
     branches:
     - master
     always_run: false

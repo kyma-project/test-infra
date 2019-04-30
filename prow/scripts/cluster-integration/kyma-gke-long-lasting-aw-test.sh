@@ -235,6 +235,7 @@ function installKyma() {
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
+    applyServiceCatalogCRDOverride
 	waitUntilInstallerApiAvailable
 
 	shout "Trigger installation"
@@ -274,7 +275,23 @@ function addGithubDexConnector() {
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 
-shout "Adam-test"
+function applyServiceCatalogCRDOverride(){
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-catalog-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: service-catalog
+    kyma-project.io/installation: ""
+data:
+  service-catalog-apiserver.enabled: "false"
+  service-catalog-crds.enabled: "true"
+EOF
+}
+
 shout "Authenticate"
 date
 init
