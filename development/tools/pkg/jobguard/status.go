@@ -14,17 +14,19 @@ import (
 // StatusState is state of a status (job)
 type StatusState string
 
-// StatusStateSuccess represents success state of a status
-const StatusStateSuccess StatusState = "success"
+const (
+	// StatusStateSuccess represents success state of a status
+	StatusStateSuccess StatusState = "success"
 
-// StatusStatePending represents pending state of a status
-const StatusStatePending StatusState = "pending"
+	// StatusStatePending represents pending state of a status
+	StatusStatePending StatusState = "pending"
 
-// StatusStateError represents error state of a status
-const StatusStateError StatusState = "error"
+	// StatusStateError represents error state of a status
+	StatusStateError StatusState = "error"
 
-// StatusStateFailure represents failure state of a status
-const StatusStateFailure StatusState = "failure"
+	// StatusStateFailure represents failure state of a status
+	StatusStateFailure StatusState = "failure"
+)
 
 // Status stores essential data for a status
 type Status struct {
@@ -99,9 +101,10 @@ func (f *GithubStatusFetcher) Do() ([]Status, error) {
 }
 
 func (f *GithubStatusFetcher) closeResponseBody(resp *http.Response) {
-	_, _ = io.Copy(ioutil.Discard, resp.Body)
-	err := resp.Body.Close()
-	if err != nil {
+	if _, err := io.Copy(ioutil.Discard, resp.Body); err != nil {
+		log.Println("\tGot error on discarding response body:", err)
+	}
+	if err := resp.Body.Close(); err != nil {
 		log.Println("\tGot error on closing response body:", err)
 	}
 }
