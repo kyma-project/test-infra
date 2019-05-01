@@ -52,7 +52,7 @@ postsubmits:
 periodics: # runs periodic on master
 - name: periodic-website
   decorate: true
-  cron: "@hourly" # Run once an hour, beginning of hour
+  cron: "@hourly" # Run once a hour, beginning of hour
   labels:
     <<: *job_labels_template
     preset-build-master: "true"
