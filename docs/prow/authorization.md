@@ -6,11 +6,13 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 
 | Service account name          | Usage                                                      | Required roles |
 | :---------------------------- | :----------------------------------------------------------| :------------- |
-| **sa-gcs-plank**              | Used by Prow plank microservice. | `Storage Object Admin` (`roles/storage.objectAdmin`) in the `kyma-prow-logs` bucket
-| **sa-gke-kyma-integration**   | Runs integration tests on a GKE cluster. | `Compute Admin` (`roles/compute.admin`), `Kubernetes Engine Admin` (`roles/container.admin`), `Kubernetes Engine Cluster Admin` (`roles/container.clusterAdmin`), `DNS Administrator` (`roles/dns.admin`), `Service Account User` (`roles/iam.serviceAccountUser`), `Storage Admin` (`roles/storage.admin`)
+| **sa-gke-kyma-integration**   | Runs integration tests on a GKE cluster. | `Cloud KMS CryptoKey Encrypter/Decrypter` (`roles/cloudkms.cryptoKeyVersions.useToDecrypt`,`roles/cloudkms.cryptoKeyVersions.useToEncrypt`,`roles/resourcemanager.projects.get`), `Compute Admin` (`roles/compute.admin`), `Compute Network Admin`,`Kubernetes Engine Admin` (`roles/container.admin`), `Kubernetes Engine Cluster Admin` (`roles/container.clusterAdmin`), `DNS Administrator` (`roles/dns.admin`), `Service Account User` (`roles/iam.serviceAccountUser`), `Storage Admin` (`roles/storage.admin`)
 | **sa-kyma-artifacts**         | Saves release and development artifacts to the GCS bucket. | `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-vm-kyma-integration**    | Runs integration tests on Minikube. | `Compute Instance Admin (beta)` (`roles/compute.instanceAdmin`), `Compute OS Admin Login` (`roles/compute.osAdminLogin`), `Service Account User` (`roles/iam.serviceAccountUser`)
-| **sa-gcr-push-kyma-project**  | Publishes Docker images. | `Storage Object Creator` (`roles/storage.objectCreator`) in the `eu.artifacts.kyma-project.appspot.com` and `artifacts.kyma-project.appspot.com` buckets
+| **sa-kyma-aks-nightly** | Deploys the nightly cluster on AKS. | `Cloud KMS CryptoKey Encrypter/Decrypter` (`roles/cloudkms.cryptoKeyVersions.useToDecrypt`,`roles/cloudkms.cryptoKeyVersions.useToEncrypt`,`roles/resourcemanager.projects.get`), `DNS Administrator` (`roles/dns.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
+| **sa-kyma-backup-restore** | Used for backups. | `Compute Storage Admin`, `Storage Admin` (`roles/storage.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
+| **sa-stability-fluentd-storage-writer** | Used for fluentd storage |  `Storage Object Admin` (`roles/storage.objectAdmin`)
+| **sa-gcs-plank**              | Currently not in use. | no roles attached
 
 
 ## Kubernetes RBAC roles on Prow cluster
