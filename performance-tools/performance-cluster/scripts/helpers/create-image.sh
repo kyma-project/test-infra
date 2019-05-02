@@ -30,6 +30,7 @@ echo "--------------------------------------------------------------------------
 echo "Dockerfile: ${DCONTENT}"
 echo "--------------------------------------------------------------------------------"
 echo
+
 docker build "${KYMA_SOURCES_DIR}" -f "${KYMA_SOURCES_DIR}"/tools/kyma-installer/kyma.Dockerfile -t "${KYMA_INSTALLER_IMAGE}"
 
 echo "--------------------------------------------------------------------------------"

@@ -31,7 +31,11 @@ function installKyma() {
 
 	shout "Build Kyma-Installer Docker image"
 	date
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+	if [[ "${CLUSTER_GRADE}" == "production" ]]; then
+		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
+	else
+		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+	fi
     export KYMA_INSTALLER_IMAGE
     shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
     source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-image.sh"
@@ -62,6 +66,8 @@ function installKyma() {
 
 	shout "Trigger installation"
 	date
+
+	kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
 	kubectl label installation/kyma-installation action=install
