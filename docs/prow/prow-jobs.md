@@ -91,7 +91,7 @@ For further reference, read a more technical insight into the Kubernetes [ProwJo
 ## Manual job trigger
 
 If you need to trigger a new job, because re-running the job would would not use the new code base, you can do so manually.
-For that you'll need a tool from the called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that will generate a valid ProwJob yaml for you. In the example below `kyma-gke-nightly` is target to be triggered manually:
+Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid `yaml` for the ProwJob. See the example of generating the `kyma-gke-nightly` target:
 ```shell
 go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
 ```
