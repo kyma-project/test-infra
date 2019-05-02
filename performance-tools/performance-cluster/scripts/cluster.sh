@@ -12,8 +12,6 @@ export CLOUDSDK_PROJECT="kyma-project"
 
 source "${CURRENT_PATH}/scripts/library.sh"
 
-echo $#
-
 if [ $# -lt "1" ]; then
         echo "Usage:  $0 --action (create or delete) --cluster-grade (production or development)"
         exit 1;
