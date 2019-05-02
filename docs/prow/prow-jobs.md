@@ -96,7 +96,7 @@ Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/pr
 go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
 ```
 
-The job can then be triggered with `kubectl`:
+You can trigger this job manually. Run:
 ```shell
 kubectl apply -f job.yaml
 ```
