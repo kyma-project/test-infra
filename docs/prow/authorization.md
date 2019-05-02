@@ -11,7 +11,7 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 | **sa-vm-kyma-integration**    | Runs integration tests on Minikube. | `Compute Instance Admin (beta)` (`roles/compute.instanceAdmin`), `Compute OS Admin Login` (`roles/compute.osAdminLogin`), `Service Account User` (`roles/iam.serviceAccountUser`)
 | **sa-kyma-aks-nightly** | Deploys the nightly cluster on AKS. | `Cloud KMS CryptoKey Encrypter/Decrypter` (`roles/cloudkms.cryptoKeyVersions.useToDecrypt`,`roles/cloudkms.cryptoKeyVersions.useToEncrypt`,`roles/resourcemanager.projects.get`), `DNS Administrator` (`roles/dns.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-kyma-backup-restore** | Used for backups. | `Compute Storage Admin`, `Storage Admin` (`roles/storage.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
-| **sa-stability-fluentd-storage-writer** | Used for fluentd storage |  `Storage Object Admin` (`roles/storage.objectAdmin`)
+| **sa-stability-fluentd-storage-writer** | Used for fluentd storage. |  `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-gcs-plank**              | Currently not in use. | no roles attached
 
 
