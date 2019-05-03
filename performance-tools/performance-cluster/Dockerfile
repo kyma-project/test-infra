@@ -1,5 +1,3 @@
-# Basic setup for Prow jobs
-
 FROM debian:stretch
 
 WORKDIR /workspace
