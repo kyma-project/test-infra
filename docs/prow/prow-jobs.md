@@ -90,7 +90,7 @@ For further reference, read a more technical insight into the Kubernetes [ProwJo
 
 ## Trigger jobs manually
 
-If you need to trigger a new job, because re-running the job would would not use the new code base, you can do so manually.
+In most situations, re-running the job means that Prow uses the same commit. To make sure the job uses the updated code base, you can trigger the job manually.
 Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid `yaml` for the ProwJob. See the example of generating the `kyma-gke-nightly` target:
 ```shell
 go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
