@@ -8,7 +8,6 @@
 #  - INPUT_CLUSTER_NAME - name for the new cluster
 #  - DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. ""
 #  - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
-#  - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation.
 #    Ex. "/home/${USER}/go/src/github.com/kyma-project"
 #
 #  - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
@@ -34,7 +33,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE GOOGLE_APPLICATION_CREDENTIALS DOCKER_IN_DOCKER_ENABLED CLUSTER_GRADE ACTION REPO_OWNER REPO_NAME; do
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE GOOGLE_APPLICATION_CREDENTIALS DOCKER_IN_DOCKER_ENABLED CLUSTER_GRADE ACTION REPO_OWNER REPO_NAME; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -97,7 +96,7 @@ elif [[ "${ACTION}" == "create" ]]; then
         export KYMA_SOURCES_DIR="${GOPATH}/src/github.com/kyma-project/kyma"
     fi
 
-export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+    export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
     source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-cluster.sh"
     shout "Install tiller"

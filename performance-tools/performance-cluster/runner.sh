@@ -14,7 +14,6 @@ if [[ "${KUBERNETES_SERVICE_HOST}" == "" ]]; then
 fi
 
 
-gcloud container clusters get-credentials $LOADGEN_CLUSTER_NAME --zone $LOADGEN_COMPUTE_ZONE --project $CLOUDSDK_CORE_PROJECT
 
 # Create Kyma Cluster
 source "${CURRENT_PATH}/scripts/cluster.sh" "--action" "create" "--cluster-grade" "production"
@@ -62,11 +61,11 @@ shout "Running K6 Scripts"
 
 if [[ "${RUNMODE}" == "all" ]]; then
   shout "Running the complete test suite"
-  source "k6-runner.sh" "all"
+  source "${CURRENT_PATH}/scripts/helpers/k6-runner.sh" "all"
   set -o errexit
 elif [[ "${RUNMODE}" == "" && "${SCRIPTPATH}" != "" ]]; then
   shout "Running following Script: $SCRIPTPATH"
-  source "k6-runner.sh" "${SCRIPTPATH}"
+  source "${CURRENT_PATH}/scripts/helpers/k6-runner.sh" "${SCRIPTPATH}"
   set -o errexit
 fi
 

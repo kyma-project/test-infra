@@ -4,7 +4,6 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any
 #set -x
 export CURRENT_PATH="$PWD"
-export KYMA_PROJECT_DIR="kyma-project"
 export DOCKER_IN_DOCKER_ENABLED="true"
 export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"

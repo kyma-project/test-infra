@@ -4,7 +4,6 @@
 #
 #Expected vars:
 # - CLUSTER_NAME: name of the GKE cluster
-# - KYMA_SOURCES_DIR: absolute path for kyma/ directory
 # - TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS: absolute path for kyma/tools/performance-cloud-cluster/scripts/helpers directory
 # - CLOUDSDK_COMPUTE_REGION: region where the GKE cluster is e.g. europe-west1-b
 #
@@ -14,7 +13,7 @@ source "${CURRENT_PATH}/scripts/library.sh"
 function cleanup() {
 	discoverUnsetVar=false
 
-	for var in CLUSTER_NAME KYMA_SOURCES_DIR TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS CLOUDSDK_COMPUTE_REGION; do
+	for var in CLUSTER_NAME TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS CLOUDSDK_COMPUTE_REGION; do
 		if [ -z "${!var}" ] ; then
 			echo "ERROR: $var is not set"
 			discoverUnsetVar=true
