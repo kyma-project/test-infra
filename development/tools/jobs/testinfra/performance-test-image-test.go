@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPerfTestImageJobsPresubmit(t *testing.T) {
+func TestPerfTestImageJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/performance-test-image.yaml")
 	// THEN
@@ -26,7 +26,7 @@ func TestPerfTestImageJobsPresubmit(t *testing.T) {
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/performance-tools/performance-cluster")
 }
 
-func TestStabilityCheckerJobPostsubmit(t *testing.T) {
+func TestPerfTestImageJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/perf-test-image.yaml")
 	// THEN
