@@ -28,7 +28,7 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *job_template
-    run_if_changed: "^perf-test-image/"
+    run_if_changed: "^performance-tools/performance-cluster/"
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
@@ -48,7 +48,7 @@ postsubmits:
     branches:
     - master
     <<: *job_template
-    run_if_changed: "^perf-test-image/"
+    run_if_changed: "^performance-tools/performance-cluster/"
     labels:
       <<: *job_labels_template
       preset-build-master: "true"

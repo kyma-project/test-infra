@@ -21,8 +21,8 @@ func TestPerfTestImageJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "perf-test-image/fix")
-	assert.Equal(t, "^perf-test-image/", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "performance-tools/performance-cluster/fix")
+	assert.Equal(t, "^performance-tools/performance-cluster/", actualPresubmit.RunIfChanged)
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/performance-tools/performance-cluster")
 }
 
@@ -43,6 +43,6 @@ func TestPerfTestImageJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^perf-test-image/", actualPost.RunIfChanged)
+	assert.Equal(t, "^performance-tools/performance-cluster/", actualPost.RunIfChanged)
 	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/performance-tools/performance-cluster")
 }
