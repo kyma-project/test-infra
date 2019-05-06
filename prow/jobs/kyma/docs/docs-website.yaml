@@ -37,7 +37,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-docs-website
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^docs/"
       labels:
