@@ -121,6 +121,32 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	}
 }
 
+func TestKymaGKEMinioGatewayJobPresubmit(t *testing.T) {
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-minio-gateway", "master")
+	require.NotNil(t, actualJob)
+
+	// then
+	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+	assert.True(t, actualJob.Decorate)
+	assert.False(t, actualJob.SkipReport)
+	assert.False(t, actualJob.AlwaysRun)
+	assert.Equal(t, 10, actualJob.MaxConcurrency)
+	assert.Empty(t, actualJob.RunIfChanged)
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"}, actualJob.Spec.Containers[0].Args)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
+		tester.PresetDindEnabled, "preset-build-pr",
+		"preset-sa-gke-kyma-integration", "preset-gc-compute-envs",
+		"preset-gc-project-env", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket")
+}
+
 func TestKymaGKEXipJobPresubmit(t *testing.T) {
 	// given
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
@@ -135,7 +161,7 @@ func TestKymaGKEXipJobPresubmit(t *testing.T) {
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.False(t, actualJob.AlwaysRun)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	// SHOULD BE UNCOMMENTED: tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"}, actualJob.Spec.Containers[0].Args)
@@ -160,7 +186,7 @@ func TestKymaGKEXipUpgradeJobsPresubmit(t *testing.T) {
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.False(t, actualJob.AlwaysRun)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	// SHOULD BE UNCOMMENTED: tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"}, actualJob.Spec.Containers[0].Args)
@@ -185,7 +211,7 @@ func TestKymaGKEXipCentralConnectorJobsPresubmit(t *testing.T) {
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	// SHOULD BE UNCOMMENTED: tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"}, actualJob.Spec.Containers[0].Args)
@@ -328,7 +354,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 13)
+	assert.Len(t, periodics, 14)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -340,7 +366,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, disksCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", disksCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, disksCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-(gkeint|gke-upgrade).*[-]pvc[-]'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central|gke-minio'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, disksCleanerPeriodic.JobBase)
 
 	expName = "orphaned-clusters-cleaner"
@@ -387,12 +413,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, firewallCleanerPeriodic)
 	assert.Equal(t, expName, firewallCleanerPeriodic.Name)
 	assert.True(t, firewallCleanerPeriodic.Decorate)
-	assert.Equal(t, "45 */1 * * 1-5", firewallCleanerPeriodic.Cron)
+	assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd", firewallCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=true"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
 
 	expName = "orphaned-dns-cleaner"
@@ -467,7 +493,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "6h")
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
-	// TODO: change to "#c4core-kyma-ci-force" when PR from https://github.com/kyma-project/kyma/issues/2873 will be merge
+	// TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#test-nonexistent")
 	tester.AssertThatContainerHasEnvFromSecret(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
@@ -476,7 +502,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, backupRestorePeriodic)
 	assert.Equal(t, expName, backupRestorePeriodic.Name)
 	assert.True(t, backupRestorePeriodic.Decorate)
-	assert.Equal(t, "0 5 * * 5", backupRestorePeriodic.Cron)
+	assert.Equal(t, "0 5 * * 1-5", backupRestorePeriodic.Cron)
 	tester.AssertThatHasPresets(t, backupRestorePeriodic.JobBase, tester.PresetKymaBackupRestoreBucket, tester.PresetKymaBackupCredentials, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
 	tester.AssertThatHasExtraRefs(t, backupRestorePeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", backupRestorePeriodic.Spec.Containers[0].Image)
@@ -522,4 +548,18 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	//TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-gopher-pr")
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "OUT_OF_DATE_DAYS", "3")
+
+	expName = "kyma-minikube-verification"
+	minikubeVerification := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, minikubeVerification)
+	assert.Equal(t, expName, minikubeVerification.Name)
+	assert.True(t, minikubeVerification.Decorate)
+	assert.Equal(t, "0 */1 * * 1-5", minikubeVerification.Cron)
+	tester.AssertThatHasPresets(t, minikubeVerification.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
+	testContainer := minikubeVerification.Spec.Containers[0]
+	assert.Equal(t, tester.ImageBootstrap001, testContainer.Image)
+	assert.Len(t, testContainer.Command, 1)
+	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh", testContainer.Command[0])
+	tester.AssertThatSpecifiesResourceRequests(t, minikubeVerification.JobBase)
+
 }

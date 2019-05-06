@@ -81,7 +81,7 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 			split := strings.Split(str, "/")
 			str = split[len(split)-1]
 
-			regMatch := regexp.MustCompile("(.*)-default-pool-[a-z0-9]+-grp")
+			regMatch := regexp.MustCompile("(.*)-default-pool-[a-z0-9]+")
 
 			matched := regMatch.FindStringSubmatch(str)
 			if len(matched) > 1 {
@@ -104,6 +104,12 @@ func (c *Cleaner) checkAndDeleteFirewallRules(project string, dryRun bool) error
 			}
 			for _, cluster := range clusters { // takes care of 'k8s-' rules
 				if strings.HasPrefix(target, cluster.Name) {
+					exist = true
+					continue
+				}
+			}
+			for _, poolName := range poolNames {
+				if strings.HasPrefix(target, poolName) {
 					exist = true
 					continue
 				}

@@ -1,14 +1,17 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^call-ec/"
   decorate: true
-  path_alias: github.com/kyma-project/examples
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   extra_refs:
     - org: kyma-project
       repo: test-infra
       base_ref: master
       path_alias: github.com/kyma-project/test-infra
+    - org: kyma-project
+      repo: website
+      base_ref: master
+      path_alias: github.com/kyma-project/website
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
@@ -17,7 +20,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/examples/call-ec"
+          - "/home/prow/go/src/github.com/kyma-project/website"
         resources:
           requests:
             memory: 1.5Gi
@@ -25,25 +28,18 @@ job_template: &job_template
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository: "true"
-
-presubmits: # runs on PRs
-  kyma-project/examples:
-    - name: pre-master-examples-call-ec
-      branches:
-        - ^master$
-      <<: *job_template
-      labels:
-        <<: *job_labels_template
-        preset-build-pr: "true"
+  preset-website-bot-github-token: "true"
+  preset-website-bot-github-ssh: "true"
+  preset-website-bot-github-identity: "true"
+  preset-website-bot-zenhub-token: "true"
 
 postsubmits:
-  kyma-project/examples:
-    - name: post-master-examples-call-ec
+  kyma-project/kyma:
+    - name: post-master-kyma-docs-website
       branches:
         - ^master$
       <<: *job_template
+      run_if_changed: "^docs/"
       labels:
         <<: *job_labels_template
         preset-build-master: "true"

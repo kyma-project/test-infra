@@ -131,7 +131,7 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 			{Name: "cluster-name"},
 		}
 		nodePools := []*container.NodePool{
-			{Name: "nodepool-one"},
+			{Name: "nodepool-one", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/nodepool-one-default-pool-abcdefg01-grp"}},
 		}
 		defer computeAPI.AssertExpectations(t)
 
@@ -206,7 +206,7 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 			{Name: "cluster-name-pr-3451-something"},
 		}
 		nodePools := []*container.NodePool{
-			{Name: "nodepool-one"},
+			{Name: "nodepool-one", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/nodepool-one-default-pool-abcdefg01-grp"}},
 		}
 		defer computeAPI.AssertExpectations(t)
 
@@ -328,8 +328,8 @@ func TestFirewallcleanerRuleInteraction(t *testing.T) {
 			{Name: "cluster-name-pr-3451-something"},
 		}
 		nodePools := []*container.NodePool{
-			{Name: "nodepool-one"},
-			{Name: "nodepool-two"},
+			{Name: "nodepool-one", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/nodepool-one-default-pool-abcdefg01-grp"}},
+			{Name: "nodepool-two", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/nodepool-two-default-pool-abcdefg09-grp"}},
 		}
 		defer computeAPI.AssertExpectations(t)
 
@@ -365,7 +365,7 @@ func TestK8sNames(t *testing.T) {
 			{Name: "cluster-two"},
 		}
 		nodePools := []*container.NodePool{
-			{Name: "nodepool-two"},
+			{Name: "nodepool-two", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/nodepool-two-default-pool-30ed18ba-vzqv"}},
 		}
 		defer computeAPI.AssertExpectations(t)
 
@@ -405,7 +405,48 @@ func TestK8sNames(t *testing.T) {
 			{Name: "cluster-one"},
 		}
 		nodePools := []*container.NodePool{
-			{Name: "nodepool-one"},
+			{Name: "nodepool-one", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/nodepool-one-default-pool-30ed18ba-grp"}},
+		}
+		defer computeAPI.AssertExpectations(t)
+
+		computeAPI.On("LookupFirewallRule", testProject).Return(firewalls, nil)
+		computeAPI.On("LookupInstances", testProject).Return(instances, nil)
+		computeAPI.On("LookupClusters", testProject).Return(clusters, nil)
+		computeAPI.On("LookupNodePools", clusters).Return(nodePools, nil)
+
+		c := NewCleaner(computeAPI)
+
+		// dryRun true
+		firstErr := c.Run(true, testProject)
+		assert.Nil(t, firstErr)
+
+		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
+
+		// dryRun false
+		secondErr := c.Run(false, testProject)
+		assert.Nil(t, secondErr)
+
+		computeAPI.AssertNumberOfCalls(t, "DeleteFirewallRule", 0)
+	})
+}
+
+func TestWeeklyAndNightly(t *testing.T) {
+	t.Run("Cleaner should not delete weekly or nightly rules", func(t *testing.T) {
+		computeAPI := &automock.ComputeAPI{}
+
+		firewalls := []*compute.Firewall{
+			{Name: "k8s-fw-a1212ca1a5b9411e995a542010a9c01e", TargetTags: []string{"gke-weekly-44aa27bf-node"}},
+			{Name: "k8s-fw-djkalsak7d8dshfsi98q2jkasq2ufa0e", TargetTags: []string{"gke-nightly-dhj328a3-node"}},
+		}
+		instances := []*compute.Instance{
+			{Name: "instance-one"},
+		}
+		clusters := []*container.Cluster{
+			{Name: "cluster-name-pr-3451-something"},
+		}
+		nodePools := []*container.NodePool{
+			{Name: "gke-weekly-default-pool-30ed18ba-vzqv", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/gke-weekly-default-pool-30ed18ba-vzqv"}},
+			{Name: "gke-nightly-default-pool-esa8dsa8-kshq", InitialNodeCount: 1, InstanceGroupUrls: []string{"https://www.googleapis.com/compute/v1/projects/sap-kyma-prow/zones/europe-west3-a/instanceGroupManagers/gke-nightly-default-pool-esa8dsa8-kshq"}},
 		}
 		defer computeAPI.AssertExpectations(t)
 

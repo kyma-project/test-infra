@@ -51,7 +51,7 @@ function removeCluster() {
 	EXIT_STATUS=$?
 
     shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at"')
+	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
 
 	shout "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
@@ -178,32 +178,6 @@ function waitUntilInstallerApiAvailable() {
     done
 }
 
-function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
-
-    mkdir letsencrypt
-    cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
-
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-    export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-    export TLS_KEY
-}
-
 function installKyma() {
 
 	kymaUnsetVar=false
@@ -232,7 +206,12 @@ function installKyma() {
 
 	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 	export DOMAIN
-    generateAndExportLetsEncryptCert
+
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
+	TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+	export TLS_CERT
+	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+	export TLS_KEY
 
 	shout "Apply Kyma config"
 	date
