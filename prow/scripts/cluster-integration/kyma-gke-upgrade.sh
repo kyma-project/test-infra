@@ -374,8 +374,7 @@ createTestResources() {
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS} \
-        --set global.domainName="${DOMAIN}"
+        --wait ${HELM_ARGS}
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
@@ -454,10 +453,6 @@ function upgradeKyma() {
 }
 
 function testKyma() {
-    shout "Test Kyma"
-    date
-    "${KYMA_SCRIPTS_DIR}"/testing.sh
-
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
@@ -477,6 +472,10 @@ function testKyma() {
         exit "${testEndToEndResult}"
     fi
     set -o errexit
+
+    shout "Test Kyma"
+    date
+    "${KYMA_SCRIPTS_DIR}"/testing.sh
 }
 
 # Used to detect errors for logging purposes

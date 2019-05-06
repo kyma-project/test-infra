@@ -33,6 +33,27 @@ vm_job_labels_template: &vm_job_labels_template
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
+gke_minio_gateway_job_template: &gke_minio_gateway_job_template
+  optional: true
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_template: &gke_job_template
   skip_report: false
   decorate: true
@@ -218,40 +239,18 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.0
 
-  # TODO this is temprary job to test PR-904
-  - name: pre-master-kyma-guard-job
+  - name: pre-master-kyma-gke-minio-gateway
     branches:
-      - master
-    skip_report: true
-    decorate: true
-    always_run: true
-    optional: true
-    path_alias: github.com/kyma-project/kyma
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-          securityContext:
-            privileged: true
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/cmd/jobguard/run.sh"
-          env:
-            - name: GITHUB_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: aszecowka-github-token #secret was added manually
-                  key: token
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
+    - master
+    <<: *gke_minio_gateway_job_template
+    #run_if_changed: "^(resources\/assetstore|installation)" # uncomment when stable
+    always_run: false # remove when stable
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
     extra_refs:
-      - org: pkosiec
-        repo: test-infra
-        path_alias: github.com/kyma-project/test-infra
-        base_ref: wait-for-jobs
+    - <<: *test_infra_ref
+      base_ref: master
 
   - name: pre-master-kyma-gke-integration
     branches:
@@ -454,7 +453,7 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.0
 
-  - name: kyma-service-catalog-e2e-tests
+  - name: kyma-gke-service-catalog-nightly
     # this is work in progress for https://github.com/kyma-project/kyma/issues/3047
     # cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     branches:
@@ -466,14 +465,14 @@ presubmits: # runs on PRs
       preset-kyma-encryption-key: "true"
       preset-build-master: "true"
       preset-stability-checker-slack-notifications: "true"
-      preset-nightly-github-integration: "true"
+      preset-service-catalog-nightly-github-integration: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
     - org: adamwalach
       repo: test-infra
       path_alias: github.com/kyma-project/test-infra
-      base_ref: sc-e2e-tests
+      base_ref: service-catalog-nightly
     spec:
       volumes:
       - name: sa-stability-fluentd-storage-writer
@@ -489,13 +488,15 @@ presubmits: # runs on PRs
           readOnly: true
         env:
         - name: INPUT_CLUSTER_NAME
-          value: "sc-e2e"
+          value: "service-catalog-nightly"
         - name: TEST_RESULT_WINDOW_TIME
           value: "6h"
         - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-          value: "#adam-slack-tests"
+          value: "#c4core-kyma-sc-night"
         - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
           value: "cluster-access"
+        - name: SERVICE_CATALOG_CRD
+          value: "true"
         - name: KYMA_ALERTS_SLACK_API_URL
           valueFrom:
             secretKeyRef:
@@ -591,7 +592,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central'"
+      - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central|gke-minio'"
       resources:
         requests:
           memory: 1Gi
@@ -874,7 +875,7 @@ periodics:
             cpu: 80m
 
 - name: kyma-gke-end-to-end-test-backup-restore
-  cron: "0 5 * * 5" # "At 05:00 on every day-of-week from Monday through Friday."
+  cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
   labels:
     preset-build-master: "true"
     preset-weekly-github-integration: "true"
@@ -986,11 +987,13 @@ periodics:
   labels:
     <<: *vm_job_labels_template
   extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - org: Demonsthere
+      repo: test-infra
       path_alias: github.com/kyma-project/test-infra
-    - <<: *kyma_ref
-      base_ref: master
+      base_ref: feature/minikube-debug
+    - org: Demonsthere
+      repo: kyma
+      base_ref: feature/minikube-debug
       path_alias: github.com/kyma-project/kyma
   spec:
     containers:

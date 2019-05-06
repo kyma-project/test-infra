@@ -87,3 +87,16 @@ For details on how to create jobs, see:
 - [Create release jobs](./release-jobs.md)
 
 For further reference, read a more technical insight into the Kubernetes [ProwJobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
+
+## Trigger jobs manually
+
+In most situations, re-running the job means that Prow uses the same commit. To make sure the job uses the updated code base, you can trigger the job manually.
+Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid `yaml` for the ProwJob. See the example of generating the `kyma-gke-nightly` target:
+```shell
+go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
+```
+
+You can trigger this job manually. Run:
+```shell
+kubectl apply -f job.yaml
+```
