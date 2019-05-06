@@ -96,4 +96,3 @@ function waitUntilInstallerApiAvailable() {
 
 installKyma
 
-createConfigmap
