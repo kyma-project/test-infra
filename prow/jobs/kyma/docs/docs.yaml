@@ -3,12 +3,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-website_ref: &website_ref
-  org: kyma-project
-  repo: website
-  base_ref: master
-  path_alias: github.com/kyma-project/website
-
 job_template: &job_template
   skip_report: false
   decorate: true
@@ -32,9 +26,6 @@ job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
   preset-docker-push-repository: "true"
-  preset-bot-github-token: "true"
-  preset-bot-github-ssh: "true"
-  preset-bot-github-identity: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -46,7 +37,6 @@ presubmits: # runs on PRs
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
-      - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -58,7 +48,6 @@ presubmits: # runs on PRs
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.7
-      - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -70,7 +59,6 @@ presubmits: # runs on PRs
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-0.8
-      - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -82,7 +70,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-0.9
-        - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -94,7 +81,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.0
-        - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -109,7 +95,6 @@ postsubmits:
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
-      - <<: *website_ref
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
