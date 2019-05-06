@@ -92,7 +92,6 @@ spec:
       {{ end }}
       # The container name is hardcoded in the stability checker, do not change it
       - name: stability-checker
-        # process the output of the pre-start-scripts.sh by the jq tool to get output as json
         command:
         - /bin/sh
         - -c
