@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any
 #set -x
 
-export SCRIPTS_PATH="$PWD"
+export SCRIPTS_PATH="$PWD/scripts"
 
 source "${SCRIPTS_PATH}/library.sh"
 

@@ -65,7 +65,8 @@ RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/a
 RUN apt-get update
 RUN apt-get install k6
 
-COPY scripts /scripts
+RUN mkdir perf-tests
+COPY scripts /perf-tests/scripts
 
-COPY runner.sh /
+COPY runner.sh /perf-tests
 CMD ["./runner.sh"]
