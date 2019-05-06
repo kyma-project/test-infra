@@ -3,13 +3,10 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any
 #set -x
-export CURRENT_PATH="$PWD"
-export DOCKER_IN_DOCKER_ENABLED="true"
-export REPO_OWNER="kyma-project"
-export REPO_NAME="kyma"
-export CLOUDSDK_PROJECT="kyma-project"
 
-source "${CURRENT_PATH}/scripts/library.sh"
+export SCRIPTS_PATH="$PWD"
+
+source "${SCRIPTS_PATH}/library.sh"
 
 if [ $# -lt "1" ]; then
         echo "Usage:  $0 --action (create or delete) --cluster-grade (production or development)"
@@ -49,10 +46,16 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 export ACTION
 export CLUSTER_GRADE
 
-if [[ "${CLUSTER_GRADE}" == "" ]] || [[ "${ACTION}" == "" ]]; then
-    shoutFail "--action and --cluster-grade required"
+if [[ "${ACTION}" == "" ]]; then
+    shoutFail "--action is required"
     exit 0
 fi
+
+if [[ "${ACTION}" == "create" ]] && [[ "${CLUSTER_GRADE}" == "" ]]; then
+    shoutFail "--cluster-grade is required"
+    exit 0
+fi
+
 
 shout "Cluster Grade ${CLUSTER_GRADE}"
 
@@ -76,7 +79,7 @@ fi
 setupCluster() {
 
     set +o errexit
-    source "scripts/kyma-gke-cluster.sh"
+    source "${SCRIPTS_PATH}/kyma-gke-cluster.sh"
     set -o errexit
 
 }

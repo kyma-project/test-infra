@@ -14,7 +14,7 @@
 # - CURRENT_TIMESTAMP: Current timestamp which is computed as $(date +%Y%m%d) 
 # - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
-source "${CURRENT_PATH}/scripts/library.sh"
+source "${SCRIPTS_PATH}/library.sh"
 function installKyma() {
 
 	kymaUnsetVar=false
@@ -34,7 +34,7 @@ function installKyma() {
 	if [[ "${CLUSTER_GRADE}" == "production" ]]; then
 		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
 	else
-		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
 	fi
     export KYMA_INSTALLER_IMAGE
     shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
@@ -92,15 +92,6 @@ function waitUntilInstallerApiAvailable() {
         echo "Sleep for 3 seconds"
         sleep 3
     done
-}
-
-function createConfigmap() {
-    shout "Creating Configmap"
-
-    # get kubeconfig
-    # gcloud container clusters get-credentials "${INPUT_CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_ZONE}" --project="${CLOUDSDK_CORE_PROJECT}"
-    # kubectl create configmap kyma-config --from-file="${HOME}/.kube/config"
-
 }
 
 installKyma

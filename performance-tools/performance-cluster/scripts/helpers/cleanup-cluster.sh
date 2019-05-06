@@ -9,7 +9,7 @@
 #
 #Permissions: In order to run this script you need to use a service account with "Compute Admin,DNS Administrator, Kubernetes Engine Admin, Kubernetes Engine Cluster Admin, Service Account User, Storage Admin" role
 
-source "${CURRENT_PATH}/scripts/library.sh"
+source "${SCRIPTS_PATH}/library.sh"
 function cleanup() {
 	discoverUnsetVar=false
 

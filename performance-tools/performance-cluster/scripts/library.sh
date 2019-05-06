@@ -37,18 +37,9 @@ function authenticate() {
 }
 
 function authenticateDocker() {
-    shout "Authenticating on docker registry ${DOCKER_REGESTRY}"
+    shout "Authenticating on docker registry ${DOCKER_REGISTRY}"
 
-#    VERSION=1.5.0
-#    OS=linux
-#    ARCH=amd64
-#    curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${VERSION}/docker-credential-gcr_${OS}_${ARCH}-${VERSION}.tar.gz" | tar xz --to-stdout ./docker-credential-gcr > docker-credential-gcr && chmod +x docker-credential-gcr
-#
-#    cp docker-credential-gcr /usr/bin/
-#
-#
-#   docker-credential-gcr configure-docker
-    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://"${DOCKER_REGESTRY}"
+    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://"${DOCKER_REGISTRY}"
 }
 
 function configure_git() {
@@ -87,6 +78,7 @@ function init() {
 
     if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
         start_docker
+        authenticateDocker
     fi
 
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then

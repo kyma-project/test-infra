@@ -8,7 +8,7 @@
 # - DNS_SUBDOMAIN: name of the GCP managed zone
 # - DNS_DOMAIN: name of the cluster
 
-source "${CURRENT_PATH}/scripts/library.sh"
+source "${SCRIPTS_PATH}/library.sh"
 
 function createCluster() {
 	discoverUnsetVar=false

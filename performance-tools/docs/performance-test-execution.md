@@ -11,12 +11,13 @@ Are a set of scripts that deploy on demand a kyma cluster on GCP.
 ### Production Mode
 Here the script is executed periodically. It is a kuberentes job defined at (k6pod.yaml)[]. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
 
+The K6 scripts are located [here](https://github.com/kyma-project/kyma/tests/perf). For more details of how to write K6 scripts in Kyma refer here.
 
-### Developement mode
+### Development mode
 Here a developer can create his/her own kyma cluster on demand and then run k6 scripts manually. The idea here is if a developer wants to develop or debug k6 scripts then he/she can use this mode. One can execute the script (cluster.sh)[] in the following way
 
 ```bash
-./cluster.sh --action create --cluster-grade developement
+./cluster.sh --action create --cluster-grade development
 ```
 ## Commands
 
@@ -34,7 +35,7 @@ Delete Kyma and remove GKE cluster:
 
 ## Expected environment variables:
 
-- DOCKER_REGESTRY
+- DOCKER_REGISTRY
 - DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. ""
 - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
    Ex. "/home/${USER}/go/src/github.com/kyma-project"
@@ -58,9 +59,17 @@ In order to run this script you need to use a service account with permissions e
 
 
 #### Development workflow
+
+> If you are using dockerhub to push Kyma installer image then please login to docker before starting `cluster.sh`
+
+This environment variables are set up by the developer before run the commands.
+
+- **REPO_OWNER** is the repository owner. 
+- **REPO_NAME** is the repository name. 
+
 * Create the development cluster using following command:
   ```bash
-  ./cluster.sh --action create --cluster-grade developement
+  ./cluster.sh --action create --cluster-grade development
   ```
 * Once the cluster is ready check it using the command
   ```bash
@@ -71,6 +80,4 @@ In order to run this script you need to use a service account with permissions e
   ```bash
   k6 run <path to the .js file>
   ```
-
-> **NOTE**: Docker container regestry credentials are needed for executing `docker push`. [Authentication methods](https://cloud.google.com/container-registry/docs/advanced-authentication)
 
