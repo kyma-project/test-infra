@@ -1,16 +1,17 @@
 package main
 
 import (
-	"cloud.google.com/go/storage"
 	"context"
 	"flag"
+	"log"
+	"strings"
+	"time"
+
+	"cloud.google.com/go/storage"
 	"github.com/googleapis/google-cloud-go-testing/storage/stiface"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"log"
-	"strings"
-	"time"
 )
 
 func main() {
@@ -38,8 +39,10 @@ var (
 	argBucketLifespanDuration     string
 	bucketLifespanDurationDefault = "2h"
 
+	// ErrInvalidProjectName - returned if project name argument is invalid
 	ErrInvalidProjectName = errors.New("invalid project name argument")
-	ErrInvalidDuration    = errors.New("invalid duration argument")
+	// ErrInvalidDuration - returned if duration argument is invalid
+	ErrInvalidDuration = errors.New("invalid duration argument")
 )
 
 func init() {

@@ -3,15 +3,17 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strconv"
+	"time"
+
 	"github.com/googleapis/google-cloud-go-testing/storage/stiface"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
-	"regexp"
-	"strconv"
-	"time"
 )
 
+// Clean - cleans up buckets created by Asset Store
 func Clean(
 	ctx context.Context,
 	cfg Config,
@@ -95,6 +97,7 @@ func extractTimestampSuffix(name string) *string {
 	return &result
 }
 
+// Config - structure aggregating application configuration arguments
 type Config struct {
 	ProjectName            string
 	BucketLifespanDuration time.Duration
@@ -103,4 +106,5 @@ type Config struct {
 
 var regTimestampSuffix = regexp.MustCompile(`^.+-([a-z0-9]+$)`)
 
+// ErrWhileDelBuckets - returned when error occurred while deleting one or more buckets
 var ErrWhileDelBuckets = errors.New("error while deleting bucket")

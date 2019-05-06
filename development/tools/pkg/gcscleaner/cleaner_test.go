@@ -3,11 +3,12 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestExtractTimestamp(t *testing.T) {
@@ -70,8 +71,8 @@ func TestExtractTimestamp(t *testing.T) {
 
 func TestClean(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
-	protectedBucketName := fmt.Sprintf(`protected-bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3 * time.Hour).UnixNano(), 32))
-	bucket2Delete := fmt.Sprintf(`bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3 * time.Hour).UnixNano(), 32))
+	protectedBucketName := fmt.Sprintf(`protected-bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
+	bucket2Delete := fmt.Sprintf(`bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
 	defaultBucketNames := []string{
 		"atx-prow2",
 		bucket2Delete,
