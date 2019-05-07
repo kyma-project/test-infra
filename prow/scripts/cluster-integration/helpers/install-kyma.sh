@@ -8,6 +8,7 @@
 # - DOCKER_PUSH_REPOSITORY: name of the docker registry where images are pushed
 # - KYMA_SOURCES_DIR: absolute path for kyma sources directory
 # - DOCKER_PUSH_DIRECTORY: directory for docker images where it should be pushed
+# - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - STANDARIZED_NAME: a variation of cluster name
 # - REPO_OWNER: Kyma repository owner
 # - REPO_NAME: name of the Kyma repository
@@ -20,7 +21,7 @@ function installKyma() {
 
 	kymaUnsetVar=false
 
-	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP DOMAIN; do
+	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY GOOGLE_APPLICATION_CREDENTIALS STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP DOMAIN; do
     	if [ -z "${!var}" ] ; then
         	echo "ERROR: $var is not set"
         	kymaUnsetVar=true
