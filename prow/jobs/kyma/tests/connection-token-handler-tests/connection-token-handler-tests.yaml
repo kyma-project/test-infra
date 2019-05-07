@@ -62,6 +62,17 @@ presubmits:
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
+  - name: pre-rel11-kyma-tests-connection-token-handler-tests
+    branches:
+      - release-1.1
+    <<: *job_template
+    always_run: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.1
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
