@@ -9,12 +9,12 @@ The performance cluster script can be executed in two modes:
 Are a set of scripts that deploy on demand a kyma cluster on GCP.
 
 ### Production Mode
-Here the script is executed periodically. It is a kuberentes job defined at (k6pod.yaml)[]. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
+Here the script is executed periodically. It is a kuberentes job defined at (k6pod.yaml)[location to be defined]. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
 
 The K6 scripts are located [here](https://github.com/kyma-project/kyma/tests/perf). For more details of how to write K6 scripts in Kyma refer here.
 
 ### Development mode
-Here a developer can create his/her own kyma cluster on demand and then run k6 scripts manually. The idea here is if a developer wants to develop or debug k6 scripts then he/she can use this mode. One can execute the script (cluster.sh)[] in the following way
+Here a developer can create his/her own kyma cluster on demand and then run k6 scripts manually. The idea here is if a developer wants to develop or debug k6 scripts then he/she can use this mode. One can execute the script (cluster.sh)[https://github.com/kyma-project/test-infra/performance-tools/performance-cluster/cluster.sh] in the following way
 
 ```bash
 ./cluster.sh --action create --cluster-grade development
@@ -36,7 +36,7 @@ Delete Kyma and remove GKE cluster:
 ## Expected environment variables:
 
 - DOCKER_REGISTRY
-- DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. ""
+- DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. "docker.io/anyrepository"
 - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
    Ex. "/home/${USER}/go/src/github.com/kyma-project"
 - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)

@@ -46,10 +46,6 @@ function installKyma() {
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 	PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
-
-	#export DOMAIN=$(kubectl get cm net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.domainName}')
-#export DNS_ZONE={YOUR_DNS_ZONE}
-
 	shout "Apply Kyma config"
 	date
 	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \

@@ -47,11 +47,11 @@ fi
 CERT_DIR="$(mktemp -d -t cert.XXXXXX)"
 
 TMP_FILE=$(mktemp $CERT_DIR/temp-cert.XXXXXX) \
-&& kubectl get configmap  net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.tlsCrt}' | base64 -d > ${TMP_FILE} \
-&& cp ${TMP_FILE} ${DIR_SHARED_CERT}/$(basename -- ${TMP_FILE}) \
-&& update-ca-certificates \
-&& update-ca-certificates --fresh \
-&& rm ${TMP_FILE}
+   && kubectl get configmap  net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.tlsCrt}' | base64 -d > ${TMP_FILE} \
+   && cp ${TMP_FILE} ${DIR_SHARED_CERT}/$(basename -- ${TMP_FILE}) \
+   && update-ca-certificates \
+   && update-ca-certificates --fresh \
+   && rm ${TMP_FILE}
 
 # Get test scripts
 

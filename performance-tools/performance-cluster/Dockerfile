@@ -66,7 +66,11 @@ RUN apt-get update
 RUN apt-get install k6
 
 RUN mkdir perf-tests
-COPY scripts /perf-tests/scripts
 
+COPY scripts /perf-tests/scripts
 COPY runner.sh /perf-tests
+COPY cluster.sh /perf-tests
+
+WORKDIR /perf-tests
+
 CMD ["./runner.sh"]

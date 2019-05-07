@@ -48,12 +48,12 @@ export CLUSTER_GRADE
 
 if [[ "${ACTION}" == "" ]]; then
     shoutFail "--action is required"
-    exit 0
+    exit 1
 fi
 
 if [[ "${ACTION}" == "create" ]] && [[ "${CLUSTER_GRADE}" == "" ]]; then
     shoutFail "--cluster-grade is required"
-    exit 0
+    exit 1
 fi
 
 
@@ -61,19 +61,19 @@ shout "Cluster Grade ${CLUSTER_GRADE}"
 
 if [[ "${INPUT_CLUSTER_NAME}" == "" ]]; then
     shoutFail "Environment INPUT_CLUSTER_NAME is required"
-    exit 0
+    exit 1
 fi
 
 if [[ ! -f "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
     shoutFail "Environment GOOGLE_APPLICATION_CREDENTIALS with service_account credetntials is required."
-    exit 0
+    exit 1
 fi
 
 shout "Directory ${GOPATH}/src/github.com/kyma-project/kyma does exists."
 
 if [[ "${CLUSTER_GRADE}" == "development" ]] && [[ ! -d "${GOPATH}/src/github.com/kyma-project/kyma" ]]; then
     shoutFail "Directory ${GOPATH}/src/github.com/kyma-project/kyma does not exists."
-    exit 0
+    exit 1
 fi
 
 setupCluster() {

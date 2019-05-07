@@ -90,10 +90,8 @@ elif [[ "${ACTION}" == "create" ]]; then
         export REPO_OWNER="kyma-project"
         export REPO_NAME="kyma"
         shout "Production"
-        # git clone -b <branch> <remote_repo>
         mkdir -p /${SRC_DIR}/${REPO_OWNER}/${REPO_NAME}
         git clone https://github.com/${REPO_OWNER}/${REPO_NAME}.git ${SRC_DIR}/${REPO_OWNER}/${REPO_NAME}
-        #git clone -b ${BRANCH_NAME} --single-branch https://github.com/${REPO_OWNER}/${REPO_NAME}.git ${SRC_DIR}/${REPO_OWNER}/${REPO_NAME}
         export KYMA_SOURCES_DIR="${SRC_DIR}/${REPO_OWNER}/${REPO_NAME}"
     else
         for var in REPO_OWNER REPO_NAME; do
