@@ -28,7 +28,7 @@ shout "Generate lets encrypt certificate"
 date
 
 mkdir letsencrypt
-cp ${GOOGLE_APPLICATION_CREDENTIALS} letsencrypt
+cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
 docker run  --name certbot \
     --rm  \
     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \

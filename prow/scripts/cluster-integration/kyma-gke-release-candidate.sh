@@ -150,9 +150,6 @@ DNS_SUBDOMAIN="${COMMON_NAME}"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
-INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -226,16 +223,16 @@ date
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
 export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
-
-source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-and-export-letsencrypt-TLS-cert.sh"
+# shellcheck disable=SC1090
+  source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-and-export-letsencrypt-TLS-cert.sh"
 
 
 shout "Apply Kyma config"
 date
 
 echo "Use released artifacts"
-wget https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-config-cluster.yaml
-wget https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml
+wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-config-cluster.yaml"
+wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml"
 
 kubectl apply -f kyma-installer-cluster.yaml
 
