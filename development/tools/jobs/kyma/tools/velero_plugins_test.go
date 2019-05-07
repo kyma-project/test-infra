@@ -44,7 +44,7 @@ func TestVeleroPluginsPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/velero-plugins"}, actualPost.Spec.Containers[0].Args)
 }
 
-// TODO: Will enable during a release
+// TODO: Will enable this test during a release
 // func TestVeleroPluginsReleases(t *testing.T) {
 // 	// WHEN
 // 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
