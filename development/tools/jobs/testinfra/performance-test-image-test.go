@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestPerfTestImageJobPresubmit test presubmit jobs
-func TestPerfTestImageJobPresubmit(t *testing.T) {
+// TestPerfTestJobPresubmit test presubmit jobs
+func TestPerfTestJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/performance-test-image.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/performance-test.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], "pre-master-perf-test-image", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], "pre-master-perf-test", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -27,14 +27,14 @@ func TestPerfTestImageJobPresubmit(t *testing.T) {
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/performance-tools/performance-cluster")
 }
 
-// TestPerfTestImageJobPostsubmit test postsubmit jobs
-func TestPerfTestImageJobPostsubmit(t *testing.T) {
+// TestPerfTestJobPostsubmit test postsubmit jobs
+func TestPerfTestJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/perf-test-image.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/perf-test.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-master-perf-test-image"
+	expName := "post-master-perf-test"
 	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/test-infra"], expName, "master")
 	require.NotNil(t, actualPost)
 

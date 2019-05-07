@@ -24,7 +24,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-  - name: pre-master-perf-test-image
+  - name: pre-master-perf-test
     branches:
     - master
     <<: *job_template
@@ -32,19 +32,10 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel08-kyma-tools-perf-test-image
-    branches:
-    - release-1.0
-    <<: *job_template
-    always_run: true
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-    # Releases jobs are not required for this component
 
 postsubmits:    
   kyma-project/test-infra:
-  - name: post-master-perf-test-image
+  - name: post-master-perf-test
     branches:
     - master
     <<: *job_template
