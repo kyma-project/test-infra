@@ -17,7 +17,7 @@ func TestLoadTestJobsPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, len(tester.GetAllKymaReleaseBranches()) + 1)
+	assert.Len(t, kymaPresubmits, len(tester.GetAllKymaReleaseBranches())+1)
 
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-kyma-tools-load-test"
