@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-- name: pre-master-kyma-tests-application-gateway-tests
+  - name: pre-master-kyma-tests-application-gateway-tests
     branches:
       - master
     <<: *job_template
