@@ -26,6 +26,7 @@ job_labels_template: &job_labels_template
   preset-website-bot-github-token: "true"
   preset-website-bot-github-ssh: "true"
   preset-website-bot-github-identity: "true"
+  preset-website-bot-zenhub-token: "true"
 
 presubmits: # runs on PRs
   kyma-project/website:
