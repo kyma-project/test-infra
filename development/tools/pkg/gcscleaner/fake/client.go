@@ -28,6 +28,7 @@ func (b bucketHandle) Delete(ctx context.Context) error {
 	return nil
 }
 
+// NewFakeClient creates fake GCS client to be used in tests
 func NewFakeClient(data []string) stiface.Client {
 	buckets := map[string]*bucket{}
 	for _, name := range data {
@@ -64,6 +65,7 @@ func (c *client) Buckets(ctx context.Context, projectID string) stiface.BucketIt
 	return &bucketIterator{buckets: buckets}
 }
 
+// GetBucketNames returns bucket names
 func GetBucketNames(bucketIterator stiface.BucketIterator) ([]string, error) {
 	var buckets []string
 	for {
