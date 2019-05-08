@@ -3,10 +3,11 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/fake"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/fake"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -96,7 +97,7 @@ func TestClean(t *testing.T) {
 
 func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, protectedBucketNames []string) {
 
-	duration := strconv.FormatInt(time.Now().Add(-3 * time.Hour).UnixNano(), 32)
+	duration := strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32)
 
 	protectedBucketNames = []string{
 		fmt.Sprintf(`protected-bucket-%s`, duration),
