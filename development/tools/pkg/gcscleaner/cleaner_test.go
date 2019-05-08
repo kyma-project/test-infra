@@ -71,20 +71,11 @@ func TestExtractTimestamp(t *testing.T) {
 
 func TestClean(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
-	protectedBucketName := fmt.Sprintf(`protected-bucket-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
-	bucket2Delete := fmt.Sprintf(`bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
-	bucketNames := []string{
-		"atx-prow2",
-		bucket2Delete,
-		"atx-prow3",
-		"atx-",
-		protectedBucketName,
-		fmt.Sprintf(`future-bucket-%s`, strconv.FormatInt(time.Now().Add(time.Hour).UnixNano(), 32)),
-	}
+	bucketNames, bucketsToDelete, protectedBuckets := getTestData()
 	client := NewFakeClient(bucketNames)
 	err := Clean(context.Background(), Config{
 		BucketLifespanDuration: time.Second,
-		ExcludedBucketNames:    []string{"atx-prow2", protectedBucketName},
+		ExcludedBucketNames:    append([]string{"atx-prow2"}, protectedBuckets...),
 	}, client)
 	if err != nil {
 		t.Error(err)
@@ -94,8 +85,43 @@ func TestClean(t *testing.T) {
 		t.Error(err)
 	}
 	assert := assert.New(t)
-	assert.Equal(len(bucketNames)-1, len(actualBucketNames))
+	assert.Equal(len(bucketNames)-len(bucketsToDelete), len(actualBucketNames))
 	for _, bucketName := range actualBucketNames {
-		assert.NotEqual(bucket2Delete, bucketName)
+		for _, bucketToDelete := range bucketsToDelete {
+			assert.NotEqual(bucketToDelete, bucketName)
+		}
 	}
+}
+
+func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, protectedBucketNames []string) {
+
+	duration := strconv.FormatInt(time.Now().Add(-3 * time.Hour).UnixNano(), 32)
+
+	protectedBucketNames = []string{
+		fmt.Sprintf(`protected-bucket-%s`, duration),
+	}
+
+	namesOfBucketsToBeDeleted = []string{
+		fmt.Sprintf(`bucket-to-delete-%s`, duration),
+		fmt.Sprintf(`bucket-to-delete2-%s`, duration),
+		fmt.Sprintf(`bucket-to-delete3-%s`, duration),
+	}
+
+	bucketWithFutureName := fmt.Sprintf(
+		`future-bucket-%s`,
+		strconv.FormatInt(time.Now().Add(time.Hour).UnixNano(), 32))
+
+	for _, slice := range [][]string{
+		{
+			"atx-prow2",
+			"atx-prow3",
+			"atx-",
+			bucketWithFutureName,
+		},
+		protectedBucketNames,
+		namesOfBucketsToBeDeleted,
+	} {
+		bucketNames = append(bucketNames, slice...)
+	}
+	return
 }
