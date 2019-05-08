@@ -3,6 +3,7 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/fake"
 	"strconv"
 	"testing"
 	"time"
@@ -72,7 +73,7 @@ func TestExtractTimestamp(t *testing.T) {
 func TestClean(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
 	bucketNames, bucketsToDelete, protectedBuckets := getTestData()
-	client := NewFakeClient(bucketNames)
+	client := fake.NewFakeClient(bucketNames)
 	err := Clean(context.Background(), Config{
 		BucketLifespanDuration: time.Second,
 		ExcludedBucketNames:    append([]string{"atx-prow2"}, protectedBuckets...),
@@ -80,7 +81,7 @@ func TestClean(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	actualBucketNames, err := GetBucketNames(client.Buckets(context.Background(), "test-project"))
+	actualBucketNames, err := fake.GetBucketNames(client.Buckets(context.Background(), "test-project"))
 	if err != nil {
 		t.Error(err)
 	}

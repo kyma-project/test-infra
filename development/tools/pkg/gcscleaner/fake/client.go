@@ -1,4 +1,4 @@
-package gcscleaner
+package fake
 
 import (
 	"context"
