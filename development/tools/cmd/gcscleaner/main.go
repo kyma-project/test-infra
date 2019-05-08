@@ -38,9 +38,9 @@ var (
 	argBucketLifespanDuration     string
 	bucketLifespanDurationDefault = "2h"
 
-	// ErrInvalidProjectName - returned if project name argument is invalid
+	// ErrInvalidProjectName returned if project name argument is invalid
 	ErrInvalidProjectName = errors.New("invalid project name argument")
-	// ErrInvalidDuration - returned if duration argument is invalid
+	// ErrInvalidDuration returned if duration argument is invalid
 	ErrInvalidDuration = errors.New("invalid duration argument")
 )
 
