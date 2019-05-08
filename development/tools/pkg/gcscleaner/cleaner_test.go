@@ -71,9 +71,9 @@ func TestExtractTimestamp(t *testing.T) {
 
 func TestClean(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
-	protectedBucketName := fmt.Sprintf(`protected-bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
+	protectedBucketName := fmt.Sprintf(`protected-bucket-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
 	bucket2Delete := fmt.Sprintf(`bucket-to-delete-%s`, strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32))
-	defaultBucketNames := []string{
+	bucketNames := []string{
 		"atx-prow2",
 		bucket2Delete,
 		"atx-prow3",
@@ -81,7 +81,7 @@ func TestClean(t *testing.T) {
 		protectedBucketName,
 		fmt.Sprintf(`future-bucket-%s`, strconv.FormatInt(time.Now().Add(time.Hour).UnixNano(), 32)),
 	}
-	client := NewFakeClient(defaultBucketNames)
+	client := NewFakeClient(bucketNames)
 	err := Clean(context.Background(), Config{
 		BucketLifespanDuration: time.Second,
 		ExcludedBucketNames:    []string{"atx-prow2", protectedBucketName},
@@ -94,7 +94,7 @@ func TestClean(t *testing.T) {
 		t.Error(err)
 	}
 	assert := assert.New(t)
-	assert.Equal(len(defaultBucketNames)-1, len(actualBucketNames))
+	assert.Equal(len(bucketNames)-1, len(actualBucketNames))
 	for _, bucketName := range actualBucketNames {
 		assert.NotEqual(bucket2Delete, bucketName)
 	}
