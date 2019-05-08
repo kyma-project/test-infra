@@ -47,7 +47,7 @@ var (
 func init() {
 	flag.StringVar(
 		&argProjectName,
-		"project-name",
+		"project",
 		"",
 		"google cloud project name")
 
@@ -60,7 +60,7 @@ func init() {
 
 	flag.StringVar(
 		&argExcludedBucketNames,
-		"excluded-buckets",
+		"excludedBuckets",
 		"",
 		"bucket names that are protected from deletion")
 }
