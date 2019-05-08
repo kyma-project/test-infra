@@ -46,7 +46,6 @@ cat << EOF > /etc/docker/daemon.json
    "log-opts": {
          "gcp-meta-name": "kyma-integration-test"
       }
-  
 }
 EOF
 sudo mv /tmp/daemon.json /etc/docker/
