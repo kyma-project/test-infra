@@ -1,28 +1,30 @@
 package gcscleaner
 
 import (
-	"context"
 	"fmt"
 	"regexp"
 	"strconv"
 	"time"
 
-	"github.com/googleapis/google-cloud-go-testing/storage/stiface"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
 )
 
+type DeleteBucket func(string) error
+
+type NextBucket func() (string, error)
+
 // Clean cleans up buckets created by Asset Store
 func Clean(
-	ctx context.Context,
-	cfg Config,
-	client stiface.Client) error {
+	nextBucket NextBucket,
+	deleteBucket DeleteBucket,
+	excludedBucketNames []string,
+	bucketLifespanDuration time.Duration) error {
 
-	buckets := client.Buckets(ctx, cfg.ProjectName)
 	var result error
 	for {
-		attrs, err := buckets.Next()
+		bucketName, err := nextBucket()
 		if err == iterator.Done {
 			break
 		}
@@ -30,21 +32,21 @@ func Clean(
 			return err
 		}
 		if !shouldDeleteBucket(
-			attrs.Name,
-			cfg.ExcludedBucketNames,
+			bucketName,
+			excludedBucketNames,
 			time.Now().UnixNano(),
-			cfg.BucketLifespanDuration) {
+			bucketLifespanDuration) {
 
 			continue
 		}
-		if err := client.Bucket(attrs.Name).Delete(ctx); err != nil {
+		if err := deleteBucket(bucketName); err != nil {
 			logrus.Error(errors.Wrap(
 				err,
-				fmt.Sprintf(`"deleting bucket %s"`, attrs.Name)),
+				fmt.Sprintf(`"deleting bucket %s"`, bucketName)),
 			)
 			result = ErrWhileDelBuckets
 		}
-		logrus.Info(fmt.Sprintf(`bucket: '%s' deleted`, attrs.Name))
+		logrus.Info(fmt.Sprintf(`bucket: '%s' deleted`, bucketName))
 	}
 	return result
 }
@@ -102,6 +104,7 @@ type Config struct {
 	ProjectName            string
 	BucketLifespanDuration time.Duration
 	ExcludedBucketNames    []string
+	DryRun                 bool
 }
 
 var regTimestampSuffix = regexp.MustCompile(`^.+-([a-z0-9]+$)`)

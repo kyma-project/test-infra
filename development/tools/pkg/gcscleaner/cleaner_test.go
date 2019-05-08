@@ -1,7 +1,6 @@
 package gcscleaner
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"testing"
@@ -75,17 +74,16 @@ func TestClean(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
 	bucketNames, bucketsToDelete, protectedBuckets := getTestData()
 	client := fake.NewFakeClient(bucketNames)
-	err := Clean(context.Background(), Config{
-		BucketLifespanDuration: time.Second,
-		ExcludedBucketNames:    append([]string{"atx-prow2"}, protectedBuckets...),
-	}, client)
+	err := Clean(
+		client.NextBucket,
+		client.DeleteBucket,
+		append([]string{"atx-prow2"}, protectedBuckets...),
+		time.Second)
+
 	if err != nil {
 		t.Error(err)
 	}
-	actualBucketNames, err := fake.GetBucketNames(client.Buckets(context.Background(), "test-project"))
-	if err != nil {
-		t.Error(err)
-	}
+	actualBucketNames := client.Buckets()
 	assert := assert.New(t)
 	assert.Equal(len(bucketNames)-len(bucketsToDelete), len(actualBucketNames))
 	for _, bucketName := range actualBucketNames {
@@ -97,7 +95,7 @@ func TestClean(t *testing.T) {
 
 func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, protectedBucketNames []string) {
 
-	duration := strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32)
+	duration := strconv.FormatInt(time.Now().Add(-3 * time.Hour).UnixNano(), 32)
 
 	protectedBucketNames = []string{
 		fmt.Sprintf(`protected-bucket-%s`, duration),

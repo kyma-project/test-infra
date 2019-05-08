@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"cloud.google.com/go/storage"
-	"github.com/googleapis/google-cloud-go-testing/storage/stiface"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -26,7 +25,32 @@ func main() {
 		logrus.Fatal(errors.Wrap(err, "reading configuration"))
 	}
 
-	err = gcscleaner.Clean(ctx, cfg, stiface.AdaptClient(client))
+	deleteBucket := func() gcscleaner.DeleteBucket {
+		if cfg.DryRun {
+			return dryRunDeleteBucket
+		}
+		return func(bucketName string) error {
+			return client.Bucket(bucketName).Delete(ctx)
+		}
+	}()
+
+	nextBucket := func() gcscleaner.NextBucket {
+		bucketIterator := client.Buckets(ctx, cfg.ProjectName)
+		return func() (string, error) {
+			attrs, err := bucketIterator.Next()
+			if err != nil {
+				return "", err
+			}
+			return attrs.Name, nil
+		}
+	}()
+
+	err = gcscleaner.Clean(
+		nextBucket,
+		deleteBucket,
+		cfg.ExcludedBucketNames,
+		cfg.BucketLifespanDuration)
+
 	if err != nil {
 		logrus.Fatal(errors.Wrap(err, "cleaning buckets"))
 	}
@@ -37,6 +61,10 @@ var (
 	argExcludedBucketNames        string
 	argBucketLifespanDuration     string
 	bucketLifespanDurationDefault = "2h"
+	argDryRun                     bool
+	dryRunDeleteBucket            = func(_ string) error {
+		return nil
+	}
 
 	// ErrInvalidProjectName returned if project name argument is invalid
 	ErrInvalidProjectName = errors.New("invalid project name argument")
@@ -63,6 +91,12 @@ func init() {
 		"excludedBuckets",
 		"",
 		"bucket names that are protected from deletion")
+
+	flag.BoolVar(
+		&argDryRun,
+		"dryRun",
+		false,
+		"dry Run enabled, nothing is deleted")
 }
 
 func readConfig() (gcscleaner.Config, error) {
@@ -85,6 +119,7 @@ func readConfig() (gcscleaner.Config, error) {
 			argExcludedBucketNames,
 			",")
 	}
+	cfg.DryRun = argDryRun
 
 	return cfg, nil
 }
