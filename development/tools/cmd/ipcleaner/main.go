@@ -13,7 +13,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/ipcleaner"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
-	compute "google.golang.org/api/compute/v1"
+	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/container/v1"
 )
 
@@ -67,7 +67,7 @@ func main() {
 	success, err := ipr.Run(*project, *region, *ipName)
 
 	if err != nil {
-		log.Fatalf("Cluster collector error: %v", err)
+		log.Fatalf("IP Cleaner error: %v", err)
 	}
 
 	if !success {

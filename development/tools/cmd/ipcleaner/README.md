@@ -1,8 +1,8 @@
-# IP release
+# IP cleaner
 
 ## Overview
 
-This command finds and removes ips created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
+This command finds and removes IPs created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
 
 The `kyma-gke-long-lasting` job creates a GKE cluster to install and test Kyma.
 
@@ -32,12 +32,12 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name
-| **--ipname**              |   Yes    | GCP IP resource name
-| **--region**              |   Yes    | GCP region name
-| **--maxAttempts**         |    No    | Maximum number of retries in the backoff, default: 3
-| **--backoff**             |    No    | Initial backoff in seconds for the first retry, will increase after this, default: 5
-| **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
+| **--project**             |   YES    | GCP project name.
+| **--ipname**              |   YES    | GCP IP resource name.
+| **--region**              |   YES    | GCP region name.
+| **--maxAttempts**         |    NO    | Maximum number of retries in the backoff. The default value is `3`.
+| **--backoff**             |    NO    | Initial backoff in seconds for the first retry. The backoff will increase after this time. The default value is `5`.
+| **--dryRun**              |    NO    | The boolean value that controls the dry-run mode. The default is `true`.
 
 ### Environment variables
 
@@ -45,5 +45,5 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    YES   | The path to the service account file. The service account requires at least `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
 

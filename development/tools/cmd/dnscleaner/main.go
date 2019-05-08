@@ -76,7 +76,7 @@ func main() {
 	success, err := der.Run(*project, *zone, *name, *address, *rtype, *ttl)
 
 	if err != nil {
-		log.Fatalf("Cluster collector error: %v", err)
+		log.Fatalf("DNS Cleaner error: %v", err)
 	}
 
 	if !success {

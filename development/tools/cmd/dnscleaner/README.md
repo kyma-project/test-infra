@@ -1,8 +1,8 @@
-# IP release
+# DNS Cleaner
 
 ## Overview
 
-This command finds and removes ips created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
+This command finds and removes DNS entries created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
 
 The `kyma-gke-long-lasting` job creates a GKE cluster to install and test Kyma.
 
@@ -34,15 +34,15 @@ See the list of available flags:
 
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **--project**             |   Yes    | GCP project name
-| **--zone**                |   Yes    | GCP zone name
-| **--name**                |   Yes    | GCP DNS resource name
-| **--address**             |   Yes    | GCP resource's attached IP
-| **--rtype**               |    No    | DNS Record Type to search for, default: A
-| **--ttl**                 |    No    | TTL of the resource, default: 300
-| **--maxAttempts**         |    No    | Maximum number of retries in the backoff, default: 3
-| **--backoff**             |    No    | Initial backoff in seconds for the first retry, will increase after this, default: 5
-| **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
+| **--project**             |   YES    | GCP project name.
+| **--zone**                |   YES    | GCP zone name.
+| **--name**                |   YES    | GCP DNS resource name.
+| **--address**             |   YES    | GCP resource's attached IP.
+| **--rtype**               |    NO    | DNS Record Type to search for. The default value is `A`.
+| **--ttl**                 |    NO    | TTL of the resource. The default value is `300`.
+| **--maxAttempts**         |    NO    | Maximum number of retries in the backoff. The default value is `3`.
+| **--backoff**             |    NO    | Initial backoff in seconds for the first retry. The backoff will increase after this time. The default value is `5`.
+| **--dryRun**              |    NO    | The boolean value that controls the dry-run mode. The default is `true`.
 
 ### Environment variables
 
@@ -50,5 +50,5 @@ See the list of available environment variables:
 
 | Name                                  | Required | Description                                                                                          |
 | :------------------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
-| **GOOGLE_APPLICATION_CREDENTIALS**    |    Yes   | The path to the service account file. The service account requires at least `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
+| **GOOGLE_APPLICATION_CREDENTIALS**    |    YES   | The path to the service account file. The service account requires at least `container.clusters.list` and `container.clusters.delete` Google IAM permissions. |
 
