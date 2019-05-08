@@ -41,6 +41,16 @@ sudo apt install -y docker-ce=${DOCKER_VERSION}
 
 # setup logging drived for docker
 echo "{\"log-driver\": \"gcplogs\",\"log-opts\": {\"gcp-meta-name\": \"kyma-integration-test\"}}" > /tmp/daemon.json
+
+cat << EOF > /etc/docker/daemon.json
+{
+   "log-driver": "gcplogs",
+   "log-opts": {
+         "gcp-meta-name": "kyma-integration-test"
+      }
+  
+}
+EOF
 sudo mv /tmp/daemon.json /etc/docker/
 
 # install fluentd 
