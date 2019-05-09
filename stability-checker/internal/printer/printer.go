@@ -6,7 +6,6 @@ import (
 	"io"
 
 	"github.com/kyma-project/test-infra/stability-checker/internal/log"
-
 	"github.com/kyma-project/test-infra/stability-checker/internal/runner"
 )
 

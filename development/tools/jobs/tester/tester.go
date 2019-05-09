@@ -44,6 +44,14 @@ const (
 	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
 	// PresetBotGithubIdentity means github identity
 	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
+	// PresetWebsiteBotGithubToken means github token
+	PresetWebsiteBotGithubToken Preset = "preset-website-bot-github-token"
+	// PresetWebsiteBotGithubSSH means github ssh
+	PresetWebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
+	// PresetWebsiteBotGithubIdentity means github identity
+	PresetWebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
+	// PresetWebsiteBotZenHubToken means zenhub token
+	PresetWebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
 	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable
@@ -89,10 +97,9 @@ type SupportedRelease = string
 // When we removing support for given version, there remove
 // its entry also here.
 const (
-	Release07 SupportedRelease = "release-0.7"
-	Release08 SupportedRelease = "release-0.8"
 	Release09 SupportedRelease = "release-0.9"
 	Release10 SupportedRelease = "release-1.0"
+	Release11 SupportedRelease = "release-1.1"
 )
 
 // Release allows you to execute checks on given release
@@ -113,7 +120,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []SupportedRelease {
-	return []SupportedRelease{Release07, Release08, Release09, Release10}
+	return []SupportedRelease{Release09, Release10, Release11}
 }
 
 // GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones

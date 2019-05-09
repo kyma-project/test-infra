@@ -1,15 +1,7 @@
-# The following job has been deprecated
-# New version of this job can be found here: prow/jobs/test-infra/stability-checker.yaml
-
-test_infra_ref: &test_infra_ref
-  org: kyma-project
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 job_template: &job_template
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-project/kyma
+  path_alias: github.com/kyma-project/test-infra
   max_concurrency: 10
   spec:
     containers:
@@ -19,7 +11,7 @@ job_template: &job_template
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
       args:
-      - "/home/prow/go/src/github.com/kyma-project/kyma/tools/stability-checker"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/performance-tools/performance-cluster"
       resources:
         requests:
           memory: 1.5Gi
@@ -31,15 +23,23 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-  - name: pre-rel07-kyma-tools-stability-checker
+  kyma-project/test-infra:
+  - name: pre-master-perf-test
     branches:
-    - release-0.7
+    - master
     <<: *job_template
-    always_run: true
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.7
+    run_if_changed: "^performance-tools/performance-cluster/"
     labels:
       <<: *job_labels_template
-      preset-build-release: "true"
+      preset-build-pr: "true"
+
+postsubmits:    
+  kyma-project/test-infra:
+  - name: post-master-perf-test
+    branches:
+    - master
+    <<: *job_template
+    run_if_changed: "^performance-tools/performance-cluster/"
+    labels:
+      <<: *job_labels_template
+      preset-build-master: "true"

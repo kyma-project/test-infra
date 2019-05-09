@@ -32,7 +32,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -80,41 +80,11 @@ cleanup() {
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
     fi
-
-    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-        shout "Delete Gateway DNS Record"
-        date
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        shout "Release Gateway IP Address"
-        date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-    fi
-
-    if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
-        shout "Delete Remote Environments DNS Record"
-        date
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-    fi
-
-    if [ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]; then
-        shout "Release Remote Environments IP Address"
-        date
-        IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-    fi
     
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-    fi
-
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        shout "Delete Apiserver proxy DNS Record"
-        date
-        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
     fi
 
     MSG=""
@@ -167,7 +137,6 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
@@ -249,15 +218,6 @@ shout "Trigger installation"
 date
 kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
-
-if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    shout "Create DNS Record for Apiserver proxy IP"
-    date
-    APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-    CLEANUP_APISERVER_DNS_RECORD="true"
-    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
