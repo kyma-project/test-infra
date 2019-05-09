@@ -45,7 +45,7 @@ func main() {
 	}
 
 	bucketIterator := client.Buckets(ctx, options.ProjectName)
-	nextBucket := func() (string, error) {
+	nextBucketNameGenerator := func() (string, error) {
 		attrs, err := bucketIterator.Next()
 		if err != nil {
 			return "", err
@@ -54,7 +54,7 @@ func main() {
 	}
 
 	err = gcscleaner.Clean(
-		nextBucket,
+		nextBucketNameGenerator,
 		deleteBucket,
 		gcscleaner.NewConfig(
 			options.BucketNameRegexp,
