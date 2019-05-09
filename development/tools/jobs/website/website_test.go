@@ -31,7 +31,7 @@ func TestWebsiteJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-project/website", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetWebsiteBotGithubIdentity, tester.PresetWebsiteBotGithubSSH, tester.PresetWebsiteBotGithubToken, tester.PresetWebsiteBotZenHubToken)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetDindEnabled, tester.PresetWebsiteBotGithubIdentity, tester.PresetWebsiteBotGithubSSH, tester.PresetWebsiteBotGithubToken, tester.PresetWebsiteBotZenHubToken)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/website"}, actualPresubmit.Spec.Containers[0].Args)
@@ -58,8 +58,31 @@ func TestWebsiteJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/website", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster, tester.PresetWebsiteBotGithubIdentity, tester.PresetWebsiteBotGithubSSH, tester.PresetWebsiteBotGithubToken, tester.PresetWebsiteBotZenHubToken)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster, tester.PresetDindEnabled, tester.PresetWebsiteBotGithubIdentity, tester.PresetWebsiteBotGithubSSH, tester.PresetWebsiteBotGithubToken, tester.PresetWebsiteBotZenHubToken)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/website"}, actualPost.Spec.Containers[0].Args)
+}
+
+func TestWebsiteJobPeriodic(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/website/website.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	periodics := jobConfig.Periodics
+	assert.Len(t, periodics, 1)
+
+	expName := "periodic-website"
+	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, actualPeriodic)
+	assert.Equal(t, expName, actualPeriodic.Name)
+	assert.True(t, actualPeriodic.Decorate)
+	assert.Equal(t, "@hourly", actualPeriodic.Cron)
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetBuildMaster, tester.PresetDindEnabled, tester.PresetWebsiteBotGithubIdentity, tester.PresetWebsiteBotGithubSSH, tester.PresetWebsiteBotGithubToken, tester.PresetWebsiteBotZenHubToken)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"website"})
+	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/website"}, actualPeriodic.Spec.Containers[0].Args)
 }
