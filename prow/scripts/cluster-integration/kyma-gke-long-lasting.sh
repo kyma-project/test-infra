@@ -35,6 +35,10 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
+if [ -z "${SERVICE_CATALOG_CRD}" ]; then
+	export SERVICE_CATALOG_CRD="false"
+fi
+
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 # shellcheck disable=SC1090
@@ -232,6 +236,10 @@ function installKyma() {
 		| sed -e "s/__.*__//g" \
 		| kubectl apply -f-
 
+	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
+         applyServiceCatalogCRDOverride
+    fi
+
 	waitUntilInstallerApiAvailable
 
 	shout "Trigger installation"
@@ -269,6 +277,25 @@ function addGithubDexConnector() {
     popd
     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
+}
+
+function applyServiceCatalogCRDOverride(){
+    shout "Apply override for ServiceCatalog"
+
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-catalog-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: service-catalog
+    kyma-project.io/installation: ""
+data:
+  service-catalog-apiserver.enabled: "false"
+  service-catalog-crds.enabled: "true"
+EOF
 }
 
 shout "Authenticate"

@@ -429,9 +429,9 @@ presubmits: # runs on PRs
     - <<: *kk_test_ref
       base_ref: feature/xip-gke-upgrade
 
-  - name: kyma-gke-service-catalog-nightly
+  - name: kyma-gke-service-catalog-crd-periodic
     # this is work in progress for https://github.com/kyma-project/kyma/issues/3047
-    # cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    # cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
     branches:
     - master
     always_run: false
@@ -464,11 +464,11 @@ presubmits: # runs on PRs
           readOnly: true
         env:
         - name: INPUT_CLUSTER_NAME
-          value: "service-catalog-nightly"
+          value: "service-catalog-crd-periodic"
         - name: TEST_RESULT_WINDOW_TIME
           value: "6h"
         - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-          value: "#c4core-kyma-sc-night"
+          value: "#c4core-kyma-gopher-pr"
         - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
           value: "cluster-access"
         - name: SERVICE_CATALOG_CRD
@@ -479,12 +479,12 @@ presubmits: # runs on PRs
               name: kyma-alerts-slack-api-url
               key: secret
         - name: KYMA_ALERTS_CHANNEL
-          value: "#adam-slack-tests"
+          value: "#c4core-kyma-gopher-pr"
         command:
         - "bash"
         args:
         - "-c"
-        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting-aw-test.sh"
+        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
         resources:
           requests:
             memory: 200Mi
