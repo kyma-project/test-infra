@@ -1,12 +1,14 @@
-package gcscleaner
+package gcscleaner_test
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/fake"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
+	"google.golang.org/api/iterator"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -64,7 +66,7 @@ func TestExtractTimestamp(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := extractTimestampSuffix(test.bucketName)
+			actual := gcscleaner.ExtractTimestampSuffix(test.bucketName, *regexp.MustCompile(`^.+-([a-z0-9]+$)`))
 			assert.New(t).Equal(test.expected(), actual)
 		})
 	}
@@ -73,17 +75,19 @@ func TestExtractTimestamp(t *testing.T) {
 func TestClean(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
 	bucketNames, bucketsToDelete, protectedBuckets := getTestData()
-	client := fake.NewFakeClient(bucketNames)
-	err := Clean(
-		client.NextBucket,
-		client.DeleteBucket,
-		append([]string{"atx-prow2"}, protectedBuckets...),
-		time.Second)
+	actualBucketNames := append([]string(nil), bucketNames...)
+	err := gcscleaner.Clean(
+		testNextBucketNameFunc(bucketNames),
+		testDeleteBucket(&actualBucketNames),
+		gcscleaner.NewConfig(
+			*regexp.MustCompile(`^.+-([a-z0-9]+$)`),
+			append([]string{"atx-prow2"}, protectedBuckets...),
+			time.Second))
 
 	if err != nil {
 		t.Error(err)
 	}
-	actualBucketNames := client.Buckets()
+
 	assert := assert.New(t)
 	assert.Equal(len(bucketNames)-len(bucketsToDelete), len(actualBucketNames))
 	for _, bucketName := range actualBucketNames {
@@ -95,7 +99,7 @@ func TestClean(t *testing.T) {
 
 func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, protectedBucketNames []string) {
 
-	duration := strconv.FormatInt(time.Now().Add(-3 * time.Hour).UnixNano(), 32)
+	duration := strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32)
 
 	protectedBucketNames = []string{
 		fmt.Sprintf(`protected-bucket-%s`, duration),
@@ -124,4 +128,29 @@ func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, pr
 		bucketNames = append(bucketNames, slice...)
 	}
 	return
+}
+
+func testDeleteBucket(remainingBuckets *[]string) gcscleaner.DeleteBucketFunc {
+	return func(bucketNameToDelete string) error {
+		for i, bucketName := range *remainingBuckets {
+			if bucketName != bucketNameToDelete {
+				continue
+			}
+			*remainingBuckets = append((*remainingBuckets)[:i], (*remainingBuckets)[i+1:]...)
+			return nil
+		}
+		return nil
+	}
+}
+
+func testNextBucketNameFunc(bucketNames []string) func() (string, error) {
+	index := 0
+	return func() (string, error) {
+		if len(bucketNames) < index+1 {
+			return "", iterator.Done
+		}
+		bucketName := bucketNames[index]
+		index++
+		return bucketName, nil
+	}
 }

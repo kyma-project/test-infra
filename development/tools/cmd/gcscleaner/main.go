@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"regexp"
 	"strings"
 	"time"
 
@@ -12,6 +13,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Config structure aggregating application configuration arguments
+type options struct {
+	ProjectName            string
+	BucketLifespanDuration time.Duration
+	ExcludedBucketNames    []string
+	DryRun                 bool
+	BucketNameRegexp       regexp.Regexp
+}
+
 func main() {
 	ctx := context.Background()
 
@@ -20,36 +30,36 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	cfg, err := readConfig()
+	options, err := readOptions()
 	if err != nil {
 		logrus.Fatal(errors.Wrap(err, "reading configuration"))
 	}
 
-	deleteBucket := func() gcscleaner.DeleteBucket {
-		if cfg.DryRun {
-			return dryRunDeleteBucket
-		}
-		return func(bucketName string) error {
+	var deleteBucket gcscleaner.DeleteBucketFunc
+	if options.DryRun {
+		deleteBucket = dryRunDeleteBucket
+	} else {
+		deleteBucket = func(bucketName string) error {
 			return client.Bucket(bucketName).Delete(ctx)
 		}
-	}()
+	}
 
-	nextBucket := func() gcscleaner.NextBucket {
-		bucketIterator := client.Buckets(ctx, cfg.ProjectName)
-		return func() (string, error) {
-			attrs, err := bucketIterator.Next()
-			if err != nil {
-				return "", err
-			}
-			return attrs.Name, nil
+	bucketIterator := client.Buckets(ctx, options.ProjectName)
+	nextBucket := func() (string, error) {
+		attrs, err := bucketIterator.Next()
+		if err != nil {
+			return "", err
 		}
-	}()
+		return attrs.Name, nil
+	}
 
 	err = gcscleaner.Clean(
 		nextBucket,
 		deleteBucket,
-		cfg.ExcludedBucketNames,
-		cfg.BucketLifespanDuration)
+		gcscleaner.NewConfig(
+			options.BucketNameRegexp,
+			options.ExcludedBucketNames,
+			options.BucketLifespanDuration))
 
 	if err != nil {
 		logrus.Fatal(errors.Wrap(err, "cleaning buckets"))
@@ -60,16 +70,20 @@ var (
 	argProjectName                string
 	argExcludedBucketNames        string
 	argBucketLifespanDuration     string
-	bucketLifespanDurationDefault = "2h"
+	argBucketNameRegexp           string
 	argDryRun                     bool
+	bucketLifespanDurationDefault = "2h"
 	dryRunDeleteBucket            = func(_ string) error {
 		return nil
 	}
-
 	// ErrInvalidProjectName returned if project name argument is invalid
 	ErrInvalidProjectName = errors.New("invalid project name argument")
 	// ErrInvalidDuration returned if duration argument is invalid
 	ErrInvalidDuration = errors.New("invalid duration argument")
+	// ErrEmptyBucketNameRegexp returned if argBucketNameRegexp is empty
+	ErrEmptyBucketNameRegexp = errors.New("empty bucketNameRegexp argument")
+	// ErrInvalidBucketNameRegexp returned if argBucketNameRegexp is invalid
+	ErrInvalidBucketNameRegexp = errors.New("invalid bucketNameRegexp argument")
 )
 
 func init() {
@@ -97,29 +111,45 @@ func init() {
 		"dryRun",
 		false,
 		"dry Run enabled, nothing is deleted")
+
+	flag.StringVar(
+		&argBucketNameRegexp,
+		"bucketNameRegexp",
+		"",
+		"bucket name regexp pattern used to mach when deleted buckets")
 }
 
-func readConfig() (gcscleaner.Config, error) {
+func readOptions() (options, error) {
 	flag.Parse()
 
+	if argBucketNameRegexp == "" {
+		return options{}, ErrEmptyBucketNameRegexp
+	}
+
+	bucketNameRegexp, err := regexp.Compile(argBucketNameRegexp)
+	if err != nil {
+		return options{}, ErrInvalidBucketNameRegexp
+	}
+
 	if argProjectName == "" {
-		return gcscleaner.Config{}, ErrInvalidProjectName
+		return options{}, ErrInvalidProjectName
 	}
 
 	duration, err := time.ParseDuration(argBucketLifespanDuration)
 	if err != nil {
-		return gcscleaner.Config{}, ErrInvalidDuration
+		return options{}, ErrInvalidDuration
 	}
 
-	cfg := gcscleaner.Config{}
-	cfg.ProjectName = argProjectName
-	cfg.BucketLifespanDuration = duration
+	options := options{}
+	options.ProjectName = argProjectName
+	options.BucketLifespanDuration = duration
 	if argExcludedBucketNames != "" {
-		cfg.ExcludedBucketNames = strings.Split(
+		options.ExcludedBucketNames = strings.Split(
 			argExcludedBucketNames,
 			",")
 	}
-	cfg.DryRun = argDryRun
+	options.DryRun = argDryRun
+	options.BucketNameRegexp = *bucketNameRegexp
 
-	return cfg, nil
+	return options, nil
 }

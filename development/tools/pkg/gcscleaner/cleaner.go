@@ -11,32 +11,35 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-type DeleteBucket func(string) error
+// DeleteBucketFunc deletes bucket with a given name
+type DeleteBucketFunc func(string) error
 
-type NextBucket func() (string, error)
+// BucketNameGeneratorFunc returns next bucket name on each call
+type BucketNameGeneratorFunc func() (string, error)
+
+// Config cleaner configuration
+type Config struct {
+	ExcludedBucketNames    []string
+	BucketLifespanDuration time.Duration
+	RegTimestampSuffix     regexp.Regexp
+}
 
 // Clean cleans up buckets created by Asset Store
 func Clean(
-	nextBucket NextBucket,
-	deleteBucket DeleteBucket,
-	excludedBucketNames []string,
-	bucketLifespanDuration time.Duration) error {
+	generateNextBucketName BucketNameGeneratorFunc,
+	deleteBucket DeleteBucketFunc,
+	cfg Config) error {
 
 	var result error
 	for {
-		bucketName, err := nextBucket()
+		bucketName, err := generateNextBucketName()
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
 			return err
 		}
-		if !shouldDeleteBucket(
-			bucketName,
-			excludedBucketNames,
-			time.Now().UnixNano(),
-			bucketLifespanDuration) {
-
+		if !shouldDeleteBucket(bucketName, time.Now().UnixNano(), cfg) {
 			continue
 		}
 		if err := deleteBucket(bucketName); err != nil {
@@ -51,21 +54,21 @@ func Clean(
 	return result
 }
 
-func shouldDeleteBucket(
-	bucketName string,
-	excludedBucketNames []string,
-	now int64,
-	bucketLifespanDuration time.Duration) bool {
+func shouldDeleteBucket(bucketName string, now int64, cfg Config) bool {
 
-	for _, excludedBucketName := range excludedBucketNames {
+	for _, excludedBucketName := range cfg.ExcludedBucketNames {
 		if excludedBucketName != bucketName {
 			continue
 		}
 		return false
 	}
 
-	timestampSuffix := extractTimestampSuffix(bucketName)
+	timestampSuffix := extractTimestampSuffix(bucketName, cfg.RegTimestampSuffix)
 	if timestampSuffix == nil {
+		logrus.Debug(fmt.Sprintf(
+			"skipping bucket '%s', no timestamp",
+			bucketName),
+		)
 		return false
 	}
 	timestamp, err := strconv.ParseInt(*timestampSuffix, 32, 0)
@@ -76,12 +79,12 @@ func shouldDeleteBucket(
 		)
 		return false
 	}
-	if now-timestamp < int64(bucketLifespanDuration) {
+	if now-timestamp < int64(cfg.BucketLifespanDuration) {
 		logrus.Debug(fmt.Sprintf(
 			"bucket: '%s' is %s old and will not be deleted, the duration: '%s' was not exceeded",
 			bucketName,
 			time.Duration(now-timestamp),
-			bucketLifespanDuration),
+			cfg.BucketLifespanDuration),
 		)
 		return false
 	}
@@ -89,7 +92,7 @@ func shouldDeleteBucket(
 	return true
 }
 
-func extractTimestampSuffix(name string) *string {
+func extractTimestampSuffix(name string, regTimestampSuffix regexp.Regexp) *string {
 
 	submatch := regTimestampSuffix.FindSubmatch([]byte(name))
 	if len(submatch) < 2 {
@@ -99,15 +102,18 @@ func extractTimestampSuffix(name string) *string {
 	return &result
 }
 
-// Config structure aggregating application configuration arguments
-type Config struct {
-	ProjectName            string
-	BucketLifespanDuration time.Duration
-	ExcludedBucketNames    []string
-	DryRun                 bool
-}
+// NewConfig creates new cleaner configuration
+func NewConfig(
+	bucketNameRegexp regexp.Regexp,
+	excludedBucketNames []string,
+	bucketLifespanDuration time.Duration) Config {
 
-var regTimestampSuffix = regexp.MustCompile(`^.+-([a-z0-9]+$)`)
+	return Config{
+		RegTimestampSuffix:     bucketNameRegexp,
+		ExcludedBucketNames:    excludedBucketNames,
+		BucketLifespanDuration: bucketLifespanDuration,
+	}
+}
 
 // ErrWhileDelBuckets returned when error occurred while deleting one or more buckets
 var ErrWhileDelBuckets = errors.New("error while deleting bucket")
