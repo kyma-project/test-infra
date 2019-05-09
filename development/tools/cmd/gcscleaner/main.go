@@ -25,14 +25,14 @@ type options struct {
 func main() {
 	ctx := context.Background()
 
-	client, err := storage.NewClient(ctx)
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
 	options, err := readOptions()
 	if err != nil {
 		logrus.Fatal(errors.Wrap(err, "reading configuration"))
+	}
+
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		logrus.Fatal(err)
 	}
 
 	var deleteBucket gcscleaner.DeleteBucketFunc
