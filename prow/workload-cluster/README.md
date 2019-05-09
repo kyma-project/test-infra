@@ -25,3 +25,4 @@ You can define two kinds of Secrets:
 The `secretspopulator` function looks for the `{prefix}.encrypted` object in the bucket and creates a Kubernetes Secret with a `{prefix}`.
 For service accounts, the Secret key is `service-account.json`. For generic Secrets, you must provide a key.
 For details on the file syntax, see the `RequiredSecretsData` type in [`secretspopulator`](../../development/tools/cmd/secretspopulator/main.go).
+
