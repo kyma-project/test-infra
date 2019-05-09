@@ -1,7 +1,6 @@
 job_template: &job_template
-  skip_report: false
   decorate: true
-  path_alias: github.com/Szymongib/kyma # TODO - for script testing
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 1
   spec:
     containers:
@@ -12,7 +11,7 @@ job_template: &job_template
           - "bash"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
         resources:
           requests:
             memory: 200Mi
@@ -30,14 +29,14 @@ job_template: &job_template
             value: "europe-west3"
           - name: CLOUDSDK_CORE_PROJECT
             value: "sap-hybris-sf-playground"
-        volumes:
-          - name: sa-kyma-release-candidate
-            secret:
-              secretName: sa-kyma-release-candidate
         volumeMounts:
           - name: sa-kyma-release-candidate
             mountPath: /etc/credentials/sa-kyma-release-candidate
             readOnly: true
+    volumes:
+      - name: sa-kyma-release-candidate
+        secret:
+          secretName: sa-kyma-release-candidate
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -45,17 +44,15 @@ job_labels_template: &job_labels_template
 
 
 postsubmits:
-  Szymongib/kyma: # TODO - for script testing
-    - name: post-rel-kyma-release-candidate
+  kyma-project/kyma:
+    - name: post-rel11-kyma-release-candidate
       branches:
         - release-1.1
       <<: *job_template
       extra_refs:
-        - org: Szymongib # TODO - for script testing
+        - org: kyma-project
           repo: test-infra
-          path_alias: github.com/Szymongib/test-infra # TODO - for script testing
+          path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.1
       labels:
         <<: *job_labels_template
-        preset-build-release: "true"
-        preset-target-commit-1.1: "true"
