@@ -37,7 +37,7 @@ See the list of available flags:
 | **--region**              |   YES    | GCP region name.
 | **--maxAttempts**         |    NO    | Maximum number of retries in the backoff. The default value is `3`.
 | **--backoff**             |    NO    | Initial backoff in seconds for the first retry. The backoff will increase after this time. The default value is `5`.
-| **--dryRun**              |    NO    | The boolean value that controls the dry-run mode. The default is `true`.
+| **--dryRun**              |    NO    | The boolean value that controls the dry-run mode. The default value is `true`.
 
 ### Environment variables
 
