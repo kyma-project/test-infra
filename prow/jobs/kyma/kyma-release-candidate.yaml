@@ -2,7 +2,7 @@ job_template: &job_template
   skip_report: false
   decorate: true
   path_alias: github.com/Szymongib/kyma # TODO - for script testing
-  max_concurrency: 10
+  max_concurrency: 1
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
