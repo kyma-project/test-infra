@@ -7,6 +7,6 @@ EXCLUDED_BUCKETS='kyma-prow-secrets,kyma-prow-logs,kyma-prow-artifacts,kyma-deve
 BUCKET_REGEXP_NAME="^.+-([a-z0-9]+$)"
 
 go run "${DEVELOPMENT_DIR}"/tools/cmd/gcscleaner/main.go \
-      -bucketNameRegexp  ${BUCKET_REGEXP_NAME}\
-      -excludedBuckets ${EXCLUDED_BUCKETS}\
+      -bucketNameRegexp  "${BUCKET_REGEXP_NAME}"\
+      -excludedBuckets "${EXCLUDED_BUCKETS}"\
       "$@"
