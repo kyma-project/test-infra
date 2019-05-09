@@ -352,20 +352,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-0.7: # Already defined to ensure that check is defined for the new upgrade job
-              required_status_checks:
-                contexts:
-                - pre-rel07-kyma-integration
-                - pre-rel07-kyma-gke-integration
-                - pre-rel07-kyma-artifacts
-                - pre-rel07-kyma-installer
-            release-0.8: # Already defined to ensure that check is defined for the new upgrade job
-              required_status_checks:
-                contexts:
-                - pre-rel08-kyma-integration
-                - pre-rel08-kyma-gke-integration
-                - pre-rel08-kyma-artifacts
-                - pre-rel08-kyma-installer
             release-0.9:
               required_status_checks:
                 contexts:
@@ -384,6 +370,15 @@ branch-protection:
                   - pre-rel10-kyma-gke-central-connector
                   - pre-rel10-kyma-artifacts
                   - pre-rel10-kyma-installer
+            release-1.1:
+              required_status_checks:
+                contexts:
+                  - pre-rel11-kyma-integration
+                  - pre-rel11-kyma-gke-integration
+                  - pre-rel11-kyma-gke-upgrade
+                  - pre-rel11-kyma-gke-central-connector
+                  - pre-rel11-kyma-artifacts
+                  - pre-rel11-kyma-installer
         luigi:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
