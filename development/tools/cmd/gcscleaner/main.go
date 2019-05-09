@@ -27,7 +27,7 @@ func main() {
 
 	options, err := readOptions()
 	if err != nil {
-		logrus.Fatal(errors.Wrap(err, "reading configuration"))
+		logrus.Fatal(errors.Wrap(err, "reading arguments"))
 	}
 
 	client, err := storage.NewClient(ctx)
