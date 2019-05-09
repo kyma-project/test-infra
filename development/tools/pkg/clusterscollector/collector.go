@@ -2,7 +2,6 @@ package clusterscollector
 
 import (
 	"errors"
-	"regexp"
 	"strconv"
 	"time"
 
@@ -15,13 +14,6 @@ import (
 const volatileLabelName = "volatile"
 const createdAtLabelName = "created-at"
 const ttlLabelName = "ttl"
-
-var whitelistClusterNames = map[string]bool{
-	"kyma-prow":          true,
-	"workload-kyma-prow": true,
-	"nightly":            true,
-	"weekly":             true,
-}
 
 //go:generate mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
 
@@ -110,51 +102,13 @@ func (gc *ClustersGarbageCollector) list(project string) ([]*container.Cluster, 
 // ClusterRemovalPredicate returns true when the cluster should be deleted (matches removal criteria)
 type ClusterRemovalPredicate func(cluster *container.Cluster) (bool, error)
 
-// DefaultClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on clusterNameRegexp, label "volatile", ageInHours and Status
-func DefaultClusterRemovalPredicate(clusterNameRegexp *regexp.Regexp, ageInHours uint) ClusterRemovalPredicate {
-	return func(cluster *container.Cluster) (bool, error) {
-		if cluster == nil {
-			return false, errors.New("Invalid data: Nil")
-		}
-
-		nameMatches := clusterNameRegexp.MatchString(cluster.Name)
-
-		isVolatileCluster := false
-		if cluster.ResourceLabels != nil && cluster.ResourceLabels[volatileLabelName] == "true" {
-			isVolatileCluster = true
-		}
-
-		var ageMatches bool
-
-		clusterCreationTime, err := time.Parse(time.RFC3339, cluster.CreateTime)
-		if err != nil {
-			log.Errorf("Error while parsing CreateTime: \"%s\" for the cluster: %s", cluster.CreateTime, cluster.Name)
-			return false, err
-		}
-
-		clusterAgeThreshold := time.Since(clusterCreationTime).Hours() - float64(ageInHours)
-		ageMatches = clusterAgeThreshold > 0
-
-		if nameMatches && isVolatileCluster && ageMatches {
-			//Filter out clusters that are being deleted at this moment
-			if cluster.Status == "STOPPING" {
-				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\", label createdAt: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime, cluster.ResourceLabels[createdAtLabelName])
-				return false, nil
-			}
-			return true, nil
-		}
-
-		return false, nil
-	}
-}
-
 // TimeBasedClusterRemovalPredicate returns an instance of ClusterRemovalPredicate that filters clusters based on label "volatile", "created-at", "ttl" and status
-func TimeBasedClusterRemovalPredicate() ClusterRemovalPredicate {
+func TimeBasedClusterRemovalPredicate(whitelistedClusters map[string]struct{}) ClusterRemovalPredicate {
 	return func(cluster *container.Cluster) (bool, error) {
 		var timestamp int64
 		var ageInHours uint64
 		var err error
-		if _, ok := whitelistClusterNames[cluster.Name]; ok {
+		if _, ok := whitelistedClusters[cluster.Name]; ok {
 			log.Warnf("Cluster is whitelisted, deletion will be skipped. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
 			return false, nil
 		}
