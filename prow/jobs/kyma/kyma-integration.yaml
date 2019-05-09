@@ -429,67 +429,6 @@ presubmits: # runs on PRs
     - <<: *kk_test_ref
       base_ref: feature/xip-gke-upgrade
 
-  - name: kyma-gke-service-catalog-crd-periodic
-    # this is work in progress for https://github.com/kyma-project/kyma/issues/3047
-    # cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
-    branches:
-    - master
-    always_run: false
-    optional: true
-    labels:
-      preset-kyma-keyring: "true"
-      preset-kyma-encryption-key: "true"
-      preset-build-master: "true"
-      preset-stability-checker-slack-notifications: "true"
-      preset-service-catalog-nightly-github-integration: "true"
-      <<: *gke_job_labels_template
-    decorate: true
-    extra_refs:
-    - org: adamwalach
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: service-catalog-nightly
-    spec:
-      volumes:
-      - name: sa-stability-fluentd-storage-writer
-        secret:
-          secretName: sa-stability-fluentd-storage-writer
-      containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - name: sa-stability-fluentd-storage-writer
-          mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-          readOnly: true
-        env:
-        - name: INPUT_CLUSTER_NAME
-          value: "service-catalog-crd-periodic"
-        - name: TEST_RESULT_WINDOW_TIME
-          value: "6h"
-        - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-          value: "#c4core-kyma-gopher-pr"
-        - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-          value: "cluster-access"
-        - name: SERVICE_CATALOG_CRD
-          value: "true"
-        - name: KYMA_ALERTS_SLACK_API_URL
-          valueFrom:
-            secretKeyRef:
-              name: kyma-alerts-slack-api-url
-              key: secret
-        - name: KYMA_ALERTS_CHANNEL
-          value: "#c4core-kyma-gopher-pr"
-        command:
-        - "bash"
-        args:
-        - "-c"
-        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
 postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-integration
@@ -1001,3 +940,57 @@ periodics:
           memory: 100Mi
           cpu: 50m  
 
+
+- name: kyma-gke-service-catalog-crd-periodic
+  cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
+  labels:
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
+    preset-build-master: "true"
+    preset-stability-checker-slack-notifications: "true"
+    preset-service-catalog-nightly-github-integration: "true"
+    <<: *gke_job_labels_template
+  decorate: true
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+  spec:
+    volumes:
+    - name: sa-stability-fluentd-storage-writer
+      secret:
+        secretName: sa-stability-fluentd-storage-writer
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      securityContext:
+        privileged: true
+      volumeMounts:
+      - name: sa-stability-fluentd-storage-writer
+        mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+        readOnly: true
+      env:
+      - name: INPUT_CLUSTER_NAME
+        value: "service-catalog-crd-periodic"
+      - name: TEST_RESULT_WINDOW_TIME
+        value: "6h"
+      - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+        value: "#c4core-kyma-gopher-pr"
+      - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+        value: "cluster-access"
+      - name: SERVICE_CATALOG_CRD
+        value: "true"
+      - name: KYMA_ALERTS_SLACK_API_URL
+        valueFrom:
+          secretKeyRef:
+            name: kyma-alerts-slack-api-url
+            key: secret
+      - name: KYMA_ALERTS_CHANNEL
+        value: "#c4core-kyma-gopher-pr"
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
