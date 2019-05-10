@@ -592,7 +592,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 		"preset-kyma-artifacts-bucket",
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, scPeriodic.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasExtraRefs(t,scPeriodic.JobBase.UtilityConfig,[]string{"kyma"})
+	tester.AssertThatHasExtraRefs(t, scPeriodic.JobBase.UtilityConfig, []string{"kyma"})
 	require.Len(t, scPeriodic.Spec.Containers, 1)
 	cont := scPeriodic.Spec.Containers[0]
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", cont.Image)
