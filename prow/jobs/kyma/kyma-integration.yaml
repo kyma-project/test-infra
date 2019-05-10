@@ -954,6 +954,8 @@ periodics:
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+    - <<: *kyma_ref
+      base_ref: master
   spec:
     volumes:
     - name: sa-stability-fluentd-storage-writer
