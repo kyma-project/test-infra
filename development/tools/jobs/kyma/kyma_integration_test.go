@@ -354,6 +354,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
+	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -573,5 +574,37 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Len(t, testContainer.Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh", testContainer.Command[0])
 	tester.AssertThatSpecifiesResourceRequests(t, minikubeVerification.JobBase)
+
+	expName = "kyma-gke-service-catalog-crd-periodic"
+	scPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, scPeriodic)
+	assert.True(t, scPeriodic.Decorate)
+	tester.AssertThatHasPresets(t, scPeriodic.JobBase,
+		"preset-kyma-keyring",
+		"preset-kyma-encryption-key",
+		"preset-stability-checker-slack-notifications",
+		"preset-service-catalog-crd-periodic-github-integration",
+		"preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs",
+		"preset-gc-project-env",
+		"preset-docker-push-repository-gke-integration",
+		"preset-dind-enabled",
+		"preset-kyma-artifacts-bucket",
+	)
+	tester.AssertThatHasExtraRefTestInfra(t, scPeriodic.JobBase.UtilityConfig, "master")
+	require.Len(t, scPeriodic.Spec.Containers, 1)
+	cont := scPeriodic.Spec.Containers[0]
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", cont.Image)
+	assert.Equal(t, []string{"bash"}, cont.Command)
+	require.Len(t, cont.Args, 2)
+	assert.Equal(t, "-c", cont.Args[0])
+	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh", cont.Args[1])
+	tester.AssertThatContainerHasEnv(t, cont, "INPUT_CLUSTER_NAME", "service-catalog-crd-periodic")
+	tester.AssertThatContainerHasEnv(t, cont, "TEST_RESULT_WINDOW_TIME", "24h")
+	tester.AssertThatContainerHasEnv(t, cont, "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-gopher-pr")
+	tester.AssertThatContainerHasEnv(t, cont, "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
+	tester.AssertThatContainerHasEnv(t, cont, "SERVICE_CATALOG_CRD", "true")
+	tester.AssertThatContainerHasEnv(t, cont, "KYMA_ALERTS_CHANNEL", "#c4core-kyma-gopher-pr")
+	tester.AssertThatContainerHasEnvFromSecret(t, cont, "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
 }
