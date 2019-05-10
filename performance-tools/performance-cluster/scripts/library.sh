@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-RED='\033[00;31m'
-GREEN='\033[00;32m'
-
 function start_docker() {
     echo "Docker in Docker enabled, initializing..."
     printf '=%.0s' {1..80}; echo
@@ -30,7 +27,6 @@ function start_docker() {
 }
 
 function authenticate() {
-
     echo "Authenticating"
     gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
 
@@ -78,8 +74,11 @@ function init() {
 
     if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
         start_docker
-        authenticateDocker
     fi
+
+	if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]] && [[ "${PERFORMACE_CLUSTER_SETUP}" == "true" ]]; then
+	    authenticateDocker
+	fi
 
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
         configure_git

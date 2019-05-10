@@ -43,9 +43,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-
-
-export TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS="${SCRIPTS_PATH}/helpers"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${SCRIPTS_PATH}/helpers"
 
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
@@ -62,7 +60,7 @@ export REPO_OWNER
 export REPO_NAME
 export CURRENT_TIMESTAMP
 
-source "${SCRIPTS_PATH}/library.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 shout "Authenticate"
 date
@@ -72,7 +70,7 @@ if [[ "${ACTION}" == "delete" ]]; then
 
     shout "Cleanup"
     date
-    source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/cleanup-cluster.sh"
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
 elif [[ "${ACTION}" == "create" ]]; then
     shout "Create new cluster"
@@ -82,9 +80,6 @@ elif [[ "${ACTION}" == "create" ]]; then
       shoutFail "ERROR: ${CLUSTER_GRADE} is not set"
       exit 0
     fi
-
-    export SRC_DIR="$(mktemp -d -t src.XXXXXX)"
-    ls "/tmp/"
 
     if [[ "${CLUSTER_GRADE}" == "production" ]]; then
         export REPO_OWNER="kyma-project"
@@ -105,7 +100,7 @@ elif [[ "${ACTION}" == "create" ]]; then
 
     export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
-    source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-cluster.sh"
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-cluster.sh"
     shout "Install tiller"
     date
 
@@ -119,9 +114,9 @@ elif [[ "${ACTION}" == "create" ]]; then
     shout "Install kyma"
     date
 
-    source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/install-kyma.sh"
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-kyma.sh"
 
-    source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/get-helm-certs.sh"
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 else
    shoutFail "None of the actions met"
 fi

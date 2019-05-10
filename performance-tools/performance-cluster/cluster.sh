@@ -69,12 +69,13 @@ if [[ ! -f "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
     exit 1
 fi
 
-shout "Directory ${GOPATH}/src/github.com/kyma-project/kyma does exists."
-
 if [[ "${CLUSTER_GRADE}" == "development" ]] && [[ ! -d "${GOPATH}/src/github.com/kyma-project/kyma" ]]; then
     shoutFail "Directory ${GOPATH}/src/github.com/kyma-project/kyma does not exists."
     exit 1
 fi
+
+while read line; do ln -s "$line" "${line##*/}" ; done <pathfile.foo
+
 
 setupCluster() {
 
