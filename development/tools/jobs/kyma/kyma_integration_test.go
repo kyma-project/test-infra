@@ -600,7 +600,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "-c", cont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh", cont.Args[1])
 	tester.AssertThatContainerHasEnv(t, cont, "INPUT_CLUSTER_NAME", "service-catalog-crd-periodic")
-	tester.AssertThatContainerHasEnv(t, cont, "TEST_RESULT_WINDOW_TIME", "6h")
+	tester.AssertThatContainerHasEnv(t, cont, "TEST_RESULT_WINDOW_TIME", "24h")
 	tester.AssertThatContainerHasEnv(t, cont, "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-gopher-pr")
 	tester.AssertThatContainerHasEnv(t, cont, "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
 	tester.AssertThatContainerHasEnv(t, cont, "SERVICE_CATALOG_CRD", "true")
