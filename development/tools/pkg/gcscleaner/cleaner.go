@@ -93,7 +93,6 @@ func shouldDeleteBucket(bucketName string, now int64, cfg Config) bool {
 }
 
 func extractTimestampSuffix(name string, regTimestampSuffix regexp.Regexp) *string {
-
 	submatch := regTimestampSuffix.FindSubmatch([]byte(name))
 	if len(submatch) < 2 {
 		return nil
