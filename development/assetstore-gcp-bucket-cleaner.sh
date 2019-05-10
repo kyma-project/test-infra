@@ -3,6 +3,8 @@
 set -e
 set -o pipefail
 
+readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 EXCLUDED_BUCKETS='kyma-prow-secrets,kyma-prow-logs,kyma-prow-artifacts,kyma-development-artifacts,kyma-backup-restore,eu.artifacts.sap-kyma-prow.appspot.com'
 BUCKET_REGEXP_NAME="^.+-([a-z0-9]+$)"
 
