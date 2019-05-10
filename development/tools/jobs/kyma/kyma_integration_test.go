@@ -583,7 +583,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 		"preset-kyma-keyring",
 		"preset-kyma-encryption-key",
 		"preset-stability-checker-slack-notifications",
-		"preset-service-catalog-nightly-github-integration",
+		"preset-service-catalog-crd-periodic-github-integration",
 		"preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs",
 		"preset-gc-project-env",

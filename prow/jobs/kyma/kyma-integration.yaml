@@ -948,7 +948,7 @@ periodics:
     preset-kyma-encryption-key: "true"
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
-    preset-service-catalog-nightly-github-integration: "true"
+    preset-service-catalog-crd-periodic-github-integration: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
