@@ -491,7 +491,7 @@ periodics:
           memory: 100Mi
           cpu: 50m
 - name: orphaned-assetstore-gcp-bucket-cleaner
-  cron: "30 * * * *" # "At 30 minutes past every hour"
+  cron: "15 * * * *" # "At 15 minutes past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
