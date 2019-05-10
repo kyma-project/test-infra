@@ -280,7 +280,7 @@ function addGithubDexConnector() {
 }
 
 function applyServiceCatalogCRDOverride(){
-    shout "Apply override for ServiceCatalog"
+    shout "Apply override for ServiceCatalog to enable CRD implementation"
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
