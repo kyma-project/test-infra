@@ -354,7 +354,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 14)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -368,6 +367,19 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, disksCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central|gke-minio'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, disksCleanerPeriodic.JobBase)
+
+	expName = "orphaned-assetstore-gcp-bucket-cleaner"
+	assetstoreGcpBucketCleaner := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, assetstoreGcpBucketCleaner)
+	assert.Equal(t, expName, assetstoreGcpBucketCleaner.Name)
+	assert.True(t, assetstoreGcpBucketCleaner.Decorate)
+	assert.Equal(t, "30 * * * *", assetstoreGcpBucketCleaner.Cron)
+	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
+	tester.AssertThatHasExtraRefs(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, assetstoreGcpBucketCleaner.JobBase)
 
 	expName = "orphaned-clusters-cleaner"
 	clustersCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
