@@ -79,7 +79,7 @@ COPY ../../prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh /te
 
 RUN mkdir perf-tests
 
-COPY kyma-gke-cluster.sh /perf-tests
+COPY scripts /perf-tests/scripts
 COPY runner.sh /perf-tests
 COPY cluster.sh /perf-tests
 

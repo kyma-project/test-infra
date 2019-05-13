@@ -43,6 +43,19 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+if [ -f "../../prow/scripts/library.sh" ]; then
+    export TEST_INFRA_SOURCES_DIR="../.."
+
+elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
+    export TEST_INFRA_SOURCES_DIR="../test-infra"
+
+else
+	echo "File '/prow/scripts/library.sh' does not exists."
+    exit 1;
+fi
+
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"

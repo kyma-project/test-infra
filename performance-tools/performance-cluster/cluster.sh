@@ -4,22 +4,19 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any
 #set -x
 
-
+SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export PERFORMACE_CLUSTER_SETUP="true"
 
 if [ -f "../../prow/scripts/library.sh" ]; then
-    export TEST_INFRA_SOURCES_DIR="../.."
+    source "../../prow/scripts/library.sh"
 
 elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
-    export TEST_INFRA_SOURCES_DIR="../test-infra"
+    source "../test-infra/prow/scripts/library.sh"
 
 else
 	echo "File '/prow/scripts/library.sh' does not exists."
     exit 1;
 fi
-
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 if [ $# -lt "1" ]; then
         echo "Usage:  $0 --action (create or delete) --cluster-grade (production or development)"
@@ -91,7 +88,7 @@ fi
 setupCluster() {
 
     set +o errexit
-    source "kyma-gke-cluster.sh"
+    source "${SCRIPTS_DIR}/scripts/kyma-gke-cluster.sh"
     set -o errexit
 
 }
