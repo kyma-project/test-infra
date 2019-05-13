@@ -20,7 +20,7 @@ function installKyma() {
 
 	kymaUnsetVar=false
 
-	for var in DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP DOMAIN; do
+	for var in DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP; do
     	if [ -z "${!var}" ] ; then
         	echo "ERROR: $var is not set"
         	kymaUnsetVar=true
@@ -28,7 +28,7 @@ function installKyma() {
 	done
 
 		if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-		for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS; do
+		for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOMAIN; do
 			if [ -z "${!var}" ] ; then
 				echo "ERROR: $var is not set"
 				kymaUnsetVar=true
@@ -115,7 +115,7 @@ function installKyma() {
 
 function createImage() {
 	shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
-	source "${TEST_INFRA_PERFORMANCE_TOOLS_CLUSTER_SCRIPTS}/create-image.sh"
+	source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 }
 
 function waitUntilInstallerApiAvailable() {

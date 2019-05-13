@@ -65,9 +65,21 @@ RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/a
 RUN apt-get update
 RUN apt-get install k6
 
+RUN mkdir test-infra
+
+COPY ../../prow/scripts/library.sh /test-infra/prow/scripts/library.sh
+COPY ../../prow/scripts/cluster-integration/helpers/cleanup-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/cleanup-cluster.sh
+COPY ../../prow/scripts/cluster-integration/helpers/create-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/create-cluster.sh
+COPY ../../prow/scripts/cluster-integration/helpers/delete-image.sh /test-infra/prow/scripts/cluster-integration/helpers/delete-image.sh
+COPY ../../prow/scripts/cluster-integration/helpers/deprovision-gke-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/deprovision-gke-cluster.sh
+COPY ../../prow/scripts/cluster-integration/helpers/get-helm-certs.sh /test-infra/prow/scripts/cluster-integration/helpers/get-helm-certs.sh
+COPY ../../prow/scripts/cluster-integration/helpers/install-kyma.sh /test-infra/prow/scripts/cluster-integration/helpers/install-kyma.sh
+COPY ../../prow/scripts/cluster-integration/helpers/k6-runner.sh /test-infra/prow/scripts/cluster-integration/helpers/k6-runner.sh
+COPY ../../prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh
+
 RUN mkdir perf-tests
 
-COPY scripts /perf-tests/scripts
+COPY kyma-gke-cluster.sh /perf-tests
 COPY runner.sh /perf-tests
 COPY cluster.sh /perf-tests
 

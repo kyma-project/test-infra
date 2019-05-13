@@ -3,8 +3,20 @@
 set -o pipefail
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source "${SCRIPTS_DIR}/scripts/library.sh"
 
+if [ -f "../../prow/scripts/library.sh" ]; then
+    TEST_INFRA_SOURCES_DIR="../.."
+
+elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
+    TEST_INFRA_SOURCES_DIR="../test-infra"
+
+else
+	echo "File '/prow/scripts/library.sh' does not exists."
+    exit 1;
+fi
+
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # Set the kubeconfig
 
@@ -27,7 +39,7 @@ export SRC_DIR="$(mktemp -d -t src.XXXXXX)"
 
 
 # Create Kyma Cluster
-${SCRIPTS_DIR}/scripts/cluster.sh --action create --cluster-grade production
+cluster.sh --action create --cluster-grade production
 if [[ $? != 0 ]]; then
 shoutFail "Cluster creation failed!!"
 curl -X POST \
@@ -90,7 +102,7 @@ shout "Running K6 Scripts"
 
 if [[ "${RUNMODE}" == "all" ]]; then
   shout "Running the complete test suite"
-  bash ${SCRIPTS_DIR}/scripts/helpers/k6-runner.sh all
+  bash ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/k6-runner.sh all
   if [[ $? != 0 ]]; then
     shoutFail "K6 test scripts run failed!!"
     curl -X POST \
@@ -101,7 +113,7 @@ if [[ "${RUNMODE}" == "all" ]]; then
   fi
 elif [[ "${RUNMODE}" == "" && "${SCRIPTPATH}" != "" ]]; then
   shout "Running following Script: $SCRIPTPATH"
-  bash ${SCRIPTS_DIR}/scripts/helpers/k6-runner.sh $SCRIPTPATH
+  bash  ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/k6-runner.sh $SCRIPTPATH
   if [[ $? != 0 ]]; then
     shoutFail "K6 test scripts run failed!!"
     curl -X POST \
