@@ -6,9 +6,9 @@
 # Expected vars:
 #
 #  - INPUT_CLUSTER_NAME - name for the new cluster
-#  - DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. ""
+#  - DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. "docker.io/anyrepository"
 #  - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
-#    Ex. "/home/${USER}/go/src/github.com/kyma-project"
+#   Ex. "/perf"
 #
 #  - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 #  - CLOUDSDK_COMPUTE_REGION - GCP compute region. Ex. "europe-west3"
