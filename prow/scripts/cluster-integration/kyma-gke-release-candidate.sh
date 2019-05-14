@@ -248,7 +248,7 @@ sed -e "s/__DOMAIN__/${DOMAIN}/g" kyma-config-cluster.yaml \
 
 shout "Trigger installation"
 date
-kubectl label installation/kyma-installation action=install
+kubectl label installation/kyma-installation action=install --overwrite
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
