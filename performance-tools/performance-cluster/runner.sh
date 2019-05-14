@@ -22,7 +22,7 @@ if [[ "${KUBERNETES_SERVICE_HOST}" == "" ]]; then
     exit 1
 fi
 
-if [[ "${SLACK_TOKEN}" == "" || "${SLACK_URL}" == "" || "${SLACK_CHANNEL}" == ""]]; then
+if [[ "${SLACK_TOKEN}" == "" || "${SLACK_URL}" == "" || "${SLACK_CHANNEL}" == "" ]]; then
   shout "Slack details not set!! Exiting"
   exit 1
 fi
@@ -124,6 +124,8 @@ fi
 shout "Finished all k6 tests!!"
 
 shout "Deleting the deployed kyma cluster!!"
+
+service docker stop
 
 source "${SCRIPTS_DIR}/cluster.sh" "--action" "delete"
 

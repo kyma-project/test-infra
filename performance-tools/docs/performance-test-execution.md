@@ -45,7 +45,7 @@ Delete Kyma and remove GKE cluster:
 - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path.
   Ex. "/etc/credentials/sa-gke-kyma-integration/service-account.json"
 - INPUT_CLUSTER_NAME - name for the new cluster
-- DOCKER_IN_DOCKER_ENABLED with value "true"
+- DOCKER_IN_DOCKER_ENABLED with value "true" for producition and "false" for the development flow.
 
 ### Permissions: 
 
