@@ -18,6 +18,11 @@ spec:
       maxUnavailable: 0
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+        #For pods running sidecars w/o service there's a problem with envoy readiness probe.
+        #Details https://github.com/istio/istio/issues/9504#issuecomment-439432130
+        status.sidecar.istio.io/port: "0"
       labels:
         app: {{ template "stability-checker.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -87,7 +92,11 @@ spec:
       {{ end }}
       # The container name is hardcoded in the stability checker, do not change it
       - name: stability-checker
-        command: ['/bin/sh', '-c', './data/input/pre-start-scripts.sh && ./root/stability-checker']
+        command:
+        - /bin/sh
+        - -c
+        - |-
+          ./data/input/pre-start-scripts.sh 2>&1 | jq --slurp --raw-input 'split("\n")[:-1] | map({level: "info", log: {message: .}})' | jq -c -M '.[]' && ./root/stability-checker
         image: "{{ .Values.containerRegistry.path }}/develop/stability-checker:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
 
@@ -129,9 +138,10 @@ spec:
             mountPath: /data
 
         readinessProbe:
-          httpGet:
-            path: /statusz
-            port: {{ .Values.service.internalPort }}
+          exec:
+            command:
+             - curl
+             - localhost:{{ .Values.service.internalPort }}/statusz
           failureThreshold: 3
           initialDelaySeconds: 5
           periodSeconds: 3
@@ -139,10 +149,10 @@ spec:
           timeoutSeconds: 2
 
         livenessProbe:
-          httpGet:
-            path: /statusz
-            port: {{ .Values.service.internalPort }}
-
+          exec:
+            command:
+             - curl
+             - localhost:{{ .Values.service.internalPort }}/statusz
           periodSeconds: 10
           timeoutSeconds: 2
           successThreshold: 1

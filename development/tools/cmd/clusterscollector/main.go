@@ -8,23 +8,20 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"regexp"
+	"strings"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/clusterscollector"
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
-	container "google.golang.org/api/container/v1"
+	"google.golang.org/api/container/v1"
 )
 
-const defaultClusterNameRegexp = "^gkeint[-](pr|commit|rel)[-].*"
-
 var (
-	project           = flag.String("project", "", "Project ID [Required]")
-	dryRun            = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
-	strategy          = flag.String("strategy", "default", "Change cluster filter strategy. Current options are 'default' and 'time'.")
-	ageInHours        = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
-	clusterNameRegexp = flag.String("clusterNameRegexp", defaultClusterNameRegexp, "Cluster name regexp pattern. Matching clusters are subject to removal.")
+	project             = flag.String("project", "", "Project ID [Required]")
+	dryRun              = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
+	ageInHours          = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
+	whitelistedClusters = flag.String("whitelisted-clusters", "", "Comma separated list of the whitelisted clusters that cannot be removed by cluster collector")
 )
 
 func main() {
@@ -42,7 +39,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, strategy: %s, ageInHours: %d, clusterNameRegexp: \"%s\"", *project, *dryRun, *strategy, *ageInHours, *clusterNameRegexp)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, whitelisted clusters: %v", *project, *dryRun, *ageInHours, *whitelistedClusters)
 	ctx := context.Background()
 
 	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
@@ -55,21 +52,20 @@ func main() {
 		log.Fatalf("Could not initialize container API client: %v", err)
 	}
 
-	clusterNameRx := regexp.MustCompile(*clusterNameRegexp)
-
 	clustersService := containerSvc.Projects.Locations.Clusters
 
 	clusterAPI := &clusterscollector.ClusterAPIWrapper{Context: ctx, Service: clustersService}
 
 	var clusterFilter clusterscollector.ClusterRemovalPredicate
 
-	if *strategy == "time" {
-		clusterFilter = clusterscollector.TimeBasedClusterRemovalPredicate()
-		log.Infof("Using time based filter strategy. Clusters will be filtered based on TTL, volatility, created-at timestamp and status\n")
-	} else {
-		log.Infof("Using default filter strategy. Clusters will be filtered based on cluster name, age in hours (passed), volatility and status\n")
-		clusterFilter = clusterscollector.DefaultClusterRemovalPredicate(clusterNameRx, uint(*ageInHours))
+	whClustersMap := map[string]struct{}{}
+	for _, cl := range strings.Split(*whitelistedClusters, ",") {
+		whClustersMap[cl] = struct{}{}
 	}
+
+	clusterFilter = clusterscollector.TimeBasedClusterRemovalPredicate(whClustersMap)
+	log.Infof("Using time based filter strategy. Clusters will be filtered based on TTL, volatility, created-at timestamp and status\n")
+
 	gc := clusterscollector.NewClustersGarbageCollector(clusterAPI, clusterFilter)
 
 	allSucceeded, err := gc.Run(*project, !(*dryRun))
