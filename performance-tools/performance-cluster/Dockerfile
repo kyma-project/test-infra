@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   shellcheck \
   software-properties-common \
   lsb-release \
+  gettext-base \
   && apt-get clean
 
 # Install gcloud

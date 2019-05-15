@@ -76,22 +76,25 @@ CERT_DIR="$(mktemp -d -t cert.XXXXXX)"
 
 TMP_FILE=$(mktemp $CERT_DIR/temp-cert.XXXXXX) \
    && kubectl get configmap  net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.tlsCrt}' | base64 -d > ${TMP_FILE} \
-   && cp ${TMP_FILE} ${DIR_SHARED_CERT}/$(basename -- ${TMP_FILE}) \
+   && cp ${TMP_FILE} ${DIR_SHARED_CERT}/$(basename -- ${TMP_FILE}).crt \
    && update-ca-certificates \
    && update-ca-certificates --fresh \
    && rm ${TMP_FILE}
+
 
 if [[ $TESTS_DIR == "" ]]; then
   shoutFail "TESTS Directory is not defined!!"
   exit 1
 fi
 
-shout "Applying all prequisite files !!"
-for f in $(find "${TESTS_DIR}/prerequisites" -type f -name *.yaml); do
-    shout "Applying following file: $f"
-    kubectl apply -f $f
-done
+export PREREQ_PATH="${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}/prerequisites"
+export TESTS_PATH="${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}/components"
 
+shout "Applying all prequisite files !!"
+for f in $(find "${TESTS_DIR}/prerequisites" -type f -name '*setup.sh'); do
+  shout "Running following file: $f"
+  source $f
+done
 
 # Run K6 scripts
 shout "Running K6 Scripts"

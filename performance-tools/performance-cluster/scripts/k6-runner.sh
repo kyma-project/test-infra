@@ -6,6 +6,7 @@
 
 set -o pipefail
 
+source $LIBS_DIR
 
 # Setup
 export K6_USER="$(cat /var/k6-details/k6admin)"
@@ -14,12 +15,12 @@ export INFLUXDB="$(cat /var/k6-details/k6database)"
 
 
 function runAll() {
-  shout "Running the complete suite"
-  for f in $(find "${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}" -maxdepth 2 -type f -name *.js);
-  do
-    shout "Running File $f"
-    $K6_CMD $f
-  done
+    shout "Running the complete suite"
+    for f in $(find "${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}" -maxdepth 2 -type f -name *.js);
+    do
+        shout "Running File $f"
+        $K6_CMD $f
+    done
 }
 
 function runOne() {
@@ -29,11 +30,14 @@ function runOne() {
 }
 
 if [[ "${1}" == "" ]]; then
-  shoutFail "Please pass either 'all' or 'path to the test scrit' to run!!"
-  exit 1
+    shoutFail "Please pass either 'all' or 'path to the test scrit' to run!!"
+    exit 1
 fi
 
-
+if [[ "${TESTS_PATH}" == "" ]]; then
+	shoutFail "TESTS_PATH not set!! Exiting"
+	+  exit 1
+fi
 
 if [[ "${INFLUXDB_FQDN}" == "" ]]; then
     shoutFail "INFLUXDB not set exiting"
@@ -46,5 +50,5 @@ K6_CMD="k6 run --tag revision=$REVISION --out influxdb=http://${K6_USER}:${K6_PA
 if [[ "${1}" == "all" ]]; then
     runAll
 else 
-  runOne $1
+    runOne $1
 fi  
