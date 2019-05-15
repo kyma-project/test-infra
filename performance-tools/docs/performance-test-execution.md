@@ -9,7 +9,7 @@ The performance cluster script can be executed in two modes:
 Are a set of scripts that deploy on demand a kyma cluster on GCP.
 
 ### Production Mode
-Here the script is executed periodically. It is a kuberentes job defined at (k6pod.yaml)[location to be defined]. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
+Here the script is executed periodically. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
 
 The K6 scripts are located [here](https://github.com/kyma-project/kyma/tests/perf). For more details of how to write K6 scripts in Kyma refer here.
 
@@ -45,7 +45,7 @@ Delete Kyma and remove GKE cluster:
 - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path.
   Ex. "/etc/credentials/sa-gke-kyma-integration/service-account.json"
 - INPUT_CLUSTER_NAME - name for the new cluster
-- DOCKER_IN_DOCKER_ENABLED with value "true" for producition and "false" for the development flow.
+- DOCKER_IN_DOCKER_ENABLED with value "true" for production and "false" for the development flow.
 
 ### Permissions: 
 

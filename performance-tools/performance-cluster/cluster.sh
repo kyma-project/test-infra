@@ -75,7 +75,7 @@ if [[ "${INPUT_CLUSTER_NAME}" == "" ]]; then
 fi
 
 if [[ ! -f "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-    shoutFail "Environment GOOGLE_APPLICATION_CREDENTIALS with service_account credetntials is required."
+    shoutFail "Environment GOOGLE_APPLICATION_CREDENTIALS with service_account credentials is required."
     exit 1
 fi
 
