@@ -1,7 +1,7 @@
 job_template: &job_template
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-incubator/kyma-cli
+  path_alias: github.com/kyma-project/cli
   max_concurrency: 10
   extra_refs:
     - org: kyma-project
@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/kyma-cli"
+          - "/home/prow/go/src/github.com/kyma-project/cli"
         resources:
           requests:
             memory: 1.5Gi
@@ -28,7 +28,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository-incubator: "true"
 
 presubmits: # runs on PRs
-  kyma-incubator/kyma-cli:
+  kyma-project/cli:
     - name: pre-master-kyma-cli
       always_run: true
       branches:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
 
 postsubmits:
-  kyma-incubator/kyma-cli:
+  kyma-project/cli:
     - name: post-master-kyma-cli
       branches:
         - master
