@@ -14,7 +14,7 @@ elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
     source "../test-infra/prow/scripts/library.sh"
 
 else
-	echo "File '/prow/scripts/library.sh' does not exists."
+	echo "File 'library.sh' can't be found."
     exit 1;
 fi
 

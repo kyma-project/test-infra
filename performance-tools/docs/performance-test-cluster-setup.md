@@ -4,9 +4,9 @@
 
 ### Pre-requisites
 
-We have used GKE for installtinng the load generator cluster. Following are the prerequisites for the same.
+We have used GKE for installing the load generator cluster. Following are the prerequisites for the same.
 
-1. Create GKE account with `onwer` rights
+1. Create GKE account with `owner` rights
 2. Have domain name to be used.
 
 ### Installation
@@ -39,7 +39,7 @@ Following are the configurations required:
      ```
    * GRANT appropriate rights to users
       ```bash
-      GRANT ALL ON "databse" TO "writeUser"
+      GRANT ALL ON "database" TO "writeUser"
       GRANT READ ON "database" TO "readUser"
       ```
 2. Grafana

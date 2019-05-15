@@ -50,7 +50,7 @@ elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
     export TEST_INFRA_SOURCES_DIR="../test-infra"
 
 else
-	echo "File '/prow/scripts/library.sh' does not exists."
+	echo "File 'library.sh' can't be found."
     exit 1;
 fi
 
