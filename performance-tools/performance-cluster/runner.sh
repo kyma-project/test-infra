@@ -12,7 +12,7 @@ elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
     export LIBS_DIR="../test-infra/prow/scripts/library.sh"
 
 else
-	echo "File 'library.sh' can't be found."
+    echo "File 'library.sh' can't be found."
     exit 1;
 fi
 
@@ -98,7 +98,6 @@ for f in $(find "${PREREQ_PATH}" -type f -name '*setup.sh'); do
   source $f
 done
 
-# Run K6 scripts
 shout "Running K6 Scripts"
 
 if [[ "${RUNMODE}" == "all" ]]; then
