@@ -75,7 +75,7 @@ Following are the configurations required:
     gcloud iam service-accounts create $SA_NAME --display-name $SA_DISPLAY_NAME
     gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$GCLOUD_PROJECT_NAME.iam.gserviceaccount.com
     ```
-    Save the service account credentials into GCP bucket
+    Save the service account credentials into the GCP bucket:
     ```bash
     gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
     gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
