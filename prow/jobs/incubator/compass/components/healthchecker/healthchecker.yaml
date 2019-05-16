@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/healthcheck"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/healthchecker"
         resources:
           requests:
             memory: 1.5Gi
@@ -29,18 +29,18 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-master-compass-components-healthcheck
+    - name: pre-master-compass-components-healthchecker
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^components/healthcheck/"
+      run_if_changed: "^components/healthchecker/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel12-compass-components-healthcheck
+    - name: pre-rel12-compass-components-healthchecker
       branches:
         - release-1.2
       <<: *job_template
@@ -54,11 +54,11 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-master-compass-components-healthcheck
+    - name: post-master-compass-components-healthchecker
       branches:
         - master
       <<: *job_template
-      run_if_changed: "^components/healthcheck/"
+      run_if_changed: "^components/healthchecker/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
