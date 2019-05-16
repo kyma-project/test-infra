@@ -41,8 +41,8 @@ Following are the configurations required:
       GRANT READ ON "database" TO "readUser"
       ```
 2. Grafana
-  Configure Grafana to use `readUser` to read the metrics from influxDB.
-3. GKE
+   Configure Grafana to use `readUser` to read the metrics from influxDB.
+3. Configure the GKE cluster:
   * Export the required variables into shell
       ```bash
       export GCLOUD_PROJECT_NAME="project-name"
