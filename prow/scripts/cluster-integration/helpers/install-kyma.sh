@@ -41,6 +41,7 @@ function installKyma() {
     	exit 1
 	fi
 
+	# shellcheck disable=SC2153
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
@@ -116,6 +117,7 @@ function installKyma() {
 
 function createImage() {
 	shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
+	# shellcheck disable=SC1090
 	source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 }
 
