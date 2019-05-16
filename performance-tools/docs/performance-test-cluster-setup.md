@@ -7,35 +7,35 @@ Installation of Load Generating Cluster.
 - Create a GKE account with `owner` rights.
 - Have domain name to be used.
 
-### Installation
+## Installation
 
-#### 1. Installation of the cluster
+1. [Install Kyma](https://kyma-project.io/docs/root/kyma/#installation-install-kyma-on-a-cluster) on the cluster.
 We are using kyma for the installation as it provides authentication and authorization. Additionally we can leverage grafana which comes with Kyma. To install the cluster follow the steps documented [here](https://kyma-project.io/docs/root/kyma/#installation-install-kyma-on-a-cluster).
 
 
-#### 2. Installation of InfluxDB
+2. [Install InfluxDB](https://console.cloud.google.com/marketplace/details/google/influxdb?q=influxdb) to store test results. The supported version of InfluxDB is 1.6.
 k6 uses InfluxDB to store results and Grafana could be used to visualize the test results. To install InfluxDB we used the application available on [GCP market place](https://console.cloud.google.com/marketplace/details/google/influxdb?q=influxdb). The version of influxDB has been backported to [1.6](gcr.io/cloud-marketplace/google/influxdb@sha256:23d3f92f3f375a7e37ee4e54e739a068e9cf80a570ffecce60b97076c15855b6`), since 1.7 has issues with random timeouts/freeze as mentioned [here](https://github.com/influxdata/influxdb/issues/12731) 
 
 
 
-#### 3. Configuration
+3. Use Grafana to visualize test results and configure it to read metrics from InfluxDB.
 
-Following are the configurations required:
+4. Configure InfluxDB:
 1. InfluxDB
-   * Login into influx:
+   * Log in to Influx:
      ```bash
-     influx -username <>  -password <>
+     influx -username {username}  -password {password}
      ```
-   * Create USER to readUser and writeUser
+   * Create a USER with both read and write rights.
      ```bash
-      CREATE USER readUser with PASSWORD <>
-      CREATE USER writeUser with PASSWORD <>
+      CREATE USER readUser with PASSWORD {password}
+      CREATE USER writeUser with PASSWORD {password}
      ```
-   * Create database
+   * Create a database:
      ```bash
      CREATE DATABASE "database"
      ```
-   * GRANT appropriate rights to users
+   * Grant appropriate rights to users:
       ```bash
       GRANT ALL ON "database" TO "writeUser"
       GRANT READ ON "database" TO "readUser"
@@ -43,7 +43,7 @@ Following are the configurations required:
 2. Grafana
    Configure Grafana to use `readUser` to read the metrics from influxDB.
 3. Configure the GKE cluster:
-  * Export the required variables into shell
+  * Export the required variables into shell:
       ```bash
       export GCLOUD_PROJECT_NAME="project-name"
       export GCLOUD_COMPUTE_ZONE="compute-zone"
@@ -57,16 +57,16 @@ Following are the configurations required:
     ```bash
     gcloud config set project $GCLOUD_PROJECT_NAME
     ```
-  * Create Bucket
+  * Create a bucket:
     ```bash
     gsutil mb -p $GCLOUD_PROJECT_NAME gs://$BUCKET_NAME/
     ```
-  * Create keyring and keys for kms
+  * Create a keyring and keys for kms:
     ```bash
     gcloud kms keyrings create $KEYRING_NAME --location "global"
     gcloud kms keys create $ENCRYPTION_KEY_NAME --location "global" --keyring $KEYRING_NAME --purpose encryption
     ```
-  * Service Account
+  * Create a service account:
     ```bash
     export SA_NAME="sa-name"
     export SA_DISPLAY_NAME=$SA_NAME
