@@ -379,6 +379,10 @@ branch-protection:
                   - pre-rel11-kyma-gke-central-connector
                   - pre-rel11-kyma-artifacts
                   - pre-rel11-kyma-installer
+        website:
+          required_status_checks:
+            contexts:
+              - "netlify/kyma-project/deploy-preview"
         luigi:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
