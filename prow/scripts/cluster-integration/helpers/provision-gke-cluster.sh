@@ -25,6 +25,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
+
 for var in GCLOUD_SERVICE_KEY_PATH GCLOUD_PROJECT_NAME CLUSTER_NAME GCLOUD_COMPUTE_ZONE; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
