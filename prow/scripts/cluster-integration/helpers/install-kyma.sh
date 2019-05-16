@@ -59,7 +59,7 @@ function installKyma() {
 		# shellcheck disable=SC2153
 		PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 		# shellcheck disable=SC1090
-	    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
+		source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
 		shout "Apply Kyma config"
 		date
