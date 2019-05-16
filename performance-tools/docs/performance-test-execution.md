@@ -1,35 +1,37 @@
 # Performance Cluster
 
-## Overview
-
 You can execute the performance cluster script in two modes:
 * Production mode (executed periodically)
 * Development mode (executed on demand)
 
-Are a set of scripts that deploy on demand a kyma cluster on GCP.
+These scripts deploy on demand a kyma cluster on GCP.
 
-### Production Mode
 In the **production mode**,  the script is executed periodically. The `runner.sh` script creates a Kyma cluster that needs to be tested. Once the cluster is created, it runs all the K6 scripts and then deletes the cluster.
 
-### Development mode
+```bash
+./cluster.sh  --action create --cluster-grade production
+```
+
 In the **development mode**, you can create your own Kyma cluster on demand and then run K6 scripts manually. You can use this mode to develop or debug K6 scripts. One can execute the script (cluster.sh)[performance-tools/performance-cluster/cluster.sh] in the following way
+
+Create Kyma and remove GKE cluster:
 
 ```bash
 ./cluster.sh --action create --cluster-grade development
 ```
-## Commands
-
-- `action`: It is a required command which indicates the action to be executed for the scripts. Possible action values are `create` or `delete`
-- `cluster-grade`: It is a required command which indicates the cluster grade of the kyma cluster. Possible action values are `production` or `development`
-
 
 Delete Kyma and remove GKE cluster:
 
-- cluster grade development
-
 ```bash
-./cluster.sh --action delete --cluster-grade development
+./cluster.sh --action delete
 ```
+
+## Script arguments
+
+| Name | Required |  Values |  Description |
+|-----|---------|--------|------------|
+|**action** | YES | `create` or `delete` | Indicates the action to be executed for the scripts. `create` or `delete` a kyma cluster. |
+|**cluster-grade** | YES | `production` or `development` | Indicates the cluster grade of the kyma cluster. `development` is expected to be used by developers for testing their own tests |
 
 ## Expected environment variables:
 
