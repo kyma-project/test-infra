@@ -101,18 +101,18 @@ function installKyma() {
 
     fi
 
-    waitUntilInstallerApiAvailable
+        waitUntilInstallerApiAvailable
 
-    if [[ "${PERFORMACE_CLUSTER_SETUP}" != "" ]]; then
-        kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
-    fi
+        if [[ "${PERFORMACE_CLUSTER_SETUP}" != "" ]]; then
+            kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
+        fi
 
-    shout "Trigger installation"
-    date
+        shout "Trigger installation"
+        date
 
-    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-    kubectl label installation/kyma-installation action=install --overwrite
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+        sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
+        kubectl label installation/kyma-installation action=install --overwrite
+        "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
 
 function createImage() {

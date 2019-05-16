@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o pipefail  # Fail a pipe if any
-#set -x
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export PERFORMACE_CLUSTER_SETUP="true"
