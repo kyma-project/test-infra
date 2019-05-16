@@ -240,7 +240,7 @@ until [ $n -ge 2 ]
 do
     kubectl apply -f kyma-installer-cluster.yaml && break
     echo "Failed to apply kyma-installer-cluster.yaml"
-    n=$(($n+1))
+    n=$((n+1))
     if [ 2 -gt "$n" ]
     then
         echo "Retrying in 5 seconds"
