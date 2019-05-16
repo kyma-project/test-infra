@@ -35,17 +35,17 @@ Delete Kyma and remove GKE cluster:
 
 ## Expected environment variables:
 
-- DOCKER_REGISTRY. Ex. "docker.io"
-- DOCKER_PUSH_REPOSITORY - Docker repository hostname. Ex. "docker.io/anyrepository"
-- DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
-   Ex. "/home/${USER}/go/src/github.com/kyma-project"
-- CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
-- CLOUDSDK_COMPUTE_REGION - GCP compute region. Ex. "europe-west3"
-- CLOUDSDK_COMPUTE_ZONE Ex. "europe-west3-a"
-- GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path.
-  Ex. "/etc/credentials/sa-gke-kyma-integration/service-account.json"
-- INPUT_CLUSTER_NAME - name for the new cluster
-- DOCKER_IN_DOCKER_ENABLED with value "true" for production and "false" for the development flow.
+| Variable | Description |
+|-----|---------|
+|**DOCKER_REGISTRY** | Ex. "docker.io" | 
+|**DOCKER_PUSH_REPOSITORY** | Docker repository hostname. Ex. "docker.io/anyrepository" |
+|**DOCKER_PUSH_DIRECTORY** | Docker "top-level" directory (with leading "/") Ex. "/home/${USER}/go/src/github.com/kyma-project"| 
+|**CLOUDSDK_CORE_PROJECT** | GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.) |
+|**CLOUDSDK_COMPUTE_REGION** | GCP compute region. Ex. "europe-west3" | 
+|**CLOUDSDK_COMPUTE_ZONE** | GCP compute zone. Ex. "europe-west3-a" |
+|**GOOGLE_APPLICATION_CREDENTIALS** | GCP Service Account key file path. Ex. "/etc/credentials/sa-gke-kyma-integration/service-account.json" | 
+|**INPUT_CLUSTER_NAME** | name for the new cluster |
+|**DOCKER_IN_DOCKER_ENABLED** | with value "true" for production and "false" for the development flow. | 
 
 ### Permissions: 
 
