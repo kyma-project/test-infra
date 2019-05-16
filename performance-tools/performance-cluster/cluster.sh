@@ -13,13 +13,13 @@ elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
     source "../test-infra/prow/scripts/library.sh"
 
 else
-	echo "File 'library.sh' can't be found."
+    echo "File 'library.sh' can't be found."
     exit 1;
 fi
 
 if [ $# -lt "1" ]; then
-        echo "Usage:  $0 --action (create or delete) --cluster-grade (production or development)"
-        exit 1;
+    echo "Usage:  $0 --action (create or delete) --cluster-grade (production or development)"
+    exit 1;
 fi
 
 POSITIONAL=()
