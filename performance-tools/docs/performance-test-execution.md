@@ -49,7 +49,7 @@ Delete Kyma and remove GKE cluster:
 
 ### Permissions: 
 
-In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
+In order to exeucte (cluster.sh)[performance-tools/performance-cluster/cluster.sh] you need to use a service account with permissions equivalent to the following GCP roles:
 - Compute Admin
 - Kubernetes Engine Admin
 - Kubernetes Engine Cluster Admin
