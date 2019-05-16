@@ -383,6 +383,11 @@ branch-protection:
           required_status_checks:
             contexts:
               - "netlify/kyma-project/deploy-preview"
+        luigi:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: true
+            required_approving_review_count: 2
     kyma-incubator:
       repos:
         varkes:	
