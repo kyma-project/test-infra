@@ -9,6 +9,7 @@ if [ -f "../../prow/scripts/library.sh" ]; then
 
 elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
     source "../test-infra/prow/scripts/library.sh"
+    export LIBS_DIR="../test-infra/prow/scripts/library.sh"
 
 else
 	echo "File 'library.sh' can't be found."
@@ -34,11 +35,13 @@ fi
 
 export SRC_DIR="$(mktemp -d -t src.XXXXXX)"
 
+export REVISION="$(cd /${SRC_DIR}/kyma-project/kyma && git rev-parse --short HEAD)"
 
 # Create Kyma Cluster
 ${SCRIPTS_DIR}/cluster.sh --action create --cluster-grade production
 if [[ $? != 0 ]]; then
     shoutFail "Cluster creation failed!!"
+    DATE="$(date)"
     curl -X POST \
     -H 'Content-type: application/json; charset=utf-8' \
     --data '{"channel":"'"${SLACK_CHANNEL}"'","text":"Test Run: Failure \n Date: '"${DATE}"' \n Revision: '"${REVISION}"' \n Reason: Cluster Creation Failed"}' \
@@ -46,7 +49,6 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
-export REVISION="$(cd /${SRC_DIR}/kyma-project/kyma && git rev-parse --short HEAD)"
 
 # Get virtualservice
 # Switch to kubeconfig from kyma cluster
@@ -91,7 +93,7 @@ export PREREQ_PATH="${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}/prerequisites"
 export TESTS_PATH="${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}/components"
 
 shout "Applying all prequisite files !!"
-for f in $(find "${TESTS_DIR}/prerequisites" -type f -name '*setup.sh'); do
+for f in $(find "${PREREQ_PATH}" -type f -name '*setup.sh'); do
   shout "Running following file: $f"
   source $f
 done

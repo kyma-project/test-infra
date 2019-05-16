@@ -16,7 +16,7 @@ export INFLUXDB="$(cat /var/k6-details/k6database)"
 
 function runAll() {
     shout "Running the complete suite"
-    for f in $(find "${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}" -maxdepth 2 -type f -name *.js);
+    for f in $(find "${TESTS_PATH}" -maxdepth 2 -type f -name *.js);
     do
         shout "Running File $f"
         $K6_CMD $f
@@ -44,7 +44,7 @@ if [[ "${INFLUXDB_FQDN}" == "" ]]; then
     exit 1
 fi
 
-K6_CMD="k6 run --tag --out influxdb=http://${K6_USER}:${K6_PASSWORD}@${INFLUXDB_FQDN}/${INFLUXDB}"
+K6_CMD="k6 run --out influxdb=http://${K6_USER}:${K6_PASSWORD}@${INFLUXDB_FQDN}/${INFLUXDB}"
 
 
 if [[ "${1}" == "all" ]]; then
