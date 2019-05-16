@@ -2,17 +2,17 @@
 
 ## Overview
 
-The performance cluster script can be executed in two modes:
-* Production Mode (executed periodically)
-* Development Mode (executed on Demand)
+You can execute the performance cluster script in two modes:
+* Production mode (executed periodically)
+* Development mode (executed on demand)
 
 Are a set of scripts that deploy on demand a kyma cluster on GCP.
 
 ### Production Mode
-Here the script is executed periodically. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
+In the **production mode**,  the script is executed periodically. The `runner.sh` script creates a Kyma cluster that needs to be tested. Once the cluster is created, it runs all the K6 scripts and then deletes the cluster.
 
 ### Development mode
-Here a developer can create his/her own kyma cluster on demand and then run k6 scripts manually. The idea here is if a developer wants to develop or debug k6 scripts then he/she can use this mode. One can execute the script (cluster.sh)[performance-tools/performance-cluster/cluster.sh] in the following way
+In the **development mode**, you can create your own Kyma cluster on demand and then run K6 scripts manually. You can use this mode to develop or debug K6 scripts. One can execute the script (cluster.sh)[performance-tools/performance-cluster/cluster.sh] in the following way
 
 ```bash
 ./cluster.sh --action create --cluster-grade development
@@ -57,26 +57,26 @@ In order to run this script you need to use a service account with permissions e
 - Compute Network Admin
 
 
-#### Development workflow
+## Development workflow
 
-> If you are using dockerhub to push Kyma installer image then please login to docker before starting `cluster.sh`
+>**NOTE:** If you use Dockerhub to push the Kyma Installer image, log in to Docker before you start the `cluster.sh` script.
 
-This environment variables are set up by the developer before run the commands.
+1. Set up these environment variables:
 
-- **REPO_OWNER** is the repository owner. 
-- **REPO_NAME** is the repository name. 
+- **REPO_OWNER** which is the repository owner. 
+- **REPO_NAME** which is the repository name. 
 
-* Create the development cluster using following command:
+2. Create the development cluster:
   ```bash
   ./cluster.sh --action create --cluster-grade development
   ```
-* Once the cluster is ready check it using the command
+3. Once the cluster is ready, check its status:
   ```bash
     kubectl -n default get installation/kyma-installation -o jsonpath="{'Status: '}{.status.state}{', description: '}{.status.description}"; echo; \
   ```
   Check for: `Status: Installed, description: Kyma installed`
-* One can run the k6 test scripts using following commands
+4. Run the K6 test scripts:
   ```bash
-  k6 run <path to the .js file>
+  k6 run {path to the .js file}
   ```
 
