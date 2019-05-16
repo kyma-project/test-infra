@@ -1,13 +1,11 @@
 # Performance test setup
 
-## Installation of Load Generating Cluster.
+Installation of Load Generating Cluster.
 
-### Pre-requisites
+### Prerequisites
 
-We have used GKE for installing the load generator cluster. Following are the prerequisites for the same.
-
-1. Create GKE account with `owner` rights
-2. Have domain name to be used.
+- Create a GKE account with `owner` rights.
+- Have domain name to be used.
 
 ### Installation
 
@@ -82,14 +80,14 @@ Following are the configurations required:
     gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
     gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
     ```
-    Add the required roles to the service account
+    * Add the required roles to the service account:
     ```bash
       for role in "roles/container.admin" "roles/container.clusterAdmin" "roles/serviceaccounts.serviceAccountUser", "roles/storage.storageAdmin"; do
           echo $role
           gcloud projects add-iam-policy-binding $GCLOUD_PROJECT_NAME  --member=serviceAccount:$SA_NAME@$GCLOUD_PROJECT_NAME.iam.gserviceaccount.com --role=$role
         done
     ```
-  * Create the namespace for running the performance test job
+  * Create a namespace for running the performance test job:
     ```bash
     gcloud container clusters get-credentials $LOAD_GEN_CLUSTER --zone=$GCLOUD_COMPUTE_ZONE --project=$GCLOUD_PROJECT_NAME
 
@@ -97,12 +95,11 @@ Following are the configurations required:
 
     kubectl label ns $LOAD_GEN_NAMESPACE env=true
     ```
-  * Create various secrets
-    create secret for service account
+  * Create Secrets for the service account:
     ```bash
     kubectl create secret generic $SA_NAME --from-file=./sa.json -n $LOAD_GEN_NAMESPACE
     ```
 
-    create secret for influxDB `readUser`  and `readWriter`
+  * Create Secrets for InfluxDB `readUser` and `writeUser`:
     ```bash
     kubectl create secret generic `k6-secrets` --from-file=./writeUser --from-file=./writeUser_pass --from-file=./database -n $LOAD_GEN_NAMESPACE
