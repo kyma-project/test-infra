@@ -44,7 +44,7 @@ if [[ "${INFLUXDB_FQDN}" == "" ]]; then
     exit 1
 fi
 
-K6_CMD="k6 run --tag revision=$REVISION --out influxdb=http://${K6_USER}:${K6_PASSWORD}@${INFLUXDB_FQDN}/${INFLUXDB}"
+K6_CMD="k6 run --tag --out influxdb=http://${K6_USER}:${K6_PASSWORD}@${INFLUXDB_FQDN}/${INFLUXDB}"
 
 
 if [[ "${1}" == "all" ]]; then

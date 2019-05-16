@@ -66,7 +66,7 @@ RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/a
 RUN apt-get update
 RUN apt-get install k6
 
-RUN mkdir test-infra
+RUN mkdir /test-infra
 
 COPY prow/scripts/library.sh /test-infra/prow/scripts/library.sh
 COPY prow/scripts/cluster-integration/helpers/cleanup-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/cleanup-cluster.sh
@@ -78,11 +78,12 @@ COPY prow/scripts/cluster-integration/helpers/get-helm-certs.sh /test-infra/prow
 COPY prow/scripts/cluster-integration/helpers/install-kyma.sh /test-infra/prow/scripts/cluster-integration/helpers/install-kyma.sh
 COPY prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh
 
-RUN mkdir perf-tests
+RUN mkdir /perf-tests
 
-COPY scripts /perf-tests/scripts
-COPY runner.sh /perf-tests
-COPY cluster.sh /perf-tests
+COPY performance-tools/performance-cluster/runner.sh /perf-tests/runner.sh
+COPY performance-tools/performance-cluster/cluster.sh /perf-tests/cluster.sh
+COPY performance-tools/performance-cluster/scripts/k6-runner.sh /perf-tests/scripts/k6-runner.sh
+COPY performance-tools/performance-cluster/scripts/kyma-gke-cluster.sh /perf-tests/scripts/kyma-gke-cluster.sh
 
 WORKDIR /perf-tests
 
