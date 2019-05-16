@@ -11,8 +11,6 @@ Are a set of scripts that deploy on demand a kyma cluster on GCP.
 ### Production Mode
 Here the script is executed periodically. There is runner.sh script which is creating a kyma cluster that needs to be tested. Once the cluster is created, it runs all the k6 scripts present and then deletes the cluster.
 
-The K6 scripts are located [here](https://github.com/kyma-project/kyma/tests/perf). For more details of how to write K6 scripts in Kyma refer here.
-
 ### Development mode
 Here a developer can create his/her own kyma cluster on demand and then run k6 scripts manually. The idea here is if a developer wants to develop or debug k6 scripts then he/she can use this mode. One can execute the script (cluster.sh)[https://github.com/kyma-project/test-infra/performance-tools/performance-cluster/cluster.sh] in the following way
 
