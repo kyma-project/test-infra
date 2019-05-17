@@ -4,6 +4,7 @@ TAG = $(DOCKER_TAG)
 
 .PHONY: build-image
 build-image:
+    $(info ************  BUILD IMAGE ************)
     docker build -f Dockerfile -t $(APP_NAME):latest ../../
 
 .PHONY: push-image

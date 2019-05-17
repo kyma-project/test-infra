@@ -1,55 +1,14 @@
-# Performance Cluster
+# Performance cluster
 
-You can execute the performance cluster script in two modes:
+The [`cluster.sh`](performance-tools/performance-cluster/cluster.sh) script is the performance cluster script that you can run in two modes:
 * Production mode (executed periodically)
 * Development mode (executed on demand)
 
-These scripts deploy on demand a kyma cluster on GCP.
+In the **production mode**, the script is executed periodically by `runner.sh`. This script creates a Kyma cluster that needs to be tested. Once the cluster is created, it runs all the K6 scripts and then deletes the cluster.
 
-In the **production mode**,  the script is executed periodically. The `runner.sh` script creates a Kyma cluster that needs to be tested. Once the cluster is created, it runs all the K6 scripts and then deletes the cluster.
+In the **development mode**, you can create your own Kyma cluster on demand and then run K6 scripts manually. You can use this mode to develop or debug K6 scripts.
 
-```bash
-./cluster.sh  --action create --cluster-grade production
-```
-
-In the **development mode**, you can create your own Kyma cluster on demand and then run K6 scripts manually. You can use this mode to develop or debug K6 scripts. One can execute the script (cluster.sh)[performance-tools/performance-cluster/cluster.sh] in the following way
-
-Create Kyma and remove GKE cluster:
-
-```bash
-./cluster.sh --action create --cluster-grade development
-```
-
-Delete Kyma and remove GKE cluster:
-
-```bash
-./cluster.sh --action delete
-```
-
-## Script arguments
-
-| Name | Required |  Values |  Description |
-|-----|---------|--------|------------|
-|**action** | YES | `create` or `delete` | Indicates the action to be executed for the scripts. `create` or `delete` a kyma cluster. |
-|**cluster-grade** | YES | `production` or `development` | Indicates the cluster grade of the kyma cluster. `development` is expected to be used by developers for testing their own tests |
-
-## Expected environment variables:
-
-| Variable | Description |
-|-----|---------|
-|**DOCKER_REGISTRY** | Ex. "docker.io" | 
-|**DOCKER_PUSH_REPOSITORY** | Docker repository hostname. Ex. "docker.io/anyrepository" |
-|**DOCKER_PUSH_DIRECTORY** | Docker "top-level" directory (with leading "/") Ex. "/home/${USER}/go/src/github.com/kyma-project"| 
-|**CLOUDSDK_CORE_PROJECT** | GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.) |
-|**CLOUDSDK_COMPUTE_REGION** | GCP compute region. Ex. "europe-west3" | 
-|**CLOUDSDK_COMPUTE_ZONE** | GCP compute zone. Ex. "europe-west3-a" |
-|**GOOGLE_APPLICATION_CREDENTIALS** | GCP Service Account key file path. Ex. "/etc/credentials/sa-gke-kyma-integration/service-account.json" | 
-|**INPUT_CLUSTER_NAME** | name for the new cluster |
-|**DOCKER_IN_DOCKER_ENABLED** | with value "true" for production and "false" for the development flow. | 
-
-### Permissions: 
-
-In order to exeucte (cluster.sh)[performance-tools/performance-cluster/cluster.sh] you need to use a service account with permissions equivalent to the following GCP roles:
+In order to run the script, you need a service account with permissions equivalent to the following GCP roles:
 - Compute Admin
 - Kubernetes Engine Admin
 - Kubernetes Engine Cluster Admin
@@ -58,17 +17,45 @@ In order to exeucte (cluster.sh)[performance-tools/performance-cluster/cluster.s
 - Storage Admin
 - Compute Network Admin
 
+## Environment variables
+
+Set the following environment variables before running the `cluster.sh` script:
+
+| Variable | Description |
+|-----|---------|
+|**DOCKER_REGISTRY** | Specifies the Docker registry, for example: `docker.io`. |
+|**DOCKER_PUSH_REPOSITORY** | Specifies the Docker repository hostname, for example: `docker.io/{anyrepository}`. |
+|**DOCKER_PUSH_DIRECTORY** | Specifies the Docker top-level directory, for example: `/home/${USER}/go/src/github.com/kyma-project`.|
+|**CLOUDSDK_CORE_PROJECT** | Indicates the GCP project for all GCP resources used during the script execution. |
+|**CLOUDSDK_COMPUTE_REGION** | Specifies the GCP compute region, for example `europe-west3`. |
+|**CLOUDSDK_COMPUTE_ZONE** | Specifies the GCP compute zone, for example `europe-west3-a`. |
+|**GOOGLE_APPLICATION_CREDENTIALS** | Provides the GCP service account key file path, for example: `/etc/credentials/sa-gke-kyma-integration/service-account.json`. |
+|**INPUT_CLUSTER_NAME** | Provides a name for the new cluster. |
+|**DOCKER_IN_DOCKER_ENABLED** | Specifies the cluster mode. Set this value to `true` for the production mode, or to `false` for the development mode. |
+
+## Script arguments
+
+Set these arguments while running the `cluster.sh` script:
+
+| Name | Required |  Description |
+|-----|---------|------------|
+|**action** | YES | Specifies the action executed on the Kyma cluster. The possible values are `create` or `delete`. |
+|**cluster-grade** | YES | Indicates the cluster grade of the Kyma cluster. The possible values are `production` or `development`. Set the `development` value if you use the cluster for testing purposes. |
+
+>**CAUTION:** If you don't specify these arguments, you will receive an error while running the script.
 
 ## Development workflow
 
 >**NOTE:** If you use Dockerhub to push the Kyma Installer image, log in to Docker before you start the `cluster.sh` script.
 
+Follow these steps to run the [`cluster.sh`](performance-tools/performance-cluster/cluster.sh) script in the development mode:
+
 1. Set up these environment variables:
 
-- **REPO_OWNER** which is the repository owner. 
-- **REPO_NAME** which is the repository name. 
+- **REPO_OWNER** which is the repository owner.
+- **REPO_NAME** which is the repository name.
 
-2. Create the development cluster:
+2. Create the development cluster and set the required arguments:
   ```bash
   ./cluster.sh --action create --cluster-grade development
   ```
@@ -77,8 +64,12 @@ In order to exeucte (cluster.sh)[performance-tools/performance-cluster/cluster.s
     kubectl -n default get installation/kyma-installation -o jsonpath="{'Status: '}{.status.state}{', description: '}{.status.description}"; echo; \
   ```
   Check for: `Status: Installed, description: Kyma installed`
+
 4. Run the K6 test scripts:
   ```bash
   k6 run {path to the .js file}
   ```
-
+5. Delete Kyma and remove the GKE cluster:
+```bash
+./cluster.sh --action delete
+```
