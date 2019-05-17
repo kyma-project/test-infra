@@ -6,7 +6,6 @@ TAG = $(DOCKER_TAG)
 build-image:
 	docker build -f Dockerfile -t $(APP_NAME):latest ../../
     $(info ************  BUILD IMAGE ************)
-    docker images ls
 
 .PHONY: push-image
 push-image:
