@@ -1,19 +1,17 @@
 # Performance test setup
 
-Installation of Load Generating Cluster.
+This document describes how to install the load generating cluster.
 
-### Prerequisites
+## Prerequisites
 
 - Create a GKE account with `owner` rights.
-- Have domain name to be used.
+- Prepare a domain name that you will use.
 
 ## Installation
 
-1. [Install Kyma](https://kyma-project.io/docs/root/kyma/#installation-install-kyma-on-a-cluster) on the cluster.
-We are using kyma for the installation as it provides authentication and authorization. Additionally we can leverage grafana which comes with Kyma. To install the cluster follow the steps documented [here](https://kyma-project.io/docs/root/kyma/#installation-install-kyma-on-a-cluster).
+1. [Install Kyma](https://kyma-project.io/docs/root/kyma/#installation-install-kyma-on-a-cluster) on the cluster. Kyma comes with authentication and authorization, as well as Grafana.
 
 2. [Install InfluxDB](https://console.cloud.google.com/marketplace/details/google/influxdb?q=influxdb) to store test results. The supported version of InfluxDB is 1.6.
-k6 uses InfluxDB to store results and Grafana could be used to visualize the test results. To install InfluxDB we used the application available on [GCP market place](https://console.cloud.google.com/marketplace/details/google/influxdb?q=influxdb). The version of influxDB has been backported to [1.6](gcr.io/cloud-marketplace/google/influxdb@sha256:23d3f92f3f375a7e37ee4e54e739a068e9cf80a570ffecce60b97076c15855b6`), since 1.7 has issues with random timeouts/freeze as mentioned [here](https://github.com/influxdata/influxdb/issues/12731) 
 
 3. Use Grafana to visualize test results and configure it to read metrics from InfluxDB.
 
@@ -36,9 +34,8 @@ k6 uses InfluxDB to store results and Grafana could be used to visualize the tes
       GRANT ALL ON "database" TO "writeUser"
       GRANT READ ON "database" TO "readUser"
       ```
-2. Grafana
-   Configure Grafana to use `readUser` to read the metrics from influxDB.
-3. Configure the GKE cluster:
+
+5. Configure the GKE cluster:
   * Export the required variables into shell:
       ```bash
       export GCLOUD_PROJECT_NAME="project-name"
@@ -49,7 +46,7 @@ k6 uses InfluxDB to store results and Grafana could be used to visualize the tes
       export LOAD_GEN_CLUSTER="load-gen-cluster"
       export LOAD_GEN_NAMESPACE="load-gen-ns"
       ```
-  * Set the google cloud project where the GKE cluster will be created
+  * Set up the Google Cloud Project where the GKE cluster will be created:
     ```bash
     gcloud config set project $GCLOUD_PROJECT_NAME
     ```
@@ -76,14 +73,14 @@ k6 uses InfluxDB to store results and Grafana could be used to visualize the tes
     gcloud kms encrypt --location global --keyring $KEYRING_NAME --key $ENCRYPTION_KEY_NAME --plaintext-file $SECRET_FILE --ciphertext-file $SECRET_FILE.encrypted
     gsutil cp $SECRET_FILE.encrypted gs://$BUCKET_NAME/
     ```
-    * Add the required roles to the service account:
+  * Add the required roles to the service account:
     ```bash
       for role in "roles/container.admin" "roles/container.clusterAdmin" "roles/serviceaccounts.serviceAccountUser", "roles/storage.storageAdmin"; do
           echo $role
           gcloud projects add-iam-policy-binding $GCLOUD_PROJECT_NAME  --member=serviceAccount:$SA_NAME@$GCLOUD_PROJECT_NAME.iam.gserviceaccount.com --role=$role
         done
     ```
-  * Create a namespace for running the performance test job:
+  * Create a Namespace for running the performance test job:
     ```bash
     gcloud container clusters get-credentials $LOAD_GEN_CLUSTER --zone=$GCLOUD_COMPUTE_ZONE --project=$GCLOUD_PROJECT_NAME
 
@@ -99,3 +96,4 @@ k6 uses InfluxDB to store results and Grafana could be used to visualize the tes
   * Create Secrets for InfluxDB `readUser` and `writeUser`:
     ```bash
     kubectl create secret generic `k6-secrets` --from-file=./writeUser --from-file=./writeUser_pass --from-file=./database -n $LOAD_GEN_NAMESPACE
+    ```
