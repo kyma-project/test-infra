@@ -1,6 +1,6 @@
 # Performance cluster
 
-The [`cluster.sh`](performance-tools/performance-cluster/cluster.sh) script is the performance cluster script that you can run in two modes:
+The [`cluster.sh`](./performance-tools/performance-cluster/cluster.sh) script is the performance cluster script that you can run in two modes:
 * Production mode (executed periodically)
 * Development mode (executed on demand)
 
