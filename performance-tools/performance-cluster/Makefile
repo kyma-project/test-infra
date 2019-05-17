@@ -8,7 +8,7 @@ build-image:
 
 .PHONY: push-image
 push-image:
-	docker tag $(APP_NAME) $(IMG):$(TAG)
+	docker tag $(APP_NAME):latest $(IMG):$(TAG)
 	docker push $(IMG):$(TAG)
 
 .PHONY: ci-pr
