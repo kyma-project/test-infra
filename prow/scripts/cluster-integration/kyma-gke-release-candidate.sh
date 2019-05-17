@@ -49,12 +49,18 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
-trap cleanup EXIT INT
+trap cleanupOnError EXIT INT
 
 #!Put cleanup code in this function!
-cleanup() {
+cleanupOnError() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
+
+    # Do not cleanup cluster if job finished successfully
+    if [ "$EXIT_STATUS" == "0" ] ; then
+        echo "Job finished successfully, cleanup will not be performed"
+        exit
+    fi
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         shout "AN ERROR OCCURED! Take a look at preceding log entries."
