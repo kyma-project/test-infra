@@ -1,6 +1,6 @@
 # Performance cluster
 
-The [`cluster.sh`](./performance-tools/performance-cluster/cluster.sh) script is the performance cluster script that you can run in two modes:
+The [`cluster.sh`](../performance-cluster/cluster.sh) script is the performance cluster script that you can run in two modes:
 * Production mode (executed periodically)
 * Development mode (executed on demand)
 
@@ -48,7 +48,7 @@ Set these arguments while running the `cluster.sh` script:
 
 >**NOTE:** If you use Dockerhub to push the Kyma Installer image, log in to Docker before you start the `cluster.sh` script.
 
-Follow these steps to run the [`cluster.sh`](./performance-tools/performance-cluster/cluster.sh) script in the development mode:
+Follow these steps to run the [`cluster.sh`](../performance-cluster/cluster.sh) script in the development mode:
 
 1. Set up these environment variables:
 
