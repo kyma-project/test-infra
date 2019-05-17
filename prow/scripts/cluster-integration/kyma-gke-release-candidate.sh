@@ -49,7 +49,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
-trap cleanup EXIT INT
+trap cleanupOnError EXIT INT
 
 #!Put cleanup code in this function!
 cleanupOnError() {
