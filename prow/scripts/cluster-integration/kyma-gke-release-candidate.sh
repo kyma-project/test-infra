@@ -49,6 +49,83 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
+trap cleanup EXIT INT
+
+#!Put cleanup code in this function!
+cleanupOnError() {
+    #!!! Must be at the beginning of this function !!!
+    EXIT_STATUS=$?
+
+    # Do not cleanup cluster if job finished successfully
+    if [ "$EXIT_STATUS" == "0" ] ; then
+        echo "Job finished successfully, cleanup will not be performed"
+        exit
+    fi
+
+    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+        shout "AN ERROR OCCURED! Take a look at preceding log entries."
+        echo
+    fi
+
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
+
+    if [ -n "${CLEANUP_CLUSTER}" ]; then
+        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
+        date
+
+        #save disk names while the cluster still exists to remove them later
+        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        export DISKS
+
+        #Delete cluster
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+
+        #Delete orphaned disks
+        shout "Delete orphaned PVC disks..."
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+    fi
+
+    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+        shout "Delete Gateway DNS Record"
+        date
+        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+    fi
+
+    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+        shout "Release Gateway IP Address"
+        date
+        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+    fi
+
+    if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
+        shout "Delete Remote Environments DNS Record"
+        date
+        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+    fi
+
+    if [ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]; then
+        shout "Release Remote Environments IP Address"
+        date
+        IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+    fi
+
+    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+        shout "Delete Apiserver proxy DNS Record"
+        date
+        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+    fi
+
+
+    MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+    shout "Job is finished ${MSG}"
+    date
+    set -e
+
+    exit "${EXIT_STATUS}"
+}
 
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
