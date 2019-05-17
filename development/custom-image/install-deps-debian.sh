@@ -53,7 +53,7 @@ sudo mv /tmp/daemon.json /etc/docker/
 # install fluentd 
 curl -Lo /tmp/install-logging-agent.sh https://dl.google.com/cloudagents/install-logging-agent.sh && \
  chmod +x /tmp/install-logging-agent.sh
-sudo bash /tmp/install-logging-agent.sh
+ sudo bash /tmp/install-logging-agent.sh
 
 # install kubectl
 curl -Lo /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_CLI_VERSION}/bin/linux/amd64/kubectl && \
