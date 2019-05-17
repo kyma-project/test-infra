@@ -218,7 +218,7 @@ function installKyma() {
 
     shout "Trigger installation with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
-    kubectl label installation/kyma-installation action=install
+    kubectl label installation/kyma-installation action=install --overwrite
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
@@ -352,7 +352,7 @@ function upgradeKyma() {
 
     shout "Trigger update with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
-    kubectl label installation/kyma-installation action=install
+    kubectl label installation/kyma-installation action=install --overwrite
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 
 }

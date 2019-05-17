@@ -60,38 +60,19 @@ func TestMonitoringJobPostsubmit(t *testing.T) {
 func TestMonitoringTestSetupReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		// Retaining the behavior for release 0.7,
-		// When we will remove support for release 0.7 then we can remove this case
-		if tester.Release(currentRelease).Matches(tester.Release07) {
-			t.Run(currentRelease, func(t *testing.T) {
-				jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/monitoring/monitoring.yaml")
-				// THEN
-				require.NoError(t, err)
-				actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-test-logging-monitoring", currentRelease), currentRelease)
-				require.NotNil(t, actualPresubmit)
-				assert.False(t, actualPresubmit.SkipReport)
-				assert.True(t, actualPresubmit.Decorate)
-				assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-				tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-				tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
-				assert.True(t, actualPresubmit.AlwaysRun)
-				tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/test-logging-monitoring")
-			})
-		} else {
-			t.Run(currentRelease, func(t *testing.T) {
-				jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/monitoring/monitoring.yaml")
-				// THEN
-				require.NoError(t, err)
-				actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-monitoring", currentRelease), currentRelease)
-				require.NotNil(t, actualPresubmit)
-				assert.False(t, actualPresubmit.SkipReport)
-				assert.True(t, actualPresubmit.Decorate)
-				assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-				tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-				tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
-				assert.True(t, actualPresubmit.AlwaysRun)
-				tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/monitoring")
-			})
-		}
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/monitoring/monitoring.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-monitoring", currentRelease), currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/monitoring")
+		})
 	}
 }

@@ -2,8 +2,6 @@ package clusterscollector
 
 import (
 	"errors"
-	"fmt"
-	"regexp"
 	"strconv"
 	"testing"
 	"time"
@@ -12,10 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	container "google.golang.org/api/container/v1"
+	"google.golang.org/api/container/v1"
 )
-
-const sampleClusterNameRegexp = "^gkeint[-](pr|commit)[-].*"
 
 const sampleClusterName = "gkeint-pr-2991-abc"
 const volatileLabel = "true"
@@ -23,9 +19,7 @@ const sampleStatus = "RUNNING"
 const ttlLabel = "1" // max ttl of a cluster in hours
 
 var (
-	clusterNameRegexp       = regexp.MustCompile(sampleClusterNameRegexp)
-	filterFunc              = DefaultClusterRemovalPredicate(clusterNameRegexp, 1) //age is 1 hour
-	labelFilterFunc         = TimeBasedClusterRemovalPredicate()
+	labelFilterFunc         = TimeBasedClusterRemovalPredicate(map[string]struct{}{"kyma-prow": {}, "workload-kyma-prow": {}, "nightly": {}, "weekly": {}, "service-catalog-nightly": {}})
 	timeNow                 = time.Now()
 	timeNowFormatted        = timeNow.Format(time.RFC3339Nano)
 	timeNowUnix             = strconv.FormatInt(timeNow.Unix(), 10)
@@ -33,101 +27,8 @@ var (
 	timeOneHourAgoFormatted = timeOneHourAgo.Format(time.RFC3339Nano)
 	timeOneHourAgoUnix      = strconv.FormatInt(timeOneHourAgo.Unix(), 10)
 	timeWellOver            = timeNow.Add(time.Duration(-24) * time.Hour)
-	timeWellOverFormatted   = timeWellOver.Format(time.RFC3339Nano)
 	timeWellOverUnix        = strconv.FormatInt(timeWellOver.Unix(), 10)
 )
-
-func TestDefaultClusterRemovalPredicate(t *testing.T) {
-
-	//given
-	var testCases = []struct {
-		name                string
-		expectedFilterValue bool
-		clusterName         string
-		clusterCreateTime   string
-		volatileLabelValue  string
-		clusterStatus       string
-	}{
-		{name: "Should filter matching cluster",
-			expectedFilterValue: true,
-			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeOneHourAgoFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster with non matching name",
-			expectedFilterValue: false,
-			clusterName:         "otherName",
-			clusterCreateTime:   timeOneHourAgoFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster recently created",
-			expectedFilterValue: false,
-			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeNowFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster with invalid label",
-			expectedFilterValue: false,
-			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeOneHourAgoFormatted,
-			volatileLabelValue:  "no",
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster in STOPPING status",
-			expectedFilterValue: false,
-			clusterName:         sampleClusterName,
-			clusterCreateTime:   timeOneHourAgoFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       "STOPPING"},
-		{name: "Should skip cluster in with name kyma-prow",
-			expectedFilterValue: false,
-			clusterName:         "kyma-prow",
-			clusterCreateTime:   timeWellOverFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster in with name workload-kyma-prow",
-			expectedFilterValue: false,
-			clusterName:         "workload-kyma-prow",
-			clusterCreateTime:   timeWellOverFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster in with name nightly",
-			expectedFilterValue: false,
-			clusterName:         "nightly",
-			clusterCreateTime:   timeWellOverFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-		{name: "Should skip cluster in with name weekly",
-			expectedFilterValue: false,
-			clusterName:         "weekly",
-			clusterCreateTime:   timeWellOverFormatted,
-			volatileLabelValue:  volatileLabel,
-			clusterStatus:       sampleStatus},
-	}
-
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			//when
-			cluster := createCluster(testCase.clusterName, testCase.clusterCreateTime, testCase.volatileLabelValue, "", "", testCase.clusterStatus)
-			collected, err := filterFunc(cluster)
-
-			//then
-			require.NoError(t, err)
-			assert.Equal(t, testCase.expectedFilterValue, collected)
-		})
-	}
-
-	t.Run("Should return error on invalid timestamp", func(t *testing.T) {
-
-		//given
-		badTime := "@@@"
-		cluster := &container.Cluster{
-			CreateTime: badTime,
-		}
-
-		_, err := filterFunc(cluster)
-		assert.Contains(t, err.Error(), fmt.Sprintf("parsing time \"%s\" as", badTime))
-	})
-}
 
 func TestTimeBasedClusterRemovalPredicate(t *testing.T) {
 	//given
@@ -260,27 +161,6 @@ func TestClustersGarbageCollector(t *testing.T) {
 	clusterCreatedTooRecently := createCluster(sampleClusterName+"4", timeNowFormatted, volatileLabel, timeNowUnix, ttlLabel, sampleStatus)            //not old enough
 	clusterMatching2 := createCluster(sampleClusterName+"5", timeOneHourAgoFormatted, volatileLabel, timeOneHourAgoUnix, ttlLabel, sampleStatus)       //matches removal filter
 
-	t.Run("list() should select two clusters out of five - DefaultClusterRemovalPredicate", func(t *testing.T) {
-
-		mockClusterAPI := &automock.ClusterAPI{}
-		defer mockClusterAPI.AssertExpectations(t)
-
-		testProject := "testProject"
-
-		//Given
-		mockClusterAPI.On("ListClusters", testProject).Return([]*container.Cluster{clusterMatching1, clusterNonMatchingName, clusterNonMatchingLabel, clusterCreatedTooRecently, clusterMatching2}, nil)
-
-		//When
-		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
-		res, err := gdc.list(testProject)
-
-		//Then
-		require.NoError(t, err)
-		assert.Len(t, res, 2)
-		assert.Equal(t, clusterMatching1, res[0])
-		assert.Equal(t, clusterMatching2, res[1])
-	})
-
 	t.Run("list() should select two clusters out of five - TimeBasedClusterRemovalPredicate", func(t *testing.T) {
 
 		mockClusterAPI := &automock.ClusterAPI{}
@@ -302,22 +182,6 @@ func TestClustersGarbageCollector(t *testing.T) {
 		assert.Equal(t, clusterMatching2, res[1])
 	})
 
-	t.Run("Run() should fail if list() fails - DefaultClusterRemovalPredicate", func(t *testing.T) {
-
-		mockClusterAPI := &automock.ClusterAPI{}
-		defer mockClusterAPI.AssertExpectations(t)
-
-		testError := errors.New("testError")
-		testProject := "testProject"
-		mockClusterAPI.On("ListClusters", testProject).Return(nil, testError)
-
-		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
-
-		_, err := gdc.Run(testProject, true)
-		require.Error(t, err)
-		assert.Equal(t, testError, err)
-	})
-
 	t.Run("Run() should fail if list() fails - TimeBasedClusterRemovalPredicate", func(t *testing.T) {
 
 		mockClusterAPI := &automock.ClusterAPI{}
@@ -332,24 +196,6 @@ func TestClustersGarbageCollector(t *testing.T) {
 		_, err := gdc.Run(testProject, true)
 		require.Error(t, err)
 		assert.Equal(t, testError, err)
-	})
-
-	t.Run("Run(makeChanges=true) should remove matching clusters - DefaultClusterRemovalPredicate", func(t *testing.T) {
-
-		mockClusterAPI := &automock.ClusterAPI{}
-		defer mockClusterAPI.AssertExpectations(t)
-
-		testProject := "testProject"
-		mockClusterAPI.On("ListClusters", testProject).Return([]*container.Cluster{clusterMatching1, clusterNonMatchingName, clusterNonMatchingLabel, clusterCreatedTooRecently, clusterMatching2}, nil)
-
-		mockClusterAPI.On("RemoveCluster", testProject, clusterMatching1.Zone, clusterMatching1.Name).Return(nil)
-		mockClusterAPI.On("RemoveCluster", testProject, clusterMatching2.Zone, clusterMatching2.Name).Return(nil)
-
-		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
-
-		allSucceeded, err := gdc.Run(testProject, true)
-		require.NoError(t, err)
-		assert.True(t, allSucceeded)
 	})
 
 	t.Run("Run(makeChanges=true) should remove matching clusters - TimeBasedClusterRemovalPredicate", func(t *testing.T) {
@@ -368,28 +214,6 @@ func TestClustersGarbageCollector(t *testing.T) {
 		allSucceeded, err := gdc.Run(testProject, true)
 		require.NoError(t, err)
 		assert.True(t, allSucceeded)
-	})
-
-	t.Run("Run(makeChanges=true) should continue process if a previous call failed - DefaultClusterRemovalPredicate", func(t *testing.T) {
-
-		mockClusterAPI := &automock.ClusterAPI{}
-		defer mockClusterAPI.AssertExpectations(t)
-
-		testProject := "testProject"
-
-		//Given
-		mockClusterAPI.On("ListClusters", testProject).Return([]*container.Cluster{clusterMatching1, clusterNonMatchingName, clusterNonMatchingLabel, clusterCreatedTooRecently, clusterMatching2}, nil)
-
-		mockClusterAPI.On("RemoveCluster", testProject, clusterMatching1.Zone, clusterMatching1.Name).Return(errors.New("testError"))
-		mockClusterAPI.On("RemoveCluster", testProject, clusterMatching2.Zone, clusterMatching2.Name).Return(nil)
-		//When
-		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
-		allSucceeded, err := gdc.Run(testProject, true)
-
-		//Then
-		mockClusterAPI.AssertCalled(t, "RemoveCluster", mock.Anything, mock.Anything, mock.Anything)
-		require.NoError(t, err)
-		assert.False(t, allSucceeded)
 	})
 
 	t.Run("Run(makeChanges=true) should continue process if a previous call failed - TimeBasedClusterRemovalPredicate", func(t *testing.T) {
@@ -412,27 +236,6 @@ func TestClustersGarbageCollector(t *testing.T) {
 		mockClusterAPI.AssertCalled(t, "RemoveCluster", mock.Anything, mock.Anything, mock.Anything)
 		require.NoError(t, err)
 		assert.False(t, allSucceeded)
-	})
-
-	t.Run("Run(makeChanges=false) should not invoke RemoveCluster() (dry run) - DefaultClusterRemovalPredicate", func(t *testing.T) {
-
-		mockClusterAPI := &automock.ClusterAPI{}
-		defer mockClusterAPI.AssertExpectations(t)
-
-		testProject := "testProject"
-
-		//Given
-		mockClusterAPI.On("ListClusters", testProject).Return([]*container.Cluster{clusterMatching1, clusterNonMatchingName, clusterNonMatchingLabel, clusterCreatedTooRecently, clusterMatching2}, nil)
-
-		//When
-		gdc := NewClustersGarbageCollector(mockClusterAPI, filterFunc)
-		allSucceeded, err := gdc.Run(testProject, false)
-
-		//Then
-		mockClusterAPI.AssertCalled(t, "ListClusters", testProject)
-		mockClusterAPI.AssertNotCalled(t, "RemoveCluster", mock.Anything, mock.Anything, mock.Anything)
-		require.NoError(t, err)
-		assert.True(t, allSucceeded)
 	})
 
 	t.Run("Run(makeChanges=false) should not invoke RemoveCluster() (dry run) - TimeBasedClusterRemovalPredicate", func(t *testing.T) {

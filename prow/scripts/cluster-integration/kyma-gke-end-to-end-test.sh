@@ -241,7 +241,7 @@ shout "Manual concatenating yamls"
 
 shout "Trigger installation"
 date
-kubectl label installation/kyma-installation action=install
+kubectl label installation/kyma-installation action=install --overwrite
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 

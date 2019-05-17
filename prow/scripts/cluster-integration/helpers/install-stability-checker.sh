@@ -45,7 +45,7 @@ metadata:
   name: stability-checker-with-octopus
 rules:
 - apiGroups: ["testing.kyma-project.io"]
-  resources: ["clustertestsuites"]
+  resources: ["clustertestsuites", "testdefinitions"]
   verbs: ["*"]
 EOF
 
