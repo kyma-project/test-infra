@@ -15,6 +15,26 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/gcp-broker-provider"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
+
+old_job_template: &old_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
         securityContext:
           privileged: true
@@ -26,6 +46,7 @@ job_template: &job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
+
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
@@ -45,7 +66,7 @@ presubmits: # runs on PRs
     - name: pre-rel09-kyma-tools-gcp-broker-provider
       branches:
         - release-0.9
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
@@ -56,7 +77,7 @@ presubmits: # runs on PRs
     - name: pre-rel10-kyma-tools-gcp-broker-provider
       branches:
         - release-1.0
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
@@ -67,7 +88,7 @@ presubmits: # runs on PRs
     - name: pre-rel11-kyma-tools-gcp-broker-provider
       branches:
         - release-1.1
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
