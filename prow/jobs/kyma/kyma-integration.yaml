@@ -916,31 +916,6 @@ periodics:
             memory: 1Gi
             cpu: 400m
 
-- name: kyma-minikube-verification
-  decorate: true
-  cron: "0 */1 * * 1-5" #At minute 0 past every hour on every day-of-week from Monday through Friday
-  labels:
-    <<: *vm_job_labels_template
-  extra_refs:
-    - org: Demonsthere
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: feature/minikube-debug
-    - org: Demonsthere
-      repo: kyma
-      base_ref: feature/minikube-debug
-      path_alias: github.com/kyma-project/kyma
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/minikube-test.sh"
-      resources:
-        requests:
-          memory: 100Mi
-          cpu: 50m  
-
-
 - name: kyma-gke-service-catalog-crd-periodic
   cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
   labels:
