@@ -29,18 +29,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-rel07-kyma-tools-ark-plugins
-    branches:
-      - release-0.7
-    <<: *job_template
-    always_run: true
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.7
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-  - name: pre-rel08-kyma-tools-ark-plugins
+  - name: pre-rel09-kyma-tools-ark-plugins
     branches:
       - release-0.9
     <<: *job_template
