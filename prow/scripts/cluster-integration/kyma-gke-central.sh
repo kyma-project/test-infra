@@ -270,6 +270,10 @@ date
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP:${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \

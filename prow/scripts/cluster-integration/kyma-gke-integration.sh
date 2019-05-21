@@ -282,6 +282,10 @@ date
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP:${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
