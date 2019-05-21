@@ -72,8 +72,7 @@ function installKyma() {
         --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
         --label "component=logging"
 
-	cat "${INSTALLER_YAML}" \
-		| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
 		| kubectl apply -f-
 
 	waitUntilInstallerApiAvailable

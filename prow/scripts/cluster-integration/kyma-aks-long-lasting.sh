@@ -289,8 +289,7 @@ function installKyma() {
         --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
         --label "component=monitoring"
 
-    cat "${INSTALLER_YAML}" \
-        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
         | kubectl apply -f-
 
     waitUntilInstallerApiAvailable

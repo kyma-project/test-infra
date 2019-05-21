@@ -249,10 +249,9 @@ date
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
 
-cat "${INSTALLER_CR}" \
-| sed -e "s/__VERSION__/0.0.1/g" \
-| sed -e "s/__.*__//g" \
-| kubectl apply -f-
+sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
 
 shout "Trigger installation"
 date

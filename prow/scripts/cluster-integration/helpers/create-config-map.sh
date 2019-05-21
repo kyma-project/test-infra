@@ -49,7 +49,6 @@ function createConfigmap {
     kubectl label configmap -n ${NAMESPACE} ${NAME} ${LABELS}
 }
 
-POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
     key="$1"
