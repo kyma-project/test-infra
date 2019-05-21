@@ -40,7 +40,7 @@ sudo apt update
 sudo apt install -y docker-ce=${DOCKER_VERSION}
 
 # setup logging drived for docker
-cat << EOF > /etc/docker/daemon.json
+cat << EOF > /tmp/daemon.json
 {
    "log-driver": "gcplogs",
    "log-opts": {
