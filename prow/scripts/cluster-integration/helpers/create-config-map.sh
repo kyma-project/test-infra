@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
 NAME=""
-DATA=""
-PARSED_DATA=""
+DATA=()
+LABELS=("kyma-project.io/installation=" "installer=overrides")
 
-LABELS="kyma-project.io/installation= installer=overrides "
 NAMESPACE="kyma-installer"
 VALUE_REGEXP="^[a-z0-9.-]+=[a-z0-9.-]+$"
 
@@ -37,16 +36,9 @@ function checkIfExists {
         && exit 1
 }
 
-function parseData {
-    IFS=' ' read -r -a tokens <<< "${DATA}"
-    for token in "${tokens[@]}"; do
-        PARSED_DATA+=" --from-literal=${token}"
-    done
-}
-
 function createConfigmap {
-    kubectl create configmap -n ${NAMESPACE} ${NAME} ${PARSED_DATA}
-    kubectl label configmap -n ${NAMESPACE} ${NAME} ${LABELS}
+    kubectl create configmap -n ${NAMESPACE} ${NAME} "${DATA[@]}"
+    kubectl label configmap -n ${NAMESPACE} ${NAME} "${LABELS[@]}"
 }
 
 while [[ $# -gt 0 ]]
@@ -62,14 +54,14 @@ do
         --data)
             checkScriptInput "$2"
             checkValue "$2"
-            DATA+="$2 "
+            DATA+=("--from-literal=$2")
             shift # past argument
             shift # past value
             ;;
         --label)
             checkScriptInput "$2"
             checkValue "$2"
-            LABELS+="$2 "
+            LABELS+=("$2")
             shift # past argument
             shift # past value
             ;;
@@ -81,5 +73,4 @@ done
 
 checkName
 checkIfExists
-parseData
 createConfigmap
