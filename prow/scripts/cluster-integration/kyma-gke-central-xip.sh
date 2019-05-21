@@ -217,8 +217,9 @@ else
     | kubectl apply -f-
 fi
 
-shout "Installation triggered"
+shout "Trigger installation"
 date
+kubectl label installation/kyma-installation action=install --overwrite
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"

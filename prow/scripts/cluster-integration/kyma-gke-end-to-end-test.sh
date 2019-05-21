@@ -254,13 +254,13 @@ cat "${INSTALLER_CR}" \
 | sed -e "s/__.*__//g" \
 | kubectl apply -f-
 
-shout "Installation triggered"
+shout "Trigger installation"
 date
+kubectl label installation/kyma-installation action=install --overwrite
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
-
-shout "Success: cluster created"
+shout "Success cluster created"
 
 shout "End To End Test"
 date
