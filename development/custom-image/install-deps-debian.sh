@@ -39,6 +39,22 @@ sudo add-apt-repository \
 sudo apt update
 sudo apt install -y docker-ce=${DOCKER_VERSION}
 
+# setup logging drived for docker
+cat << EOF > /tmp/daemon.json
+{
+   "log-driver": "gcplogs",
+   "log-opts": {
+         "gcp-meta-name": "kyma-integration-test"
+      }
+}
+EOF
+sudo mv /tmp/daemon.json /etc/docker/
+
+# install fluentd 
+curl -Lo /tmp/install-logging-agent.sh https://dl.google.com/cloudagents/install-logging-agent.sh && \
+ chmod +x /tmp/install-logging-agent.sh
+ sudo bash /tmp/install-logging-agent.sh
+
 # install kubectl
 curl -Lo /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_CLI_VERSION}/bin/linux/amd64/kubectl && \
  chmod +x /tmp/kubectl && \
