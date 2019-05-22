@@ -258,6 +258,9 @@ function installKyma() {
 
     shout "Apply Kyma config"
 
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
+        | kubectl apply -f-
+
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
         --data "global.proxy.excludeIPRanges=10.0.0.1" \
         --data "gateways.istio-ingressgateway.loadBalancerIP:${GATEWAY_IP_ADDRESS}" \
@@ -288,9 +291,6 @@ function installKyma() {
         --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
         --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
         --label "component=monitoring"
-
-    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
-        | kubectl apply -f-
 
     waitUntilInstallerApiAvailable
 

@@ -218,7 +218,7 @@ shout "Apply Kyma config"
 date
 
 # shellcheck disable=SC2002
-cat "${INSTALLER_YAML}" | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" | kubectl apply -f-
+sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" | kubectl apply -f-
 
 shout "Apply backup config"
 date

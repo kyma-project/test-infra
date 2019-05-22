@@ -260,6 +260,20 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 shout "Apply Kyma config"
 date
 
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    echo "Use released artifacts"
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
+
+else
+    echo "Manual concatenating yamls"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    | sed -e "s/__VERSION__/0.0.1/g" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+fi
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
     --data "knative-serving.domainName=${DOMAIN}" \
     --label "component=knative-serving"
@@ -284,20 +298,6 @@ date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
     --data "gateways.istio-ingressgateway.loadBalancerIP:${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
-
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
-
-else
-    echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
-fi
 
 shout "Trigger installation"
 date

@@ -273,6 +273,15 @@ function installKyma() {
     kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
     "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
+    NEW_INSTALL_PROCEDURE_SINCE="0.7.0"
+    if [[ "$(printf '%s\n' "$NEW_INSTALL_PROCEDURE_SINCE" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_INSTALL_PROCEDURE_SINCE" ]]; then
+        echo "Used Kyma release version is greater than or equal to 0.7.0. Using new way of installing Kyma release"
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    else
+        echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
+    fi
+
      "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
         --data "knative-serving.domainName=${DOMAIN}" \
         --label "component=knative-serving"
@@ -297,15 +306,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
-
-    NEW_INSTALL_PROCEDURE_SINCE="0.7.0"
-    if [[ "$(printf '%s\n' "$NEW_INSTALL_PROCEDURE_SINCE" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_INSTALL_PROCEDURE_SINCE" ]]; then
-        echo "Used Kyma release version is greater than or equal to 0.7.0. Using new way of installing Kyma release"
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-    else
-        echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
-    fi
 
     shout "Trigger installation with timeout ${KYMA_INSTALL_TIMEOUT}"
     date

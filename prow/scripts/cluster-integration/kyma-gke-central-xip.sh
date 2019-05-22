@@ -190,6 +190,19 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Apply Kyma config"
 date
 
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    echo "Use released artifacts"
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
+else
+    echo "Manual concatenating yamls"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    | sed -e "s/__VERSION__/0.0.1/g" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+fi
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
     --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
     --label "component=logging"
@@ -203,19 +216,6 @@ shout "Apply override for central connector-service"
     --data "connector-service.deployment.args.central=true" \
     --data "connector-service.tests.central=true" \
     --data "connection-token-handler.tests.central=true"
-
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
-else
-    echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
-fi
 
 shout "Trigger installation"
 date

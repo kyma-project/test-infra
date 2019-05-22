@@ -189,14 +189,6 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Apply Kyma config"
 date
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-    --label "component=logging"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
@@ -209,6 +201,14 @@ else
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 fi
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
+    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
+    --label "component=logging"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
 
 shout "Trigger installation"
 date

@@ -219,6 +219,9 @@ function installKyma() {
 	shout "Apply Kyma config"
 	date
 
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
+        | kubectl apply -f-
+
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
     --data "knative-serving.domainName=${DOMAIN}" \
     --label "component=knative-serving"
@@ -248,10 +251,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
-
-
-    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
-        | kubectl apply -f-
 
 	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
          applyServiceCatalogCRDOverride

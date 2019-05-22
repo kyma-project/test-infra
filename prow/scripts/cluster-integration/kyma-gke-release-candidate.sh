@@ -235,6 +235,26 @@ export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
 shout "Apply Kyma config"
 date
 
+echo "Use released artifacts"
+wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml"
+
+# There is possibility of a race condition when applying kyma-installer-cluster.yaml
+# Retry should prevent job from failing
+n=0
+until [ $n -ge 2 ]
+do
+    kubectl apply -f kyma-installer-cluster.yaml && break
+    echo "Failed to apply kyma-installer-cluster.yaml"
+    n=$((n+1))
+    if [ 2 -gt "$n" ]
+    then
+        echo "Retrying in 5 seconds"
+        sleep 5
+    else
+        exit 1
+    fi
+done
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
 --data "knative-serving.domainName=${DOMAIN}" \
 --label "component=knative-serving"
@@ -259,26 +279,6 @@ date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
-
-echo "Use released artifacts"
-wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-config-cluster.yaml"
-
-# There is possibility of a race condition when applying kyma-installer-cluster.yaml
-# Retry should prevent job from failing
-n=0
-until [ $n -ge 2 ]
-do
-    kubectl apply -f kyma-installer-cluster.yaml && break
-    echo "Failed to apply kyma-installer-cluster.yaml"
-    n=$((n+1))
-    if [ 2 -gt "$n" ]
-    then
-        echo "Retrying in 5 seconds"
-        sleep 5
-    else
-        exit 1
-    fi
-done
 
 shout "Trigger installation"
 date
