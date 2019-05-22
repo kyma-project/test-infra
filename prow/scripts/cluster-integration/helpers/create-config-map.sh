@@ -5,7 +5,7 @@ DATA=()
 LABELS=("kyma-project.io/installation=" "installer=overrides")
 
 NAMESPACE="kyma-installer"
-LABEL_REGEXP="^[a-zA-Z0-9./-]+=[a-zA-Z0-9./-]+$"
+LABEL_REGEXP="^[a-zA-Z0-9./-]+=[a-zA-Z0-9./-]*$"
 
 
 function checkScriptInput {
@@ -16,7 +16,7 @@ function checkScriptInput {
 }
 
 function checkLabel {
-    [[ "$1" =~ ${LABEL_REGEXP} ]] || { echo "error: label or label value. Exiting..." && exit 1; }
+    [[ "$1" =~ ${LABEL_REGEXP} ]] || { echo "error: malformed label or label value. Exiting..." && exit 1; }
 }
 
 function usage {
