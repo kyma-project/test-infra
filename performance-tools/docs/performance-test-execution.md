@@ -8,7 +8,7 @@ In the **production mode**, the script is executed periodically by `runner.sh`. 
 
 A Kubernetes job defined in [`performance-tests-k6-runner-cronjob.yaml`](../performance-cluster/job/performance-tests-k6-runner-cronjob.yaml) triggers the execution of [`runner.sh`](../performance-cluster/runner.sh).
 
->**NOTE:** For more details of how to write K6 scripts in Kyma refer [here](https://github.com/kyma-project/kyma/tree/master/tests/perf).
+>**NOTE:** For more details of how to write K6 scripts in Kyma, see [this document](https://github.com/kyma-project/kyma/tree/master/tests/perf/README.md).
 
 In the **development mode**, you can create your own Kyma cluster on demand and then run K6 scripts manually. You can use this mode to develop or debug K6 scripts.
 
