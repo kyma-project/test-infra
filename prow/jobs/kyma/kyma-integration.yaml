@@ -9,6 +9,11 @@ kk_test_ref: &kk_test_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+test_infra_ref_nosed: &test_infra_ref_nosed
+  org: Tomasz-Smelcerz-SAP
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -55,6 +60,27 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
           cpu: 80m
 
 gke_job_template: &gke_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+gke_job_template_nosed: &gke_job_template_nosed
+  optional: true
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -254,6 +280,18 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
+  - name: pre-master-kyma-gke-integration-nosed
+    branches:
+    - master
+    <<: *gke_job_template_nosed
+    run_if_changed: "^(resources|installation)"
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref_nosed
+      base_ref: simplify-installation-gke-integration
+
   - name: pre-rel09-kyma-gke-integration
     branches:
       - release-0.9
@@ -394,7 +432,7 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.1
-        
+
   - name: pre-master-kyma-xip-integration
     branches:
        - master
