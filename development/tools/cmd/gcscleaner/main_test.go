@@ -16,6 +16,7 @@ func cleanFlags() {
 	argExcludedBucketNames = ""
 	argDryRun = false
 	argBucketNameRegexp = ""
+	argBucketObjectWorkerNumber = bucketObjectWorkerNumberDefault
 }
 
 func TestConfigRead(t *testing.T) {
@@ -25,26 +26,30 @@ func TestConfigRead(t *testing.T) {
 	const durationArgTag = "-duration"
 	const dryRunArgTag = "-dryRun"
 	const bucketNameRegexpArgTag = "-bucketNameRegexp"
+	const bucketObjectWorkerNumberTag = "-bucketObjectWorkerNumber"
 
 	tests := []struct {
-		args                    []string
-		expectedErr             error
-		expectedProjectName     string
-		expectedDuration        time.Duration
-		expectedExcludedNames   []string
-		expectedDryRun          bool
-		expectedBucketNameRegex regexp.Regexp
+		args                             []string
+		expectedErr                      error
+		expectedProjectName              string
+		expectedDuration                 time.Duration
+		expectedExcludedNames            []string
+		expectedDryRun                   bool
+		expectedBucketNameRegex          regexp.Regexp
+		expectedBucketObjectWorkerNumber int
 	}{
 		{
 			args: []string{
 				"cmd",
 				projectArgTag, "test",
 				bucketNameRegexpArgTag, "123",
+				bucketObjectWorkerNumberTag, "10",
 			},
-			expectedProjectName:     "test",
-			expectedDuration:        2 * time.Hour,
-			expectedDryRun:          false,
-			expectedBucketNameRegex: *regexp.MustCompile("123"),
+			expectedProjectName:              "test",
+			expectedDuration:                 2 * time.Hour,
+			expectedDryRun:                   false,
+			expectedBucketNameRegex:          *regexp.MustCompile("123"),
+			expectedBucketObjectWorkerNumber: 10,
 		},
 		{
 			args: []string{
@@ -54,10 +59,11 @@ func TestConfigRead(t *testing.T) {
 				dryRunArgTag,
 				bucketNameRegexpArgTag, "123",
 			},
-			expectedProjectName:     "test2",
-			expectedDuration:        time.Minute,
-			expectedDryRun:          true,
-			expectedBucketNameRegex: *regexp.MustCompile("123"),
+			expectedProjectName:              "test2",
+			expectedDuration:                 time.Minute,
+			expectedDryRun:                   true,
+			expectedBucketNameRegex:          *regexp.MustCompile("123"),
+			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
 		},
 		{
 			args: []string{
@@ -67,11 +73,12 @@ func TestConfigRead(t *testing.T) {
 				excludedBucketsArgTag, "test4,test5,test6",
 				bucketNameRegexpArgTag, "123",
 			},
-			expectedProjectName:     "test3",
-			expectedDuration:        time.Minute,
-			expectedExcludedNames:   []string{"test4", "test5", "test6"},
-			expectedDryRun:          false,
-			expectedBucketNameRegex: *regexp.MustCompile("123"),
+			expectedProjectName:              "test3",
+			expectedDuration:                 time.Minute,
+			expectedExcludedNames:            []string{"test4", "test5", "test6"},
+			expectedDryRun:                   false,
+			expectedBucketNameRegex:          *regexp.MustCompile("123"),
+			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
 		},
 		{
 			args: []string{
@@ -118,6 +125,7 @@ func TestConfigRead(t *testing.T) {
 			assert.Equal(test.expectedExcludedNames, options.ExcludedBucketNames)
 			assert.Equal(test.expectedDryRun, options.DryRun)
 			assert.Equal(test.expectedBucketNameRegex, options.BucketNameRegexp)
+			assert.Equal(test.expectedBucketObjectWorkerNumber, options.BucketObjectWorkersNumber)
 		})
 	}
 }

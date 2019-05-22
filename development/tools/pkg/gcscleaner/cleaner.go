@@ -45,7 +45,7 @@ func Clean(
 		if err := deleteBucket(bucketName); err != nil {
 			logrus.Error(errors.Wrap(
 				err,
-				fmt.Sprintf(`"deleting bucket %s"`, bucketName)),
+				fmt.Sprintf(`deleting bucket: %s`, bucketName)),
 			)
 			result = ErrWhileDelBuckets
 		}
@@ -60,6 +60,10 @@ func shouldDeleteBucket(bucketName string, now int64, cfg Config) bool {
 		if excludedBucketName != bucketName {
 			continue
 		}
+		logrus.Debug(fmt.Sprintf(
+			"skipping bucket '%s', bucket is excluded",
+			bucketName),
+		)
 		return false
 	}
 
