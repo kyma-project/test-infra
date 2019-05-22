@@ -3,7 +3,10 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any
 
+
+
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export OUDSDK_COMPUTE_ZONE="europe-west3-c"
 export PERFORMACE_CLUSTER_SETUP="true"
 
 if [ -f "../../prow/scripts/library.sh" ]; then
