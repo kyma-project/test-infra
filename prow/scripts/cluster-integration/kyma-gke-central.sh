@@ -141,7 +141,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gke-central-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-central-connector/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-central-connector/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}-nosed"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gke-central-rel"
@@ -262,6 +262,8 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 shout "Apply Kyma config"
 date
 
+shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
+
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
@@ -290,7 +292,8 @@ fi
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+    --data "cluster-users.users.adminGroup=" \
+    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}" #TODO: move adminGroup to charts
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
