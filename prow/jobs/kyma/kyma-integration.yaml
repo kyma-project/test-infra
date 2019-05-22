@@ -901,10 +901,6 @@ periodics:
         - "-c"
         - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
         env:
-          - name: JAVA_OPTS
-            value: -d64 -Xmx15g
-          - name: PRODUCTNAME
-            value: OOSS - KYMA
           - name : PROJECTNAME
             value: api-controller
         resources:
