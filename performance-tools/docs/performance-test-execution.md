@@ -4,7 +4,7 @@ The [`cluster.sh`](../performance-cluster/cluster.sh) script is the performance 
 * Production mode (executed periodically)
 * Development mode (executed on demand)
 
-In the **production mode**, the script is executed periodically by `runner.sh`. This script creates a Kyma cluster that needs to be tested. Once the cluster is created, it runs all the [K6 scripts](https://github.com/kyma-project/kyma/tree/master/tests/perf) and then deletes the cluster.
+In the **production mode**, `runner.sh` periodically executes the `cluster.sh` script. This script creates a Kyma cluster that needs to be tested. Once the cluster is created, it runs all the [K6 scripts](https://github.com/kyma-project/kyma/tree/master/tests/perf) and then deletes the cluster.
 
 A Kubernetes job defined in [`performance-tests-k6-runner-cronjob.yaml`](../performance-cluster/job/performance-tests-k6-runner-cronjob.yaml) triggers the execution of [`runner.sh`](../performance-cluster/runner.sh).
 
