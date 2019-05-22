@@ -16,8 +16,7 @@
 
 set -o errexit
 
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh" \
-gsutil cp "gs://kyma-prow-secrets/whitesource-userkey.encrypted" "." \
+gsutil cp "gs://kyma-prow-secrets/whitesource-userkey.encrypted" "." 
 gsutil cp "gs://kyma-prow-secrets/whitesource-apikey.encrypted" "." 
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" \
