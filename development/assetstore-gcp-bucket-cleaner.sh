@@ -10,7 +10,7 @@ BUCKET_REGEXP_NAME="^.+-([a-z0-9]+$)"
 BUCKET_OBJECT_WORKERS_NUMBER=10
 
 # [panic|fatal|error|warn|warning|info|debug|trace]
-LOG_LEVEL=info
+LOG_LEVEL=debug
 
 if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
     echo "Vendoring 'tools'"
@@ -23,4 +23,5 @@ go run "${DEVELOPMENT_DIR}"/tools/cmd/gcscleaner/main.go \
       -bucketNameRegexp  "${BUCKET_REGEXP_NAME}"\
       -excludedBuckets "${EXCLUDED_BUCKETS}"\
       -bucketObjectWorkerNumber "${BUCKET_OBJECT_WORKERS_NUMBER}"\
+      -logLevel "${LOG_LEVEL}"
       "$@"
