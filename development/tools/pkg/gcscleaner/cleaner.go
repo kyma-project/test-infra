@@ -48,6 +48,7 @@ func Clean(
 				fmt.Sprintf(`deleting bucket: %s`, bucketName)),
 			)
 			result = ErrWhileDelBuckets
+			continue
 		}
 		logrus.Info(fmt.Sprintf(`bucket: '%s' deleted`, bucketName))
 	}

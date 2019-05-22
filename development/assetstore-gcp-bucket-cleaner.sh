@@ -9,6 +9,9 @@ EXCLUDED_BUCKETS='kyma-prow-secrets,kyma-prow-logs,kyma-prow-artifacts,kyma-deve
 BUCKET_REGEXP_NAME="^.+-([a-z0-9]+$)"
 BUCKET_OBJECT_WORKERS_NUMBER=10
 
+# [panic|fatal|error|warn|warning|info|debug|trace]
+LOG_LEVEL=info
+
 if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
     echo "Vendoring 'tools'"
     pushd "${DEVELOPMENT_DIR}/tools"

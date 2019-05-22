@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"os"
 	"regexp"
 	"testing"
@@ -17,6 +18,7 @@ func cleanFlags() {
 	argDryRun = false
 	argBucketNameRegexp = ""
 	argBucketObjectWorkerNumber = bucketObjectWorkerNumberDefault
+	argLogLevel = "info"
 }
 
 func TestConfigRead(t *testing.T) {
@@ -27,6 +29,7 @@ func TestConfigRead(t *testing.T) {
 	const dryRunArgTag = "-dryRun"
 	const bucketNameRegexpArgTag = "-bucketNameRegexp"
 	const bucketObjectWorkerNumberTag = "-bucketObjectWorkerNumber"
+	const logLevelTag = "-logLevel"
 
 	tests := []struct {
 		args                             []string
@@ -37,6 +40,7 @@ func TestConfigRead(t *testing.T) {
 		expectedDryRun                   bool
 		expectedBucketNameRegex          regexp.Regexp
 		expectedBucketObjectWorkerNumber int
+		expectedLogLevel                 logrus.Level
 	}{
 		{
 			args: []string{
@@ -44,12 +48,14 @@ func TestConfigRead(t *testing.T) {
 				projectArgTag, "test",
 				bucketNameRegexpArgTag, "123",
 				bucketObjectWorkerNumberTag, "10",
+				logLevelTag, "debug",
 			},
 			expectedProjectName:              "test",
 			expectedDuration:                 2 * time.Hour,
 			expectedDryRun:                   false,
 			expectedBucketNameRegex:          *regexp.MustCompile("123"),
 			expectedBucketObjectWorkerNumber: 10,
+			expectedLogLevel:                 logrus.DebugLevel,
 		},
 		{
 			args: []string{
@@ -64,6 +70,7 @@ func TestConfigRead(t *testing.T) {
 			expectedDryRun:                   true,
 			expectedBucketNameRegex:          *regexp.MustCompile("123"),
 			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
+			expectedLogLevel:                 logrus.InfoLevel,
 		},
 		{
 			args: []string{
@@ -79,6 +86,7 @@ func TestConfigRead(t *testing.T) {
 			expectedDryRun:                   false,
 			expectedBucketNameRegex:          *regexp.MustCompile("123"),
 			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
+			expectedLogLevel:                 logrus.InfoLevel,
 		},
 		{
 			args: []string{
@@ -111,6 +119,15 @@ func TestConfigRead(t *testing.T) {
 			},
 			expectedErr: ErrInvalidBucketNameRegexp,
 		},
+		{
+			args: []string{
+				"cmd",
+				projectArgTag, "test5",
+				bucketNameRegexpArgTag, "123",
+				logLevelTag, "1213",
+			},
+			expectedErr: ErrInvalidLogLevel,
+		},
 	}
 	for i, test := range tests {
 		testName := fmt.Sprintf(`test %d: args:%s`, i, test.args[1:])
@@ -126,6 +143,7 @@ func TestConfigRead(t *testing.T) {
 			assert.Equal(test.expectedDryRun, options.DryRun)
 			assert.Equal(test.expectedBucketNameRegex, options.BucketNameRegexp)
 			assert.Equal(test.expectedBucketObjectWorkerNumber, options.BucketObjectWorkersNumber)
+			assert.Equal(test.expectedLogLevel, options.LogLevel)
 		})
 	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"math/rand"
 	"regexp"
 	"strings"
 	"sync"
@@ -24,11 +25,16 @@ type options struct {
 	DryRun                    bool
 	BucketNameRegexp          regexp.Regexp
 	BucketObjectWorkersNumber int
+	LogLevel                  logrus.Level
+}
+
+type bucketError struct {
+	sync.Mutex
+	err error
 }
 
 func main() {
 
-	logrus.SetLevel(logrus.DebugLevel)
 	ctx := context.Background()
 
 	options, err := readOptions()
@@ -36,86 +42,91 @@ func main() {
 		logrus.Fatal(errors.Wrap(err, "reading arguments"))
 	}
 
+	logrus.SetLevel(options.LogLevel)
 	client, err := storage.NewClient(ctx)
 	if err != nil {
 		logrus.Fatal(err)
 	}
 
-	var deleteBucket gcscleaner.DeleteBucketFunc
-	if options.DryRun {
-		deleteBucket = dryRunDeleteBucket
-	} else {
-		deleteBucket = func(bucketName string) error {
-			ctx, cancel := context.WithCancel(context.Background())
-			bucketNamesChan := make(chan string)
-			errorChan := make(chan error)
-			go func() {
-				defer close(bucketNamesChan)
-				objects := client.Bucket(bucketName).Objects(ctx, nil)
-				for {
-					select {
-					case <-ctx.Done():
-						return
-					default:
-						objectAttrs, err := objects.Next()
-						if err == iterator.Done {
-							return
-						}
-						if err != nil {
-							logrus.Error(err)
-							errorChan <- err
-							cancel()
-						}
-						if objectAttrs == nil {
-							logrus.Error(ErrInvalidBucketObjectAttributes)
-							errorChan <- err
-							cancel()
-						}
-						bucketNamesChan <- objectAttrs.Name
-					}
-				}
-			}()
+	deleteBucket := func(bucketName string) error {
+		bucketNamesChan := make(chan string)
+		var bucketError bucketError
+		rand.NewSource(time.Now().UnixNano())
+		ctx, cancel := context.WithCancel(context.Background())
 
-			var waitGroup sync.WaitGroup
-			waitGroup.Add(options.BucketObjectWorkersNumber)
-			go func() {
-				defer close(errorChan)
-				for i := 0; i < options.BucketObjectWorkersNumber; i++ {
-					go func() {
-						defer waitGroup.Done()
-						for {
-							select {
-							case <-ctx.Done():
-								return
-							default:
-							}
-							select {
-							case objectName, ok := <-bucketNamesChan:
-								if !ok {
-									return
-								}
-								logrus.Info("deleting ", bucketName, "::", objectName)
-								if err := client.Bucket(bucketName).Object(objectName).Delete(ctx); err != nil {
-									logrus.Error(err)
-									errorChan <- err
-									cancel()
-								}
-							default:
-							}
-						}
-					}()
+		go func() {
+			defer close(bucketNamesChan)
+			objects := client.Bucket(bucketName).Objects(ctx, nil)
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				default:
+					objectAttrs, err := objects.Next()
+					if err == iterator.Done {
+						return
+					}
+					if err != nil {
+						logrus.Error(errors.Wrap(err, "iterating bucket objects"))
+						bucketError.Lock()
+						bucketError.err = err
+						bucketError.Unlock()
+						cancel()
+						return
+					}
+					if objectAttrs == nil {
+						logrus.Error(errors.Wrap(ErrInvalidBucketObjectAttributes, "iterating bucket objects"))
+						bucketError.Lock()
+						bucketError.err = ErrBucketDeletionCanceled
+						bucketError.Unlock()
+						cancel()
+						return
+					}
+					bucketNamesChan <- objectAttrs.Name
 				}
-			}()
-			waitGroup.Wait()
-			var allErrors []string
-			for err := range errorChan {
-				allErrors = append(allErrors, err.Error())
 			}
-			if len(allErrors) > 0 {
-				return errors.Wrap(ErrDeletingBucketObjects, strings.Join(allErrors, "\n"))
+		}()
+
+		var waitGroup sync.WaitGroup
+		waitGroup.Add(options.BucketObjectWorkersNumber)
+		go func() {
+			for i := 0; i < options.BucketObjectWorkersNumber; i++ {
+				go func() {
+					defer waitGroup.Done()
+					for {
+						select {
+						case <-ctx.Done():
+							return
+						case objectName, ok := <-bucketNamesChan:
+							if !ok {
+								return
+							}
+							logrus.Debug("deleting: ", objectName)
+							if options.DryRun {
+								continue
+							}
+							if err := client.Bucket(bucketName).Object(objectName).Delete(ctx); err != nil {
+								logrus.Error(errors.Wrap(err, "deleting bucket object"))
+								bucketError.Lock()
+								bucketError.err = ErrBucketDeletionCanceled
+								bucketError.Unlock()
+								return
+							}
+						default:
+						}
+					}
+				}()
 			}
-			return client.Bucket(bucketName).Delete(ctx)
+		}()
+		waitGroup.Wait()
+		err := bucketError.err
+		if err != nil {
+			return err
 		}
+		if options.DryRun {
+			return nil
+		}
+		return client.Bucket(bucketName).Delete(ctx)
 	}
 
 	bucketIterator := client.Buckets(ctx, options.ProjectName)
@@ -147,11 +158,10 @@ var (
 	argBucketNameRegexp             string
 	argDryRun                       bool
 	argBucketObjectWorkerNumber     int
+	argLogLevel                     string
 	bucketLifespanDurationDefault   = "2h"
 	bucketObjectWorkerNumberDefault = 1
-	dryRunDeleteBucket              = func(_ string) error {
-		return nil
-	}
+	logLevelDefault                 = "info"
 	// ErrInvalidProjectName returned if project name argument is invalid
 	ErrInvalidProjectName = errors.New("invalid project name argument")
 	// ErrInvalidDuration returned if duration argument is invalid
@@ -160,10 +170,12 @@ var (
 	ErrEmptyBucketNameRegexp = errors.New("empty bucketNameRegexp argument")
 	// ErrInvalidBucketNameRegexp returned if argBucketNameRegexp is invalid
 	ErrInvalidBucketNameRegexp = errors.New("invalid bucketNameRegexp argument")
-	// ErrDeletingBucketObjects returned when bucket object deletion was unsuccessful
-	ErrDeletingBucketObjects = errors.New("error while deleting bucket object")
 	// ErrInvalidBucketObjectAttributes returned when bucket object has invalid attributes
 	ErrInvalidBucketObjectAttributes = errors.New("bucket object has invalid attributes")
+	// ErrInvalidLogLevel returned when argLogLevel is invalid
+	ErrInvalidLogLevel = errors.New("bucket object has invalid attributes")
+	// ErrBucketDeletionCanceled returned when deletion of bucket was canceled
+	ErrBucketDeletionCanceled = errors.New("bucket deletion canceled")
 )
 
 func init() {
@@ -203,6 +215,12 @@ func init() {
 		"bucketObjectWorkerNumber",
 		bucketObjectWorkerNumberDefault,
 		"the number of workers that will be used to delete bucket object")
+
+	flag.StringVar(
+		&argLogLevel,
+		"logLevel",
+		logLevelDefault,
+		"logging level [panic|fatal|error|warn|warning|info|debug|trace]")
 }
 
 func readOptions() (options, error) {
@@ -226,6 +244,11 @@ func readOptions() (options, error) {
 		return options{}, ErrInvalidDuration
 	}
 
+	logLevel, err := logrus.ParseLevel(argLogLevel)
+	if err != nil {
+		return options{}, ErrInvalidLogLevel
+	}
+
 	options := options{}
 	options.ProjectName = argProjectName
 	options.BucketLifespanDuration = duration
@@ -237,5 +260,6 @@ func readOptions() (options, error) {
 	options.DryRun = argDryRun
 	options.BucketNameRegexp = *bucketNameRegexp
 	options.BucketObjectWorkersNumber = argBucketObjectWorkerNumber
+	options.LogLevel = logLevel
 	return options, nil
 }
