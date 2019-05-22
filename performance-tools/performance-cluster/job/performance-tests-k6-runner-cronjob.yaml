@@ -1,0 +1,82 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: k6-runner
+  namespace: perf-test
+spec:
+  schedule: "0 22 * * sat"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: k6-runner
+            image: eu.gcr.io/kyma-project/pr/perf-test:PR-1028
+            env:
+            - name:  INFLUXDB_FQDN
+              value: "influxdb-1-influxdb-svc.influxdb:8086"
+            - name: RUNMODE
+              value: all
+            - name: INPUT_CLUSTER_NAME
+              value: perf-kyma
+            - name: CLOUDSDK_CORE_PROJECT
+              value: sap-se-kyma-perf
+            - name: CLOUDSDK_COMPUTE_REGION
+              value: europe-west3
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: europe-west3-a
+            - name: LOADGEN_CLUSTER_NAME
+              value: load-generator-cluster
+            - name: LOADGEN_COMPUTE_ZONE
+              value: europe-west1-b
+            - name: DOCKER_REGISTRY
+              value: eu.gcr.io
+            - name: DOCKER_PUSH_REPOSITORY
+              value: eu.gcr.io/sap-se-kyma-perf
+            - name: DOCKER_PUSH_DIRECTORY
+              value: /perf
+            - name: DOCKER_IN_DOCKER_ENABLED
+              value: "true"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/credentials/perf-test-bot/service-account.json
+            - name: SLACK_TOKEN
+              value: /var/slack-details/slack-token
+            - name: SLACK_CHANNEL
+              value: /var/slack-details/slack-channel
+            - name: SLACK_URL
+              value: /var/slack-details/slack-url
+            - name: GRAFANA_URL
+              value: /var/slack-details/grafana-url
+            volumeMounts:
+            - mountPath: /var/k6-details
+              name: k6-details
+              readOnly: true
+            - mountPath: /var/slack-details
+              name: slack-details
+              readOnly: true
+            - mountPath: /etc/credentials/perf-test-bot
+              name: perf-test-bot
+              readOnly: true
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              name: k6runner-sa-token-586nv
+              readOnly: true
+            securityContext:
+              privileged: true
+          restartPolicy: Never
+          volumes:
+          - name: k6-details
+            secret:
+              defaultMode: 420
+              secretName: k6-details
+          - name: perf-test-bot
+            secret:
+              defaultMode: 420
+              secretName: perf-test-bot
+          - name: k6runner-sa-token-586nv
+            secret:
+              defaultMode: 420
+              secretName: k6runner-sa-token-586nv
+          - name: slack-details
+            secret:
+              defaultMode: 420
+              secretName: slack-details
