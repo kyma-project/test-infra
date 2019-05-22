@@ -147,9 +147,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// then
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+			assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
+			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -273,10 +275,11 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -300,9 +303,11 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
