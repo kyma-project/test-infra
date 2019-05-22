@@ -96,6 +96,7 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
+      # for the next release job use job_template, not old_job_template
 
 postsubmits:
   kyma-project/kyma:
