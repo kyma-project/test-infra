@@ -60,6 +60,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 		givenJobName string
 		expPresets   []tester.Preset
 		expJobImage  string
+		expRunIfChangedRegex string
 	}{
 		"Should contains the kyma-integration job": {
 			givenJobName: "pre-master-kyma-integration",
@@ -69,6 +70,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 
 			expJobImage: tester.ImageBootstrap001,
+			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 		},
 		"Should contains the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
@@ -79,6 +81,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 			expJobImage: tester.ImageBootstrapHelm20181121,
+			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 		},
 		"Should contains the gke-central job": {
 			givenJobName: "pre-master-kyma-gke-central-connector",
@@ -89,6 +92,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 			expJobImage: tester.ImageBootstrapHelm20181121,
+			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 		},
 	}
 
@@ -105,7 +109,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// then
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
@@ -261,11 +265,12 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
 	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "resources/test/values.yaml")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
