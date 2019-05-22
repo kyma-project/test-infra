@@ -47,6 +47,9 @@ function installKyma() {
 	shout "Apply Kyma config"
 	date
 
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
+		| kubectl apply -f-
+
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
         --data "gateways.istio-ingressgateway.loadBalancerIP:${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
@@ -71,9 +74,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
         --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
         --label "component=logging"
-
-    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
-		| kubectl apply -f-
 
 	waitUntilInstallerApiAvailable
 
