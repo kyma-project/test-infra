@@ -5,7 +5,8 @@ DATA=()
 LABELS=("kyma-project.io/installation=" "installer=overrides")
 
 NAMESPACE="kyma-installer"
-VALUE_REGEXP="^[a-zA-Z0-9.-]+=[a-zA-Z0-9.-]+$"
+LABEL_REGEXP="^[a-zA-Z0-9./-]+=[a-zA-Z0-9./-]+$"
+
 
 function checkScriptInput {
     if [[ -z "${1}" ]] || [[ "${1:0:2}" == "--" ]]; then
@@ -14,8 +15,8 @@ function checkScriptInput {
     fi
 }
 
-function checkValue {
-    [[ "$1" =~ ${VALUE_REGEXP} ]] || { echo "error: incorrect data/label value. Exiting..." && exit 1; }
+function checkLabel {
+    [[ "$1" =~ ${LABEL_REGEXP} ]] || { echo "error: label or label value. Exiting..." && exit 1; }
 }
 
 function usage {
@@ -53,14 +54,13 @@ do
             ;;
         --data)
             checkScriptInput "$2"
-            checkValue "$2"
             DATA+=("--from-literal=$2")
             shift # past argument
             shift # past value
             ;;
         --label)
             checkScriptInput "$2"
-            checkValue "$2"
+            checkLabel "$2"
             LABELS+=("$2")
             shift # past argument
             shift # past value
