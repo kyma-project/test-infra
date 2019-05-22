@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"os"
 	"regexp"
 	"testing"
 	"time"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/stretchr/testify/assert"
 )
