@@ -5,7 +5,7 @@ DATA=()
 LABELS=("kyma-project.io/installation=" "installer=overrides")
 
 NAMESPACE="kyma-installer"
-VALUE_REGEXP="^[a-z0-9.-]+=[a-z0-9.-]+$"
+VALUE_REGEXP="^[a-zA-Z0-9.-]+=[a-zA-Z0-9.-]+$"
 
 function checkScriptInput {
     if [[ -z "${1}" ]] || [[ "${1:0:2}" == "--" ]]; then
