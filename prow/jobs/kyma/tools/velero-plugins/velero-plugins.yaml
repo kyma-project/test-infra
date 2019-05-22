@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/ark-plugins"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/velero-plugins"
         resources:
           requests:
             memory: 1.5Gi
@@ -29,36 +29,28 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-rel09-kyma-tools-ark-plugins
+  - name: pre-master-kyma-tools-velero-plugins
     branches:
-      - release-0.9
+      - master
     <<: *job_template
-    always_run: true
+    run_if_changed: "^tools/velero-plugins/"
     extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.9
+    - <<: *test_infra_ref
+      base_ref: master
     labels:
       <<: *job_labels_template
-      preset-build-release: "true"
-  - name: pre-rel10-kyma-tools-ark-plugins
+      preset-build-pr: "true"
+
+postsubmits:
+  kyma-project/kyma:
+  - name: post-master-kyma-tools-velero-plugins
     branches:
-      - release-1.0
+      - master
     <<: *job_template
-    always_run: true
+    run_if_changed: "^tools/velero-plugins/"
     extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.0
+    - <<: *test_infra_ref
+      base_ref: master
     labels:
       <<: *job_labels_template
-      preset-build-release: "true"
-  - name: pre-rel11-kyma-tools-ark-plugins
-    branches:
-      - release-1.1
-    <<: *job_template
-    always_run: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.1
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
+      preset-build-master: "true"

@@ -1,11 +1,13 @@
 package kyma_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
 )
 
 func TestKymaIntegrationVMJobsReleases(t *testing.T) {
@@ -58,6 +60,8 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
+		branch       string
+		org          string
 		expPresets   []tester.Preset
 		expJobImage  string
 	}{
@@ -73,6 +77,17 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 		"Should contains the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
 
+			expPresets: []tester.Preset{
+				tester.PresetGCProjectEnv, tester.PresetBuildPr,
+				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+			},
+			expJobImage: tester.ImageBootstrapHelm20181121,
+		},
+		"Should contains the gke-integration-nosed job": {
+			givenJobName: "pre-master-kyma-gke-integration-nosed",
+			branch:       "simplify-installation-gke-integration",
+			org:          "Tomasz-Smelcerz-SAP",
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildPr,
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
@@ -102,6 +117,33 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
+			var branch = func() string {
+				if tc.branch != "" {
+					return tc.branch
+				}
+				return "master"
+			}
+
+			var org = func() string {
+				if tc.org != "" {
+					return tc.org
+				}
+				return "kyma-project"
+			}
+
+			var assertRepo = func(t *testing.T, in config.UtilityConfig, expectedBaseRef, expectedOrg string) {
+				for _, curr := range in.ExtraRefs {
+					if curr.PathAlias == "github.com/kyma-project/test-infra" &&
+						//curr.Org == "kyma-project" &&
+						curr.Org == expectedOrg &&
+						curr.Repo == "test-infra" &&
+						curr.BaseRef == expectedBaseRef {
+						return
+					}
+				}
+				assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s]", expectedBaseRef))
+			}
+
 			// then
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
@@ -111,7 +153,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			assertRepo(t, actualJob.JobBase.UtilityConfig, branch(), org())
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
