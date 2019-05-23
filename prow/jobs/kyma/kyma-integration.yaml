@@ -733,7 +733,7 @@ periodics:
       - "bash"
       env:
       - name: INPUT_CLUSTER_NAME
-        value: "nightly"
+        value: "nightnosely"
       - name: TEST_RESULT_WINDOW_TIME
         value: "6h"
       - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
