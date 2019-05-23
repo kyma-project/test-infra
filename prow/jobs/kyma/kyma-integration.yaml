@@ -700,7 +700,7 @@ periodics:
           cpu: 80m
 
 - name: kyma-gke-nightly-nosed
-  cron: "50 12 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+  cron: "00 13 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
