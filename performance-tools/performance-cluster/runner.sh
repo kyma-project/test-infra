@@ -4,6 +4,8 @@ set -o pipefail
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+export CLOUDSDK_COMPUTE_ZONE="europe-west3-c"
+
 if [ -f "../../prow/scripts/library.sh" ]; then
     source "../../prow/scripts/library.sh"
 

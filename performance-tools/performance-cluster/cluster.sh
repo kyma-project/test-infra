@@ -4,7 +4,9 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 export PERFORMACE_CLUSTER_SETUP="true"
+export CLOUDSDK_COMPUTE_ZONE="europe-west3-c"
 
 if [ -f "../../prow/scripts/library.sh" ]; then
     source "../../prow/scripts/library.sh"
