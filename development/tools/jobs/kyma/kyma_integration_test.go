@@ -550,6 +550,38 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
 
+	// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
+	var assertThatHasExtraRefs = func(t *testing.T, in config.UtilityConfig, org, repository, baseref string) {
+		for _, curr := range in.ExtraRefs {
+			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
+				curr.Org == org &&
+				curr.Repo == repository &&
+				curr.BaseRef == baseref {
+				return
+			}
+		}
+		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+	}
+
+	expName = "kyma-load-tests-weekly-nosed"
+	nosedPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, nosedPeriodic)
+	assert.Equal(t, expName, nosedPeriodic.Name)
+	assert.True(t, nosedPeriodic.Decorate)
+	assert.Equal(t, "0 14 * * *", nosedPeriodic.Cron)
+	tester.AssertThatHasPresets(t, nosedPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-sap-slack-bot-token")
+	assertThatHasExtraRefs(t, nosedPeriodic.JobBase.UtilityConfig, "jakkab", "test-infra", "simplify-installation-install-kyma")
+	assertThatHasExtraRefs(t, nosedPeriodic.JobBase.UtilityConfig, "kyma-project", "kyma", "master")
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", nosedPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, nosedPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"}, nosedPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, nosedPeriodic.JobBase)
+	assert.Len(t, nosedPeriodic.Spec.Containers[0].Env, 4)
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "load-test")
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "LOAD_TEST_SLACK_CLIENT_CHANNEL_ID", "#c4-xf-load-test")
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
+
 	expName = "kyma-components-use-recent-versions"
 	verTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	assert.Equal(t, expName, verTestPeriodic.Name)
