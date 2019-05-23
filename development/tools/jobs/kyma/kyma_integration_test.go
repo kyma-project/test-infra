@@ -1,11 +1,13 @@
 package kyma_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
 )
 
 func TestKymaIntegrationVMJobsReleases(t *testing.T) {
@@ -242,6 +244,46 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
+		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
+		"preset-bot-github-token")
+}
+
+func TestKymaGKEUpgradeNosedJobsPresubmit(t *testing.T) {
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-upgrade-nosed", "master")
+	require.NotNil(t, actualJob)
+
+	var assertThatHasExtraRefTestInfra = func(t *testing.T, in config.UtilityConfig, org, expectedBaseRef string) {
+		for _, curr := range in.ExtraRefs {
+			if curr.PathAlias == "github.com/kyma-project/test-infra" &&
+				curr.Org == org &&
+				curr.Repo == "test-infra" &&
+				curr.BaseRef == expectedBaseRef {
+				return
+			}
+		}
+		assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s]", expectedBaseRef))
+	}
+
+	// then
+	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
+	assert.True(t, actualJob.Decorate)
+	assert.False(t, actualJob.SkipReport)
+	assert.Equal(t, 10, actualJob.MaxConcurrency)
+	assertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "jakkab", "simplify-installation-kyma-gke-upgrade")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
