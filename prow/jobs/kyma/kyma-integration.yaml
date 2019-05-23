@@ -9,11 +9,6 @@ kk_test_ref: &kk_test_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-test_infra_ref_nosed: &test_infra_ref_nosed
-  org: jakkab
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -80,27 +75,6 @@ gke_job_template: &gke_job_template
           cpu: 80m
 
 gke_upgrade_job_template: &gke_upgrade_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
-gke_upgrade_job_template_nosed: &gke_upgrade_job_template_nosed
-  optional: true
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -337,20 +311,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
-  - name: pre-master-kyma-gke-upgrade-nosed
-    branches:
-    - master
-    <<: *gke_upgrade_job_template
-    # following regexp won't start build if only Markdown files were changed
-    run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-    labels:
-      preset-bot-github-token: "true"
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *test_infra_ref_nosed
-      base_ref: simplify-installation-kyma-gke-upgrade
 
     # Already defined to ensure that pipeline is defined for the new upgrade job
   - name: pre-rel09-kyma-gke-upgrade
