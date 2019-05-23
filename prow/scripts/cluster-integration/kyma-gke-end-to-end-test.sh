@@ -214,6 +214,8 @@ CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
+shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
+
 shout "Apply Kyma config"
 date
 
