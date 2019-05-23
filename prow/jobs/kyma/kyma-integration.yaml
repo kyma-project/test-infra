@@ -341,7 +341,7 @@ presubmits: # runs on PRs
   - name: pre-master-kyma-gke-upgrade-nosed
     branches:
     - master
-    <<: *gke_upgrade_job_template
+    <<: *gke_upgrade_job_template_nosed
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
