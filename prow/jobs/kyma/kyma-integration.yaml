@@ -888,7 +888,7 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
-<<<<<<< HEAD
+
 - name: kyma-whitesource-wssagent-scan
   decorate: true
   cron: "0 0 15 * *" # At 00:00 on day-of-month 15.
@@ -913,8 +913,6 @@ periodics:
             memory: 20Gi
             cpu: 400m
         
-=======
-
 - name: kyma-load-tests-weekly-nosed
   cron: "0 14 * * *" # "At 14:00 every day."
   labels:
@@ -953,7 +951,6 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
->>>>>>> upstream/master
 - name: kyma-components-use-recent-versions
   decorate: true
   cron: "0 4 * * 1" # At 04:00 on every Monday
