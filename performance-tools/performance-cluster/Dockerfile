@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get clean
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=219.0.1
+ENV CLOUD_SDK_VERSION=247.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
   CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -57,8 +57,6 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
   tee --append /etc/default/docker
 RUN mkdir /docker-graph
 
-
-RUN curl -Lo /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.10.0/bin/linux/amd64/kubectl && chmod +x /usr/bin/kubectl
 
 RUN apt-get install dirmngr
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61

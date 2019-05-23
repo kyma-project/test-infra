@@ -1,11 +1,13 @@
 package kyma_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
 )
 
 func TestKymaIntegrationVMJobsReleases(t *testing.T) {
@@ -105,9 +107,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// then
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+			assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
+			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -231,10 +235,11 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -258,9 +263,11 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^(resources|installation)", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -507,7 +514,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
 	// TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#test-nonexistent")
+	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#test-alert-channel")
 	tester.AssertThatContainerHasEnvFromSecret(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
 	expName = "kyma-gke-end-to-end-test-backup-restore"
@@ -544,6 +551,38 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LOAD_TEST_SLACK_CLIENT_CHANNEL_ID", "#c4-xf-load-test")
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
 	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
+
+	// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
+	var assertThatHasExtraRefs = func(t *testing.T, in config.UtilityConfig, org, repository, baseref string) {
+		for _, curr := range in.ExtraRefs {
+			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
+				curr.Org == org &&
+				curr.Repo == repository &&
+				curr.BaseRef == baseref {
+				return
+			}
+		}
+		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+	}
+
+	expName = "kyma-load-tests-weekly-nosed"
+	nosedPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, nosedPeriodic)
+	assert.Equal(t, expName, nosedPeriodic.Name)
+	assert.True(t, nosedPeriodic.Decorate)
+	assert.Equal(t, "0 14 * * *", nosedPeriodic.Cron)
+	tester.AssertThatHasPresets(t, nosedPeriodic.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration, "preset-sap-slack-bot-token")
+	assertThatHasExtraRefs(t, nosedPeriodic.JobBase.UtilityConfig, "jakkab", "test-infra", "simplify-installation-install-kyma")
+	assertThatHasExtraRefs(t, nosedPeriodic.JobBase.UtilityConfig, "kyma-project", "kyma", "master")
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", nosedPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, nosedPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"}, nosedPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, nosedPeriodic.JobBase)
+	assert.Len(t, nosedPeriodic.Spec.Containers[0].Env, 4)
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "load-test-nosed")
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "LOAD_TEST_SLACK_CLIENT_CHANNEL_ID", "#c4-xf-load-test")
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
+	tester.AssertThatContainerHasEnv(t, nosedPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
 
 	expName = "kyma-components-use-recent-versions"
 	verTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)

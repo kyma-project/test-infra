@@ -189,7 +189,8 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *vm_job_template
-    run_if_changed: "^(resources|installation)"
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       <<: *vm_job_labels_template
     extra_refs:
@@ -246,7 +247,8 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_job_template
-    run_if_changed: "^(resources|installation)"
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
@@ -300,7 +302,8 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_upgrade_job_template
-    run_if_changed: "^(resources|installation|tests/end-to-end/upgrade/chart/upgrade/)"
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       preset-bot-github-token: "true"
       preset-build-pr: "true"
@@ -351,7 +354,8 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_central_job_template
-    run_if_changed: "^(resources|installation)"
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
@@ -394,7 +398,7 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.1
-        
+
   - name: pre-master-kyma-xip-integration
     branches:
        - master
@@ -798,7 +802,7 @@ periodics:
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             # TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
-            value: "#test-nonexistent"
+            value: "#test-alert-channel"
         command:
           - "bash"
         args:
@@ -884,6 +888,7 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+<<<<<<< HEAD
 - name: kyma-whitesource-wssagent-scan
   decorate: true
   cron: "0 0 15 * *" # At 00:00 on day-of-month 15.
@@ -908,6 +913,47 @@ periodics:
             memory: 20Gi
             cpu: 400m
         
+=======
+
+- name: kyma-load-tests-weekly-nosed
+  cron: "0 14 * * *" # "At 14:00 every day."
+  labels:
+    preset-build-master: "true"
+    preset-sap-slack-bot-token: "true"
+    <<: *gke_job_labels_template
+  decorate: true
+  extra_refs:
+    - org: jakkab
+      repo: test-infra
+      base_ref: simplify-installation-install-kyma
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: INPUT_CLUSTER_NAME
+            value: "load-test-nosed"
+          - name: LOAD_TEST_SLACK_CLIENT_CHANNEL_ID
+            value: "#c4-xf-load-test"
+          - name: LT_TIMEOUT # Load test timeout in minutes
+            value: "30"
+          - name: LT_REQS_PER_ROUTINE # Number of requests to function per go routine
+            value: "1600"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+>>>>>>> upstream/master
 - name: kyma-components-use-recent-versions
   decorate: true
   cron: "0 4 * * 1" # At 04:00 on every Monday

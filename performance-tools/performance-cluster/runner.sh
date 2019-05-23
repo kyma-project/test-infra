@@ -54,7 +54,7 @@ export REVISION="$(cd /${SRC_DIR}/kyma-project/kyma && git rev-parse --short HEA
 gcloud container clusters get-credentials "${INPUT_CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_ZONE}" --project="${CLOUDSDK_CORE_PROJECT}"
 
 # Set kubernetes context
-kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME} --namespace=default"
+kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
 
 # Get Virtual Service Host Name
 export VIRTUAL_SERVICE_NAME="$(kubectl get virtualservice core-console -n kyma-system -o jsonpath='{.spec.hosts[0]}')"

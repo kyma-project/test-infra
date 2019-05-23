@@ -5,6 +5,25 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+      securityContext:
+        privileged: true
+      command:
+        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      args:
+        - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
+
+old_job_template: &old_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/test-infra
+  max_concurrency: 10
+  spec:
+    containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
         securityContext:
           privileged: true
@@ -35,7 +54,7 @@ presubmits: # runs on PRs
     - name: pre-rel09-kyma-tools-watch-pods
       branches:
       - release-0.9
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       labels:
         <<: *job_labels_template
@@ -43,7 +62,7 @@ presubmits: # runs on PRs
     - name: pre-rel10-kyma-tools-watch-pods
       branches:
         - release-1.0
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       labels:
         <<: *job_labels_template
@@ -51,11 +70,12 @@ presubmits: # runs on PRs
     - name: pre-rel11-kyma-tools-watch-pods
       branches:
         - release-1.1
-      <<: *job_template
+      <<: *old_job_template
       always_run: true
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
+      # for the next release job use job_template, not old_job_template
 
 postsubmits:
   kyma-project/test-infra:

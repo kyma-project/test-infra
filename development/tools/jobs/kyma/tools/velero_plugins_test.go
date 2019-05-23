@@ -1,4 +1,4 @@
-package kyma_test
+package tools_test
 
 import (
 	"testing"
@@ -8,51 +8,51 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestEtcdTlsSetupJobsPresubmit(t *testing.T) {
+func TestVeleroPluginsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/velero-plugins/velero-plugins.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-etcd-tls-setup-job", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tools-velero-plugins", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/etcd-tls-setup-job/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tools/velero-plugins/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/etcd-tls-setup-job"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/velero-plugins"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestEtcdTlsSetupPostsubmit(t *testing.T) {
+func TestVeleroPluginsPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/velero-plugins/velero-plugins.yaml")
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-components-etcd-tls-setup-job", "master")
+	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-tools-velero-plugins", "master")
 	require.NotNil(t, actualPost)
-
 	assert.Equal(t, []string{"master"}, actualPost.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^components/etcd-tls-setup-job/", actualPost.RunIfChanged)
+	assert.Equal(t, "^tools/velero-plugins/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/etcd-tls-setup-job"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/velero-plugins"}, actualPost.Spec.Containers[0].Args)
 }
 
-func TestEtcdTlsSetupReleases(t *testing.T) {
+func TestVeleroPluginsReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	unsupportedReleases := []tester.SupportedRelease{tester.Release09, tester.Release10, tester.Release11}
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/velero-plugins/velero-plugins.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tools-etcd-tls-setup", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tools-velero-plugins", currentRelease), currentRelease)
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -60,7 +60,7 @@ func TestEtcdTlsSetupReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/etcd-tls-setup-job")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/tools/velero-plugins")
 		})
 	}
 }
