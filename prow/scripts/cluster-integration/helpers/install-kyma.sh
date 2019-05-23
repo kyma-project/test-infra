@@ -48,67 +48,70 @@ function installKyma() {
     INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
     PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
+    if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
+        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
+    else
+        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
+    fi
+
     shout "Build Kyma-Installer Docker image"
     date
 
+    createImage
+
+    shout "Apply Kyma config"
+    date
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
+    | kubectl apply -f-
+
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-
-        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
-
-        createImage
 
         # shellcheck disable=SC1090
         source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
-        shout "Apply Kyma config"
-        date
-        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
-			| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-			| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-			| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-			| sed -e "s#__TLS_CERT__#${TLS_CERT}#g" \
-			| sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
-			| sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-			| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-			| sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-			| sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-			| sed -e "s/__VERSION__/0.0.1/g" \
-			| sed -e "s/__.*__//g" \
-			| kubectl apply -f-
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+          --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+          --label "component=istio"
+
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
+          --data "knative-serving.domainName=${DOMAIN}" \
+          --label "component=knative-serving"
+
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+            --data "global.domainName=${DOMAIN}" \
+            --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+            --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+            --data "global.tlsCrt=${TLS_CERT}" \
+            --data "global.tlsKey=${TLS_KEY}"
 
     else
 
-        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
-
-        createImage
-
-        shout "Apply Kyma config"
-        date
-        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
-			| sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-			| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-			| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-			| sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-			| sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-			| sed -e "s/__VERSION__/0.0.1/g" \
-			| sed -e "s/__.*__//g" \
-			| kubectl apply -f-
-
-
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+            --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
     fi
 
-        waitUntilInstallerApiAvailable
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+        --data "test.acceptance.ui.logging.enabled=true" \
+        --label "component=core"
 
-        if [[ "${PERFORMACE_CLUSTER_SETUP}" != "" ]]; then
-            kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
-        fi
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
+        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
+        --label "component=logging"
 
-        shout "Trigger installation"
-        date
+    waitUntilInstallerApiAvailable
 
-        sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-        kubectl label installation/kyma-installation action=install --overwrite
-        "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+    if [[ "${PERFORMACE_CLUSTER_SETUP}" != "" ]]; then
+        kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
+    fi
+
+    shout "Trigger installation"
+    date
+
+    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
+    kubectl label installation/kyma-installation action=install --overwrite
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
 
 function createImage() {
