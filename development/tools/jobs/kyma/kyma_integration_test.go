@@ -1,11 +1,13 @@
 package kyma_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
 )
 
 func TestKymaIntegrationVMJobsReleases(t *testing.T) {
