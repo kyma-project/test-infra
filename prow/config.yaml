@@ -334,6 +334,16 @@ presets:
     env:
       - name: KYMA_ENCRYPTION_KEY
         value: kyma-prow-encryption
+  - labels:
+     preset-kyma-wssagent-product-name: "true"
+    env:
+      - name: PRODUCTNAME
+        value: OOSS - KYMA
+  - labels:
+     preset-kyma-wssagent-java-options: "true"
+    env:
+      - name: JAVA_OPTS
+        value: -d64 -Xmx15g
 
 
 branch-protection:
