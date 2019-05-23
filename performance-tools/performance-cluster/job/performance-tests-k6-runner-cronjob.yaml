@@ -12,6 +12,7 @@ spec:
           containers:
           - name: k6-runner
             image: eu.gcr.io/kyma-project/pr/perf-test:PR-1030
+            imagePullPolicy: Always
             env:
             - name:  INFLUXDB_FQDN
               value: "influxdb-1-influxdb-svc.influxdb:8086"
