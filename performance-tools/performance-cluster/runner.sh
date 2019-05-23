@@ -134,9 +134,17 @@ service docker stop
 
 source "${SCRIPTS_DIR}/cluster.sh" "--action" "delete"
 
+shout "DATE: ${DATE}"
+shout "SLACK_CHANNEL: ${SLACK_CHANNEL}"
+shout "REVISION: ${REVISION}"
+shout "GRAFANA_URL: ${GRAFANA_URL}"
+shout "SLACK_URL: ${SLACK_URL}"
+shout "SLACK_TOKEN: ${SLACK_TOKEN}"
+
+
 DATE="$(date)"
 
 curl -X POST \
     -H 'Content-type: application/json; charset=utf-8' \
     --data '{"channel":"'"${SLACK_CHANNEL}"'","text":"Test Run: Success \n Date: '"${DATE}"' \n Revision: '"${REVISION}"' \n Grafana:'"${GRAFANA_URL}"'"}' \
-    $SLACK_URL/$SLACK_TOKEN
+    ${SLACK_URL}/${SLACK_TOKEN}

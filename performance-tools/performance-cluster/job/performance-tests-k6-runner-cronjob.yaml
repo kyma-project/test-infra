@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
           - name: k6-runner
-            image: eu.gcr.io/kyma-project/pr/perf-test:PR-1028
+            image: eu.gcr.io/kyma-project/pr/perf-test:PR-1030
             env:
             - name:  INFLUXDB_FQDN
               value: "influxdb-1-influxdb-svc.influxdb:8086"
@@ -39,20 +39,31 @@ spec:
               value: "true"
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: /etc/credentials/perf-test-bot/service-account.json
-            - name: SLACK_TOKEN
-              value: /var/slack-details/slack-token
-            - name: SLACK_CHANNEL
-              value: /var/slack-details/slack-channel
-            - name: SLACK_URL
-              value: /var/slack-details/slack-url
             - name: GRAFANA_URL
-              value: /var/slack-details/grafana-url
+              valueFrom:
+                secretKeyRef:
+                  name: slack-details
+                  key: grafana-url
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: slack-details
+                  key: slack-token
+            - name: SLACK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slack-details
+                  key: slack-url
+            - name: SLACK_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: slack-details
+                  key: slack-channel
+            - name: TESTS_DIR
+              value: tests/perf
             volumeMounts:
             - mountPath: /var/k6-details
               name: k6-details
-              readOnly: true
-            - mountPath: /var/slack-details
-              name: slack-details
               readOnly: true
             - mountPath: /etc/credentials/perf-test-bot
               name: perf-test-bot
@@ -76,7 +87,3 @@ spec:
             secret:
               defaultMode: 420
               secretName: k6runner-sa-token-586nv
-          - name: slack-details
-            secret:
-              defaultMode: 420
-              secretName: slack-details
