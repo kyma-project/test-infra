@@ -361,7 +361,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-
 	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
