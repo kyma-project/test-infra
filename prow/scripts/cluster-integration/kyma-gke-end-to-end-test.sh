@@ -128,7 +128,6 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 shout "Authenticate"
@@ -219,25 +218,41 @@ shout "Apply Kyma config"
 date
 
 # shellcheck disable=SC2002
-cat "${INSTALLER_YAML}" | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" | kubectl apply -f-
+sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
+    | kubectl apply -f-
 
 shout "Apply backup config"
 date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-cluster-backup-config.sh"
 
-shout "Manual concatenating yamls"
-"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
-| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-| sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-| sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-| sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-| sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-| sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-| sed -e "s/__VERSION__/0.0.1/g" \
-| sed -e "s/__.*__//g" \
-| kubectl apply -f-
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
+    --data "knative-serving.domainName=${DOMAIN}" \
+    --label "component=knative-serving"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
+    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
+    --label "component=logging"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
 
 shout "Trigger installation"
 date
