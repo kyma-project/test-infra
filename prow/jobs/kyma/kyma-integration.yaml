@@ -930,7 +930,7 @@ periodics:
           - "bash"
         env:
           - name: INPUT_CLUSTER_NAME
-            value: "load-test-nosed"
+            value: "load-test"
           - name: LOAD_TEST_SLACK_CLIENT_CHANNEL_ID
             value: "#c4-xf-load-test"
           - name: LT_TIMEOUT # Load test timeout in minutes
@@ -968,7 +968,7 @@ periodics:
           - "bash"
         env:
           - name: INPUT_CLUSTER_NAME
-            value: "load-test"
+            value: "load-test-nosed"
           - name: LOAD_TEST_SLACK_CLIENT_CHANNEL_ID
             value: "#c4-xf-load-test"
           - name: LT_TIMEOUT # Load test timeout in minutes
