@@ -11,7 +11,7 @@ rules:
 
 - apiGroups: [""]
   resources: ["configmaps"]
-  verbs: ["GET"]
+  verbs: ["get", "list"]
 
 - apiGroups: [""]
   resources: ["pods"]
