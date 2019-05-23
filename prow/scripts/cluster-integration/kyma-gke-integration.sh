@@ -104,7 +104,7 @@ cleanup() {
         date
         IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
     fi
-    
+
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
@@ -260,6 +260,9 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 shout "Apply Kyma config"
 date
 
+#TODO: Remove
+shout "Simplified installation mode without kyma-config-cluster.yaml"
+
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
@@ -281,7 +284,8 @@ fi
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+    --data "cluster-users.users.adminGroup=" \
+    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}" #TODO: move adminGroup to charts
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
