@@ -12,7 +12,7 @@
 # - STANDARIZED_NAME: a variation of cluster name
 # - REPO_OWNER: Kyma repository owner
 # - REPO_NAME: name of the Kyma repository
-# - CURRENT_TIMESTAMP: Current timestamp which is computed as $(date +%Y%m%d) 
+# - CURRENT_TIMESTAMP: Current timestamp which is computed as $(date +%Y%m%d)
 # - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 # shellcheck disable=SC1090
@@ -46,6 +46,7 @@ function installKyma() {
     INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
     INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
     INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+    PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
     shout "Build Kyma-Installer Docker image"
     date
@@ -56,8 +57,6 @@ function installKyma() {
 
         createImage
 
-        # shellcheck disable=SC2153
-        PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
         # shellcheck disable=SC1090
         source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
@@ -82,9 +81,6 @@ function installKyma() {
         export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
 
         createImage
-
-        INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-        PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
         shout "Apply Kyma config"
         date
