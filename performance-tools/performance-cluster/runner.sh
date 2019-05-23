@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -o pipefail
+export CLOUDSDK_COMPUTE_ZONE="europe-west3-c"
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
