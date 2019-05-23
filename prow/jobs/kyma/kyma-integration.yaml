@@ -802,7 +802,7 @@ periodics:
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             # TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
-            value: "#test-nonexistent"
+            value: "#test-alert-channel"
         command:
           - "bash"
         args:
