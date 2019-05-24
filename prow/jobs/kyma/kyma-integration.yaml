@@ -995,6 +995,8 @@ periodics:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#c4core-kyma-gopher-pr"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-a"
       command:
       - "bash"
       args:
