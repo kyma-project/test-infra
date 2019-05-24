@@ -814,7 +814,7 @@ periodics:
             cpu: 80m
 
 - name: kyma-aks-nightly-nosed
-  cron: "35 8 * * 1-5"
+  cron: "0 11 * * 1-5"
   labels:
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
