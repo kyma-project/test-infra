@@ -913,6 +913,44 @@ periodics:
           memory: 200Mi
           cpu: 80m
 
+- name: kyma-gke-end-to-end-test-backup-restore-nosed
+  cron: "55 9 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  labels:
+    preset-build-master: "true"
+    preset-weekly-github-integration: "true"
+    preset-kyma-backup-restore-bucket: "true"
+    preset-kyma-backup-credentials: "true"
+    <<: *gke_job_labels_template
+  decorate: true
+  extra_refs:
+    - org: jakkab
+      repo: test-infra
+      base_ref: simplify-installation-kyma-gke-end-to-end-test
+      path_alias: github.com/kyma-project/test-infra
+    - <<: *kyma_ref
+      base_ref: master
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: INPUT_CLUSTER_NAME
+            value: "e2etest-nosed"
+          - name: REPO_OWNER_GIT
+            value: "kyma-project"
+          - name: REPO_NAME_GIT
+            value: "kyma"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
 - name: kyma-load-tests-weekly
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
   labels:
