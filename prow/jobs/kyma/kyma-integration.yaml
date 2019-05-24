@@ -9,11 +9,6 @@ kk_test_ref: &kk_test_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-dj_test_ref: &dj_test_ref
-  org: kubadz
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -412,8 +407,8 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-      - <<: *dj_test_ref
-        base_ref: feature/xip-gke-upgrade
+      - <<: *test_infra_ref
+        base_ref: master
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
@@ -424,8 +419,8 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *dj_test_ref
-      base_ref: feature/xip-gke-upgrade
+    - <<: *test_infra_ref
+      base_ref: master
 
   - name: pre-master-kyma-xip-gke-central-connector
     branches:
@@ -435,8 +430,8 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *dj_test_ref
-      base_ref: feature/xip-gke-upgrade
+    - <<: *test_infra_ref
+      base_ref: master
 
 postsubmits:
   kyma-project/kyma:
