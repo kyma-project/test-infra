@@ -206,6 +206,9 @@ function installKyma() {
         echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
     fi
 
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "cluster-users.users.adminGroup=" #TODO: Backward compatibility for releases <= 1.1.X
+
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
