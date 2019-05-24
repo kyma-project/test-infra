@@ -33,6 +33,8 @@ if [[ "${GRAFANA_URL}" == "" ]]; then
     exit 1
 fi
 
+SLACK_URL=`echo $SLACK_URL`
+
 export SRC_DIR="$(mktemp -d -t src.XXXXXX)"
 
 # Create Kyma Cluster
@@ -135,6 +137,8 @@ service docker stop
 source "${SCRIPTS_DIR}/cluster.sh" "--action" "delete"
 
 DATE="$(date)"
+
+shout "DATE: ${DATE}"
 
 curl -X POST \
     -H 'Content-type: application/json; charset=utf-8' \
