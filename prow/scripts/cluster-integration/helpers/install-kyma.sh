@@ -47,7 +47,7 @@ function installKyma() {
     INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
     PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
-     shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
+    shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
 
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
         export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
