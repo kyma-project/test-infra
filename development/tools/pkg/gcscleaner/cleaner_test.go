@@ -21,7 +21,7 @@ func TestExtractTimestamp(t *testing.T) {
 	}{
 		{
 			name:       "match: a1b2b3",
-			bucketName: "matching-bucket-name-1b6dibbg2ogqo",
+			bucketName: "matching-Bucket-Name-1b6dibbg2ogqo",
 			expected: func() *string {
 				result := "1b6dibbg2ogqo"
 				return &result
@@ -43,21 +43,21 @@ func TestExtractTimestamp(t *testing.T) {
 		},
 		{
 			name:       "no match #3",
-			bucketName: "not.matching.the.bucket.name-1b6dibbg2ogq@",
+			bucketName: "not.matching.the.Bucket.Name-1b6dibbg2ogq@",
 			expected: func() *string {
 				return nil
 			},
 		},
 		{
 			name:       "no match #4",
-			bucketName: "not.matching.the.bucket.name-_a1s2d34d12",
+			bucketName: "not.matching.the.Bucket.Name-_a1s2d34d12",
 			expected: func() *string {
 				return nil
 			},
 		},
 		{
 			name:       "match: 1111",
-			bucketName: "matching.bucket.name-1111",
+			bucketName: "matching.Bucket.Name-1111",
 			expected: func() *string {
 				result := "1111"
 				return &result
@@ -102,17 +102,17 @@ func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, pr
 	duration := strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32)
 
 	protectedBucketNames = []string{
-		fmt.Sprintf(`protected-bucket-%s`, duration),
+		fmt.Sprintf(`protected-Bucket-%s`, duration),
 	}
 
 	namesOfBucketsToBeDeleted = []string{
-		fmt.Sprintf(`bucket-to-delete-%s`, duration),
-		fmt.Sprintf(`bucket-to-delete2-%s`, duration),
-		fmt.Sprintf(`bucket-to-delete3-%s`, duration),
+		fmt.Sprintf(`Bucket-to-delete-%s`, duration),
+		fmt.Sprintf(`Bucket-to-delete2-%s`, duration),
+		fmt.Sprintf(`Bucket-to-delete3-%s`, duration),
 	}
 
 	bucketWithFutureName := fmt.Sprintf(
-		`future-bucket-%s`,
+		`future-Bucket-%s`,
 		strconv.FormatInt(time.Now().Add(time.Hour).UnixNano(), 32))
 
 	for _, slice := range [][]string{

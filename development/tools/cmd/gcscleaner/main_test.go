@@ -135,16 +135,16 @@ func TestConfigRead(t *testing.T) {
 		t.Run(testName, func(t *testing.T) {
 			cleanFlags()
 			os.Args = test.args
-			options, err := readOptions()
+			config, err := readCfg()
 			assert := assert.New(t)
 			assert.Equal(test.expectedErr, err)
-			assert.Equal(test.expectedProjectName, options.ProjectName)
-			assert.Equal(test.expectedDuration, options.BucketLifespanDuration)
-			assert.Equal(test.expectedExcludedNames, options.ExcludedBucketNames)
-			assert.Equal(test.expectedDryRun, options.DryRun)
-			assert.Equal(test.expectedBucketNameRegex, options.BucketNameRegexp)
-			assert.Equal(test.expectedBucketObjectWorkerNumber, options.BucketObjectWorkersNumber)
-			assert.Equal(test.expectedLogLevel, options.LogLevel)
+			assert.Equal(test.expectedProjectName, config.ProjectName)
+			assert.Equal(test.expectedDuration, config.BucketLifespanDuration)
+			assert.Equal(test.expectedExcludedNames, config.ExcludedBucketNames)
+			assert.Equal(test.expectedDryRun, config.IsDryRun)
+			assert.Equal(test.expectedBucketNameRegex, config.BucketNameRegexp)
+			assert.Equal(test.expectedBucketObjectWorkerNumber, config.BucketObjectWorkersNumber)
+			assert.Equal(test.expectedLogLevel, config.LogLevel)
 		})
 	}
 }
