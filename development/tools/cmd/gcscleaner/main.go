@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	_ "math/rand"
@@ -32,12 +33,8 @@ var (
 	ErrEmptyBucketNameRegexp = errors.New("empty bucketNameRegexp argument")
 	// ErrInvalidBucketNameRegexp returned if argBucketNameRegexp is invalid
 	ErrInvalidBucketNameRegexp = errors.New("invalid bucketNameRegexp argument")
-	// ErrInvalidBucketObjectAttributes returned when bucket object has invalid attributes
-	ErrInvalidBucketObjectAttributes = errors.New("bucket object has invalid attributes")
 	// ErrInvalidLogLevel returned when argLogLevel is invalid
 	ErrInvalidLogLevel = errors.New("bucket object has invalid attributes")
-	// ErrBucketDeletionCanceled returned when deletion of bucket was canceled
-	ErrBucketDeletionCanceled = errors.New("bucket deletion canceled")
 )
 
 func main() {
@@ -48,11 +45,11 @@ func main() {
 		logrus.Fatal(errors.Wrap(err, "reading arguments"))
 	}
 	logrus.SetLevel(cfg.LogLevel)
-	client, err := gcscleaner.NewClient2(rootCtx)
+	client, err := client.NewClient2(rootCtx)
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	defer logrus.Debug(errors.Wrap(err, "closing client"))
+	defer client.Close()
 	cleaner := gcscleaner.NewCleaner2(client, cfg)
 	err = cleaner.DeleteOldBuckets(rootCtx)
 	if err != nil {

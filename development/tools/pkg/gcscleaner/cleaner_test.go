@@ -1,17 +1,21 @@
 package gcscleaner_test
 
 import (
+	"context"
 	"fmt"
-	"regexp"
-	"strconv"
-	"testing"
-	"time"
-
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
-	"google.golang.org/api/iterator"
-
+	gclient "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client/automock"
+	"github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"google.golang.org/api/iterator"
+	"regexp"
+	"strconv"
+	"sync/atomic"
+	"testing"
+	"time"
 )
 
 func TestExtractTimestamp(t *testing.T) {
@@ -64,93 +68,160 @@ func TestExtractTimestamp(t *testing.T) {
 			},
 		},
 	}
+	cleaner := newTestCleaner(nil)
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := gcscleaner.ExtractTimestampSuffix(test.bucketName, *regexp.MustCompile(`^.+-([a-z0-9]+$)`))
+			actual := cleaner.ExtractTimestampSuffix(test.bucketName)
 			assert.New(t).Equal(test.expected(), actual)
 		})
 	}
 }
 
-func TestClean(t *testing.T) {
+func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
-	bucketNames, bucketsToDelete, protectedBuckets := getTestData()
-	actualBucketNames := append([]string(nil), bucketNames...)
-	err := gcscleaner.Clean(
-		testNextBucketNameFunc(bucketNames),
-		testDeleteBucket(&actualBucketNames),
-		gcscleaner.NewConfig(
-			*regexp.MustCompile(`^.+-([a-z0-9]+$)`),
-			append([]string{"atx-prow2"}, protectedBuckets...),
-			time.Second))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	assert := assert.New(t)
-	assert.Equal(len(bucketNames)-len(bucketsToDelete), len(actualBucketNames))
-	for _, bucketName := range actualBucketNames {
-		for _, bucketToDelete := range bucketsToDelete {
-			assert.NotEqual(bucketToDelete, bucketName)
-		}
-	}
-}
-
-func getTestData() (bucketNames []string, namesOfBucketsToBeDeleted []string, protectedBucketNames []string) {
-
-	duration := strconv.FormatInt(time.Now().Add(-3*time.Hour).UnixNano(), 32)
-
-	protectedBucketNames = []string{
-		fmt.Sprintf(`protected-Bucket-%s`, duration),
-	}
-
-	namesOfBucketsToBeDeleted = []string{
-		fmt.Sprintf(`Bucket-to-delete-%s`, duration),
-		fmt.Sprintf(`Bucket-to-delete2-%s`, duration),
-		fmt.Sprintf(`Bucket-to-delete3-%s`, duration),
-	}
-
-	bucketWithFutureName := fmt.Sprintf(
-		`future-Bucket-%s`,
-		strconv.FormatInt(time.Now().Add(time.Hour).UnixNano(), 32))
-
-	for _, slice := range [][]string{
+	now := time.Now()
+	excludedBucketName := fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32))
+	cleaner := newTestCleaner([]string{
+		excludedBucketName,
+	})
+	tests := []struct {
+		name     string
+		expected bool
+	}{
 		{
-			"atx-prow2",
-			"atx-prow3",
-			"atx-",
-			bucketWithFutureName,
+			name:     fmt.Sprintf(`old-bucket-to-delete-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32)),
+			expected: true,
 		},
-		protectedBucketNames,
-		namesOfBucketsToBeDeleted,
-	} {
-		bucketNames = append(bucketNames, slice...)
+		{
+			name:     fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32)),
+			expected: false,
+		},
+		{
+			name:     fmt.Sprintf(`bucket-not-to-delete-%s`, strconv.FormatInt(now.UnixNano(), 32)),
+			expected: false,
+		},
+		{
+			name:     "make-sure-to-exclude-cause-this-one-wil-be-deleted",
+			expected: true,
+		},
+		{
+			name:     fmt.Sprintf(`bucket-will-not-be-deleted_%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32)),
+			expected: false,
+		},
 	}
-	return
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			actual := cleaner.ShouldDeleteBucket(test.name, now.UnixNano())
+			assert := gomega.NewWithT(t)
+			assert.Expect(actual).To(gomega.Equal(test.expected))
+		})
+	}
 }
 
-func testDeleteBucket(remainingBuckets *[]string) gcscleaner.DeleteBucketFunc {
-	return func(bucketNameToDelete string) error {
-		for i, bucketName := range *remainingBuckets {
-			if bucketName != bucketNameToDelete {
-				continue
-			}
-			*remainingBuckets = append((*remainingBuckets)[:i], (*remainingBuckets)[i+1:]...)
-			return nil
-		}
-		return nil
+func newTestCleaner(excludedBucketNames []string) gcscleaner.Cleaner {
+	return gcscleaner.NewCleaner2(&automock.Client{}, gcscleaner.Config{
+		BucketLifespanDuration: 2 * time.Hour,
+		ExcludedBucketNames:    excludedBucketNames,
+		BucketNameRegexp:       *regexp.MustCompile("^.+-([a-z0-9]+$)"),
+		IsDryRun:               false,
+	})
+}
+
+func TestCleaner2_DeleteOldBuckets(t *testing.T) {
+
+	var delObjectCounter int32
+
+	logrus.SetLevel(logrus.DebugLevel)
+	now := time.Now()
+	bucketIterator, bucketName := getBucketTestData(now)
+	client := automock.Client{}
+	client.
+		On("Buckets", mock.AnythingOfType("*context.emptyCtx"), "test-project").
+		Return(bucketIterator).
+		Once()
+
+	objectAttrs := automock.ObjectAttrs{}
+	testObjectName := "test-object"
+	objectAttrs.
+		On("Name").
+		Return(testObjectName).
+		Once().
+		On("Bucket").
+		Return(bucketName).
+		Once()
+
+	objectIterator := automock.ObjectIterator{}
+	objectIterator.
+		On("Next").
+		Return(&objectAttrs, nil).
+		Once().
+		On("Next").
+		Return(nil, iterator.Done).
+		Once()
+
+	objectHandle := automock.ObjectHandle{}
+	objectHandle.
+		On("Delete", mock.Anything).
+		Run(func(_ mock.Arguments) {
+			atomic.AddInt32(&delObjectCounter, 1)
+		}).
+		Return(nil).
+		Once()
+
+	bucketHandle := automock.BucketHandle{}
+	bucketHandle.
+		On("Objects", mock.AnythingOfType("gcscleaner.CancelableContext"), nil).
+		Return(&objectIterator).
+		Once().
+		On("Object", testObjectName).
+		Return(&objectHandle).
+		Once().
+		On("Delete", mock.AnythingOfType("gcscleaner.CancelableContext")).
+		Return(nil).
+		Once()
+
+	client.
+		On("Bucket", bucketName).
+		Return(&bucketHandle)
+
+	cleaner, _, _ := getCleaner(&client)
+	ctx := context.Background()
+	err := cleaner.DeleteOldBuckets(ctx)
+	assert := gomega.NewWithT(t)
+	assert.Expect(err).To(gomega.BeNil())
+	assert.Expect(delObjectCounter).To(gomega.Equal(int32(1)))
+}
+
+func getCleaner(client gclient.Client) (gcscleaner.Cleaner, chan gclient.BucketObject, chan error) {
+	cleaner := gcscleaner.NewCleaner2(client, getConf())
+	return cleaner, make(chan gclient.BucketObject), make(chan error)
+}
+
+func getConf() gcscleaner.Config {
+	return gcscleaner.Config{
+		ProjectName:               "test-project",
+		BucketNameRegexp:          *regexp.MustCompile("^.+-([a-z0-9]+$)"),
+		BucketObjectWorkersNumber: 1,
+		IsDryRun:                  false,
 	}
 }
 
-func testNextBucketNameFunc(bucketNames []string) func() (string, error) {
-	index := 0
-	return func() (string, error) {
-		if len(bucketNames) < index+1 {
-			return "", iterator.Done
-		}
-		bucketName := bucketNames[index]
-		index++
-		return bucketName, nil
-	}
+func getBucketTestData(t time.Time) (gclient.BucketIterator, string) {
+	bucketIterator := automock.BucketIterator{}
+
+	// bucket to be deleted
+	formatInt := strconv.FormatInt(t.Add(-3 * time.Hour).UnixNano(), 32)
+	bucketName := fmt.Sprintf(`test-bucket-to-be-deleted-%s`, formatInt)
+	b1 := automock.BucketAttrs{}
+	b1.On("Name").Return(bucketName)
+
+	bucketIterator.
+		On("Next").
+		Return(&b1, nil).
+		Once().
+		On("Next").
+		Return(nil, iterator.Done).
+		Once()
+
+	return &bucketIterator, bucketName
 }
