@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	_ "math/rand"
@@ -13,6 +13,17 @@ import (
 	"syscall"
 	"time"
 )
+
+// Config cleaner configuration
+type Config struct {
+	ProjectName               string
+	BucketLifespanDuration    time.Duration
+	ExcludedBucketNames       []string
+	IsDryRun                  bool
+	BucketNameRegexp          regexp.Regexp
+	BucketObjectWorkersNumber int
+	LogLevel                  logrus.Level
+}
 
 var (
 	argProjectName                  string
@@ -38,19 +49,18 @@ var (
 )
 
 func main() {
-	// TODO extract timeout to args
-	rootCtx, _ := context.WithTimeout(context.Background(), 10*time.Minute)
+	rootCtx := context.Background()
 	cfg, err := readCfg()
 	if err != nil {
 		logrus.Fatal(errors.Wrap(err, "reading arguments"))
 	}
 	logrus.SetLevel(cfg.LogLevel)
-	client, err := client.NewClient2(rootCtx)
+	client, err := storage.NewClient(rootCtx)
 	if err != nil {
 		logrus.Fatal(err)
 	}
 	defer client.Close()
-	cleaner := gcscleaner.NewCleaner2(client, cfg)
+	cleaner := gcscleaner.NewCleaner(client, cfg)
 	err = cleaner.DeleteOldBuckets(rootCtx)
 	if err != nil {
 		logrus.Warn(errors.Wrap(err, "deleting old buckets"))

@@ -3,7 +3,7 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
@@ -22,14 +22,16 @@ type Config struct {
 	IsDryRun                  bool
 	BucketNameRegexp          regexp.Regexp
 	BucketObjectWorkersNumber int
-	LogLevel                  logrus.Level // TODO do not pass it into cleaner
+	LogLevel                  logrus.Level
 }
 
+// CancelableContext contains both context and it's Cancel function
 type CancelableContext struct {
 	context.Context
 	Cancel func()
 }
 
+// NewCancelableContext creates new CancelableContext
 func NewCancelableContext(ctx context.Context) CancelableContext {
 	cancelableCtx, cancel := context.WithCancel(ctx)
 	return CancelableContext{
@@ -38,14 +40,15 @@ func NewCancelableContext(ctx context.Context) CancelableContext {
 	}
 }
 
+// Cleaner cleans GCP buckets
 type Cleaner struct {
 	ctx    context.Context
-	client client.Client
+	client storage.Client
 	cfg    Config
 }
 
-// NewCleaner2 creates cleaner
-func NewCleaner2(client client.Client, cfg Config) Cleaner {
+// NewCleaner creates cleaner
+func NewCleaner(client storage.Client, cfg Config) Cleaner {
 	return Cleaner{
 		client: client,
 		cfg:    cfg,
@@ -106,20 +109,20 @@ func (r Cleaner) deleteBucketObject(
 	ctx context.Context,
 	bucketName string,
 	objectName string) error {
+	msg := fmt.Sprintf("object deleted: %s", objectName)
 	if r.cfg.IsDryRun {
-		msg := fmt.Sprintf(`dry-run|delete object: %s`, objectName) // FIXME change it
 		logrus.Debug(msg)
 		return nil
 	}
 	err := r.client.Bucket(bucketName).Object(objectName).Delete(ctx)
-	logrus.Debug("object deleted: ", objectName)
+	logrus.Debug(msg)
 	return err
 }
 
 func (r Cleaner) iterateBucketObjectNames(
 	ctx context.Context,
 	bucketName string,
-	bucketObjectChan chan client.BucketObject,
+	bucketObjectChan chan storage.BucketObject,
 	errChan chan error) {
 	defer close(bucketObjectChan)
 
@@ -139,14 +142,14 @@ func (r Cleaner) iterateBucketObjectNames(
 				errChan <- err
 				return
 			}
-			bucketObjectChan <- client.NewBucketObject(attrs.Bucket(), attrs.Name())
+			bucketObjectChan <- storage.NewBucketObject(attrs.Bucket(), attrs.Name())
 		}
 	}
 }
 
 func (r Cleaner) deleteBucketObjects(
 	ctx CancelableContext,
-	bucketObjectChan chan client.BucketObject,
+	bucketObjectChan chan storage.BucketObject,
 	errChan chan error) {
 	for {
 		select {
@@ -164,7 +167,7 @@ func (r Cleaner) deleteBucketObjects(
 	}
 }
 
-// deleteBucketObjects deletes old buckets within GCP project
+// DeleteOldBuckets deletes old buckets within GCP project
 func (r Cleaner) DeleteOldBuckets(rootCtx context.Context) error {
 	bucketIterator := r.client.Buckets(rootCtx, r.cfg.ProjectName)
 	var errorMessages []string
@@ -229,7 +232,7 @@ func (r Cleaner) deleteAllObjects(
 	errChan chan error) {
 	defer close(errChan)
 
-	bucketObjectChan := make(chan client.BucketObject)
+	bucketObjectChan := make(chan storage.BucketObject)
 	var waitGroup sync.WaitGroup
 
 	waitGroup.Add(1)

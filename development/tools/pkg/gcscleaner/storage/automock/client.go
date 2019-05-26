@@ -2,7 +2,7 @@
 
 package automock
 
-import client "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client"
+import client "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
 import context "context"
 import mock "github.com/stretchr/testify/mock"
 

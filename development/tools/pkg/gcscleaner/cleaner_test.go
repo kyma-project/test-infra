@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
-	gclient "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/client/automock"
+	gclient "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage/automock"
 	"github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -68,7 +68,7 @@ func TestExtractTimestamp(t *testing.T) {
 			},
 		},
 	}
-	cleaner := newTestCleaner(nil)
+	cleaner := newTestCleaner(&automock.Client{}, nil)
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			actual := cleaner.ExtractTimestampSuffix(test.bucketName)
@@ -81,7 +81,7 @@ func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
 	now := time.Now()
 	excludedBucketName := fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32))
-	cleaner := newTestCleaner([]string{
+	cleaner := newTestCleaner(&automock.Client{}, []string{
 		excludedBucketName,
 	})
 	tests := []struct {
@@ -118,16 +118,11 @@ func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 	}
 }
 
-func newTestCleaner(excludedBucketNames []string) gcscleaner.Cleaner {
-	return gcscleaner.NewCleaner2(&automock.Client{}, gcscleaner.Config{
-		BucketLifespanDuration: 2 * time.Hour,
-		ExcludedBucketNames:    excludedBucketNames,
-		BucketNameRegexp:       *regexp.MustCompile("^.+-([a-z0-9]+$)"),
-		IsDryRun:               false,
-	})
+func newTestCleaner(client gclient.Client, excludedBucketNames []string) gcscleaner.Cleaner {
+	return gcscleaner.NewCleaner(client, getConf(excludedBucketNames))
 }
 
-func TestCleaner2_DeleteOldBuckets(t *testing.T) {
+func TestCleaner_DeleteOldBuckets(t *testing.T) {
 
 	var delObjectCounter int32
 
@@ -184,7 +179,7 @@ func TestCleaner2_DeleteOldBuckets(t *testing.T) {
 		On("Bucket", bucketName).
 		Return(&bucketHandle)
 
-	cleaner, _, _ := getCleaner(&client)
+	cleaner := newTestCleaner(&client, nil)
 	ctx := context.Background()
 	err := cleaner.DeleteOldBuckets(ctx)
 	assert := gomega.NewWithT(t)
@@ -192,16 +187,13 @@ func TestCleaner2_DeleteOldBuckets(t *testing.T) {
 	assert.Expect(delObjectCounter).To(gomega.Equal(int32(1)))
 }
 
-func getCleaner(client gclient.Client) (gcscleaner.Cleaner, chan gclient.BucketObject, chan error) {
-	cleaner := gcscleaner.NewCleaner2(client, getConf())
-	return cleaner, make(chan gclient.BucketObject), make(chan error)
-}
-
-func getConf() gcscleaner.Config {
+func getConf(excludedBucketNames []string) gcscleaner.Config {
 	return gcscleaner.Config{
+		BucketLifespanDuration:    2 * time.Hour,
 		ProjectName:               "test-project",
 		BucketNameRegexp:          *regexp.MustCompile("^.+-([a-z0-9]+$)"),
 		BucketObjectWorkersNumber: 1,
+		ExcludedBucketNames:       excludedBucketNames,
 		IsDryRun:                  false,
 	}
 }
