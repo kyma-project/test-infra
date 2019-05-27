@@ -124,10 +124,10 @@ func newTestCleaner(client storage.Client, excludedBucketNames []string) gcsclea
 	return gcscleaner.NewCleaner(client, getConf(excludedBucketNames))
 }
 
-func TestCleaner_DeleteOldBuckets_Err(t *testing.T) {
+func TestCleaner_DeleteOldBuckets_ErrBucketIteration(t *testing.T) {
 
 	logrus.SetLevel(logrus.DebugLevel)
-	errTest := errors.New("test error")
+	errTest := errors.New("error while iterating buckets")
 
 	bucketIterator := automock.BucketIterator{}
 	bucketIterator.
@@ -146,6 +146,54 @@ func TestCleaner_DeleteOldBuckets_Err(t *testing.T) {
 	assert.Expect(err).To(gomega.Equal(errTest))
 }
 
+func TestCleaner_DeleteOldBuckets_ErrDeleteObject(t *testing.T) {
+	logrus.SetLevel(logrus.DebugLevel)
+	now := time.Now()
+	bucketIterator, bucketName := getBucketTestData(now)
+	client := getStorageClient(bucketIterator)
+	objectAttrs := automock.ObjectAttrs{}
+	testObjectName := "test-object"
+	objectIterator := getTestObjectIterator(objectAttrs, testObjectName, bucketName)
+	objectHandle := automock.ObjectHandle{}
+	errTestDeleteObject := errors.New("error while deleting object")
+	objectHandle.
+		On("Delete", mock.Anything).
+		Return(errTestDeleteObject).
+		Once()
+	bucketHandle := getTestBucketHandle(objectIterator, testObjectName, objectHandle)
+	client.
+		On("Bucket", bucketName).
+		Return(&bucketHandle)
+	cleaner := newTestCleaner(&client, nil)
+	ctx := context.Background()
+	err := cleaner.DeleteOldBuckets(ctx)
+	assert := gomega.NewWithT(t)
+	assert.Expect(err).To(gomega.Equal(errTestDeleteObject))
+}
+
+func getTestObjectIterator(
+	attrs automock.ObjectAttrs,
+	testObjectName string,
+	bucketName string) automock.ObjectIterator {
+	attrs.
+		On("Name").
+		Return(testObjectName).
+		Once().
+		On("Bucket").
+		Return(bucketName).
+		Once()
+
+	objectIterator := automock.ObjectIterator{}
+	objectIterator.
+		On("Next").
+		Return(&attrs, nil).
+		Once().
+		On("Next").
+		Return(nil, iterator.Done).
+		Once()
+	return objectIterator
+}
+
 func TestCleaner_DeleteOldBuckets(t *testing.T) {
 
 	var delObjectCounter int32
@@ -157,22 +205,7 @@ func TestCleaner_DeleteOldBuckets(t *testing.T) {
 
 	objectAttrs := automock.ObjectAttrs{}
 	testObjectName := "test-object"
-	objectAttrs.
-		On("Name").
-		Return(testObjectName).
-		Once().
-		On("Bucket").
-		Return(bucketName).
-		Once()
-
-	objectIterator := automock.ObjectIterator{}
-	objectIterator.
-		On("Next").
-		Return(&objectAttrs, nil).
-		Once().
-		On("Next").
-		Return(nil, iterator.Done).
-		Once()
+	objectIterator := getTestObjectIterator(objectAttrs, testObjectName, bucketName)
 
 	objectHandle := automock.ObjectHandle{}
 	objectHandle.
@@ -183,17 +216,7 @@ func TestCleaner_DeleteOldBuckets(t *testing.T) {
 		Return(nil).
 		Once()
 
-	bucketHandle := automock.BucketHandle{}
-	bucketHandle.
-		On("Objects", mock.AnythingOfType("gcscleaner.CancelableContext"), nil).
-		Return(&objectIterator).
-		Once().
-		On("Object", testObjectName).
-		Return(&objectHandle).
-		Once().
-		On("Delete", mock.AnythingOfType("gcscleaner.CancelableContext")).
-		Return(nil).
-		Once()
+	bucketHandle := getTestBucketHandle(objectIterator, testObjectName, objectHandle)
 
 	client.
 		On("Bucket", bucketName).
@@ -205,6 +228,21 @@ func TestCleaner_DeleteOldBuckets(t *testing.T) {
 	assert := gomega.NewWithT(t)
 	assert.Expect(err).To(gomega.BeNil())
 	assert.Expect(delObjectCounter).To(gomega.Equal(int32(1)))
+}
+
+func getTestBucketHandle(objectIterator automock.ObjectIterator, testObjectName string, objectHandle automock.ObjectHandle) automock.BucketHandle {
+	bucketHandle := automock.BucketHandle{}
+	bucketHandle.
+		On("Objects", mock.AnythingOfType("gcscleaner.CancelableContext"), nil).
+		Return(&objectIterator).
+		Once().
+		On("Object", testObjectName).
+		Return(&objectHandle).
+		Once().
+		On("Delete", mock.AnythingOfType("gcscleaner.CancelableContext")).
+		Return(nil).
+		Once()
+	return bucketHandle
 }
 
 func getStorageClient(bucketIterator storage.BucketIterator) automock.Client {
