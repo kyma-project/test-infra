@@ -2,6 +2,7 @@ package gcscleaner_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 	"time"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
-	gclient "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage/automock"
 	"github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
@@ -81,7 +82,7 @@ func TestExtractTimestamp(t *testing.T) {
 func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
 	now := time.Now()
-	excludedBucketName := fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3*time.Hour).UnixNano(), 32))
+	excludedBucketName := fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32))
 	cleaner := newTestCleaner(&automock.Client{}, []string{
 		excludedBucketName,
 	})
@@ -90,11 +91,11 @@ func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 		expected bool
 	}{
 		{
-			name:     fmt.Sprintf(`old-bucket-to-delete-%s`, strconv.FormatInt(now.Add(-3*time.Hour).UnixNano(), 32)),
+			name:     fmt.Sprintf(`old-bucket-to-delete-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32)),
 			expected: true,
 		},
 		{
-			name:     fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3*time.Hour).UnixNano(), 32)),
+			name:     fmt.Sprintf(`excluded-bucket-%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32)),
 			expected: false,
 		},
 		{
@@ -106,7 +107,7 @@ func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 			expected: true,
 		},
 		{
-			name:     fmt.Sprintf(`bucket-will-not-be-deleted_%s`, strconv.FormatInt(now.Add(-3*time.Hour).UnixNano(), 32)),
+			name:     fmt.Sprintf(`bucket-will-not-be-deleted_%s`, strconv.FormatInt(now.Add(-3 * time.Hour).UnixNano(), 32)),
 			expected: false,
 		},
 	}
@@ -119,8 +120,30 @@ func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 	}
 }
 
-func newTestCleaner(client gclient.Client, excludedBucketNames []string) gcscleaner.Cleaner {
+func newTestCleaner(client storage.Client, excludedBucketNames []string) gcscleaner.Cleaner {
 	return gcscleaner.NewCleaner(client, getConf(excludedBucketNames))
+}
+
+func TestCleaner_DeleteOldBuckets_Err(t *testing.T) {
+
+	logrus.SetLevel(logrus.DebugLevel)
+	errTest := errors.New("test error")
+
+	bucketIterator := automock.BucketIterator{}
+	bucketIterator.
+		On("Next").
+		Return(nil, errTest).
+		Once()
+
+	client := automock.Client{}
+	client.
+		On("Buckets", mock.AnythingOfType("*context.emptyCtx"), "test-project").
+		Return(&bucketIterator).
+		Once()
+	cleaner := newTestCleaner(&client, nil)
+	err := cleaner.DeleteOldBuckets(context.Background())
+	assert := gomega.NewWithT(t)
+	assert.Expect(err).To(gomega.Equal(errTest))
 }
 
 func TestCleaner_DeleteOldBuckets(t *testing.T) {
@@ -130,11 +153,7 @@ func TestCleaner_DeleteOldBuckets(t *testing.T) {
 	logrus.SetLevel(logrus.DebugLevel)
 	now := time.Now()
 	bucketIterator, bucketName := getBucketTestData(now)
-	client := automock.Client{}
-	client.
-		On("Buckets", mock.AnythingOfType("*context.emptyCtx"), "test-project").
-		Return(bucketIterator).
-		Once()
+	client := getStorageClient(bucketIterator)
 
 	objectAttrs := automock.ObjectAttrs{}
 	testObjectName := "test-object"
@@ -188,6 +207,15 @@ func TestCleaner_DeleteOldBuckets(t *testing.T) {
 	assert.Expect(delObjectCounter).To(gomega.Equal(int32(1)))
 }
 
+func getStorageClient(bucketIterator storage.BucketIterator) automock.Client {
+	client := automock.Client{}
+	client.
+		On("Buckets", mock.AnythingOfType("*context.emptyCtx"), "test-project").
+		Return(bucketIterator).
+		Once()
+	return client
+}
+
 func getConf(excludedBucketNames []string) gcscleaner.Config {
 	return gcscleaner.Config{
 		BucketLifespanDuration:    2 * time.Hour,
@@ -199,11 +227,11 @@ func getConf(excludedBucketNames []string) gcscleaner.Config {
 	}
 }
 
-func getBucketTestData(t time.Time) (gclient.BucketIterator, string) {
+func getBucketTestData(t time.Time) (storage.BucketIterator, string) {
 	bucketIterator := automock.BucketIterator{}
 
 	// bucket to be deleted
-	formatInt := strconv.FormatInt(t.Add(-3*time.Hour).UnixNano(), 32)
+	formatInt := strconv.FormatInt(t.Add(-3 * time.Hour).UnixNano(), 32)
 	bucketName := fmt.Sprintf(`test-bucket-to-be-deleted-%s`, formatInt)
 	b1 := automock.BucketAttrs{}
 	b1.On("Name").Return(bucketName)
