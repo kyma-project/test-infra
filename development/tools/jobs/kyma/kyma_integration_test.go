@@ -110,7 +110,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
-			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/application-connector/values.yaml")
 			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
 			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
