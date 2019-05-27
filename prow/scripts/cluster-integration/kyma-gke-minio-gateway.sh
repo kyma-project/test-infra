@@ -316,10 +316,9 @@ fi
 shout "Apply Asset Store configuration"
 date
 
-GCS_KEY_JSON=$(< "${GOOGLE_APPLICATION_CREDENTIALS}" base64 | tr -d '\n')
 ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
 
-kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-literal=minio.gcsgateway.gcsKeyJson="${GCS_KEY_JSON}"
+kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"
 kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
