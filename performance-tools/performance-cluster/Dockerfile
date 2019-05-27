@@ -57,13 +57,18 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
   tee --append /etc/default/docker
 RUN mkdir /docker-graph
 
+
+RUN apt-get install dirmngr
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
+RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/apt/sources.list
+RUN apt-get update
+RUN apt-get install k6
+
 # Install Helm
 ENV HELM_VERSION=v2.0.0
 
 ENV HELM_FILE_NAME helm-${HELM_VERSION}-linux-amd64.tar.gz
 ENV HELM_URL https://storage.googleapis.com/kubernetes-helm/${HELM_FILE_NAME}
-
-RUN echo $HELM_URL
 
 RUN curl -o /tmp/$HELM_FILE_NAME ${HELM_URL} \
   && tar -zxvf /tmp/${HELM_FILE_NAME} -C /tmp \
@@ -71,13 +76,6 @@ RUN curl -o /tmp/$HELM_FILE_NAME ${HELM_URL} \
   && rm -rf /tmp
 
 RUN helm init --client-only
-
-# Install k6
-RUN apt-get install dirmngr
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
-RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install k6
 
 RUN mkdir /test-infra
 
