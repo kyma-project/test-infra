@@ -289,8 +289,8 @@ else
 fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
---data "knative-serving.domainName=${DOMAIN}" \
---label "component=knative-serving"
+    --data "knative-serving.domainName=${DOMAIN}" \
+    --label "component=knative-serving"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
