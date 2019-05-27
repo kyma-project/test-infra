@@ -315,36 +315,19 @@ fi
 
 shout "Apply Asset Store configuration"
 date
+
 GCS_KEY_JSON=$(< "${GOOGLE_APPLICATION_CREDENTIALS}" base64 | tr -d '\n')
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Secret
-metadata:
-  name: asset-store-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    component: assetstore
-    kyma-project.io/installation: ""
-type: Opaque
-data:
-  minio.gcsgateway.gcsKeyJson: "${GCS_KEY_JSON}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: asset-store-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    component: assetstore
-    kyma-project.io/installation: ""
-data:
-  minio.persistence.enabled: "false"
-  minio.gcsgateway.enabled: "true"
-  minio.defaultBucket.enabled: "false"
-  minio.gcsgateway.projectId: "${CLOUDSDK_CORE_PROJECT}"
-EOF
+ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
+
+kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-literal=minio.gcsgateway.gcsKeyJson="${GCS_KEY_JSON}"
+kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
+    --data "minio.persistence.enabled=false" \
+    --data "minio.gcsgateway.enabled=true" \
+    --data "minio.defaultBucket.enabled=false" \
+    --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
+    --label "component=assetstore"
 
 shout "Trigger installation"
 date
