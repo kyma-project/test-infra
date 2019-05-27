@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"cloud.google.com/go/storage"
 	"context"
+
+	"cloud.google.com/go/storage"
 )
 
 //go:generate mockery -name=BucketHandle -output=automock -outpkg=automock -case=underscore

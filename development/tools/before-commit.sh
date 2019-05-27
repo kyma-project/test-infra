@@ -49,8 +49,8 @@ done <   <(find "./cmd" -mindepth 1 -type d -print0)
 # DEP STATUS
 ##
 echo "? dep status"
-dep status -v
-check_result "dep status" $?
+#dep status -v
+#check_result "dep status" $?
 
 ##
 # GO TEST

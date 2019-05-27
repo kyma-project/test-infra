@@ -39,7 +39,7 @@ func TestConfigRead(t *testing.T) {
 		expectedDuration                 time.Duration
 		expectedExcludedNames            []string
 		expectedDryRun                   bool
-		expectedBucketNameRegex          regexp.Regexp
+		expectedBucketNameRegex          *regexp.Regexp
 		expectedBucketObjectWorkerNumber int
 		expectedLogLevel                 logrus.Level
 	}{
@@ -54,7 +54,7 @@ func TestConfigRead(t *testing.T) {
 			expectedProjectName:              "test",
 			expectedDuration:                 2 * time.Hour,
 			expectedDryRun:                   false,
-			expectedBucketNameRegex:          *regexp.MustCompile("123"),
+			expectedBucketNameRegex:          regexp.MustCompile("123"),
 			expectedBucketObjectWorkerNumber: 10,
 			expectedLogLevel:                 logrus.DebugLevel,
 		},
@@ -69,7 +69,7 @@ func TestConfigRead(t *testing.T) {
 			expectedProjectName:              "test2",
 			expectedDuration:                 time.Minute,
 			expectedDryRun:                   true,
-			expectedBucketNameRegex:          *regexp.MustCompile("123"),
+			expectedBucketNameRegex:          regexp.MustCompile("123"),
 			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
 			expectedLogLevel:                 logrus.InfoLevel,
 		},
@@ -85,7 +85,7 @@ func TestConfigRead(t *testing.T) {
 			expectedDuration:                 time.Minute,
 			expectedExcludedNames:            []string{"test4", "test5", "test6"},
 			expectedDryRun:                   false,
-			expectedBucketNameRegex:          *regexp.MustCompile("123"),
+			expectedBucketNameRegex:          regexp.MustCompile("123"),
 			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
 			expectedLogLevel:                 logrus.InfoLevel,
 		},

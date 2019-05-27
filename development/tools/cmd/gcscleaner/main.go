@@ -104,7 +104,7 @@ func readCfg() (gcscleaner.Config, error) {
 			",")
 	}
 	cfg.IsDryRun = argDryRun
-	cfg.BucketNameRegexp = *bucketNameRegexp
+	cfg.BucketNameRegexp = bucketNameRegexp
 	cfg.BucketObjectWorkersNumber = argBucketObjectWorkerNumber
 	cfg.LogLevel = logLevel
 	return cfg, nil

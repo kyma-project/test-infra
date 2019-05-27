@@ -21,7 +21,7 @@ type Config struct {
 	BucketLifespanDuration    time.Duration
 	ExcludedBucketNames       []string
 	IsDryRun                  bool
-	BucketNameRegexp          regexp.Regexp
+	BucketNameRegexp          *regexp.Regexp
 	BucketObjectWorkersNumber int
 	LogLevel                  logrus.Level
 }
