@@ -304,6 +304,7 @@ fi
 
 shout "Apply override for central connector-service"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
+    --data "connector_service.central=true" \
     --data "connector-service.deployment.args.central=true" \
     --data "connector-service.tests.central=true" \
     --data "connection-token-handler.tests.central=true"
