@@ -57,9 +57,9 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
-		givenJobName string
-		expPresets   []tester.Preset
-		expJobImage  string
+		givenJobName         string
+		expPresets           []tester.Preset
+		expJobImage          string
 		expRunIfChangedRegex string
 	}{
 		"Should contains the kyma-integration job": {
@@ -69,7 +69,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
 			},
 
-			expJobImage: tester.ImageBootstrap001,
+			expJobImage:          tester.ImageBootstrap001,
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 		},
 		"Should contains the gke-integration job": {
@@ -80,7 +80,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:          tester.ImageBootstrapHelm20181121,
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 		},
 		"Should contains the gke-central job": {
@@ -91,7 +91,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:          tester.ImageBootstrapHelm20181121,
 			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 		},
 	}
