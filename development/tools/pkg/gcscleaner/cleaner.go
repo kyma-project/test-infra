@@ -3,15 +3,16 @@ package gcscleaner
 import (
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
-	"google.golang.org/api/iterator"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/api/iterator"
 )
 
 // Config cleaner configuration

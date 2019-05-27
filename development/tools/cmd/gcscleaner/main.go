@@ -3,15 +3,16 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	_ "math/rand"
 	"regexp"
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // Config cleaner configuration

@@ -49,7 +49,7 @@ func NewBucketIterator(iterator *storage.BucketIterator) BucketIterator {
 
 //go:generate mockery -name=BucketObject -output=automock -outpkg=automock -case=underscore
 
-// BucketObject
+// BucketObject identifies GCS object to be deleted
 type BucketObject interface {
 	Name() string
 	Bucket() string

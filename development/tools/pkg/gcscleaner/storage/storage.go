@@ -1,11 +1,13 @@
 package storage
 
 import (
-	"cloud.google.com/go/storage"
 	"context"
+
+	"cloud.google.com/go/storage"
 )
 
 //go:generate mockery -name=ObjectAttrs -output=automock -outpkg=automock -case=underscore
+
 // ObjectAttrs a GCS bucket object metadata
 type ObjectAttrs interface {
 	Name() string
@@ -13,6 +15,7 @@ type ObjectAttrs interface {
 }
 
 //go:generate mockery -name=Query -output=automock -outpkg=automock -case=underscore
+
 // Query a bucket object filter query
 type Query interface {
 	Delimiter() string
@@ -21,16 +24,22 @@ type Query interface {
 }
 
 //go:generate mockery -name=ObjectIterator -output=automock -outpkg=automock -case=underscore
+
+// ObjectIterator iterate over bucket object metadata
 type ObjectIterator interface {
 	Next() (ObjectAttrs, error)
 }
 
 //go:generate mockery -name=ObjectHandle -output=automock -outpkg=automock -case=underscore
+
+// ObjectHandle allows to operate on GCS bucket object
 type ObjectHandle interface {
 	Delete(ctx context.Context) error
 }
 
 //go:generate mockery -name=BucketHandle -output=automock -outpkg=automock -case=underscore
+
+// BucketHandle allows to operate on
 type BucketHandle interface {
 	Object(name string) ObjectHandle
 	Objects(ctx context.Context, q Query) ObjectIterator
@@ -38,6 +47,8 @@ type BucketHandle interface {
 }
 
 //go:generate mockery -name=Client -output=automock -outpkg=automock -case=underscore
+
+// Client provides interaction with GCS
 type Client interface {
 	Bucket(bucketName string) BucketHandle
 	Buckets(ctx context.Context, projectID string) BucketIterator
