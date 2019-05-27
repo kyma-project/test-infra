@@ -37,15 +37,6 @@ type ObjectHandle interface {
 	Delete(ctx context.Context) error
 }
 
-//go:generate mockery -name=BucketHandle -output=automock -outpkg=automock -case=underscore
-
-// BucketHandle allows to operate on
-type BucketHandle interface {
-	Object(name string) ObjectHandle
-	Objects(ctx context.Context, q Query) ObjectIterator
-	Delete(ctx context.Context) (err error)
-}
-
 //go:generate mockery -name=Client -output=automock -outpkg=automock -case=underscore
 
 // Client provides interaction with GCS
@@ -70,24 +61,6 @@ type client struct {
 
 func (r client) Close() error {
 	return r.client.Close()
-}
-
-type bucketHandle struct {
-	bucketHandle *storage.BucketHandle
-}
-
-func (r bucketHandle) Object(name string) ObjectHandle {
-	return r.bucketHandle.Object(name)
-}
-
-func (r bucketHandle) Objects(ctx context.Context, q Query) ObjectIterator {
-	return objectIterator{
-		objectIterator: r.bucketHandle.Objects(ctx, nil),
-	}
-}
-
-func (r bucketHandle) Delete(ctx context.Context) (err error) {
-	return r.bucketHandle.Delete(ctx)
 }
 
 func (r client) Bucket(bucketName string) BucketHandle {

@@ -1,6 +1,36 @@
 package storage
 
-import "cloud.google.com/go/storage"
+import (
+	"cloud.google.com/go/storage"
+	"context"
+)
+
+//go:generate mockery -name=BucketHandle -output=automock -outpkg=automock -case=underscore
+
+// BucketHandle allows to operate on
+type BucketHandle interface {
+	Object(name string) ObjectHandle
+	Objects(ctx context.Context, q Query) ObjectIterator
+	Delete(ctx context.Context) (err error)
+}
+
+type bucketHandle struct {
+	bucketHandle *storage.BucketHandle
+}
+
+func (r bucketHandle) Object(name string) ObjectHandle {
+	return r.bucketHandle.Object(name)
+}
+
+func (r bucketHandle) Objects(ctx context.Context, q Query) ObjectIterator {
+	return objectIterator{
+		objectIterator: r.bucketHandle.Objects(ctx, nil),
+	}
+}
+
+func (r bucketHandle) Delete(ctx context.Context) (err error) {
+	return r.bucketHandle.Delete(ctx)
+}
 
 //go:generate mockery -name=BucketAttrs -output=automock -outpkg=automock -case=underscore
 
