@@ -57,10 +57,12 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
-		givenJobName         string
-		expPresets           []tester.Preset
-		expJobImage          string
-		expRunIfChangedRegex string
+		givenJobName            string
+		expPresets              []tester.Preset
+		expJobImage             string
+		expRunIfChangedRegex    string
+		expRunIfChangedPaths    []string
+		expNotRunIfChangedPaths []string
 	}{
 		"Should contains the kyma-integration job": {
 			givenJobName: "pre-master-kyma-integration",
@@ -71,6 +73,14 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 
 			expJobImage:          tester.ImageBootstrap001,
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
 		},
 		"Should contains the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
@@ -82,6 +92,14 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 			expJobImage:          tester.ImageBootstrapHelm20181121,
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
 		},
 		"Should contains the gke-central job": {
 			givenJobName: "pre-master-kyma-gke-central-connector",
@@ -93,6 +111,15 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 			expJobImage:          tester.ImageBootstrapHelm20181121,
 			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/application-connector/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+				"resources/test/values.yaml",
+			},
 		},
 	}
 
@@ -110,10 +137,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
-			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/application-connector/values.yaml")
-			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
-			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -123,6 +146,12 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the job specific expectation
 			assert.Equal(t, tc.expJobImage, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
+			for _, path := range tc.expRunIfChangedPaths {
+				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
+			}
+			for _, path := range tc.expNotRunIfChangedPaths {
+				tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, path)
+			}
 		})
 	}
 }
