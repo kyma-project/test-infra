@@ -87,6 +87,7 @@ COPY prow/scripts/cluster-integration/helpers/deprovision-gke-cluster.sh /test-i
 COPY prow/scripts/cluster-integration/helpers/get-helm-certs.sh /test-infra/prow/scripts/cluster-integration/helpers/get-helm-certs.sh
 COPY prow/scripts/cluster-integration/helpers/install-kyma.sh /test-infra/prow/scripts/cluster-integration/helpers/install-kyma.sh
 COPY prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh
+COPY prow/scripts/cluster-integration/helpers/create-config-map.sh /test-infra/prow/scripts/cluster-integration/helpers/create-config-map.sh
 
 RUN mkdir /perf-tests
 
