@@ -166,7 +166,7 @@ function updateAz() {
     shout "Update az"
     date
 
-    apt-get update && apt-get --only-upgrade install -y azure-cli
+    apt-get update && apt-get --only-upgrade install -y azure-cli=2.0.62-1~stretch
 }
 
 function createPublicIPandDNS() {
