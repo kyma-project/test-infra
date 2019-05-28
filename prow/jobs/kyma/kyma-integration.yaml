@@ -845,7 +845,7 @@ periodics:
             readOnly: true
         env:
           - name: RS_GROUP
-            value: "kyma-nightly-aks"
+            value: "kyma-nightly-aks-nosed"
           - name: REGION
             value: "northeurope"
           - name: INPUT_CLUSTER_NAME
