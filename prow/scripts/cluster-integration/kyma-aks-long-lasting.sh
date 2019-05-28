@@ -162,6 +162,13 @@ function azureAuthenticating() {
     az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
+function updateAz() {
+    shout "Update az"
+    date
+
+    apt-get update && apt-get --only-upgrade install -y azure-cli
+}
+
 function createPublicIPandDNS() {
     CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
@@ -312,6 +319,7 @@ function installKyma() {
 }
 
 init
+updateAz
 azureAuthenticating
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
