@@ -66,6 +66,8 @@ PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
 trap cleanup EXIT INT
 
@@ -400,6 +402,10 @@ createCluster
 installKyma
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+# creates a config map which provides the testing bundles
+injectTestingBundles
+trap removeTestingBundles ERR EXIT
 
 createTestResources
 
