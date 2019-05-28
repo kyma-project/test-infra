@@ -5,6 +5,14 @@ The purpose of the Stability Checker is to check if a cluster is stable.
 To ensure the cluster's stability, install the Stability Checker in the cluster. 
 It runs a testing script in a loop and sends notifications with the test executions summary on a Slack channel.
 
+## Prerequisites
+To set up the project, use these tools:
+* Version 1.11.4 of [Go](https://golang.org/dl/)
+* Version v0.5.0 of [Dep](https://github.com/golang/dep)
+* The latest version of [Docker](https://www.docker.com/)
+
+These versions are compliant with the `buildpack` used on Prow. For more information read [this](https://github.com/kyma-project/test-infra/blob/master/prow/images/buildpack-golang/README.md) document.
+
 ## Installation
 Install the Stability Checker on the Kyma cluster as a Helm chart. Find the chart definition in the `deploy/chart` directory.
 1. Configure kubectl and helm to point to your cluster by specifying the **KUBECONFIG** environment variable. 

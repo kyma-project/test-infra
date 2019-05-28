@@ -9,7 +9,12 @@ The program runs outside of the cluster so it requires the `kubeconfig` file to 
 
 ## Prerequisites
 
-The `before-commit` script requires golint and Go in 1.9 version.
+To set up the project, use these tools:
+* Version 1.11.4 of [Go](https://golang.org/dl/)
+* Version v0.5.0 of [Dep](https://github.com/golang/dep)
+* The latest version of [Docker](https://www.docker.com/)
+
+These versions are compliant with the `buildpack` used on Prow. For more information read [this](https://github.com/kyma-project/test-infra/blob/master/prow/images/buildpack-golang/README.md) document.
 
 ## Usage
 
