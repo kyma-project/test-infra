@@ -836,7 +836,7 @@ periodics:
         secret:
           secretName: sa-stability-fluentd-storage-writer
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190227-a4164f9
+      - image: eu.gcr.io/kyma-project/test-infra/pr/kyma-cluster-infra:PR-1077
         securityContext:
           privileged: true
         volumeMounts:
