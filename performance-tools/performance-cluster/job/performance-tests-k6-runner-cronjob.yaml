@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
           - name: k6-runner
-            image: eu.gcr.io/kyma-project/develop/perf-test:4f9a46c0
+            image: eu.gcr.io/kyma-project/develop/perf-test:e8fd3acc
             imagePullPolicy: Always
             env:
             - name:  INFLUXDB_FQDN
