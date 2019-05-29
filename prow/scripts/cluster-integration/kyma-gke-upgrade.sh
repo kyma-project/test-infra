@@ -434,9 +434,8 @@ function upgradeKyma() {
         | kubectl apply -f-
     fi
 
-    shout "Trigger update with timeout ${KYMA_UPDATE_TIMEOUT}"
+    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
-    kubectl label installation/kyma-installation action=install --overwrite
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 
 
