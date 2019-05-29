@@ -231,7 +231,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
 # shellcheck disable=SC1090
   source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-and-export-letsencrypt-TLS-cert.sh"
 
-
+shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
 shout "Apply Kyma config"
 date
 
