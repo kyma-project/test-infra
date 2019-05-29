@@ -223,28 +223,46 @@ function installKyma() {
 
     KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
     echo "Apply Azure crb for healthz"
     kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
+    shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
     shout "Apply Kyma config"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
-        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-        | sed -e "s/__PROXY_EXCLUDE_IP_RANGES__/10.0.0.1/g" \
-        | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-        | sed -e "s#__TLS_CERT__#${TLS_CERT}#g" \
-        | sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
-        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-        | sed -e "s/__VERSION__/0.0.1/g" \
-        | sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
-        | sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
-        | sed -e "s/__.*__//g" \
+
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
         | kubectl apply -f-
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+        --data "global.proxy.excludeIPRanges=10.0.0.1" \
+        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+        --label "component=istio"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
+        --data "knative-serving.domainName=${DOMAIN}" \
+        --label "component=knative-serving"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "global.domainName=${DOMAIN}" \
+        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+        --data "global.tlsCrt=${TLS_CERT}" \
+        --data "global.tlsKey=${TLS_KEY}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+        --data "test.acceptance.ui.logging.enabled=true" \
+        --label "component=core"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
+        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
+        --label "component=logging"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
+        --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
+        --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+        --label "component=monitoring"
 
     waitUntilInstallerApiAvailable
 
