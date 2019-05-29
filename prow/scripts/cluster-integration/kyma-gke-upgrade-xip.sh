@@ -194,27 +194,28 @@ function installKyma() {
     kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
     "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
+     #TODO: Remove
+    shout "Simplified installation mode without kyma-config-cluster.yaml"
+
     NEW_INSTALL_PROCEDURE_SINCE="0.7.0"
     if [[ "$(printf '%s\n' "$NEW_INSTALL_PROCEDURE_SINCE" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_INSTALL_PROCEDURE_SINCE" ]]; then
         echo "Used Kyma release version is greater than or equal to 0.7.0. Using new way of installing Kyma release"
         curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
         kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-        sed -e "s/__SKIP_SSL_VERIFY__/true/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-            | sed -e "s/__.*__//g" \
-            | kubectl apply -f-
     else
         echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-        sed -e "s/__SKIP_SSL_VERIFY__/true/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-            | sed -e "s/__.*__//g" \
-            | kubectl apply -f-
     fi
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "cluster-users.users.adminGroup=" #TODO: Backward compatibility for releases <= 1.1.X
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+        --data "test.acceptance.ui.logging.enabled=true" \
+        --label "component=core"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
+        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
+        --label "component=logging"
 
     shout "Trigger installation with timeout ${KYMA_INSTALL_TIMEOUT}"
     date

@@ -143,7 +143,6 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Used to detect errors for logging purposes
@@ -183,7 +182,6 @@ fi
 CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
-
 shout "Install Tiller"
 date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
@@ -192,45 +190,35 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Apply Kyma config"
 date
 
+#TODO: Remove
+shout "Simplified installation mode without kyma-config-cluster.yaml"
+
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-central/downloaded-config.yaml
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
-
     kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
-
-    sed -e "s/__SKIP_SSL_VERIFY__/true/g" /tmp/kyma-gke-central/downloaded-config.yaml \
-        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
 else
     echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-    | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-    | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 fi
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
+    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
+    --label "component=logging"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
 shout "Apply override for central connector-service"
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: connector-service-central-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  connector-service.deployment.args.central: "true"
-  connector-service.tests.central: "true"
-  connection-token-handler.tests.central: "true"
-EOF
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
+    --data "connector-service.deployment.args.central=true" \
+    --data "connector-service.tests.central=true" \
+    --data "connection-token-handler.tests.central=true"
 
 shout "Trigger installation"
 date

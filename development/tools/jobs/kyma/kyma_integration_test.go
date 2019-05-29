@@ -57,9 +57,12 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
-		givenJobName string
-		expPresets   []tester.Preset
-		expJobImage  string
+		givenJobName            string
+		expPresets              []tester.Preset
+		expJobImage             string
+		expRunIfChangedRegex    string
+		expRunIfChangedPaths    []string
+		expNotRunIfChangedPaths []string
 	}{
 		"Should contains the kyma-integration job": {
 			givenJobName: "pre-master-kyma-integration",
@@ -68,7 +71,16 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
 			},
 
-			expJobImage: tester.ImageBootstrap001,
+			expJobImage:          tester.ImageBootstrap001,
+			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
 		},
 		"Should contains the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
@@ -78,7 +90,16 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:          tester.ImageBootstrapHelm20181121,
+			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
 		},
 		"Should contains the gke-central job": {
 			givenJobName: "pre-master-kyma-gke-central-connector",
@@ -88,7 +109,17 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
+			expJobImage:          tester.ImageBootstrapHelm20181121,
+			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/application-connector/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+				"resources/test/values.yaml",
+			},
 		},
 	}
 
@@ -105,11 +136,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// then
 			// the common expectation
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-			tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
-			tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
-			tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
+			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -119,6 +146,12 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the job specific expectation
 			assert.Equal(t, tc.expJobImage, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
+			for _, path := range tc.expRunIfChangedPaths {
+				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
+			}
+			for _, path := range tc.expNotRunIfChangedPaths {
+				tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, path)
+			}
 		})
 	}
 }
@@ -261,11 +294,12 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+	assert.Equal(t, "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/application-connector/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
 	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "resources/test/values.yaml")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -359,7 +393,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 15)
+	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -511,8 +545,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "6h")
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
-	// TODO: change to "#c4core-kyma-ci-force" when issue https://github.com/kyma-project/test-infra/issues/684 will be finished
-	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#test-alert-channel")
+	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnvFromSecret(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
 	expName = "kyma-gke-end-to-end-test-backup-restore"
@@ -564,7 +597,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Len(t, verTestPeriodic.Spec.Containers[0].Env, 3)
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	//TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
-	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-gopher-pr")
+	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#test-alert-channel")
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "OUT_OF_DATE_DAYS", "3")
 
 	expName = "kyma-gke-service-catalog-crd-periodic"

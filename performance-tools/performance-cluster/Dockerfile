@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get clean
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=219.0.1
+ENV CLOUD_SDK_VERSION=247.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
   CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -58,13 +58,23 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
 RUN mkdir /docker-graph
 
 
-RUN curl -Lo /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v1.10.0/bin/linux/amd64/kubectl && chmod +x /usr/bin/kubectl
-
 RUN apt-get install dirmngr
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61
 RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install k6
+RUN apt-get update && apt-get install k6 && rm -rf /var/lib/apt/lists/*
+
+# Install Helm
+ENV HELM_VERSION=v2.0.0
+
+ENV HELM_FILE_NAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
+ENV HELM_URL=https://storage.googleapis.com/kubernetes-helm/${HELM_FILE_NAME}
+
+RUN curl -o /tmp/$HELM_FILE_NAME ${HELM_URL} \
+  && tar -zxvf /tmp/${HELM_FILE_NAME} -C /tmp \
+  && mv /tmp/linux-amd64/helm /usr/local/bin/helm \
+  && rm -rf /tmp/linux-amd64/helm
+
+RUN helm init --client-only
 
 RUN mkdir /test-infra
 
@@ -77,6 +87,7 @@ COPY prow/scripts/cluster-integration/helpers/deprovision-gke-cluster.sh /test-i
 COPY prow/scripts/cluster-integration/helpers/get-helm-certs.sh /test-infra/prow/scripts/cluster-integration/helpers/get-helm-certs.sh
 COPY prow/scripts/cluster-integration/helpers/install-kyma.sh /test-infra/prow/scripts/cluster-integration/helpers/install-kyma.sh
 COPY prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh
+COPY prow/scripts/cluster-integration/helpers/create-config-map.sh /test-infra/prow/scripts/cluster-integration/helpers/create-config-map.sh
 
 RUN mkdir /perf-tests
 
