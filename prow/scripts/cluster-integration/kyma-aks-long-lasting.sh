@@ -85,18 +85,6 @@ function cleanup() {
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-        echo "Remove DNS Record for Remote Environments IP"
-        REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
-        REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-
-        REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
         echo "Remove DNS Record for Apiserver Proxy IP"
         APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
         APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
@@ -106,7 +94,7 @@ function cleanup() {
             if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
         fi
 
-        echo "Remove Cluster, IP Address for Ingressgateway, IP Address for Remote Environments"
+        echo "Remove Cluster, IP Address for Ingressgateway"
         az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -180,22 +168,6 @@ function createPublicIPandDNS() {
 
     GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
-
-    # IP address and DNS for Remote Environments
-    shout "Reserve IP Address for Remote Environments"
-	date
-
-    REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-    az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" -l "${REGION}" --allocation-method static
-
-    REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
-    echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-
-    shout "Create DNS Record for Remote Environments IP"
-    date
-
-    REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
-    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
 function addGithubDexConnector() {
@@ -262,7 +234,6 @@ function installKyma() {
         | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
         | sed -e "s/__PROXY_EXCLUDE_IP_RANGES__/10.0.0.1/g" \
         | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
         | sed -e "s#__TLS_CERT__#${TLS_CERT}#g" \
         | sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
         | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
