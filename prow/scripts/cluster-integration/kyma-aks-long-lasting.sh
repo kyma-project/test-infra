@@ -256,7 +256,6 @@ function installKyma() {
     echo "Apply Azure crb for healthz"
     kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
-    shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
     shout "Apply Kyma config"
 
     sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
@@ -266,10 +265,6 @@ function installKyma() {
         --data "global.proxy.excludeIPRanges=10.0.0.1" \
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
-        --data "knative-serving.domainName=${DOMAIN}" \
-        --label "component=knative-serving"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
         --data "global.domainName=${DOMAIN}" \
@@ -284,10 +279,6 @@ function installKyma() {
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-        --label "component=logging"
-
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
         --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
         --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
@@ -299,7 +290,6 @@ function installKyma() {
 	date
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-    kubectl label installation/kyma-installation action=install --overwrite
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 80m
 
     if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
