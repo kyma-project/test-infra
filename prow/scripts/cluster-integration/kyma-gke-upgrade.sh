@@ -263,12 +263,12 @@ function installKyma() {
     mkdir -p /tmp/kyma-gke-upgradeability
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
-    shout "Install Tiller from ${LAST_RELEASE_VERSION}"
+    shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
     date
     kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
     "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
-    shout "Apply Kyma config from ${LAST_RELEASE_VERSION}"
+    shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
     date
     kubectl create namespace "kyma-installer"
 
