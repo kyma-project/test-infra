@@ -47,8 +47,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 trap cleanupOnError EXIT INT
 
 #!Put cleanup code in this function!
@@ -231,9 +229,27 @@ export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
 # shellcheck disable=SC1090
   source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-and-export-letsencrypt-TLS-cert.sh"
 
-shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
 shout "Apply Kyma config"
 date
+
+kubectl create namespace "kyma-installer"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
 
 echo "Use released artifacts"
 wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml"
@@ -254,31 +270,6 @@ do
         exit 1
     fi
 done
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
---data "knative-serving.domainName=${DOMAIN}" \
---label "component=knative-serving"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-    --label "component=logging"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=${TLS_CERT}" \
-    --data "global.tlsKey=${TLS_KEY}"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --label "component=istio"
 
 shout "Trigger installation"
 date
