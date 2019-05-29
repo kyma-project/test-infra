@@ -298,6 +298,40 @@ presubmits: # runs on PRs
         path_alias: github.com/kyma-project/test-infra
         base_ref: release-1.1
 
+  - name: pre-master-kyma-gke-upgrade-migration-test
+    branches:
+      - master
+    skip_report: true
+    decorate: true
+    optional: true
+    path_alias: github.com/kyma-project/kyma
+    max_concurrency: 10
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-migration-test.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    labels:
+      preset-bot-github-token: "true"
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - org: Szymongib
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: migration-test-script
+
   - name: pre-master-kyma-gke-upgrade
     branches:
     - master
