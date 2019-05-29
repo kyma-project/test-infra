@@ -49,8 +49,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 trap cleanup EXIT INT
 
 #!Put cleanup code in this function!

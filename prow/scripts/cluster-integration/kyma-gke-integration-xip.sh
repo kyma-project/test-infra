@@ -142,7 +142,6 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"

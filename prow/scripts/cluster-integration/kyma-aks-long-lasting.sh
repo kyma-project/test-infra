@@ -55,7 +55,6 @@ export CLUSTER_SIZE="Standard_D4_v3"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
 export CLUSTER_K8S_VERSION="1.11"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
