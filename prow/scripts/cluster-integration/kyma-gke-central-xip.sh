@@ -190,8 +190,17 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Apply Kyma config"
 date
 
-#TODO: Remove
-shout "Simplified installation mode without kyma-config-cluster.yaml"
+kubectl create namespace "kyma-installer"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+shout "Apply override for central connector-service"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
+    --data "connector-service.deployment.args.central=true" \
+    --data "connector-service.tests.central=true" \
+    --data "connection-token-handler.tests.central=true"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
@@ -206,23 +215,8 @@ else
     | kubectl apply -f-
 fi
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-    --label "component=logging"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-shout "Apply override for central connector-service"
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
-    --data "connector-service.deployment.args.central=true" \
-    --data "connector-service.tests.central=true" \
-    --data "connection-token-handler.tests.central=true"
-
-shout "Trigger installation"
+shout "Installation triggered"
 date
-kubectl label installation/kyma-installation action=install --overwrite
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
