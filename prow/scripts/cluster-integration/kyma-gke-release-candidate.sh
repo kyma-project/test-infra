@@ -47,8 +47,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 trap cleanupOnError EXIT INT
 
 #!Put cleanup code in this function!
@@ -231,12 +229,29 @@ export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
 # shellcheck disable=SC1090
   source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-and-export-letsencrypt-TLS-cert.sh"
 
-
 shout "Apply Kyma config"
 date
 
+kubectl create namespace "kyma-installer"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
 echo "Use released artifacts"
-wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-config-cluster.yaml"
 wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml"
 
 # There is possibility of a race condition when applying kyma-installer-cluster.yaml
@@ -255,17 +270,6 @@ do
         exit 1
     fi
 done
-
-sed -e "s/__DOMAIN__/${DOMAIN}/g" kyma-config-cluster.yaml \
-    | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-    | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-    | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-    | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-    | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
 
 shout "Trigger installation"
 date
