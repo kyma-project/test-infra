@@ -40,7 +40,6 @@ if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 fi
 
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -184,8 +183,6 @@ function waitUntilInstallerApiAvailable() {
 
 function installKyma() {
 
-    shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
-
 	kymaUnsetVar=false
 
 	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS ; do
@@ -224,10 +221,6 @@ function installKyma() {
     sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
         | kubectl apply -f-
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
-        --data "knative-serving.domainName=${DOMAIN}" \
-        --label "component=knative-serving"
-
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
         --data "global.domainName=${DOMAIN}" \
         --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
@@ -236,10 +229,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-        --label "component=logging"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
         --data "global.tlsCrt=${TLS_CERT}" \
@@ -264,7 +253,6 @@ function installKyma() {
 	date
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-	kubectl label installation/kyma-installation action=install --overwrite
 	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then

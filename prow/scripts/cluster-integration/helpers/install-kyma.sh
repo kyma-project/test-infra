@@ -45,9 +45,6 @@ function installKyma() {
     KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
     INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
     INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-    PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
-    shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
 
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
         export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
@@ -66,17 +63,12 @@ function installKyma() {
     | kubectl apply -f-
 
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-
         # shellcheck disable=SC1090
         source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
           --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
           --label "component=istio"
-
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
-          --data "knative-serving.domainName=${DOMAIN}" \
-          --label "component=knative-serving"
 
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
             --data "global.domainName=${DOMAIN}" \
@@ -86,9 +78,7 @@ function installKyma() {
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
             --data "global.tlsCrt=${TLS_CERT}" \
             --data "global.tlsKey=${TLS_KEY}"
-
     else
-
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
             --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
     fi
@@ -96,10 +86,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-        --label "component=logging"
 
     waitUntilInstallerApiAvailable
 
@@ -111,7 +97,6 @@ function installKyma() {
     date
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-    kubectl label installation/kyma-installation action=install --overwrite
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
 

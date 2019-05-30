@@ -49,8 +49,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 trap cleanup EXIT INT
 
 #!Put cleanup code in this function!
@@ -262,24 +260,7 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 shout "Apply Kyma config"
 date
 
-shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
-
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
-else
-    echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
-fi
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
-    --data "knative-serving.domainName=${DOMAIN}" \
-    --label "component=knative-serving"
+kubectl create namespace "kyma-installer"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=${TLS_CERT}" \
@@ -298,10 +279,6 @@ fi
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-    --label "component=logging"
-
 shout "Apply override for central connector-service"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
     --data "tests.application_connector_tests.connector_service.central=true" \
@@ -309,9 +286,21 @@ shout "Apply override for central connector-service"
     --data "connector-service.tests.central=true" \
     --data "connection-token-handler.tests.central=true"
 
-shout "Trigger installation"
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    echo "Use released artifacts"
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
+else
+    echo "Manual concatenating yamls"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    | sed -e "s/__VERSION__/0.0.1/g" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+fi
+
+shout "Installation triggered"
 date
-kubectl label installation/kyma-installation action=install --overwrite
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
