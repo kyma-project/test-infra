@@ -18,7 +18,7 @@ func cleanFlags() {
 	argExcludedBucketNames = ""
 	argDryRun = false
 	argBucketNameRegexp = ""
-	argBucketObjectWorkerNumber = bucketObjectWorkerNumberDefault
+	argWorkersNumber = workerNumberDefault
 	argLogLevel = "info"
 }
 
@@ -29,34 +29,34 @@ func TestConfigRead(t *testing.T) {
 	const durationArgTag = "-duration"
 	const dryRunArgTag = "-dryRun"
 	const bucketNameRegexpArgTag = "-bucketNameRegexp"
-	const bucketObjectWorkerNumberTag = "-bucketObjectWorkerNumber"
+	const workersNumberTag = "-workerNumber"
 	const logLevelTag = "-logLevel"
 
 	tests := []struct {
-		args                             []string
-		expectedErr                      error
-		expectedProjectName              string
-		expectedDuration                 time.Duration
-		expectedExcludedNames            []string
-		expectedDryRun                   bool
-		expectedBucketNameRegex          *regexp.Regexp
-		expectedBucketObjectWorkerNumber int
-		expectedLogLevel                 logrus.Level
+		args                    []string
+		expectedErr             error
+		expectedProjectName     string
+		expectedDuration        time.Duration
+		expectedExcludedNames   []string
+		expectedDryRun          bool
+		expectedBucketNameRegex *regexp.Regexp
+		expectedWorkerNumber    int
+		expectedLogLevel        logrus.Level
 	}{
 		{
 			args: []string{
 				"cmd",
 				projectArgTag, "test",
 				bucketNameRegexpArgTag, "123",
-				bucketObjectWorkerNumberTag, "10",
+				workersNumberTag, "10",
 				logLevelTag, "debug",
 			},
-			expectedProjectName:              "test",
-			expectedDuration:                 2 * time.Hour,
-			expectedDryRun:                   false,
-			expectedBucketNameRegex:          regexp.MustCompile("123"),
-			expectedBucketObjectWorkerNumber: 10,
-			expectedLogLevel:                 logrus.DebugLevel,
+			expectedProjectName:     "test",
+			expectedDuration:        2 * time.Hour,
+			expectedDryRun:          false,
+			expectedBucketNameRegex: regexp.MustCompile("123"),
+			expectedWorkerNumber:    10,
+			expectedLogLevel:        logrus.DebugLevel,
 		},
 		{
 			args: []string{
@@ -66,12 +66,12 @@ func TestConfigRead(t *testing.T) {
 				dryRunArgTag,
 				bucketNameRegexpArgTag, "123",
 			},
-			expectedProjectName:              "test2",
-			expectedDuration:                 time.Minute,
-			expectedDryRun:                   true,
-			expectedBucketNameRegex:          regexp.MustCompile("123"),
-			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
-			expectedLogLevel:                 logrus.InfoLevel,
+			expectedProjectName:     "test2",
+			expectedDuration:        time.Minute,
+			expectedDryRun:          true,
+			expectedBucketNameRegex: regexp.MustCompile("123"),
+			expectedWorkerNumber:    workerNumberDefault,
+			expectedLogLevel:        logrus.InfoLevel,
 		},
 		{
 			args: []string{
@@ -81,13 +81,13 @@ func TestConfigRead(t *testing.T) {
 				excludedBucketsArgTag, "test4,test5,test6",
 				bucketNameRegexpArgTag, "123",
 			},
-			expectedProjectName:              "test3",
-			expectedDuration:                 time.Minute,
-			expectedExcludedNames:            []string{"test4", "test5", "test6"},
-			expectedDryRun:                   false,
-			expectedBucketNameRegex:          regexp.MustCompile("123"),
-			expectedBucketObjectWorkerNumber: bucketObjectWorkerNumberDefault,
-			expectedLogLevel:                 logrus.InfoLevel,
+			expectedProjectName:     "test3",
+			expectedDuration:        time.Minute,
+			expectedExcludedNames:   []string{"test4", "test5", "test6"},
+			expectedDryRun:          false,
+			expectedBucketNameRegex: regexp.MustCompile("123"),
+			expectedWorkerNumber:    workerNumberDefault,
+			expectedLogLevel:        logrus.InfoLevel,
 		},
 		{
 			args: []string{
@@ -143,7 +143,7 @@ func TestConfigRead(t *testing.T) {
 			assert.Equal(test.expectedExcludedNames, config.ExcludedBucketNames)
 			assert.Equal(test.expectedDryRun, config.IsDryRun)
 			assert.Equal(test.expectedBucketNameRegex, config.BucketNameRegexp)
-			assert.Equal(test.expectedBucketObjectWorkerNumber, config.BucketObjectWorkersNumber)
+			assert.Equal(test.expectedWorkerNumber, config.BucketObjectWorkersNumber)
 			assert.Equal(test.expectedLogLevel, config.LogLevel)
 		})
 	}

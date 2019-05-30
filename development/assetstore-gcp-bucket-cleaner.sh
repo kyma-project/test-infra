@@ -22,6 +22,6 @@ fi
 go run "${DEVELOPMENT_DIR}"/tools/cmd/gcscleaner/main.go \
       -bucketNameRegexp  "${BUCKET_REGEXP_NAME}"\
       -excludedBuckets "${EXCLUDED_BUCKETS}"\
-      -bucketObjectWorkerNumber "${BUCKET_OBJECT_WORKERS_NUMBER}"\
+      -workerNumber "${BUCKET_OBJECT_WORKERS_NUMBER}"\
       -logLevel "${LOG_LEVEL}"
       "$@"

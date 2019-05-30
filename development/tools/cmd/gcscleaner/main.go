@@ -17,26 +17,26 @@ import (
 
 // Config cleaner configuration
 type Config struct {
-	ProjectName               string
-	BucketLifespanDuration    time.Duration
-	ExcludedBucketNames       []string
-	IsDryRun                  bool
-	BucketNameRegexp          regexp.Regexp
-	BucketObjectWorkersNumber int
-	LogLevel                  logrus.Level
+	ProjectName            string
+	BucketLifespanDuration time.Duration
+	ExcludedBucketNames    []string
+	IsDryRun               bool
+	BucketNameRegexp       regexp.Regexp
+	WorkersNumber          int
+	LogLevel               logrus.Level
 }
 
 var (
-	argProjectName                  string
-	argExcludedBucketNames          string
-	argBucketLifespanDuration       string
-	argBucketNameRegexp             string
-	argDryRun                       bool
-	argBucketObjectWorkerNumber     int
-	argLogLevel                     string
-	bucketLifespanDurationDefault   = "2h"
-	bucketObjectWorkerNumberDefault = 1
-	logLevelDefault                 = "info"
+	argProjectName                string
+	argExcludedBucketNames        string
+	argBucketLifespanDuration     string
+	argBucketNameRegexp           string
+	argDryRun                     bool
+	argWorkersNumber              int
+	argLogLevel                   string
+	bucketLifespanDurationDefault = "2h"
+	workerNumberDefault           = 1
+	logLevelDefault               = "info"
 	// ErrInvalidProjectName returned if project name argument is invalid
 	ErrInvalidProjectName = errors.New("invalid project name argument")
 	// ErrInvalidDuration returned if duration argument is invalid
@@ -105,7 +105,7 @@ func readCfg() (gcscleaner.Config, error) {
 	}
 	cfg.IsDryRun = argDryRun
 	cfg.BucketNameRegexp = bucketNameRegexp
-	cfg.BucketObjectWorkersNumber = argBucketObjectWorkerNumber
+	cfg.BucketObjectWorkersNumber = argWorkersNumber
 	cfg.LogLevel = logLevel
 	return cfg, nil
 }
@@ -143,9 +143,9 @@ func init() {
 		"bucket name regexp pattern used to mach when deleted buckets")
 
 	flag.IntVar(
-		&argBucketObjectWorkerNumber,
-		"bucketObjectWorkerNumber",
-		bucketObjectWorkerNumberDefault,
+		&argWorkersNumber,
+		"workerNumber",
+		workerNumberDefault,
 		"the number of workers that will be used to delete bucket object")
 
 	flag.StringVar(
