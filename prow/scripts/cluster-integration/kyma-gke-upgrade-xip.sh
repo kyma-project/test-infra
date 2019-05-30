@@ -69,6 +69,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanup EXIT INT
 
+shout "Execute Job Guard"
+"${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+
 cleanup() {
     ## Save status of failed script execution
     EXIT_STATUS=$?

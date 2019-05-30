@@ -21,7 +21,7 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/bootstrap:0.0.1
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
       resources:
@@ -30,6 +30,7 @@ vm_job_template: &vm_job_template
           cpu: 50m
 
 vm_job_labels_template: &vm_job_labels_template
+  preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
@@ -41,7 +42,7 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -61,7 +62,7 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -81,7 +82,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -101,7 +102,7 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -122,7 +123,7 @@ gke_xip_job_template: &gke_xip_job_template
   always_run: false
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -142,7 +143,7 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -162,7 +163,7 @@ gke_xip_central_job_template: &gke_xip_central_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+    - image:  eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
       securityContext:
         privileged: true
       command:
@@ -176,6 +177,7 @@ gke_xip_central_job_template: &gke_xip_central_job_template
           cpu: 80m
 
 gke_job_labels_template: &gke_job_labels_template
+  preset-kyma-guard-bot-github-token: "true"
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
@@ -323,7 +325,6 @@ presubmits: # runs on PRs
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
-      preset-bot-github-token: "true"
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
@@ -339,7 +340,6 @@ presubmits: # runs on PRs
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
-      preset-bot-github-token: "true"
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
@@ -353,7 +353,6 @@ presubmits: # runs on PRs
     <<: *gke_upgrade_job_template
     always_run: false
     labels:
-      preset-bot-github-token: "true"
       preset-build-release: "true"
       <<: *gke_job_labels_template
     extra_refs:
@@ -365,7 +364,6 @@ presubmits: # runs on PRs
     <<: *gke_upgrade_job_template
     always_run: false
     labels:
-      preset-bot-github-token: "true"
       preset-build-release: "true"
       <<: *gke_job_labels_template
     extra_refs:
@@ -377,7 +375,6 @@ presubmits: # runs on PRs
     <<: *gke_upgrade_job_template
     always_run: false
     labels:
-      preset-bot-github-token: "true"
       preset-build-release: "true"
       <<: *gke_job_labels_template
     extra_refs:
@@ -449,7 +446,6 @@ presubmits: # runs on PRs
     - master
     <<: *gke_xip_upgrade_job_template
     labels:
-      preset-bot-github-token: "true"
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
@@ -506,7 +502,6 @@ postsubmits:
     branches:
       - master
     labels:
-      preset-bot-github-token: "true"
       preset-build-master: "true"
       <<: *gke_job_labels_template
     extra_refs:
