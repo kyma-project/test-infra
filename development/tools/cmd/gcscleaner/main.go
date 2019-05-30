@@ -6,7 +6,6 @@ import (
 	_ "math/rand"
 	"regexp"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
@@ -53,7 +52,7 @@ func main() {
 	rootCtx := context.Background()
 	cfg, err := readCfg()
 	if err != nil {
-		logrus.Fatal(errors.Wrap(err, "reading arguments"))
+		logrus.Fatal(errors.Wrap(err, "while reading arguments"))
 	}
 	logrus.SetLevel(cfg.LogLevel)
 	client, err := storage.NewClient(rootCtx)
@@ -64,8 +63,7 @@ func main() {
 	cleaner := gcscleaner.NewCleaner(client, cfg)
 	err = cleaner.DeleteOldBuckets(rootCtx)
 	if err != nil {
-		logrus.Warn(errors.Wrap(err, "deleting old buckets"))
-		syscall.Exit(1)
+		logrus.Fatal(errors.Wrap(err, "while deleting old buckets"))
 	}
 }
 

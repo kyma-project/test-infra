@@ -112,7 +112,7 @@ func (r Cleaner) deleteBucketObject(
 	objectName string) error {
 	msg := fmt.Sprintf("object deleted: %s", objectName)
 	if r.cfg.IsDryRun {
-		logrus.Debug(msg)
+		logrus.Debug("[dry-run] ", msg)
 		return nil
 	}
 	err := r.client.Bucket(bucketName).Object(objectName).Delete(ctx)
@@ -140,7 +140,7 @@ func (r Cleaner) iterateBucketObjectNames(
 				return
 			}
 			if err != nil {
-				errChan <- err
+				errChan <- errors.Wrap(err, "while iterating bucket object names")
 				return
 			}
 			bucketObjectChan <- storage.NewBucketObject(attrs.Bucket(), attrs.Name())
@@ -159,11 +159,10 @@ func (r Cleaner) deleteBucketObjects(
 				return
 			}
 			if err := r.deleteBucketObject(ctx, bo.Bucket(), bo.Name()); err != nil {
-				errChan <- err
+				errChan <- errors.Wrap(err, "while deleting bucket object")
 				ctx.Cancel()
 				return
 			}
-		default:
 		}
 	}
 }
@@ -200,7 +199,7 @@ func (r Cleaner) deleteBucket(ctx CancelableContext, bucketName string) error {
 		return err
 	}
 	if r.cfg.IsDryRun {
-		logrus.Info(`deleted bucket: `, bucketName)
+		logrus.Info(`[dry-run] deleted bucket: `, bucketName)
 		return nil
 	}
 	err = r.client.Bucket(bucketName).Delete(ctx)
