@@ -1,71 +1,75 @@
 package gcscleaner
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
+	"sync"
 	"time"
 
+	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
 )
 
-// DeleteBucketFunc deletes bucket with a given name
-type DeleteBucketFunc func(string) error
-
-// BucketNameGeneratorFunc returns next bucket name on each call
-type BucketNameGeneratorFunc func() (string, error)
-
 // Config cleaner configuration
 type Config struct {
-	ExcludedBucketNames    []string
-	BucketLifespanDuration time.Duration
-	RegTimestampSuffix     regexp.Regexp
+	ProjectName               string
+	BucketLifespanDuration    time.Duration
+	ExcludedBucketNames       []string
+	IsDryRun                  bool
+	BucketNameRegexp          *regexp.Regexp
+	BucketObjectWorkersNumber int
+	LogLevel                  logrus.Level
 }
 
-// Clean cleans up buckets created by Asset Store
-func Clean(
-	generateNextBucketName BucketNameGeneratorFunc,
-	deleteBucket DeleteBucketFunc,
-	cfg Config) error {
+// CancelableContext contains both context and it's Cancel function
+type CancelableContext struct {
+	context.Context
+	Cancel func()
+}
 
-	var result error
-	for {
-		bucketName, err := generateNextBucketName()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		if !shouldDeleteBucket(bucketName, time.Now().UnixNano(), cfg) {
-			continue
-		}
-		if err := deleteBucket(bucketName); err != nil {
-			logrus.Error(errors.Wrap(
-				err,
-				fmt.Sprintf(`"deleting bucket %s"`, bucketName)),
-			)
-			result = ErrWhileDelBuckets
-		}
-		logrus.Info(fmt.Sprintf(`bucket: '%s' deleted`, bucketName))
+// NewCancelableContext creates new CancelableContext
+func NewCancelableContext(ctx context.Context) CancelableContext {
+	cancelableCtx, cancel := context.WithCancel(ctx)
+	return CancelableContext{
+		Context: cancelableCtx,
+		Cancel:  cancel,
 	}
-	return result
 }
 
-func shouldDeleteBucket(bucketName string, now int64, cfg Config) bool {
+// Cleaner cleans GCP buckets
+type Cleaner struct {
+	ctx    context.Context
+	client storage.Client
+	cfg    Config
+}
 
-	for _, excludedBucketName := range cfg.ExcludedBucketNames {
+// NewCleaner creates cleaner
+func NewCleaner(client storage.Client, cfg Config) Cleaner {
+	return Cleaner{
+		client: client,
+		cfg:    cfg,
+	}
+}
+
+func (r Cleaner) shouldDeleteBucket(bucketName string, now int64) bool {
+	for _, excludedBucketName := range r.cfg.ExcludedBucketNames {
 		if excludedBucketName != bucketName {
 			continue
 		}
+		logrus.Info(fmt.Sprintf(
+			"skipping bucket '%s', bucket is excluded",
+			bucketName),
+		)
 		return false
 	}
-
-	timestampSuffix := extractTimestampSuffix(bucketName, cfg.RegTimestampSuffix)
+	timestampSuffix := r.extractTimestampSuffix(bucketName)
 	if timestampSuffix == nil {
-		logrus.Debug(fmt.Sprintf(
+		logrus.Info(fmt.Sprintf(
 			"skipping bucket '%s', no timestamp",
 			bucketName),
 		)
@@ -73,27 +77,28 @@ func shouldDeleteBucket(bucketName string, now int64, cfg Config) bool {
 	}
 	timestamp, err := strconv.ParseInt(*timestampSuffix, 32, 0)
 	if err != nil {
-		logrus.Debug(fmt.Sprintf(
+		logrus.Info(fmt.Sprintf(
 			"skipping bucket '%s', unable to parse timestamp",
 			bucketName),
 		)
 		return false
 	}
-	if now-timestamp < int64(cfg.BucketLifespanDuration) {
-		logrus.Debug(fmt.Sprintf(
+	duration := now - timestamp
+	if duration < int64(r.cfg.BucketLifespanDuration) {
+		logrus.Info(fmt.Sprintf(
 			"bucket: '%s' is %s old and will not be deleted, the duration: '%s' was not exceeded",
 			bucketName,
-			time.Duration(now-timestamp),
-			cfg.BucketLifespanDuration),
+			time.Duration(duration),
+			r.cfg.BucketLifespanDuration),
 		)
 		return false
 	}
-	logrus.Debug(fmt.Sprintf(`bucket: '%s' will be deleted`, bucketName))
+	logrus.Debug(fmt.Sprintf(`bucket: '%s' was created %s ago and will be deleted`, bucketName, time.Duration(duration)))
 	return true
 }
 
-func extractTimestampSuffix(name string, regTimestampSuffix regexp.Regexp) *string {
-	submatch := regTimestampSuffix.FindSubmatch([]byte(name))
+func (r Cleaner) extractTimestampSuffix(name string) *string {
+	submatch := r.cfg.BucketNameRegexp.FindSubmatch([]byte(name))
 	if len(submatch) < 2 {
 		return nil
 	}
@@ -101,18 +106,137 @@ func extractTimestampSuffix(name string, regTimestampSuffix regexp.Regexp) *stri
 	return &result
 }
 
-// NewConfig creates new cleaner configuration
-func NewConfig(
-	bucketNameRegexp regexp.Regexp,
-	excludedBucketNames []string,
-	bucketLifespanDuration time.Duration) Config {
+func (r Cleaner) deleteBucketObject(
+	ctx context.Context,
+	bucketName string,
+	objectName string) error {
+	msg := fmt.Sprintf("object deleted: %s", objectName)
+	if r.cfg.IsDryRun {
+		logrus.Debug("[dry-run] ", msg)
+		return nil
+	}
+	err := r.client.Bucket(bucketName).Object(objectName).Delete(ctx)
+	logrus.Debug(msg)
+	return err
+}
 
-	return Config{
-		RegTimestampSuffix:     bucketNameRegexp,
-		ExcludedBucketNames:    excludedBucketNames,
-		BucketLifespanDuration: bucketLifespanDuration,
+func (r Cleaner) iterateBucketObjectNames(ctx context.Context, bucketName string, bucketObjectChan chan storage.BucketObject, errChan chan error) {
+	defer close(bucketObjectChan)
+
+	bucket := r.client.Bucket(bucketName)
+	objectIterator := bucket.Objects(ctx, nil)
+	for {
+		select {
+		case <-ctx.Done():
+			errChan <- ctx.Err()
+			return
+		default:
+			attrs, err := objectIterator.Next()
+			if err == iterator.Done {
+				return
+			}
+			if err != nil {
+				errChan <- errors.Wrap(err, "while iterating bucket object names")
+				return
+			}
+			bucketObjectChan <- storage.NewBucketObject(attrs.Bucket(), attrs.Name())
+		}
 	}
 }
 
-// ErrWhileDelBuckets returned when error occurred while deleting one or more buckets
-var ErrWhileDelBuckets = errors.New("error while deleting bucket")
+func (r Cleaner) deleteBucketObjects(ctx CancelableContext, bucketObjectChan chan storage.BucketObject, errChan chan error) {
+	for {
+		select {
+		case bo, ok := <-bucketObjectChan:
+			if !ok {
+				return
+			}
+			if err := r.deleteBucketObject(ctx, bo.Bucket(), bo.Name()); err != nil {
+				errChan <- errors.Wrap(err, "while deleting bucket object")
+				ctx.Cancel()
+				return
+			}
+		}
+	}
+}
+
+// DeleteOldBuckets deletes old buckets within GCP project
+func (r Cleaner) DeleteOldBuckets(rootCtx context.Context) error {
+	bucketIterator := r.client.Buckets(rootCtx, r.cfg.ProjectName)
+	var errorMessages []string
+	for {
+		bucketAttrs, err := bucketIterator.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		if !r.shouldDeleteBucket(bucketAttrs.Name(), time.Now().UnixNano()) {
+			continue
+		}
+		cancelableCtx := NewCancelableContext(rootCtx)
+		err = r.deleteBucket(cancelableCtx, bucketAttrs.Name())
+		if err != nil {
+			errorMessages = append(errorMessages, err.Error())
+		}
+	}
+	return r.parseErrors(errorMessages)
+}
+
+func (r Cleaner) deleteBucket(ctx CancelableContext, bucketName string) error {
+	errChan := make(chan error)
+	go r.deleteAllObjects(ctx, bucketName, errChan)
+	err := r.collectErrors(errChan)
+	if err != nil {
+		return err
+	}
+	if r.cfg.IsDryRun {
+		logrus.Info(`[dry-run] deleted bucket: `, bucketName)
+		return nil
+	}
+	err = r.client.Bucket(bucketName).Delete(ctx)
+	if err != nil {
+		message := fmt.Sprintf(`deleting bucket %s`, bucketName)
+		return errors.Wrap(err, message)
+	}
+	return nil
+}
+
+func (r Cleaner) collectErrors(errChan chan error) error {
+	var errorMessages []string
+	for err := range errChan {
+		errorMessages = append(errorMessages, err.Error())
+	}
+	return r.parseErrors(errorMessages)
+}
+
+func (r Cleaner) parseErrors(errorMessages []string) error {
+	if len(errorMessages) == 0 {
+		return nil
+	}
+	errorMessage := strings.Join(errorMessages, "\n")
+	return fmt.Errorf(errorMessage)
+}
+
+func (r Cleaner) deleteAllObjects(ctx CancelableContext, bucketName string, errChan chan error) {
+	defer close(errChan)
+
+	bucketObjectChan := make(chan storage.BucketObject)
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(1)
+	go func() {
+		defer waitGroup.Done()
+		r.iterateBucketObjectNames(ctx, bucketName, bucketObjectChan, errChan)
+	}()
+
+	for i := 0; i < r.cfg.BucketObjectWorkersNumber; i++ {
+		waitGroup.Add(1)
+		go func() {
+			defer waitGroup.Done()
+			r.deleteBucketObjects(ctx, bucketObjectChan, errChan)
+		}()
+	}
+	waitGroup.Wait()
+}
