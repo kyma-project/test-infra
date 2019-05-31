@@ -120,11 +120,7 @@ func (r Cleaner) deleteBucketObject(
 	return err
 }
 
-func (r Cleaner) iterateBucketObjectNames(
-	ctx context.Context,
-	bucketName string,
-	bucketObjectChan chan storage.BucketObject,
-	errChan chan error) {
+func (r Cleaner) iterateBucketObjectNames(ctx context.Context, bucketName string, bucketObjectChan chan storage.BucketObject, errChan chan error) {
 	defer close(bucketObjectChan)
 
 	bucket := r.client.Bucket(bucketName)
@@ -148,10 +144,7 @@ func (r Cleaner) iterateBucketObjectNames(
 	}
 }
 
-func (r Cleaner) deleteBucketObjects(
-	ctx CancelableContext,
-	bucketObjectChan chan storage.BucketObject,
-	errChan chan error) {
+func (r Cleaner) deleteBucketObjects(ctx CancelableContext, bucketObjectChan chan storage.BucketObject, errChan chan error) {
 	for {
 		select {
 		case bo, ok := <-bucketObjectChan:
@@ -226,10 +219,7 @@ func (r Cleaner) parseErrors(errorMessages []string) error {
 	return fmt.Errorf(errorMessage)
 }
 
-func (r Cleaner) deleteAllObjects(
-	ctx CancelableContext,
-	bucketName string,
-	errChan chan error) {
+func (r Cleaner) deleteAllObjects(ctx CancelableContext, bucketName string, errChan chan error) {
 	defer close(errChan)
 
 	bucketObjectChan := make(chan storage.BucketObject)

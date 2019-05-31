@@ -171,10 +171,7 @@ func TestCleaner_DeleteOldBuckets_ErrDeleteObject(t *testing.T) {
 	assert.Expect(err).NotTo(gomega.BeNil())
 }
 
-func getTestObjectIterator(
-	attrs *automock.ObjectAttrs,
-	testObjectName string,
-	bucketName string) *automock.ObjectIterator {
+func getTestObjectIterator(attrs *automock.ObjectAttrs, testObjectName string, bucketName string) *automock.ObjectIterator {
 	attrs.
 		On("Name").
 		Return(testObjectName).
