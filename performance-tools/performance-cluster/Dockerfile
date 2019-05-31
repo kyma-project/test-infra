@@ -96,6 +96,10 @@ COPY performance-tools/performance-cluster/cluster.sh /perf-tests/cluster.sh
 COPY performance-tools/performance-cluster/scripts/k6-runner.sh /perf-tests/scripts/k6-runner.sh
 COPY performance-tools/performance-cluster/scripts/kyma-gke-cluster.sh /perf-tests/scripts/kyma-gke-cluster.sh
 
+# fortio test scripts
+COPY performance-tools/istio-benchmark/ /perf-tests/istio-benchmark/
+
+
 WORKDIR /perf-tests
 
 CMD ["./runner.sh"]

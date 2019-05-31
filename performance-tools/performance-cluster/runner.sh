@@ -93,6 +93,11 @@ if [[ $TESTS_DIR == "" ]]; then
   exit 1
 fi
 
+# Deploying istio benchmark setup
+shout "Applying fortio deployment for istio benchmark tests"
+export ISTIO_NAMESPACE=istio-benchmark-ns
+${SCRIPTS_DIR}/istio-benchmark/setup.sh
+
 export PREREQ_PATH="${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}/prerequisites"
 export TESTS_PATH="${SRC_DIR}/kyma-project/kyma/${TESTS_DIR}/components"
 
@@ -101,6 +106,11 @@ for f in $(find "${PREREQ_PATH}" -type f -name '*setup.sh'); do
   shout "Running following file: $f"
   source $f
 done
+
+# run istio benchmark tests
+shout "Running fortio tests"
+python ${SCRIPTS_DIR}/istio-benchmark/runner/runner.py 16,64 1000,4000 180 --ingress fortioserver.${CLUSTER_DOMAIN_NAME}:443 --no-baseline --no-clientsidecar --no-serversidecar
+python ${SCRIPTS_DIR}/istio-benchmark/runner/runner.py 16,64 1000,4000 180 --serversidecar --baseline
 
 shout "Running K6 Scripts"
 

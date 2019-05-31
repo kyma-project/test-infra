@@ -1,0 +1,240 @@
+ {{- define "rbac" }}
+{{- $ruleName := (randAlpha 16) | lower }}
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRole
+metadata:
+  name: {{ $ruleName }}
+spec:
+  rules:
+  - services: ["{{ $.name }}.*"]
+    methods: ["*"]
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: ServiceRoleBinding
+metadata:
+  name: {{ $ruleName }}
+spec:
+  subjects:
+  - user: "{{ $.userName }}"
+  roleRef:
+    kind: ServiceRole
+    name: "{{ $ruleName }}"
+{{- end }}
+
+{{- define "fortio" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.name }}
+spec:
+  ports:
+  - name: http-echo
+    port: 8080
+    protocol: TCP
+  - name: grpc-ping
+    port: 8079
+    protocol: TCP
+  - name: http-echoa
+    port: 8078
+    protocol: TCP
+  - name: grpc-pinga
+    port: 8077
+    protocol: TCP
+  selector:
+    app: {{ $.name }}
+{{- if $.V.expose }}
+  type: LoadBalancer
+{{- end }}
+---
+{{- if $.Values.rbac.enabled }}
+{{- range $i, $e := until ($.Values.rbac.numPolicies|int) }}
+{{- $data := dict "name" $.name "Values" $.Values "userName" (randAlpha 16) }}
+{{- template "rbac" $data }}
+---
+{{- end }}
+{{- $data := dict "name" .name "Values" .Values "ruleName" (randAlphaNum 16) "userName" "*" }}
+  {{- template "rbac" $data }}
+---
+apiVersion: "rbac.istio.io/v1alpha1"
+kind: RbacConfig
+metadata:
+  name: default
+spec:
+  mode: 'ON'
+---
+{{- end }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ $.name }}
+  name: {{ $.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $.name }}
+  template:
+    metadata:
+      annotations:
+        {{- if $.Values.excludeOutboundIPRanges }}
+        traffic.sidecar.istio.io/excludeOutboundIPRanges: {{ $.Values.excludeOutboundIPRanges }}
+        {{- end }}
+        {{- if $.Values.includeOutboundIPRanges }}
+        traffic.sidecar.istio.io/includeOutboundIPRanges: {{ $.Values.includeOutboundIPRanges }}
+        {{- end }}
+        {{- if $.V.inject }}
+        sidecar.istio.io/inject: "{{ $.V.inject }}"
+        {{- end }}
+        sidecar.istio.io/proxyCPU: {{ $.Values.proxy.cpu }}
+        sidecar.istio.io/proxyMemory: {{ $.Values.proxy.memory }}
+      labels:
+        app: {{ $.name }}
+    spec:
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+      containers:
+      - name: captured
+        volumeMounts:
+        - name: shared-data
+          mountPath: /var/lib/fortio
+        image: {{ $.Values.fortioImage }}
+{{- if eq $.name "fortioclient" }}
+        args:
+        - report
+{{- end }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8079
+          protocol: TCP
+        resources:
+{{- if $.Values.appresources }}
+{{ toYaml $.Values.appresources | indent 10 }}
+{{- end }}
+      - name: shell
+        volumeMounts:
+        - name: shared-data
+          mountPath: /var/lib/fortio
+        image: tutum/curl:trusty
+        args:
+        - /bin/sleep
+        - infinity
+      - name: uncaptured
+        image: {{ $.Values.fortioImage }}
+        args:
+{{- if eq $.name "fortioclient" }}
+        - report
+{{- else }}
+        - server
+{{- end }}
+        - -http-port
+        - "8077"
+        - -grpc-port
+        - "8076"
+        - -redirect-port
+        - "8078"
+        resources:
+{{- if $.Values.appresources }}
+{{ toYaml $.Values.appresources | indent 10 }}
+{{- end }}
+---
+apiVersion: authentication.istio.io/v1alpha1
+kind: Policy
+metadata:
+  name: {{ $.name }}
+spec:
+  targets:
+  - name: {{ $.name }}
+  peers:
+  - mtls:
+      mode: PERMISSIVE
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ $.name }}
+spec:
+  host:  {{ $.name }}
+  trafficPolicy:
+    tls:
+      mode: {{ $.V.tlsmode }}
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ $.name }}
+spec:
+  hosts:
+  - {{ $.name }}.{{ $.Values.domain }}
+  gateways:
+  - {{ $.Values.gateway }}
+  http:
+  - route:
+    - destination:
+        host: {{ $.name }}
+        port:
+          number: 8080
+---
+{{- end }}
+
+{{- $fortioserver := dict "name" "fortioserver" "Values" .Values "V" .Values.server}}
+{{- template "fortio" $fortioserver }}
+{{- $fortioclient := dict "name" "fortioclient" "Values" .Values "V" .Values.client }}
+{{- template "fortio" $fortioclient }}
+
+{{/*
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Values.gateway }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - fortioserver.{{ .Values.domain }}
+    - fortioclient.{{ .Values.domain }}
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+  - hosts:
+    - '*'
+    port:
+      name: https-fortio
+      number: 443
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+
+---
+
+
+{{- if $.Values.cert }}
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: fortio-two-pod
+  namespace: istio-system
+spec:
+  secretName: istio-ingressgateway-certs-fortio-twopod
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: fortioclient.{{ .Values.domain }}
+  dnsNames:
+  - fortioclient.{{ .Values.domain }}
+  acme:
+    config:
+    - http01:
+        ingressClass: istio
+      domains:
+      - fortiotls.{{ .Values.domain }}
+      - fortioclient.{{ .Values.domain }}
+{{- end }}
+*/}}
