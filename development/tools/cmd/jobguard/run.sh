@@ -13,7 +13,7 @@ cd "${ROOT_PATH}" || exit 1
 dep ensure -v -vendor-only
 
 env GITHUB_TOKEN="${GITHUB_TOKEN}" \
-    INITIAL_SLEEP_TIME=2m \
+    INITIAL_SLEEP_TIME=1m \
     COMMIT_SHA="${PULL_PULL_SHA}" \
     JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
     PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \

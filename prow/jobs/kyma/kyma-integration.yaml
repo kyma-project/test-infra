@@ -194,6 +194,7 @@ presubmits: # runs on PRs
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
+      preset-build-pr: "true"
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref

@@ -51,8 +51,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanup EXIT INT
 
-shout "Execute Job Guard"
-"${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 #!Put cleanup code in this function!
 cleanup() {

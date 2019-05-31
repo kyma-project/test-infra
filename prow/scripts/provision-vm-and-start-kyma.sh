@@ -10,8 +10,10 @@ readonly TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
 
-shout "Execute Job Guard"
-"${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 cleanup() {
     ARG=$?
