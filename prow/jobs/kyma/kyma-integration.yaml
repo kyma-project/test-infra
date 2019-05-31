@@ -529,7 +529,7 @@ periodics:
           memory: 100Mi
           cpu: 50m
 - name: orphaned-assetstore-gcp-bucket-cleaner
-  cron: "05 * * * *" # "At 5 minutes past every hour"
+  cron: "00 00 * * *" # "At 00:00 each day"
   labels:
     preset-sa-gke-kyma-integration: "true"
     preset-gc-project-env: "true"
@@ -544,7 +544,7 @@ periodics:
       - "bash"
       args:
       - "-c"
-      - "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun"
+      - "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
       resources:
         requests:
           memory: 1Gi
