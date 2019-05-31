@@ -10,8 +10,6 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
 cd "${ROOT_PATH}" || exit 1
 
-dep ensure -v -vendor-only
-
 env GITHUB_TOKEN="${GITHUB_TOKEN}" \
     INITIAL_SLEEP_TIME=1m \
     COMMIT_SHA="${PULL_PULL_SHA}" \
