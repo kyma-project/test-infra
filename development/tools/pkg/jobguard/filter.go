@@ -35,7 +35,7 @@ func IsFailedStatus(status string) bool {
 	return status == StatusStateError || status == StatusStateFailure
 }
 
-// PendingStatusPredicate returns true for status that are in Pending state
+// IsPendingStatus returns true for status that are in Pending state
 func IsPendingStatus(status string) bool {
 	return status == StatusStatePending
 }

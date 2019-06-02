@@ -46,6 +46,8 @@ const (
 	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
 	// PresetWebsiteBotGithubToken means github token
 	PresetWebsiteBotGithubToken Preset = "preset-website-bot-github-token"
+	// PresetKymaGuardBotGithubToken represents the Kyma Guard Bot token for GitHub
+	PresetKymaGuardBotGithubToken Preset = "preset-kyma-guard-bot-github-token"
 	// PresetWebsiteBotGithubSSH means github ssh
 	PresetWebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
 	// PresetWebsiteBotGithubIdentity means github identity
@@ -77,6 +79,8 @@ const (
 	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
+	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 
