@@ -18,16 +18,6 @@ func NameRegexpPredicate(pattern string) (StatusPredicate, error) {
 	}, nil
 }
 
-// FailedStatusPredicate returns true for Statuses that have Error of Failure state
-func FailedStatusPredicate(in Status) bool {
-	return in.State == string(StatusStateError) || in.State == string(StatusStateFailure)
-}
-
-// PendingStatusPredicate returns true for Statuses that are in Pending state
-func PendingStatusPredicate(in Status) bool {
-	return in.State == string(StatusStatePending)
-}
-
 // Filter removes Statused that do not match predicate
 func Filter(in []Status, pred StatusPredicate) []Status {
 	var filteredStatuses []Status
@@ -38,4 +28,14 @@ func Filter(in []Status, pred StatusPredicate) []Status {
 		}
 	}
 	return filteredStatuses
+}
+
+// IsFailedStatus returns true for status that have Error of Failure state
+func IsFailedStatus(status string) bool {
+	return status == StatusStateError || status == StatusStateFailure
+}
+
+// PendingStatusPredicate returns true for Statuses that are in Pending state
+func IsPendingStatus(status string) bool {
+	return status == StatusStatePending
 }
