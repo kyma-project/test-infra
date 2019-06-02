@@ -10,9 +10,7 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
 cd "${ROOT_PATH}" || exit 1
 
-if [[ -z "${BOT_GITHUB_TOKEN}"  ]]  ; then
-        echo "Unset BOT_GITHUB_TOKEN"
-fi
+dep ensure -v -vendor-only
 
 env GITHUB_TOKEN="${GITHUB_TOKEN}" \
     INITIAL_SLEEP_TIME=1m \
