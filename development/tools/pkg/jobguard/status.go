@@ -3,11 +3,12 @@ package jobguard
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -103,7 +104,7 @@ func (f *GithubStatusFetcher) Do() (IndexedStatuses, error) {
 	return idxStatuses, nil
 }
 
-func (f *GithubStatusFetcher) handleIncorrectHTTPStatus(resp *http.Response) (IndexedStatuses, error){
+func (f *GithubStatusFetcher) handleIncorrectHTTPStatus(resp *http.Response) (IndexedStatuses, error) {
 	reqBody := ""
 	rawBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
