@@ -82,6 +82,5 @@ All artifacts are stored in the publicly available bucket under the `gs://kyma-d
 
 A directory with artifacts consists of the following files:
 - `kyma-installer-cluster.yaml` to deploy Kyma installer
-- `kyma-config-cluster.yaml` to configure Kyma installation
 - `is-installed.sh` to verify if Kyma installation process is finished
 - `tiller.yaml` to install Tiller
