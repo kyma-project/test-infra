@@ -171,7 +171,7 @@ func TestKymaGKEMinioGatewayJobPresubmit(t *testing.T) {
 	assert.False(t, actualJob.SkipReport)
 	assert.False(t, actualJob.AlwaysRun)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	assert.Empty(t, actualJob.RunIfChanged)
+	assert.Equal(t, `^(resources\/assetstore|installation)`, actualJob.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
