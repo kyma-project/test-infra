@@ -50,4 +50,4 @@ done
 cp stability-checker deploy/stability-checker/stability-checker
 cp logs-printer deploy/stability-checker/logs-printer
 
-docker build -t local/stability-checker:local deploy/stability-checker
+docker build -t local/develop/stability-checker:local deploy/stability-checker
