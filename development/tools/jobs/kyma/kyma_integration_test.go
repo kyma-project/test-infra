@@ -413,12 +413,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, assetstoreGcpBucketCleaner)
 	assert.Equal(t, expName, assetstoreGcpBucketCleaner.Name)
 	assert.True(t, assetstoreGcpBucketCleaner.Decorate)
-	assert.Equal(t, "05 * * * *", assetstoreGcpBucketCleaner.Cron)
+	assert.Equal(t, "00 00 * * *", assetstoreGcpBucketCleaner.Cron)
 	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, assetstoreGcpBucketCleaner.JobBase)
 
 	expName = "orphaned-clusters-cleaner"
