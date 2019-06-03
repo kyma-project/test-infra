@@ -14,4 +14,5 @@ helm install deploy/chart/stability-checker \
   --set stats.successfulTestRegexp="PASSED: ([0-9A-Za-z_-]+)" \
   --set pathToTestingScript="/data/input/testing-dummy.sh" \
   --namespace="kyma-system" \
-  --name="stability-checker"
+  --name="stability-checker" \
+  --tls
