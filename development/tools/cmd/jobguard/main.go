@@ -92,14 +92,14 @@ func waitForDependentJobs(statusFetcher *jobguard.GithubStatusFetcher, cfg confi
 		notYetReported, pending, failed := classifyJobs(ghJobs, expSuccessJobs)
 
 		switch {
+		case len(failed) > 0:
+			log.Fatalf("[ERROR] At least one job with name matching pattern '%s' failed: [%s]", cfg.JobNamePattern, printJobNames(failed))
 		case len(notYetReported) > 0:
 			log.Printf("Waiting for jobs [%s] to report their status", printJobNames(notYetReported))
 			return false, nil
 		case len(pending) > 0:
 			log.Printf("Waiting for jobs to finish: [%s]", printJobNames(pending))
 			return false, nil
-		case len(failed) > 0:
-			log.Fatalf("[ERROR] At least one job with name matching pattern '%s' failed: [%s]", cfg.JobNamePattern, printJobNames(failed))
 		}
 
 		log.Printf("[SUCCESS] All jobs with name matching pattern '%s' finished.", cfg.JobNamePattern)
