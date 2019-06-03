@@ -3,7 +3,6 @@
 # This script generates development artifacts:
 # - installer image
 # - kyma-installer image
-# - kyma-config-cluster.yaml
 # - kyma-installer-cluster.yaml
 # - is-installed.sh
 # Yaml files, as well as is-installed.sh script are stored on GCS.
