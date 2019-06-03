@@ -234,8 +234,7 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_minio_gateway_job_template
-    #run_if_changed: "^(resources\/assetstore|installation)" # uncomment when stable
-    always_run: false # remove when stable
+    run_if_changed: "^(resources\/assetstore|installation)"
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
