@@ -59,7 +59,7 @@ func TestKnativeServingAcceptanceReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml")
 			// THEN
 			var moduleName, execArg string
-			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08, tester.Release09) {
+			if tester.Release(currentRelease).Matches(tester.Release09) {
 				moduleName = "kyma-tests-knative-serving-acceptance"
 				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance"
 			} else {

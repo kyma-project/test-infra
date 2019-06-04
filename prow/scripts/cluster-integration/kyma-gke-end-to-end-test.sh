@@ -82,20 +82,6 @@ removeCluster() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
     fi
 
-	shout "Delete Remote Environments DNS Record"
-	date
-	REMOTEENVS_IP_ADDRESS=$(gcloud compute addresses describe "remoteenvs-${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
-	IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-    if [ ! -z "${REMOTEENVS_IP_ADDRESS_NAME}" ]; then
-        shout "Release Remote Environments IP Address"
-        date
-        IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
 
     shout "Delete temporary Kyma-Installer Docker image"
     date
@@ -128,7 +114,6 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 shout "Authenticate"
@@ -138,10 +123,6 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 
 GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${STANDARIZED_NAME}"
-
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 shout "Cleanup"
 date
@@ -166,17 +147,6 @@ echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 shout "Create DNS Record for Ingressgateway IP"
 date
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-
-
-shout "Reserve IP Address for Remote Environments"
-date
-REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-
-
-shout "Create DNS Record for Remote Environments IP"
-date
-IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
@@ -219,31 +189,38 @@ shout "Apply Kyma config"
 date
 
 # shellcheck disable=SC2002
-cat "${INSTALLER_YAML}" | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" | kubectl apply -f-
+sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
+    | kubectl apply -f-
 
 shout "Apply backup config"
 date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-cluster-backup-config.sh"
 
-shout "Manual concatenating yamls"
-"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
-| sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-| sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-| sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-| sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-| sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-| sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-| sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-| sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-| sed -e "s/__VERSION__/0.0.1/g" \
-| sed -e "s/__.*__//g" \
-| kubectl apply -f-
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
 
-shout "Trigger installation"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+
+shout "Installation triggered"
 date
-kubectl label installation/kyma-installation action=install
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Success cluster created"
 

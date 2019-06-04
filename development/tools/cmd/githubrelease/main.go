@@ -17,7 +17,6 @@ import (
 var (
 	targetCommit           = flag.String("targetCommit", "", "Target commitish [Required]")
 	bucketName             = flag.String("bucketName", "kyma-prow-artifacts", "Google bucket name where artifacts are stored [Optional]")
-	kymaConfigCluster      = flag.String("kymaConfigCluster", "kyma-config-cluster.yaml", "Filename for config cluster artifact [Optional]")
 	kymaInstallerCluster   = flag.String("kymaInstallerCluster", "kyma-installer-cluster.yaml", "Filename for installer cluster artifact [Optional]")
 	kymaConfigLocal        = flag.String("kymaConfigLocal", "kyma-config-local.yaml", "Filename for local config artifact [Optional]")
 	kymaInstallerLocal     = flag.String("kymaInstallerLocal", "kyma-installer-local.yaml", "Filename for installer local artifact [Optional]")
@@ -78,7 +77,7 @@ func main() {
 	}
 
 	// Github release
-	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaInstallerLocal, *kymaConfigCluster, *kymaInstallerCluster)
+	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaInstallerLocal, *kymaInstallerCluster)
 	if err != nil {
 		log.Fatal(err)
 	}

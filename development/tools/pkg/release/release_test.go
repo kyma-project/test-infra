@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	mockLocalArtifactName   = "mockcluster.yaml"
-	mockClusterArtifactName = "kyma-config-cluster.yaml"
-	mockChangelogFileName   = "change-record.md"
-	mockCommitish           = "a1b2c3d4"
+	mockLocalConfigArtifactName    = "kyma-config-local.yaml"
+	mockLocalInstallerArtifactName = "kyma-installer-local.yaml"
+	mockChangelogFileName          = "change-record.md"
+	mockCommitish                  = "a1b2c3d4"
 )
 
 func TestCreateRelease(t *testing.T) {
@@ -37,7 +37,7 @@ func TestCreateRelease(t *testing.T) {
 			Convey("should download three files from Google Storage, create a release and upload two assets", func() {
 
 				//when
-				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalArtifactName, mockClusterArtifactName)
+				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalConfigArtifactName, mockLocalInstallerArtifactName)
 
 				//then
 				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 3)
@@ -48,8 +48,8 @@ func TestCreateRelease(t *testing.T) {
 
 				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 2)
 				So(fakeGithub.AssetCount, ShouldEqual, 2)
-				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalArtifactName)
-				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockClusterArtifactName)
+				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalConfigArtifactName)
+				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockLocalInstallerArtifactName)
 
 			})
 		})
@@ -69,7 +69,7 @@ func TestCreateRelease(t *testing.T) {
 			Convey("should download three files from Google Storage, create a pre-release and upload two assets", func() {
 
 				//when
-				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalArtifactName, mockClusterArtifactName)
+				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalConfigArtifactName, mockLocalInstallerArtifactName)
 
 				//then
 				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 3)
@@ -80,8 +80,8 @@ func TestCreateRelease(t *testing.T) {
 
 				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 2)
 				So(fakeGithub.AssetCount, ShouldEqual, 2)
-				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalArtifactName)
-				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockClusterArtifactName)
+				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalConfigArtifactName)
+				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockLocalInstallerArtifactName)
 
 			})
 		})

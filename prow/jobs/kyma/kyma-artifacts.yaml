@@ -28,26 +28,6 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-rel07-kyma-artifacts
-    branches:
-    - release-0.7
-    <<: *job_template
-    always_run: false
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.7
-    labels:
-      <<: *job_labels_template
-  - name: pre-rel08-kyma-artifacts
-    branches:
-    - release-0.8
-    <<: *job_template
-    always_run: false
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-0.8
-    labels:
-      <<: *job_labels_template
   - name: pre-rel09-kyma-artifacts
     branches:
       - release-0.9
@@ -66,5 +46,15 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.0
+    labels:
+      <<: *job_labels_template
+  - name: pre-rel11-kyma-artifacts
+    branches:
+      - release-1.1
+    <<: *job_template
+    always_run: false
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.1
     labels:
       <<: *job_labels_template

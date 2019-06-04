@@ -26,7 +26,7 @@ func TestBranchProtection(t *testing.T) {
 	}{
 		{"kyma-project", "kyma", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "test-infra", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "website", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "website", "master", []string{"license/cla", "netlify/kyma-project/deploy-preview"}, 1},
 		{"kyma-project", "community", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "console", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "examples", "master", []string{"license/cla"}, 1},
@@ -65,12 +65,7 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
-
-			if tester.Release(relBranch).Matches(tester.Release07, tester.Release08) {
-				assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
-			} else {
-				assert.Len(t, p.RequiredStatusChecks.Contexts, 7)
-			}
+			assert.Len(t, p.RequiredStatusChecks.Contexts, 7)
 
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))

@@ -6,8 +6,16 @@ This folder contains the Bootstrap image for Prow infrastructure. Use it for a r
 
 The image consists of:
 
-- gcloud
+- curl
+- dnsutils
 - Docker
+- gcloud
+- gettext
+- git
+- jq
+- python
+- shellcheck
+- wget
 
 ## Installation
 

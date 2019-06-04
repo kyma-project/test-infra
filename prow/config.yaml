@@ -3,7 +3,7 @@ presets:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west3-a"
+        value: "europe-west3-b"
       - name: CLOUDSDK_COMPUTE_REGION
         value: "europe-west3"
   - labels:
@@ -218,6 +218,22 @@ presets:
         secretKeyRef:
           name: kyma-website-bot-zenhub-token
           key: token
+  # Kyma Guard Bot
+  - labels:
+      preset-kyma-guard-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-guard-bot-github-token
+            key: token
+  - labels:
+      preset-kyma-guard-bot-github-identity: "true"
+    env:
+      - name: BOT_GITHUB_EMAIL
+        value: "kymabotguard@gmail.com"
+      - name: BOT_GITHUB_USER
+        value: "kyma-guard-bot"
   - labels:
       preset-kyma-snyk-token: "true"
     env:
@@ -281,17 +297,17 @@ presets:
             name: nightly-github-integration-app-client-secret
             key: client-secret
   - labels:
-      preset-service-catalog-nightly-github-integration: "true"
+      preset-service-catalog-crd-periodic-github-integration: "true"
     env:
     - name: GITHUB_INTEGRATION_APP_CLIENT_ID
       valueFrom:
         secretKeyRef:
-          name: service-catalog-nightly-github-integration-app-client-id
+          name: service-catalog-crd-periodic-github-integration-app-client-id
           key: client-id
     - name: GITHUB_INTEGRATION_APP_CLIENT_SECRET
       valueFrom:
         secretKeyRef:
-          name: service-catalog-nightly-github-integration-app-client-secret
+          name: service-catalog-crd-periodic-github-integration-app-client-secret
           key: client-secret
   - labels:
       preset-weekly-github-integration: "true"
@@ -352,20 +368,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-0.7: # Already defined to ensure that check is defined for the new upgrade job
-              required_status_checks:
-                contexts:
-                - pre-rel07-kyma-integration
-                - pre-rel07-kyma-gke-integration
-                - pre-rel07-kyma-artifacts
-                - pre-rel07-kyma-installer
-            release-0.8: # Already defined to ensure that check is defined for the new upgrade job
-              required_status_checks:
-                contexts:
-                - pre-rel08-kyma-integration
-                - pre-rel08-kyma-gke-integration
-                - pre-rel08-kyma-artifacts
-                - pre-rel08-kyma-installer
             release-0.9:
               required_status_checks:
                 contexts:
@@ -384,6 +386,19 @@ branch-protection:
                   - pre-rel10-kyma-gke-central-connector
                   - pre-rel10-kyma-artifacts
                   - pre-rel10-kyma-installer
+            release-1.1:
+              required_status_checks:
+                contexts:
+                  - pre-rel11-kyma-integration
+                  - pre-rel11-kyma-gke-integration
+                  - pre-rel11-kyma-gke-upgrade
+                  - pre-rel11-kyma-gke-central-connector
+                  - pre-rel11-kyma-artifacts
+                  - pre-rel11-kyma-installer
+        website:
+          required_status_checks:
+            contexts:
+              - "netlify/kyma-project/deploy-preview"
         luigi:
           required_pull_request_reviews:
             dismiss_stale_reviews: false
@@ -391,26 +406,32 @@ branch-protection:
             required_approving_review_count: 2
     kyma-incubator:
       repos:
-        varkes:	
-          branches:	
-            master:	
-              protect: true	
-        kymactl:	
-          branches:	
-            master:	
-              protect: true	
-        vstudio-extension:	
-          branches:	
-            master:	
-              protect: true	
-        service-catalog-tester:	
-          branches:	
-            master:	
-              protect: true	
-        octopus:	
-          branches:	
-            master:	
+        varkes:
+          branches:
+            master:
               protect: true
+        kymactl:
+          branches:
+            master:
+              protect: true
+        vstudio-extension:
+          branches:
+            master:
+              protect: true
+        service-catalog-tester:
+          branches:
+            master:
+              protect: true
+        octopus:
+          branches:
+            master:
+              protect: true
+        compass:
+          branches:
+            master:
+              protect: true
+        marketplaces:
+          protect: true
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
