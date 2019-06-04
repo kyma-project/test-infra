@@ -72,15 +72,12 @@ function installKyma() {
 
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
             --data "global.domainName=${DOMAIN}" \
-            --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-            --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+            --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
             --data "global.tlsCrt=${TLS_CERT}" \
             --data "global.tlsKey=${TLS_KEY}"
-    else
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-            --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+
     fi
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
