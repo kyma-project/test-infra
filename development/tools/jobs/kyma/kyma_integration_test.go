@@ -170,6 +170,7 @@ func TestKymaGKEMinioGatewayJobPresubmit(t *testing.T) {
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.False(t, actualJob.AlwaysRun)
+	assert.False(t, actualJob.Optional)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.Equal(t, `^(resources\/assetstore|installation)`, actualJob.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
