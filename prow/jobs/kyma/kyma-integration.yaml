@@ -135,6 +135,32 @@ gke_xip_job_template: &gke_xip_job_template
         requests:
           memory: 200Mi
           cpu: 80m
+          
+gke_new_proj_job_template: &gke_new_proj_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  always_run: false
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west2-c"
+      - name: CLOUDSDK_CORE_PROJECT
+        value: "sap-kyma-prow-workloads"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
 
 gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
   skip_report: false
@@ -435,6 +461,17 @@ presubmits: # runs on PRs
     branches:
        - master
     <<: *gke_xip_job_template
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+  
+  - name: pre-master-kyma-integration-new-project
+    branches:
+       - master
+    <<: *gke_new_proj_job_template
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
