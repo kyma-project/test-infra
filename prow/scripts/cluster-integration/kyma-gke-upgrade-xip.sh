@@ -67,8 +67,6 @@ PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-trap cleanup EXIT INT
-
 cleanup() {
     ## Save status of failed script execution
     EXIT_STATUS=$?
@@ -112,6 +110,13 @@ cleanup() {
 
     exit "${EXIT_STATUS}"
 }
+
+trap cleanup EXIT INT
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 function generateAndExportClusterName() {
     readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')

@@ -49,8 +49,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-trap cleanup EXIT INT
-
 #!Put cleanup code in this function!
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -138,6 +136,13 @@ cleanup() {
 
     exit "${EXIT_STATUS}"
 }
+
+trap cleanup EXIT INT
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
