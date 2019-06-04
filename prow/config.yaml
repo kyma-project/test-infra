@@ -373,15 +373,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-0.9:
-              required_status_checks:
-                contexts:
-                  - pre-rel09-kyma-integration
-                  - pre-rel09-kyma-gke-integration
-                  - pre-rel09-kyma-gke-upgrade
-                  - pre-rel09-kyma-gke-central-connector
-                  - pre-rel09-kyma-artifacts
-                  - pre-rel09-kyma-installer
             release-1.0:
               required_status_checks:
                 contexts:
@@ -400,6 +391,15 @@ branch-protection:
                   - pre-rel11-kyma-gke-central-connector
                   - pre-rel11-kyma-artifacts
                   - pre-rel11-kyma-installer
+            release-1.2:
+              required_status_checks:
+                contexts:
+                  - pre-rel12-kyma-integration
+                  - pre-rel12-kyma-gke-integration
+                  - pre-rel12-kyma-gke-upgrade
+                  - pre-rel12-kyma-gke-central-connector
+                  - pre-rel12-kyma-artifacts
+                  - pre-rel12-kyma-installer
         website:
           required_status_checks:
             contexts:
