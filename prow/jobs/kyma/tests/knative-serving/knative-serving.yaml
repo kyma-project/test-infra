@@ -3,25 +3,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-job_template_pre_1_0: &job_template_pre_1_0
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
 job_template: &job_template
   skip_report: false
   decorate: true
@@ -59,17 +40,6 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel09-kyma-tests-knative-serving-acceptance
-      branches:
-        - release-0.9
-      <<: *job_template_pre_1_0
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-0.9
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
     - name: pre-rel10-kyma-tests-knative-serving
       branches:
         - release-1.0
@@ -89,6 +59,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.1
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+    - name: pre-rel12-kyma-tests-knative-serving
+      branches:
+        - release-1.2
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.2
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
