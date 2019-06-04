@@ -218,6 +218,22 @@ presets:
         secretKeyRef:
           name: kyma-website-bot-zenhub-token
           key: token
+  # Kyma Guard Bot
+  - labels:
+      preset-kyma-guard-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-guard-bot-github-token
+            key: token
+  - labels:
+      preset-kyma-guard-bot-github-identity: "true"
+    env:
+      - name: BOT_GITHUB_EMAIL
+        value: "kymabotguard@gmail.com"
+      - name: BOT_GITHUB_USER
+        value: "kyma-guard-bot"
   - labels:
       preset-kyma-snyk-token: "true"
     env:

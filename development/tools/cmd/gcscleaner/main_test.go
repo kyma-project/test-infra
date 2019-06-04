@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,6 +18,8 @@ func cleanFlags() {
 	argExcludedBucketNames = ""
 	argDryRun = false
 	argBucketNameRegexp = ""
+	argWorkersNumber = workerNumberDefault
+	argLogLevel = "info"
 }
 
 func TestConfigRead(t *testing.T) {
@@ -25,6 +29,8 @@ func TestConfigRead(t *testing.T) {
 	const durationArgTag = "-duration"
 	const dryRunArgTag = "-dryRun"
 	const bucketNameRegexpArgTag = "-bucketNameRegexp"
+	const workersNumberTag = "-workerNumber"
+	const logLevelTag = "-logLevel"
 
 	tests := []struct {
 		args                    []string
@@ -33,18 +39,24 @@ func TestConfigRead(t *testing.T) {
 		expectedDuration        time.Duration
 		expectedExcludedNames   []string
 		expectedDryRun          bool
-		expectedBucketNameRegex regexp.Regexp
+		expectedBucketNameRegex *regexp.Regexp
+		expectedWorkerNumber    int
+		expectedLogLevel        logrus.Level
 	}{
 		{
 			args: []string{
 				"cmd",
 				projectArgTag, "test",
 				bucketNameRegexpArgTag, "123",
+				workersNumberTag, "10",
+				logLevelTag, "debug",
 			},
 			expectedProjectName:     "test",
 			expectedDuration:        2 * time.Hour,
 			expectedDryRun:          false,
-			expectedBucketNameRegex: *regexp.MustCompile("123"),
+			expectedBucketNameRegex: regexp.MustCompile("123"),
+			expectedWorkerNumber:    10,
+			expectedLogLevel:        logrus.DebugLevel,
 		},
 		{
 			args: []string{
@@ -57,7 +69,9 @@ func TestConfigRead(t *testing.T) {
 			expectedProjectName:     "test2",
 			expectedDuration:        time.Minute,
 			expectedDryRun:          true,
-			expectedBucketNameRegex: *regexp.MustCompile("123"),
+			expectedBucketNameRegex: regexp.MustCompile("123"),
+			expectedWorkerNumber:    workerNumberDefault,
+			expectedLogLevel:        logrus.InfoLevel,
 		},
 		{
 			args: []string{
@@ -71,7 +85,9 @@ func TestConfigRead(t *testing.T) {
 			expectedDuration:        time.Minute,
 			expectedExcludedNames:   []string{"test4", "test5", "test6"},
 			expectedDryRun:          false,
-			expectedBucketNameRegex: *regexp.MustCompile("123"),
+			expectedBucketNameRegex: regexp.MustCompile("123"),
+			expectedWorkerNumber:    workerNumberDefault,
+			expectedLogLevel:        logrus.InfoLevel,
 		},
 		{
 			args: []string{
@@ -104,20 +120,31 @@ func TestConfigRead(t *testing.T) {
 			},
 			expectedErr: ErrInvalidBucketNameRegexp,
 		},
+		{
+			args: []string{
+				"cmd",
+				projectArgTag, "test5",
+				bucketNameRegexpArgTag, "123",
+				logLevelTag, "1213",
+			},
+			expectedErr: ErrInvalidLogLevel,
+		},
 	}
 	for i, test := range tests {
 		testName := fmt.Sprintf(`test %d: args:%s`, i, test.args[1:])
 		t.Run(testName, func(t *testing.T) {
 			cleanFlags()
 			os.Args = test.args
-			options, err := readOptions()
+			config, err := readCfg()
 			assert := assert.New(t)
 			assert.Equal(test.expectedErr, err)
-			assert.Equal(test.expectedProjectName, options.ProjectName)
-			assert.Equal(test.expectedDuration, options.BucketLifespanDuration)
-			assert.Equal(test.expectedExcludedNames, options.ExcludedBucketNames)
-			assert.Equal(test.expectedDryRun, options.DryRun)
-			assert.Equal(test.expectedBucketNameRegex, options.BucketNameRegexp)
+			assert.Equal(test.expectedProjectName, config.ProjectName)
+			assert.Equal(test.expectedDuration, config.BucketLifespanDuration)
+			assert.Equal(test.expectedExcludedNames, config.ExcludedBucketNames)
+			assert.Equal(test.expectedDryRun, config.IsDryRun)
+			assert.Equal(test.expectedBucketNameRegex, config.BucketNameRegexp)
+			assert.Equal(test.expectedWorkerNumber, config.BucketObjectWorkersNumber)
+			assert.Equal(test.expectedLogLevel, config.LogLevel)
 		})
 	}
 }

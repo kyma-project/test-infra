@@ -20,11 +20,11 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageBootstrap001, testContainer.Image)
+			assert.Equal(t, tester.ImageKymaClusterInfra20190528, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
 			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -44,11 +44,11 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetSaGKEKymaIntegration, tester.PresetGCProjectEnv, tester.PresetBuildRelease, tester.PresetDindEnabled, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-kyma-artifacts-bucket")
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetSaGKEKymaIntegration, tester.PresetGCProjectEnv, tester.PresetBuildRelease, tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-kyma-artifacts-bucket")
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageBootstrapHelm20181121, testContainer.Image)
+			assert.Equal(t, tester.ImageKymaClusterInfra20190528, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
@@ -59,7 +59,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName            string
 		expPresets              []tester.Preset
-		expJobImage             string
 		expRunIfChangedRegex    string
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
@@ -68,10 +67,9 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			givenJobName: "pre-master-kyma-integration",
 
 			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
+				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, tester.PresetBuildPr, "preset-sa-vm-kyma-integration",
 			},
 
-			expJobImage:          tester.ImageBootstrap001,
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/values.yaml",
@@ -87,10 +85,9 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildPr,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage:          tester.ImageBootstrapHelm20181121,
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/values.yaml",
@@ -106,10 +103,9 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildPr,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage:          tester.ImageBootstrapHelm20181121,
 			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/application-connector/values.yaml",
@@ -144,7 +140,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
-			assert.Equal(t, tc.expJobImage, actualJob.Spec.Containers[0].Image)
+			assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
 				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
@@ -170,14 +166,15 @@ func TestKymaGKEMinioGatewayJobPresubmit(t *testing.T) {
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.False(t, actualJob.AlwaysRun)
+	assert.False(t, actualJob.Optional)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	assert.Empty(t, actualJob.RunIfChanged)
+	assert.Equal(t, `^(resources\/assetstore|installation)`, actualJob.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"}, actualJob.Spec.Containers[0].Args)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, "preset-build-pr",
+		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-build-pr",
 		"preset-sa-gke-kyma-integration", "preset-gc-compute-envs",
 		"preset-gc-project-env", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket")
 }
@@ -198,10 +195,10 @@ func TestKymaGKEXipJobPresubmit(t *testing.T) {
 	assert.False(t, actualJob.AlwaysRun)
 	// SHOULD BE UNCOMMENTED: tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"}, actualJob.Spec.Containers[0].Args)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, "preset-build-pr",
+		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-build-pr",
 		"preset-sa-gke-kyma-integration", "preset-gc-compute-envs",
 		"preset-gc-project-env", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket")
 
@@ -223,10 +220,10 @@ func TestKymaGKEXipUpgradeJobsPresubmit(t *testing.T) {
 	assert.False(t, actualJob.AlwaysRun)
 	// SHOULD BE UNCOMMENTED: tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"}, actualJob.Spec.Containers[0].Args)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, "preset-build-pr", "preset-bot-github-token",
+		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-build-pr",
 		"preset-sa-gke-kyma-integration", "preset-gc-compute-envs",
 		"preset-gc-project-env", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket")
 
@@ -248,10 +245,10 @@ func TestKymaGKEXipCentralConnectorJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	// SHOULD BE UNCOMMENTED: tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"}, actualJob.Spec.Containers[0].Args)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, "preset-build-pr", "preset-sa-gke-kyma-integration",
+		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-build-pr", "preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket")
 }
 
@@ -276,11 +273,10 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
-		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-		"preset-bot-github-token")
+		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 }
 
 func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
@@ -305,9 +301,9 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 }
 
@@ -315,47 +311,40 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
 		expPresets   []tester.Preset
-		expJobImage  string
 	}{
 		"Should contains the kyma-integration job": {
 			givenJobName: "post-master-kyma-integration",
 
 			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration",
+				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
-
-			expJobImage: tester.ImageBootstrap001,
 		},
 		"Should contains the gke-integration job": {
 			givenJobName: "post-master-kyma-gke-integration",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
 		},
 		"Should contains the gke-upgrade job": {
 			givenJobName: "post-master-kyma-gke-upgrade",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-				"preset-bot-github-token",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
 		},
 		"Should contains the gke-central job": {
 			givenJobName: "post-master-kyma-gke-central-connector",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
-				tester.PresetDindEnabled, "preset-sa-gke-kyma-integration",
+				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expJobImage: tester.ImageBootstrapHelm20181121,
 		},
 	}
 
@@ -380,7 +369,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
-			assert.Equal(t, tc.expJobImage, actualJob.Spec.Containers[0].Image)
+			assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 		})
 	}
@@ -413,12 +402,12 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, assetstoreGcpBucketCleaner)
 	assert.Equal(t, expName, assetstoreGcpBucketCleaner.Name)
 	assert.True(t, assetstoreGcpBucketCleaner.Decorate)
-	assert.Equal(t, "05 * * * *", assetstoreGcpBucketCleaner.Cron)
+	assert.Equal(t, "00 00 * * *", assetstoreGcpBucketCleaner.Cron)
 	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, tester.PresetGCProjectEnv, tester.PresetSaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, assetstoreGcpBucketCleaner.JobBase)
 
 	expName = "orphaned-clusters-cleaner"

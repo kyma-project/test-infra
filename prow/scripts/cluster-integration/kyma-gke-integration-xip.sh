@@ -49,8 +49,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-trap cleanup EXIT INT
-
 #!Put cleanup code in this function!
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -95,6 +93,13 @@ cleanup() {
 
     exit "${EXIT_STATUS}"
 }
+
+trap cleanup EXIT INT
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
@@ -142,7 +147,6 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -189,8 +193,11 @@ kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-ad
 shout "Apply Kyma config"
 date
 
-#TODO: Remove
-shout "Simplified installation mode without kyma-config-cluster.yaml"
+kubectl create namespace "kyma-installer"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
@@ -205,17 +212,8 @@ else
     | kubectl apply -f-
 fi
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-    --label "component=logging"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-shout "Trigger installation"
+shout "Installation triggered"
 date
-kubectl label installation/kyma-installation action=install --overwrite
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"

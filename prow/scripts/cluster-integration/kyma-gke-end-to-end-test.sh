@@ -124,8 +124,6 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 shout "Cleanup"
 date
 cleanup
@@ -187,8 +185,6 @@ CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
-shout "Simplified installation mode without kyma-config-cluster.yaml" #TODO: Remove
-
 shout "Apply Kyma config"
 date
 
@@ -199,10 +195,6 @@ sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALL
 shout "Apply backup config"
 date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-cluster-backup-config.sh"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "knative-serving-overrides" \
-    --data "knative-serving.domainName=${DOMAIN}" \
-    --label "component=knative-serving"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=${TLS_CERT}" \
@@ -216,10 +208,6 @@ date
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-    --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-    --label "component=logging"
-
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
@@ -228,11 +216,11 @@ sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 
-shout "Trigger installation"
+shout "Installation triggered"
 date
-kubectl label installation/kyma-installation action=install --overwrite
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Success cluster created"
 

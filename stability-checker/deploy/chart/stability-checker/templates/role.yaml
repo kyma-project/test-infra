@@ -11,7 +11,13 @@ rules:
 
 - apiGroups: [""]
   resources: ["configmaps"]
-  verbs: ["get", "list"]
+  verbs: ["create", "get", "list"]
+
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["delete", "patch"]
+  resourceNames:
+    - "testing-bundles-repos"
 
 - apiGroups: [""]
   resources: ["pods"]
