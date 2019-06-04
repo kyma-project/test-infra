@@ -113,10 +113,11 @@ cleanup() {
 
 trap cleanup EXIT INT
 
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
-fi
+# TODO: temporary disabled
+#if [[ "${BUILD_TYPE}" == "pr" ]]; then
+#    shout "Execute Job Guard"
+#    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+#fi
 
 function generateAndExportClusterName() {
     readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
