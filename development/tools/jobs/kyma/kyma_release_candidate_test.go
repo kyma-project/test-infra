@@ -11,7 +11,7 @@ import (
 
 func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release09, tester.Release10}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release10}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {

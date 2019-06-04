@@ -11,6 +11,10 @@ import (
 func TestHelmBrokerReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
+			expectedImage := tester.ImageGolangBuildpack1_11
+			if tester.Release(currentRelease).Matches(tester.Release10, tester.Release11) {
+				expectedImage = tester.ImageGolangBuildpackLatest
+			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/helm-broker/helm-broker.yaml")
 			// THEN
 			require.NoError(t, err)
@@ -22,7 +26,7 @@ func TestHelmBrokerReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, expectedImage, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
 		})
 	}
 }
