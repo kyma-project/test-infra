@@ -40,6 +40,17 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
+  - name: pre-rel12-kyma-tools-velero-plugins
+    branches:
+      - release-1.2
+    <<: *job_template
+    always_run: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.2
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

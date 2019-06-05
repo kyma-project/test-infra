@@ -40,17 +40,6 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel09-kyma-tests-application-operator-tests
-    branches:
-      - release-0.9
-    <<: *job_template
-    always_run: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.9
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
   - name: pre-rel10-kyma-tests-application-operator-tests
     branches:
       - release-1.0
@@ -70,6 +59,17 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.1
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+  - name: pre-rel12-kyma-tests-application-operator-tests
+    branches:
+      - release-1.2
+    <<: *job_template
+    always_run: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.2
     labels:
       <<: *job_labels_template
       preset-build-release: "true"

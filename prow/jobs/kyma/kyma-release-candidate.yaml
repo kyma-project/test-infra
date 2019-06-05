@@ -56,3 +56,14 @@ postsubmits:
           base_ref: release-1.1
       labels:
         <<: *job_labels_template
+    - name: post-rel12-kyma-release-candidate
+      branches:
+        - release-1.2
+      <<: *job_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.2
+      labels:
+        <<: *job_labels_template

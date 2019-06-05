@@ -49,6 +49,10 @@ func TestEtcdTlsSetupReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
+			expectedImage := tester.ImageGolangBuildpack1_11
+			if tester.Release(currentRelease).Matches(tester.Release10, tester.Release11) {
+				expectedImage = tester.ImageGolangBuildpackLatest
+			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml")
 			// THEN
 			require.NoError(t, err)
@@ -60,7 +64,7 @@ func TestEtcdTlsSetupReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/etcd-tls-setup-job")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, expectedImage, "/home/prow/go/src/github.com/kyma-project/kyma/components/etcd-tls-setup-job")
 		})
 	}
 }
