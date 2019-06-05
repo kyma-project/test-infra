@@ -18,7 +18,6 @@ func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
 			actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], tester.GetReleasePostSubmitJobName("kyma-github-release", currentRelease), currentRelease)
 			require.NotNil(t, actualPostsubmit)
 
-			//then
 			assert.True(t, actualPostsubmit.Decorate)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, "preset-sa-kyma-artifacts", "preset-bot-github-token")
