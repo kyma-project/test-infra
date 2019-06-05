@@ -8,47 +8,36 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestKymaCliReleases(t *testing.T) {
-	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release09, tester.Release10}
+const registryJobPath = "./../../../../prow/jobs/cli/cli.yaml"
 
-	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
-		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/cli/cli.yaml")
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/cli"], tester.GetReleaseJobName("kyma-cli", currentRelease), currentRelease)
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-project/cli", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr)
-			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/cli")
+func TestKymaCliJobRelease(t *testing.T) {
+	jobConfig, err := tester.ReadJobConfig(registryJobPath)
+	// THEN
+	require.NoError(t, err)
 
-			actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], tester.GetReleasePostSubmitJobName("kyma-cli", currentRelease), currentRelease)
-			require.NotNil(t, actualPostsubmit)
-			assert.True(t, actualPostsubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-project/cli", actualPostsubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, currentRelease)
-			tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetBuildRelease)
-			tester.AssertThatExecGolangBuildpack(t, actualPostsubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/cli")
-		})
-	}
+	expName := "rel-kyma-cli"
+	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "1.1.1")
+	require.NotNil(t, actualPost)
+	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "2.1.1-rc1")
+	require.NotNil(t, actualPost)
+
+	assert.True(t, actualPost.Decorate)
+	assert.Equal(t, 10, actualPost.MaxConcurrency)
+	assert.Equal(t, "github.com/kyma-project/cli", actualPost.PathAlias)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildRelease, tester.PresetBotGithubToken)
 }
 
 func TestKymaCliJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/cli/cli.yaml")
+	jobConfig, err := tester.ReadJobConfig(registryJobPath)
 	// THEN
 	require.NoError(t, err)
 
-	expName := "pre-master-kyma-cli"
+	expName := "pre-kyma-cli"
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
@@ -63,15 +52,18 @@ func TestKymaCliJobPresubmit(t *testing.T) {
 
 func TestKymaCliJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/cli/cli.yaml")
+	jobConfig, err := tester.ReadJobConfig(registryJobPath)
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-master-kyma-cli"
+	expName := "post-kyma-cli"
 	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPost)
+	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "release-1.1")
+	require.NotNil(t, actualPost)
+
+	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPost.PathAlias)

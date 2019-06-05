@@ -1,13 +1,13 @@
-test_infra_ref: &test_infra_ref
-  org: kyma-project
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 job_template: &job_template
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/cli
   max_concurrency: 10
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
@@ -22,49 +22,27 @@ job_template: &job_template
             memory: 1.5Gi
             cpu: 0.8
 
-
 presubmits: # runs on PRs
   kyma-project/cli:
-  - name: pre-master-kyma-cli
+  - name: pre-kyma-cli
     always_run: true
-    branches:
-      - master
     <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      preset-build-pr: "true"
-  - name: pre-rel11-kyma-cli
-    always_run: true
-    branches:
-      - release-1.1
-    <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-1.1
     labels:
       preset-build-pr: "true"
 
-postsubmits:
+postsubmits: # runs on merges
   kyma-project/cli:
-  - name: post-master-kyma-cli
+  - name: post-kyma-cli
     branches:
-      - master
+    - "^master$" # Master branch
+    - "^release-\\d+\\.\\d+$" # Release branches
     <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
     labels:
       preset-build-master: "true"
-  - name: post-rel11-kyma-cli
+  - name: rel-kyma-cli
     branches:
-      - release-1.1
+    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags
     <<: *job_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-1.1
     labels:
       preset-build-release: "true"
       preset-bot-github-token: "true"
-      
