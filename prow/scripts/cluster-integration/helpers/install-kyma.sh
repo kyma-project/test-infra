@@ -3,7 +3,6 @@
 #Description: Installs Kyma in a given GKE cluster
 #
 #Expected vars:
-# - REMOTEENVS_IP_ADDRESS: static IP for remote env
 # - GATEWAY_IP_ADDRESS: static IP for gateway
 # - DOCKER_PUSH_REPOSITORY: name of the docker registry where images are pushed
 # - KYMA_SOURCES_DIR: absolute path for kyma sources directory
@@ -29,7 +28,7 @@ function installKyma() {
     done
 
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-        for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS DOMAIN; do
+        for var in GATEWAY_IP_ADDRESS DOMAIN; do
             if [ -z "${!var}" ] ; then
                 echo "ERROR: $var is not set"
                 kymaUnsetVar=true

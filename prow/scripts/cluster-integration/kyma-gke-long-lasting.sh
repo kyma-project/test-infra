@@ -159,7 +159,7 @@ function installKyma() {
 
 	kymaUnsetVar=false
 
-	for var in REMOTEENVS_IP_ADDRESS GATEWAY_IP_ADDRESS ; do
+	for var in GATEWAY_IP_ADDRESS ; do
     	if [ -z "${!var}" ] ; then
         	echo "ERROR: $var is not set"
         	kymaUnsetVar=true
@@ -197,8 +197,7 @@ function installKyma() {
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
         --data "global.domainName=${DOMAIN}" \
-        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
