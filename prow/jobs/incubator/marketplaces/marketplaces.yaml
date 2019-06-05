@@ -40,8 +40,8 @@ postsubmits: # runs on merges
   kyma-incubator/marketplaces:
   - name: post-marketplaces
     branches:
-    - ^master$ # Master branch
-    - ^release-\\d+\\.\\d+$ # Release branches
+    - "^master$" # Master branch
+    - "^release-\\d+\\.\\d+$" # Release branches
     <<: *job_template
     labels:
       <<: *job_labels_template
@@ -50,7 +50,7 @@ postsubmits: # runs on merges
   - name: rel-marketplaces
     <<: *job_template
     branches:
-    - ^\\d+\\.\\d+\\.\\d+(?:-.*)?$ # Tags
+    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
