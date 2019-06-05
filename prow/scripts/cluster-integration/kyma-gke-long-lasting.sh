@@ -157,8 +157,6 @@ function waitUntilInstallerApiAvailable() {
 
 function installKyma() {
 
-	kymaUnsetVar=false
-
   if [ -z "$GATEWAY_IP_ADDRESS" ] ; then
      	echo "ERROR: GATEWAY_IP_ADDRESS is not set"
      	exit 1
