@@ -157,10 +157,18 @@ function waitUntilInstallerApiAvailable() {
 
 function installKyma() {
 
-  if [ -z "$GATEWAY_IP_ADDRESS" ] ; then
-     	echo "ERROR: GATEWAY_IP_ADDRESS is not set"
-     	exit 1
-  fi
+	kymaUnsetVar=false
+
+  # shellcheck disable=SC2043
+	for var in GATEWAY_IP_ADDRESS ; do
+    	if [ -z "${!var}" ] ; then
+        	echo "ERROR: $var is not set"
+        	kymaUnsetVar=true
+    	fi
+	done
+	if [ "${kymaUnsetVar}" = true ] ; then
+    	exit 1
+	fi
 
 	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
 
