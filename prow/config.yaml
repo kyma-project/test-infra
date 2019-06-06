@@ -400,6 +400,7 @@ branch-protection:
                   - pre-rel12-kyma-gke-central-connector
                   - pre-rel12-kyma-artifacts
                   - pre-rel12-kyma-installer
+                  - pre-rel12-kyma-gke-minio-gateway
         website:
           required_status_checks:
             contexts:
