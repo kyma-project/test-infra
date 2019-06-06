@@ -474,10 +474,15 @@ presubmits: # runs on PRs
     <<: *gke_new_proj_job_template
     labels:
       preset-build-pr: "true"
-      <<: *gke_job_labels_template
+      preset-kyma-guard-bot-github-token: "true"
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-compute-envs: "true"
+      preset-docker-push-repository-gke-integration: "true"
+      preset-dind-enabled: "true"
+      preset-kyma-artifacts-bucket: "true"
     extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
+      - <<: *kk_test_ref
+        base_ref: workload-project
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
