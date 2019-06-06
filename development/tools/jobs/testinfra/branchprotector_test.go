@@ -66,12 +66,6 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
-			if tester.Release(relBranch).Matches(tester.Release10, tester.Release11) {
-				assert.Len(t, p.RequiredStatusChecks.Contexts, 7)
-			} else {
-				assert.Len(t, p.RequiredStatusChecks.Contexts, 8)
-			}
-
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
