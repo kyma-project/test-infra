@@ -158,7 +158,7 @@ gke_new_proj_job_template: &gke_new_proj_job_template
         value: "sap-kyma-prow-workloads"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
       resources:
         requests:
           memory: 200Mi
