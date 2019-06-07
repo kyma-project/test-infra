@@ -166,6 +166,11 @@ presets:
           secretKeyRef:
             name: kyma-bot-github-token
             key: token
+      - name: GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-token
+            key: token
   - labels:
       preset-bot-github-identity: "true"
     env:
