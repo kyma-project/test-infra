@@ -156,9 +156,23 @@ gke_new_proj_job_template: &gke_new_proj_job_template
         value: "europe-west2"
       - name: CLOUDSDK_CORE_PROJECT
         value: "sap-kyma-prow-workloads"
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+      volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+      volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
       resources:
         requests:
           memory: 200Mi
@@ -457,7 +471,6 @@ presubmits: # runs on PRs
     labels:
       preset-build-pr: "true"
       preset-kyma-guard-bot-github-token: "true"
-      preset-sa-gke-kyma-integration: "true"
       preset-docker-push-repository-gke-integration: "true"
       preset-dind-enabled: "true"
       preset-kyma-artifacts-bucket: "true"
