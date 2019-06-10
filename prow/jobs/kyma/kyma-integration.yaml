@@ -135,6 +135,27 @@ gke_xip_job_template: &gke_xip_job_template
         requests:
           memory: 200Mi
           cpu: 80m
+          
+gke_new_proj_job_template: &gke_new_proj_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  always_run: false
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
 
 gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
   skip_report: false
@@ -200,17 +221,6 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: pre-rel09-kyma-integration
-    branches:
-      - release-0.9
-    always_run: false
-    <<: *vm_job_template
-    labels:
-      <<: *vm_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.9
-
   - name: pre-rel10-kyma-integration
     branches:
       - release-1.0
@@ -233,6 +243,17 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.1
 
+  - name: pre-rel12-kyma-integration
+    branches:
+      - release-1.2
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.2
+
   - name: pre-master-kyma-gke-minio-gateway
     branches:
     - master
@@ -246,6 +267,19 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
+  - name: pre-rel12-kyma-gke-minio-gateway
+    branches:
+    - release-1.2
+    always_run: false
+    <<: *gke_minio_gateway_job_template
+    optional: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.2
+
   - name: pre-master-kyma-gke-integration
     branches:
     - master
@@ -258,20 +292,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
-  - name: pre-rel09-kyma-gke-integration
-    branches:
-      - release-0.9
-    <<: *gke_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - org: kyma-project
-        repo: test-infra
-        path_alias: github.com/kyma-project/test-infra
-        base_ref: release-0.9
 
   - name: pre-rel10-kyma-gke-integration
     branches:
@@ -301,38 +321,19 @@ presubmits: # runs on PRs
         path_alias: github.com/kyma-project/test-infra
         base_ref: release-1.1
 
-  - name: pre-master-kyma-gke-upgrade-migration-test
+  - name: pre-rel12-kyma-gke-integration
     branches:
-      - master
-    skip_report: true
-    decorate: true
-    optional: true
-    path_alias: github.com/kyma-project/kyma
-    max_concurrency: 10
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
-          securityContext:
-            privileged: true
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-migration-test.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
-    # following regexp won't start build if only Markdown files were changed
-    run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      - release-1.2
+    <<: *gke_job_template
+    always_run: false
     labels:
-      preset-build-pr: "true"
+      preset-build-release: "true"
       <<: *gke_job_labels_template
     extra_refs:
-      - org: Szymongib
+      - org: kyma-project
         repo: test-infra
         path_alias: github.com/kyma-project/test-infra
-        base_ref: migration-test-script
+        base_ref: release-1.2
 
   - name: pre-master-kyma-gke-upgrade
     branches:
@@ -348,17 +349,6 @@ presubmits: # runs on PRs
       base_ref: master
 
     # Already defined to ensure that pipeline is defined for the new upgrade job
-  - name: pre-rel09-kyma-gke-upgrade
-    branches:
-      - release-0.9
-    <<: *gke_upgrade_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.9
   - name: pre-rel10-kyma-gke-upgrade
     branches:
       - release-1.0
@@ -381,6 +371,17 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.1
+  - name: pre-rel12-kyma-gke-upgrade
+    branches:
+      - release-1.2
+    <<: *gke_upgrade_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.2
 
   - name: pre-master-kyma-gke-central-connector
     branches:
@@ -394,18 +395,6 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-
-  - name: pre-rel09-kyma-gke-central-connector
-    branches:
-      - release-0.9
-    <<: *gke_central_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-0.9
 
   - name: pre-rel10-kyma-gke-central-connector
     branches:
@@ -431,6 +420,18 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.1
 
+  - name: pre-rel12-kyma-gke-central-connector
+    branches:
+      - release-1.2
+    <<: *gke_central_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.2
+
   - name: pre-master-kyma-xip-integration
     branches:
        - master
@@ -441,6 +442,21 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
+  
+  - name: pre-master-kyma-integration-new-project
+    branches:
+       - master
+    <<: *gke_new_proj_job_template
+    labels:
+      preset-build-pr: "true"
+      preset-kyma-guard-bot-github-token: "true"
+      preset-sa-gke-kyma-workloads: "true"
+      preset-docker-push-repository-gke-integration: "true"
+      preset-dind-enabled: "true"
+      preset-kyma-artifacts-bucket: "true"
+    extra_refs:
+      - <<: *kk_test_ref
+        base_ref: workload-project
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:

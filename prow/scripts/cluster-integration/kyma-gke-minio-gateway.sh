@@ -254,8 +254,7 @@ kubectl create namespace "kyma-installer"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --data "nginx-ingress.controller.service.loadBalancerIP=${REMOTEENVS_IP_ADDRESS}"
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \

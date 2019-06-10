@@ -42,6 +42,29 @@ presets:
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
   - labels:
+      preset-sa-gke-kyma-workloads: "true"
+    env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west2-c"
+      - name: CLOUDSDK_COMPUTE_REGION
+        value: "europe-west2"
+      - name: CLOUDSDK_CORE_PROJECT
+        value: "sap-kyma-prow-workloads"
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
+  - labels:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -121,6 +144,11 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/incubator"
   - labels:
+      preset-docker-push-repository-marketplaces: "true"
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "eu.gcr.io/kyma-project/marketplaces"
+  - labels:
       preset-build-pr: "true"
     env:
       - name: BUILD_TYPE
@@ -157,6 +185,11 @@ presets:
       preset-bot-github-token: "true"
     env:
       - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-token
+            key: token
+      - name: GITHUB_TOKEN
         valueFrom:
           secretKeyRef:
             name: kyma-bot-github-token
@@ -368,15 +401,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-0.9:
-              required_status_checks:
-                contexts:
-                  - pre-rel09-kyma-integration
-                  - pre-rel09-kyma-gke-integration
-                  - pre-rel09-kyma-gke-upgrade
-                  - pre-rel09-kyma-gke-central-connector
-                  - pre-rel09-kyma-artifacts
-                  - pre-rel09-kyma-installer
             release-1.0:
               required_status_checks:
                 contexts:
@@ -395,22 +419,27 @@ branch-protection:
                   - pre-rel11-kyma-gke-central-connector
                   - pre-rel11-kyma-artifacts
                   - pre-rel11-kyma-installer
+            release-1.2:
+              required_status_checks:
+                contexts:
+                  - pre-rel12-kyma-integration
+                  - pre-rel12-kyma-gke-integration
+                  - pre-rel12-kyma-gke-upgrade
+                  - pre-rel12-kyma-gke-central-connector
+                  - pre-rel12-kyma-artifacts
+                  - pre-rel12-kyma-installer
+                  - pre-rel12-kyma-gke-minio-gateway
         website:
           required_status_checks:
             contexts:
               - "netlify/kyma-project/deploy-preview"
-        luigi:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 2
-    kyma-incubator:
-      repos:
-        varkes:
+        cli:
           branches:
             master:
               protect: true
-        kymactl:
+    kyma-incubator:
+      repos:
+        varkes:
           branches:
             master:
               protect: true
