@@ -243,7 +243,7 @@ function installKyma() {
     mkdir -p /tmp/kyma-gke-upgradeability
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
-    if [ -z $LAST_RELEASE_VERSION ]; then
+    if [ -z "$LAST_RELEASE_VERSION" ]; then
         shoutFail "Couldn't grab latest version from GitHub API, stopping."
         exit 1
     fi
