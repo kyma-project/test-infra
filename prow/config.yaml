@@ -43,27 +43,27 @@ presets:
         readOnly: true
   - labels:
       preset-sa-gke-kyma-workloads: "true"
-      env:
-        - name: CLOUDSDK_COMPUTE_ZONE
-          value: "europe-west2-c"
-        - name: CLOUDSDK_COMPUTE_REGION
-          value: "europe-west2"
-        - name: CLOUDSDK_CORE_PROJECT
-          value: "sap-kyma-prow-workloads"
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /etc/credentials/sa-gke-kyma-integration/service-account.json
-        - name: CLOUDSDK_DNS_ZONE_NAME
-          value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
-        - name: KYMA_PROJECT_DIR
-          value: "/home/prow/go/src/github.com/kyma-project"
-      volumes:
-        - name: sa-gke-kyma-integration
-          secret:
-            secretName: sa-gke-kyma-integration
-      volumeMounts:
-        - name: sa-gke-kyma-integration
-          mountPath: /etc/credentials/sa-gke-kyma-integration
-          readOnly: true
+    env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west2-c"
+      - name: CLOUDSDK_COMPUTE_REGION
+        value: "europe-west2"
+      - name: CLOUDSDK_CORE_PROJECT
+        value: "sap-kyma-prow-workloads"
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
   - labels:
       preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
     env:
