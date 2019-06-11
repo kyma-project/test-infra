@@ -1,6 +1,6 @@
 # Info
 
-Taken from https://github.com/kubernetes/k8s.io/tree/master/gcsweb.k8s.io to display our own artifacts tab.
+Taken from https://github.com/kubernetes/k8s.io/tree/master/gcsweb.k8s.io to display our own artifacts tab. For updating `gcsweb`, check the changes in all files in this folder. Current version of this deployment is based off of https://github.com/kubernetes/k8s.io/commit/9ff18320db33ef9ee62ed92d50ad29e2382cdac4 which relates to container version `v1.1.0`
 
 # Original README
 
