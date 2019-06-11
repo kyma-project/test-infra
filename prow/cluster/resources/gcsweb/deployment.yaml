@@ -24,7 +24,6 @@ spec:
           args:
             - -upgrade-proxied-http-to-https
             - -b=kyma-prow-logs
-            - -b=kyma-development-artifacts
             - -p=8080
           ports:
             - containerPort: 8080
