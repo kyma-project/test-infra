@@ -484,6 +484,7 @@ plank:
 deck:
   spyglass:
     size_limit: 500000000 # 500MB
+    gcs_browser_prefix: https://gcsweb.build.kyma-project.io/
     viewers:
       "started.json|finished.json":
       - "metadata"

@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gcsweb
+  labels:
+    app: gcsweb
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: kyma-prow-gcsweb
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/acme-http01-edit-in-place: "true"
+    kubernetes.io/ingress.class: "gce"
+spec:
+  tls:
+  - secretName: prow-tls
+  backend:
+    serviceName: gcsweb
+    servicePort: http

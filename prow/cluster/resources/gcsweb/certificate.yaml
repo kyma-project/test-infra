@@ -1,0 +1,19 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: kyma-prow-gcsweb
+  namespace: gcsweb
+spec:
+  secretName: prow-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  commonName: gcsweb.k8s.io
+  dnsNames:
+  - gcsweb.build.kyma-project.io
+  acme:
+    config:
+    - http01:
+        ingress: gcsweb
+      domains:
+      - gcsweb.build.kyma-project.io
