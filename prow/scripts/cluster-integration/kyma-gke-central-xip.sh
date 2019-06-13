@@ -196,12 +196,25 @@ date
 
 kubectl create namespace "kyma-installer"
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
 
 shout "Apply override for central connector-service"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
+    --data "tests.application_connector_tests.connector_service.central=true" \
     --data "connector-service.deployment.args.central=true" \
     --data "connector-service.tests.central=true" \
     --data "connection-token-handler.tests.central=true"
@@ -222,6 +235,15 @@ fi
 shout "Installation triggered"
 date
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+
+if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+    shout "Create DNS Record for Apiserver proxy IP"
+    date
+    APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    CLEANUP_APISERVER_DNS_RECORD="true"
+    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 shout "Test Kyma"
