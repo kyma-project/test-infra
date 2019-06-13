@@ -297,9 +297,9 @@ fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-MINIO_HOST=`kubectl -n kyma-system get configmap assetstore-minio-docs-upload -o jsonpath='{.data.APP_EXTERNAL_ENDPOINT}'`
-ACCESS_KEY=`kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -D`
-SECRET_KEY=`kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -D`
+MINIO_HOST=$(kubectl -n kyma-system get configmap assetstore-minio-docs-upload -o jsonpath='{.data.APP_EXTERNAL_ENDPOINT}' | xargs -n1 echo)
+ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -D | xargs -n1 echo)
+SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -D | xargs -n1 echo)
 CONTENT_TYPE="application/octet-stream"
 
 # Creates sample file and uploads it to minio.
@@ -310,9 +310,9 @@ function upload_sample_file_to_minio {
     BUCKET_NAME=$1
     FILE_NAME=$2
     RESOURCE="${BUCKET_NAME}"/"${FILE_NAME}"
-    DATE=`date -R`
-    SIGNATURE=PUT\n\n"${CONTENT_TYPE}"\n"${DATE}"\n/"${RESOURCE}"
-    CHECKSUM=`echo -en ${SIGNATURE} | openssl sha1 -hmac ${SECRET_KEY} -binary | base64`
+    DATE=$(date -R)
+    SIGNATURE=PUT"\n\n${CONTENT_TYPE}\n${DATE}\n/${RESOURCE}"
+    CHECKSUM=$(echo -en "${SIGNATURE}" | openssl sha1 -hmac "${SECRET_KEY}" -binary | base64)
     echo "sample" | curl -v -X PUT -d @- \
         -H "Date: ${DATE}" \
         -H "Content-Type: ${CONTENT_TYPE}" \
@@ -322,8 +322,8 @@ function upload_sample_file_to_minio {
 }
 
 # upload samples to minIO
-PUBLIC_BUCKET="public_bucket"
-PRIVATE_BUCKET="private_bucket"
+PUBLIC_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.public}" | xargs -n1 echo)
+PRIVATE_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.private}" | xargs -n1 echo)
 
 upload_sample_file_to_minio "${PUBLIC_BUCKET}" sample/sample
 upload_sample_file_to_minio "${PUBLIC_BUCKET}" sample
@@ -332,7 +332,6 @@ upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample/sample
 upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample
 
 # switch to minIO GCS gateway mode
-
 ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
 
 kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"
@@ -344,8 +343,8 @@ kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer
     --data "minio.defaultBucket.enabled=false" \
     --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
     --data "minio.DeploymentUpdate.type=RollingUpdate" \
-    --data "minio.DeploymentUpdate.maxSurge=\"0\""
-    --data "minio.DeploymentUpdate.maxUnavailable: \"50%\""
+    --data "minio.DeploymentUpdate.maxSurge=\"0\"" \
+    --data "minio.DeploymentUpdate.maxUnavailable: \"50%\"" \
     --label "component=assetstore"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
@@ -371,16 +370,15 @@ kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 shout "Minio switched to gateway GCP mode"
 
-# download samples from minIO
-
+# download samples from minIO to verify if the migration was successful
 function download_sample_file_from_minio {
     set -u
     BUCKET_NAME=$1
     FILE_NAME=$2
     RESOURCE="${BUCKET_NAME}"/"${FILE_NAME}"
-    DATE=`date -R`
-    SIGNATURE=GET\n\n"${CONTENT_TYPE}"\n"${DATE}"\n/"${RESOURCE}"
-    CHECKSUM=`echo -en ${SIGNATURE} | openssl sha1 -hmac ${SECRET_KEY} -binary | base64`
+    DATE=$(date -R)
+    SIGNATURE=GET"\n\n${CONTENT_TYPE}\n${DATE}\n/${RESOURCE}"
+    CHECKSUM=$(echo -en "${SIGNATURE}" | openssl sha1 -hmac "${SECRET_KEY}" -binary | base64)
     curl -v -X GET \
         -H "Date: ${DATE}" \
         -H "Content-Type: ${CONTENT_TYPE}" \
