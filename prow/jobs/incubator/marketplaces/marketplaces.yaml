@@ -59,6 +59,8 @@ presubmits: # runs on PRs
           args:
           - "--repository"
           - "marketplaces"
+          - "--repository-org"
+          - "kyma-incubator"
           resources:
             requests:
               memory: 10Mi
@@ -109,6 +111,8 @@ periodics:
         args:
           - "--repository"
           - "marketplaces"
+          - "--repository-org"
+          - "kyma-incubator"
           - "--repository-dir"
           - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
           - "--full-validation"
