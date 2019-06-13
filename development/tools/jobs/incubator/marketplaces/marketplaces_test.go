@@ -86,7 +86,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"--repository", "marketplaces"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository", "marketplaces", "--repository-org", "kyma-incubator"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestGovernanceJobPeriodic(t *testing.T) {
@@ -108,5 +108,5 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "marketplaces"})
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/marketplaces", tester.KymaIncubatorDir)
-	assert.Equal(t, []string{"--repository", "marketplaces", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"--repository", "marketplaces", "--repository-org", "kyma-incubator", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
 }
