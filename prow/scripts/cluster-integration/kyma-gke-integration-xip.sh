@@ -195,9 +195,21 @@ date
 
 kubectl create namespace "kyma-installer"
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
