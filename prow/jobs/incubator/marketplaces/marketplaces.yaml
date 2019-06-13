@@ -26,7 +26,7 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
-  preset-docker-push-repository-marketplaces: "true"
+  preset-docker-push-global-repository: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/marketplaces:
@@ -35,6 +35,34 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
+  - name: pre-marketplaces-governance
+    skip_report: false
+    decorate: true
+    max_concurrency: 10
+    labels:
+      preset-dind-enabled: "true"
+      preset-build-pr: "true"
+    run_if_changed: "milv.config.yaml|.md$"
+    path_alias: github.com/kyma-incubator/marketplaces
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        base_ref: master
+        path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20190604-d08e7fe
+          securityContext:
+            privileged: true
+          command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+          args:
+          - "--repository"
+          - "marketplaces"
+          resources:
+            requests:
+              memory: 10Mi
+              cpu: 100m
 
 postsubmits: # runs on merges
   kyma-incubator/marketplaces:
@@ -55,4 +83,37 @@ postsubmits: # runs on merges
       <<: *job_labels_template
       preset-build-release: "true"
       preset-bot-github-token: "true"
-      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+
+periodics:
+- name: marketplaces-governance-nightly
+  decorate: true
+  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+  labels:
+    preset-dind-enabled: "true"
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - org: kyma-incubator
+      repo: marketplaces
+      base_ref: master
+      path_alias: github.com/kyma-incubator/marketplaces
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+        args:
+          - "--repository"
+          - "marketplaces"
+          - "--repository-dir"
+          - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
+          - "--full-validation"
+          - "true"
+        resources:
+          requests:
+            memory: 10Mi
+            cpu: 100m
