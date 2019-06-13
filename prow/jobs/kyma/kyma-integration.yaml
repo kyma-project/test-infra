@@ -440,8 +440,8 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
+      - <<: *kk_test_ref
+        base_ref: xip-integration
   
   - name: pre-master-kyma-integration-new-project
     branches:
@@ -455,8 +455,8 @@ presubmits: # runs on PRs
       preset-dind-enabled: "true"
       preset-kyma-artifacts-bucket: "true"
     extra_refs:
-      - <<: *kk_test_ref
-        base_ref: workload-project
+      - <<: *test_infra_ref
+        base_ref: master
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
@@ -466,8 +466,8 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - <<: *kk_test_ref
+      base_ref: xip-integration
 
   - name: pre-master-kyma-xip-gke-central-connector
     branches:
@@ -477,8 +477,8 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_job_labels_template
     extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - <<: *kk_test_ref
+      base_ref: xip-integration
 
 postsubmits:
   kyma-project/kyma:
