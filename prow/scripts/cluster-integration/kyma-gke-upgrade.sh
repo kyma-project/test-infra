@@ -66,6 +66,7 @@ PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
 cleanup() {
@@ -345,7 +346,7 @@ function checkTestPodTerminated() {
 createTestResources() {
     shout "Create e2e upgrade test resources"
     date
-    
+
     injectTestingBundles
 
     if [  -f "$(helm home)/ca.pem" ]; then
