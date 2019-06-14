@@ -142,19 +142,19 @@ RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gke-minio-pr"
+    readonly COMMON_NAME_PREFIX="gke-minio-min-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gke-minio-rel"
+    readonly COMMON_NAME_PREFIX="gke-minio-mig-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gke-minio-commit"
+    readonly COMMON_NAME_PREFIX="gke-minio-min-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
@@ -328,11 +328,11 @@ function upload_sample_file_to_minio {
 PUBLIC_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.public}" | xargs -n1 echo)
 PRIVATE_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.private}" | xargs -n1 echo)
 
-upload_sample_file_to_minio "${PUBLIC_BUCKET}" sample/sample
 upload_sample_file_to_minio "${PUBLIC_BUCKET}" sample
+upload_sample_file_to_minio "${PUBLIC_BUCKET}" sampledir/sample
 
-upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample/sample
 upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample
+upload_sample_file_to_minio "${PRIVATE_BUCKET}" sampledir/sample
 
 # switch to minIO GCS gateway mode
 ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
@@ -346,7 +346,7 @@ kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer
     --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
     --data "minio.DeploymentUpdate.type=RollingUpdate" \
     --data "minio.DeploymentUpdate.maxSurge=\"0\"" \
-    --data "minio.DeploymentUpdate.maxUnavailable: \"50%\"" \
+    --data "minio.DeploymentUpdate.maxUnavailable=\"50%\"" \
     --label "component=assetstore"
 
 # trigger installation
@@ -378,11 +378,11 @@ function download_sample_file_from_minio {
 ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)
 SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -d | xargs -n1 echo)
 
-download_sample_file_from_minio "${PUBLIC_BUCKET}" sample/sample
 download_sample_file_from_minio "${PUBLIC_BUCKET}" sample
+download_sample_file_from_minio "${PUBLIC_BUCKET}" sampledir/sample
 
-download_sample_file_from_minio "${PRIVATE_BUCKET}" sample/sample
 download_sample_file_from_minio "${PRIVATE_BUCKET}" sample
+download_sample_file_from_minio "${PRIVATE_BUCKET}" sampledir/sample
 
 shout "Success"
 
