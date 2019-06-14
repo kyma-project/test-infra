@@ -297,7 +297,8 @@ fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-MINIO_HOST=$(kubectl -n kyma-system get configmap assetstore-minio-docs-upload -o jsonpath='{.data.APP_EXTERNAL_ENDPOINT}' | xargs -n1 echo)
+MINIO_HOST=$(kubectl -n kyma-system get endpoints assetstore-minio -o jsonpath='{.subsets[0].addresses[0].ip}' | xargs -n1 echo)
+MINIO_PORT=$(kubectl -n kyma-system get service assetstore-minio -o jsonpath='{.spec.ports[0].port}' | xargs -n1 echo)
 ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -D | xargs -n1 echo)
 SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -D | xargs -n1 echo)
 CONTENT_TYPE="application/octet-stream"
@@ -313,11 +314,11 @@ function upload_sample_file_to_minio {
     DATE=$(date -R)
     SIGNATURE=PUT"\n\n${CONTENT_TYPE}\n${DATE}\n/${RESOURCE}"
     CHECKSUM=$(echo -en "${SIGNATURE}" | openssl sha1 -hmac "${SECRET_KEY}" -binary | base64)
-    echo "sample" | curl -v -X PUT -d @- \
+    echo "sample" | curl -X PUT -d @- \
         -H "Date: ${DATE}" \
         -H "Content-Type: ${CONTENT_TYPE}" \
         -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
-        "${MINIO_HOST}"/"${RESOURCE}"
+        http://"${MINIO_HOST}":"${MINIO_PORT}"/"${RESOURCE}"
     set +u
 }
 
@@ -379,11 +380,10 @@ function download_sample_file_from_minio {
     DATE=$(date -R)
     SIGNATURE=GET"\n\n${CONTENT_TYPE}\n${DATE}\n/${RESOURCE}"
     CHECKSUM=$(echo -en "${SIGNATURE}" | openssl sha1 -hmac "${SECRET_KEY}" -binary | base64)
-    curl -v -X GET \
-        -H "Date: ${DATE}" \
-        -H "Content-Type: ${CONTENT_TYPE}" \
-        -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
-        "${MINIO_HOST}"/"${RESOURCE}"
+    curl -H "Date: ${DATE}" \
+         -H "Content-Type: ${CONTENT_TYPE}" \
+         -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
+         http://"${MINIO_HOST}":"${MINIO_PORT}"/"${RESOURCE}"
     set +u
 }
 
