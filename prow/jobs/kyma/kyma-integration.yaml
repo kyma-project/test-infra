@@ -314,19 +314,6 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.2
 
-  - name: pre-rel12-kyma-gke-minio-gateway-migration
-    branches:
-      - release-1.2
-    always_run: false
-    <<: *gke_minio_gateway_migration_job_template
-    optional: true  # change to false after verification
-    labels:
-      preset-build-release: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.2
-
   - name: pre-master-kyma-gke-integration
     branches:
     - master
