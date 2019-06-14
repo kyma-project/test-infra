@@ -66,6 +66,8 @@ PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
 cleanup() {
     ## Save status of failed script execution
@@ -345,6 +347,8 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
+    injectTestingBundles
+
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
     fi
@@ -450,6 +454,8 @@ function testKyma() {
         exit "${testEndToEndResult}"
     fi
     set -o errexit
+
+    removeTestingBundles
 
     shout "Test Kyma"
     date
