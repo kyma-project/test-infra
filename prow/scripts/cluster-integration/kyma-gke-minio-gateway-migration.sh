@@ -320,19 +320,25 @@ function upload_sample_file_to_minio {
         -H "Content-Type: ${CONTENT_TYPE}" \
         -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
 	--insecure \
+	--silent \
         "${MINIO_HOST}"/"${RESOURCE}"
     set +u
 }
 
+set -e
 # upload samples to minIO
 PUBLIC_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.public}" | xargs -n1 echo)
 PRIVATE_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.private}" | xargs -n1 echo)
 
+shout "Uploading files to minIO"
+date
 upload_sample_file_to_minio "${PUBLIC_BUCKET}" sample
 upload_sample_file_to_minio "${PUBLIC_BUCKET}" sampledir/sample
 
 upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample
 upload_sample_file_to_minio "${PRIVATE_BUCKET}" sampledir/sample
+shout "Files successfully uploaded"
+date
 
 # switch to minIO GCS gateway mode
 ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
@@ -370,6 +376,7 @@ function download_sample_file_from_minio {
     curl -H "Date: ${DATE}" \
          -H "Content-Type: ${CONTENT_TYPE}" \
          -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
+	 --silent \
 	 --insecure \
          "${MINIO_HOST}"/"${RESOURCE}"
     set +u
@@ -378,11 +385,19 @@ function download_sample_file_from_minio {
 ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)
 SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -d | xargs -n1 echo)
 
+shout "Verifing bucket migration"
+date
 download_sample_file_from_minio "${PUBLIC_BUCKET}" sample
 download_sample_file_from_minio "${PUBLIC_BUCKET}" sampledir/sample
 
 download_sample_file_from_minio "${PRIVATE_BUCKET}" sample
 download_sample_file_from_minio "${PRIVATE_BUCKET}" sampledir/sample
+shout "Migration verified"
+date
+
+shout "Test Kyma"
+date
+"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 shout "Success"
 
