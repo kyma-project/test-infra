@@ -321,6 +321,7 @@ function upload_sample_file_to_minio {
         -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
 	--insecure \
 	--silent \
+	--fail \
         "${MINIO_HOST}"/"${RESOURCE}"
     set +u
 }
@@ -376,6 +377,7 @@ function download_sample_file_from_minio {
          -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
 	 --silent \
 	 --insecure \
+	 --fail \
          "${MINIO_HOST}"/"${RESOURCE}" > /dev/null
     set +u
 }
