@@ -345,6 +345,10 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
+    # shellcheck disable=SC1090
+    source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
+    injectTestingBundles
+
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
     fi
@@ -372,6 +376,7 @@ createTestResources() {
         echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
         exit "${prepareTestResult}"
     fi
+    removeTestingBundles
 }
 
 function upgradeKyma() {
@@ -434,6 +439,10 @@ function testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
+    # shellcheck disable=SC1090
+    source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
+    injectTestingBundles
+
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
     fi
@@ -450,6 +459,8 @@ function testKyma() {
         exit "${testEndToEndResult}"
     fi
     set -o errexit
+
+    removeTestingBundles
 
     shout "Test Kyma"
     date
