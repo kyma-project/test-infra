@@ -297,9 +297,11 @@ fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
+set -e
+
 MINIO_HOST=$(kubectl -n kyma-system get configmap assetstore-minio-docs-upload -o jsonpath='{.data.APP_EXTERNAL_ENDPOINT}' | xargs -n1 echo)
-ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -D | xargs -n1 echo)
-SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -D | xargs -n1 echo)
+ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)
+SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -d | xargs -n1 echo)
 CONTENT_TYPE="application/octet-stream"
 
 # Creates sample file and uploads it to minio.
@@ -372,6 +374,9 @@ function download_sample_file_from_minio {
          "${MINIO_HOST}"/"${RESOURCE}"
     set +u
 }
+
+ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)
+SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -d | xargs -n1 echo)
 
 download_sample_file_from_minio "${PUBLIC_BUCKET}" sample/sample
 download_sample_file_from_minio "${PUBLIC_BUCKET}" sample
