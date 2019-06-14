@@ -279,8 +279,10 @@ kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
     --data "minio.persistence.enabled=false" \
     --data "minio.gcsgateway.enabled=true" \
-    --data "minio.defaultBucket.enabled=false" \
     --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
+    --data "minio.DeploymentUpdate.type=RollingUpdate" \
+    --data "minio.DeploymentUpdate.maxSurge=\"0\"" \
+    --data "minio.DeploymentUpdate.maxUnavailable: \"50%\"" \
     --label "component=assetstore"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then

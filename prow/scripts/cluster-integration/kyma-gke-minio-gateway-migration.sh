@@ -297,8 +297,7 @@ fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-MINIO_HOST=$(kubectl -n kyma-system get endpoints assetstore-minio -o jsonpath='{.subsets[0].addresses[0].ip}' | xargs -n1 echo)
-MINIO_PORT=$(kubectl -n kyma-system get service assetstore-minio -o jsonpath='{.spec.ports[0].port}' | xargs -n1 echo)
+MINIO_HOST=$(kubectl -n kyma-system get configmap assetstore-minio-docs-upload -o jsonpath='{.data.APP_EXTERNAL_ENDPOINT}' | xargs -n1 echo)
 ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -D | xargs -n1 echo)
 SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -D | xargs -n1 echo)
 CONTENT_TYPE="application/octet-stream"
@@ -318,7 +317,8 @@ function upload_sample_file_to_minio {
         -H "Date: ${DATE}" \
         -H "Content-Type: ${CONTENT_TYPE}" \
         -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
-        http://"${MINIO_HOST}":"${MINIO_PORT}"/"${RESOURCE}"
+	--insecure \
+        "${MINIO_HOST}"/"${RESOURCE}"
     set +u
 }
 
@@ -341,26 +341,11 @@ kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
     --data "minio.persistence.enabled=false" \
     --data "minio.gcsgateway.enabled=true" \
-    --data "minio.defaultBucket.enabled=false" \
     --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
     --data "minio.DeploymentUpdate.type=RollingUpdate" \
     --data "minio.DeploymentUpdate.maxSurge=\"0\"" \
     --data "minio.DeploymentUpdate.maxUnavailable: \"50%\"" \
     --label "component=assetstore"
-
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
-
-else
-    echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
-fi
 
 # trigger installation
 shout "Minio gateway GCP update triggered"
@@ -383,7 +368,8 @@ function download_sample_file_from_minio {
     curl -H "Date: ${DATE}" \
          -H "Content-Type: ${CONTENT_TYPE}" \
          -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
-         http://"${MINIO_HOST}":"${MINIO_PORT}"/"${RESOURCE}"
+	 --insecure \
+         "${MINIO_HOST}"/"${RESOURCE}"
     set +u
 }
 
