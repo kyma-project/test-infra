@@ -55,6 +55,27 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
           memory: 200Mi
           cpu: 80m
 
+gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_template
+  optional: true
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 gke_job_template: &gke_job_template
   skip_report: false
   decorate: true
@@ -266,6 +287,19 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+
+  - name: pre-master-kyma-gke-minio-gateway-migration
+    branches:
+      - master
+    <<: *gke_minio_gateway_migration_job_template
+    run_if_changed: "^(resources\\/assetstore|installation)"
+    optional: true # change to false after verification
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
 
   - name: pre-rel12-kyma-gke-minio-gateway
     branches:
