@@ -345,8 +345,8 @@ kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer
     --data "minio.gcsgateway.enabled=true" \
     --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
     --data "minio.DeploymentUpdate.type=RollingUpdate" \
-    --data "minio.DeploymentUpdate.maxSurge=\"0\"" \
-    --data "minio.DeploymentUpdate.maxUnavailable=\"50%\"" \
+    --data "minio.DeploymentUpdate.maxSurge=0" \
+    --data "minio.DeploymentUpdate.maxUnavailable=50%" \
     --label "component=assetstore"
 
 # trigger installation
