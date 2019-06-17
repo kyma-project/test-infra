@@ -144,10 +144,10 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/incubator"
   - labels:
-      preset-docker-push-repository-marketplaces: "true"
+      preset-docker-push-global-repository: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/marketplaces"
+        value: "gcr.io/kyma-project"
   - labels:
       preset-build-pr: "true"
     env:
@@ -484,6 +484,7 @@ plank:
 deck:
   spyglass:
     size_limit: 500000000 # 500MB
+    gcs_browser_prefix: https://gcsweb.build.kyma-project.io/gcs/
     viewers:
       "started.json|finished.json":
       - "metadata"

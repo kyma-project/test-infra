@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster with Minio Gateway enabled.
+#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to test migration of minIO from persistence to GCS gateway mode, on real GKE cluster.
 #
 #
 #Expected vars:
@@ -142,19 +142,19 @@ RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gke-minio-pr"
+    readonly COMMON_NAME_PREFIX="gke-minio-min-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gke-minio-rel"
+    readonly COMMON_NAME_PREFIX="gke-minio-mig-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gke-minio-commit"
+    readonly COMMON_NAME_PREFIX="gke-minio-min-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
@@ -268,23 +268,6 @@ kubectl create namespace "kyma-installer"
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
 
-shout "Apply Asset Store configuration"
-date
-
-ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
-
-kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"
-kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
-    --data "minio.persistence.enabled=false" \
-    --data "minio.gcsgateway.enabled=true" \
-    --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
-    --data "minio.DeploymentUpdate.type=RollingUpdate" \
-    --data "minio.DeploymentUpdate.maxSurge=0" \
-    --data "minio.DeploymentUpdate.maxUnavailable=50%" \
-    --label "component=assetstore"
-
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
@@ -313,6 +296,102 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
 fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+set -e
+
+MINIO_HOST=$(kubectl -n kyma-system get configmap assetstore-minio-docs-upload -o jsonpath='{.data.APP_EXTERNAL_ENDPOINT}' | xargs -n1 echo)
+ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)
+SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -d | xargs -n1 echo)
+CONTENT_TYPE="application/octet-stream"
+
+# Creates sample file and uploads it to minio.
+# arg1: the name of the bucket the file will be uploaded to
+# arg2: the name of the created file
+function upload_sample_file_to_minio {
+    set -u
+    BUCKET_NAME=$1
+    FILE_NAME=$2
+    RESOURCE="${BUCKET_NAME}"/"${FILE_NAME}"
+    DATE=$(date -R)
+    SIGNATURE=PUT"\n\n${CONTENT_TYPE}\n${DATE}\n/${RESOURCE}"
+    CHECKSUM=$(echo -en "${SIGNATURE}" | openssl sha1 -hmac "${SECRET_KEY}" -binary | base64)
+    echo "sample" | curl -X PUT -d @- \
+        -H "Date: ${DATE}" \
+        -H "Content-Type: ${CONTENT_TYPE}" \
+        -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
+	--insecure \
+	--silent \
+	--fail \
+        "${MINIO_HOST}"/"${RESOURCE}"
+    set +u
+}
+
+set -e
+# upload samples to minIO
+PUBLIC_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.public}" | xargs -n1 echo)
+PRIVATE_BUCKET=$(kubectl -n kyma-system get configmap asset-upload-service -o jsonpath="{.data.private}" | xargs -n1 echo)
+
+shout "Upload files to minIO"
+date
+upload_sample_file_to_minio "${PUBLIC_BUCKET}" sample
+upload_sample_file_to_minio "${PUBLIC_BUCKET}" sampledir/sample
+
+upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample
+upload_sample_file_to_minio "${PRIVATE_BUCKET}" sampledir/sample
+
+# switch to minIO GCS gateway mode
+ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
+
+kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"
+kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
+    --data "minio.persistence.enabled=false" \
+    --data "minio.gcsgateway.enabled=true" \
+    --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
+    --data "minio.DeploymentUpdate.type=RollingUpdate" \
+    --data "minio.DeploymentUpdate.maxSurge=0" \
+    --data "minio.DeploymentUpdate.maxUnavailable=50%" \
+    --label "component=assetstore"
+
+# trigger installation
+shout "Minio gateway GCP update triggered"
+date
+kubectl label installation/kyma-installation action=install
+
+# wait update to finish
+"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+shout "Minio switched to gateway GCP mode"
+
+# download samples from minIO to verify if the migration was successful
+function download_sample_file_from_minio {
+    set -u
+    BUCKET_NAME=$1
+    FILE_NAME=$2
+    RESOURCE="${BUCKET_NAME}"/"${FILE_NAME}"
+    DATE=$(date -R)
+    SIGNATURE=GET"\n\n${CONTENT_TYPE}\n${DATE}\n/${RESOURCE}"
+    CHECKSUM=$(echo -en "${SIGNATURE}" | openssl sha1 -hmac "${SECRET_KEY}" -binary | base64)
+    curl -H "Date: ${DATE}" \
+         -H "Content-Type: ${CONTENT_TYPE}" \
+         -H "Authorization: AWS ${ACCESS_KEY}:${CHECKSUM}" \
+	 --silent \
+	 --insecure \
+	 --fail \
+         "${MINIO_HOST}"/"${RESOURCE}" > /dev/null
+    set +u
+}
+
+ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)
+SECRET_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.secretkey}" | base64 -d | xargs -n1 echo)
+
+shout "Verify minIO bucket migration"
+date
+download_sample_file_from_minio "${PUBLIC_BUCKET}" sample
+download_sample_file_from_minio "${PUBLIC_BUCKET}" sampledir/sample
+
+download_sample_file_from_minio "${PRIVATE_BUCKET}" sample
+download_sample_file_from_minio "${PRIVATE_BUCKET}" sampledir/sample
 
 shout "Test Kyma"
 date

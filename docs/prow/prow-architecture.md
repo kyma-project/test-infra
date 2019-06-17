@@ -37,6 +37,9 @@ Sinker scans for jobs older than one day and cleans up their Pods.
 ### Branch Protector
 Branch Protector is a Prow component that is responsible for defining branch protection settings on GitHub repositories. It updates protection settings on GitHub repositories every 30 minutes. It takes configuration from the `config.yaml` file on the cluster.
 
+### gcsweb
+gcsweb is a lightweight web frontend for GCS which allows you to access the content of the **artifacts** tab in Spyglass without the need to log in. For more information on gcsweb read [this](https://github.com/kubernetes/k8s.io/tree/master/gcsweb.k8s.io) document.
+
 ### Prow Addons Controller Manager
 
 The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure, such as the Notifier controller. Notifier watches all ProwJobs and sends notifications to a given Slack channel. Find detailed documentation [here](../../development/prow-addons-ctrl-manager/README.md).

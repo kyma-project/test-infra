@@ -30,8 +30,8 @@ const (
 	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
 	// PresetDockerPushRepoIncubator means Decker repository incubator images
 	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
-	// PresetDockerPushRepoMarketplaces means Decker repository marketplaces images
-	PresetDockerPushRepoMarketplaces Preset = "preset-docker-push-repository-marketplaces"
+	// PresetDockerPushGlobalRepo means Decker global repository for images
+	PresetDockerPushGlobalRepo Preset = "preset-docker-push-global-repository"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
@@ -88,6 +88,8 @@ const (
 
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
+	// KymaIncubatorDir means kyma incubator dir
+	KymaIncubatorDir = "/home/prow/go/src/github.com/kyma-incubator"
 
 	// BuildScriptDir means build script directory
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
