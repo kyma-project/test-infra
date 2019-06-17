@@ -47,6 +47,9 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-c"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
@@ -88,6 +91,9 @@ gke_job_template: &gke_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-b"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
@@ -108,6 +114,9 @@ gke_upgrade_job_template: &gke_upgrade_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-c"
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
@@ -128,6 +137,9 @@ gke_central_job_template: &gke_central_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-a"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
@@ -149,6 +161,9 @@ gke_xip_job_template: &gke_xip_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-b"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
@@ -190,6 +205,9 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-c"
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
@@ -210,6 +228,9 @@ gke_xip_central_job_template: &gke_xip_central_job_template
         privileged: true
       command:
       - "bash"
+      env: 
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-a"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"
@@ -772,6 +793,8 @@ periodics:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#c4core-kyma-ci-force"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-b"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -826,6 +849,8 @@ periodics:
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             value: "#c4core-kyma-ci-force"
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west3-b"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -923,6 +948,8 @@ periodics:
         value: "kyma-project"
       - name: REPO_NAME_GIT
         value: "kyma"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-a"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
@@ -961,6 +988,8 @@ periodics:
             value: "30"
           - name: LT_REQS_PER_ROUTINE # Number of requests to function per go routine
             value: "1600"
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west3-b"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"
@@ -1046,6 +1075,8 @@ periodics:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#c4core-kyma-gopher-pr"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-b"
       command:
       - "bash"
       args:
