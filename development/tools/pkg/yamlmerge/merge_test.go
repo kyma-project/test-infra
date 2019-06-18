@@ -15,7 +15,7 @@ func createTempfiles(noYaml, noOther int) (string, func(string)) {
 	dir, fn := createTempDir()
 	for i := 0; i < noYaml; i++ {
 		tmpfn := filepath.Join(dir, fmt.Sprintf("%s%d%s", "tmpfile", i, ".yaml"))
-		if err := ioutil.WriteFile(tmpfn, []byte("tmpcontent\n"), 0666); err != nil {
+		if err := ioutil.WriteFile(tmpfn, []byte("tmpcontent"), 0666); err != nil { // no newline at the end of the file will force the merge function to add it
 			log.Fatal(err)
 		}
 	}
@@ -56,7 +56,6 @@ func TestMergeFiles(t *testing.T) {
 	}
 
 	mixedFiles, cleanMixedFn := createTempfiles(2, 2)
-	onlyOtherFiles, cleanOtherFn := createTempfiles(0, 2)
 	startYamlFiles, cleanStarterYamlFn := createStarterYamlTemps()
 
 	tests := []struct {
@@ -82,7 +81,38 @@ func TestMergeFiles(t *testing.T) {
 	}
 
 	cleanMixedFn(mixedFiles)
-	cleanOtherFn(onlyOtherFiles)
+	cleanStarterYamlFn(startYamlFiles)
+}
+
+func TestMergeFilesDryRun(t *testing.T) {
+	type args struct {
+		path       string
+		extension  string
+		target     string
+		changeFile bool
+	}
+
+	mixedFiles, cleanMixedFn := createTempfiles(2, 2)
+	startYamlFiles, cleanStarterYamlFn := createStarterYamlTemps()
+
+	tests := []struct {
+		name string
+		args args
+	}{
+		{name: "Try to read starter.yaml, but file should not be created", args: args{path: mixedFiles, extension: ".yaml", target: fmt.Sprintf("%s%s%s", mixedFiles, string(os.PathSeparator), "starter.yaml"), changeFile: false}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			MergeFiles(tt.args.path, tt.args.extension, tt.args.target, tt.args.changeFile)
+
+			_, err := ioutil.ReadFile(tt.args.target)
+			if err == nil {
+				t.Errorf("starter.yaml should not exist.")
+			}
+		})
+	}
+
+	cleanMixedFn(mixedFiles)
 	cleanStarterYamlFn(startYamlFiles)
 }
 
@@ -101,7 +131,7 @@ func TestMergeFilesNoYamlFiles(t *testing.T) {
 		args args
 		want string
 	}{
-		{name: "No file created, test should fail, due to no yaml files in path", args: args{path: onlyOtherFiles, extension: ".yaml", target: "", changeFile: true}, want: ""},
+		{name: "No file created, test should fail, due to no yaml files in path", args: args{path: onlyOtherFiles, extension: ".yaml", target: fmt.Sprintf("%s%s%s", onlyOtherFiles, string(os.PathSeparator), "starter.yaml"), changeFile: true}, want: ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -137,7 +167,7 @@ func Test_collectFiles(t *testing.T) {
 	}{
 		{name: "Collect only yaml files", args: args{mixedFiles, ".yaml"}, want: []string{fmt.Sprintf("%s%stmpfile0.yaml", mixedFiles, string(os.PathSeparator)), fmt.Sprintf("%s%stmpfile1.yaml", mixedFiles, string(os.PathSeparator))}},
 		{name: "Collect only yaml files, when there's no other files", args: args{onlyYamlFiles, ".yaml"}, want: []string{fmt.Sprintf("%s%stmpfile0.yaml", onlyYamlFiles, string(os.PathSeparator)), fmt.Sprintf("%s%stmpfile1.yaml", onlyYamlFiles, string(os.PathSeparator))}},
-		{name: "No yaml files on path", args: args{onlyOtherFiles, ".yaml"}, want: []string{}},
+		{name: "No yaml files on path", args: args{onlyOtherFiles, ".yaml"}, want: nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

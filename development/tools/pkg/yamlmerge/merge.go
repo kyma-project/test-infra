@@ -19,7 +19,7 @@ func MergeFiles(path, extension, target string, changeFile bool) {
 	}
 	files := collectFiles(path, extension)
 
-	removeFromArray(files, target)
+	files = removeFromArray(files, target)
 
 	for _, f := range files {
 		data, err := ioutil.ReadFile(f)
