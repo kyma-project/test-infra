@@ -68,6 +68,11 @@ kubectl apply -f cluster/starter.yaml
 # Enable https redirection on deck
 kubectl patch deployment deck --patch "$(cat cluster/00-deck-patch.yaml)"
 
+# Patch workload volume for plank/deck/sinker
+kubectl patch deployment plank --patch "$(cat cluster/12-plank-deck-sinker-patch-workload-volume.yaml)"
+kubectl patch deployment deck --patch "$(cat cluster/12-plank-deck-sinker-patch-workload-volume.yaml)"
+kubectl patch deployment sinker --patch "$(cat cluster/12-plank-deck-sinker-patch-workload-volume.yaml)"
+
 # Install cert-manager
 kubectl apply -f cluster/01-cert-manager.yaml
 kubectl apply -f cluster/02-cluster-issuer.yaml

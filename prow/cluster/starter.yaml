@@ -3,7 +3,7 @@
 # Source commit: 4faaf685958cd79ea5b5a376fadabd8a9d1b4123
 #
 # Changes:
-# - add get verb for configmaps resource in hook role
+# - move workload volume mapping for sinker/plank/deck to separate patch
 ###
 ---
 apiVersion: v1
@@ -243,10 +243,6 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -287,10 +283,6 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -355,10 +347,6 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
 ---
 apiVersion: v1
 kind: Service
