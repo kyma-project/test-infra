@@ -71,6 +71,9 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west3-c"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"
