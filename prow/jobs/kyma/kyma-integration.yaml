@@ -218,6 +218,32 @@ gke_xip_central_job_template: &gke_xip_central_job_template
           memory: 200Mi
           cpu: 80m
 
+gke_backup_job_template: &gke_backup_job_template
+  skip_report: false
+  decorate: true
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      env:
+      - name: INPUT_CLUSTER_NAME
+        value: "e2etest"
+      - name: REPO_OWNER_GIT
+        value: "kyma-project"
+      - name: REPO_NAME_GIT
+        value: "kyma"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
+
 gke_job_labels_template: &gke_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-gke-kyma-integration: "true"
@@ -226,6 +252,12 @@ gke_job_labels_template: &gke_job_labels_template
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
+
+gke_backup_job_labels_template: &gke_backup_job_labels_template
+  preset-weekly-github-integration: "true"
+  preset-kyma-backup-restore-bucket: "true"
+  preset-kyma-backup-credentials: "true"
+  <<: *gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -513,6 +545,20 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *kk_test_ref
       base_ref: xip-integration
+
+  - name: pre-master-kyma-backup-test
+    optional: true
+    branches:
+    - master
+    <<: *gke_backup_job_template
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_backup_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
 
 postsubmits:
   kyma-project/kyma:
@@ -895,13 +941,10 @@ periodics:
 
 - name: kyma-gke-end-to-end-test-backup-restore
   cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  <<: *gke_backup_job_template
   labels:
     preset-build-master: "true"
-    preset-weekly-github-integration: "true"
-    preset-kyma-backup-restore-bucket: "true"
-    preset-kyma-backup-credentials: "true"
-    <<: *gke_job_labels_template
-  decorate: true
+    <<: *gke_backup_job_labels_template
   extra_refs:
     - org: kyma-project
       repo: test-infra
@@ -909,27 +952,6 @@ periodics:
       path_alias: github.com/kyma-project/test-infra
     - <<: *kyma_ref
       base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: INPUT_CLUSTER_NAME
-        value: "e2etest"
-      - name: REPO_OWNER_GIT
-        value: "kyma-project"
-      - name: REPO_NAME_GIT
-        value: "kyma"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
 
 - name: kyma-load-tests-weekly
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
