@@ -1,4 +1,4 @@
-package tools_test
+package kyma
 
 import (
 	"testing"
