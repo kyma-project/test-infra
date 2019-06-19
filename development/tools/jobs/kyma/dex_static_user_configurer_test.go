@@ -12,7 +12,7 @@ func TestStaticUsersGeneratorReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-dex-static-user-configurer", currentRelease), currentRelease)
@@ -34,7 +34,7 @@ func TestStaticUsersGeneratorReleases(t *testing.T) {
 
 func TestStaticUsersGeneratorJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -57,7 +57,7 @@ func TestStaticUsersGeneratorJobsPresubmit(t *testing.T) {
 
 func TestStaticUsersGeneratorJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml")
 	// THEN
 	require.NoError(t, err)
 
