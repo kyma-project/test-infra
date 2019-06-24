@@ -32,7 +32,7 @@ func TestIntegrationDexJobsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/dex/dex.yaml")
 	// THEN
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-test-integration-dex", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-dex", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -42,7 +42,7 @@ func TestIntegrationDexJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/integration/dex/fix")
-	assert.Equal(t, "^tests/integration/dex/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^tests/integration/dex", actualPresubmit.RunIfChanged)
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
 }
 
@@ -67,6 +67,6 @@ func TestIntegrationDexJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^tests/integration/dex/", actualPost.RunIfChanged)
+	assert.Equal(t, "^tests/integration/dex", actualPost.RunIfChanged)
 	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
 }
