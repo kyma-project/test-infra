@@ -243,6 +243,25 @@ gke_backup_job_template: &gke_backup_job_template
           memory: 200Mi
           cpu: 80m
 
+aks_upgrade_job_template: &aks_upgrade_job_template
+  skip_report: true # set to true until job is stable
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-aks-upgrade.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
 
 gke_job_labels_template: &gke_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
@@ -405,6 +424,19 @@ presubmits: # runs on PRs
     branches:
     - master
     <<: *gke_upgrade_job_template
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+
+  - name: pre-master-kyma-aks-upgrade # WIP
+    branches:
+    - master
+    <<: *aks_upgrade_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
