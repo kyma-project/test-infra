@@ -3,7 +3,7 @@ presets:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_REGION
-        value: "europe-west3"
+        value: "europe-west4"
   - labels:
       preset-gc-project-env: "true"
     env:

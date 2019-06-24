@@ -11,8 +11,8 @@
 #   Ex. "/perf"
 #
 #  - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
-#  - CLOUDSDK_COMPUTE_REGION - GCP compute region. Ex. "europe-west3"
-#  - CLOUDSDK_COMPUTE_ZONE Ex. "europe-west3-a"
+#  - CLOUDSDK_COMPUTE_REGION - GCP compute region. Ex. "europe-west4"
+#  - CLOUDSDK_COMPUTE_ZONE Ex. "europe-west4-a"
 #  - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path.
 #    Ex. "/etc/credentials/sa-gke-kyma-integration/service-account.json"
 #
