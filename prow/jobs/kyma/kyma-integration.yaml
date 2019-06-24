@@ -944,7 +944,6 @@ periodics:
       path_alias: github.com/kyma-project/test-infra
     - <<: *kyma_ref
       base_ref: master
-<<<<<<< HEAD
   spec:
     containers:
     - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
@@ -968,8 +967,6 @@ periodics:
         requests:
           memory: 200Mi
           cpu: 80m
-=======
->>>>>>> 1fb36eedf237313d841385bdf2483407f29ef0c5
 
 - name: kyma-load-tests-weekly
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
