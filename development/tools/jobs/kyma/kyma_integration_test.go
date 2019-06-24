@@ -336,6 +336,31 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 }
 
+func TestKymaBackupTestJobPresubmit(t *testing.T) {
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-backup-test", "master")
+	require.NotNil(t, actualJob)
+
+	// then
+	assert.True(t, actualJob.Decorate)
+	assert.Equal(t, "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetKymaBackupRestoreBucket, tester.PresetKymaBackupCredentials, tester.PresetGCProjectEnv, tester.PresetBuildPr,
+		tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
+	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", actualJob.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, actualJob.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"}, actualJob.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+	assert.Len(t, actualJob.Spec.Containers[0].Env, 3)
+	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "e2etest")
+	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "REPO_OWNER_GIT", "kyma-project")
+	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "REPO_NAME_GIT", "kyma")
+}
+
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
