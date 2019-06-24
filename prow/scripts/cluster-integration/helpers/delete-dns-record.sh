@@ -29,7 +29,7 @@ retryTimeInSec="5"
 function deleteDNSWithRetries() {
     set +e
 
-    echo "Deleting ${DNS_FULL_NAME} in ${CLOUDSDK_DNS_ZONE_NAME} DNS Zone"
+    echo "Deleting record sets ${IP_ADDRESS}, DNS full name: ${DNS_FULL_NAME} in ${CLOUDSDK_DNS_ZONE_NAME} DNS Zone"
 
     for ((i=1; i<=attempts; i++)); do
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
