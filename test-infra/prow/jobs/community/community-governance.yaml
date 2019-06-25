@@ -1,0 +1,65 @@
+presubmits: # runs on PRs
+  kyma-project/community:
+    - name: pre-master-community-governance
+      decorate: true
+      max_concurrency: 10
+      branches:
+        - master
+      labels:
+        preset-dind-enabled: "true"
+        preset-build-pr: "true"
+      run_if_changed: "milv.config.yaml|.md$"
+      path_alias: github.com/kyma-project/community
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "community"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+
+periodics: # runs periodic on master
+- name: community-governance-nightly
+  decorate: true
+  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
+  labels:
+    preset-dind-enabled: "true"
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - org: kyma-project
+      repo: community
+      base_ref: master
+      path_alias: github.com/kyma-project/community
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+        args:
+          - "--repository"
+          - "community"
+          - "--repository-dir"
+          - "/home/prow/go/src/github.com/kyma-project/community"
+          - "--full-validation"
+          - "true"
+        resources:
+          requests:
+            memory: 10Mi
+            cpu: 100m

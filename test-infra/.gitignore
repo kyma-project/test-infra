@@ -1,0 +1,7 @@
+/development/hmac_token.txt
+/development/checker/vendor
+/development/tools/vendor
+
+.idea/
+*.iml
+**/*.swp
