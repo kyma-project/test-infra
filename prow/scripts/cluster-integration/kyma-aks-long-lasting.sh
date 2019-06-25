@@ -114,6 +114,7 @@ function cleanup() {
     set -e
 }
 
+# in library
 function createGroup() {
     shout "Create Azure group"
     date
@@ -121,6 +122,7 @@ function createGroup() {
     az group create --name "${RS_GROUP}" --location "${REGION}"
 }
 
+# in library
 function installCluster() {
     shout "Install Kubernetes on Azure"
     date
@@ -141,6 +143,7 @@ function installCluster() {
       --generate-ssh-keys
 }
 
+# in library
 function azureAuthenticating() {
     shout "Authenticating to azure"
     date
@@ -149,6 +152,7 @@ function azureAuthenticating() {
     az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
+# in library
 function createPublicIPandDNS() {
     CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
@@ -169,6 +173,7 @@ function createPublicIPandDNS() {
     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
+# in library
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
     date
@@ -178,6 +183,8 @@ function addGithubDexConnector() {
     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
+
+# in library
 function setupKubeconfig() {
     shout "Setup kubeconfig and create ClusterRoleBinding"
     date
@@ -193,6 +200,7 @@ function installTiller() {
     "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 }
 
+# in library
 function waitUntilInstallerApiAvailable() {
     shout "Waiting for Installer API"
 
