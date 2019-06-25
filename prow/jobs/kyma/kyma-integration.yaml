@@ -238,6 +238,8 @@ gke_backup_job_template: &gke_backup_job_template
         value: "kyma-project"
       - name: REPO_NAME_GIT
         value: "kyma"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
@@ -944,30 +946,7 @@ periodics:
       path_alias: github.com/kyma-project/test-infra
     - <<: *kyma_ref
       base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: INPUT_CLUSTER_NAME
-        value: "e2etest"
-      - name: REPO_OWNER_GIT
-        value: "kyma-project"
-      - name: REPO_NAME_GIT
-        value: "kyma"
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
+  
 - name: kyma-load-tests-weekly
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
   labels:
