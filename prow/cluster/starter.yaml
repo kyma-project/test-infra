@@ -3,7 +3,7 @@
 # Source commit: 4faaf685958cd79ea5b5a376fadabd8a9d1b4123
 #
 # Changes:
-# - move workload volume mapping for sinker/plank/deck to separate patch
+# - add get verb for configmaps resource in hook role
 ###
 ---
 apiVersion: v1
