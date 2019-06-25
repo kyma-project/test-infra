@@ -47,6 +47,9 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-c"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
@@ -68,6 +71,9 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-c"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"
@@ -88,6 +94,9 @@ gke_job_template: &gke_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-b"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
@@ -108,6 +117,9 @@ gke_upgrade_job_template: &gke_upgrade_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-c"
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
@@ -128,6 +140,9 @@ gke_central_job_template: &gke_central_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
@@ -149,30 +164,12 @@ gke_xip_job_template: &gke_xip_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-b"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-          
-gke_new_proj_job_template: &gke_new_proj_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  always_run: false
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
       resources:
         requests:
           memory: 200Mi
@@ -190,6 +187,9 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
         privileged: true
       command:
       - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-c"
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
@@ -210,6 +210,9 @@ gke_xip_central_job_template: &gke_xip_central_job_template
         privileged: true
       command:
       - "bash"
+      env: 
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"
@@ -217,6 +220,34 @@ gke_xip_central_job_template: &gke_xip_central_job_template
         requests:
           memory: 200Mi
           cpu: 80m
+
+gke_backup_job_template: &gke_backup_job_template
+  skip_report: false
+  decorate: true
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      env:
+      - name: INPUT_CLUSTER_NAME
+        value: "e2etest"
+      - name: REPO_OWNER_GIT
+        value: "kyma-project"
+      - name: REPO_NAME_GIT
+        value: "kyma"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 
 gke_job_labels_template: &gke_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
@@ -226,6 +257,12 @@ gke_job_labels_template: &gke_job_labels_template
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
+
+gke_backup_job_labels_template: &gke_backup_job_labels_template
+  preset-weekly-github-integration: "true"
+  preset-kyma-backup-restore-bucket: "true"
+  preset-kyma-backup-credentials: "true"
+  <<: *gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -476,21 +513,6 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *kk_test_ref
         base_ref: xip-integration
-  
-  - name: pre-master-kyma-integration-new-project
-    branches:
-       - master
-    <<: *gke_new_proj_job_template
-    labels:
-      preset-build-pr: "true"
-      preset-kyma-guard-bot-github-token: "true"
-      preset-sa-gke-kyma-workloads: "true"
-      preset-docker-push-repository-gke-integration: "true"
-      preset-dind-enabled: "true"
-      preset-kyma-artifacts-bucket: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
 
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
@@ -513,6 +535,20 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *kk_test_ref
       base_ref: xip-integration
+
+  - name: pre-master-kyma-backup-test
+    optional: true
+    branches:
+    - master
+    <<: *gke_backup_job_template
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_backup_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
 
 postsubmits:
   kyma-project/kyma:
@@ -772,6 +808,8 @@ periodics:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#c4core-kyma-ci-force"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-b"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -826,6 +864,8 @@ periodics:
                 key: secret
           - name: KYMA_ALERTS_CHANNEL
             value: "#c4core-kyma-ci-force"
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -895,13 +935,10 @@ periodics:
 
 - name: kyma-gke-end-to-end-test-backup-restore
   cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  <<: *gke_backup_job_template
   labels:
     preset-build-master: "true"
-    preset-weekly-github-integration: "true"
-    preset-kyma-backup-restore-bucket: "true"
-    preset-kyma-backup-credentials: "true"
-    <<: *gke_job_labels_template
-  decorate: true
+    <<: *gke_backup_job_labels_template
   extra_refs:
     - org: kyma-project
       repo: test-infra
@@ -909,28 +946,7 @@ periodics:
       path_alias: github.com/kyma-project/test-infra
     - <<: *kyma_ref
       base_ref: master
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: INPUT_CLUSTER_NAME
-        value: "e2etest"
-      - name: REPO_OWNER_GIT
-        value: "kyma-project"
-      - name: REPO_NAME_GIT
-        value: "kyma"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
+  
 - name: kyma-load-tests-weekly
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
   labels:
@@ -961,6 +977,8 @@ periodics:
             value: "30"
           - name: LT_REQS_PER_ROUTINE # Number of requests to function per go routine
             value: "1600"
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4b"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"
@@ -1046,6 +1064,8 @@ periodics:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#c4core-kyma-gopher-pr"
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-b"
       command:
       - "bash"
       args:
