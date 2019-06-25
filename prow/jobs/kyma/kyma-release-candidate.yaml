@@ -24,7 +24,7 @@ job_template: &job_template
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west1-c"
+            value: "europe-west4-c"
           - name: CLOUDSDK_COMPUTE_REGION
             value: "europe-west1"
           - name: CLOUDSDK_CORE_PROJECT
