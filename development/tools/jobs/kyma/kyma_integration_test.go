@@ -355,7 +355,7 @@ func TestKymaBackupTestJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, actualJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"}, actualJob.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Len(t, actualJob.Spec.Containers[0].Env, 3)
+	assert.Len(t, actualJob.Spec.Containers[0].Env, 4)
 	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "INPUT_CLUSTER_NAME", "e2etest")
 	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "REPO_OWNER_GIT", "kyma-project")
 	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "REPO_NAME_GIT", "kyma")
