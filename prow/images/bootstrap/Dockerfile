@@ -5,7 +5,8 @@ FROM debian:stretch
 WORKDIR /workspace
 RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \
-    TERM=xterm
+    TERM=xterm \
+    BUILDPACK_NAME=bootstrap
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -24,6 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     gettext \
     && apt-get clean
+
+COPY ./scripts/license-puller.sh /usr/local/bin/license-puller.sh
 
 # Install gcloud
 ENV CLOUD_SDK_VERSION=219.0.1
