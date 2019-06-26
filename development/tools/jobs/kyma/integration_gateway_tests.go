@@ -12,7 +12,7 @@ import (
 func TestIntegrationGatewayReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-gateway", currentRelease), currentRelease)
@@ -31,7 +31,7 @@ func TestIntegrationGatewayReleases(t *testing.T) {
 //TestIntegrationGatewayJobsPresubmit ?
 func TestIntegrationGatewayJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-gateway", "master")
@@ -52,7 +52,7 @@ func TestIntegrationGatewayJobsPresubmit(t *testing.T) {
 //TestIntegrationGatewayJobPostsubmit ?
 func TestIntegrationGatewayJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
