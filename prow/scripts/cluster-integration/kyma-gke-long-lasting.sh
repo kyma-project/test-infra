@@ -243,6 +243,8 @@ function cleanup() {
 	    for CLUSTER in $OLD_CLUSTERS; do
 		    removeCluster "${CLUSTER}"
 	    done
+
+		removeCluster nightly
     fi
 
 }
