@@ -245,6 +245,11 @@ function installKyma() {
     mkdir -p /tmp/kyma-gke-upgradeability
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
+    if [ -z "$LAST_RELEASE_VERSION" ]; then
+        shoutFail "Couldn't grab latest version from GitHub API, stopping."
+        exit 1
+    fi
+
     shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
     date
     kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
