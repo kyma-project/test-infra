@@ -251,38 +251,6 @@
   version = "v1.0.1"
 
 [[projects]]
-  branch = "master"
-  digest = "1:a184ed77438c32327091b28f757e03ef2ff102108f0e6ca1260e10c082c0aaec"
-  name = "github.com/kyma-project/test-infra"
-  packages = [
-    "development/tools/cmd/secretspopulator/automock",
-    "development/tools/jobs/tester",
-    "development/tools/pkg/clusterscollector",
-    "development/tools/pkg/clusterscollector/automock",
-    "development/tools/pkg/common",
-    "development/tools/pkg/diskscollector",
-    "development/tools/pkg/diskscollector/automock",
-    "development/tools/pkg/dnscollector",
-    "development/tools/pkg/dnscollector/automock",
-    "development/tools/pkg/file",
-    "development/tools/pkg/firewallcleaner",
-    "development/tools/pkg/firewallcleaner/automock",
-    "development/tools/pkg/gcscleaner",
-    "development/tools/pkg/gcscleaner/storage",
-    "development/tools/pkg/gcscleaner/storage/automock",
-    "development/tools/pkg/jobguard",
-    "development/tools/pkg/orphanremover",
-    "development/tools/pkg/orphanremover/automock",
-    "development/tools/pkg/release",
-    "development/tools/pkg/synchronizer/syncomponent",
-    "development/tools/pkg/synchronizer/tools",
-    "development/tools/pkg/vmscollector",
-    "development/tools/pkg/vmscollector/automock",
-  ]
-  pruneopts = "NUT"
-  revision = "42404a91fca814bef0efb09f892a43d31dc3a162"
-
-[[projects]]
   digest = "1:5985ef4caf91ece5d54817c11ea25f182697534f8ae6521eadcd628c142ac4b6"
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
@@ -1012,29 +980,6 @@
     "github.com/golang/lint/golint",
     "github.com/google/go-github/github",
     "github.com/google/go-querystring/query",
-    "github.com/kyma-project/test-infra/development/tools/cmd/secretspopulator/automock",
-    "github.com/kyma-project/test-infra/development/tools/jobs/tester",
-    "github.com/kyma-project/test-infra/development/tools/pkg/clusterscollector",
-    "github.com/kyma-project/test-infra/development/tools/pkg/clusterscollector/automock",
-    "github.com/kyma-project/test-infra/development/tools/pkg/common",
-    "github.com/kyma-project/test-infra/development/tools/pkg/diskscollector",
-    "github.com/kyma-project/test-infra/development/tools/pkg/diskscollector/automock",
-    "github.com/kyma-project/test-infra/development/tools/pkg/dnscollector",
-    "github.com/kyma-project/test-infra/development/tools/pkg/dnscollector/automock",
-    "github.com/kyma-project/test-infra/development/tools/pkg/file",
-    "github.com/kyma-project/test-infra/development/tools/pkg/firewallcleaner",
-    "github.com/kyma-project/test-infra/development/tools/pkg/firewallcleaner/automock",
-    "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner",
-    "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage",
-    "github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage/automock",
-    "github.com/kyma-project/test-infra/development/tools/pkg/jobguard",
-    "github.com/kyma-project/test-infra/development/tools/pkg/orphanremover",
-    "github.com/kyma-project/test-infra/development/tools/pkg/orphanremover/automock",
-    "github.com/kyma-project/test-infra/development/tools/pkg/release",
-    "github.com/kyma-project/test-infra/development/tools/pkg/synchronizer/syncomponent",
-    "github.com/kyma-project/test-infra/development/tools/pkg/synchronizer/tools",
-    "github.com/kyma-project/test-infra/development/tools/pkg/vmscollector",
-    "github.com/kyma-project/test-infra/development/tools/pkg/vmscollector/automock",
     "github.com/nlopes/slack",
     "github.com/onsi/gomega",
     "github.com/pkg/errors",
