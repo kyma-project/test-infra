@@ -2,7 +2,7 @@
 
 ## Overview
 
-This commandline tool enables merging of YAML files on a given path into one file. It should be used to create a starter.yaml file from the components in the `/prow/cluster/components` path, to generate a file that is of the contents of `/prow/cluster/starter.yaml`.
+This command-line tool enables merging YAML files on a given path into one file. It simply creates a`starter.yaml` file from the component configurations under the `/prow/cluster/components` path, and generates a file that includes the content of `/prow/cluster/starter.yaml`.
 
 ## Usage
 
