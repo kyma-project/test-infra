@@ -301,7 +301,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-integration
     branches:
-    - master
+    - ^master$
     <<: *gke_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -454,7 +454,7 @@ presubmits: # runs on PRs
   - name: pre-master-kyma-backup-test
     optional: true
     branches:
-    - master
+    - ^master$
     <<: *gke_backup_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -517,7 +517,7 @@ periodics:
 - name: periodic-kyma-xip-gke-upgrade
   cron: "* */2 * * *" # "every 2 hours"
   branches:
-   - master
+   - ^master$
   <<: *gke_xip_upgrade_job_template
   labels:
     preset-build-pr: "true"
