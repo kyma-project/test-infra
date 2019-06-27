@@ -358,7 +358,11 @@ presets:
     env:
       - name: KYMA_ENCRYPTION_KEY
         value: kyma-prow-encryption
-
+  - labels:
+     preset-kyma-slack-channel: "true"
+    env:
+      - name: SLACK_CHANNEL
+        value: CBMPTMCV9
 
 branch-protection:
   enforce_admins: false
