@@ -262,7 +262,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-minio-gateway
     branches:
-    - master
+    - ^master$
     <<: *gke_minio_gateway_job_template
     run_if_changed: "^(resources\\/assetstore|installation)"
     optional: false
@@ -275,9 +275,10 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-minio-gateway-migration
     branches:
-    - master
-    <<: *gke_job_template
-    run_if_changed: "^(resources|installation)"
+    - ^master$
+    <<: *gke_minio_gateway_migration_job_template
+    run_if_changed: "^(resources\\/assetstore|installation)"
+    optional: true # change to false after verification
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
@@ -428,8 +429,9 @@ presubmits: # runs on PRs
 
   - name: pre-rel11-kyma-gke-central-connector
     branches:
-       - master
-    <<: *gke_xip_job_template
+      - release-1.1
+    <<: *gke_central_job_template
+    always_run: false
     labels:
       preset-build-release: "true"
       <<: *gke_job_labels_template
@@ -439,30 +441,7 @@ presubmits: # runs on PRs
 
   - name: pre-rel12-kyma-gke-central-connector
     branches:
-    - master
-    <<: *gke_xip_upgrade_job_template
-    labels:
-      preset-bot-github-token: "true"
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *kk_test_ref
-      base_ref: feature/xip-gke-upgrade
-
-  - name: pre-master-kyma-xip-gke-central-connector
-    branches:
-    - master
-    <<: *gke_xip_central_job_template
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *kk_test_ref
-      base_ref: feature/xip-gke-upgrade
-
-  - name: pre-rel10-kyma-gke-central-connector
-    branches:
-      - release-1.0
+      - release-1.2
     <<: *gke_central_job_template
     always_run: false
     labels:
