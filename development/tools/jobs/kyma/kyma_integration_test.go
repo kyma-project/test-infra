@@ -388,7 +388,14 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 15)
+	assert.Len(t, periodics, 16)
+
+	expName := "testing-kyma-xip-gke-upgrade"
+	testingXipPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, testingXipPeriodic)
+	assert.Equal(t, expName, testingXipPeriodic.Name)
+	assert.True(t, testingXipPeriodic.Decorate)
+	assert.Equal(t, "* */30 * * *", testingXipPeriodic.Cron)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
