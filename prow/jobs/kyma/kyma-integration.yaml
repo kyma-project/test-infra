@@ -146,29 +146,6 @@ gke_central_job_template: &gke_central_job_template
           memory: 200Mi
           cpu: 80m
 
-gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-c"
-      args:
-      - "-c"
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
 gke_backup_job_template: &gke_backup_job_template
   skip_report: false
   decorate: true
@@ -516,17 +493,35 @@ periodics:
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
 
 - name: testing-kyma-xip-gke-upgrade
-  cron: "* * */2 * *" # Every 2 hours
-  branches:
-  - master
-  <<: *gke_xip_upgrade_job_template
+  cron: "* */2 * * *" # Every 2 hours
   labels:
     preset-build-pr: "true"
     <<: *gke_job_labels_template
   extra_refs:
   - <<: *test_infra_ref
     base_ref: master
-    
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      env:
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-c"
+      args:
+      - "-c"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 80m
+
 - name: utilities-kyma-integration-cleaner
   cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
