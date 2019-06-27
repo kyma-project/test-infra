@@ -64,7 +64,7 @@ function removeCluster() {
 	shout "Delete Gateway DNS Record"
 	date
 	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
-	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.a.build.kyma-project.io."
+	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_DOMAIN}"
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -179,10 +179,6 @@ function installKyma() {
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-	
-
-	DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-	export DOMAIN
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 	TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
@@ -255,7 +251,7 @@ function addGithubDexConnector() {
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
-    export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.a.build.kyma-project.io/callback"
+    export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 
@@ -282,12 +278,15 @@ shout "Authenticate"
 date
 init
 
-shout "Add Github Dex Connector"
-date
-addGithubDexConnector
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
+DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+export DOMAIN
+
+shout "Add Github Dex Connector"
+date
+addGithubDexConnector
 
 shout "Cleanup"
 date
