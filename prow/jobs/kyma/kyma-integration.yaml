@@ -151,30 +151,6 @@ gke_central_job_template: &gke_central_job_template
           memory: 200Mi
           cpu: 80m
 
-gke_xip_job_template: &gke_xip_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  always_run: false
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-b"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
 gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
   skip_report: false
   decorate: true
@@ -193,29 +169,6 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
-gke_xip_central_job_template: &gke_xip_central_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env: 
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"
       resources:
         requests:
           memory: 200Mi
@@ -503,32 +456,10 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.2
 
-  - name: pre-master-kyma-xip-integration
-    branches:
-       - master
-    <<: *gke_xip_job_template
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *kk_test_ref
-        base_ref: xip-integration
-
   - name: pre-master-kyma-xip-gke-upgrade
     branches:
     - master
     <<: *gke_xip_upgrade_job_template
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *kk_test_ref
-      base_ref: xip-integration
-
-  - name: pre-master-kyma-xip-gke-central-connector
-    branches:
-    - master
-    <<: *gke_xip_central_job_template
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
