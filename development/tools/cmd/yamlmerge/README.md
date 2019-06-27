@@ -6,7 +6,7 @@ This commandline tool enables merging of YAML files on a given path into one fil
 
 ## Usage
 
-For safety reasons, the dry-run mode is the default one.
+For security reasons, the dry-run mode is the default one.
 To run it, use:
 ```bash
 go run main.go -path /path/to/components/folder -target /path/to/target/file
