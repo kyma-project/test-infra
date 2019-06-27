@@ -4,11 +4,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-kk_test_ref: &kk_test_ref
-  org: kasiakepka
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -151,30 +146,6 @@ gke_central_job_template: &gke_central_job_template
           memory: 200Mi
           cpu: 80m
 
-gke_xip_job_template: &gke_xip_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  always_run: false
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-b"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
 gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
   skip_report: false
   decorate: true
@@ -193,29 +164,6 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
-gke_xip_central_job_template: &gke_xip_central_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env: 
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central-xip.sh"
       resources:
         requests:
           memory: 200Mi
@@ -503,39 +451,6 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: release-1.2
 
-  - name: pre-master-kyma-xip-integration
-    branches:
-       - master
-    <<: *gke_xip_job_template
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *kk_test_ref
-        base_ref: xip-integration
-
-  - name: pre-master-kyma-xip-gke-upgrade
-    branches:
-    - master
-    <<: *gke_xip_upgrade_job_template
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *kk_test_ref
-      base_ref: xip-integration
-
-  - name: pre-master-kyma-xip-gke-central-connector
-    branches:
-    - master
-    <<: *gke_xip_central_job_template
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-    - <<: *kk_test_ref
-      base_ref: xip-integration
-
   - name: pre-master-kyma-backup-test
     optional: true
     branches:
@@ -599,6 +514,18 @@ postsubmits:
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
+- name: periodic-kyma-xip-gke-upgrade
+  cron: "* */2 * * *" # "every 2 hours"
+  branches:
+   - master
+  <<: *gke_xip_upgrade_job_template
+  labels:
+    preset-build-pr: "true"
+    <<: *gke_job_labels_template
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+
 - name: utilities-kyma-integration-cleaner
   cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
@@ -768,6 +695,7 @@ periodics:
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-nightly-github-integration: "true"
+    preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
@@ -826,6 +754,7 @@ periodics:
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-weekly-github-integration: "true"
+    preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
@@ -883,6 +812,7 @@ periodics:
     preset-stability-checker-slack-notifications: "true"
     preset-nightly-aks-github-integration: "true"
     preset-creds-aks-kyma-integration: "true"
+    preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
