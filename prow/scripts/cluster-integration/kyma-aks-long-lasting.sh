@@ -176,7 +176,7 @@ function addGithubDexConnector() {
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
-    export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
+    export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.a.build.kyma-project.io/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 function setupKubeconfig() {
