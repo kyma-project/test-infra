@@ -25,6 +25,6 @@ See the list of available flags:
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--path**                |   Yes    | Path to the folder containing the yaml files to merge.
 | **--target**              |   Yes    | Path of the file, that is target to collected files' merged content.
-| **--dryRun**              |    No    | The boolean value that controls the dry-run mode. It defaults to `true`.
+| **--dryRun**              |    No    | The boolean value that controls the dry-run mode. Its default value is `true`.
 
 
