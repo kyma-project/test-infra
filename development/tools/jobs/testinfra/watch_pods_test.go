@@ -9,9 +9,13 @@ import (
 )
 
 func TestWatchPodsReleases(t *testing.T) {
-	unsupportedReleases := []tester.SupportedRelease{tester.Release07}
-	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
+
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
+			expectedImage := tester.ImageGolangBuildpack1_11
+			if tester.Release(currentRelease).Matches(tester.Release10, tester.Release11) {
+				expectedImage = tester.ImageGolangBuildpackLatest
+			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
 			// THEN
 			require.NoError(t, err)
@@ -22,7 +26,7 @@ func TestWatchPodsReleases(t *testing.T) {
 			assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, expectedImage, "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods")
 		})
 	}
 }
@@ -42,7 +46,7 @@ func TestWatchPodsJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "watch-pods/fix")
 	assert.Equal(t, "^watch-pods/", actualPresubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods")
 }
 
 func TestWatchPodsJobPostsubmit(t *testing.T) {
@@ -63,5 +67,5 @@ func TestWatchPodsJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^watch-pods/", actualPost.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods")
 }

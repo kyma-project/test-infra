@@ -2,14 +2,17 @@ presets:
   - labels:
       preset-gc-compute-envs: "true"
     env:
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west3-a"
       - name: CLOUDSDK_COMPUTE_REGION
-        value: "europe-west3"
+        value: "europe-west4"
   - labels:
       preset-gc-project-env: "true"
     env:
       - name: CLOUDSDK_CORE_PROJECT
+        value: "sap-kyma-prow-workloads"
+  - labels:
+      preset-kms-gc-project-env: "true"
+    env:
+      - name: CLOUDSDK_KMS_PROJECT
         value: "sap-kyma-prow"
   - labels:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
@@ -30,7 +33,7 @@ presets:
       - name: GOOGLE_APPLICATION_CREDENTIALS
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
       - name: CLOUDSDK_DNS_ZONE_NAME
-        value: "build-kyma" #GCloud DNS Zone Name (NOT it's DNS name!)
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
     volumes:
@@ -121,6 +124,11 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/incubator"
   - labels:
+      preset-docker-push-global-repository: "true"
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "gcr.io/kyma-project"
+  - labels:
       preset-build-pr: "true"
     env:
       - name: BUILD_TYPE
@@ -157,6 +165,11 @@ presets:
       preset-bot-github-token: "true"
     env:
       - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-token
+            key: token
+      - name: GITHUB_TOKEN
         valueFrom:
           secretKeyRef:
             name: kyma-bot-github-token
@@ -218,6 +231,22 @@ presets:
         secretKeyRef:
           name: kyma-website-bot-zenhub-token
           key: token
+  # Kyma Guard Bot
+  - labels:
+      preset-kyma-guard-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-guard-bot-github-token
+            key: token
+  - labels:
+      preset-kyma-guard-bot-github-identity: "true"
+    env:
+      - name: BOT_GITHUB_EMAIL
+        value: "kymabotguard@gmail.com"
+      - name: BOT_GITHUB_USER
+        value: "kyma-guard-bot"
   - labels:
       preset-kyma-snyk-token: "true"
     env:
@@ -281,17 +310,17 @@ presets:
             name: nightly-github-integration-app-client-secret
             key: client-secret
   - labels:
-      preset-service-catalog-nightly-github-integration: "true"
+      preset-service-catalog-crd-periodic-github-integration: "true"
     env:
     - name: GITHUB_INTEGRATION_APP_CLIENT_ID
       valueFrom:
         secretKeyRef:
-          name: service-catalog-nightly-github-integration-app-client-id
+          name: service-catalog-crd-periodic-github-integration-app-client-id
           key: client-id
     - name: GITHUB_INTEGRATION_APP_CLIENT_SECRET
       valueFrom:
         secretKeyRef:
-          name: service-catalog-nightly-github-integration-app-client-secret
+          name: service-catalog-crd-periodic-github-integration-app-client-secret
           key: client-secret
   - labels:
       preset-weekly-github-integration: "true"
@@ -352,29 +381,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-0.7: # Already defined to ensure that check is defined for the new upgrade job
-              required_status_checks:
-                contexts:
-                - pre-rel07-kyma-integration
-                - pre-rel07-kyma-gke-integration
-                - pre-rel07-kyma-artifacts
-                - pre-rel07-kyma-installer
-            release-0.8: # Already defined to ensure that check is defined for the new upgrade job
-              required_status_checks:
-                contexts:
-                - pre-rel08-kyma-integration
-                - pre-rel08-kyma-gke-integration
-                - pre-rel08-kyma-artifacts
-                - pre-rel08-kyma-installer
-            release-0.9:
-              required_status_checks:
-                contexts:
-                  - pre-rel09-kyma-integration
-                  - pre-rel09-kyma-gke-integration
-                  - pre-rel09-kyma-gke-upgrade
-                  - pre-rel09-kyma-gke-central-connector
-                  - pre-rel09-kyma-artifacts
-                  - pre-rel09-kyma-installer
             release-1.0:
               required_status_checks:
                 contexts:
@@ -384,33 +390,57 @@ branch-protection:
                   - pre-rel10-kyma-gke-central-connector
                   - pre-rel10-kyma-artifacts
                   - pre-rel10-kyma-installer
-        luigi:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: false
-            require_code_owner_reviews: true
-            required_approving_review_count: 2
+            release-1.1:
+              required_status_checks:
+                contexts:
+                  - pre-rel11-kyma-integration
+                  - pre-rel11-kyma-gke-integration
+                  - pre-rel11-kyma-gke-upgrade
+                  - pre-rel11-kyma-gke-central-connector
+                  - pre-rel11-kyma-artifacts
+                  - pre-rel11-kyma-installer
+            release-1.2:
+              required_status_checks:
+                contexts:
+                  - pre-rel12-kyma-integration
+                  - pre-rel12-kyma-gke-integration
+                  - pre-rel12-kyma-gke-upgrade
+                  - pre-rel12-kyma-gke-central-connector
+                  - pre-rel12-kyma-artifacts
+                  - pre-rel12-kyma-installer
+                  - pre-rel12-kyma-gke-minio-gateway
+        website:
+          required_status_checks:
+            contexts:
+              - "netlify/kyma-project/deploy-preview"
+        cli:
+          branches:
+            master:
+              protect: true
     kyma-incubator:
       repos:
-        varkes:	
-          branches:	
-            master:	
-              protect: true	
-        kymactl:	
-          branches:	
-            master:	
-              protect: true	
-        vstudio-extension:	
-          branches:	
-            master:	
-              protect: true	
-        service-catalog-tester:	
-          branches:	
-            master:	
-              protect: true	
-        octopus:	
-          branches:	
-            master:	
+        varkes:
+          branches:
+            master:
               protect: true
+        vstudio-extension:
+          branches:
+            master:
+              protect: true
+        service-catalog-tester:
+          branches:
+            master:
+              protect: true
+        octopus:
+          branches:
+            master:
+              protect: true
+        compass:
+          branches:
+            master:
+              protect: true
+        marketplaces:
+          protect: true
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
@@ -434,6 +464,7 @@ plank:
 deck:
   spyglass:
     size_limit: 500000000 # 500MB
+    gcs_browser_prefix: https://gcsweb.build.kyma-project.io/gcs/
     viewers:
       "started.json|finished.json":
       - "metadata"

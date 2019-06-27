@@ -58,14 +58,8 @@ func TestKnativeServingAcceptanceReleases(t *testing.T) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml")
 			// THEN
-			var moduleName, execArg string
-			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08, tester.Release09) {
-				moduleName = "kyma-tests-knative-serving-acceptance"
-				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance"
-			} else {
-				moduleName = "kyma-tests-knative-serving"
-				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving"
-			}
+			moduleName := "kyma-tests-knative-serving"
+			execArg := "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving"
 
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName(moduleName, currentRelease), currentRelease)

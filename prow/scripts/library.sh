@@ -29,6 +29,13 @@ function start_docker() {
 function authenticate() {
     echo "Authenticating"
     gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+
+}
+
+function authenticateDocker() {
+    shout "Authenticating on docker registry ${DOCKER_REGISTRY}"
+
+    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://"${DOCKER_REGISTRY}"
 }
 
 function configure_git() {
@@ -51,7 +58,7 @@ function configure_git() {
     if [[ ! -z "${BOT_GITHUB_EMAIL}" ]]; then
         git config --global user.email "${BOT_GITHUB_EMAIL}"
     fi
-    
+
     # configure name
     if [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
         git config --global user.name "${BOT_GITHUB_NAME}"
@@ -69,15 +76,49 @@ function init() {
         start_docker
     fi
 
+	if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]] && [[ "${PERFORMACE_CLUSTER_SETUP}" == "true" ]]; then
+	    authenticateDocker
+	fi
+
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
         configure_git
     fi
 }
 
 function shout() {
-    echo "
+    echo -e "${GREEN}
 #################################################################################################
 # $1
 #################################################################################################
     "
+}
+
+function shoutFail() {
+    echo -e "${RED}
+#################################################################################################
+# $1
+#################################################################################################
+    "
+}
+
+function checkInputParameterValue() {
+    if [ -z "${1}" ] || [ "${1:0:2}" == "--" ]; then
+        echo -e "${RED}Wrong parameter value"
+        echo -e "${RED}Make sure parameter value is neither empty nor start with two hyphens"
+        exit 1
+    fi
+}
+
+function checkClusterGradeInputParameterValue() {
+    if [[  "${CLUSTER_GRADE}" != "production" ]] && [[ "${CLUSTER_GRADE}" != "development" ]]; then
+        shoutFail "--cluster-grade  possible values are 'production' or 'development'"
+        exit 1
+    fi
+}
+
+function checkActionInputParameterValue() {
+    if [[ "${ACTION}" != "create" ]] && [[ "${ACTION}" != "delete" ]]; then
+        shoutFail "--action  possible values are 'create' or 'delete'"
+        exit 1
+    fi
 }

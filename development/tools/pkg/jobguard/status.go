@@ -11,21 +11,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-// StatusState is state of a status (job)
-type StatusState string
-
 const (
 	// StatusStateSuccess represents success state of a status
-	StatusStateSuccess StatusState = "success"
+	StatusStateSuccess = "success"
 
 	// StatusStatePending represents pending state of a status
-	StatusStatePending StatusState = "pending"
+	StatusStatePending = "pending"
 
 	// StatusStateError represents error state of a status
-	StatusStateError StatusState = "error"
+	StatusStateError = "error"
 
 	// StatusStateFailure represents failure state of a status
-	StatusStateFailure StatusState = "failure"
+	StatusStateFailure = "failure"
 )
 
 // Status stores essential data for a status
@@ -33,6 +30,9 @@ type Status struct {
 	Name  string `json:"context"`
 	State string `json:"state"`
 }
+
+// IndexedStatuses contains job status indexed by its name
+type IndexedStatuses map[string]string
 
 // StatusConfig holds configuraiton for GithubStatusFetcher
 type StatusConfig struct {
@@ -59,7 +59,7 @@ type statusResponse struct {
 }
 
 // Do fetches Github statuses
-func (f *GithubStatusFetcher) Do() ([]Status, error) {
+func (f *GithubStatusFetcher) Do() (IndexedStatuses, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/commits/%s/status", f.cfg.Origin, f.cfg.Owner, f.cfg.Repository, f.cfg.CommitSHA)
 
 	var statuses []Status
@@ -73,8 +73,7 @@ func (f *GithubStatusFetcher) Do() ([]Status, error) {
 		}
 
 		if resp.StatusCode != http.StatusOK {
-			f.closeResponseBody(resp)
-			return nil, fmt.Errorf("returned unexpected status code, expected: [%d], got: [%d]", http.StatusOK, resp.StatusCode)
+			return f.handleIncorrectHTTPStatus(resp)
 		}
 
 		var result statusResponse
@@ -97,7 +96,25 @@ func (f *GithubStatusFetcher) Do() ([]Status, error) {
 		pageNo++
 	}
 
-	return statuses, nil
+	idxStatuses := IndexedStatuses{}
+	for _, s := range statuses {
+		idxStatuses[s.Name] = s.State
+	}
+
+	return idxStatuses, nil
+}
+
+func (f *GithubStatusFetcher) handleIncorrectHTTPStatus(resp *http.Response) (IndexedStatuses, error) {
+	reqBody := ""
+	rawBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		reqBody = fmt.Sprintf("Could not decode the req body, got err: %v", err)
+	} else {
+		reqBody = string(rawBody)
+	}
+	f.closeResponseBody(resp)
+
+	return nil, fmt.Errorf("returned unexpected status code, expected: [%d], got: [%d]. Request body: %s", http.StatusOK, resp.StatusCode, reqBody)
 }
 
 func (f *GithubStatusFetcher) closeResponseBody(resp *http.Response) {

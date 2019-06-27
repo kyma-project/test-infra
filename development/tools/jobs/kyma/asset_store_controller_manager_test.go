@@ -23,19 +23,7 @@ func TestAssetControllerReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-
-			var args []string
-			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08) {
-				args = []string{
-					"/home/prow/go/src/github.com/kyma-project/kyma/components/assetstore-controller-manager",
-				}
-			} else {
-				args = []string{
-					"/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager",
-				}
-			}
-
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, args...)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager")
 		})
 	}
 }

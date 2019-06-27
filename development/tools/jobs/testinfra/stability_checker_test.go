@@ -23,7 +23,7 @@ func TestStabilityCheckerJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "stability-checker/fix")
 	assert.Equal(t, "^stability-checker/", actualPresubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker")
 }
 
 func TestStabilityCheckerJobPostsubmit(t *testing.T) {
@@ -44,5 +44,5 @@ func TestStabilityCheckerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^stability-checker/", actualPost.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker")
 }

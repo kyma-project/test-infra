@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2
 
 ENV HELM_VERSION="v2.10.0"
+ENV AZURE_CLI_VERSION="2.0.62-1~stretch"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
@@ -24,4 +25,4 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(ls
         --keyserver packages.microsoft.com \
         --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
     apt-get update && \
-    apt-get install -y azure-cli
+    apt-get install -y azure-cli=${AZURE_CLI_VERSION}

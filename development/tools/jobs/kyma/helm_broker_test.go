@@ -11,6 +11,10 @@ import (
 func TestHelmBrokerReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
+			expectedImage := tester.ImageGolangBuildpack1_11
+			if tester.Release(currentRelease).Matches(tester.Release10, tester.Release11) {
+				expectedImage = tester.ImageGolangBuildpackLatest
+			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/helm-broker/helm-broker.yaml")
 			// THEN
 			require.NoError(t, err)
@@ -22,7 +26,7 @@ func TestHelmBrokerReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, expectedImage, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
 		})
 	}
 }
@@ -42,7 +46,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^components/helm-broker/", actualPresubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
 }
 
 func TestHelmBrokerJobPostsubmit(t *testing.T) {
@@ -67,5 +71,5 @@ func TestHelmBrokerJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^components/helm-broker/", actualPost.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/helm-broker")
 }
