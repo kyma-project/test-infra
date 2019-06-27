@@ -395,7 +395,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, testingXipPeriodic)
 	assert.Equal(t, expName, testingXipPeriodic.Name)
 	assert.True(t, testingXipPeriodic.Decorate)
-	assert.Equal(t, "* */30 * * *", testingXipPeriodic.Cron)
+	assert.Equal(t, "* */2 * * *", testingXipPeriodic.Cron)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
