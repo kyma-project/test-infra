@@ -1,6 +1,6 @@
 # Basic node buildpack
 
-FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+FROM eu.gcr.io/kyma-project/test-infra/pr/bootstrap:PR-1190
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
