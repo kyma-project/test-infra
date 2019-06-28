@@ -2,6 +2,8 @@
 
 FROM eu.gcr.io/kyma-project/test-infra/pr/bootstrap:PR-1190
 
+ENV BUILDPACK_NAME=buildpack-node
+
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libfontconfig \
