@@ -147,7 +147,7 @@ gke_central_job_template: &gke_central_job_template
           cpu: 80m
 
 gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
-  skip_report: false
+  skip_report: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -520,7 +520,7 @@ periodics:
    - master
   <<: *gke_xip_upgrade_job_template
   labels:
-    preset-build-pr: "true"
+    preset-build-master: "true"
     <<: *gke_job_labels_template
   extra_refs:
   - <<: *test_infra_ref
