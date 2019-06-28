@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const apiserverProxyTestNewJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test-new.yaml"
+const apiserverProxyTestNewJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-integration.yaml"
 
 func TestApiserverProxyTestReleasesNew(t *testing.T) {
 	// WHEN

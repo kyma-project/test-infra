@@ -18,6 +18,10 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/apiserver-proxy"
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 0.2
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
