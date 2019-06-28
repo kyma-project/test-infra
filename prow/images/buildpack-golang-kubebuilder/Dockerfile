@@ -5,7 +5,8 @@ FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20190116-69aa0a1
 # Buildpack variables
 
 ARG BUILDPACK_VERSION=latest
-ENV BUILDPACK_VERSION ${BUILDPACK_VERSION}
+ENV BUILDPACK_VERSION ${BUILDPACK_VERSION} \
+    BUILDPACK_NAME=buildpack-golang-kubebuilder
 
 # Versions
 

@@ -2,9 +2,10 @@
 
 FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
 
-ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CHROMIUM_VERSION 70.0.3538.110-1~deb9u1
+ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true \
+    CHROMIUM_VERSION 70.0.3538.110-1~deb9u1 \
+    BUILDPACK_NAME=buildpack-node-chromium
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
