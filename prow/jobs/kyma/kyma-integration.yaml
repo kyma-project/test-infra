@@ -161,6 +161,10 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
       env:
       - name: CLOUDSDK_COMPUTE_ZONE
         value: "europe-west4-c"
+      - name: REPO_OWNER
+        value: "kyma-project"
+      - name: REPO_NAME
+        value: "kyma"
       args:
       - "-c"
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
