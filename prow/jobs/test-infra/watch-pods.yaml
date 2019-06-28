@@ -45,7 +45,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-master-watch-pods
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^watch-pods/"
       labels:
@@ -80,7 +80,7 @@ postsubmits:
   kyma-project/test-infra:
     - name: post-master-watch-pods
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^watch-pods/"
       labels:

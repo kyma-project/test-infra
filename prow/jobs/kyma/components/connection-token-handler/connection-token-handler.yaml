@@ -31,7 +31,7 @@ presubmits:
   kyma-project/kyma:
   - name: pre-master-kyma-components-connection-token-handler
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/connection-token-handler/"
     extra_refs:
@@ -78,7 +78,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-components-connection-token-handler
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/connection-token-handler/"
     extra_refs:

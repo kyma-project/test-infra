@@ -4,7 +4,7 @@ presubmits: # runs on PRs
       decorate: true
       max_concurrency: 10
       branches:
-        - master
+        - ^master$
       labels:
         preset-dind-enabled: "true"
         preset-build-pr: "true"

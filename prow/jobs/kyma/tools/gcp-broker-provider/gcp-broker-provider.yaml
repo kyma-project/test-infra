@@ -58,7 +58,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-tools-gcp-broker-provider
       run_if_changed: "^tools/gcp-broker-provider/"
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -101,7 +101,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tools-gcp-broker-provider
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^tools/gcp-broker-provider/"
       labels:

@@ -216,7 +216,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-integration
     branches:
-    - master
+    - ^master$
     <<: *vm_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -262,7 +262,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-minio-gateway
     branches:
-    - master
+    - ^master$
     <<: *gke_minio_gateway_job_template
     run_if_changed: "^(resources\\/assetstore|installation)"
     optional: false
@@ -275,7 +275,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-minio-gateway-migration
     branches:
-      - master
+    - ^master$
     <<: *gke_minio_gateway_migration_job_template
     run_if_changed: "^(resources\\/assetstore|installation)"
     optional: true # change to false after verification
@@ -301,7 +301,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-integration
     branches:
-    - master
+    - ^master$
     <<: *gke_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -356,7 +356,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-upgrade
     branches:
-    - master
+    - ^master$
     <<: *gke_upgrade_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -404,7 +404,7 @@ presubmits: # runs on PRs
 
   - name: pre-master-kyma-gke-central-connector
     branches:
-    - master
+    - ^master$
     <<: *gke_central_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -454,7 +454,7 @@ presubmits: # runs on PRs
   - name: pre-master-kyma-backup-test
     optional: true
     branches:
-    - master
+    - ^master$
     <<: *gke_backup_job_template
     # following regexp won't start build if only Markdown files were changed
     run_if_changed: "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -470,7 +470,7 @@ postsubmits:
   - name: post-master-kyma-integration
     <<: *vm_job_template
     branches:
-    - master
+    - ^master$
     labels:
       preset-build-master: "true"
       <<: *vm_job_labels_template
@@ -481,7 +481,7 @@ postsubmits:
   - name: post-master-kyma-gke-integration
     <<: *gke_job_template
     branches:
-    - master
+    - ^master$
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
@@ -492,7 +492,7 @@ postsubmits:
   - name: post-master-kyma-gke-central-connector
     <<: *gke_central_job_template
     branches:
-      - master
+      - ^master$
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
@@ -503,7 +503,7 @@ postsubmits:
   - name: post-master-kyma-gke-upgrade
     <<: *gke_upgrade_job_template
     branches:
-      - master
+      - ^master$
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
@@ -517,7 +517,7 @@ periodics:
 - name: periodic-kyma-xip-gke-upgrade
   cron: "30 */2 * * *" # "every 2 hours"
   branches:
-   - master
+   - ^master$
   <<: *gke_xip_upgrade_job_template
   labels:
     preset-build-master: "true"

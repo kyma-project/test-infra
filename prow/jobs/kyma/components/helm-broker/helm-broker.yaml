@@ -51,7 +51,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-components-helm-broker
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/helm-broker/"
     extra_refs:
@@ -98,7 +98,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-components-helm-broker
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/helm-broker/"
     extra_refs:

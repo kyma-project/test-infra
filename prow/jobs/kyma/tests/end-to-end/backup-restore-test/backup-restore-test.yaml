@@ -31,7 +31,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-tests-end-to-end-backup-restore-test
     branches:
-      - master
+      - ^master$
     <<: *job_template
     run_if_changed: "^tests/end-to-end/backup-restore-test/"
     extra_refs:
@@ -78,7 +78,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-tests-end-to-end-backup-restore-test
     branches:
-      - master
+      - ^master$
     <<: *job_template
     run_if_changed: "^tests/end-to-end/backup-restore-test/"
     extra_refs:

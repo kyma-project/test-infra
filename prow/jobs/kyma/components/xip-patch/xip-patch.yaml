@@ -31,7 +31,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-components-xip-patch
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/xip-patch/"
     extra_refs:
@@ -78,7 +78,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-components-xip-patch
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/xip-patch/"
     extra_refs:

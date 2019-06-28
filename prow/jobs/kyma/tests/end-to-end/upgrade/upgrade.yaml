@@ -31,7 +31,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-tests-end-to-end-upgrade
       branches:
-        - master
+        - ^master$
       <<: *job_template
       # run against all changes in `upgrade/*` folder except
       # changes made inside the`upgrade/chart/*`
@@ -80,7 +80,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tests-end-to-end-upgrade
       branches:
-        - master
+        - ^master$
       <<: *job_template
       # run against all changes in `upgrade/*` folder except
       # changes made inside the`upgrade/chart/*`

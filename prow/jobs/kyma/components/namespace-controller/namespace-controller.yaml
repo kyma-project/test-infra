@@ -27,7 +27,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-components-namespace-controller
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/namespace-controller/"
     extra_refs:
@@ -74,7 +74,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-components-namespace-controller
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/namespace-controller/"
     extra_refs:
