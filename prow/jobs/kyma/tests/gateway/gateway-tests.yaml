@@ -16,7 +16,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/gateway-tests"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/gateway"
         resources:
           requests:
             memory: 1.5Gi
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *job_template
-      run_if_changed: "^tests/gateway-tests/"
+      run_if_changed: "^tests/gateway/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -80,7 +80,7 @@ postsubmits:
       branches:
         - ^master$
       <<: *job_template
-      run_if_changed: "^tests/gateway-tests/"
+      run_if_changed: "^tests/gateway/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
