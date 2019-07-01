@@ -4,7 +4,7 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  optional: true
+  optional: false
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
