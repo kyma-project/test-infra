@@ -912,7 +912,7 @@ periodics:
           - name: LT_REQS_PER_ROUTINE # Number of requests to function per go routine
             value: "1600"
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4b"
+            value: "europe-west4-b"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"
