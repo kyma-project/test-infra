@@ -12,24 +12,12 @@ readonly LICENSES_DIR="./licenses"
 
 LANGUAGE=
 function init() {
-    if [[ -z ${BUILDPACK_NAME} ]]; then
-        echo "BUILDPACK_NAME variable is not set"
-        exit 1
-    fi
-
-    if [[ ${BUILDPACK_NAME} =~ golang ]]; then
+    if [[ -f "package.json" ]]; then
+        LANGUAGE=node
+    else
         LANGUAGE=golang
     fi
-
-    if [[ ${BUILDPACK_NAME} =~ node ]]; then
-        LANGUAGE=node
-    fi
     readonly LANGUAGE
-
-    if [[ -z ${LANGUAGE} ]]; then
-        echo "Unsupported buildpack '${BUILDPACK_NAME}'"
-        exit 1
-    fi
 
     echo "Will work in '${LANGUAGE}' mode"
 }
