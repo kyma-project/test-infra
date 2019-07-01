@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
 #Description: This script is responsible for downloading license files for dependencies
-#
-#Expected vars:
-# - BUILDPACK_NAME: name of the buildpack
 
 set -e
 
