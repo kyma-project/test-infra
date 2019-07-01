@@ -35,7 +35,6 @@ func TestApiserverProxyTestReleases(t *testing.T) {
 func TestApiserverProxyTestJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig(apiserverProxyTestNewJobConfigFilePath)
-	///Users/i500678/go/src/github.com/kyma-project/test-infra/prow/jobs/kyma/tests/apiserver-proxy-tests/apiserver-proxy-test.yaml
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-apiserver-proxy", "master")
