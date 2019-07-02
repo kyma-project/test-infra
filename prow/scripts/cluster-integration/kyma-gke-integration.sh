@@ -232,7 +232,7 @@ date
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh --concurrency 5
+"${KYMA_SCRIPTS_DIR}"/testing.sh
 
 shout "Success"
 
