@@ -525,6 +525,7 @@ periodics:
   <<: *gke_xip_upgrade_job_template
   labels:
     preset-build-master: "true"
+    prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
     <<: *gke_job_labels_template
   extra_refs:
   - <<: *test_infra_ref
