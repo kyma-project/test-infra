@@ -10,10 +10,7 @@ import (
 )
 
 func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
-	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release10}
-
-	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-release-candidate.yaml")
 			require.NoError(t, err)
