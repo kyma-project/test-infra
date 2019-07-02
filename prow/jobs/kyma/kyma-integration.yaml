@@ -976,6 +976,7 @@ periodics:
     preset-build-master: "true"
     preset-stability-checker-slack-notifications: "true"
     preset-service-catalog-crd-periodic-github-integration: "true"
+    preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   decorate: true
   extra_refs:
