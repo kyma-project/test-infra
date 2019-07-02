@@ -536,10 +536,15 @@ periodics:
   <<: *gke_xip_upgrade_job_template
   labels:
     preset-build-master: "true"
+    prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
     <<: *gke_job_labels_template
   extra_refs:
   - <<: *test_infra_ref
+  - org: kyma-project
+    repo: kyma
     base_ref: master
+    path_alias: github.com/kyma-project/kyma
+  base_ref: master
 
 - name: utilities-kyma-integration-cleaner
   cron: "30 * * * *" # "At 30 minutes past every hour"

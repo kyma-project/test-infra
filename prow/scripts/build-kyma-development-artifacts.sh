@@ -67,6 +67,8 @@ fi
 
 shout "Build installer with target ${buildTarget}"
 make -C "${KYMA_PATH}/components/installer" ${buildTarget}
+shout "Build kyma-operator with target ${buildTarget}"
+make -C "${KYMA_PATH}/components/kyma-operator" ${buildTarget}
 shout "Build kyma-installer with target ${buildTarget}"
 make -C "${KYMA_PATH}/tools/kyma-installer" ${buildTarget}
 
