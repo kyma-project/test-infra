@@ -19,7 +19,6 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 
 	tester.AssertThatJobRunIfChanged(t, job, "resources/helm-broker/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, job, "installation/scripts/concat-yamls.sh")
-	tester.AssertThatJobRunIfChanged(t, job, "components/installer/Makefile")
 	tester.AssertThatJobRunIfChanged(t, job, "components/kyma-operator/Makefile")
 	tester.AssertThatJobRunIfChanged(t, job, "tools/kyma-installer/kyma.Dockerfile")
 	assert.False(t, job.SkipReport)
