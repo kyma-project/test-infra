@@ -23,12 +23,8 @@ func TestApplicationBrokerReleases(t *testing.T) {
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 
-			var imgVer string
-			if tester.Release(currentRelease).Matches(tester.Release10) {
-				imgVer = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
-			} else {
-				imgVer = tester.ImageGolangBuildpack1_11
-			}
+			imgVer := tester.ImageGolangBuildpack1_11
+
 			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, imgVer, "/home/prow/go/src/github.com/kyma-project/kyma/components/application-broker")
 		})
 	}
