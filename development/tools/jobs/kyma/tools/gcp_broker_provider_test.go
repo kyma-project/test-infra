@@ -13,7 +13,7 @@ func TestGCPBrokerProviderReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
-			if tester.Release(currentRelease).Matches(tester.Release10, tester.Release11) {
+			if tester.Release(currentRelease).Matches(tester.Release11) {
 				expectedImage = tester.ImageGolangBuildpackLatest
 			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/gcp-broker-provider/gcp-broker-provider.yaml")

@@ -12,7 +12,7 @@ const healthcheckerJobPath = "./../../../../../prow/jobs/incubator/compass/compo
 
 func TestHealthcheckerJobReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release10, tester.Release11}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release11}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
