@@ -602,11 +602,11 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, cont, "KYMA_ALERTS_CHANNEL", "#c4core-kyma-gopher-pr")
 	tester.AssertThatContainerHasEnvFromSecret(t, cont, "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
-	expName = "kyma-compass-master-integration"
+	expName = "kyma-gke-compass-integration-periodic"
 	compassPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, compassPeriodic)
 	assert.True(t, compassPeriodic.Decorate)
-	assert.Equal(t,"eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828",compassPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatHasExtraRefTestInfra(t, compassPeriodic.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasExtraRefs(t, compassPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
 	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
