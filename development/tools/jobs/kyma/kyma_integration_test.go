@@ -362,7 +362,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 16)
+	assert.Len(t, periodics, 17)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -601,5 +601,15 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, cont, "SERVICE_CATALOG_CRD", "true")
 	tester.AssertThatContainerHasEnv(t, cont, "KYMA_ALERTS_CHANNEL", "#c4core-kyma-gopher-pr")
 	tester.AssertThatContainerHasEnvFromSecret(t, cont, "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
+
+	expName = "kyma-compass-master-integration"
+	compassPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, compassPeriodic)
+	assert.True(t, compassPeriodic.Decorate)
+	assert.Equal(t,"eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828",compassPeriodic.Spec.Containers[0].Image)
+	tester.AssertThatHasExtraRefTestInfra(t, compassPeriodic.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefs(t, compassPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
+	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CUSTOM_INSTALLER_CR_PATH", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl")
 
 }
