@@ -1028,7 +1028,7 @@ periodics:
           cpu: 80m
 
 - name: kyma-gke-compass-integration-periodic
-  cron: "0 * * *" # "Every hour" //TODO its for testing purpose, change to every day
+  cron: "0 * * * *" # "Every hour" //TODO its for testing purpose, change to every day
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
