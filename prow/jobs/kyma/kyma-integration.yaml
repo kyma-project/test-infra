@@ -332,7 +332,7 @@ presubmits: # runs on PRs
       <<: *gke_job_labels_template
     extra_refs:
       - <<: *dekiel_test_infra_ref
-        base_ref:
+        base_ref: dekiel-debug-xip-1206
 
   - name: pre-master-kyma-gke-integration
     branches:
