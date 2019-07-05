@@ -35,9 +35,9 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
-if [ -z "${SERVICE_CATALOG_CRD}" ]; then
-	export SERVICE_CATALOG_CRD="false"
-fi
+#if [ -z "${SERVICE_CATALOG_CRD}" ]; then
+#	export SERVICE_CATALOG_CRD="false"
+#fi
 
 #TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
@@ -214,9 +214,9 @@ function installKyma() {
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
 
-	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
-         applyServiceCatalogCRDOverride
-    fi
+#	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
+#         applyServiceCatalogCRDOverride
+#    fi
 
 	waitUntilInstallerApiAvailable
 
@@ -245,7 +245,6 @@ function cleanup() {
 		    removeCluster "${CLUSTER}"
 	    done
     fi
-
 }
 
 #function addGithubDexConnector() {
@@ -254,26 +253,26 @@ function cleanup() {
 #    popd
 #    export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 #    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-}
+#}
 
-function applyServiceCatalogCRDOverride(){
-    shout "Apply override for ServiceCatalog to enable CRD implementation"
-
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: service-catalog-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    component: service-catalog
-    kyma-project.io/installation: ""
-data:
-  service-catalog-apiserver.enabled: "false"
-  service-catalog-crds.enabled: "true"
-EOF
-}
+#function applyServiceCatalogCRDOverride(){
+#    shout "Apply override for ServiceCatalog to enable CRD implementation"
+#
+#cat <<EOF | kubectl apply -f -
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: service-catalog-overrides
+#  namespace: kyma-installer
+#  labels:
+#    installer: overrides
+#    component: service-catalog
+#    kyma-project.io/installation: ""
+#data:
+#  service-catalog-apiserver.enabled: "false"
+#  service-catalog-crds.enabled: "true"
+#EOF
+#}
 
 shout "Authenticate"
 date
