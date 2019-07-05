@@ -203,16 +203,9 @@ function installKyma() {
     date
     kubectl create namespace "kyma-installer"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-        --data "cluster-users.users.adminGroup=" # Backward compatibility for releases <= 1.1.X
-
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-        --label "component=logging" # Backward compatibility for releases <= 1.1.X
 
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
