@@ -12,7 +12,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
         securityContext:
           privileged: true
         command:
