@@ -1078,6 +1078,8 @@ periodics:
             value: "kyma"
           - name: CUSTOM_INSTALLER_CR_PATH
             value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
+          - name: INPUT_CLUSTER_NAME
+            value: kyma-compass-integration
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
