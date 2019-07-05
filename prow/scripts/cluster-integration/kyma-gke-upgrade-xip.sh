@@ -62,8 +62,6 @@ export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="runner"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -203,24 +201,15 @@ function installKyma() {
     date
     kubectl create namespace "kyma-installer"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-        --data "cluster-users.users.adminGroup=" # Backward compatibility for releases <= 1.1.X
-
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "intallation-logging-overrides" \
-        --data "global.logging.promtail.config.name=${PROMTAIL_CONFIG_NAME}" \
-        --label "component=logging" # Backward compatibility for releases <= 1.1.X
 
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-
-    kubectl label installation/kyma-installation action=install --overwrite #Backward compatibility for releases <= 1.1.X
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
