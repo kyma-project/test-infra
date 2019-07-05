@@ -1049,7 +1049,7 @@ periodics:
             value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
         resources:
           requests:
             memory: 200Mi
@@ -1057,8 +1057,14 @@ periodics:
   branches:
     - ^master$
   labels:
+    prow.kyma-project.io/slack.skipReport: "true"
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
+    preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   extra_refs:
+    - <<: *kyma_ref
+      base_ref: master
     - org: kfurgol
       repo: test-infra
       base_ref: periodic-test
