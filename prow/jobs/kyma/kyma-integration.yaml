@@ -1041,6 +1041,10 @@ periodics:
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
+          - name: REPO_OWNER
+            value: "kyma-project"
+          - name: REPO_NAME
+            value: "kyma"
           - name: CUSTOM_INSTALLER_CR_PATH
             value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
         args:
@@ -1053,7 +1057,6 @@ periodics:
   branches:
     - ^master$
   labels:
-    preset-build-master: "true"
     <<: *gke_job_labels_template
   extra_refs:
     - <<: *test_infra_ref
