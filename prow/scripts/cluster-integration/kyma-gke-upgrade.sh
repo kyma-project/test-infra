@@ -279,8 +279,6 @@ function installKyma() {
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
 
-    kubectl label installation/kyma-installation action=install --overwrite #Backward compatibility for releases <= 1.1.X
-
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
