@@ -1,4 +1,9 @@
 ---
+dekiel_test_infra_ref: &dekiel_test_infra_ref
+  org: dekiel
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -315,6 +320,19 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-1.3
+
+  # Test job for debugging xip.io DNS no host issues.
+  - name: pre-master-kyma-gke-integration-xip-debug
+    optional: true
+    branches:
+      - ^master$
+    <<: *gke_job_template
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *dekiel_test_infra_ref
+        base_ref:
 
   - name: pre-master-kyma-gke-integration
     branches:

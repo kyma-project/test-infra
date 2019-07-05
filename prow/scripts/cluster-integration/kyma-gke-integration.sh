@@ -217,7 +217,7 @@ fi
 if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
-CLEANUP_CLUSTER="true"
+CLEANUP_CLUSTER=""
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
 
