@@ -108,11 +108,15 @@ done;
 
 shout "Installing Kyma CLI"
 
-cd ${KYMA_PROJECT_DIR}/cli
+cd "${KYMA_PROJECT_DIR}/cli"
 
 make resolve build
 
-gcloud compute scp --quiet --zone="${ZONE}" ${KYMA_PROJECT_DIR}/cli/bin/kyma-linux "compass-integration-test-${RANDOM_ID}":/usr/local/bin/kyma && break;
+for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute scp --quiet --zone="${ZONE}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "compass-integration-test-${RANDOM_ID}":/usr/local/bin/kyma && break;
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+done;
 
 shout "Triggering the installation"
 
