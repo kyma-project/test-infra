@@ -1059,5 +1059,7 @@ periodics:
   labels:
     <<: *gke_job_labels_template
   extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+    - org: kfurgol
+      repo: test-infra
+      base_ref: periodic-test
+      path_alias: github.com/kyma-project/test-infra
