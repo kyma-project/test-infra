@@ -8,6 +8,7 @@ cli_ref: &cli_ref
   org: kyma-project
   repo: cli
   path_alias: github.com/kyma-project/cli
+  base_ref: master
 
 vm_job_template: &vm_job_template
   optional: true # TODO: Remove when done testing
@@ -27,6 +28,7 @@ vm_job_template: &vm_job_template
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
+  prow.kyma-project.io/slack.skipReport: "true" # TODO: Remove when done testing
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
@@ -44,6 +46,7 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: compass-integration-jobs # TODO: Change to master when done testing
+    - <<: *cli_ref
 
   - name: pre-rel12-compass-integration
     branches:
@@ -55,6 +58,7 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.2
+      - <<: *cli_ref
 
   - name: pre-rel13-compass-integration
     branches:
@@ -66,6 +70,7 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-1.3
+    - <<: *cli_ref
 
 postsubmits:
   kyma-incubator/compass:
@@ -79,3 +84,4 @@ postsubmits:
     extra_refs:
     - <<: *test_infra_ref
       base_ref: compass-integration-jobs # TODO: Change to master when done testing
+    - <<: *cli_ref
