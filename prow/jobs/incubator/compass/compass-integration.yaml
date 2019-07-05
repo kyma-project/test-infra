@@ -4,8 +4,14 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+cli_ref: &cli_ref
+  org: kyma-project
+  repo: cli
+  path_alias: github.com/kyma-project/cli
+  base_ref: master
+
 vm_job_template: &vm_job_template
-  optional: true
+  optional: true # TODO: Remove when done testing
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-incubator/compass
@@ -22,41 +28,9 @@ vm_job_template: &vm_job_template
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
+  prow.kyma-project.io/slack.skipReport: "true" # TODO: Remove when done testing
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
-
-gke_job_template: &gke_job_template
-  optional: true
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-incubator/compass
-  max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-      securityContext:
-        privileged: true
-      command:
-      - "bash"
-      env:
-      - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-b"
-      args:
-      - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-integration.sh"
-      resources:
-        requests:
-          memory: 200Mi
-          cpu: 80m
-
-gke_job_labels_template: &gke_job_labels_template
-  preset-kyma-guard-bot-github-token: "true"
-  preset-sa-gke-kyma-integration: "true"
-  preset-gc-compute-envs: "true"
-  preset-gc-project-env: "true"
-  preset-docker-push-repository-incubator: "true"
-  preset-dind-enabled: "true"
-  preset-kyma-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
@@ -65,14 +39,14 @@ presubmits: # runs on PRs
     - ^master$
     <<: *vm_job_template
     # following regexp won't start build if only Markdown files were changed
-    # run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" # TODO: Uncomment when done testing
-    always_run: false # TODO: Remove when done testing
+    # run_if_changed: "^((chart/\\S+|installation/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" # TODO: Uncomment when done testing
     labels:
       preset-build-pr: "true"
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: compass-integration-jobs # TODO: Change to master when done testing
+    - <<: *cli_ref
 
   - name: pre-rel12-compass-integration
     branches:
@@ -84,6 +58,7 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.2
+      - <<: *cli_ref
 
   - name: pre-rel13-compass-integration
     branches:
@@ -95,19 +70,7 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: release-1.3
-
-  # - name: pre-master-compass-gke-integration
-  #   branches:
-  #   - ^master$
-  #   <<: *gke_job_template
-  #   # following regexp won't start build if only Markdown files were changed
-  #   run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-  #   labels:
-  #     preset-build-pr: "true"
-  #     <<: *gke_job_labels_template
-  #   extra_refs:
-  #   - <<: *test_infra_ref
-  #     base_ref: master
+    - <<: *cli_ref
 
 postsubmits:
   kyma-incubator/compass:
@@ -120,15 +83,5 @@ postsubmits:
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
-
-  # - name: post-master-compass-gke-integration
-  #   <<: *gke_job_template
-  #   branches:
-  #   - ^master$
-  #   labels:
-  #     preset-build-master: "true"
-  #     <<: *gke_job_labels_template
-  #   extra_refs:
-  #   - <<: *test_infra_ref
-  #     base_ref: master
+      base_ref: compass-integration-jobs # TODO: Change to master when done testing
+    - <<: *cli_ref
