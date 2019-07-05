@@ -607,8 +607,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, compassPeriodic)
 	assert.True(t, compassPeriodic.Decorate)
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassPeriodic.Spec.Containers[0].Image)
-	tester.AssertThatHasExtraRefTestInfra(t, compassPeriodic.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasExtraRefs(t, compassPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
 	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
 	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CUSTOM_INSTALLER_CR_PATH", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl")
 
