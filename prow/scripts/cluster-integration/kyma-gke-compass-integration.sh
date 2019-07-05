@@ -4,7 +4,6 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
-INPUT_CLUSTER_NAME="compass-integration-periodic" #TODO
 for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do #SLACK_CLIENT_TOKEN STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_WEBHOOK_URL
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
@@ -35,11 +34,6 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
-#if [ -z "${SERVICE_CATALOG_CRD}" ]; then
-#	export SERVICE_CATALOG_CRD="false"
-#fi
-
-#TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -213,11 +207,7 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
-
-#	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
-#         applyServiceCatalogCRDOverride
-#    fi
-
+        
 	waitUntilInstallerApiAvailable
 
 	shout "Trigger installation"
@@ -247,46 +237,14 @@ function cleanup() {
     fi
 }
 
-#function addGithubDexConnector() {
-#    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-#    dep ensure -v -vendor-only
-#    popd
-#    export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-#    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-#}
-
-#function applyServiceCatalogCRDOverride(){
-#    shout "Apply override for ServiceCatalog to enable CRD implementation"
-#
-#cat <<EOF | kubectl apply -f -
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: service-catalog-overrides
-#  namespace: kyma-installer
-#  labels:
-#    installer: overrides
-#    component: service-catalog
-#    kyma-project.io/installation: ""
-#data:
-#  service-catalog-apiserver.enabled: "false"
-#  service-catalog-crds.enabled: "true"
-#EOF
-#}
-
 shout "Authenticate"
 date
 init
-
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
-
-#shout "Add Github Dex Connector"
-#date
-#addGithubDexConnector
 
 shout "Cleanup"
 date
@@ -309,13 +267,3 @@ installKyma
 shout "Test Kyma with Compass"
 date
 "${KYMA_SCRIPTS_DIR}"/testing.sh --concurrency 5
-
-
-#shout "Install stability-checker"
-#date
-#(
-#export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
-#        CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
-#"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
-#)
-

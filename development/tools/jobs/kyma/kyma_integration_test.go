@@ -628,12 +628,24 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	expName = "kyma-gke-compass-integration-periodic"
 	compassPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, compassPeriodic)
-	assert.True(t, compassPeriodic.Decorate)
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassPeriodic.Spec.Containers[0].Image)
-	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, compassPeriodic.Spec.Containers[0], "CUSTOM_INSTALLER_CR_PATH", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl")
 	tester.AssertThatHasPresets(t, compassPeriodic.JobBase,
+		"preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs",
+		"preset-gc-project-env",
 		"preset-docker-push-repository-gke-integration",
 		"preset-dind-enabled",
+		"preset-kyma-artifacts-bucket",
 	)
+	tester.AssertThatHasExtraRefTestInfra(t, scPeriodic.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefs(t, scPeriodic.JobBase.UtilityConfig, []string{"kyma"})
+	require.Len(t, scPeriodic.Spec.Containers, 1)
+	compassCont := compassPeriodic.Spec.Containers[0]
+	assert.True(t, compassPeriodic.Decorate)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassCont.Image)
+	assert.Equal(t, []string{"bash"}, compassCont.Command)
+	require.Len(t, compassCont.Args, 2)
+	assert.Equal(t, "-c", compassCont.Args[0])
+	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh", compassCont.Args[1])
+	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, compassCont, "INPUT_CLUSTER_NAME", "compass-integration-periodic")
 }

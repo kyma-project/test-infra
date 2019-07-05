@@ -1057,7 +1057,7 @@ periodics:
           cpu: 80m
 
 - name: kyma-gke-compass-integration-periodic
-  cron: "*/20 * * * *" # "Every 20th minute" //TODO its for testing purpose, change to every day
+  cron: "00 00 * * *" # "At 00:00 every day"
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -1072,14 +1072,8 @@ periodics:
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
-          - name: REPO_OWNER
-            value: "kyma-project"
-          - name: REPO_NAME
-            value: "kyma"
-          - name: CUSTOM_INSTALLER_CR_PATH
-            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
           - name: INPUT_CLUSTER_NAME
-            value: kyma-compass-integration
+            value: "compass-integration-periodic"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
@@ -1090,7 +1084,6 @@ periodics:
   branches:
     - ^master$
   labels:
-    prow.kyma-project.io/slack.skipReport: "true"
     preset-build-master: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
@@ -1099,7 +1092,5 @@ periodics:
   extra_refs:
     - <<: *kyma_ref
       base_ref: master
-    - org: kfurgol
-      repo: test-infra
-      base_ref: periodic-test
-      path_alias: github.com/kyma-project/test-infra
+    - <<: *test_infra_ref
+      base_ref: master
