@@ -1063,6 +1063,8 @@ periodics:
     preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   extra_refs:
+    - <<: *kyma_ref
+      base_ref: master
     - org: kfurgol
       repo: test-infra
       base_ref: periodic-test
