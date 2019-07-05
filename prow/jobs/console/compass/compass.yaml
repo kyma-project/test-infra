@@ -1,7 +1,7 @@
 job_template: &job_template
   optional: true
   skip_report: false
-  run_if_changed: "^compass/"
+  run_if_changed: "(^compass/)|(^components/react/)"
   decorate: true
   path_alias: github.com/kyma-project/console
   max_concurrency: 10
