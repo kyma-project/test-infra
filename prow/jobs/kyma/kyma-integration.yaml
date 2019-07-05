@@ -1057,7 +1057,7 @@ periodics:
   branches:
     - ^master$
   labels:
-    prow.kyma-project.io/slack.skipReport: true
+    prow.kyma-project.io/slack.skipReport: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
     preset-kms-gc-project-env: "true"
