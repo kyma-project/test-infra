@@ -1024,3 +1024,37 @@ periodics:
         requests:
           memory: 200Mi
           cpu: 80m
+
+- name: kyma-gke-compass-integration-periodic
+  cron: "*/20 * * * *" # "Every 20th minute" //TODO its for testing purpose, change to every day
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+          - name: CUSTOM_INSTALLER_CR_PATH
+            value: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+  branches:
+    - ^master$
+  labels:
+    preset-build-master: "true"
+    <<: *gke_job_labels_template
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master

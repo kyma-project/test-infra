@@ -167,6 +167,9 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+if [[ "${CUSTOM_INSTALLER_CR_PATH}" ]]; then
+    INSTALLER_CR=${CUSTOM_INSTALLER_CR_PATH}
+fi
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
