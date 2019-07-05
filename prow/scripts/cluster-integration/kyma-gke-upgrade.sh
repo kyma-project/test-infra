@@ -62,8 +62,6 @@ export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="runner"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
