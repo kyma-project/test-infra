@@ -277,19 +277,6 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: pre-master-kyma-gke-minio-gateway-migration
-    branches:
-    - ^master$
-    <<: *gke_minio_gateway_migration_job_template
-    run_if_changed: "^(resources\\/assetstore|installation)"
-    optional: true # change to false after verification
-    labels:
-      preset-build-pr: "true"
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-
   - name: pre-rel12-kyma-gke-minio-gateway
     branches:
     - release-1.2
@@ -308,6 +295,32 @@ presubmits: # runs on PRs
     - release-1.3
     always_run: false
     <<: *gke_minio_gateway_job_template
+    optional: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-1.3
+
+  - name: pre-master-kyma-gke-minio-gateway-migration
+    branches:
+    - ^master$
+    <<: *gke_minio_gateway_migration_job_template
+    run_if_changed: "^(resources\\/assetstore|installation)"
+    optional: false
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+
+  - name: pre-rel13-kyma-gke-minio-gateway-migration
+    branches:
+    - release-1.3
+    always_run: false
+    <<: *gke_minio_gateway_migration_job_template
     optional: false
     labels:
       preset-build-release: "true"
