@@ -39,7 +39,7 @@ if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 	export SERVICE_CATALOG_CRD="false"
 fi
 
-TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
+#TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
