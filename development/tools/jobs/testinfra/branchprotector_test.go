@@ -76,6 +76,10 @@ func TestBranchProtectionRelease(t *testing.T) {
 			if !tester.Release(relBranch).Matches(tester.Release11) {
 				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway", relBranch))
 			}
+
+			if !tester.Release(relBranch).Matches(tester.Release11) && !tester.Release(relBranch).Matches(tester.Release12) {
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("pre-rel13-kyma-gke-minio-gateway-migration", relBranch))
+			}
 		})
 	}
 }
