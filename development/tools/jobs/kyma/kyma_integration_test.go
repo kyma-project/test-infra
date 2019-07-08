@@ -167,7 +167,7 @@ func TestKymaIntegrationJobsPresubmitXipDebug(t *testing.T) {
 	// the common expectation
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.True(t, actualJob.Decorate)
-	assert.True(t, actualJob.SkipReport)
+	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
