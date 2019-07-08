@@ -410,6 +410,7 @@ branch-protection:
                 - pre-rel13-kyma-artifacts
                 - pre-rel13-kyma-installer
                 - pre-rel13-kyma-gke-minio-gateway
+                - pre-rel13-kyma-gke-minio-gateway-migration
         website:
           required_status_checks:
             contexts:
