@@ -160,7 +160,7 @@ func TestKymaIntegrationJobsPresubmitXipDebug(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration-xip-debug", "dekiel-debug-xip-1206")
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration-xip-debug", "master")
 	require.NotNil(t, actualJob)
 
 	// then
