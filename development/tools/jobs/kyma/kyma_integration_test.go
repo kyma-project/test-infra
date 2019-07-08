@@ -636,9 +636,9 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 		"preset-dind-enabled",
 		"preset-kyma-artifacts-bucket",
 	)
-	tester.AssertThatHasExtraRefTestInfra(t, scPeriodic.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasExtraRefs(t, scPeriodic.JobBase.UtilityConfig, []string{"kyma"})
-	require.Len(t, scPeriodic.Spec.Containers, 1)
+	tester.AssertThatHasExtraRefTestInfra(t, compassPeriodic.JobBase.UtilityConfig, "master")
+	tester.AssertThatHasExtraRefs(t, compassPeriodic.JobBase.UtilityConfig, []string{"kyma"})
+	require.Len(t, compassPeriodic.Spec.Containers, 1)
 	compassCont := compassPeriodic.Spec.Containers[0]
 	assert.True(t, compassPeriodic.Decorate)
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassCont.Image)
