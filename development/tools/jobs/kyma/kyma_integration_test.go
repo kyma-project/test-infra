@@ -80,23 +80,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contains the gke-integration-xip job": {
-			givenJobName: "pre-master-kyma-gke-integration-xip-debug",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildPr,
-				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
 		"Should contains the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
 
@@ -169,6 +152,29 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	}
 }
 
+func TestKymaIntegrationJobsPresubmitXipDebug(t *testing.T) {
+	expPresets := []tester.Preset{tester.PresetGCProjectEnv, tester.PresetBuildPr, tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration"}
+
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration-xip-debug", "dekiel-debug-xip-1206")
+	require.NotNil(t, actualJob)
+
+	// then
+	// the common expectation
+	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+	assert.True(t, actualJob.Decorate)
+	assert.True(t, actualJob.SkipReport)
+	assert.Equal(t, 10, actualJob.MaxConcurrency)
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+
+	// the job specific expectation
+	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, expPresets...)
+}
 func TestKymaGKEMinioGatewayJobPresubmit(t *testing.T) {
 	// given
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
