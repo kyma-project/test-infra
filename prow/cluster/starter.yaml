@@ -230,9 +230,6 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
       volumes:
         - name: oauth
           secret:
@@ -272,9 +269,6 @@ spec:
               readOnly: true
             - name: job-config
               mountPath: /etc/job-config
-              readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
               readOnly: true
       volumes:
         - name: config
@@ -323,9 +317,6 @@ spec:
               readOnly: true
             - name: job-config
               mountPath: /etc/job-config
-              readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
               readOnly: true
           livenessProbe:
             httpGet:

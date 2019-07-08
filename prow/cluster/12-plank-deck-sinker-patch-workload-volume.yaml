@@ -1,9 +1,0 @@
----
-spec:
-  template:
-    spec:
-      volumes:
-      - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
