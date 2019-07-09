@@ -4,6 +4,7 @@
 #
 #Expected vars:
 # - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+# - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
@@ -11,8 +12,15 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-if [ -z "${DOMAIN}" ] ; then
-    echo "ERROR: DOMAIN is not set"
+discoverUnsetVar=false
+
+for var in DOMAIN GOOGLE_APPLICATION_CREDENTIALS; do
+    if [ -z "${!var}" ] ; then
+        echo "ERROR: $var is not set"
+        discoverUnsetVar=true
+    fi
+done
+if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
@@ -20,7 +28,7 @@ shout "Generate lets encrypt certificate"
 date
 
 mkdir letsencrypt
-cp /etc/credentials/sa-gke-kyma-integration/service-account.json letsencrypt
+cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
 docker run  --name certbot \
     --rm  \
     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \

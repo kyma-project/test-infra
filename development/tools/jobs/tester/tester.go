@@ -30,6 +30,8 @@ const (
 	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
 	// PresetDockerPushRepoIncubator means Decker repository incubator images
 	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
+	// PresetDockerPushGlobalRepo means Decker global repository for images
+	PresetDockerPushGlobalRepo Preset = "preset-docker-push-global-repository"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
@@ -44,6 +46,16 @@ const (
 	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
 	// PresetBotGithubIdentity means github identity
 	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
+	// PresetWebsiteBotGithubToken means github token
+	PresetWebsiteBotGithubToken Preset = "preset-website-bot-github-token"
+	// PresetKymaGuardBotGithubToken represents the Kyma Guard Bot token for GitHub
+	PresetKymaGuardBotGithubToken Preset = "preset-kyma-guard-bot-github-token"
+	// PresetWebsiteBotGithubSSH means github ssh
+	PresetWebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
+	// PresetWebsiteBotGithubIdentity means github identity
+	PresetWebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
+	// PresetWebsiteBotZenHubToken means zenhub token
+	PresetWebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
 	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
 	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
 	// PresetGCProjectEnv means project name is injected as env variable
@@ -69,11 +81,15 @@ const (
 	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
+	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
+	// KymaIncubatorDir means kyma incubator dir
+	KymaIncubatorDir = "/home/prow/go/src/github.com/kyma-incubator"
 
 	// BuildScriptDir means build script directory
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
@@ -89,9 +105,9 @@ type SupportedRelease = string
 // When we removing support for given version, there remove
 // its entry also here.
 const (
-	Release07 SupportedRelease = "release-0.7"
-	Release08 SupportedRelease = "release-0.8"
-	Release09 SupportedRelease = "release-0.9"
+	Release11 SupportedRelease = "release-1.1"
+	Release12 SupportedRelease = "release-1.2"
+	Release13 SupportedRelease = "release-1.3"
 )
 
 // Release allows you to execute checks on given release
@@ -112,7 +128,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []SupportedRelease {
-	return []SupportedRelease{Release07, Release08, Release09}
+	return []SupportedRelease{Release11, Release12, Release13}
 }
 
 // GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones

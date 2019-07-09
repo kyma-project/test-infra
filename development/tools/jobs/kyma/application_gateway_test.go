@@ -10,9 +10,8 @@ import (
 
 func TestApplicationGatewayReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release07}
 
-	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
+	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-gateway/application-gateway.yaml")
 			// THEN
@@ -64,7 +63,7 @@ func TestApplicationGatewayJobPostsubmit(t *testing.T) {
 	actualPost := kymaPost[0]
 	expName := "post-master-kyma-components-application-gateway"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

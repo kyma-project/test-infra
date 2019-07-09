@@ -26,16 +26,17 @@ func TestBranchProtection(t *testing.T) {
 	}{
 		{"kyma-project", "kyma", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "test-infra", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "website", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "website", "master", []string{"license/cla", "netlify/kyma-project/deploy-preview"}, 1},
 		{"kyma-project", "community", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "console", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "examples", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "luigi", "master", []string{"license/cla"}, 2},
 		{"kyma-project", "bundles", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "cli", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "varkes", "master", []string{"license/cla"}, 1},
-		{"kyma-incubator", "kymactl", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "vstudio-extension", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "service-catalog-tester", "master", []string{"license/cla"}, 1},
+		{"kyma-incubator", "marketplaces", "master", []string{"license/cla"}, 1},
+		{"kyma-incubator", "compass", "master", []string{"license/cla"}, 1},
 	}
 
 	for _, testcase := range testcases {
@@ -65,18 +66,20 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
 			require.NotNil(t, p.RequiredStatusChecks)
-
-			if tester.Release(relBranch).Matches(tester.Release07, tester.Release08) {
-				assert.Len(t, p.RequiredStatusChecks.Contexts, 5)
-			} else {
-				assert.Len(t, p.RequiredStatusChecks.Contexts, 7)
-			}
-
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-upgrade", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
+			if !tester.Release(relBranch).Matches(tester.Release11) {
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway", relBranch))
+			}
+
+			if !tester.Release(relBranch).Matches(tester.Release11) && !tester.Release(relBranch).Matches(tester.Release12) {
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway-migration", relBranch))
+			}
 		})
 	}
 }

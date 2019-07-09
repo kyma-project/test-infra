@@ -68,7 +68,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/binding-usage-controller/"
     extra_refs:
@@ -91,7 +91,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
   - branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^components/binding-usage-controller/"
     extra_refs:

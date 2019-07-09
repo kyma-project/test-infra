@@ -39,7 +39,7 @@ func TestKnativeServingAcceptanceJobPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	require.NotNil(t, actualPostsubmit)
 
-	assert.Equal(t, []string{"master"}, actualPostsubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPostsubmit.Branches)
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 	assert.True(t, actualPostsubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPostsubmit.PathAlias)
@@ -58,14 +58,8 @@ func TestKnativeServingAcceptanceReleases(t *testing.T) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml")
 			// THEN
-			var moduleName, execArg string
-			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08, tester.Release09) {
-				moduleName = "kyma-tests-knative-serving-acceptance"
-				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving-acceptance"
-			} else {
-				moduleName = "kyma-tests-knative-serving"
-				execArg = "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving"
-			}
+			moduleName := "kyma-tests-knative-serving"
+			execArg := "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-serving"
 
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName(moduleName, currentRelease), currentRelease)

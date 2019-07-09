@@ -23,19 +23,7 @@ func TestConsoleBackendServiceJobReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-
-			var args []string
-			if tester.Release(currentRelease).Matches(tester.Release07, tester.Release08) {
-				args = []string{
-					"/home/prow/go/src/github.com/kyma-project/kyma/components/ui-api-layer",
-				}
-			} else {
-				args = []string{
-					"/home/prow/go/src/github.com/kyma-project/kyma/components/console-backend-service",
-				}
-			}
-
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, args...)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/console-backend-service")
 		})
 	}
 }
@@ -50,7 +38,7 @@ func TestConsoleBackendServiceJobPresubmit(t *testing.T) {
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -80,7 +68,7 @@ func TestConsoleBackendServiceJobPostsubmit(t *testing.T) {
 	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

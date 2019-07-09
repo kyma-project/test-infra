@@ -17,12 +17,12 @@ func TestLoadTestJobsPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Presubmits, 1)
 	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 4)
+	assert.Len(t, kymaPresubmits, len(tester.GetAllKymaReleaseBranches())+1)
 
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-kyma-tools-load-test"
 	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
@@ -51,7 +51,7 @@ func TestLoadTestJobPostsubmit(t *testing.T) {
 	actualPost := kymaPost[0]
 	expName := "post-master-kyma-tools-load-test"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

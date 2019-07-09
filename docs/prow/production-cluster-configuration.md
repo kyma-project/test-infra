@@ -3,7 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
-> Note: This prow installation is compatible with commit SHA of `4faaf685958cd79ea5b5a376fadabd8a9d1b4123` of github.com/k8s.io/test-infra repository
+>**NOTE**: This Prow installation is compatible with the [`4faaf685958cd79ea5b5a376fadabd8a9d1b4123`](https://github.com/kubernetes/test-infra/commit/4faaf685958cd79ea5b5a376fadabd8a9d1b4123) revision in the `kubernetes/test-infra` repository.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ Use the following tools and configuration:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
-- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-prow-main-cluster)
+- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-main-prow-cluster)
 - Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
@@ -41,7 +41,7 @@ Use the following tools and configuration:
 
   This script performs the following steps:
   - Creates a ClusterRoleBinding to provide access to the Prow cluster. This way it enables running and monitoring jobs on the workload cluster.
-  - Creates Kubernetes `Secrets` resources out of Secrets fetched from the GCP bucket.
+  - Creates Kubernetes Secrets resources from secrets fetched from the GCP bucket.
 
 2. Set the context to your Google Cloud project.
 
@@ -67,11 +67,7 @@ Use the following tools and configuration:
     gcloud container clusters get-credentials $CLUSTER_NAME --zone=$ZONE --project=$PROJECT
   ```
 
-4. Export these environment variables, where:
-
-   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
-   - **KEYRING_NAME** is the KMS key ring.
-   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
+4. Export these environment variables:
 
   ```bash
     export BUCKET_NAME=kyma-prow-secrets
@@ -79,13 +75,18 @@ Use the following tools and configuration:
     export ENCRYPTION_KEY_NAME=kyma-prow-encryption
     export GOPATH=$GOPATH ### Ensure GOPATH is set
   ```
+where: 
+   - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
+   - **KEYRING_NAME** is the KMS key ring.
+   - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
 
-5. Run the following script to create a Kubernetes Secret resource in Prow main cluster. This way you allow the Prow main cluster to access the workload cluster:
->**NOTE:** Create the workload cluster beforehand and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the Prow main cluster.
+5. Run the following script to create a Kubernetes Secret resource in the main Prow cluster. This way the main Prow cluster can access the workload cluster:
 
   ```bash
     ./create-secrets-for-workload-cluster.sh
   ```
+
+>**NOTE:** Create the workload cluster first and make sure the **local** kubeconfig for the Prow admin contains the context for this cluster. Point the **current** kubeconfig to the main Prow cluster.
 
 6. Run the following script to start the installation process:
 
@@ -95,13 +96,13 @@ Use the following tools and configuration:
 
    The installation script performs the following steps to install Prow:
 
-   - Deploy the NGINX Ingress Controller.
-   - Create a ClusterRoleBinding.
-   - Deploy Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision.
-   - Deploy the Cert Manager.
-   - Deploy secure Ingress.
-   - Deploy the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md).
-   - Remove insecure Ingress.
+   - Deploys the NGINX Ingress Controller
+   - Creates a ClusterRoleBinding
+   - Deploys Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision
+   - Deploys the Cert Manager
+   - Deploys secure Ingress
+   - Deploys the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md)
+   - Removes insecure Ingress
 
 7. Verify the installation.
 

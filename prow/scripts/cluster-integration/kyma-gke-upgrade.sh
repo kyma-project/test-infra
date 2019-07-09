@@ -60,13 +60,12 @@ export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
-
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
+export TEST_CONTAINER_NAME="runner"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-trap cleanup EXIT INT
+# shellcheck disable=SC1090
+source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
 cleanup() {
     ## Save status of failed script execution
@@ -109,18 +108,6 @@ cleanup() {
         IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
     fi
 
-    if [[ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]]; then
-        shout "Delete Remote Environments DNS Record"
-        date
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-    fi
-
-    if [[ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]]; then
-        shout "Release Remote Environments IP Address"
-        date
-        IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-    fi
-
     if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
@@ -141,6 +128,13 @@ cleanup() {
 
     exit "${EXIT_STATUS}"
 }
+
+trap cleanup EXIT INT
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 function generateAndExportClusterName() {
     readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
@@ -191,19 +185,6 @@ function reserveIPsAndCreateDNSRecords() {
     GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_GATEWAY_DNS_RECORD="true"
     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-
-    shout "Reserve IP Address for Remote Environments"
-    date
-    REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
-    REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-    CLEANUP_REMOTEENVS_IP_ADDRESS="true"
-    echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-
-    shout "Create DNS Record for Remote Environments IP"
-    date
-    REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-    CLEANUP_REMOTEENVS_DNS_RECORD="true"
-    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
     DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
     export DOMAIN
@@ -259,54 +240,47 @@ function getLastReleaseVersion() {
 
 function installKyma() {
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-
-    shout "Apply Kyma config from latest release - pre releases are omitted"
-    date
     mkdir -p /tmp/kyma-gke-upgradeability
-
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-    shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
-    shout "Install Tiller from ${LAST_RELEASE_VERSION}"
+    if [ -z "$LAST_RELEASE_VERSION" ]; then
+        shoutFail "Couldn't grab latest version from GitHub API, stopping."
+        exit 1
+    fi
+
+    shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
     date
     kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
     "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
-    NEW_INSTALL_PROCEDURE_SINCE="0.7.0"
-    if [[ "$(printf '%s\n' "$NEW_INSTALL_PROCEDURE_SINCE" "$LAST_RELEASE_VERSION" | sort -V | head -n1)" = "$NEW_INSTALL_PROCEDURE_SINCE" ]]; then
-        echo "Used Kyma release version is greater than or equal to 0.7.0. Using new way of installing Kyma release"
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-        sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-            | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-            | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-            | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-            | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-            | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-            | sed -e "s/__.*__//g" \
-            | kubectl apply -f-
-    else
-        echo "Used Kyma release version is less than 0.7.0. Using old way of installing Kyma release"
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-config-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-config.yaml
-        sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-upgradeability/last-release-config.yaml \
-            | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-            | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-            | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-            | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-            | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-            | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-            | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-            | sed -e "s/__.*__//g" \
-            | kubectl apply -f-
-    fi
-
-    shout "Trigger installation with timeout ${KYMA_INSTALL_TIMEOUT}"
+    shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
     date
-    kubectl label installation/kyma-installation action=install
+    kubectl create namespace "kyma-installer"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "global.domainName=${DOMAIN}" \
+        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+        --data "test.acceptance.ui.logging.enabled=true" \
+        --label "component=core"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+        --data "global.tlsCrt=${TLS_CERT}" \
+        --data "global.tlsKey=${TLS_KEY}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+        --label "component=istio"
+
+    shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
+    date
+
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+
+    shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
+    date
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
@@ -365,6 +339,8 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
+    injectTestingBundles
+
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
     fi
@@ -373,8 +349,7 @@ createTestResources() {
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS} \
-        --set global.domainName="${DOMAIN}"
+        --wait ${HELM_ARGS}
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
@@ -388,7 +363,7 @@ createTestResources() {
     set -o errexit
 
     echo "Logs for prepare data operation to test e2e upgrade: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}"
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -c "${TEST_CONTAINER_NAME}"
     if [ "${prepareTestResult}" != 0 ]; then
         echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
         exit "${prepareTestResult}"
@@ -436,9 +411,8 @@ function upgradeKyma() {
         | kubectl apply -f-
     fi
 
-    shout "Trigger update with timeout ${KYMA_UPDATE_TIMEOUT}"
+    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
-    kubectl label installation/kyma-installation action=install
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 
 
@@ -453,10 +427,6 @@ function upgradeKyma() {
 }
 
 function testKyma() {
-    shout "Test Kyma"
-    date
-    "${KYMA_SCRIPTS_DIR}"/testing.sh
-
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
@@ -469,13 +439,19 @@ function testKyma() {
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}"
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
 
     if [ "${testEndToEndResult}" != 0 ]; then
         echo "Helm test operation failed: ${testEndToEndResult}"
         exit "${testEndToEndResult}"
     fi
     set -o errexit
+
+    removeTestingBundles
+
+    shout "Test Kyma"
+    date
+    "${KYMA_SCRIPTS_DIR}"/testing.sh
 }
 
 # Used to detect errors for logging purposes

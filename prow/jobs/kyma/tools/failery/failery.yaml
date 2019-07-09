@@ -25,7 +25,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-tools-failery
       branches:
-        - master
+        - ^master$
       labels:
         preset-build-pr: "true"
       <<: *job_template
@@ -34,7 +34,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tools-failery
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         preset-build-master: "true"

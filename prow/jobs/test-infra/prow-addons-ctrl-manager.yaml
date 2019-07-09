@@ -26,7 +26,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: pre-master-test-infra-development-prow-addons-ctrl-manager
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^development/prow-addons-ctrl-manager/"
     labels:
@@ -37,7 +37,7 @@ postsubmits:
   kyma-project/test-infra:
   - name: post-master-test-infra-development-prow-addons-ctrl-manager
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^development/prow-addons-ctrl-manager/"
     labels:

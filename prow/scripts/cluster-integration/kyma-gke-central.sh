@@ -49,10 +49,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
-trap cleanup EXIT INT
-
 #!Put cleanup code in this function!
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -95,18 +91,6 @@ cleanup() {
         IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
     fi
 
-    if [ -n "${CLEANUP_REMOTEENVS_DNS_RECORD}" ]; then
-        shout "Delete Remote Environments DNS Record"
-        date
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
-    fi
-
-    if [ -n "${CLEANUP_REMOTEENVS_IP_ADDRESS}" ]; then
-        shout "Release Remote Environments IP Address"
-        date
-        IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
-    fi
-
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
@@ -128,6 +112,13 @@ cleanup() {
 
     exit "${EXIT_STATUS}"
 }
+
+trap cleanup EXIT INT
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
@@ -175,7 +166,6 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Used to detect errors for logging purposes
@@ -206,21 +196,6 @@ date
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 CLEANUP_GATEWAY_DNS_RECORD="true"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-
-
-shout "Reserve IP Address for Remote Environments"
-date
-REMOTEENVS_IP_ADDRESS_NAME="remoteenvs-${COMMON_NAME}"
-REMOTEENVS_IP_ADDRESS=$(IP_ADDRESS_NAME=${REMOTEENVS_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-CLEANUP_REMOTEENVS_IP_ADDRESS="true"
-echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-
-
-shout "Create DNS Record for Remote Environments IP"
-date
-REMOTEENVS_DNS_FULL_NAME="gateway.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_REMOTEENVS_DNS_RECORD="true"
-IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
@@ -263,59 +238,46 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 shout "Apply Kyma config"
 date
 
+kubectl create namespace "kyma-installer"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+shout "Apply override for central connector-service"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "connector-service-central-overrides" \
+    --data "tests.application_connector_tests.connector_service.central=true" \
+    --data "connector-service.deployment.args.central=true" \
+    --data "connector-service.tests.central=true" \
+    --data "connection-token-handler.tests.central=true"
+
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-config-cluster.yaml" /tmp/kyma-gke-central/downloaded-config.yaml
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-central/downloaded-installer.yaml
-
     kubectl apply -f /tmp/kyma-gke-central/downloaded-installer.yaml
-
-    sed -e "s/__DOMAIN__/${DOMAIN}/g" /tmp/kyma-gke-central/downloaded-config.yaml \
-        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-        | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-        | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
 else
     echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" "${INSTALLER_CR}" \
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-    | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-    | sed -e "s/__TLS_CERT__/${TLS_CERT}/g" \
-    | sed -e "s/__TLS_KEY__/${TLS_KEY}/g" \
-    | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-    | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-    | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-    | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
 fi
 
-shout "Apply override for central connector-service"
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: connector-service-central-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  connector-service.deployment.args.central: "true"
-  connector-service.tests.central: "true"
-  connection-token-handler.tests.central: "true"
-EOF
-
-shout "Trigger installation"
+shout "Installation triggered"
 date
-kubectl label installation/kyma-installation action=install
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then

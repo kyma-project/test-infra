@@ -51,13 +51,10 @@ readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
-export CLUSTER_SIZE="Standard_DS2_v2"
+export CLUSTER_SIZE="Standard_D4_v3"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
 export CLUSTER_K8S_VERSION="1.11"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
-
-PROMTAIL_CONFIG_NAME=promtail-k8s-1-14.yaml
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -82,20 +79,9 @@ function cleanup() {
         GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+        echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 
         IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-        echo "Remove DNS Record for Remote Environments IP"
-        REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
-        REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-
-        REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-        IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -108,7 +94,7 @@ function cleanup() {
             if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
         fi
 
-        echo "Remove Cluster, IP Address for Ingressgateway, IP Address for Remote Environments"
+        echo "Remove Cluster, IP Address for Ingressgateway"
         az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -182,22 +168,6 @@ function createPublicIPandDNS() {
 
     GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
-
-    # IP address and DNS for Remote Environments
-    shout "Reserve IP Address for Remote Environments"
-	date
-
-    REMOTEENVS_IP_NAME="remoteenvs-${STANDARIZED_NAME}"
-    az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" -l "${REGION}" --allocation-method static
-
-    REMOTEENVS_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${REMOTEENVS_IP_NAME}" --query ipAddress -o tsv)
-    echo "Created IP Address for Remote Environments: ${REMOTEENVS_IP_ADDRESS}"
-
-    shout "Create DNS Record for Remote Environments IP"
-    date
-
-    REMOTEENVS_DNS_FULL_NAME="gateway.${DOMAIN}."
-    IP_ADDRESS=${REMOTEENVS_IP_ADDRESS} DNS_FULL_NAME=${REMOTEENVS_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
 function addGithubDexConnector() {
@@ -206,36 +176,9 @@ function addGithubDexConnector() {
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
     popd
-    export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
+    export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
     go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
-
-function generateAndExportLetsEncryptCert() {
-	shout "Generate lets encrypt certificate"
-	date
-
-    mkdir letsencrypt
-    cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
-
-    TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-    export TLS_CERT
-    TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-    export TLS_KEY
-}
-
 function setupKubeconfig() {
     shout "Setup kubeconfig and create ClusterRoleBinding"
     date
@@ -280,29 +223,37 @@ function installKyma() {
 
     KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-	INSTALLER_CONFIG="${KYMA_RESOURCES_DIR}/installer-config-cluster.yaml.tpl"
 	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
     echo "Apply Azure crb for healthz"
     kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
     shout "Apply Kyma config"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CONFIG}" \
-        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-        | sed -e "s/__PROXY_EXCLUDE_IP_RANGES__/10.0.0.1/g" \
-        | sed -e "s/__DOMAIN__/${DOMAIN}/g" \
-        | sed -e "s/__REMOTE_ENV_IP__/${REMOTEENVS_IP_ADDRESS}/g" \
-        | sed -e "s#__TLS_CERT__#${TLS_CERT}#g" \
-        | sed -e "s#__TLS_KEY__#${TLS_KEY}#g" \
-        | sed -e "s/__EXTERNAL_PUBLIC_IP__/${GATEWAY_IP_ADDRESS}/g" \
-        | sed -e "s/__SKIP_SSL_VERIFY__/true/g" \
-        | sed -e "s/__LOGGING_INSTALL_ENABLED__/true/g" \
-        | sed -e "s/__PROMTAIL_CONFIG_NAME__/${PROMTAIL_CONFIG_NAME}/g" \
-        | sed -e "s/__VERSION__/0.0.1/g" \
-        | sed -e "s/__SLACK_CHANNEL_VALUE__/${KYMA_ALERTS_CHANNEL}/g" \
-        | sed -e "s#__SLACK_API_URL_VALUE__#${KYMA_ALERTS_SLACK_API_URL}#g" \
-        | sed -e "s/__.*__//g" \
+
+    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
         | kubectl apply -f-
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+        --data "global.proxy.excludeIPRanges=10.0.0.1" \
+        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+        --label "component=istio"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "global.domainName=${DOMAIN}" \
+        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+        --data "global.tlsCrt=${TLS_CERT}" \
+        --data "global.tlsKey=${TLS_KEY}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+        --data "test.acceptance.ui.logging.enabled=true" \
+        --label "component=core"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
+        --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
+        --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+        --label "component=monitoring"
 
     waitUntilInstallerApiAvailable
 
@@ -310,7 +261,6 @@ function installKyma() {
 	date
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-    kubectl label installation/kyma-installation action=install
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 80m
 
     if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
@@ -321,46 +271,6 @@ function installKyma() {
         IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
     fi
 }
-
-function installStabilityChecker() {
-    shout "Install stability-checker"
-    date
-
-	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"'([0-9A-Za-z_-]+)' (?:has Failed status?|failed due to too long Running status?|failed due to too long Pending status?|failed with Unknown status?)"}
-	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test of '([0-9A-Za-z_-]+)' was successful"}
-	STATS_ENABLED="true"
-
-	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
-
-	kubectl create -f "${SC_DIR}/local/provisioning.yaml"
-	bash "${SC_DIR}/local/helpers/isready.sh" kyma-system app  stability-test-provisioner
-	kubectl exec stability-test-provisioner -n kyma-system --  mkdir -p /home/input
-	kubectl cp "${KYMA_SCRIPTS_DIR}/testing.sh" stability-test-provisioner:/home/input/ -n kyma-system
-	kubectl cp "${KYMA_SCRIPTS_DIR}/utils.sh" stability-test-provisioner:/home/input/ -n kyma-system
-	kubectl cp "${KYMA_SCRIPTS_DIR}/testing-common.sh" stability-test-provisioner:/home/input/ -n kyma-system
-    kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
-	kubectl delete pod -n kyma-system stability-test-provisioner
-
-    # create a secret with service account used for storing logs
-    kubectl create secret generic sa-stability-fluentd-storage-writer --from-file=service-account.json=/etc/credentials/sa-stability-fluentd-storage-writer/service-account.json -n kyma-system
-
-	helm install --set clusterName="${CLUSTER_NAME}" \
-	        --set logsPersistence.enabled=true \
-	        --set slackClientWebhookUrl="${SLACK_CLIENT_WEBHOOK_URL}" \
-	        --set slackClientChannelId="${STABILITY_SLACK_CLIENT_CHANNEL_ID}" \
-	        --set slackClientToken="${SLACK_CLIENT_TOKEN}" \
-	        --set stats.enabled="${STATS_ENABLED}" \
-	        --set stats.failingTestRegexp="${STATS_FAILING_TEST_REGEXP}" \
-	        --set stats.successfulTestRegexp="${STATS_SUCCESSFUL_TEST_REGEXP}" \
-	        --set testResultWindowTime="${TEST_RESULT_WINDOW_TIME}" \
-	        "${SC_DIR}/deploy/chart/stability-checker" \
-	        --namespace=kyma-system \
-	        --name=stability-checker \
-	        --wait \
-	        --timeout=600 \
-	        --tls
-}
-
 
 init
 azureAuthenticating
@@ -375,11 +285,22 @@ createGroup
 installCluster
 
 createPublicIPandDNS
-generateAndExportLetsEncryptCert
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
+TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+export TLS_CERT
+TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+export TLS_KEY
 
 setupKubeconfig
 installTiller
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-installStabilityChecker
+shout "Install stability-checker"
+date
+(
+export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
+        CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
+)
+

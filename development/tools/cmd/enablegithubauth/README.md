@@ -18,3 +18,6 @@ These are the available environment variables:
 | **GITHUB_INTEGRATION_APP_CLIENT_SECRET**     |    Yes   | Client secret of an OAuth Github application  |
 | **DEX_CALLBACK_URL**                         |    Yes   | DEX callback URL |
 | **GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS**     |    Yes   | Comma-separated list of Github teams in `kyma-project` that are bound to the `kymaAdmin` role |
+
+## More
+Dex docs for GitHub connector: https://github.com/dexidp/dex/blob/master/Documentation/connectors/github.md

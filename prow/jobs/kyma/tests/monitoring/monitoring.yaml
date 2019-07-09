@@ -50,7 +50,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-tests-monitoring
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^tests/monitoring/"
       extra_refs:
@@ -59,36 +59,36 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel07-kyma-tests-test-logging-monitoring
+    - name: pre-rel11-kyma-tests-monitoring
       branches:
-        - release-0.7
-      <<: *job_template_rel06_rel07
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-0.7
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-    - name: pre-rel08-kyma-tests-monitoring
-      branches:
-        - release-0.8
+        - release-1.1
       <<: *job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: release-0.8
+          base_ref: release-1.1
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel09-kyma-tests-monitoring
+    - name: pre-rel12-kyma-tests-monitoring
       branches:
-        - release-0.9
+        - release-1.2
       <<: *job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: release-0.9
+          base_ref: release-1.2
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+    - name: pre-rel13-kyma-tests-monitoring
+      branches:
+      - release-1.3
+      <<: *job_template
+      always_run: true
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.3
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -97,7 +97,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-tests-monitoring
       branches:
-        - master
+        - ^master$
       <<: *job_template
       run_if_changed: "^tests/monitoring/"
       extra_refs:
