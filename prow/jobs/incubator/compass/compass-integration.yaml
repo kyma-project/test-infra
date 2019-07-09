@@ -5,10 +5,10 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 cli_ref: &cli_ref
-  org: kyma-project
+  org: tgorgol # TODO: Change to kyma-project when done testing
   repo: cli
   path_alias: github.com/kyma-project/cli
-  base_ref: master
+  base_ref: sed-fix # TODO: Change to master when done testing
 
 vm_job_template: &vm_job_template
   optional: true # TODO: Remove when done testing
