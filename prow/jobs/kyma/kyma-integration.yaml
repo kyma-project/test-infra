@@ -1043,7 +1043,7 @@ periodics:
             name: kyma-alerts-slack-api-url
             key: secret
       - name: KYMA_ALERTS_CHANNEL
-        value: "#c4core-kyma-gopher-pr"
+        value: "#not-exists"
       - name: CLOUDSDK_COMPUTE_ZONE
         value: "europe-west4-b"
       command:
