@@ -58,8 +58,9 @@ func TestLoggingTestsJobPostsubmit(t *testing.T) {
 }
 
 func TestLoggingTestsReleases(t *testing.T) {
+	oldStyleReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range oldStyleReleases {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging-integration.yaml")
 			// THEN
@@ -73,6 +74,24 @@ func TestLoggingTestsReleases(t *testing.T) {
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/logging")
+		})
+	}
+
+	// WHEN
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(oldStyleReleases) {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging-integration.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-logging", currentRelease), currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/logging")
 		})
 	}
 }
