@@ -10,7 +10,7 @@ import (
 
 func TestLoggingTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -32,7 +32,7 @@ func TestLoggingTestsJobsPresubmit(t *testing.T) {
 
 func TestLoggingTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -61,7 +61,7 @@ func TestLoggingTestsReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/logging/logging.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/logging/logging-integration.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-logging", currentRelease), currentRelease)
