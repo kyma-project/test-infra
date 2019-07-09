@@ -12,7 +12,7 @@ const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/comp
 
 func TestCompassIntegrationVMJobsReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release11}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
@@ -46,14 +46,14 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contains the compass-integration job": {
+		"Should contain the compass-integration job": {
 			givenJobName: "pre-master-compass-integration",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, tester.PresetBuildPr, "preset-sa-vm-kyma-integration",
 			},
 
-			expRunIfChangedRegex: "^((chart/\\S+|installation/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedRegex: "^(chart/\\S+|installation/\\S+)\\.([^.\\s]|[^.\\s]{3,}|[^.\\s][^dD]|[^mM][^.\\s])$",
 			expRunIfChangedPaths: []string{
 				"chart/compass/values.yaml",
 				"installation/cmd/run.sh",
@@ -106,7 +106,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		givenJobName string
 		expPresets   []tester.Preset
 	}{
-		"Should contains the compass-integration job": {
+		"Should contain the compass-integration job": {
 			givenJobName: "post-master-compass-integration",
 
 			expPresets: []tester.Preset{
