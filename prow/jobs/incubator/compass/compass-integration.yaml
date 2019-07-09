@@ -1,17 +1,16 @@
 ---
 test_infra_ref: &test_infra_ref
-  org: tgorgol # TODO: Change to kyma-incubator when done testing
+  org: kyma-project
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
 cli_ref: &cli_ref
-  org: tgorgol # TODO: Change to kyma-project when done testing
+  org: kyma-project
   repo: cli
   path_alias: github.com/kyma-project/cli
-  base_ref: sed-fix # TODO: Change to master when done testing
+  base_ref: master
 
 vm_job_template: &vm_job_template
-  optional: true # TODO: Remove when done testing
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-incubator/compass
@@ -28,7 +27,6 @@ vm_job_template: &vm_job_template
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
-  prow.kyma-project.io/slack.skipReport: "true" # TODO: Remove when done testing
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
@@ -39,13 +37,13 @@ presubmits: # runs on PRs
     - ^master$
     <<: *vm_job_template
     # following regexp won't start build if only Markdown files were changed
-    # run_if_changed: "^((chart/\\S+|installation/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" # TODO: Uncomment when done testing
+    run_if_changed: "^((chart/\\S+|installation/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       preset-build-pr: "true"
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: compass-integration-jobs # TODO: Change to master when done testing
+      base_ref: master
     - <<: *cli_ref
 
   - name: pre-rel12-compass-integration
@@ -83,5 +81,5 @@ postsubmits:
       <<: *vm_job_labels_template
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: compass-integration-jobs # TODO: Change to master when done testing
+      base_ref: master
     - <<: *cli_ref
