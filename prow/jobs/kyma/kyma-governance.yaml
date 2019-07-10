@@ -64,24 +64,4 @@ periodics: # runs periodic on master
           requests:
             memory: 10Mi
             cpu: 100m
-            
-- name: kyma-governance-vulncollector
-  decorate: true
-  cron: "0 0 1 * *" # “At 00:00 on day-of-month 1.”
-  labels:
-    preset-sap-slack-bot-token: "true"
-    preset-kyma-slack-channel: "true"
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        command:
-          - "go run /home/prow/go/src/github.com/kyma-project/test-infra/development/tools/cmd/vulnerabilitycollector/main.go "
-        args:
-          - "-project"
-          - "kyma-project"
-          - "-url"
-          - "https://eu.gcr.io/kyma-project/prow/test-infra/bootstrap@sha256:e5df652750a8f6d9785f39d2c88bc3b64684ea035350c5e7bbe06a733b770427"
-        resources:
-          requests:
-            memory: 10Mi
-            cpu: 100m
+
