@@ -43,6 +43,19 @@ kubectl apply -f "${PROW_WORKLOAD_CLUSTER_DIR}/00-clusterrolebinding.yaml"
 # Install PodDisruptionBudgets
 kubectl apply -f "${PROW_WORKLOAD_CLUSTER_DIR}/02-kube-system_poddisruptionbudgets.yaml"
 
+# Overwrite kube-dns-autoscaler config map
+cat <<EOF | kubectl replace -f -
+apiVersion: v1
+data:
+  linear: '{"coresPerReplica":256,"nodesPerReplica":8,"preventSinglePointFailure":true}'
+kind: ConfigMap
+metadata:
+  name: kube-dns-autoscaler
+  namespace: kube-system
+EOF
+}
+
+
 # Create secrets
 go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_WORKLOAD_CLUSTER_DIR}/required-secrets.yaml"
 
