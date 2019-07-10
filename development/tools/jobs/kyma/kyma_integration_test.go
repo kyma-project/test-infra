@@ -63,7 +63,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contains the kyma-integration job": {
+		"Should contain the kyma-integration job": {
 			givenJobName: "pre-master-kyma-integration",
 
 			expPresets: []tester.Preset{
@@ -80,7 +80,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contains the gke-integration job": {
+		"Should contain the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
 
 			expPresets: []tester.Preset{
@@ -98,7 +98,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contains the gke-central job": {
+		"Should contain the gke-central job": {
 			givenJobName: "pre-master-kyma-gke-central-connector",
 
 			expPresets: []tester.Preset{
@@ -315,14 +315,14 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		givenJobName string
 		expPresets   []tester.Preset
 	}{
-		"Should contains the kyma-integration job": {
+		"Should contain the kyma-integration job": {
 			givenJobName: "post-master-kyma-integration",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
-		"Should contains the gke-integration job": {
+		"Should contain the gke-integration job": {
 			givenJobName: "post-master-kyma-gke-integration",
 
 			expPresets: []tester.Preset{
@@ -331,7 +331,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 		},
-		"Should contains the gke-upgrade job": {
+		"Should contain the gke-upgrade job": {
 			givenJobName: "post-master-kyma-gke-upgrade",
 
 			expPresets: []tester.Preset{
@@ -340,7 +340,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
 		},
-		"Should contains the gke-central job": {
+		"Should contain the gke-central job": {
 			givenJobName: "post-master-kyma-gke-central-connector",
 
 			expPresets: []tester.Preset{

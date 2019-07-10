@@ -12,7 +12,7 @@ const directorJobPath = "./../../../../../prow/jobs/incubator/compass/components
 
 func TestDirectorJobReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release11}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
