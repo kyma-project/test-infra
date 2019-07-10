@@ -222,7 +222,7 @@ function installKyma() {
   fi
 }
 
-trap `removeCluster ${CLUSTER_NAME}` EXIT INT
+trap 'removeCluster ${CLUSTER_NAME}' EXIT INT
 
 shout "Authenticate"
 date
