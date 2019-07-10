@@ -53,7 +53,6 @@ metadata:
   name: kube-dns-autoscaler
   namespace: kube-system
 EOF
-}
 
 
 # Create secrets
