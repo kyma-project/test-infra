@@ -1057,7 +1057,7 @@ periodics:
           cpu: 80m
 
 - name: kyma-gke-compass-integration-periodic
-  cron: "0 0 * * 1-5" # "At 00:00 every day"
+  cron: "0 0 * * 1-5"
   decorate: true
   max_concurrency: 10
   spec:
