@@ -53,16 +53,17 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, tester.PresetBuildPr, "preset-sa-vm-kyma-integration",
 			},
 
-			expRunIfChangedRegex: "^(chart/\\S+|installation/\\S+)\\.([^.\\s]|[^.\\s]{3,}|[^.\\s][^dD]|[^mM][^.\\s])$",
+			expRunIfChangedRegex: "^(chart|installation)/",
 			expRunIfChangedPaths: []string{
 				"chart/compass/values.yaml",
+				"chart/compass/README.md",
 				"installation/cmd/run.sh",
 				"installation/resources/installer-cr-with-compass.yaml",
 			},
 			expNotRunIfChangedPaths: []string{
 				"charts/values.yaml",
-				"installation/README.md",
-				"chart/test/test/README.MD",
+				"installations/README.md",
+				"test/test/test/README.yaml",
 			},
 		},
 	}

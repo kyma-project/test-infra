@@ -36,8 +36,7 @@ presubmits: # runs on PRs
     branches:
     - ^master$
     <<: *vm_job_template
-    # following regexp won't start build if only Markdown files were changed
-    run_if_changed: "^(chart/\\S+|installation/\\S+)\\.([^.\\s]|[^.\\s]{3,}|[^.\\s][^dD]|[^mM][^.\\s])$"
+    run_if_changed: "^(chart|installation)/"
     labels:
       preset-build-pr: "true"
       <<: *vm_job_labels_template
