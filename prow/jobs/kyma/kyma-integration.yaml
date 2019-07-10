@@ -1057,10 +1057,8 @@ periodics:
           cpu: 80m
 
 - name: kyma-gke-compass-integration-periodic
-  cron: "00 00 * * *" # "At 00:00 every day"
-  skip_report: false
+  cron: "0 0 * * 1-5" # "At 00:00 every day"
   decorate: true
-  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
     containers:
@@ -1069,14 +1067,14 @@ periodics:
           privileged: true
         command:
           - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
           - name: INPUT_CLUSTER_NAME
             value: "compass-integration-periodic"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
         resources:
           requests:
             memory: 200Mi

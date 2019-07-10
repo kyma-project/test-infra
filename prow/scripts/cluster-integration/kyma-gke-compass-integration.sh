@@ -41,8 +41,8 @@ function removeCluster() {
 	#Turn off exit-on-error so that next step is executed even if previous one fails.
 	set +e
 
-  # CLUSTER_NAME variable is used in other scripts so we need to change it for a while
-  ORIGINAL_CLUSTER_NAME=${CLUSTER_NAME}
+  	# CLUSTER_NAME variable is used in other scripts so we need to change it for a while
+  	ORIGINAL_CLUSTER_NAME=${CLUSTER_NAME}
 	CLUSTER_NAME=$1
 
 	EXIT_STATUS=$?
@@ -82,8 +82,7 @@ function removeCluster() {
 	shout "Delete temporary Kyma-Installer Docker image"
 	date
 
-
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+  	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -92,8 +91,8 @@ function removeCluster() {
 	shout "Job is finished ${MSG}"
 	date
 
-    # Revert previous value for CLUSTER_NAME variable
-    CLUSTER_NAME=${ORIGINAL_CLUSTER_NAME}
+  	# Revert previous value for CLUSTER_NAME variable
+  	CLUSTER_NAME=${ORIGINAL_CLUSTER_NAME}
 	set -e
 }
 
@@ -150,10 +149,9 @@ function waitUntilInstallerApiAvailable() {
 }
 
 function installKyma() {
-
 	kymaUnsetVar=false
 
-  # shellcheck disable=SC2043
+  	# shellcheck disable=SC2043
 	for var in GATEWAY_IP_ADDRESS ; do
     	if [ -z "${!var}" ] ; then
         	echo "ERROR: $var is not set"
@@ -172,8 +170,7 @@ function installKyma() {
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-	INSTALLER_CR="/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
-
+	INSTALLER_CR="${TEST_INFRA_SOURCES_DIR}/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 	TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
