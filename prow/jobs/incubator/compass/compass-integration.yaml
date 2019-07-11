@@ -48,6 +48,7 @@ presubmits: # runs on PRs
   - name: pre-kyma-gke-compass-integration-test # TODO remove after testing
     optional: true
     decorate: true
+    skip_report: false
     max_concurrency: 10
     spec:
       containers:
