@@ -32,7 +32,7 @@ echo "***********************************"
 sed -i.bak "s/apiKey=/apiKey=${APIKEY}/g
 s/productName=/productName=${PRODUCTNAME}/g
 s/userKey=/userKey=${USERKEY}/g
-s/projectName=/projectName=${PROJECTNAME}/g" wss-unified-agent.config
+s/projectName=/projectName=${PROJECTNAME}/g" /wss/wss-unified-agent.config
 
 echo "Dryrun state - $DRYRUN"
 echo "Product name - $PRODUCTNAME"
@@ -43,7 +43,7 @@ echo "Java Options - '$JAVA_OPTS'"
     echo "***********************************"
     echo "***********Scanning ***************"
     echo "***********************************"
-    java "${JAVA_OPTS}" -jar wss-unified-agent.jar -d "${PROJECTNAME}" -c wss-unified-agent.config
+    java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c /wss/wss-unified-agent.config
 else 
     echo "***********************************"
     echo "********* DRYRUN Success **********"  
