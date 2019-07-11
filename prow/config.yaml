@@ -363,8 +363,6 @@ presets:
     env:
       - name: PRODUCTNAME
         value: "OOSS - KYMA"
-      - name: JAVA_OPTS
-        value: "-d64 -Xmx15g"
 
 branch-protection:
   enforce_admins: false
