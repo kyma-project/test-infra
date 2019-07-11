@@ -2,11 +2,7 @@
 
 
 #Description: runs wss-unified-agent 
-#The purpose is to run the wss-unified-agent and modify its config the 
-#jar can be found 
-#curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.jar
-#config can be found here
-#curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.config
+#The purpose is to run the wss-unified-agent
 
 #Expected vars: 
 # - APIKEY- Key provided by SAP Whitesource Team
