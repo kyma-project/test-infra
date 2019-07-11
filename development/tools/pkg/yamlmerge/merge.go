@@ -24,7 +24,7 @@ func MergeFiles(path, extension, target string, changeFile bool) {
 	for _, f := range files {
 		data, err := ioutil.ReadFile(f)
 		if err != nil {
-			log.Fatalf("Coulnd't read file (%s) contents: %s\n", f, err.Error())
+			log.Fatalf("Couldn't read file (%s) contents: %s\n", f, err.Error())
 		}
 		if !strings.HasSuffix(string(data), "\n") { // append newline if file doesn't end with newline
 			data = append(data, "\n"...)
