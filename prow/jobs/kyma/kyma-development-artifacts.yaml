@@ -37,9 +37,9 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-development-artifacts
-    run_if_changed: "^installation|^resources|^components/installer|^tools/kyma-installer"
+    run_if_changed: "^installation|^resources|^components/kyma-operator|^tools/kyma-installer"
     branches:
-    - master
+    - ^master$
     <<: *job_template
     extra_refs:
     - <<: *test_infra_ref
@@ -52,7 +52,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-development-artifacts
     branches:
-      - master
+      - ^master$
     <<: *job_template
     extra_refs:
       - <<: *test_infra_ref

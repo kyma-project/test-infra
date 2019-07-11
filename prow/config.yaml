@@ -10,6 +10,11 @@ presets:
       - name: CLOUDSDK_CORE_PROJECT
         value: "sap-kyma-prow-workloads"
   - labels:
+      preset-kms-gc-project-env: "true"
+    env:
+      - name: CLOUDSDK_KMS_PROJECT
+        value: "sap-kyma-prow"
+  - labels:
       preset-sa-vm-kyma-integration: "true" # Service account with "Compute Admin" and "Compute OS Admin Login" roles
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -380,15 +385,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-1.0:
-              required_status_checks:
-                contexts:
-                  - pre-rel10-kyma-integration
-                  - pre-rel10-kyma-gke-integration
-                  - pre-rel10-kyma-gke-upgrade
-                  - pre-rel10-kyma-gke-central-connector
-                  - pre-rel10-kyma-artifacts
-                  - pre-rel10-kyma-installer
             release-1.1:
               required_status_checks:
                 contexts:
@@ -408,6 +404,17 @@ branch-protection:
                   - pre-rel12-kyma-artifacts
                   - pre-rel12-kyma-installer
                   - pre-rel12-kyma-gke-minio-gateway
+            release-1.3:
+              required_status_checks:
+                contexts:
+                - pre-rel13-kyma-integration
+                - pre-rel13-kyma-gke-integration
+                - pre-rel13-kyma-gke-upgrade
+                - pre-rel13-kyma-gke-central-connector
+                - pre-rel13-kyma-artifacts
+                - pre-rel13-kyma-installer
+                - pre-rel13-kyma-gke-minio-gateway
+                - pre-rel13-kyma-gke-minio-gateway-migration
         website:
           required_status_checks:
             contexts:

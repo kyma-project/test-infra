@@ -45,7 +45,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: pre-master-stability-checker
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^stability-checker/"
     labels:
@@ -66,7 +66,7 @@ postsubmits:
   kyma-project/test-infra:
   - name: post-master-stability-checker
     branches:
-    - master
+    - ^master$
     <<: *job_template
     run_if_changed: "^stability-checker/"
     labels:

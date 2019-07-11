@@ -13,7 +13,7 @@ func TestWatchPodsReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
-			if tester.Release(currentRelease).Matches(tester.Release10, tester.Release11) {
+			if tester.Release(currentRelease).Matches(tester.Release11) {
 				expectedImage = tester.ImageGolangBuildpackLatest
 			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
@@ -60,7 +60,7 @@ func TestWatchPodsJobPostsubmit(t *testing.T) {
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

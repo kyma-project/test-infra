@@ -4,7 +4,7 @@ common_job_template: &common_job_template
   decorate: true
   path_alias: github.com/kyma-project/test-infra
   branches:
-    - master
+    - ^master$
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
