@@ -46,7 +46,6 @@ func TestRuntimeAgentJobPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPre.MaxConcurrency)
 	assert.False(t, actualPre.SkipReport)
 	assert.True(t, actualPre.Decorate)
-	assert.False(t, actualPre.Optional)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualPre.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
