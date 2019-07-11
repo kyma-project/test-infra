@@ -81,6 +81,8 @@ presubmits: # runs on PRs
       preset-docker-push-repository-gke-integration: "true"
       preset-dind-enabled: "true"
       preset-kyma-artifacts-bucket: "true"
+      preset-kyma-keyring: "true"
+      preset-kyma-encryption-key: "true"
     extra_refs:
       - org: kyma-project
         repo: kyma
