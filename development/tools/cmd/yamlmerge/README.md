@@ -2,12 +2,13 @@
 
 ## Overview
 
-This command line tool enables merging yaml files into one single file. For the operation to work, the yaml files must follow the path with a given extension. For example, the tool creates a `starter.yaml` file from the component configurations residing under the `/prow/cluster/components` path, and puts the file under  `/prow/cluster/starter.yaml` if called like so:
+This command line tool enables merging yaml files into one single file. For the operation to work, the yaml files must follow the same source path. 
+For example, the following command allows the tool to merge the component configurations residing under the `/prow/cluster/components` path and place the resulting target file under `/prow/cluster/starter.yaml`. 
 ```bash
 go run main.go -path /prow/cluster/components -target /prow/cluster/starter.yaml
 ```
 
-If `starter.yaml` in the given path does not exist it will be created.
+>**NOTE**:  If the `starter.yaml` file does not already exist under a given path, it will be created.
 
 ## Usage
 
