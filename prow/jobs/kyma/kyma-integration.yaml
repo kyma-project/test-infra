@@ -1085,6 +1085,7 @@ periodics:
     preset-build-master: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
+    preset-kms-gc-project-env: "true"
     <<: *gke_job_labels_template
   extra_refs:
     - <<: *kyma_ref

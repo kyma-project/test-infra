@@ -83,6 +83,7 @@ presubmits: # runs on PRs
       preset-kyma-artifacts-bucket: "true"
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
+      preset-kms-gc-project-env: "true"
     extra_refs:
       - org: kyma-project
         repo: kyma
