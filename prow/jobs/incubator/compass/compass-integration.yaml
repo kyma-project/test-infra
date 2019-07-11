@@ -71,7 +71,7 @@ presubmits: # runs on PRs
     branches:
       - ^master$
     labels:
-      prow.kyma-project.io/slack.skipReport: true
+      prow.kyma-project.io/slack.skipReport: "true"
       preset-build-master: "true"
       preset-kyma-guard-bot-github-token: "true"
       preset-sa-gke-kyma-integration: "true"
