@@ -629,6 +629,9 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	compassPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, compassPeriodic)
 	tester.AssertThatHasPresets(t, compassPeriodic.JobBase,
+		"preset-kyma-keyring",
+		"preset-kyma-encryption-key",
+		"preset-kms-gc-project-env",
 		"preset-build-master",
 		"preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs",
