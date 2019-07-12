@@ -28,9 +28,6 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
       volumes:
         - name: config
           configMap:
