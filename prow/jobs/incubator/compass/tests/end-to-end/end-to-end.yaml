@@ -40,17 +40,6 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel12-compass-tests-end-to-end
-      branches:
-        - release-1.2
-      <<: *job_template
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.2
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
     - name: pre-rel13-compass-tests-end-to-end
       branches:
       - release-1.3

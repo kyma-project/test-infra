@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly LICENSE_PULLER_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/license-puller.sh"
+LICENSE_PULLER_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/license-puller.sh"
 export LICENSE_PULLER_PATH
 
 function start_docker() {

@@ -109,15 +109,21 @@ done;
 shout "Installing Kyma CLI"
 
 cd "${KYMA_PROJECT_DIR}/cli"
+CLI_FLAGS="-X github.com/kyma-project/cli/pkg/kyma/cmd/version.Version=$(git describe --tags --always) -X github.com/kyma-project/cli/pkg/kyma/cmd/install.DefaultKymaVersion=master"
+dep ensure -vendor-only -v
+go generate ./...
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/kyma-linux -ldflags "${CLI_FLAGS}" ./cmd/kyma
 
-make resolve build
+gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --zone="${ZONE}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "compass-integration-test-${RANDOM_ID}":/usr/local/bin/kyma && break;
+    gcloud compute scp --quiet --zone="${ZONE}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "compass-integration-test-${RANDOM_ID}":~/bin/kyma && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
+gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
+
 shout "Triggering the installation"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- ./compass/installation/scripts/prow/deploy-and-test.sh
+gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh"

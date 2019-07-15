@@ -99,7 +99,7 @@ gke_xip_job_template: &gke_xip_job_template
             value: "europe-west4-b"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
         resources:
           requests:
             memory: 200Mi
@@ -1066,7 +1066,7 @@ periodics:
             name: kyma-alerts-slack-api-url
             key: secret
       - name: KYMA_ALERTS_CHANNEL
-        value: "#c4core-kyma-gopher-pr"
+        value: "#not-exists"
       - name: CLOUDSDK_COMPUTE_ZONE
         value: "europe-west4-b"
       command:
@@ -1078,3 +1078,40 @@ periodics:
         requests:
           memory: 200Mi
           cpu: 80m
+
+- name: kyma-gke-compass-integration-periodic
+  cron: "0 0 * * 1-5"
+  decorate: true
+  max_concurrency: 10
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+          - name: INPUT_CLUSTER_NAME
+            value: "compass-integration-periodic"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+  branches:
+    - ^master$
+  labels:
+    preset-build-master: "true"
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
+    preset-kms-gc-project-env: "true"
+    <<: *gke_job_labels_template
+  extra_refs:
+    - <<: *kyma_ref
+      base_ref: master
+    - <<: *test_infra_ref
+      base_ref: master
