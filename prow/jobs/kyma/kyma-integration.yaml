@@ -362,7 +362,7 @@ presubmits: # runs on PRs
     optional: true
     branches:
       - ^master$
-    <<: _xip_job_template
+    <<: *gke_xip_job_template
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
