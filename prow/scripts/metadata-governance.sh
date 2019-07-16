@@ -80,7 +80,7 @@ function copy_files() {
 function run_metadata_validation_docker() {
     set +e
 
-    docker run -v ${VOLUME_DIR}:/work -w /work --rm miy4/json-schema-validator --syntax "${@}"
+    docker run -v "${VOLUME_DIR}:/work" -w /work --rm "miy4/json-schema-validator" --syntax "${@}"
 
     local result=$?
     if [[ ${result} -ne 0 ]]; then
