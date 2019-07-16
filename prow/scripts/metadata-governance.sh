@@ -4,6 +4,7 @@
 set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
+# shellcheck disable=SC2086
 source "${SCRIPT_DIR}/library.sh"
 
 readonly ARGS=("$@")
@@ -79,7 +80,7 @@ function copy_files() {
 
 function run_metadata_validation_docker() {
     set +e
-# shellcheck disable=SC2086
+
     docker run -v "${VOLUME_DIR}:/work" -w /work --rm "miy4/json-schema-validator" --syntax ${@}
 
     local result=$?
