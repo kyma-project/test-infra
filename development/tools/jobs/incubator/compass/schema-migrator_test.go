@@ -31,7 +31,7 @@ func TestSchemaMigratorJobReleases(t *testing.T) {
 			assert.True(t, actualPre.AlwaysRun)
 			assert.Len(t, actualPre.Spec.Containers, 1)
 			testContainer := actualPre.Spec.Containers[0]
-			assert.Equal(t, tester.ImageBootstrap20190604, testContainer.Image)
+			assert.Equal(t, tester.ImageBootstrap20181204, testContainer.Image)
 		})
 	}
 }
@@ -56,7 +56,7 @@ func TestSchemaMigratorJobPresubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, *actualPre, "components/schema-migrator/some_random_file.sh")
 	assert.Len(t, actualPre.Spec.Containers, 1)
 	testContainer := actualPre.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrap20190604, testContainer.Image)
+	assert.Equal(t, tester.ImageBootstrap20181204, testContainer.Image)
 }
 
 func TestSchemaMigratorJobPostsubmit(t *testing.T) {
@@ -77,5 +77,5 @@ func TestSchemaMigratorJobPostsubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/schema-migrator/some_random_file.sh")
 	assert.Len(t, actualPost.Spec.Containers, 1)
 	testContainer := actualPost.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrap20190604, testContainer.Image)
+	assert.Equal(t, tester.ImageBootstrap20181204, testContainer.Image)
 }

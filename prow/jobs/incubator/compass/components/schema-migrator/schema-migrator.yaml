@@ -10,7 +10,7 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
         securityContext:
           privileged: true
         command:
