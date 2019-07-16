@@ -80,7 +80,7 @@ function copy_files() {
 
 function run_metadata_validation_docker() {
     set +e
-
+    # shellcheck disable=SC2068
     docker run -v "${VOLUME_DIR}:/work" -w /work --rm "miy4/json-schema-validator" --syntax ${@}
 
     local result=$?
