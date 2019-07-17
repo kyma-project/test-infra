@@ -28,13 +28,13 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  optional: "true"
   kyma-project/kyma:
   - name: pre-master-kyma-tests-compass-runtime-agent
     branches:
     - master
     <<: *job_template
     run_if_changed: "^tests/compass-runtime-agent/"
+    optional: true
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
