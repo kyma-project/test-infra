@@ -4,6 +4,8 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
+  # Always set optional to true during development, or you will hog up other people PRs!
+  optional: true
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
