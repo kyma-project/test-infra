@@ -56,7 +56,7 @@ func TestKnativebuildAcceptanceReleases(t *testing.T) {
 	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
 
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches(unsupportedReleases) {
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/knative-build/knative-build.yaml")
 			// THEN
