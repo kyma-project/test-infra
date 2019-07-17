@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const runtimeAgentTestJobPath = "./../../../../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent.yaml"
+const runtimeAgentTestJobPath = "./../../../../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-test.yaml"
 
 func TestRuntimeAgentTestJobReleases(t *testing.T) {
 	// WHEN
