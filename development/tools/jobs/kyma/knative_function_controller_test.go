@@ -8,8 +8,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestKnativeFunctionControllerReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+func TestKnativeFunctionControllerAcceptanceReleases(t *testing.T) {
+
+	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
+
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/knative-function-controller/knative-function-controller.yaml")
 			// THEN
@@ -23,11 +26,13 @@ func TestKnativeFunctionControllerReleases(t *testing.T) {
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/components/knative-function-controller")
+			assert.Len(t, actualPresubmit.JobBase.Spec.Containers[0].Command, 1)
+			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Command[0], "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh")
 		})
 	}
 }
 
-func TestKnativeFunctionControllerJobsPresubmit(t *testing.T) {
+func TestKnativeFunctionControllerAcceptanceJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/knative-function-controller/knative-function-controller.yaml")
 	// THEN
@@ -47,7 +52,7 @@ func TestKnativeFunctionControllerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/knative-function-controller"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestKnativeFunctionControllerJobPostsubmit(t *testing.T) {
+func TestKnativeFunctionControllerAcceptanceJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/knative-function-controller/knative-function-controller.yaml")
 	// THEN
