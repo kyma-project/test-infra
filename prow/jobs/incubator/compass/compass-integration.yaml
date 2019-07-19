@@ -97,10 +97,10 @@ presubmits: # runs on PRs
       preset-kyma-encryption-key: "true"
       preset-kms-gc-project-env: "true"
     extra_refs:
-      - org: kyma-project
+      - org: tgorgol
         repo: kyma
         path_alias: github.com/kyma-project/kyma
-        base_ref: master
+        base_ref: update-compass-chart
       - org: kfurgol
         repo: test-infra
         path_alias: github.com/kyma-project/test-infra
