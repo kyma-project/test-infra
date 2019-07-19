@@ -105,7 +105,11 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: periodic-test
-
+        - org: kfurgol
+          repo: compass
+          path_alias: github.com/kyma-incubator/compass
+          base_ref: add-cr-with-full-kyma-and-compass
+          
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration
