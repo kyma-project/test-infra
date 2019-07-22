@@ -181,6 +181,23 @@ kubectl_job_template: &kubectl_job_template
             memory: 1.5Gi
             cpu: 0.8
 
+buildpack_fluentd_job_template: &buildpack_fluentd_job_template
+  run_if_changed: "^prow/images/fluentd-gcp/"
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/fluentd-gcp"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-bootstrap
@@ -233,6 +250,11 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
+    - name: pre-test-infra-buildpack-fluentd
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      <<: *buildpack_fluentd_job_template
 
 postsubmits: # runs on master
   kyma-project/test-infra:
