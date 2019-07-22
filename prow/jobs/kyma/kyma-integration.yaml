@@ -514,8 +514,8 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: release-1.3
 
-  - name: pre-master-kyma-backup-test
-    optional: true
+  - name: pre-master-kyma-gke-backup
+    optional: false
     branches:
     - ^master$
     <<: *gke_backup_job_template
@@ -929,7 +929,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
-- name: kyma-gke-backup-test
+- name: kyma-gke-backup-nightly
   cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
   <<: *gke_backup_job_template
   labels:
