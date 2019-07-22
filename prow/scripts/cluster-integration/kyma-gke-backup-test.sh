@@ -46,7 +46,7 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gke-backup-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-    shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    shout "Read the release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
@@ -236,7 +236,7 @@ function installKyma() {
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-    shout "Success Kyma installed"
+    shout "Success! Kyma installed"
 }
 
 BACKUP_FILE="${KYMA_SOURCES_DIR}"/docs/backup/assets/backup.yaml
@@ -244,7 +244,7 @@ BACKUP_NAME=$(cat /proc/sys/kernel/random/uuid)
 
 function takeBackup() {
 
-    shout "Taking backup"
+    shout "Take backup"
     date
 
     sed -i "s/name: kyma-backup/name: ${BACKUP_NAME}/g" "${BACKUP_FILE}"
@@ -278,7 +278,7 @@ function restoreKyma() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    shout "Installing Velero CLI"
+    shout "Install Velero CLI"
     date
 
     wget -q https://github.com/heptio/velero/releases/download/v1.0.0/velero-v1.0.0-linux-amd64.tar.gz && \
@@ -288,15 +288,15 @@ function restoreKyma() {
 
     CLOUD_PROVIDER="gcp"
 
-    shout "Installing Velero Server"
+    shout "Install Velero Server"
     date
     velero install --bucket "$BACKUP_RESTORE_BUCKET" --provider "$CLOUD_PROVIDER" --secret-file "$BACKUP_CREDENTIALS" --restore-only --wait
 
     sleep 15
 
-    shout "Checking the existing backups"
+    shout "Check if the backup ${BACKUP_NAME} exists"
     date
-    velero get backups
+    velero get backup "${BACKUP_NAME}"
 
     shout "Restore Kyma CRDs, Services and Endpoints"
     date
@@ -333,7 +333,7 @@ function restoreKyma() {
 provisionCluster
 installKyma
 
-shout "Running tests before backup"
+shout "Run tests before backup"
 date
 cd "${KYMA_SCRIPTS_DIR}"
 set +e
@@ -343,17 +343,17 @@ if [ ${TEST_STATUS} -ne 0 ]
 then
     shout "Tests before backup failed"
     exit 1
-else
-    takeBackup
-    removeCluster
 fi
+
+takeBackup
+removeCluster
 
 ### Restore phase starts here
 
 provisionCluster
 restoreKyma
 
-shout "Running tests after restore"
+shout "Run tests after restore"
 date
 cd "${KYMA_SCRIPTS_DIR}"
 set +e
