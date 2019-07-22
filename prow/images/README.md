@@ -16,5 +16,6 @@ The structure of the folder looks as follows:
   ├── buildpack-golang      # The image for building Golang components
   ├── buildpack-node        # The image for building Node.js components
   ├── cleaner               # The image with a script for cleaning SSH keys on service accounts in Google Cloud Storage 
-  └── vulnerability-scanner # The image for performing vulnerability scans with Snyk CLI
+  ├── vulnerability-scanner # The image for performing vulnerability scans with Snyk CLI
+  └── fluentd-gcp           # The image for gathering logs from minikube instances on Google Compute Engine
 ```
