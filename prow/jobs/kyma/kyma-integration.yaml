@@ -212,17 +212,11 @@ gke_backup_job_template: &gke_backup_job_template
       command:
       - "bash"
       env:
-      - name: INPUT_CLUSTER_NAME
-        value: "e2etest"
-      - name: REPO_OWNER_GIT
-        value: "kyma-project"
-      - name: REPO_NAME_GIT
-        value: "kyma"
       - name: CLOUDSDK_COMPUTE_ZONE
         value: "europe-west4-a"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-end-to-end-test.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
       resources:
         requests:
           memory: 200Mi
@@ -935,7 +929,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
-- name: kyma-gke-end-to-end-test-backup-restore
+- name: kyma-gke-backup-test
   cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
   <<: *gke_backup_job_template
   labels:
