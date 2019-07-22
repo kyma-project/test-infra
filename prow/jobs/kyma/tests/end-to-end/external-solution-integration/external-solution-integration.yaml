@@ -4,21 +4,20 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  # Always set optional to true during development, or you will hog up other people PRs!
-  optional: true
   skip_report: false
+  optional: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
         securityContext:
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/external-solution-integration"
         resources:
           requests:
             memory: 1.5Gi
@@ -31,36 +30,25 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-tests-knative-build
+    - name: pre-master-kyma-tests-end-to-end-external-solution-integration
       branches:
         - ^master$
       <<: *job_template
-      run_if_changed: "^tests/knative-build/"
+      run_if_changed: "^tests/end-to-end/external-solution-integration/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel14-kyma-tests-knative-build
-      branches:
-      - release-1.4
-      <<: *job_template
-      always_run: true
-      extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.4
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-tests-knative-build
+    - name: post-master-kyma-tests-end-to-end-external-solution-integration
       branches:
         - ^master$
       <<: *job_template
-      run_if_changed: "^tests/knative-build/"
+      run_if_changed: "^tests/end-to-end/external-solution-integration/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master

@@ -57,6 +57,59 @@ presubmits: # runs on PRs
       base_ref: release-1.3
     - <<: *cli_ref
 
+  - name: pre-kyma-gke-compass-integration-test # TODO remove after testing
+    optional: true
+    decorate: true
+    skip_report: false
+    max_concurrency: 10
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+          env:
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
+            - name: INPUT_CLUSTER_NAME
+              value: "compass-integration-periodic"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    branches:
+      - ^master$
+    labels:
+      prow.kyma-project.io/slack.skipReport: "true"
+      preset-build-master: "true"
+      preset-kyma-guard-bot-github-token: "true"
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-compute-envs: "true"
+      preset-gc-project-env: "true"
+      preset-docker-push-repository-gke-integration: "true"
+      preset-dind-enabled: "true"
+      preset-kyma-artifacts-bucket: "true"
+      preset-kyma-keyring: "true"
+      preset-kyma-encryption-key: "true"
+      preset-kms-gc-project-env: "true"
+    extra_refs:
+      - org: tgorgol
+        repo: kyma
+        path_alias: github.com/kyma-project/kyma
+        base_ref: update-compass-chart
+      - org: kfurgol
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: periodic-test
+      - org: kfurgol
+        repo: compass
+        path_alias: github.com/kyma-incubator/compass
+        base_ref: add-cr-with-full-kyma-and-compass
+
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration
