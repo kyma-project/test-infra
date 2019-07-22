@@ -104,7 +104,6 @@ for i in $(seq 1 5); do
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- docker run -d 
 shout "Triggering the installation"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
