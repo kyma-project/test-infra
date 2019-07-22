@@ -308,3 +308,8 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
+    - name: post-test-infra-buildpack-fluentd
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *buildpack_fluentd_job_template
