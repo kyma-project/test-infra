@@ -12,7 +12,7 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
         securityContext:
           privileged: true
         command:
