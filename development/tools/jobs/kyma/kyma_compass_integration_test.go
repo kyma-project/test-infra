@@ -10,7 +10,7 @@ import (
 
 func TestKymaGKECompassIntegrationOnDemand(t *testing.T) {
 	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/compass-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-integration.yaml")
 	require.NoError(t, err)
 
 	// when
@@ -50,7 +50,7 @@ func TestKymaGKECompassIntegrationOnDemand(t *testing.T) {
 
 func TestCompassIntegrationJobPeriodics(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/compass-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-integration.yaml")
 	// THEN
 	require.NoError(t, err)
 
