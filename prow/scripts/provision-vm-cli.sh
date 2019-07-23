@@ -96,10 +96,8 @@ shout "Building Kyma CLI"
 
 cd "${KYMA_PROJECT_DIR}/cli"
 
-KYMA_VERSION=$(curl --silent "https://api.github.com/repos/kyma-project/kyma/releases/latest" | jq -r .tag_name)
-
 make resolve
-make build KYMA_VERSION="${KYMA_VERSION}"
+make build
 
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
