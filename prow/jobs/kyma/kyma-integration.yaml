@@ -1157,4 +1157,4 @@ periodics:
     - <<: *test_infra_ref
       base_ref: master
     - <<: *compass_ref
-        base_ref: master
+      base_ref: master
