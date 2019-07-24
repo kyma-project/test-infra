@@ -300,10 +300,10 @@ function restoreKyma() {
     for ((i=1; i<=attempts; i++)); do
         result=$(velero get backup "${BACKUP_NAME}")
         if [[ "$result" == *"NAME"* ]]; then
-            echo "Backup "${BACKUP_NAME}" exists"
+            echo "Backup ${BACKUP_NAME} exists"
             break
         elif [[ "${i}" == "${attempts}" ]]; then
-            echo "ERROR: backup "${BACKUP_NAME}" not found"
+            echo "ERROR: backup ${BACKUP_NAME} not found"
             exit 1
         fi
         echo "Sleep for 15 seconds"
