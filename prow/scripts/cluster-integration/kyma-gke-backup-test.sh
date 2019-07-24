@@ -296,7 +296,20 @@ function restoreKyma() {
 
     shout "Check if the backup ${BACKUP_NAME} exists"
     date
-    velero get backup "${BACKUP_NAME}"
+    attempts=3
+    for ((i=1; i<=attempts; i++)); do
+        result=$(velero get backup "${BACKUP_NAME}")
+        if [[ "$result" == *"NAME"* ]]; then
+            echo "Backup ${BACKUP_NAME} exists"
+            break
+        elif [[ "${i}" == "${attempts}" ]]; then
+            echo "ERROR: backup ${BACKUP_NAME} not found"
+            exit 1
+        fi
+        echo "Sleep for 15 seconds"
+        sleep 15
+    done
+    
 
     shout "Restore Kyma CRDs, Services and Endpoints"
     date
@@ -304,10 +317,12 @@ function restoreKyma() {
 
     sleep 30
 
+    shout "Restore the rest of Kyma"
+    date
+
     attempts=3
     for ((i=1; i<=attempts; i++)); do
-        shout "Restore the rest of Kyma"
-        date
+        
         velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints, --include-cluster-resources --restore-volumes --wait
 
         sleep 60
