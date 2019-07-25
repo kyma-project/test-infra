@@ -445,6 +445,10 @@ branch-protection:
           branches:
             master:
               protect: true
+        gcp-service-broker:
+          branches:
+            master:
+              protect: true
         octopus:
           branches:
             master:

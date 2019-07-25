@@ -291,11 +291,12 @@ func TestKymaBackupTestJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-backup-test", "master")
+	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-backup", "master")
 	require.NotNil(t, actualJob)
 
 	// then
 	assert.True(t, actualJob.Decorate)
+	assert.False(t, actualJob.Optional)
 	assert.Equal(t, "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetKymaBackupRestoreBucket, tester.PresetKymaBackupCredentials, tester.PresetGCProjectEnv, tester.PresetBuildPr,
 		tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
@@ -383,7 +384,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 17)
+	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -538,7 +539,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnvFromSecret(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 
-	expName = "kyma-gke-backup-test"
+	expName = "kyma-gke-backup-nightly"
 	backupRestorePeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, backupRestorePeriodic)
 	assert.Equal(t, expName, backupRestorePeriodic.Name)
@@ -550,8 +551,10 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, backupRestorePeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, backupRestorePeriodic.JobBase)
-	assert.Len(t, backupRestorePeriodic.Spec.Containers[0].Env, 1)
+	assert.Len(t, backupRestorePeriodic.Spec.Containers[0].Env, 3)
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
+	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_OWNER", "kyma-project")
+	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_NAME", "kyma")
 
 	expName = "kyma-load-tests-weekly"
 	loadTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -620,32 +623,4 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, cont, "SERVICE_CATALOG_CRD", "true")
 	tester.AssertThatContainerHasEnv(t, cont, "KYMA_ALERTS_CHANNEL", "#not-exists")
 	tester.AssertThatContainerHasEnvFromSecret(t, cont, "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
-
-	expName = "kyma-gke-compass-integration-periodic"
-	compassPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, compassPeriodic)
-	tester.AssertThatHasPresets(t, compassPeriodic.JobBase,
-		"preset-kyma-keyring",
-		"preset-kyma-encryption-key",
-		"preset-kms-gc-project-env",
-		"preset-build-master",
-		"preset-sa-gke-kyma-integration",
-		"preset-gc-compute-envs",
-		"preset-gc-project-env",
-		"preset-docker-push-repository-gke-integration",
-		"preset-dind-enabled",
-		"preset-kyma-artifacts-bucket",
-	)
-	tester.AssertThatHasExtraRefTestInfra(t, compassPeriodic.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasExtraRefs(t, compassPeriodic.JobBase.UtilityConfig, []string{"kyma"})
-	require.Len(t, compassPeriodic.Spec.Containers, 1)
-	compassCont := compassPeriodic.Spec.Containers[0]
-	assert.True(t, compassPeriodic.Decorate)
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassCont.Image)
-	assert.Equal(t, []string{"bash"}, compassCont.Command)
-	require.Len(t, compassCont.Args, 2)
-	assert.Equal(t, "-c", compassCont.Args[0])
-	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh", compassCont.Args[1])
-	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, compassCont, "INPUT_CLUSTER_NAME", "compass-integration-periodic")
 }
