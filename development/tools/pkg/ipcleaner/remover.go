@@ -1,9 +1,12 @@
 package ipcleaner
 
 import (
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -47,8 +50,11 @@ func (ipr *IPRemover) Run(project, region, ipName string) (bool, error) {
 			removalErr = ipr.computeAPI.RemoveIP(project, region, ipName)
 		}
 		if removalErr == nil {
-			log.Infof("%sRequested deletion of IP with name \"%s\" in region \"%s\"", msgPrefix, ipName, region)
+			log.Errorf("%sRequested deletion of IP with name \"%s\" in region \"%s\"", msgPrefix, ipName, region)
 			return true, nil
+		}
+		if strings.HasPrefix(removalErr.Error(), string(http.StatusNotFound)) {
+			return false, errors.Wrap(err, "unable to delete non-existant ip")
 		}
 		if attempt < ipr.maxAttempts {
 			time.Sleep(time.Duration(backoff) * time.Second)
@@ -57,7 +63,7 @@ func (ipr *IPRemover) Run(project, region, ipName string) (bool, error) {
 		}
 	}
 	if err != nil {
-		log.Infof("Could not delete IP with name \"%s\" in region \"%s\", got error: %s", ipName, region, err.Error())
+		log.Errorf("Could not delete IP with name \"%s\" in region \"%s\", got error: %s", ipName, region, err.Error())
 	}
-	return false, err
+	return false, errors.Wrap(err, "unable to delete ip")
 }

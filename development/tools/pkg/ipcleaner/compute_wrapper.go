@@ -2,7 +2,9 @@ package ipcleaner
 
 import (
 	"context"
+	"net/http"
 
+	"github.com/pkg/errors"
 	compute "google.golang.org/api/compute/v1"
 )
 
@@ -14,9 +16,15 @@ type ComputeAPIWrapper struct {
 
 // RemoveIP delegates to Compute.Service.Addresses.Delete(project, region, name) function
 func (caw *ComputeAPIWrapper) RemoveIP(project, region, name string) error {
-	_, err := caw.Service.Addresses.Delete(project, region, name).Context(caw.Context).Do()
+	resp, err := caw.Service.Addresses.Delete(project, region, name).Context(caw.Context).Do()
 	if err != nil {
-		return err
+		if resp != nil {
+			switch resp.HTTPStatusCode {
+			case http.StatusNotFound:
+				return errors.Wrap(err, string(http.StatusNotFound))
+			}
+		}
+		return errors.Wrap(err, "something went wrong")
 	}
 
 	return nil
