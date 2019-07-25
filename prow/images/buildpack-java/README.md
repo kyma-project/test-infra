@@ -4,8 +4,7 @@
 
 This folder contains the Buildpack Java image that is based on the Bootstrap image. Use it to build Java components.
 
-The image consists of:
-- java opendjk jre8 8u212-b04
+The Buildpack Java Docker Image contains `java openjdk jre8 8u212-b04`.
 
 ## Installation
 
