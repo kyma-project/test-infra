@@ -86,7 +86,7 @@ function copy_files() {
 function run_metadata_validation() {
     set +e
     # shellcheck disable=SC2068
-    go run -v ${VALIDATOR} ${@}
+    go run "${VALIDATOR}" ${@}
 
     local result=$?
     if [[ ${result} -ne 0 ]]; then
