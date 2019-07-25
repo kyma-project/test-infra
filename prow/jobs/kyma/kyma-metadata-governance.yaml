@@ -18,7 +18,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-gloang:v20181204-a6e79be
             securityContext:
               privileged: true
             command:
@@ -26,6 +26,8 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "kyma"
+              - "--validator"
+              - "/home/development/tools/pkg/metadata/jsonmetadatavalidator.go"
             resources:
               requests:
                 memory: 10Mi
