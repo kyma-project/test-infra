@@ -447,8 +447,6 @@ function testKyma() {
     fi
     set -o errexit
 
-    removeTestingBundles
-
     shout "Test Kyma"
     date
     "${KYMA_SCRIPTS_DIR}"/testing.sh

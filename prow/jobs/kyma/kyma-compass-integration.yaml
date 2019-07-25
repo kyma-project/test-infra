@@ -1,0 +1,102 @@
+---
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+kyma_ref: &kyma_ref
+  org: kyma-project
+  repo: kyma
+  path_alias: github.com/kyma-project/kyma
+
+compass_ref: &compass_ref
+  org: kyma-incubator
+  repo: compass
+  path_alias: github.com/kyma-incubator/compass
+
+gke_integration_job_labels_template: &gke_integration_job_labels_template
+  preset-build-master: "true"
+  preset-kyma-keyring: "true"
+  preset-kyma-encryption-key: "true"
+  preset-kms-gc-project-env: "true"
+  preset-kyma-guard-bot-github-token: "true"
+  preset-sa-gke-kyma-integration: "true"
+  preset-gc-compute-envs: "true"
+  preset-gc-project-env: "true"
+  preset-docker-push-repository-gke-integration: "true"
+  preset-dind-enabled: "true"
+  preset-kyma-artifacts-bucket: "true"
+
+presubmits: # runs on PRs
+  kyma-project/kyma:
+  - name: pre-master-kyma-gke-compass-integration-on-demand
+    optional: true
+    decorate: true
+    path_alias: github.com/kyma-project/kyma
+    skip_report: false
+    max_concurrency: 10
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+          env:
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
+            - name: INPUT_CLUSTER_NAME
+              value: "compass-integration-periodic-on-demand"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    branches:
+      - ^master$
+    labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+      <<: *gke_integration_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *compass_ref
+        base_ref: master
+
+periodics:
+- name: kyma-gke-compass-integration-periodic
+  cron: "0 0 * * 1-5"
+  decorate: true
+  max_concurrency: 10
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+          - name: INPUT_CLUSTER_NAME
+            value: "compass-integration-periodic"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+  branches:
+    - ^master$
+  labels:
+    <<: *gke_integration_job_labels_template
+  extra_refs:
+    - <<: *kyma_ref
+      base_ref: master
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *compass_ref
+      base_ref: master
