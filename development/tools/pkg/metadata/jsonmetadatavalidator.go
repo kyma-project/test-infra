@@ -92,10 +92,6 @@ func validateFile(fileName string) (map[string][]error, error) {
 		return nil, errors.New("unable to decode root properties")
 	}
 
-	if len(errorsMap) == 0 {
-		return nil, nil
-	}
-
 	return errorsMap, nil
 }
 
