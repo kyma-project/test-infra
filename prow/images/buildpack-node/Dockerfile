@@ -2,11 +2,15 @@
 
 FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libfontconfig \
     procps \
     nodejs \
+    yarn \
     && apt-get clean
 
 RUN npm install -g eslint-config-react-app@^3.0.4 \
@@ -20,5 +24,4 @@ RUN npm install -g eslint-config-react-app@^3.0.4 \
     tslint-angular@^1.1.2 \
     tslint-config-prettier@^1.15.0 \
     typescript@^3.1.3 \
-    prettier@^1.14.3 \
-    whitesource@^18.10.1
+    prettier@^1.14.3

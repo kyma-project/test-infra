@@ -14,6 +14,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
+export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
+
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -170,13 +172,13 @@ function installKyma() {
 
   KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
   INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-  INSTALLER_CR="${TEST_INFRA_SOURCES_DIR}/prow/jobs/incubator/compass/resources/installer-cr-cluster-with-compass.yaml.tpl"
+  INSTALLER_CR="${COMPASS_SOURCES_DIR}/installation/resources/installer-cr-kyma-compass.yaml"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
-  TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-  export TLS_CERT
-  TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-  export TLS_KEY
+  shout "Generate self-signed certificate"
+  date
+  CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+  TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+  TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
   shout "Apply Kyma config"
   date
