@@ -123,9 +123,25 @@ shout "Checking the versions"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma version"
 
-# shout "Testing Kyma"
+shout "Running a simple test on Kyma"
 
-# gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test run"
+gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test run dex-connection"
+
+echo "Check if the test succeeds"
+date
+attempts=3
+for ((i=1; i<=attempts; i++)); do
+    result=$(gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test status -o json" | jq '.status.results[0].status')
+    if [[ "$result" == *"Succeeded"* ]]; then
+        echo "The test succeeded"
+        break
+    elif [[ "${i}" == "${attempts}" ]]; then
+        echo "ERROR: test result is ${result}"
+        exit 1
+    fi
+    echo "Sleep for 15 seconds"
+    sleep 15
+done
 
 shout "Uninstalling Kyma"
 
