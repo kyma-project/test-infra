@@ -9,7 +9,7 @@ presubmits: # runs on PRs
       labels:
         preset-dind-enabled: "true"
         preset-build-pr: "true"
-      run_if_changed: "values.schema.json"
+      run_if_changed: "^.*/resources/.*/values.schema.json$"
       path_alias: github.com/kyma-project/kyma
       extra_refs:
         - org: kyma-project
