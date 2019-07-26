@@ -371,11 +371,15 @@ presets:
       - name: KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
         value: "gs://kyma-development-artifacts"
   - labels:
-     preset-kyma-encryption-key: "true"
+      preset-kyma-encryption-key: "true"
     env:
       - name: KYMA_ENCRYPTION_KEY
         value: kyma-prow-encryption
-
+  - labels:
+      preset-kyma-wssagent-config: "true"
+    env:
+      - name: PRODUCTNAME
+        value: "OOSS - KYMA"
 
 branch-protection:
   enforce_admins: false
