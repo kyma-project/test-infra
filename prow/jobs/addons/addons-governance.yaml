@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
-  kyma-project/bundles:
-    - name: pre-master-bundles-governance
+  kyma-project/addons:
+    - name: pre-master-addons-governance
       decorate: true
       max_concurrency: 10
       branches:
@@ -9,7 +9,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-build-pr: "true"
       run_if_changed: "milv.config.yaml|.md$"
-      path_alias: github.com/kyma-project/bundles
+      path_alias: github.com/kyma-project/addons
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -24,14 +24,14 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
               - "--repository"
-              - "bundles"
+              - "addons"
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
 
 periodics: # runs periodic on master
-- name: bundles-governance-nightly
+- name: addons-governance-nightly
   decorate: true
   cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
   labels:
@@ -42,9 +42,9 @@ periodics: # runs periodic on master
       base_ref: master
       path_alias: github.com/kyma-project/test-infra
     - org: kyma-project
-      repo: bundles
+      repo: addons
       base_ref: master
-      path_alias: github.com/kyma-project/bundles
+      path_alias: github.com/kyma-project/addons
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
@@ -54,9 +54,9 @@ periodics: # runs periodic on master
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
         args:
           - "--repository"
-          - "bundles"
+          - "addons"
           - "--repository-dir"
-          - "/home/prow/go/src/github.com/kyma-project/bundles"
+          - "/home/prow/go/src/github.com/kyma-project/addons"
           - "--full-validation"
           - "true"
         resources:

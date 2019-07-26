@@ -62,10 +62,8 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
-      - org: kfurgol # change to kyma-incubator after testing
-        repo: compass
-        path_alias: github.com/kyma-incubator/compass
-        base_ref: add-cr-with-full-kyma-and-compass # change to master after testing
+      - <<: *compass_ref
+        base_ref: master
 
 periodics:
 - name: kyma-gke-compass-integration-periodic
