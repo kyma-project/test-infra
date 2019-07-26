@@ -17,7 +17,7 @@ rules:
   resources: ["configmaps"]
   verbs: ["delete", "patch"]
   resourceNames:
-    - "testing-bundles-repos"
+    - "testing-addons"
 
 - apiGroups: [""]
   resources: ["pods"]
