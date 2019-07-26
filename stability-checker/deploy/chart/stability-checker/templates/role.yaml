@@ -37,5 +37,5 @@ rules:
 
 - apiGroups: ["addons.kyma-project.io"]
   resources: ["clusteraddonsconfigurations"]
-  verbs: ["create", "delete"]
+  verbs: ["create", "delete", "get"]
   nonResourceURLs: []
