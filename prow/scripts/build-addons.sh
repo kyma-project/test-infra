@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This script is designed for the kyma-bundles releasing process which is different from the Kyma releasing process.
+# This script is designed for the kyma-addons releasing process which is different from the Kyma releasing process.
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
