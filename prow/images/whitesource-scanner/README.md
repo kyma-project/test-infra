@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the Golang Buildpack with Node.js and Snyk image that is based on the Golang Buildpack image. Use it to perform vulnerability scans.
+This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
 The image contains `whitesource agent v19.6.1`.
 
