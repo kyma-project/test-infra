@@ -133,7 +133,7 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
+	env NUM_NODES=4 ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
 function waitUntilInstallerApiAvailable() {
