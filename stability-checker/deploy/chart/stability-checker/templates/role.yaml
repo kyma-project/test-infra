@@ -19,16 +19,6 @@ rules:
   resourceNames:
     - "testing-bundles-repos"
 
-- apiGroups: ["addons.kyma-project.io"]
-  resources: ["addonsconfigurations", "clusteraddonsconfigurations"]
-  verbs: ["create", "get", "list"]
-
-- apiGroups: ["addons.kyma-project.io"]
-  resources: ["addonsconfigurations", "clusteraddonsconfigurations"]
-  verbs: ["delete", "patch"]
-  resourceNames:
-    - "testing-addons"
-
 - apiGroups: [""]
   resources: ["pods"]
   verbs: ["list","get","delete"]
