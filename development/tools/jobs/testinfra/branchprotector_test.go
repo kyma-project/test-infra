@@ -30,11 +30,12 @@ func TestBranchProtection(t *testing.T) {
 		{"kyma-project", "community", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "console", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "examples", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "bundles", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "addons", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "cli", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "varkes", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "vstudio-extension", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "service-catalog-tester", "master", []string{"license/cla"}, 1},
+		{"kyma-incubator", "gcp-service-broker", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "marketplaces", "master", []string{"license/cla"}, 1},
 		{"kyma-incubator", "compass", "master", []string{"license/cla"}, 1},
 	}
@@ -73,8 +74,12 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
-			if !tester.Release(relBranch).Matches(tester.Release10, tester.Release11) {
+			if !tester.Release(relBranch).Matches(tester.Release11) {
 				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway", relBranch))
+			}
+
+			if !tester.Release(relBranch).Matches(tester.Release11) && !tester.Release(relBranch).Matches(tester.Release12) {
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway-migration", relBranch))
 			}
 		})
 	}

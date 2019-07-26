@@ -29,7 +29,7 @@ To ignore the ProwJob, add the **prow.kyma-project.io/slack.skipReport** label u
 postsubmits:
   - name: post-master-kyma-gke-upgrade
     branches:
-    - master
+    - ^master$
     labels:
       prow.kyma-project.io/slack.skipReport: true # this job will be ignored by Slack reporter
       preset-bot-github-token: "true"

@@ -24,7 +24,7 @@ func TestValidateProwPresubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/plugins.yaml")
 	tester.AssertThatJobRunIfChanged(t, *sut, "prow/jobs/random/job.yaml")
 
-	assert.Equal(t, []string{"master"}, sut.Branches)
+	assert.Equal(t, []string{"^master$"}, sut.Branches)
 	assert.False(t, sut.SkipReport)
 
 	assert.Len(t, sut.Spec.Containers, 1)

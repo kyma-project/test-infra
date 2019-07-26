@@ -32,7 +32,7 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-master-examples-tests-http-db-service
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -42,7 +42,7 @@ postsubmits:
   kyma-project/examples:
     - name: post-master-examples-tests-http-db-service
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
