@@ -526,6 +526,19 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+  
+  - name: pre-rel14-kyma-gke-backup
+    optional: true
+    branches:
+      - release-1.4
+    <<: *gke_backup_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_backup_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.4
 
 postsubmits:
   kyma-project/kyma:
