@@ -34,6 +34,7 @@ func TestIntegrationGatewayJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-gateway", "master")
 	require.NotNil(t, actualPresubmit)
+	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
@@ -61,7 +62,7 @@ func TestIntegrationGatewayJobPostsubmit(t *testing.T) {
 	actualPost := kymaPost[0]
 	expName := "post-master-kyma-tests-integration-gateway"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

@@ -51,7 +51,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-components-etcd-tls-setup-job
     branches:
-      - master
+      - ^master$
     <<: *job_template
     run_if_changed: "^components/etcd-tls-setup-job/"
     extra_refs:
@@ -60,17 +60,6 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel10-kyma-tools-etcd-tls-setup
-    branches:
-      - release-1.0
-    <<: *old_job_template
-    always_run: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.0
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
   - name: pre-rel11-kyma-tools-etcd-tls-setup
     branches:
       - release-1.1
@@ -93,12 +82,23 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
+  - name: pre-rel13-kyma-tools-etcd-tls-setup
+    branches:
+    - release-1.3
+    <<: *job_template
+    always_run: true
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-1.3
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-components-etcd-tls-setup-job
     branches:
-      - master
+      - ^master$
     <<: *job_template
     run_if_changed: "^components/etcd-tls-setup-job/"
     extra_refs:

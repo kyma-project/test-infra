@@ -32,7 +32,7 @@ presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-master-console-tests
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -42,7 +42,7 @@ postsubmits:
   kyma-project/console:
     - name: post-master-console-tests
       branches:
-        - master
+        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template

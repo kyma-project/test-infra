@@ -61,7 +61,7 @@ func TestK8SDashboardProxyJobPostsubmit(t *testing.T) {
 	actualPost := kymaPost[0]
 	expName := "post-master-kyma-components-k8s-dashboard-proxy"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

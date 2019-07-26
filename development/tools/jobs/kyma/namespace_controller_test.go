@@ -39,7 +39,7 @@ func TestNamespaceControllerJobPostsubmit(t *testing.T) {
 	assert.Len(t, jobConfig.Postsubmits, 1)
 	require.NotNil(t, actualPostsubmit)
 
-	assert.Equal(t, []string{"master"}, actualPostsubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPostsubmit.Branches)
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 	assert.True(t, actualPostsubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPostsubmit.PathAlias)

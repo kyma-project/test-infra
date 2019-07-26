@@ -12,7 +12,7 @@ const compassEndToEndTestJobPath = "./../../../../../prow/jobs/incubator/compass
 
 func TestCompassEndToEndJobReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release10, tester.Release11}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {

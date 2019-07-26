@@ -40,7 +40,7 @@ func TestEndToEndBackupRstoreTestJobsPresubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPresubmit.Name)
 	require.NotNil(t, actualPresubmit)
 	assert.False(t, actualPresubmit.SkipReport)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
@@ -63,7 +63,7 @@ func TestEndToEndBackupRstoreTestJobsPostsubmit(t *testing.T) {
 	assert.Equal(t, expName, actualPost.Name)
 	require.NotNil(t, actualPost)
 
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)

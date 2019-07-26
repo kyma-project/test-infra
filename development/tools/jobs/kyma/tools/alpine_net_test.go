@@ -16,7 +16,7 @@ func TestAlpineNetJobsPresubmit(t *testing.T) {
 
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tools-alpine-net", "master")
 	require.NotNil(t, actualPresubmit)
-	assert.Equal(t, []string{"master"}, actualPresubmit.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
