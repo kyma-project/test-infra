@@ -254,7 +254,7 @@ function takeBackup() {
     attempts=3
     retryTimeInSec="45"
     for ((i=1; i<=attempts; i++)); do
-        STATUS=$(kubectl get backup "${BACKUP_NAME}" -n kyma-backup -o jsonpath='{.status.phase}')
+        STATUS=$(kubectl get backup "${BACKUP_NAME}" -n kyma-system -o jsonpath='{.status.phase}')
         if [ "${STATUS}" == "Completed" ]; then
             shout "Backup completed"
             break
