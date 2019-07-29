@@ -1025,7 +1025,7 @@ periodics:
     preset-kyma-encryption-key: "true"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190521
+      - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190729-00275a3
         command:
         - "bash"
         args:
