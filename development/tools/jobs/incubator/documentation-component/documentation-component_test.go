@@ -1,12 +1,12 @@
 package documentation_component_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"fmt"
 )
 
 func TestDocumentationComponentJobPresubmit(t *testing.T) {
@@ -79,4 +79,3 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	repositoryDirArg := fmt.Sprintf("%s/documentation-component", tester.KymaIncubatorDir)
 	assert.Equal(t, []string{"--repository", "documentation-component", "--repository-org", "kyma-incubator", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)
 }
-
