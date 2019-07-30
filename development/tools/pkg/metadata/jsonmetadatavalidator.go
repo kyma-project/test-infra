@@ -129,9 +129,6 @@ func validateElement(fullPath string, m map[string]interface{}, e map[string][]e
 		}
 	}
 	if !propsFound {
-		if _, ok := e[fullPath]; !ok {
-			e[fullPath] = []error{}
-		}
 		if _, ok := m[ElType]; !ok {
 			e[fullPath] = append(e[fullPath], ErrNoType)
 		}
