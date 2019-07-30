@@ -30,6 +30,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-components-cms-services
+      optional: true
       branches:
         - ^master$
       <<: *job_template
