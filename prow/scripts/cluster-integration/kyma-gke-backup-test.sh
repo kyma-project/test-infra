@@ -236,7 +236,7 @@ function installKyma() {
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-    shout "Success! Kyma installed"
+    shout "Kyma installed"
 }
 
 BACKUP_FILE="${KYMA_SOURCES_DIR}"/docs/backup/assets/backup.yaml
