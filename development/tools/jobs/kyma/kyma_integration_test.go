@@ -55,6 +55,31 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 	}
 }
 
+func TestKymaGKEBackupJobsReleases(t *testing.T) {
+	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
+
+	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
+		t.Run(currentRelease, func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-backup", currentRelease), currentRelease)
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildRelease, tester.PresetKymaBackupRestoreBucket, tester.PresetKymaBackupCredentials, tester.PresetGCProjectEnv,
+				tester.PresetSaGKEKymaIntegration, "preset-weekly-github-integration")
+			assert.False(t, actualPresubmit.AlwaysRun)
+			assert.Len(t, actualPresubmit.Spec.Containers, 1)
+			testContainer := actualPresubmit.Spec.Containers[0]
+			assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", testContainer.Image)
+			assert.Len(t, testContainer.Command, 1)
+			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
+		})
+	}
+}
+
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName            string
@@ -384,7 +409,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 16)
+	assert.Len(t, periodics, 17)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)

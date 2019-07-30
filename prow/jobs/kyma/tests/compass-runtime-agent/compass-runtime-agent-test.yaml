@@ -34,7 +34,6 @@ presubmits: # runs on PRs
     - master
     <<: *job_template
     run_if_changed: "^tests/compass-runtime-agent/"
-    optional: true
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master

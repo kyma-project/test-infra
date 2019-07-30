@@ -526,6 +526,19 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+  
+  - name: pre-rel14-kyma-gke-backup
+    optional: true
+    branches:
+      - release-1.4
+    <<: *gke_backup_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
+      <<: *gke_backup_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.4
 
 postsubmits:
   kyma-project/kyma:
@@ -1002,6 +1015,29 @@ periodics:
           requests:
             memory: 200Mi
             cpu: 80m
+
+- name: kyma-whitesource-scan
+  decorate: true
+  cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
+  labels:
+    preset-kyma-wssagent-config: "true"
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190729-00275a3
+        command:
+        - "bash"
+        args:
+        - "-c"
+        - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+        env:
+          - name : PROJECTNAME
+            value: "kyma"
+        resources:
+          requests:
+            memory: 20Gi
+            cpu: 400m
 
 - name: kyma-components-use-recent-versions
   decorate: true
