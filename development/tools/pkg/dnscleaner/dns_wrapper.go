@@ -2,20 +2,24 @@ package dnscleaner
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/pkg/errors"
 	dns "google.golang.org/api/dns/v1"
 )
 
+const (
+	deleteFailedError = "delete failed"
+)
+
 // DNSAPIWrapper abstracts GCP DNS Service API
 type DNSAPIWrapper struct {
-	Context context.Context
 	Service *dns.Service
 }
 
 // LookupDNSEntry delegates to DNS.Service.ResourceRecordSets.List(project, zone, name, address, recordType, recordTTL) function
-func (daw *DNSAPIWrapper) LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
-	listResp, listErr := daw.Service.ResourceRecordSets.List(project, zone).Name(name).Context(daw.Context).Do()
+func (daw *DNSAPIWrapper) LookupDNSEntry(ctx context.Context, project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
+	listResp, listErr := daw.Service.ResourceRecordSets.List(project, zone).Name(name).Context(ctx).Do()
 	if listErr != nil {
 		return nil, errors.Wrap(listErr, "could not locate DNS entry")
 	}
@@ -34,13 +38,16 @@ func (daw *DNSAPIWrapper) LookupDNSEntry(project, zone, name, address, recordTyp
 }
 
 // RemoveDNSEntry delegates to DNS.Service.Changes.Create(project, zone, *record) function
-func (daw *DNSAPIWrapper) RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) error {
+func (daw *DNSAPIWrapper) RemoveDNSEntry(ctx context.Context, project, zone string, record *dns.ResourceRecordSet) error {
 	proposedChange := &dns.Change{}
 	proposedChange.Deletions = append(proposedChange.Deletions, record)
 
-	_, changeErr := daw.Service.Changes.Create(project, zone, proposedChange).Context(daw.Context).Do()
+	resp, changeErr := daw.Service.Changes.Create(project, zone, proposedChange).Context(ctx).Do()
 	if changeErr != nil {
 		return errors.Wrap(changeErr, "could not remove DNS entry")
+	}
+	if resp.HTTPStatusCode > http.StatusAccepted {
+		return errors.New(deleteFailedError)
 	}
 
 	return nil

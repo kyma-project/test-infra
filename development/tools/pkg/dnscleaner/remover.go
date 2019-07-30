@@ -1,6 +1,7 @@
 package dnscleaner
 
 import (
+	"context"
 	"time"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
@@ -12,8 +13,8 @@ import (
 
 // DNSAPI abstracts access to DNS API in GCP
 type DNSAPI interface {
-	RemoveDNSEntry(project, zone string, record *dns.ResourceRecordSet) error
-	LookupDNSEntry(project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error)
+	RemoveDNSEntry(ctx context.Context, project, zone string, record *dns.ResourceRecordSet) error
+	LookupDNSEntry(ctx context.Context, project, zone, name, address, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error)
 }
 
 // DNSEntryRemover deletes IPs provisioned by gke-long-lasting prow jobs.
@@ -36,11 +37,13 @@ func New(dnsAPI DNSAPI, maxAttempts, backoff uint, makeChanges bool) *DNSEntryRe
 func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) (bool, error) {
 	common.Shout("Trying to retrieve DNS entry with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
 
+	ctx := context.Background()
+
 	backoff := der.backoff
 	var getErr error
 	var recordSet *dns.ResourceRecordSet
-	for attempt := uint(0); attempt < der.maxAttempts; attempt = attempt + 1 {
-		entry, lookupErr := der.dnsAPI.LookupDNSEntry(project, zone, dnsName, dnsAddress, recordType, recordTTL)
+	for attempt := uint(0); attempt < der.maxAttempts; attempt++ {
+		entry, lookupErr := der.dnsAPI.LookupDNSEntry(ctx, project, zone, dnsName, dnsAddress, recordType, recordTTL)
 		if entry != nil {
 			recordSet = entry
 			break
@@ -67,9 +70,13 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 	backoff = der.backoff
 	if der.makeChanges {
 		for attempt := uint(0); attempt < der.maxAttempts; attempt = attempt + 1 {
-			removalErr := der.dnsAPI.RemoveDNSEntry(project, zone, recordSet)
+			removalErr := der.dnsAPI.RemoveDNSEntry(ctx, project, zone, recordSet)
 			if removalErr == nil {
 				delErr = nil
+				break
+			}
+			if removalErr.Error() == deleteFailedError {
+				delErr = removalErr
 				break
 			}
 			if attempt < der.maxAttempts {

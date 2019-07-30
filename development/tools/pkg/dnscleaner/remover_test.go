@@ -1,6 +1,7 @@
 package dnscleaner
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -40,9 +41,11 @@ func TestNew(t *testing.T) {
 
 		record := createDNSResourceRecordSet(shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL)
 
+		ctx := context.Background()
+
 		//Given
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL).Return(record, nil)
-		mockDNSAPI.On("RemoveDNSEntry", testProject, testZone, record).Return(nil)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL).Return(record, nil)
+		mockDNSAPI.On("RemoveDNSEntry", ctx, testProject, testZone, record).Return(nil)
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
@@ -59,8 +62,10 @@ func TestNew(t *testing.T) {
 		mockDNSAPI := &automock.DNSAPI{}
 		defer mockDNSAPI.AssertExpectations(t)
 
+		ctx := context.Background()
+
 		//Given
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error"))
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error"))
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
@@ -79,8 +84,10 @@ func TestRetryableCalls(t *testing.T) {
 		mockDNSAPI := &automock.DNSAPI{}
 		defer mockDNSAPI.AssertExpectations(t)
 
+		ctx := context.Background()
+
 		//Given
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error")).Times(3)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error")).Times(3)
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
@@ -101,10 +108,12 @@ func TestRetryableCallsPartTwo(t *testing.T) {
 
 		record := createDNSResourceRecordSet(shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL)
 
+		ctx := context.Background()
+
 		//Given
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error")).Times(2)
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(record, nil)
-		mockDNSAPI.On("RemoveDNSEntry", testProject, testZone, record).Return(errors.New("test error")).Times(3)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error")).Times(2)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(record, nil)
+		mockDNSAPI.On("RemoveDNSEntry", ctx, testProject, testZone, record).Return(errors.New("test error")).Times(3)
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
@@ -125,11 +134,13 @@ func TestRetryableCallsPartThree(t *testing.T) {
 
 		record := createDNSResourceRecordSet(shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL)
 
+		ctx := context.Background()
+
 		//Given
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error")).Times(2)
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(record, nil)
-		mockDNSAPI.On("RemoveDNSEntry", testProject, testZone, record).Return(errors.New("test error")).Times(2)
-		mockDNSAPI.On("RemoveDNSEntry", testProject, testZone, record).Return(nil)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(nil, errors.New("test error")).Times(2)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(record, nil)
+		mockDNSAPI.On("RemoveDNSEntry", ctx, testProject, testZone, record).Return(errors.New("test error")).Times(2)
+		mockDNSAPI.On("RemoveDNSEntry", ctx, testProject, testZone, record).Return(nil)
 
 		//When
 		der := New(mockDNSAPI, 3, 1, true)
@@ -150,8 +161,10 @@ func TestDryRunBehaviour(t *testing.T) {
 
 		record := createDNSResourceRecordSet(shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL)
 
+		ctx := context.Background()
+
 		//Given
-		mockDNSAPI.On("LookupDNSEntry", testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(record, nil)
+		mockDNSAPI.On("LookupDNSEntry", ctx, testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL).Return(record, nil)
 
 		//When
 		der := New(mockDNSAPI, 3, 2, false)

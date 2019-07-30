@@ -2,6 +2,7 @@
 
 package automock
 
+import context "context"
 import dns "google.golang.org/api/dns/v1"
 
 import mock "github.com/stretchr/testify/mock"
@@ -11,13 +12,13 @@ type DNSAPI struct {
 	mock.Mock
 }
 
-// LookupDNSEntry provides a mock function with given fields: project, zone, name, address, recordType, recordTTL
-func (_m *DNSAPI) LookupDNSEntry(project string, zone string, name string, address string, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
-	ret := _m.Called(project, zone, name, address, recordType, recordTTL)
+// LookupDNSEntry provides a mock function with given fields: ctx, project, zone, name, address, recordType, recordTTL
+func (_m *DNSAPI) LookupDNSEntry(ctx context.Context, project string, zone string, name string, address string, recordType string, recordTTL int64) (*dns.ResourceRecordSet, error) {
+	ret := _m.Called(ctx, project, zone, name, address, recordType, recordTTL)
 
 	var r0 *dns.ResourceRecordSet
-	if rf, ok := ret.Get(0).(func(string, string, string, string, string, int64) *dns.ResourceRecordSet); ok {
-		r0 = rf(project, zone, name, address, recordType, recordTTL)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string, string, int64) *dns.ResourceRecordSet); ok {
+		r0 = rf(ctx, project, zone, name, address, recordType, recordTTL)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*dns.ResourceRecordSet)
@@ -25,8 +26,8 @@ func (_m *DNSAPI) LookupDNSEntry(project string, zone string, name string, addre
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, string, string, string, string, int64) error); ok {
-		r1 = rf(project, zone, name, address, recordType, recordTTL)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, string, string, int64) error); ok {
+		r1 = rf(ctx, project, zone, name, address, recordType, recordTTL)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -34,13 +35,13 @@ func (_m *DNSAPI) LookupDNSEntry(project string, zone string, name string, addre
 	return r0, r1
 }
 
-// RemoveDNSEntry provides a mock function with given fields: project, zone, record
-func (_m *DNSAPI) RemoveDNSEntry(project string, zone string, record *dns.ResourceRecordSet) error {
-	ret := _m.Called(project, zone, record)
+// RemoveDNSEntry provides a mock function with given fields: ctx, project, zone, record
+func (_m *DNSAPI) RemoveDNSEntry(ctx context.Context, project string, zone string, record *dns.ResourceRecordSet) error {
+	ret := _m.Called(ctx, project, zone, record)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, *dns.ResourceRecordSet) error); ok {
-		r0 = rf(project, zone, record)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, *dns.ResourceRecordSet) error); ok {
+		r0 = rf(ctx, project, zone, record)
 	} else {
 		r0 = ret.Error(0)
 	}

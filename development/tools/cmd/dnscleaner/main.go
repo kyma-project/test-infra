@@ -56,7 +56,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ipname: \"%s\"", *project, *dryRun, *name)
+	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, dns resource name: \"%s\"", *project, *dryRun, *name)
 	ctx := context.Background()
 
 	connection, err := google.DefaultClient(ctx, container.CloudPlatformScope)
