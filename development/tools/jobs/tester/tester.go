@@ -95,6 +95,8 @@ const (
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 	// GovernanceScriptDir means governance script directory
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+	// MetadataGovernanceScriptDir means governance script directory
+	MetadataGovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
 )
 
 // SupportedRelease defines supported releases
