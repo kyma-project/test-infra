@@ -125,7 +125,7 @@ function main() {
 
     if [ ! -d "${SCRIPT_DIR}/../../development/tools/vendor" ]; then
         echo "Vendoring 'tools'"
-        pushd "${DEVELOPMENT_DIR}/tools"
+        pushd "${SCRIPT_DIR}/../../development/tools"
         dep ensure -v -vendor-only
         popd
     fi
