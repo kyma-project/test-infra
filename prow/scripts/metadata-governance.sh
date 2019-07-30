@@ -123,6 +123,13 @@ function main() {
     read_arguments "${ARGS[@]}"
     init
 
+    if [ ! -d "${SCRIPT_DIR}/../../development/tools/vendor" ]; then
+        echo "Vendoring 'tools'"
+        pushd "${DEVELOPMENT_DIR}/tools"
+        dep ensure -v -vendor-only
+        popd
+    fi
+
     shout "Validate changed json schema files"
     validate_metadata_schema_on_pr
 
