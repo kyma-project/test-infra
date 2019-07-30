@@ -1,7 +1,6 @@
 package kyma_test
 
 import (
-	"fmt"
 	"testing"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
@@ -10,7 +9,7 @@ import (
 
 func TestMetadataGovernanceJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-governance.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-metadata-governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -18,7 +17,6 @@ func TestMetadataGovernanceJobPresubmit(t *testing.T) {
 	presubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
 	assert.True(t, ex)
 	assert.Len(t, presubmits, 1)
-	fmt.Print(presubmits)
 	expName := "kyma-metadata-schema-governance"
 	actualPresubmit := tester.FindPresubmitJobByName(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
