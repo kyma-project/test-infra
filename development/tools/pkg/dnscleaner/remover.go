@@ -68,7 +68,7 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 	var delErr error
 	backoff = der.backoff
 	if der.makeChanges {
-		for attempt := uint(0); attempt < der.maxAttempts; attempt = attempt + 1 {
+		for attempt := uint(0); attempt < der.maxAttempts; attempt++ {
 			removalErr := der.dnsAPI.RemoveDNSEntry(ctx, project, zone, recordSet)
 			if removalErr == nil {
 				delErr = nil
