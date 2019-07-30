@@ -110,7 +110,7 @@ function validate_metadata_schema_on_pr() {
 
         local schemas=""
         for file in ${files}; do
-            schemas="${schemas} /work/${file}"
+            schemas="${schemas} /${file}"
         done
         run_metadata_validation "${schemas}"
         rm -rf "${VOLUME_DIR}"
