@@ -60,17 +60,14 @@ func main() {
 		log.Fatalf("Could not initialize compute API client: %v", err)
 	}
 
-	computeAPI := &ipcleaner.ComputeAPIWrapper{Context: ctx, Service: computeSvc}
+	computeAPI := &ipcleaner.ComputeAPIWrapper{Service: computeSvc}
 
 	ipr := ipcleaner.New(computeAPI, *maxAttempts, *backoff, !(*dryRun))
 
-	success, err := ipr.Run(*project, *region, *ipName)
+	removalErr := ipr.Run(*project, *region, *ipName)
 
-	if err != nil {
-		log.Fatalf("IP Cleaner error: %v", err)
-	}
-
-	if !success {
+	if removalErr != nil {
+		log.Fatalf("IP Cleaner error: %v", removalErr)
 		log.Warn("Operation failed.")
 	}
 

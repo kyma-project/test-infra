@@ -69,17 +69,14 @@ func main() {
 		log.Fatalf("Could not initialize dns API client: %v", err)
 	}
 
-	dnsAPI := &dnscleaner.DNSAPIWrapper{Context: ctx, Service: dnsSvc}
+	dnsAPI := &dnscleaner.DNSAPIWrapper{Service: dnsSvc}
 
 	der := dnscleaner.New(dnsAPI, *maxAttempts, *backoff, !(*dryRun))
 
-	success, err := der.Run(*project, *zone, *name, *address, *rtype, *ttl)
+	entryRemoverErr := der.Run(*project, *zone, *name, *address, *rtype, *ttl)
 
-	if err != nil {
-		log.Fatalf("DNS Cleaner error: %v", err)
-	}
-
-	if !success {
+	if entryRemoverErr != nil {
+		log.Fatalf("DNS Cleaner error: %v", entryRemoverErr)
 		log.Warn("Operation failed.")
 	}
 

@@ -8,23 +8,23 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
+const (
+	ipDeletionFailed = "delete failed"
+)
+
 // ComputeAPIWrapper abstracts GCP Compute Service API
 type ComputeAPIWrapper struct {
-	Context context.Context
 	Service *compute.Service
 }
 
 // RemoveIP delegates to Compute.Service.Addresses.Delete(project, region, name) function
-func (caw *ComputeAPIWrapper) RemoveIP(project, region, name string) error {
-	resp, err := caw.Service.Addresses.Delete(project, region, name).Context(caw.Context).Do()
+func (caw *ComputeAPIWrapper) RemoveIP(ctx context.Context, project, region, name string) error {
+	resp, err := caw.Service.Addresses.Delete(project, region, name).Context(ctx).Do()
 	if err != nil {
-		if resp != nil {
-			switch resp.HTTPStatusCode {
-			case http.StatusNotFound:
-				return errors.Wrap(err, string(http.StatusNotFound))
-			}
-		}
 		return errors.Wrap(err, "something went wrong")
+	}
+	if resp.HTTPStatusCode > http.StatusAccepted {
+		return errors.New(ipDeletionFailed)
 	}
 
 	return nil

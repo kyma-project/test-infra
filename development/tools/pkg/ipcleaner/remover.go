@@ -1,8 +1,7 @@
 package ipcleaner
 
 import (
-	"net/http"
-	"strings"
+	"context"
 	"time"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
@@ -14,7 +13,7 @@ import (
 
 // ComputeAPI abstracts access to Compute API in GCP
 type ComputeAPI interface {
-	RemoveIP(project, region, name string) error
+	RemoveIP(ctx context.Context, project, region, name string) error
 }
 
 // IPRemover deletes IPs provisioned by gke-long-lasting prow jobs.
@@ -34,7 +33,7 @@ func New(computeAPI ComputeAPI, maxAttempts, backoff uint, makeChanges bool) *IP
 }
 
 // Run executes ip removal process for specified IP
-func (ipr *IPRemover) Run(project, region, ipName string) (bool, error) {
+func (ipr *IPRemover) Run(project, region, ipName string) error {
 	common.Shout("Trying to delete IP with name \"%s\" in project \"%s\", available in region \"%s\"", ipName, project, region)
 
 	var msgPrefix string
@@ -42,19 +41,21 @@ func (ipr *IPRemover) Run(project, region, ipName string) (bool, error) {
 		msgPrefix = "[DRY RUN] "
 	}
 
+	ctx := context.Background()
+
 	var err error
 	backoff := ipr.backoff
 	for attempt := uint(0); attempt < ipr.maxAttempts; attempt = attempt + 1 {
 		var removalErr error
 		if ipr.makeChanges {
-			removalErr = ipr.computeAPI.RemoveIP(project, region, ipName)
+			removalErr = ipr.computeAPI.RemoveIP(ctx, project, region, ipName)
 		}
 		if removalErr == nil {
 			log.Errorf("%sRequested deletion of IP with name \"%s\" in region \"%s\"", msgPrefix, ipName, region)
-			return true, nil
+			return nil
 		}
-		if strings.HasPrefix(removalErr.Error(), string(http.StatusNotFound)) {
-			return false, errors.Wrap(err, "unable to delete non-existant ip")
+		if removalErr.Error() == ipDeletionFailed {
+			return errors.Wrap(removalErr, "unable to delete non-existant ip")
 		}
 		if attempt < ipr.maxAttempts {
 			time.Sleep(time.Duration(backoff) * time.Second)
@@ -65,5 +66,5 @@ func (ipr *IPRemover) Run(project, region, ipName string) (bool, error) {
 	if err != nil {
 		log.Errorf("Could not delete IP with name \"%s\" in region \"%s\", got error: %s", ipName, region, err.Error())
 	}
-	return false, errors.Wrap(err, "unable to delete ip")
+	return errors.Wrap(err, "unable to delete ip")
 }

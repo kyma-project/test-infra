@@ -34,7 +34,7 @@ func New(dnsAPI DNSAPI, maxAttempts, backoff uint, makeChanges bool) *DNSEntryRe
 }
 
 // Run executes dns removal process for specified dns record-set
-func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) (bool, error) {
+func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType string, recordTTL int64) error {
 	common.Shout("Trying to retrieve DNS entry with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
 
 	ctx := context.Background()
@@ -55,7 +55,7 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 		}
 	}
 	if recordSet == nil {
-		return false, getErr
+		return getErr
 	}
 
 	common.Shout("Trying to delete DNS retrieved record set with name \"%s\" in project \"%s\", available in zone \"%s\" with Address: \"%s\"", dnsName, project, zone, dnsAddress)
@@ -66,7 +66,6 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 	}
 
 	var delErr error
-	succeeded := true
 	backoff = der.backoff
 	if der.makeChanges {
 		for attempt := uint(0); attempt < der.maxAttempts; attempt = attempt + 1 {
@@ -75,7 +74,7 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 				delErr = nil
 				break
 			}
-			if removalErr.Error() == deleteFailedError {
+			if removalErr.Error() == dnsDeletionFailed {
 				delErr = removalErr
 				break
 			}
@@ -87,11 +86,10 @@ func (der *DNSEntryRemover) Run(project, zone, dnsName, dnsAddress, recordType s
 		}
 	}
 	if delErr != nil {
-		log.Infof("Could not delete DNS entry with name \"%s\" in zone \"%s\" of project \"%s\", got error: %s", dnsName, zone, project, delErr.Error())
-		succeeded = false
+		log.Errorf("Could not delete DNS entry with name \"%s\" in zone \"%s\" of project \"%s\", got error: %s", dnsName, zone, project, delErr.Error())
 	} else {
 		log.Infof("%sRequested deletion of DNS entry with name \"%s\" in zone \"%s\" of project \"%s\"", msgPrefix, dnsName, zone, project)
 	}
 
-	return succeeded, delErr
+	return delErr
 }

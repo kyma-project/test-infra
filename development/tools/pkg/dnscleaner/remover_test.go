@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/dnscleaner/automock"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	dns "google.golang.org/api/dns/v1"
 )
@@ -49,13 +48,12 @@ func TestNew(t *testing.T) {
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
-		success, err := der.Run(testProject, testZone, shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL)
+		err := der.Run(testProject, testZone, shouldDeleteDNSName, shouldDeleteDNSIP, shouldDeleteDNSRecordType, shouldDeleteDNSTTL)
 
 		//Then
 		mockDNSAPI.AssertNumberOfCalls(t, "LookupDNSEntry", 1)
 		mockDNSAPI.AssertNumberOfCalls(t, "RemoveDNSEntry", 1)
 		require.NoError(t, err)
-		assert.Equal(t, success, true)
 	})
 
 	t.Run("Should not delete DNS entry", func(t *testing.T) {
@@ -69,13 +67,12 @@ func TestNew(t *testing.T) {
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
-		success, err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
+		err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
 
 		//Then
 		mockDNSAPI.AssertNotCalled(t, "RemoveDNSEntry")
 		mockDNSAPI.AssertNumberOfCalls(t, "LookupDNSEntry", 3)
 		require.Error(t, err)
-		assert.Equal(t, success, false)
 	})
 }
 
@@ -91,13 +88,12 @@ func TestRetryableCalls(t *testing.T) {
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
-		success, err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
+		err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
 
 		//Then
 		mockDNSAPI.AssertNotCalled(t, "RemoveDNSEntry")
 		mockDNSAPI.AssertNumberOfCalls(t, "LookupDNSEntry", 3)
 		require.Error(t, err)
-		assert.Equal(t, success, false)
 	})
 }
 
@@ -117,13 +113,12 @@ func TestRetryableCallsPartTwo(t *testing.T) {
 
 		//When
 		der := New(mockDNSAPI, 3, 2, true)
-		success, err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
+		err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
 
 		//Then
 		mockDNSAPI.AssertNumberOfCalls(t, "LookupDNSEntry", 3)
 		mockDNSAPI.AssertNumberOfCalls(t, "RemoveDNSEntry", 3)
 		require.Error(t, err)
-		assert.Equal(t, success, false)
 	})
 }
 
@@ -144,13 +139,12 @@ func TestRetryableCallsPartThree(t *testing.T) {
 
 		//When
 		der := New(mockDNSAPI, 3, 1, true)
-		success, err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
+		err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
 
 		//Then
 		mockDNSAPI.AssertNumberOfCalls(t, "RemoveDNSEntry", 3)
 		mockDNSAPI.AssertNumberOfCalls(t, "LookupDNSEntry", 3)
 		require.NoError(t, err)
-		assert.Equal(t, success, true)
 	})
 }
 
@@ -168,13 +162,12 @@ func TestDryRunBehaviour(t *testing.T) {
 
 		//When
 		der := New(mockDNSAPI, 3, 2, false)
-		success, err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
+		err := der.Run(testProject, testZone, shouldNotDeleteDNSName, shouldNotDeleteDNSIP, shouldNotDeleteDNSRecordType, shouldNotDeleteDNSTTL)
 
 		//Then
 		mockDNSAPI.AssertNumberOfCalls(t, "RemoveDNSEntry", 0)
 		mockDNSAPI.AssertNumberOfCalls(t, "LookupDNSEntry", 1)
 		require.NoError(t, err)
-		assert.Equal(t, success, true)
 	})
 }
 

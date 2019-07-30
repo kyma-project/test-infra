@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	deleteFailedError = "delete failed"
+	dnsDeletionFailed = "delete failed"
 )
 
 // DNSAPIWrapper abstracts GCP DNS Service API
@@ -47,7 +47,7 @@ func (daw *DNSAPIWrapper) RemoveDNSEntry(ctx context.Context, project, zone stri
 		return errors.Wrap(changeErr, "could not remove DNS entry")
 	}
 	if resp.HTTPStatusCode > http.StatusAccepted {
-		return errors.New(deleteFailedError)
+		return errors.New(dnsDeletionFailed)
 	}
 
 	return nil
