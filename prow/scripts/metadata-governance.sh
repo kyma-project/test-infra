@@ -110,7 +110,7 @@ function validate_metadata_schema_on_pr() {
 
         local schemas=""
         for file in ${files}; do
-            schemas="${schemas} /${file}"
+            schemas="${schemas} /home/prow/go/src/github.com/kyma-project/kyma/${file}"
         done
         run_metadata_validation "${schemas}"
         rm -rf "${VOLUME_DIR}"
