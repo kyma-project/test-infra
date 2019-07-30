@@ -12,7 +12,6 @@ import (
 
 //Unexported
 const (
-	ElID          = "$id"
 	ElSchema      = "$schema"
 	ElProperties  = "properties"
 	ElType        = "type"
@@ -22,7 +21,6 @@ const (
 
 //Unexported
 var (
-	ErrNoID             = errors.New("no '$id' element found")
 	ErrNoSchema         = errors.New("no '$schema' element found")
 	ErrNoDescription    = errors.New("no 'description' element found")
 	ErrNoRootProperties = errors.New("no 'properties' found in the root")
@@ -96,9 +94,6 @@ func validateFile(fileName string) (map[string][]error, error) {
 }
 
 func validateRoot(m map[string]interface{}) error {
-	if _, ok := m[ElID]; !ok {
-		return ErrNoID
-	}
 
 	if _, ok := m[ElSchema]; !ok {
 		return ErrNoSchema
