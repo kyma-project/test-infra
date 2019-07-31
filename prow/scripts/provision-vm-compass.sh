@@ -89,8 +89,8 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "compass-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
-        --custom-cpu 2
-        --custom-memory 12
+        --custom-cpu 2 \
+        --custom-memory 12 \
         --zone "${ZONE}" \
         --boot-disk-size 30 "${LABELS[@]}" &&\
     shout "Created compass-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
