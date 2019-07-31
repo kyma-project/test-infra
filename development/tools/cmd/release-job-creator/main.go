@@ -12,17 +12,7 @@ import (
 	"strings"
 
 	"github.com/kelseyhightower/envconfig"
-	// "github.com/ghodss/yaml"
 )
-
-// func gatherOptions() options {
-// 	o := options{}
-// 	flag.StringVar(&o.jobType, "job-type", "all", "Type of job")
-// 	flag.StringVar(&o.unsupportedReleases, "unsupported-releases", "", "Unsupported releases.")
-// 	flag.StringVar(&o.newRelease, "new-release", "", "Name of the new release.")
-// 	flag.Parse()
-// 	return o
-// }
 
 const (
 	jobsDir       = "prow/jobs"

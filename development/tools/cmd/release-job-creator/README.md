@@ -1,7 +1,7 @@
 Input Variables:
-- pre/all: default: all - optional
-- unsupported_releases: default - mandatory, comma separated list
-- new_release - mandatory
+- OLD_RELEASES: `1.1,1.2` `mandatory`
+- NEW_RELEASES: `1.4,1.5` `mandatory`
+- REF_RELEASE - `1.3` `mandatory`
 
 
 
@@ -9,12 +9,15 @@ Algorithm:
 - Traverse prow/jobs/kyma and read all yamls
 - Read presubsmits block
 - Take out unsupported release extract
-- Note the folder structure after "kyma/"
-- Create a name by appending foldernames separated by dashes.
-- Create a new name: "pre" "rel" <supported-release-without-dot> <kyma> <folder1-folder2...> 
+- Traverse through jobs definition folders
 - Create an old extract by replacing the old name 
 - Create a new extract for a release name from supported release
-- Add the new extract
 - Remove the old extract
+- Add the new extract
 - Overwrite the file by adding new jobs(based on the supported flag) and removing old jobs(based on the unsupported flag)
-- Handle control exit
+
+Usage:
+
+```
+    OLD_RELEASES=1.1 NEW_RELEASES=1.4 REF_RELEASE=1.3 go run main.go
+```
