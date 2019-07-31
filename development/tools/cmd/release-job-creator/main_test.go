@@ -31,5 +31,27 @@ func TestCreateJobName(t *testing.T) {
 			t.Errorf("expected: %s, got %s", test.expected, job)
 		}
 	}
+}
 
+func TestCountLeadingSpaces(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected int
+	}{
+		{
+			"foo",
+			0,
+		},
+		{
+			"     foo",
+			5,
+		},
+	}
+
+	for _, test := range tests {
+		l := countLeadingSpaces(test.input)
+		if l != test.expected {
+			t.Errorf("expected: %d, got: %d", test.expected, l)
+		}
+	}
 }

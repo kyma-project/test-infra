@@ -35,15 +35,14 @@ type envConfig struct {
 	GoPath      string `envconfig:"GOPATH" default:"" required:"true"`
 	OldReleases string `envconfig:"OLD_RELEASES" default:"" required:"true"`
 	NewReleases string `envconfig:"NEW_RELEASES" default:"" required:"true"`
+	RefRelease  string `envconfig:"REF_RELEASE" default:"" required:"true"`
 }
 
 var (
 	components = []string{
 		"kyma", "incubator/compass",
 	}
-	env     envConfig
-	oldRels []string
-	newRels []string
+	env envConfig
 )
 
 func main() {
@@ -56,8 +55,6 @@ func main() {
 }
 
 func _main(args []string, env envConfig) int {
-	oldRels = strings.Split(env.OldReleases, ",")
-	newRels = strings.Split(env.NewReleases, ",")
 	for _, component := range components {
 		processJobDef(env.GoPath + "/" + testInfraDir + "/" + jobsDir + "/" + component)
 	}
@@ -77,12 +74,9 @@ func processJobDef(root string) {
 				return err
 			}
 			if strings.Contains(info.Name(), yamlExtension) {
-				fmt.Println("PAth: " + path)
-				log.Println("exiting")
+				fmt.Println("Processed file: " + path)
 				fp := FileProcessor{
 					fileName: path,
-					// oldReleases: []string{"1.1", "1.2"},
-					// newReleases: []string{"1.4", "1.5"},
 				}
 				err := fp.readFileWithReadLine()
 				if err != nil {
@@ -96,20 +90,20 @@ func processJobDef(root string) {
 	}
 }
 
+// FileProcessor holds details needed to process a job definition file
 type FileProcessor struct {
-	fileName string
-	// oldReleases      []string
-	// newReleases      []string
-	finalContent     string
-	oldContent       string
-	sampleReleaseDef string
-	sampleReleaseNum string
+	fileName          string
+	finalContent      string
+	oldContent        string
+	sampleReleaseDefs []string
 }
 
 func (fp FileProcessor) readFileWithReadLine() (err error) {
 	file, err := os.Open(fp.fileName)
 	defer file.Close()
 	addToFinalContent := true
+	refIndicator := false
+	sampleReleaseDef := ""
 	if err != nil {
 		return err
 	}
@@ -127,52 +121,55 @@ func (fp FileProcessor) readFileWithReadLine() (err error) {
 		for {
 			l, isPrefix, err = reader.ReadLine()
 			buffer.Write(l)
-
 			// End of the line, stop reading.
 			if !isPrefix {
 				break
 			}
-
 			// At the EOF, break
 			if err != nil {
 				break
 			}
 		}
-
 		if err == io.EOF {
 			break
 		}
-
 		line := buffer.String()
 		fp.oldContent += line + "\n"
-		// fmt.Printf(" > Read %s line\n", line)
-		if fp.countLeadingSpaces(line) <= leadingSpaces {
+		// The marks the end of a job definition
+		if countLeadingSpaces(line) <= leadingSpaces {
 			oldReleaseDef = false
 			addToFinalContent = true
+			if refIndicator {
+				fp.sampleReleaseDefs = append(fp.sampleReleaseDefs, sampleReleaseDef)
+				sampleReleaseDef = ""
+			}
+			refIndicator = false
 		}
+
+		if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
+			refIndicator = true
+		}
+
+		if refIndicator {
+			sampleReleaseDef += line + "\n"
+		}
+
 		// Process the line here.
-		for _, rel := range oldRels {
+		for _, rel := range strings.Split(env.OldReleases, ",") {
 			relWithoutDot := strings.ReplaceAll(rel, ".", "")
 			if strings.Contains(line, "- name: pre-rel"+relWithoutDot) {
-				leadingSpaces = fp.countLeadingSpaces(line)
+				leadingSpaces = countLeadingSpaces(line)
 				addToFinalContent = false
 				oldReleaseDef = true
 				numOfExtractsForOldRelease++
-				if numOfExtractsForOldRelease == 1 {
-					fp.sampleReleaseNum = rel
-				}
+				// if numOfExtractsForOldRelease == 1 {
+				// 	fp.sampleReleaseNum = rel
+				// }
 				break
 			}
 			if oldReleaseDef {
 				break
 			}
-		}
-
-		if oldReleaseDef {
-			if numOfExtractsForOldRelease == 1 {
-				fp.sampleReleaseDef += line + "\n"
-			}
-			continue
 		}
 
 		if addToFinalContent {
@@ -183,8 +180,7 @@ func (fp FileProcessor) readFileWithReadLine() (err error) {
 
 	fp.finalContent = fp.addNewRelease()
 	fp.overwriteFile()
-	fmt.Println("final content")
-	fmt.Println(fp.finalContent)
+
 	if err != io.EOF {
 		fmt.Printf(" > Failed!: %v\n", err)
 	}
@@ -193,8 +189,6 @@ func (fp FileProcessor) readFileWithReadLine() (err error) {
 }
 
 func (fp FileProcessor) overwriteFile() {
-	fmt.Println("final content")
-	fmt.Println(fp.finalContent)
 	d1 := []byte(fp.finalContent)
 	err := ioutil.WriteFile(fp.fileName, d1, 0533)
 	if err != nil {
@@ -202,7 +196,7 @@ func (fp FileProcessor) overwriteFile() {
 	}
 }
 
-func (fp FileProcessor) countLeadingSpaces(line string) int {
+func countLeadingSpaces(line string) int {
 	i := 0
 	for _, runeValue := range line {
 		if runeValue == ' ' {
@@ -215,19 +209,15 @@ func (fp FileProcessor) countLeadingSpaces(line string) int {
 }
 
 func (fp FileProcessor) addNewRelease() string {
-
 	var line, contentWithNewRelease string
-	releaseExtracts := fp.getNewReleaseExtracts()
-	isNewRelAdded := true
-
 	for _, char := range fp.finalContent {
 		line += string(char)
 		if char == '\n' {
-			if isNewRelAdded && strings.Contains(line, "- name: pre-rel") {
+			if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
+				releaseExtracts := fp.getNewReleaseExtracts(line)
 				for _, re := range releaseExtracts {
 					contentWithNewRelease += re
 				}
-				isNewRelAdded = false
 			}
 			contentWithNewRelease += line
 			line = ""
@@ -236,21 +226,42 @@ func (fp FileProcessor) addNewRelease() string {
 	return contentWithNewRelease
 }
 
-func (fp FileProcessor) getNewReleaseExtracts() []string {
+func (fp FileProcessor) getNewReleaseExtracts(line string) []string {
 	var releaseExtracts []string
-	for _, rel := range newRels {
-		releaseExtract := ""
+	for _, sampleReleaseDef := range fp.sampleReleaseDefs {
+		targetRelDefLine := ""
+		for _, char := range sampleReleaseDef {
+			targetRelDefLine += string(char)
+			if char == '\n' {
+				if strings.Contains(line, targetRelDefLine) {
+					newDefs := fp.replaceRelStrings(sampleReleaseDef)
+					for _, newDef := range newDefs {
+						releaseExtracts = append(releaseExtracts, newDef)
+					}
+					return releaseExtracts
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (fp FileProcessor) replaceRelStrings(sampleRelDef string) []string {
+	var releaseExtracts []string
+	for _, rel := range strings.Split(env.NewReleases, ",") {
 		line := ""
-		for _, char := range fp.sampleReleaseDef {
+		releaseExtract := ""
+		for _, char := range sampleRelDef {
 			line += string(char)
 			if char == '\n' {
-				line = strings.ReplaceAll(line, fp.sampleReleaseNum, rel)
-				line = strings.ReplaceAll(line, strings.ReplaceAll(fp.sampleReleaseNum, ".", ""), strings.ReplaceAll(rel, ".", ""))
+				line = strings.ReplaceAll(line, env.RefRelease, rel)
+				line = strings.ReplaceAll(line, strings.ReplaceAll(env.RefRelease, ".", ""), strings.ReplaceAll(rel, ".", ""))
 				releaseExtract += line
 				line = ""
 			}
 		}
 		releaseExtracts = append(releaseExtracts, releaseExtract)
+		releaseExtract = ""
 	}
 	return releaseExtracts
 }
