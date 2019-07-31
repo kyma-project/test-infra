@@ -9,7 +9,7 @@ presubmits: # runs on PRs
       labels:
         preset-dind-enabled: "true"
         preset-build-pr: "true"
-      run_if_changed: "values.schema.json"
+      run_if_changed: "^resources/.*/values.schema.json$"
       path_alias: github.com/kyma-project/kyma
       extra_refs:
         - org: kyma-project
@@ -18,7 +18,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             securityContext:
               privileged: true
             command:
@@ -26,6 +26,8 @@ presubmits: # runs on PRs
             args:
               - "--repository"
               - "kyma"
+              - "--validator"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/pkg/metadata/jsonmetadatavalidator.go"
             resources:
               requests:
                 memory: 10Mi

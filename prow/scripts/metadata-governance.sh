@@ -30,9 +30,9 @@ function read_arguments() {
                 readonly REPOSITORY_DIR=$1
                 shift
                 ;;
-            --full-validation)
+            --validator)
                 shift
-                readonly FULL_VALIDATION=$1
+                readonly VALIDATOR=$1
                 shift
                 ;;
             *)
@@ -44,6 +44,11 @@ function read_arguments() {
 
     if [[ -z "${REPOSITORY_NAME}" ]]; then
         echo -e "ERROR: repository name is required"
+        exit 1
+    fi
+
+    if [[ -z "${VALIDATOR}" ]]; then
+        echo -e "ERROR: validator required"
         exit 1
     fi
 
@@ -78,10 +83,10 @@ function copy_files() {
     done
 }
 
-function run_metadata_validation_docker() {
+function run_metadata_validation() {
     set +e
     # shellcheck disable=SC2068
-    docker run -v "${VOLUME_DIR}:/work" -w /work --rm "miy4/json-schema-validator" --syntax ${@}
+    go run "${VALIDATOR}" ${@}
 
     local result=$?
     if [[ ${result} -ne 0 ]]; then
@@ -105,9 +110,9 @@ function validate_metadata_schema_on_pr() {
 
         local schemas=""
         for file in ${files}; do
-            schemas="${schemas} /work/${file}"
+            schemas="${schemas} /home/prow/go/src/github.com/kyma-project/kyma/${file}"
         done
-        run_metadata_validation_docker "${schemas}"
+        run_metadata_validation "${schemas}"
         rm -rf "${VOLUME_DIR}"
     else
         echo "No metadata files to validate"
@@ -117,6 +122,13 @@ function validate_metadata_schema_on_pr() {
 function main() {
     read_arguments "${ARGS[@]}"
     init
+
+    if [ ! -d "${SCRIPT_DIR}/../../development/tools/vendor" ]; then
+        echo "Vendoring 'tools'"
+        pushd "${SCRIPT_DIR}/../../development/tools"
+        dep ensure -v -vendor-only
+        popd
+    fi
 
     shout "Validate changed json schema files"
     validate_metadata_schema_on_pr
