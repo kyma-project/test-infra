@@ -293,7 +293,7 @@ func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$)|)", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/application-connector/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/core/templates/tests/test-external-solution.yaml")
