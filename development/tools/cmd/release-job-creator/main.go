@@ -136,7 +136,7 @@ func (fp FileProcessor) readFileWithReadLine() (err error) {
 			refIndicator = false
 		}
 
-		if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
+		if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) || strings.Contains(line, "- name: post-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
 			refIndicator = true
 		}
 
@@ -147,7 +147,7 @@ func (fp FileProcessor) readFileWithReadLine() (err error) {
 		// Process the line here.
 		for _, rel := range strings.Split(env.OldReleases, ",") {
 			relWithoutDot := strings.ReplaceAll(rel, ".", "")
-			if strings.Contains(line, "- name: pre-rel"+relWithoutDot) {
+			if strings.Contains(line, "- name: pre-rel"+relWithoutDot) || strings.Contains(line, "- name: post-rel"+relWithoutDot) {
 				leadingSpaces = countLeadingSpaces(line)
 				addToFinalContent = false
 				oldReleaseDef = true
@@ -203,7 +203,7 @@ func (fp FileProcessor) addNewRelease() string {
 	for _, char := range fp.finalContent {
 		line += string(char)
 		if char == '\n' {
-			if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
+			if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) || strings.Contains(line, "- name: post-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
 				releaseExtracts := fp.getNewReleaseExtracts(line)
 				for _, re := range releaseExtracts {
 					contentWithNewRelease += re
