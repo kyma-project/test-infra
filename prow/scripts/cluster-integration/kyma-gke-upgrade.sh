@@ -339,7 +339,8 @@ createTestResources() {
     shout "Create e2e upgrade test resources"
     date
 
-    injectTestingBundles
+    # DEPRECATED: change that function to injectTestingAddons after 1.4 release
+    deprecatedInjectTestingAddons
 
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"

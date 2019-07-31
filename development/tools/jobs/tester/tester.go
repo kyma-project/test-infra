@@ -69,6 +69,8 @@ const (
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
 	// ImageGolangBuildpack1_11 means Golang buildpack image with Go 1.11.*
 	ImageGolangBuildpack1_11 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11"
+	// ImageGolangBuildpack1_12 means Golang buildpack image with Go 1.12.*
+	ImageGolangBuildpack1_12 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12"
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
 	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageNodeBuildpackLatest means Node.js buildpack image
@@ -95,6 +97,8 @@ const (
 	BuildScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
 	// GovernanceScriptDir means governance script directory
 	GovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+	// MetadataGovernanceScriptDir means governance script directory
+	MetadataGovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
 )
 
 // SupportedRelease defines supported releases

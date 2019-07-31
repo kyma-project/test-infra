@@ -5,6 +5,7 @@
   name = "cloud.google.com/go"
   packages = [
     "compute/metadata",
+    "containeranalysis/apiv1beta1",
     "iam",
     "internal",
     "internal/optional",
@@ -77,6 +78,7 @@
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
+    "ptypes/empty",
     "ptypes/timestamp"
   ]
   revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
@@ -374,6 +376,7 @@
     "exemplar",
     "internal",
     "internal/tagencoding",
+    "plugin/ocgrpc",
     "plugin/ochttp",
     "plugin/ochttp/propagation/b3",
     "stats",
@@ -508,6 +511,8 @@
     "iterator",
     "option",
     "storage/v1",
+    "transport",
+    "transport/grpc",
     "transport/http",
     "transport/http/internal/propagation"
   ]
@@ -524,7 +529,9 @@
     "internal/log",
     "internal/modules",
     "internal/remote_api",
+    "internal/socket",
     "internal/urlfetch",
+    "socket",
     "urlfetch"
   ]
   revision = "e9657d882bb81064595ca3b56cbe2546bbabf7b1"
@@ -535,9 +542,22 @@
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
+    "googleapis/devtools/containeranalysis/v1beta1",
+    "googleapis/devtools/containeranalysis/v1beta1/attestation",
+    "googleapis/devtools/containeranalysis/v1beta1/build",
+    "googleapis/devtools/containeranalysis/v1beta1/common",
+    "googleapis/devtools/containeranalysis/v1beta1/deployment",
+    "googleapis/devtools/containeranalysis/v1beta1/discovery",
+    "googleapis/devtools/containeranalysis/v1beta1/grafeas",
+    "googleapis/devtools/containeranalysis/v1beta1/image",
+    "googleapis/devtools/containeranalysis/v1beta1/package",
+    "googleapis/devtools/containeranalysis/v1beta1/provenance",
+    "googleapis/devtools/containeranalysis/v1beta1/source",
+    "googleapis/devtools/containeranalysis/v1beta1/vulnerability",
     "googleapis/iam/v1",
     "googleapis/rpc/code",
-    "googleapis/rpc/status"
+    "googleapis/rpc/status",
+    "protobuf/field_mask"
   ]
   revision = "4b09977fb92221987e99d190c8f88f2c92727a29"
 
@@ -553,6 +573,7 @@
     "connectivity",
     "credentials",
     "credentials/internal",
+    "credentials/oauth",
     "encoding",
     "encoding/proto",
     "grpclog",
@@ -811,6 +832,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8735e153ababc67b580ed4b6a6bf82b95db51f93e1f036ed147b8b33ef7ffa0e"
+  inputs-digest = "ca6d541053d42bdf127c39e94d49184dfa54add130b3076b6d791ee1ea984105"
   solver-name = "gps-cdcl"
   solver-version = 1

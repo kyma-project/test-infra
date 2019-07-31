@@ -230,9 +230,6 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
       volumes:
         - name: oauth
           secret:
@@ -243,10 +240,6 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -277,9 +270,6 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
       volumes:
         - name: config
           configMap:
@@ -287,10 +277,6 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -332,9 +318,6 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
           livenessProbe:
             httpGet:
               path: /healthz
@@ -355,10 +338,6 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
 ---
 apiVersion: v1
 kind: Service
