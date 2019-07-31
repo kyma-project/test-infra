@@ -1036,7 +1036,7 @@ periodics:
             value: "kyma"
         resources:
           requests:
-            memory: 20Gi
+            memory: 1Gi
             cpu: 400m
 
 - name: kyma-components-use-recent-versions
