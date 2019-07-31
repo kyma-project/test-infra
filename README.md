@@ -1,6 +1,7 @@
 # Test Infra
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_shield)
 
+Trigger pre-release job for watch-pods
 
 ## Overview
 
