@@ -165,7 +165,7 @@ gke_central_job_template: &gke_central_job_template
       - "bash"
       env:
       - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
+        value: "europe-west4-c"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
@@ -213,7 +213,7 @@ gke_backup_job_template: &gke_backup_job_template
       - "bash"
       env:
       - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
+        value: "europe-west4-c"
       args:
       - "-c"
       - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
@@ -963,7 +963,7 @@ periodics:
       - "bash"
       env:
       - name: CLOUDSDK_COMPUTE_ZONE
-        value: "europe-west4-a"
+        value: "europe-west4-c"
       - name: REPO_OWNER
         value: "kyma-project"
       - name: REPO_NAME
@@ -1018,7 +1018,7 @@ periodics:
 
 - name: kyma-whitesource-scan
   decorate: true
-  cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
+  cron: "0 4 * * 1" # At 4am on every MOnday
   labels:
     preset-kyma-wssagent-config: "true"
     preset-kyma-keyring: "true"
