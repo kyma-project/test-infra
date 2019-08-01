@@ -12,6 +12,8 @@ import (
 	"strings"
 
 	"github.com/kelseyhightower/envconfig"
+	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/yaml"
 )
 
 const (
@@ -179,8 +181,13 @@ func (fp FileProcessor) readFileWithReadLine() (err error) {
 }
 
 func (fp FileProcessor) overwriteFile() {
-	d1 := []byte(fp.finalContent)
-	err := ioutil.WriteFile(fp.fileName, d1, 0533)
+	dat := []byte(fp.finalContent)
+	jobConfig := &config.JobConfig{}
+	err := yaml.Unmarshal(dat, jobConfig)
+	if err != nil {
+		log.Panicf("File: %s cannot be written as the yaml is invalid: %v", fp.fileName, err)
+	}
+	err = ioutil.WriteFile(fp.fileName, dat, 0533)
 	if err != nil {
 		log.Panicf("Error while writing a file: %v", err)
 	}
