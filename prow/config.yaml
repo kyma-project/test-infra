@@ -462,6 +462,10 @@ branch-protection:
           branches:
             master:
               protect: true
+        podpreset-crd:
+          branches:
+            master:
+              protect: true
         compass:
           branches:
             master:
