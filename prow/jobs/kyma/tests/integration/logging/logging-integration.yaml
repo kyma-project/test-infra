@@ -61,25 +61,14 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel11-kyma-tests-integration-logging
+    - name: pre-rel14-kyma-tests-integration-logging
       branches:
-        - release-1.1
+      - release-1.4
       <<: *job_template_less_14
       always_run: true
       extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.1
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-    - name: pre-rel12-kyma-tests-integration-logging
-      branches:
-        - release-1.2
-      <<: *job_template_less_14
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.2
+      - <<: *test_infra_ref
+        base_ref: release-1.4
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -91,6 +80,17 @@ presubmits: # runs on PRs
       extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.3
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+    - name: pre-rel12-kyma-tests-integration-logging
+      branches:
+        - release-1.2
+      <<: *job_template_less_14
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.2
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
