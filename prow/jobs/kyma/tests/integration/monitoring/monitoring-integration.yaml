@@ -64,7 +64,7 @@ presubmits: # runs on PRs
     - name: pre-rel14-kyma-tests-integration-monitoring
       branches:
       - release-1.4
-      <<: *job_template_less_14
+      <<: *job_template
       always_run: true
       extra_refs:
       - <<: *test_infra_ref
