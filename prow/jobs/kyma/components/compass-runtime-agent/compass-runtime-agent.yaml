@@ -44,6 +44,7 @@ presubmits: # runs on PRs
     branches:
       - release-1.4
     <<: *job_template
+    always_run: true
     run_if_changed: "^components/compass-runtime-agent/"
     extra_refs:
       - <<: *test_infra_ref
