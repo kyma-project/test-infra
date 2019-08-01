@@ -17,7 +17,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/podpreset-crd"
+          - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
         resources:
           requests:
             memory: 1.5Gi
