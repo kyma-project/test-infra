@@ -47,7 +47,6 @@ presubmits: # runs on PRs
         - release-1.4
       <<: *job_template
       always_run: true
-      run_if_changed: "^components/cms-services/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.4
