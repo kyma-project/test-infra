@@ -200,16 +200,28 @@ func countLeadingSpaces(line string) int {
 
 func (fp FileProcessor) addNewRelease() string {
 	var line, contentWithNewRelease string
+	leadingSpaces := 0
+	shouldAddNewRel := false
+	var releaseExtracts []string
 	for _, char := range fp.finalContent {
 		line += string(char)
 		if char == '\n' {
 			if strings.Contains(line, "- name: pre-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) || strings.Contains(line, "- name: post-rel"+strings.ReplaceAll(env.RefRelease, ".", "")) {
-				releaseExtracts := fp.getNewReleaseExtracts(line)
+				releaseExtracts = fp.getNewReleaseExtracts(line)
+				leadingSpaces = countLeadingSpaces(line)
+				shouldAddNewRel = true
+				contentWithNewRelease += line
+				line = ""
+				continue
+			}
+			contentWithNewRelease += line
+			if shouldAddNewRel && countLeadingSpaces(line) <= leadingSpaces {
 				for _, re := range releaseExtracts {
 					contentWithNewRelease += re
 				}
+				releaseExtracts = []string{}
+				shouldAddNewRel = false
 			}
-			contentWithNewRelease += line
 			line = ""
 		}
 	}
