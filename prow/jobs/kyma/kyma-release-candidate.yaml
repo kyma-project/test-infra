@@ -42,7 +42,7 @@ job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
 
-  postsubmits:
+postsubmits:
   kyma-project/kyma:
     - name: post-rel11-kyma-release-candidate
       branches:
