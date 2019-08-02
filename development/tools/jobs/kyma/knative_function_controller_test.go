@@ -10,7 +10,7 @@ import (
 
 func TestKnativeFunctionControllerAcceptanceReleases(t *testing.T) {
 
-	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release12, tester.Release13}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {

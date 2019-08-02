@@ -13,9 +13,6 @@ func TestWatchPodsReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
-			if tester.Release(currentRelease).Matches(tester.Release11) {
-				expectedImage = tester.ImageGolangBuildpackLatest
-			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
 			// THEN
 			require.NoError(t, err)

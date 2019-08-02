@@ -103,17 +103,15 @@ const (
 
 // SupportedRelease defines supported releases
 type SupportedRelease = string
-type unSupportedRelease = string
 
 // List of currently supported releases
 // Please always make it up to date
 // When we removing support for given version, there remove
 // its entry also here.
 const (
-	Release11 unSupportedRelease = "release-1.1"
-	Release12 SupportedRelease   = "release-1.2"
-	Release13 SupportedRelease   = "release-1.3"
-	Release14 SupportedRelease   = "release-1.4"
+	Release12 SupportedRelease = "release-1.2"
+	Release13 SupportedRelease = "release-1.3"
+	Release14 SupportedRelease = "release-1.4"
 )
 
 // Release allows you to execute checks on given release
