@@ -94,26 +94,23 @@ function cleanup() {
 
     removeCluster
     
-    shout "Delete Gateway DNS Record"
-	date
-	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
-	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-    if [ ! -z "${GATEWAY_IP_ADDRESS_NAME}" ]; then
-        shout "Release Gateway IP Address"
+    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+        shout "Delete Gateway DNS Record"
         date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
     fi
 
-    shout "Delete temporary Kyma-Installer Docker image"
-    date
-    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
-    TMP_STATUS=$?
-    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+        shout "Release Gateway IP Address"
+        date
+        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+    fi
+
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+    fi
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -141,26 +138,25 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-GATEWAY_IP_ADDRESS_NAME="${CLUSTER_NAME}"
-GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-
-export KYMA_INSTALLER_IMAGE
-shout "Build Kyma-Installer Docker image"
-date
-KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
-
-
-shout "Create new cluster"
-date
+if [[ "$BUILD_TYPE" != "release" ]]; then
+    shout "Build Kyma-Installer Docker image"
+    date
+    CLEANUP_DOCKER_IMAGE="true"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+fi
 
 shout "Reserve IP Address for Ingressgateway"
 date
+GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+CLEANUP_GATEWAY_IP_ADDRESS="true"
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
 shout "Create DNS Record for Ingressgateway IP"
 date
+GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+CLEANUP_GATEWAY_DNS_RECORD="true"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
 
@@ -204,9 +200,7 @@ function installKyma() {
     shout "Apply Kyma config"
     date
 
-    # shellcheck disable=SC2002
-    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
-        | kubectl apply -f-
+    kubectl create namespace "kyma-installer"
 
     # Generate backup config
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-cluster-backup-config.sh"
@@ -227,9 +221,19 @@ function installKyma() {
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
 
-    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}" \
+    if [[ "$BUILD_TYPE" == "release" ]]; then
+        echo "Use released artifacts"
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
+
+    else
+        echo "Manual concatenating yamls"
+        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+        | sed -e "s/__VERSION__/0.0.1/g" \
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
+    fi
 
     shout "Installation triggered"
     date
