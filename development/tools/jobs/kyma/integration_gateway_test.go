@@ -10,6 +10,9 @@ import (
 
 func TestIntegrationGatewayReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+		if currentRelease == tester.Release14 {
+			continue
+		}
 		t.Run(currentRelease, func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
 			// THEN
