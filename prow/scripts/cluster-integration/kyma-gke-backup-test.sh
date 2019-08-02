@@ -19,54 +19,8 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
-### For provision-gke-cluster.sh
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-
-### For generate-cluster-backup-config.sh
-export BACKUP_CREDENTIALS="${KYMA_BACKUP_CREDENTIALS}"
-export BACKUP_RESTORE_BUCKET="${KYMA_BACKUP_RESTORE_BUCKET}"
-
-# Enforce lowercase
-readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-export REPO_OWNER
-readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-export REPO_NAME
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-
-if [[ "$BUILD_TYPE" == "pr" ]]; then
-    # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gke-backup-pr"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-backup-test/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
-    export KYMA_INSTALLER_IMAGE
-elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gke-backup-rel"
-    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-    shout "Read the release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-else
-    # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gke-backup-commit"
-    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-backup-test/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
-    export KYMA_INSTALLER_IMAGE
-fi
-
-### Cluster name must be less than 40 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
-
-readonly DNS_SUBDOMAIN="${CLUSTER_NAME}"
-export GCLOUD_NETWORK_NAME="gke-backup-test-net"
-export GCLOUD_SUBNET_NAME="gke-backup-test-subnet"
-
 
 removeCluster() {
     shout "Deprovision cluster: \"${CLUSTER_NAME}\""
@@ -123,7 +77,52 @@ function cleanup() {
 
 trap cleanup EXIT INT
 
+# Enforce lowercase
+readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+export REPO_OWNER
+readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+export REPO_NAME
+
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+
+if [[ "$BUILD_TYPE" == "pr" ]]; then
+    # In case of PR, operate on PR number
+    readonly COMMON_NAME_PREFIX="gke-backup-pr"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-backup-test/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    export KYMA_INSTALLER_IMAGE
+elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly COMMON_NAME_PREFIX="gke-backup-rel"
+    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    shout "Read the release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+else
+    # Otherwise (master), operate on triggering commit id
+    readonly COMMON_NAME_PREFIX="gke-backup-commit"
+    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-backup-test/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    export KYMA_INSTALLER_IMAGE
+fi
+
+### Cluster name must be less than 40 characters!
+export CLUSTER_NAME="${COMMON_NAME}"
+
+export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
+export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+
+### For provision-gke-cluster.sh
+export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+
+### For generate-cluster-backup-config.sh
+export BACKUP_CREDENTIALS="${KYMA_BACKUP_CREDENTIALS}"
+export BACKUP_RESTORE_BUCKET="${KYMA_BACKUP_RESTORE_BUCKET}"
+
 #Local variables
+DNS_SUBDOMAIN="${COMMON_NAME}"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
