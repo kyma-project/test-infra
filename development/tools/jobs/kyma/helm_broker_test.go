@@ -12,9 +12,6 @@ func TestHelmBrokerReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
 			expectedImage := tester.ImageGolangKubebuilderBuildpackLatest
-			if tester.Release(currentRelease).Matches(tester.Release11) {
-				expectedImage = tester.ImageGolangBuildpackLatest
-			}
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/helm-broker/helm-broker.yaml")
 			// THEN
 			require.NoError(t, err)

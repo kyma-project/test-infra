@@ -109,9 +109,9 @@ type SupportedRelease = string
 // When we removing support for given version, there remove
 // its entry also here.
 const (
-	Release11 SupportedRelease = "release-1.1"
 	Release12 SupportedRelease = "release-1.2"
 	Release13 SupportedRelease = "release-1.3"
+	Release14 SupportedRelease = "release-1.4"
 )
 
 // Release allows you to execute checks on given release
@@ -132,7 +132,7 @@ type jobRunner interface {
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleaseBranches() []SupportedRelease {
-	return []SupportedRelease{Release11, Release12, Release13}
+	return []SupportedRelease{Release12, Release13, Release14}
 }
 
 // GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones

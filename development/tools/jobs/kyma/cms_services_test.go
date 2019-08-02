@@ -12,7 +12,7 @@ func TestCmsServicesReleases(t *testing.T) {
 	// WHEN
 
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		if tester.Release(currentRelease).Matches(tester.Release11, tester.Release12, tester.Release13) {
+		if tester.Release(currentRelease).Matches(tester.Release12, tester.Release13) {
 			continue
 		}
 		t.Run(currentRelease, func(t *testing.T) {
