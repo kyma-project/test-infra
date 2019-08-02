@@ -35,7 +35,6 @@ vm_job_labels_template: &vm_job_labels_template
   preset-gc-project-env: "true"
 
 gke_minio_gateway_job_template: &gke_minio_gateway_job_template
-  optional: true
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -59,7 +58,6 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
           cpu: 80m
 
 gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_template
-  optional: true
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
