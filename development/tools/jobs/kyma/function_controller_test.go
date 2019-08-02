@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestKnativeFunctionControllerAcceptanceReleases(t *testing.T) {
+func TestFunctionControllerAcceptanceReleases(t *testing.T) {
 
 	unsupportedReleases := []tester.SupportedRelease{tester.Release12, tester.Release13}
 
@@ -32,7 +32,7 @@ func TestKnativeFunctionControllerAcceptanceReleases(t *testing.T) {
 	}
 }
 
-func TestKnativeFunctionControllerAcceptanceJobsPresubmit(t *testing.T) {
+func TestFunctionControllerAcceptanceJobsPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/function-controller/function-controller.yaml")
 	// THEN
@@ -52,7 +52,7 @@ func TestKnativeFunctionControllerAcceptanceJobsPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestKnativeFunctionControllerAcceptanceJobPostsubmit(t *testing.T) {
+func TestFunctionControllerAcceptanceJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/function-controller/function-controller.yaml")
 	// THEN
