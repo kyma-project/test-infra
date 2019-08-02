@@ -34,6 +34,9 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
@@ -64,8 +67,6 @@ readonly DNS_SUBDOMAIN="${CLUSTER_NAME}"
 export GCLOUD_NETWORK_NAME="gke-backup-test-net"
 export GCLOUD_SUBNET_NAME="gke-backup-test-subnet"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 removeCluster() {
     shout "Deprovision cluster: \"${CLUSTER_NAME}\""
