@@ -16,7 +16,7 @@ func TestKymaIntegrationWithCompassJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contain the gke-integration job": {
+		"Should contain the gke-integration-with-compass job": {
 			givenJobName: "pre-master-kyma-gke-integration-with-compass",
 
 			expPresets: []tester.Preset{
@@ -39,7 +39,7 @@ func TestKymaIntegrationWithCompassJobsPresubmit(t *testing.T) {
 	for tn, tc := range tests {
 		t.Run(tn, func(t *testing.T) {
 			// given
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-with-compass.yaml")
 			require.NoError(t, err)
 
 			// when
@@ -53,8 +53,7 @@ func TestKymaIntegrationWithCompassJobsPresubmit(t *testing.T) {
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
-			// TODO: After the script merge uncomment it!
-			// tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
@@ -75,7 +74,7 @@ func TestKymaIntegrationWithCompassJobsPostsubmit(t *testing.T) {
 		givenJobName string
 		expPresets   []tester.Preset
 	}{
-		"Should contain the gke-integration job": {
+		"Should contain the gke-integration-with-compass job": {
 			givenJobName: "post-master-kyma-gke-integration-with-compass",
 
 			expPresets: []tester.Preset{
@@ -89,7 +88,7 @@ func TestKymaIntegrationWithCompassJobsPostsubmit(t *testing.T) {
 	for tn, tc := range tests {
 		t.Run(tn, func(t *testing.T) {
 			// given
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-with-compass.yaml")
 			require.NoError(t, err)
 
 			// when
@@ -103,8 +102,7 @@ func TestKymaIntegrationWithCompassJobsPostsubmit(t *testing.T) {
 			assert.Equal(t, "", actualJob.RunIfChanged)
 			assert.True(t, actualJob.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			// TODO: After the script merge uncomment it!
-			// tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
