@@ -53,7 +53,8 @@ func TestKymaIntegrationWithCompassJobsPresubmit(t *testing.T) {
 			assert.True(t, actualJob.Decorate)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			// TODO: It should be uncommented at the end of the #1335 issue from kyma-priject/test-infra repository
+			// tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
@@ -102,7 +103,8 @@ func TestKymaIntegrationWithCompassJobsPostsubmit(t *testing.T) {
 			assert.Equal(t, "", actualJob.RunIfChanged)
 			assert.True(t, actualJob.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			// TODO: It should be uncommented at the end of the #1335 issue from kyma-priject/test-infra repository
+			// tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
