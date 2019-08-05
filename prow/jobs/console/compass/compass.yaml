@@ -48,3 +48,10 @@ postsubmits:
       labels:
         <<: *job_labels_template
         preset-build-console-master: "true"
+    - name: post-rel-kyma-compass
+      branches:
+        - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags
+      <<: *job_template
+      labels:
+        preset-build-release: "true"
+        preset-bot-github-token: "true"

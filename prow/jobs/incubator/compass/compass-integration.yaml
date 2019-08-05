@@ -74,6 +74,7 @@ postsubmits:
     <<: *vm_job_template
     branches:
     - ^master$
+    - "^release-\\d+\\.\\d+$" # Release branches
     labels:
       preset-build-master: "true"
       <<: *vm_job_labels_template
