@@ -131,10 +131,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedRegex: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/application-connector/values.yaml",
 				"installation/file.yaml",
+				"resources/core/templates/tests/test-external-solution.yaml",
 			},
 			expNotRunIfChangedPaths: []string{
 				"installation/README.md",
@@ -271,34 +272,6 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
 	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
-	assert.True(t, actualJob.Decorate)
-	assert.False(t, actualJob.SkipReport)
-	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
-	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
-	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
-}
-
-func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
-	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	require.NoError(t, err)
-
-	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-central-connector", "master")
-	require.NotNil(t, actualJob)
-
-	// then
-	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/application-connector/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "resources/test/values.yaml")
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
