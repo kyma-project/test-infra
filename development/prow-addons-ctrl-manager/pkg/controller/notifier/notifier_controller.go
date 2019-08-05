@@ -2,6 +2,7 @@ package notifier
 
 import (
 	"context"
+	"time"
 
 	"github.com/go-logr/logr"
 	"github.com/google/go-github/github"
@@ -22,6 +23,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/runtime/log"
 	"sigs.k8s.io/controller-runtime/pkg/source"
+)
+
+const (
+	throttleTime = time.Millisecond * 500
 )
 
 // Config holds configuration for Notifier Controller
@@ -58,10 +63,11 @@ func Add(mgr manager.Manager) error {
 	reporter := slack.NewReporter(cfg.SlackReporter, slackCli, ghClient.Git)
 
 	r := &ReconcileProwJob{
-		reporter: reporter,
-		k8sCli:   mgr.GetClient(),
-		scheme:   mgr.GetScheme(),
-		log:      log.Log.WithName("ctrl:notifier"),
+		reporter:      reporter,
+		k8sCli:        mgr.GetClient(),
+		scheme:        mgr.GetScheme(),
+		log:           log.Log.WithName("ctrl:notifier"),
+		prevReconcile: make(chan time.Time, 1),
 	}
 
 	return add(mgr, r)
@@ -89,8 +95,9 @@ type ReconcileProwJob struct {
 	k8sCli client.Client
 	scheme *runtime.Scheme
 
-	reporter ReportClient
-	log      logr.Logger
+	reporter      ReportClient
+	log           logr.Logger
+	prevReconcile chan time.Time
 }
 
 // Reconcile reads that state of the cluster for a ProwJob object and makes changes based on the state read
@@ -110,6 +117,8 @@ func (r *ReconcileProwJob) Reconcile(request reconcile.Request) (reconcile.Resul
 
 	ctx, cancel := context.WithCancel(context.TODO())
 	defer cancel()
+
+	r.throttleIfNeeded()
 
 	infoLog("Start reconcile")
 	defer func() { infoLog("End reconcile", "actionTaken", actionTaken) }()
@@ -179,4 +188,19 @@ func (r *ReconcileProwJob) alreadyReported(pj *prowjobsv1.ProwJob) bool {
 	}
 
 	return false
+}
+
+func (r *ReconcileProwJob) throttleIfNeeded() {
+	select {
+	case prev := <-r.prevReconcile:
+		elapsed := time.Since(prev)
+		toThrottle := throttleTime - elapsed
+		if toThrottle > 0 {
+			time.Sleep(toThrottle)
+		}
+	default:
+	}
+
+	r.prevReconcile <- time.Now()
+
 }
