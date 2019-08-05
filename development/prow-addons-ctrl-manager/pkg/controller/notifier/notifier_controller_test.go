@@ -46,10 +46,11 @@ func TestReconcile(t *testing.T) {
 	c := mgr.GetClient()
 
 	r := &ReconcileProwJob{
-		k8sCli:   c,
-		reporter: reporterMock,
-		scheme:   mgr.GetScheme(),
-		log:      log.Log.WithName("ctrl:notifier"),
+		k8sCli:        c,
+		reporter:      reporterMock,
+		scheme:        mgr.GetScheme(),
+		log:           log.Log.WithName("ctrl:notifier"),
+		prevReconcile: make(chan time.Time, 1),
 	}
 
 	recFn, requests := SetupTestReconcile(r)
