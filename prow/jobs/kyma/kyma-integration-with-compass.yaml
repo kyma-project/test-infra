@@ -57,6 +57,7 @@ presubmits: # runs on PRs
     labels:
       preset-build-pr: "true"
       <<: *gke_job_labels_template
+    optional: true
     extra_refs:
     - <<: *franpog859_test_infra_ref
       base_ref: master
@@ -70,6 +71,7 @@ postsubmits:
     labels:
       preset-build-master: "true"
       <<: *gke_job_labels_template
+    optional: true
     extra_refs:
     - <<: *franpog859_test_infra_ref
       base_ref: master
