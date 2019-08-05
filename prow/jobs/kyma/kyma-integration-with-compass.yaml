@@ -242,7 +242,7 @@ gke_backup_job_labels_template: &gke_backup_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-integration
+  - name: pre-master-kyma-integration-with-compass
     branches:
     - ^master$
     <<: *vm_job_template
@@ -255,7 +255,7 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: pre-master-kyma-gke-minio-gateway
+  - name: pre-master-kyma-gke-minio-gateway-with-compass
     branches:
     - ^master$
     <<: *gke_minio_gateway_job_template
@@ -268,7 +268,7 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: pre-master-kyma-gke-minio-gateway-migration
+  - name: pre-master-kyma-gke-minio-gateway-migration-with-compass
     branches:
     - ^master$
     <<: *gke_minio_gateway_migration_job_template
@@ -282,7 +282,7 @@ presubmits: # runs on PRs
         base_ref: master
 
   # Test job for debugging xip.io DNS no host issues.
-  - name: pre-master-kyma-gke-integration-xip-debug
+  - name: pre-master-kyma-gke-integration-xip-debug-with-compass
     optional: true
     branches:
       - ^master$
@@ -294,7 +294,7 @@ presubmits: # runs on PRs
       - <<: *dekiel_test_infra_ref
         base_ref: dekiel-debug-xip-1206
 
-  - name: pre-master-kyma-gke-integration
+  - name: pre-master-kyma-gke-integration-with-compass
     branches:
     - ^master$
     <<: *gke_job_template
@@ -307,7 +307,7 @@ presubmits: # runs on PRs
     - <<: *franpog859_test_infra_ref
       base_ref: master
 
-  - name: pre-master-kyma-gke-upgrade
+  - name: pre-master-kyma-gke-upgrade-with-compass
     branches:
     - ^master$
     <<: *gke_upgrade_job_template
@@ -320,7 +320,7 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: pre-master-kyma-gke-central-connector
+  - name: pre-master-kyma-gke-central-connector-with-compass
     branches:
     - ^master$
     <<: *gke_central_job_template
@@ -333,7 +333,7 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: pre-master-kyma-gke-backup
+  - name: pre-master-kyma-gke-backup-with-compass
     optional: false
     branches:
     - ^master$
@@ -349,7 +349,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-  - name: post-master-kyma-integration
+  - name: post-master-kyma-integration-with-compass
     <<: *vm_job_template
     branches:
     - ^master$
@@ -360,7 +360,7 @@ postsubmits:
     - <<: *test_infra_ref
       base_ref: master
 
-  - name: post-master-kyma-gke-integration
+  - name: post-master-kyma-gke-integration-with-compass
     <<: *gke_job_template
     branches:
     - ^master$
@@ -371,7 +371,7 @@ postsubmits:
     - <<: *franpog859_test_infra_ref
       base_ref: master
 
-  - name: post-master-kyma-gke-central-connector
+  - name: post-master-kyma-gke-central-connector-with-compass
     <<: *gke_central_job_template
     branches:
       - ^master$
@@ -382,7 +382,7 @@ postsubmits:
       - <<: *test_infra_ref
         base_ref: master
 
-  - name: post-master-kyma-gke-upgrade
+  - name: post-master-kyma-gke-upgrade-with-compass
     <<: *gke_upgrade_job_template
     branches:
       - ^master$
@@ -396,7 +396,7 @@ postsubmits:
 periodics:
 # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
 # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
-- name: periodic-kyma-xip-gke-upgrade
+- name: periodic-kyma-xip-gke-upgrade-with-compass
   cron: "30 */2 * * *" # "every 2 hours"
   <<: *gke_xip_upgrade_job_template
   labels:
@@ -411,7 +411,7 @@ periodics:
     base_ref: master
     path_alias: github.com/kyma-project/kyma
 
-- name: utilities-kyma-integration-cleaner
+- name: utilities-kyma-integration-cleaner-with-compass
   cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
     preset-sa-vm-kyma-integration: "true"
@@ -423,7 +423,7 @@ periodics:
         requests:
           memory: 100Mi
           cpu: 50m
-- name: orphaned-assetstore-gcp-bucket-cleaner
+- name: orphaned-assetstore-gcp-bucket-cleaner-with-compass
   cron: "00 00 * * *" # "At 00:00 each day"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -444,7 +444,7 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: orphaned-disks-cleaner
+- name: orphaned-disks-cleaner-with-compass
   cron: "30 * * * *" # "At 30 minutes past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -465,7 +465,7 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: orphaned-clusters-cleaner
+- name: orphaned-clusters-cleaner-with-compass
   cron: "0 * * * *" # "At 0 minute every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -486,7 +486,7 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: orphaned-vms-cleaner
+- name: orphaned-vms-cleaner-with-compass
   cron: "0 * * * *" # "At minute 0 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -507,7 +507,7 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: orphaned-loadbalancer-cleaner
+- name: orphaned-loadbalancer-cleaner-with-compass
   cron: "15 * * * *" # "At 15 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -528,7 +528,7 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: firewall-cleaner
+- name: firewall-cleaner-with-compass
   cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -549,7 +549,7 @@ periodics:
         requests:
           memory: 1Gi
           cpu: 400m
-- name: orphaned-dns-cleaner
+- name: orphaned-dns-cleaner-with-compass
   cron: "30 * * * *" # "At minute 30 past every hour"
   labels:
     preset-sa-gke-kyma-integration: "true"
@@ -572,7 +572,7 @@ periodics:
           memory: 1Gi
           cpu: 400m
 
-- name: kyma-gke-nightly
+- name: kyma-gke-nightly-with-compass
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
     preset-kyma-keyring: "true"
@@ -631,7 +631,7 @@ periodics:
           memory: 200Mi
           cpu: 80m
 
-- name: kyma-gke-weekly
+- name: kyma-gke-weekly-with-compass
   cron: "0 6 * * 1" # "At 06:00 on Monday."
   labels:
     preset-kyma-keyring: "true"
@@ -688,7 +688,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
-- name: kyma-aks-nightly
+- name: kyma-aks-nightly-with-compass
   cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
   labels:
     preset-kyma-keyring: "true"
@@ -748,7 +748,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
-- name: kyma-gke-backup-nightly
+- name: kyma-gke-backup-nightly-with-compass
   cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
   labels:
     preset-build-master: "true"
@@ -783,7 +783,7 @@ periodics:
           memory: 200Mi
           cpu: 80m
   
-- name: kyma-load-tests-weekly
+- name: kyma-load-tests-weekly-with-compass
   cron: "0 2 * * 1" # "At 2:00 on every Monday."
   labels:
     preset-build-master: "true"
@@ -823,7 +823,7 @@ periodics:
             memory: 200Mi
             cpu: 80m
 
-- name: kyma-whitesource-scan
+- name: kyma-whitesource-scan-with-compass
   decorate: true
   cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
   labels:
@@ -846,7 +846,7 @@ periodics:
             memory: 1Gi
             cpu: 400m
 
-- name: kyma-components-use-recent-versions
+- name: kyma-components-use-recent-versions-with-compass
   decorate: true
   cron: "0 4 * * 1" # At 04:00 on every Monday
   labels:
@@ -877,7 +877,7 @@ periodics:
             memory: 1Gi
             cpu: 400m
 
-- name: kyma-gke-service-catalog-crd-periodic
+- name: kyma-gke-service-catalog-crd-periodic-with-compass
   cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
   labels:
     preset-kyma-keyring: "true"
