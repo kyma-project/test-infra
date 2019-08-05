@@ -16,25 +16,8 @@ func TestKymaIntegrationWithCompassJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contain the kyma-integration job": {
-			givenJobName: "pre-master-kyma-integration",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, tester.PresetBuildPr, "preset-sa-vm-kyma-integration",
-			},
-
-			expRunIfChangedRegex: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/values.yaml",
-				"installation/file.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-			},
-		},
 		"Should contain the gke-integration job": {
-			givenJobName: "pre-master-kyma-gke-integration",
+			givenJobName: "pre-master-kyma-gke-integration-with-compass",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildPr,
@@ -49,26 +32,6 @@ func TestKymaIntegrationWithCompassJobsPresubmit(t *testing.T) {
 			expNotRunIfChangedPaths: []string{
 				"installation/README.md",
 				"installation/test/test/README.MD",
-			},
-		},
-		"Should contain the gke-central job": {
-			givenJobName: "pre-master-kyma-gke-central-connector",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildPr,
-				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-			expRunIfChangedRegex: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/application-connector/values.yaml",
-				"installation/file.yaml",
-				"resources/core/templates/tests/test-external-solution.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-				"resources/test/values.yaml",
 			},
 		},
 	}
@@ -112,33 +75,8 @@ func TestKymaIntegrationWithCompassJobsPostsubmit(t *testing.T) {
 		givenJobName string
 		expPresets   []tester.Preset
 	}{
-		"Should contain the kyma-integration job": {
-			givenJobName: "post-master-kyma-integration",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
-			},
-		},
 		"Should contain the gke-integration job": {
-			givenJobName: "post-master-kyma-gke-integration",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
-				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-		},
-		"Should contain the gke-upgrade job": {
-			givenJobName: "post-master-kyma-gke-upgrade",
-
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
-				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-		},
-		"Should contain the gke-central job": {
-			givenJobName: "post-master-kyma-gke-central-connector",
+			givenJobName: "post-master-kyma-gke-integration-with-compass",
 
 			expPresets: []tester.Preset{
 				tester.PresetGCProjectEnv, tester.PresetBuildMaster,
