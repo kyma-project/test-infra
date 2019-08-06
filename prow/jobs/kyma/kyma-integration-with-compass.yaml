@@ -7,7 +7,7 @@ test_infra_ref: &test_infra_ref
 franpog859_test_infra_ref: &franpog859_test_infra_ref
   org: franpog859
   repo: test-infra
-  path_alias: github.com/franpog859/test-infra
+  path_alias: github.com/kyma-project/test-infra
 
 kyma_ref: &kyma_ref
   org: kyma-project
