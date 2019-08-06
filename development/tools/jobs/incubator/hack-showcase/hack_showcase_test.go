@@ -59,7 +59,7 @@ func TestHackShowcaseJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Empty(t, actualPost.RunIfChanged)
+	assert.Equal(t, "^hack-showcase/", actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase"}, actualPost.Spec.Containers[0].Args)
 
