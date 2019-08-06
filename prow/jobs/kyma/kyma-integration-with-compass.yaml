@@ -60,18 +60,4 @@ presubmits: # runs on PRs
     optional: true
     extra_refs:
     - <<: *franpog859_test_infra_ref
-      base_ref: master
-
-postsubmits:
-  kyma-project/kyma:
-  - name: post-master-kyma-gke-integration-with-compass
-    <<: *gke_job_template
-    branches:
-    - ^master$
-    labels:
-      preset-build-master: "true"
-      <<: *gke_job_labels_template
-    optional: true
-    extra_refs:
-    - <<: *franpog859_test_infra_ref
-      base_ref: master
+      base_ref: 1335-Add-compass-integration-script
