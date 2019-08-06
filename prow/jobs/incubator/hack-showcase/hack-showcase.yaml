@@ -1,5 +1,6 @@
 job_template: &job_template
   skip_report: false
+  run_if_changed: "^hack-showcase/"
   decorate: true
   optional: true
   path_alias: github.com/kyma-incubator/hack-showcase
@@ -32,7 +33,6 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/hack-showcase:
     - name: pre-master-hack-showcase
-      run_if_changed: true
       branches:
         - ^master$
       <<: *job_template
