@@ -113,7 +113,7 @@ spec:
           value: periodic,postsubmit
         - name: NOTIFIER_SLACK_REPORTER_ACT_ON_PROW_JOB_STATE
           value: failure,error
-        image: eu.gcr.io/kyma-project/test-infra/develop/prow-addons-ctrl-manager:0c2df50f
+        image: eu.gcr.io/kyma-project/test-infra/develop/prow-addons-ctrl-manager:6803bbf3
         imagePullPolicy: Always
         name: manager
         ports:
