@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
+#Description: Kyma and Compass Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma and Compass on real GKE cluster.
 #
 #
 #Expected vars:
@@ -284,7 +284,7 @@ fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-shout "Test Kyma"
+shout "Test Kyma with Compass"
 date
 "${KYMA_SCRIPTS_DIR}"/testing.sh --concurrency 5
 
