@@ -1,7 +1,7 @@
 job_template: &job_template
   skip_report: false
   decorate: true
-  optional: false
+  optional: true
   path_alias: github.com/kyma-project/helm-broker
   max_concurrency: 10
   extra_refs:
