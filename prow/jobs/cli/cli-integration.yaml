@@ -36,7 +36,6 @@ postsubmits: # runs on merge
   - name: post-kyma-cli-integration
     branches:
       - "^master$" # Master branch
-      - "^release-\\d+\\.\\d+$" # Release branches
     <<: *job_template
     labels:
       preset-build-master: "true"

@@ -40,8 +40,6 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	expName := "post-kyma-cli-integration"
 	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "release-1.1")
-	require.NotNil(t, actualPost)
 
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)

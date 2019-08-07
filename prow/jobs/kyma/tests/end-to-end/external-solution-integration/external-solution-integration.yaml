@@ -41,6 +41,17 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-rel14-kyma-tests-end-to-end-external-solution-integration
+      branches:
+        - release-1.4
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.4
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

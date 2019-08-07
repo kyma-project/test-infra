@@ -402,15 +402,6 @@ branch-protection:
       repos:
         kyma:
           branches:
-            release-1.1:
-              required_status_checks:
-                contexts:
-                  - pre-rel11-kyma-integration
-                  - pre-rel11-kyma-gke-integration
-                  - pre-rel11-kyma-gke-upgrade
-                  - pre-rel11-kyma-gke-central-connector
-                  - pre-rel11-kyma-artifacts
-                  - pre-rel11-kyma-installer
             release-1.2:
               required_status_checks:
                 contexts:
@@ -432,11 +423,26 @@ branch-protection:
                 - pre-rel13-kyma-installer
                 - pre-rel13-kyma-gke-minio-gateway
                 - pre-rel13-kyma-gke-minio-gateway-migration
+            release-1.4:
+              required_status_checks:
+                contexts:
+                - pre-rel14-kyma-integration
+                - pre-rel14-kyma-gke-integration
+                - pre-rel14-kyma-gke-upgrade
+                - pre-rel14-kyma-gke-central-connector
+                - pre-rel14-kyma-artifacts
+                - pre-rel14-kyma-installer
+                - pre-rel14-kyma-gke-minio-gateway
+                - pre-rel14-kyma-gke-minio-gateway-migration
         website:
           required_status_checks:
             contexts:
               - "netlify/kyma-project/deploy-preview"
         cli:
+          branches:
+            master:
+              protect: true
+        helm-broker:
           branches:
             master:
               protect: true
@@ -462,6 +468,10 @@ branch-protection:
           branches:
             master:
               protect: true
+        podpreset-crd:
+          branches:
+            master:
+              protect: true
         compass:
           branches:
             master:
@@ -470,6 +480,10 @@ branch-protection:
           protect: true
         documentation-component:
           protect: true
+        hack-showcase:
+          branches:
+            master:
+              protect: true
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'

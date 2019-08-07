@@ -53,7 +53,7 @@ func TestKnativebuildAcceptanceJobPostsubmit(t *testing.T) {
 }
 
 func TestKnativebuildAcceptanceReleases(t *testing.T) {
-	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release12, tester.Release13}
 
 	// WHEN
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {

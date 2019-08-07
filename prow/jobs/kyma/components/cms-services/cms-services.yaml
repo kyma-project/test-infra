@@ -30,7 +30,6 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-components-cms-services
-      optional: true
       branches:
         - ^master$
       <<: *job_template
@@ -41,6 +40,17 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-rel14-kyma-components-cms-services
+      branches:
+        - release-1.4
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.4
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

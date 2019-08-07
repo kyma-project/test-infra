@@ -12,7 +12,7 @@ func TestCmsServicesReleases(t *testing.T) {
 	// WHEN
 
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		if tester.Release(currentRelease).Matches(tester.Release11, tester.Release12, tester.Release13) {
+		if tester.Release(currentRelease).Matches(tester.Release12, tester.Release13) {
 			continue
 		}
 		t.Run(currentRelease, func(t *testing.T) {
@@ -23,6 +23,7 @@ func TestCmsServicesReleases(t *testing.T) {
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
+			assert.False(t, actualPresubmit.Optional)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
@@ -47,7 +48,7 @@ func TestCmsServicesJobPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.True(t, actualPresubmit.Optional)
+	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")

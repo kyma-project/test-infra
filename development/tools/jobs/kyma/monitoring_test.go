@@ -58,7 +58,7 @@ func TestMonitoringJobPostsubmit(t *testing.T) {
 }
 
 func TestMonitoringTestSetupReleases(t *testing.T) {
-	oldStyleReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
+	oldStyleReleases := []tester.SupportedRelease{tester.Release12, tester.Release13}
 	// WHEN
 	for _, currentRelease := range oldStyleReleases {
 		t.Run(currentRelease, func(t *testing.T) {

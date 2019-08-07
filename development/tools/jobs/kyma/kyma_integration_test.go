@@ -56,7 +56,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 }
 
 func TestKymaGKEBackupJobsReleases(t *testing.T) {
-	unsupportedReleases := []tester.SupportedRelease{tester.Release11, tester.Release12, tester.Release13}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release12, tester.Release13}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
@@ -131,10 +131,11 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
 			},
-			expRunIfChangedRegex: "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedRegex: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/application-connector/values.yaml",
 				"installation/file.yaml",
+				"resources/core/templates/tests/test-external-solution.yaml",
 			},
 			expNotRunIfChangedPaths: []string{
 				"installation/README.md",
@@ -282,34 +283,6 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 }
 
-func TestKymaGKECentralConnectorJobsPresubmit(t *testing.T) {
-	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	require.NoError(t, err)
-
-	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-central-connector", "master")
-	require.NotNil(t, actualJob)
-
-	// then
-	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/application-connector/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/README.md")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "installation/test/test/README.MD")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "resources/test/values.yaml")
-	assert.True(t, actualJob.Decorate)
-	assert.False(t, actualJob.SkipReport)
-	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
-	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
-	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
-}
-
 func TestKymaBackupTestJobPresubmit(t *testing.T) {
 	// given
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
@@ -421,7 +394,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, disksCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", disksCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, disksCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|weekly|nightly|gke-central|gke-minio'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-backup|weekly|nightly|gke-central|gke-minio'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, disksCleanerPeriodic.JobBase)
 
 	expName = "orphaned-assetstore-gcp-bucket-cleaner"
