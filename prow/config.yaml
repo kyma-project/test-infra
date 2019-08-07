@@ -442,6 +442,10 @@ branch-protection:
           branches:
             master:
               protect: true
+        helm-broker:
+          branches:
+            master:
+              protect: true
     kyma-incubator:
       repos:
         varkes:
