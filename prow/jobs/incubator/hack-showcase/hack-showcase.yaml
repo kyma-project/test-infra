@@ -1,6 +1,6 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "^hack-showcase/"
+  always_run: true
   decorate: true
   optional: true
   path_alias: github.com/kyma-incubator/hack-showcase
