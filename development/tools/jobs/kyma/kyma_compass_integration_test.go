@@ -24,12 +24,10 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.False(t, actualJob.SkipReport)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
-		"prow.kyma-project.io/slack.skipReport",
 		"preset-kyma-guard-bot-github-token",
 		"preset-kyma-keyring",
 		"preset-kyma-encryption-key",
 		"preset-kms-gc-project-env",
-		"preset-build-master",
 		"preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs",
 		"preset-gc-project-env",
@@ -66,12 +64,10 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.False(t, actualJob.SkipReport)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
-		"prow.kyma-project.io/slack.skipReport",
 		"preset-kyma-guard-bot-github-token",
 		"preset-kyma-keyring",
 		"preset-kyma-encryption-key",
 		"preset-kms-gc-project-env",
-		"preset-build-master",
 		"preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs",
 		"preset-gc-project-env",

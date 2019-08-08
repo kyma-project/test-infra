@@ -15,7 +15,6 @@ compass_ref: &compass_ref
   path_alias: github.com/kyma-incubator/compass
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
-  preset-build-master: "true"
   preset-kyma-keyring: "true"
   preset-kyma-encryption-key: "true"
   preset-kms-gc-project-env: "true"
