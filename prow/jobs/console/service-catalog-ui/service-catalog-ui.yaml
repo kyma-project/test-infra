@@ -1,6 +1,6 @@
 job_template: &job_template
   skip_report: false
-  run_if_changed: "(^brokers/)|(^components/react/)"
+  run_if_changed: "(^service-catalog-ui/)|(^components/react/)"
   decorate: true
   path_alias: github.com/kyma-project/console
   max_concurrency: 10
@@ -17,7 +17,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/brokers"
+          - "/home/prow/go/src/github.com/kyma-project/console/service-catalog-ui"
         resources:
           requests:
             memory: 1.5Gi
@@ -30,7 +30,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: pre-master-console-brokers
+    - name: pre-master-console-service-catalog-ui
       branches:
         - ^master$
       labels:
@@ -40,7 +40,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/console:
-    - name: post-master-console-brokers
+    - name: post-master-console-service-catalog-ui
       branches:
         - ^master$
       <<: *job_template
