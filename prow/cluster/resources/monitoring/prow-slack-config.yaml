@@ -5,8 +5,8 @@ prometheus-operator:
         receivers:
           - name: "prow-slack"
             slack_configs:
-              - api_url: https://hooks.slack.com/services/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
-                channel: c4core-prow-alerts
+              - api_url: {PROW_SLACK_URL}
+                channel: {PROW_SLACK_CHANNEL}
                 send_resolved: true
                 title: "<!channel>\n {{ template \"custom_title\" . }}"
                 text: '{{ template "custom_slack_message" . }}'
