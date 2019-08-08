@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
   if [ -z "${!var}" ] ; then
     echo "ERROR: $var is not set"
     discoverUnsetVar=true
@@ -13,8 +13,6 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
-
-export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -29,7 +27,29 @@ readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+if [[ "$BUILD_TYPE" == "pr" ]]; then
+    # In case of PR, operate on PR number
+    readonly COMMON_NAME_PREFIX="gkecompint-pr"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    export KYMA_INSTALLER_IMAGE
+elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly COMMON_NAME_PREFIX="gkecompint-rel"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}")
+    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+else
+    # Otherwise (master), operate on triggering commit id
+    readonly COMMON_NAME_PREFIX="gkecompint-commit"
+    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    export KYMA_INSTALLER_IMAGE
+fi
+
+readonly STANDARIZED_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
@@ -84,7 +104,7 @@ function removeCluster() {
   shout "Delete temporary Kyma-Installer Docker image"
   date
 
-  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+  KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
   TMP_STATUS=$?
   if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -164,15 +184,13 @@ function installKyma() {
     exit 1
   fi
 
-  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
-
   shout "Build Kyma-Installer Docker image"
   date
   KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
 
   KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
   INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-  INSTALLER_CR="${COMPASS_SOURCES_DIR}/installation/resources/installer-cr-kyma-compass.yaml"
+  INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
   shout "Generate self-signed certificate"
   date
