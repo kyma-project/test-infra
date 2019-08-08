@@ -19,7 +19,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 
 	// then
 	assert.True(t, actualJob.Decorate)
-	assert.Equal(t, "^((resources/compass\\S+|resources/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources\\/compass\\S+|resources\\/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.False(t, actualJob.SkipReport)
@@ -55,14 +55,13 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-integration", "master")
+	actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then
 	assert.True(t, actualJob.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	assert.False(t, actualJob.SkipReport)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
 		"preset-kyma-guard-bot-github-token",
 		"preset-kyma-keyring",

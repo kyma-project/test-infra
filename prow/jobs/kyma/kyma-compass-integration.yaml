@@ -54,7 +54,7 @@ presubmits: # runs on PRs
               cpu: 80m
     branches:
       - ^master$
-    run_if_changed: "^((resources/compass\\S+|resources/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    run_if_changed: "^((resources\\/compass\\S+|resources\\/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       preset-build-pr: "true"
       <<: *gke_integration_job_labels_template
