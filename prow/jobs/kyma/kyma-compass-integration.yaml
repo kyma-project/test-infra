@@ -32,6 +32,7 @@ presubmits: # runs on PRs
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
+    optional: true
     max_concurrency: 10
     spec:
       containers:
@@ -46,22 +47,19 @@ presubmits: # runs on PRs
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
-            - name: INPUT_CLUSTER_NAME
-              value: "compass-integration"
           resources:
             requests:
               memory: 200Mi
               cpu: 80m
     branches:
       - ^master$
-    run_if_changed: "^((resources\\/compass\\S+|resources\\/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    run_if_changed: "^(resources\\/compass\\S+|resources\\/compass-runtime-agent\\S+|installation\\S+)"
     labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
       preset-build-pr: "true"
       <<: *gke_integration_job_labels_template
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: master
-      - <<: *compass_ref
         base_ref: master
 
 postsubmits:
@@ -84,8 +82,6 @@ postsubmits:
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
-            - name: INPUT_CLUSTER_NAME
-              value: "compass-integration"
           resources:
             requests:
               memory: 200Mi
@@ -93,12 +89,11 @@ postsubmits:
     branches:
       - ^master$
     labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
       preset-build-master: "true"
       <<: *gke_integration_job_labels_template
     extra_refs:
       - <<: *kyma_ref
         base_ref: master
       - <<: *test_infra_ref
-        base_ref: master
-      - <<: *compass_ref
         base_ref: master

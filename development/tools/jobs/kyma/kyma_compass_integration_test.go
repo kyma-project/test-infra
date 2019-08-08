@@ -19,7 +19,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 
 	// then
 	assert.True(t, actualJob.Decorate)
-	assert.Equal(t, "^((resources\\/compass\\S+|resources\\/compass-runtime-agent\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	assert.Equal(t, "^(resources\\/compass\\S+|resources\\/compass-runtime-agent\\S+|installation\\S+)", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.False(t, actualJob.SkipReport)
@@ -45,7 +45,6 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "-c", compassCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh", compassCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, compassCont, "INPUT_CLUSTER_NAME", "compass-integration")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
 
@@ -84,6 +83,5 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 	assert.Equal(t, "-c", compassCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh", compassCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, compassCont, "INPUT_CLUSTER_NAME", "compass-integration")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
