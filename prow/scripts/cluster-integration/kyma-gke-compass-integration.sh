@@ -3,6 +3,10 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
+NUM=1
+echo "${NUM}"
+NUM=${NUM} + 1
+
 discoverUnsetVar=false
 for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
   if [ -z "${!var}" ] ; then
@@ -13,6 +17,9 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
+
+echo "${NUM}"
+NUM=${NUM} + 1
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -26,6 +33,9 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
+
+echo "${NUM}"
+NUM=${NUM} + 1
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 if [[ "$BUILD_TYPE" == "pr" ]]; then
@@ -42,6 +52,9 @@ else
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
 fi
 
+echo "${NUM}"
+NUM=${NUM} + 1
+
 readonly STANDARIZED_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
@@ -51,6 +64,9 @@ export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+echo "${NUM}"
+NUM=${NUM} + 1
 
 function removeCluster() {
   #Turn off exit-on-error so that next step is executed even if previous one fails.
@@ -236,6 +252,9 @@ function installKyma() {
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
   fi
 }
+
+echo "${NUM}"
+NUM=${NUM} + 1
 
 trap 'removeCluster ${CLUSTER_NAME}' EXIT INT
 
