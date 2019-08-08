@@ -9,9 +9,9 @@ import (
 )
 
 func TestHelmBrokerReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range []tester.SupportedRelease{tester.Release12, tester.Release13, tester.Release14} {
 		t.Run(currentRelease, func(t *testing.T) {
-			expectedImage := tester.ImageGolangKubebuilderBuildpackLatest
+			expectedImage := "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/helm-broker/helm-broker-deprecated.yaml")
 			// THEN
 			require.NoError(t, err)
