@@ -1,4 +1,4 @@
-IMG_NAME ?= buildpack-golang-kubebuilder
+IMG_NAME ?= buildpack-golang-kubebuilder2
 DOCKER_PUSH_REPOSITORY ?= eu.gcr.io/kyma-project
 DOCKER_TAG ?= latest
 
