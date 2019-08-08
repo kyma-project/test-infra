@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the Buildpack Golang with Kubebuilder image that is based on the Golang image. Use it to build components created with Kubebuilder.
+This folder contains the Buildpack Golang with Kubebuilder image that is based on the Golang image. Use it to build components created with Kubebuilder version 2.
 
 The image consists of:
 
