@@ -14,8 +14,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
-export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -172,7 +170,7 @@ function installKyma() {
 
   KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
   INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-  INSTALLER_CR="${COMPASS_SOURCES_DIR}/installation/resources/installer-cr-kyma-compass.yaml"
+  INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
   shout "Generate self-signed certificate"
   date
