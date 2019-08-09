@@ -3,8 +3,6 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-echo "1 Do not worry. It's an optional job and it's here for the testing purpose right now!"
-
 discoverUnsetVar=false
 for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
   if [ -z "${!var}" ] ; then
@@ -15,8 +13,6 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
-
-echo "2"
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -31,24 +27,11 @@ readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-echo "3.0"
-
-echo "3.1 try openssl"
-RANDOM_ID=$(openssl rand -hex 4)
-echo "${RANDOM_ID}"
-
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-
-echo "3.5 $RANDOM_NAME_SUFFIX"
-
-echo "3.55 $BUILD_TYPE"
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gkecompint-pr"
-
-    echo "3.6 ${PULL_NUMBER}"
-
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gkecompint-rel"
@@ -60,8 +43,6 @@ else
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
 fi
 
-echo "4"
-
 readonly STANDARIZED_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
@@ -71,8 +52,6 @@ export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-echo "4"
 
 function removeCluster() {
   #Turn off exit-on-error so that next step is executed even if previous one fails.
@@ -258,8 +237,6 @@ function installKyma() {
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
   fi
 }
-
-echo "5"
 
 trap 'removeCluster ${CLUSTER_NAME}' EXIT INT
 
