@@ -3,7 +3,7 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-echo "1"
+echo "1 Do not worry. It's an optional job and it's here for the testing purpose right now!"
 
 discoverUnsetVar=false
 for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
@@ -31,15 +31,11 @@ readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-echo "3"
-
-RAND=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 32 | head -n 1)
-
-echo "3.4 ${RAND}"
+echo "3.0"
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
-echo "3.5 ${RANDOM_NAME_SUFFIX}"
+echo "3.5 $RANDOM_NAME_SUFFIX"
 
 echo "3.55 $BUILD_TYPE"
 
