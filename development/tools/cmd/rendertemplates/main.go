@@ -15,7 +15,9 @@ var (
 	configFilePath = flag.String("config", "", "Path of the config file")
 )
 
-type Config []TemplateConfig
+type Config struct {
+	Templates []TemplateConfig
+}
 
 type TemplateConfig struct {
 	From   string
@@ -45,7 +47,7 @@ func main() {
 		log.Fatalf("Cannot parse config yaml: %s\n", err)
 	}
 
-	for _, templateConfig := range *config {
+	for _, templateConfig := range config.Templates {
 		err := renderTemplate(path.Dir(*configFilePath), templateConfig)
 		if err != nil {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)

@@ -1,26 +1,36 @@
-- from: templates/component.yaml
-  render:
-    - to: ../jobs/kyma/components/api-controller/api-controller.yaml
-      values:
-        repository: github.com/kyma-project/kyma
-        path: components/api-controller
-        preset: build
-        master:
-          buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-        releases:
-          - name: '1.4'
-            buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-          - name: '1.3'
-            buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-          - name: '1.2'
-            buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-    - to: ../jobs/console/core/core.yaml
-      values:
-        repository: github.com/kyma-project/console
-        path: core
-        preset: build-console
-        resources:
-          cpu: 1.5
-          memory: 2Gi
-        master:
-          buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
+go_releases: &go_releases
+  - name: '1.4'
+    buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+  - name: '1.3'
+    buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+  - name: '1.2'
+    buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+
+go_kyma_component: &go_kyma_component
+  repository: github.com/kyma-project/kyma
+  preset: build
+  master:
+    buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+  releases: *go_releases
+
+templates:
+  - from: templates/component.yaml
+    render:
+      - to: ../jobs/kyma/components/api-controller/api-controller.yaml
+        values:
+          <<: *go_kyma_component
+          path: components/api-controller
+      - to: ../jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
+        values:
+          <<: *go_kyma_component
+          path: components/apiserver-proxy
+      - to: ../jobs/console/core/core.yaml
+        values:
+          repository: github.com/kyma-project/console
+          path: core
+          preset: build-console
+          resources:
+            cpu: 1.5
+            memory: 2Gi
+          master:
+            buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
