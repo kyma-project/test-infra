@@ -24,6 +24,10 @@ templates:
         values:
           <<: *go_kyma_component
           path: components/apiserver-proxy
+      - to: ../jobs/kyma/tests/acceptance/acceptance.yaml
+        values:
+          <<: *go_kyma_component
+          path: tests/acceptance
       - to: ../jobs/console/core/core.yaml
         values:
           repository: github.com/kyma-project/console
