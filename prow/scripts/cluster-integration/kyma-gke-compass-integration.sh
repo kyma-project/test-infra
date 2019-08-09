@@ -33,7 +33,11 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 echo "3.0"
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+echo "3.1 try openssl"
+RANDOM_ID=$(openssl rand -hex 4)
+echo "${RANDOM_ID}"
+
+readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 echo "3.5 $RANDOM_NAME_SUFFIX"
 
