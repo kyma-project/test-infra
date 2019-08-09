@@ -34,9 +34,17 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 echo "3"
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+
+echo "3.5 $RANDOM_NAME_SUFFIX"
+
+echo "3.45 $BUILD_TYPE"
+
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gkecompint-pr"
+
+    echo "3.6 ${PULL_NUMBER}"
+
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gkecompint-rel"
