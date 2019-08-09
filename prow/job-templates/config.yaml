@@ -7,6 +7,15 @@ go_releases: &go_releases
   - name: '1.2'
     buildpack: *go_buildpack_v20181119
 
+kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
+kubebuilder_releases: &kubebuilder_releases
+  - name: '1.4'
+    buildpack: *kubebuilder_buildpack_v20190208
+  - name: '1.3'
+    buildpack: *kubebuilder_buildpack_v20190208
+  - name: '1.2'
+    buildpack: *kubebuilder_buildpack_v20190208
+
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 bootstrap_releases: &bootstrap_releases
   - name: '1.4'
@@ -25,6 +34,15 @@ go_kyma_component: &go_kyma_component
   master:
     buildpack: *go_buildpack_v20181119
   releases: *go_releases
+
+kubebuilder_kyma_component: &kubebuilder_kyma_component
+  <<: *kyma_component
+  master:
+    buildpack: *kubebuilder_buildpack_v20190208
+  releases: *kubebuilder_releases
+  resources:
+    memory: 2.5Gi
+    cpu: 2
 
 bootstrap_kyma_component: &bootstrap_kyma_component
   <<: *kyma_component
@@ -58,6 +76,10 @@ templates:
         values:
           <<: *bootstrap_kyma_component
           path: components/xip-patch
+      - to: ../jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml
+        values:
+          <<: *kubebuilder_kyma_component
+          path: components/asset-store-controller-manager
       - to: ../jobs/console/core/core.yaml
         values:
           repository: github.com/kyma-project/console
