@@ -33,11 +33,15 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 echo "3"
 
+RAND=$(cat /dev/urandom | tr -dc "a-z0-9" | fold -w 32 | head -n 1)
+
+echo "3.4 ${RAND}"
+
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
-echo "3.5 $RANDOM_NAME_SUFFIX"
+echo "3.5 ${RANDOM_NAME_SUFFIX}"
 
-echo "3.45 $BUILD_TYPE"
+echo "3.55 $BUILD_TYPE"
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
