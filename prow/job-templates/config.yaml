@@ -303,3 +303,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tools/alpine-net
+      - to: ../jobs/kyma/tools/load-test/load-test.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: tools/load-test
