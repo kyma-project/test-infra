@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const apiControllerTestsJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/integration/api-controller/api-controller-integration.yaml"
+const apiControllerTestsJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/integration/api-controller/api-controller.yaml"
 
 func TestApiControllerAcceptanceTestsReleasesNew(t *testing.T) {
 	// WHEN

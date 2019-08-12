@@ -13,7 +13,7 @@ func TestGatewayTestsReleases(t *testing.T) {
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/test-event-service.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/event-service.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-event-service", currentRelease), currentRelease)
@@ -31,7 +31,7 @@ func TestGatewayTestsReleases(t *testing.T) {
 
 func TestGatewayTestsJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/test-event-service.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/event-service.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-event-service", "master")
@@ -51,7 +51,7 @@ func TestGatewayTestsJobsPresubmit(t *testing.T) {
 
 func TestGatewayTestsJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/test-event-service.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/event-service.yaml")
 	// THEN
 	require.NoError(t, err)
 

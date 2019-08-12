@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const apiserverProxyTestNewJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-integration.yaml"
+const apiserverProxyTestNewJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy.yaml"
 
 func TestApiserverProxyTestReleases(t *testing.T) {
 	// WHEN
@@ -68,7 +68,7 @@ func TestApiserverProxyTestJobPostsubmit(t *testing.T) {
 	actualPost := kymaPost[0]
 	expName := "post-master-kyma-tests-integration-apiserver-proxy"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)

@@ -12,7 +12,7 @@ func TestConsoleBackendServiceTestJobReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/console-backend-service/console-backend-service-test.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/console-backend-service/console-backend-service.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-console-backend-service", currentRelease), currentRelease)
@@ -30,7 +30,7 @@ func TestConsoleBackendServiceTestJobReleases(t *testing.T) {
 
 func TestConsoleBackendServiceTestJobPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/console-backend-service/console-backend-service-test.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/console-backend-service/console-backend-service.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -55,7 +55,7 @@ func TestConsoleBackendServiceTestJobPresubmit(t *testing.T) {
 
 func TestConsoleBackendServiceTestJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/console-backend-service/console-backend-service-test.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/console-backend-service/console-backend-service.yaml")
 	// THEN
 	require.NoError(t, err)
 

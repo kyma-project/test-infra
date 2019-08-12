@@ -73,6 +73,13 @@ func renderTemplate(basePath string, templateConfig TemplateConfig) error {
 
 func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig RenderConfig) error {
 	relativeDestPath := path.Join(basePath, renderConfig.To)
+
+	destDir := path.Dir(relativeDestPath)
+	err := os.MkdirAll(destDir, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	destFile, err := os.Create(relativeDestPath)
 	if err != nil {
 		return err

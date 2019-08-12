@@ -13,7 +13,7 @@ func TestIntegrationClusterUsersReleases(t *testing.T) {
 
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-integration.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-cluster-users", currentRelease), currentRelease)
@@ -31,7 +31,7 @@ func TestIntegrationClusterUsersReleases(t *testing.T) {
 
 func TestIntegrationClusterUsersJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-cluster-users", "master")
@@ -52,7 +52,7 @@ func TestIntegrationClusterUsersJobsPresubmit(t *testing.T) {
 
 func TestIntegrationClusterUsersJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users.yaml")
 	// THEN
 	require.NoError(t, err)
 

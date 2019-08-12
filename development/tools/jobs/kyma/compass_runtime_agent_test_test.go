@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const runtimeAgentTestJobPath = "./../../../../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-test.yaml"
+const runtimeAgentTestJobPath = "./../../../../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent.yaml"
 
 func TestRuntimeAgentTestJobReleases(t *testing.T) {
 	// WHEN
@@ -63,7 +63,7 @@ func TestRuntimeAgentTestJobPostsubmit(t *testing.T) {
 
 	expName := "post-master-kyma-tests-compass-runtime-agent"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
