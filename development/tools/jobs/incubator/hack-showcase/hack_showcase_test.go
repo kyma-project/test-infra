@@ -63,4 +63,5 @@ func TestHackShowcaseJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase"}, actualPost.Spec.Containers[0].Args)
 
+
 }
