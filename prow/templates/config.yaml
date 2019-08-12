@@ -53,6 +53,20 @@ templates:
   - from: templates/kyma-release-candidate.yaml
     render:
       - to: ../jobs/kyma/kyma-release-candidate.yaml
+  - from: templates/prow-config.yaml
+    render:
+      - to: ../config.yaml
+        values:
+          contexts:
+            - name: kyma-integration
+            - name: kyma-gke-integration
+            - name: kyma-gke-upgrade
+            - name: kyma-gke-central-connector
+            - name: kyma-artifacts
+            - name: kyma-installer
+            - name: kyma-gke-minio-gateway
+            - name: kyma-gke-minio-gateway-migration
+              since: '1.3'
   - from: templates/component.yaml
     render:
       - to: ../jobs/kyma/components/api-controller/api-controller.yaml

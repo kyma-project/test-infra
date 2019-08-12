@@ -16,6 +16,7 @@ var (
 	configFilePath = flag.String("config", "", "Path of the config file")
 	additionalFuncs = map[string]interface{}{
 		"matchingReleases": matchingReleases,
+		"releaseMatches": releaseMatches,
 	}
 )
 
@@ -107,14 +108,20 @@ func loadTemplate(basePath, templatePath string) (*template.Template, error) {
 func matchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for _, rel := range allReleases {
-		relVer := semver.MustParse(rel.(string))
-		if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
-			continue
+		if releaseMatches(rel, since, until) {
+			result = append(result, rel)
 		}
-		if until != nil && relVer.Compare(semver.MustParse(until.(string))) > 0 {
-			continue
-		}
-		result = append(result, rel)
 	}
 	return result
+}
+
+func releaseMatches(rel interface{}, since interface{}, until interface{}) bool {
+	relVer := semver.MustParse(rel.(string))
+	if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
+		return false
+	}
+	if until != nil && relVer.Compare(semver.MustParse(until.(string))) > 0 {
+		return false
+	}
+	return true
 }
