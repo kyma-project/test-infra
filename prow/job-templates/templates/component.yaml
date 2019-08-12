@@ -1,7 +1,7 @@
-{{- $repositoryName := index (.Values.repository | splitList "/") 2 }}
-  {{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until }}
+{{- $repositoryName := index (.Values.repository | splitList "/") 2 -}}
+{{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
 
-  {{- if or $releases (not .Values.until) }}
+{{- if or $releases (not .Values.until) -}}
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -71,7 +71,8 @@ presubmits: # runs on PRs
       preset-{{ $.Values.preset }}-release: "true"
 {{- end -}}
 {{- end }}
-{{ if not .Values.until }}
+
+{{ if not .Values.until -}}
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
@@ -92,5 +93,5 @@ postsubmits:
       labels:
         <<: *job_labels_template
         preset-{{ .Values.preset }}-master: "true"
-{{- end }}
+{{- end -}}
 {{- end -}}
