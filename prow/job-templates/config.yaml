@@ -47,6 +47,9 @@ templates:
   - from: templates/kyma-installer.yaml
     render:
       - to: ../jobs/kyma/kyma-installer.yaml
+  - from: templates/kyma-github-release.yaml
+    render:
+      - to: ../jobs/kyma/kyma-github-release.yaml
   - from: templates/component.yaml
     render:
       - to: ../jobs/kyma/components/api-controller/api-controller.yaml
