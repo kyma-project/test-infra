@@ -44,6 +44,9 @@ templates:
   - from: templates/kyma-artifacts.yaml
     render:
       - to: ../jobs/kyma/kyma-artifacts.yaml
+  - from: templates/kyma-installer.yaml
+    render:
+      - to: ../jobs/kyma/kyma-installer.yaml
   - from: templates/component.yaml
     render:
       - to: ../jobs/kyma/components/api-controller/api-controller.yaml
