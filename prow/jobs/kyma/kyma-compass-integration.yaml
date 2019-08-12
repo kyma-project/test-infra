@@ -1,6 +1,6 @@
 ---
 test_infra_ref: &test_infra_ref
-  org: franpog859
+  org: kyma-project
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
@@ -60,7 +60,7 @@ presubmits: # runs on PRs
       <<: *gke_integration_job_labels_template
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: 1335-Change-script
+        base_ref: master
 
 postsubmits:
   kyma-project/kyma:
@@ -94,4 +94,4 @@ postsubmits:
       <<: *gke_integration_job_labels_template
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: 1335-Change-script
+        base_ref: master
