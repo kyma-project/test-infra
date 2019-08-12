@@ -1,6 +1,7 @@
 {{- $repositoryName := index (.Values.repository | splitList "/") 2 -}}
 {{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
 {{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
+{{- define "repoNoHost" -}}{{ replace "github.com/" "" . }}{{- end -}}
 
 {{- if or $releasable (not .Values.until) -}}
 test_infra_ref: &test_infra_ref
@@ -29,7 +30,7 @@ container_template: &container_template
       cpu: {{ .Values.resources.cpu | default 0.8 }}
 
 presubmits: # runs on PRs
-  {{ .Values.repository | replace "github.com/" "" }}:
+  {{ template "repoNoHost" .Values.repository }}:
 {{- if not .Values.until }}
     - name: pre-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       branches:
@@ -75,7 +76,7 @@ presubmits: # runs on PRs
 
 {{ if not .Values.until -}}
 postsubmits:
-  {{ .Values.repository | replace "github.com/" "" }}:
+  {{ template "repoNoHost" .Values.repository }}:
     - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       branches:
         - ^master$
