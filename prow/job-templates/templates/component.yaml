@@ -1,7 +1,8 @@
 {{- $repositoryName := index (.Values.repository | splitList "/") 2 -}}
 {{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
+{{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
 
-{{- if or $releases (not .Values.until) -}}
+{{- if or $releasable (not .Values.until) -}}
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -49,7 +50,7 @@ presubmits: # runs on PRs
       <<: *job_labels_template
       preset-build-pr: "true"
 {{- end }}
-{{- if $releases -}}
+{{- if $releasable -}}
 {{- range $releases }}
   - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
     branches:

@@ -43,60 +43,6 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-  - name: pre-rel14-console-core
-    branches:
-      - release-1.4
-    <<: *job_template
-    path_alias: github.com/kyma-project/console
-    always_run: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.4
-    spec:
-      containers:
-        - <<: *container_template
-          image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
-          args:
-            - "/home/prow/go/src/github.com/kyma-project/console/core"
-    labels:
-      <<: *job_labels_template
-      preset-build-console-release: "true"
-  - name: pre-rel13-console-core
-    branches:
-      - release-1.3
-    <<: *job_template
-    path_alias: github.com/kyma-project/console
-    always_run: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.3
-    spec:
-      containers:
-        - <<: *container_template
-          image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
-          args:
-            - "/home/prow/go/src/github.com/kyma-project/console/core"
-    labels:
-      <<: *job_labels_template
-      preset-build-console-release: "true"
-  - name: pre-rel12-console-core
-    branches:
-      - release-1.2
-    <<: *job_template
-    path_alias: github.com/kyma-project/console
-    always_run: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.2
-    spec:
-      containers:
-        - <<: *container_template
-          image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
-          args:
-            - "/home/prow/go/src/github.com/kyma-project/console/core"
-    labels:
-      <<: *job_labels_template
-      preset-build-console-release: "true"
 
 postsubmits:
   kyma-project/console:

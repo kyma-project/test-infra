@@ -288,6 +288,7 @@ templates:
           repository: github.com/kyma-project/console
           path: core
           preset: build-console
+          noRelease: yes
           resources:
             cpu: 1.5
             memory: 2Gi
