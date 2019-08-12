@@ -19,6 +19,7 @@ func TestHackShowcaseJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
+	assert.Equal(t, 1, 1)
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-hack-showcase"
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -62,6 +63,5 @@ func TestHackShowcaseJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "^hack-showcase/", actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase"}, actualPost.Spec.Containers[0].Args)
-
 
 }
