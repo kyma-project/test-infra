@@ -63,7 +63,7 @@ func TestRuntimeAgentJobPostsubmit(t *testing.T) {
 
 	expName := "post-master-kyma-components-compass-runtime-agent"
 	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"master"}, actualPost.Branches)
+	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)

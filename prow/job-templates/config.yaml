@@ -1,11 +1,29 @@
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-go_releases: &go_releases
+go_releases_v20181119: &go_releases_v20181119
   - name: '1.4'
     buildpack: *go_buildpack_v20181119
   - name: '1.3'
     buildpack: *go_buildpack_v20181119
   - name: '1.2'
     buildpack: *go_buildpack_v20181119
+
+go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+go_releases_1_11: &go_releases_1_11
+  - name: '1.4'
+    buildpack: *go_buildpack_1_11
+  - name: '1.3'
+    buildpack: *go_buildpack_1_11
+  - name: '1.2'
+    buildpack: *go_buildpack_1_11
+    
+go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
+go_releases_1_12: &go_releases_1_12
+  - name: '1.4'
+    buildpack: *go_buildpack_1_12
+  - name: '1.3'
+    buildpack: *go_buildpack_1_12
+  - name: '1.2'
+    buildpack: *go_buildpack_1_12
 
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
 kubebuilder_releases: &kubebuilder_releases
@@ -29,11 +47,23 @@ kyma_component: &kyma_component
   repository: github.com/kyma-project/kyma
   preset: build
 
-go_kyma_component: &go_kyma_component
+go_kyma_component_v20181119: &go_kyma_component_v20181119
   <<: *kyma_component
   master:
     buildpack: *go_buildpack_v20181119
-  releases: *go_releases
+  releases: *go_releases_v20181119
+
+go_kyma_component_1_11: &go_kyma_component_1_11
+  <<: *kyma_component
+  master:
+    buildpack: *go_buildpack_1_11
+  releases: *go_releases_1_11
+  
+go_kyma_component_1_12: &go_kyma_component_1_12
+  <<: *kyma_component
+  master:
+    buildpack: *go_buildpack_1_12
+  releases: *go_releases_1_12
 
 kubebuilder_kyma_component: &kubebuilder_kyma_component
   <<: *kyma_component
@@ -55,16 +85,133 @@ templates:
     render:
       - to: ../jobs/kyma/components/api-controller/api-controller.yaml
         values:
-          <<: *go_kyma_component
+          <<: *go_kyma_component_v20181119
           path: components/api-controller
       - to: ../jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
         values:
-          <<: *go_kyma_component
+          <<: *go_kyma_component_v20181119
           path: components/apiserver-proxy
       - to: ../jobs/kyma/tests/acceptance/acceptance.yaml
         values:
-          <<: *go_kyma_component
+          <<: *go_kyma_component_v20181119
           path: tests/acceptance
+      - to: ../jobs/kyma/components/application-broker/application-broker.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/application-broker
+      - to: ../jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/application-connectivity-certs-setup-job
+      - to: ../jobs/kyma/components/application-connectivity-validator/application-connectivity-validator.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/application-connectivity-validator
+      - to: ../jobs/kyma/components/application-gateway/application-gateway.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/application-gateway
+      - to: ../jobs/kyma/components/application-registry/application-registry.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/application-registry
+      - to: ../jobs/kyma/components/asset-metadata-service/asset-metadata-service.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/asset-metadata-service
+      - to: ../jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/asset-store-controller-manager
+      - to: ../jobs/kyma/components/asset-upload-service/asset-upload-service.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/asset-upload-service
+      - to: ../jobs/kyma/components/cms-controller-manager/cms-controller-manager.yaml
+        values:
+          <<: *kubebuilder_kyma_component
+          path: components/cms-controller-manager
+      - to: ../jobs/kyma/components/cms-services/cms-services.yaml
+        values:
+          <<: *go_kyma_component_1_12
+          path: components/cms-services
+      - to: ../jobs/kyma/components/compass-runtime-agent/compass-runtime-agent.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/compass-runtime-agent
+      - to: ../jobs/kyma/components/connection-token-handler/connection-token-handler.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/connection-token-handler
+      - to: ../jobs/kyma/components/connectivity-certs-controller/connectivity-certs-controller.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/connectivity-certs-controller
+      - to: ../jobs/kyma/components/connector-service/connector-service.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/connector-service
+      - to: ../jobs/kyma/components/console-backend-service/console-backend-service.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/console-backend-service
+      - to: ../jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml
+        values:
+          <<: *bootstrap_kyma_component
+          path: components/dex-static-user-configurer
+      - to: ../jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/etcd-tls-setup-job
+      - to: ../jobs/kyma/components/event-bus/event-bus.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/event-bus
+      - to: ../jobs/kyma/components/event-service/event-service.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/event-service
+      - to: ../jobs/kyma/components/helm-broker/helm-broker.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/helm-broker
+      - to: ../jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/iam-kubeconfig-service
+      - to: ../jobs/kyma/components/istio-kyma-patch/istio-kyma-patch.yaml
+        values:
+          <<: *bootstrap_kyma_component
+          path: components/istio-kyma-patch
+      - to: ../jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/k8s-dashboard-proxy
+      - to: ../jobs/kyma/components/knative-function-controller/knative-function-controller.yaml
+        values:
+          <<: *kubebuilder_kyma_component
+          path: components/knative-function-controller
+      - to: ../jobs/kyma/components/kubeless-images/kubeless-images.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/kubeless-images
+      - to: ../jobs/kyma/components/kyma-operator/kyma-operator.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/kyma-operator
+      - to: ../jobs/kyma/components/namespace-controller/namespace-controller.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/namespace-controller
+      - to: ../jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/service-binding-usage-controller
+      - to: ../jobs/kyma/components/xip-patch/xip-patch.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/xip-patch
+
       - to: ../jobs/kyma/tests/integration/cluster-users/cluster-users-integration.yaml
         values:
           <<: *bootstrap_kyma_component
