@@ -2,13 +2,13 @@ package main
 
 import (
 	"flag"
+	"github.com/Masterminds/sprig"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"text/template"
-	"github.com/Masterminds/sprig"
 )
 
 var (
@@ -17,6 +17,7 @@ var (
 
 type Config struct {
 	Templates []TemplateConfig
+	Global    map[string]interface{}
 }
 
 type TemplateConfig struct {
@@ -48,21 +49,21 @@ func main() {
 	}
 
 	for _, templateConfig := range config.Templates {
-		err := renderTemplate(path.Dir(*configFilePath), templateConfig)
+		err := renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)
 		}
 	}
 }
 
-func renderTemplate(basePath string, templateConfig TemplateConfig) error {
+func renderTemplate(basePath string, templateConfig TemplateConfig, config *Config) error {
 	templateInstance, err := loadTemplate(basePath, templateConfig.From)
 	if err != nil {
 		return err
 	}
 
 	for _, render := range templateConfig.Render {
-		err := renderFileFromTemplate(basePath, templateInstance, render)
+		err := renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
 			return err
 		}
@@ -71,7 +72,7 @@ func renderTemplate(basePath string, templateConfig TemplateConfig) error {
 	return nil
 }
 
-func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig RenderConfig) error {
+func renderFileFromTemplate(basePath string, templateInstance *template.Template, renderConfig RenderConfig, config *Config) error {
 	relativeDestPath := path.Join(basePath, renderConfig.To)
 
 	destDir := path.Dir(relativeDestPath)
@@ -85,7 +86,9 @@ func renderFileFromTemplate(basePath string, templateInstance *template.Template
 		return err
 	}
 
-	return templateInstance.Execute(destFile, renderConfig.Values)
+	values := map[string]interface{}{"Values": renderConfig.Values, "Global": config.Global}
+
+	return templateInstance.Execute(destFile, values)
 }
 
 func loadTemplate(basePath, templatePath string) (*template.Template, error) {

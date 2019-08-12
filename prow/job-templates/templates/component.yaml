@@ -1,4 +1,4 @@
-{{- $repositoryName := index (.repository | splitList "/") 2 }}
+{{- $repositoryName := index (.Values.repository | splitList "/") 2 }}
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -21,36 +21,36 @@ container_template: &container_template
     - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
   resources:
     requests:
-      memory: {{ .resources.memory | default "1.5Gi" }}
-      cpu: {{ .resources.cpu | default 0.8 }}
+      memory: {{ .Values.resources.memory | default "1.5Gi" }}
+      cpu: {{ .Values.resources.cpu | default 0.8 }}
 
 presubmits: # runs on PRs
-  {{ .repository | replace "github.com/" "" }}:
-  - name: pre-master-{{ $repositoryName }}-{{ .path | replace "/" "-" }}
+  {{ .Values.repository | replace "github.com/" "" }}:
+  - name: pre-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
     branches:
       - ^master$
     <<: *job_template
-    path_alias: {{ .repository }}
+    path_alias: {{ .Values.repository }}
     spec:
       containers:
         - <<: *container_template
-          image: {{ .master.buildpack }}
+          image: {{ .Values.master.buildpack }}
           args:
-            - "/home/prow/go/src/{{ .repository }}/{{ .path }}"
-    run_if_changed: "^{{ .path }}/"
+            - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
+    run_if_changed: "^{{ .Values.path }}/"
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-{{- if .releases -}}
-{{- range .releases }}
-  - name: pre-rel{{ .name | replace "." "" }}-{{ $repositoryName }}-{{ $.path | replace "/" "-" }}
+{{- if .Values.releases -}}
+{{- range .Values.releases }}
+  - name: pre-rel{{ .name | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
     branches:
       - release-{{ .name }}
     <<: *job_template
-    path_alias: {{ $.repository }}
+    path_alias: {{ $.Values.repository }}
     always_run: true
     extra_refs:
       - <<: *test_infra_ref
@@ -60,30 +60,30 @@ presubmits: # runs on PRs
         - <<: *container_template
           image: {{ .buildpack }}
           args:
-            - "/home/prow/go/src/{{ $.repository }}/{{ $.path }}"
+            - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
     labels:
       <<: *job_labels_template
-      preset-{{ $.preset }}-release: "true"
+      preset-{{ $.Values.preset }}-release: "true"
 {{- end -}}
 {{- end }}
 
 postsubmits:
-  {{ .repository | replace "github.com/" "" }}:
-    - name: post-master-{{ $repositoryName }}-{{ .path | replace "/" "-" }}
+  {{ .Values.repository | replace "github.com/" "" }}:
+    - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       branches:
         - ^master$
       <<: *job_template
-      path_alias: {{ .repository }}
+      path_alias: {{ .Values.repository }}
       spec:
         containers:
           - <<: *container_template
-            image: {{ .master.buildpack }}
+            image: {{ .Values.master.buildpack }}
             args:
-              - "/home/prow/go/src/{{ .repository }}/{{ .path }}"
-      run_if_changed: "^{{ .path }}/"
+              - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
+      run_if_changed: "^{{ .Values.path }}/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
       labels:
         <<: *job_labels_template
-        preset-{{ $.preset }}-master: "true"
+        preset-{{ .Values.preset }}-master: "true"
