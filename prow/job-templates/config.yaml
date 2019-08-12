@@ -38,9 +38,12 @@ go_kyma_component_v20181119: &go_kyma_component_v20181119
   buildpack: *go_buildpack_v20181119
 
 templates:
-  - from: templates/integration.yaml
+  - from: templates/kyma-integration.yaml
     render:
       - to: ../jobs/kyma/kyma-integration.yaml
+  - from: templates/kyma-artifacts.yaml
+    render:
+      - to: ../jobs/kyma/kyma-artifacts.yaml
   - from: templates/component.yaml
     render:
       - to: ../jobs/kyma/components/api-controller/api-controller.yaml
