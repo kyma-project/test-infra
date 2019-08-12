@@ -1,84 +1,41 @@
+global:
+  releases:
+    - '1.4'
+    - '1.3'
+    - '1.2'
+
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-go_releases_v20181119: &go_releases_v20181119
-  - name: '1.4'
-    buildpack: *go_buildpack_v20181119
-  - name: '1.3'
-    buildpack: *go_buildpack_v20181119
-  - name: '1.2'
-    buildpack: *go_buildpack_v20181119
-
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
-go_releases_1_11: &go_releases_1_11
-  - name: '1.4'
-    buildpack: *go_buildpack_1_11
-  - name: '1.3'
-    buildpack: *go_buildpack_1_11
-  - name: '1.2'
-    buildpack: *go_buildpack_1_11
-    
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
-go_releases_1_12: &go_releases_1_12
-  - name: '1.4'
-    buildpack: *go_buildpack_1_12
-  - name: '1.3'
-    buildpack: *go_buildpack_1_12
-  - name: '1.2'
-    buildpack: *go_buildpack_1_12
-
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
-kubebuilder_releases: &kubebuilder_releases
-  - name: '1.4'
-    buildpack: *kubebuilder_buildpack_v20190208
-  - name: '1.3'
-    buildpack: *kubebuilder_buildpack_v20190208
-  - name: '1.2'
-    buildpack: *kubebuilder_buildpack_v20190208
-
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-bootstrap_releases: &bootstrap_releases
-  - name: '1.4'
-    buildpack: *bootstrap_buildpack_v20181121
-  - name: '1.3'
-    buildpack: *bootstrap_buildpack_v20181121
-  - name: '1.2'
-    buildpack: *bootstrap_buildpack_v20181121
 
 kyma_component: &kyma_component
   repository: github.com/kyma-project/kyma
   preset: build
 
-go_kyma_component_v20181119: &go_kyma_component_v20181119
-  <<: *kyma_component
-  master:
-    buildpack: *go_buildpack_v20181119
-  releases: *go_releases_v20181119
-
 go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
-  master:
-    buildpack: *go_buildpack_1_11
-  releases: *go_releases_1_11
-  
+  buildpack: *go_buildpack_1_11
+
 go_kyma_component_1_12: &go_kyma_component_1_12
   <<: *kyma_component
-  master:
-    buildpack: *go_buildpack_1_12
-  releases: *go_releases_1_12
+  buildpack: *go_buildpack_1_12
 
 kubebuilder_kyma_component: &kubebuilder_kyma_component
   <<: *kyma_component
-  master:
-    buildpack: *kubebuilder_buildpack_v20190208
-  releases: *kubebuilder_releases
+  buildpack: *kubebuilder_buildpack_v20190208
   resources:
     memory: 2.5Gi
     cpu: 2
 
 bootstrap_kyma_component: &bootstrap_kyma_component
   <<: *kyma_component
-  master:
-    buildpack: *bootstrap_buildpack_v20181121
-  releases: *bootstrap_releases
+  buildpack: *bootstrap_buildpack_v20181121
+
+go_kyma_component_v20181119: &go_kyma_component_v20181119
+  <<: *kyma_component
+  buildpack: *go_buildpack_v20181119
 
 templates:
   - from: templates/component.yaml
@@ -295,34 +252,22 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/logging
-          releases:
-            - name: '1.4'
-              buildpack: *go_buildpack_v20181119
+          since: '1.4'
       - to: ../jobs/kyma/tests/logging/logging.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/logging
-          releases:
-            - name: '1.3'
-              buildpack: *go_buildpack_v20181119
-            - name: '1.2'
-              buildpack: *go_buildpack_v20181119
+          until: '1.3'
       - to: ../jobs/kyma/tests/integration/monitoring/monitoring.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/monitoring
-          releases:
-            - name: '1.4'
-              buildpack: *go_buildpack_v20181119
+          since: '1.4'
       - to: ../jobs/kyma/tests/monitoring/monitoring.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/monitoring
-          releases:
-            - name: '1.3'
-              buildpack: *go_buildpack_v20181119
-            - name: '1.2'
-              buildpack: *go_buildpack_v20181119
+          until: '1.3'
       - to: ../jobs/kyma/tests/integration/cluster-users/cluster-users.yaml
         values:
           <<: *bootstrap_kyma_component
@@ -346,5 +291,4 @@ templates:
           resources:
             cpu: 1.5
             memory: 2Gi
-          master:
-            buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
+          buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013

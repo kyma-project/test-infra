@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/Masterminds/semver"
 	"github.com/Masterminds/sprig"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -13,6 +14,9 @@ import (
 
 var (
 	configFilePath = flag.String("config", "", "Path of the config file")
+	additionalFuncs = map[string]interface{}{
+		"matchingReleases": matchingReleases,
+	}
 )
 
 type Config struct {
@@ -93,5 +97,24 @@ func renderFileFromTemplate(basePath string, templateInstance *template.Template
 
 func loadTemplate(basePath, templatePath string) (*template.Template, error) {
 	relativeTemplatePath := path.Join(basePath, templatePath)
-	return template.New(path.Base(templatePath)).Funcs(sprig.TxtFuncMap()).ParseFiles(relativeTemplatePath)
+	return template.
+		New(path.Base(templatePath)).
+		Funcs(sprig.TxtFuncMap()).
+		Funcs(additionalFuncs).
+		ParseFiles(relativeTemplatePath)
+}
+
+func matchingReleases(allReleases []interface{}, since interface{}, until interface{}) []interface{} {
+	result := make([]interface{}, 0)
+	for _, rel := range allReleases {
+		relVer := semver.MustParse(rel.(string))
+		if since != nil && relVer.Compare(semver.MustParse(since.(string))) < 0 {
+			continue
+		}
+		if until != nil && relVer.Compare(semver.MustParse(until.(string))) > 0 {
+			continue
+		}
+		result = append(result, rel)
+	}
+	return result
 }

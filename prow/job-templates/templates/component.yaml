@@ -1,4 +1,7 @@
 {{- $repositoryName := index (.Values.repository | splitList "/") 2 }}
+  {{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until }}
+
+  {{- if or $releases (not .Values.until) }}
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -26,6 +29,7 @@ container_template: &container_template
 
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
+{{- if not .Values.until }}
   - name: pre-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
     branches:
       - ^master$
@@ -34,7 +38,7 @@ presubmits: # runs on PRs
     spec:
       containers:
         - <<: *container_template
-          image: {{ .Values.master.buildpack }}
+          image: {{ .Values.buildpack }}
           args:
             - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
     run_if_changed: "^{{ .Values.path }}/"
@@ -44,21 +48,22 @@ presubmits: # runs on PRs
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-{{- if .Values.releases -}}
-{{- range .Values.releases }}
-  - name: pre-rel{{ .name | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+{{- end }}
+{{- if $releases -}}
+{{- range $releases }}
+  - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
     branches:
-      - release-{{ .name }}
+      - release-{{ . }}
     <<: *job_template
     path_alias: {{ $.Values.repository }}
     always_run: true
     extra_refs:
       - <<: *test_infra_ref
-        base_ref: release-{{ .name }}
+        base_ref: release-{{ . }}
     spec:
       containers:
         - <<: *container_template
-          image: {{ .buildpack }}
+          image: {{ $.Values.buildpack }}
           args:
             - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
     labels:
@@ -66,7 +71,7 @@ presubmits: # runs on PRs
       preset-{{ $.Values.preset }}-release: "true"
 {{- end -}}
 {{- end }}
-
+{{ if not .Values.until }}
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
@@ -77,7 +82,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: {{ .Values.master.buildpack }}
+            image: {{ .Values.buildpack }}
             args:
               - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
       run_if_changed: "^{{ .Values.path }}/"
@@ -87,3 +92,5 @@ postsubmits:
       labels:
         <<: *job_labels_template
         preset-{{ .Values.preset }}-master: "true"
+{{- end }}
+{{- end -}}
