@@ -24,6 +24,7 @@ func TestHackShowcaseJobPresubmit(t *testing.T) {
 	expName := "pre-master-hack-showcase"
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
+	assert.Equal(t, "true", actualPresubmit.AlwaysRun)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
@@ -52,7 +53,7 @@ func TestHackShowcaseJobPostsubmit(t *testing.T) {
 	expName := "post-master-hack-showcase"
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
-
+	assert.Equal(t, "true", actualPost.AlwaysRun)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/hack-showcase", actualPost.PathAlias)
