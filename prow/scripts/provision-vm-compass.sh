@@ -109,7 +109,7 @@ done;
 shout "Installing Kyma CLI"
 
 cd "${KYMA_PROJECT_DIR}/cli"
-make resolve build
+make resolve build-linux
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
