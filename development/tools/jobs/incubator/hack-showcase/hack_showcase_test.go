@@ -19,7 +19,6 @@ func TestHackShowcaseJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-hack-showcase"
 	assert.Equal(t, expName, actualPresubmit.Name)
