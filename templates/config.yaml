@@ -260,6 +260,10 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/console-backend-service
+      - to: ../prow/jobs/kyma/common/common.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: common
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus.yaml
         values:
           <<: *go_kyma_component_1_11
