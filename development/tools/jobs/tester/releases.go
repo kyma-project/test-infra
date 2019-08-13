@@ -18,5 +18,3 @@ func GetAllKymaReleases() []*SupportedRelease {
 		Release12,
 	}
 }
-
-

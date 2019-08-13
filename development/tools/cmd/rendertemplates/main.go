@@ -2,21 +2,22 @@ package main
 
 import (
 	"flag"
-	"github.com/Masterminds/semver"
-	"github.com/Masterminds/sprig"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"text/template"
+
+	"github.com/Masterminds/semver"
+	"github.com/Masterminds/sprig"
+	"gopkg.in/yaml.v2"
 )
 
 var (
-	configFilePath = flag.String("config", "", "Path of the config file")
+	configFilePath  = flag.String("config", "", "Path of the config file")
 	additionalFuncs = map[string]interface{}{
 		"matchingReleases": matchingReleases,
-		"releaseMatches": releaseMatches,
+		"releaseMatches":   releaseMatches,
 	}
 )
 

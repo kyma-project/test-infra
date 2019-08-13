@@ -1,10 +1,11 @@
 package tester
 
 import (
-	"github.com/Masterminds/semver"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/Masterminds/semver"
 
 	"k8s.io/test-infra/prow/kube"
 
