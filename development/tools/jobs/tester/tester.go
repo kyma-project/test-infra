@@ -196,7 +196,7 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 // FindPresubmitJobByName finds presubmit job by name from provided jobs list
 func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch) {
+		if job.Name == name {
 			return &job
 		}
 	}
@@ -217,7 +217,7 @@ func GetReleasePostSubmitJobName(moduleName string, release *SupportedRelease) s
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByName(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch) {
+		if job.Name == name {
 			return &job
 		}
 	}
@@ -293,6 +293,7 @@ func AssertThatExecGolangBuildpack(t *testing.T, job config.JobBase, img string,
 	assert.Len(t, job.Spec.Containers[0].Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh", job.Spec.Containers[0].Command[0])
 	assert.Equal(t, args, job.Spec.Containers[0].Args)
+	assert.True(t, *job.Spec.Containers[0].SecurityContext.Privileged)
 }
 
 // AssertThatSpecifiesResourceRequests checks if resources requests for memory and cpu are specified
@@ -300,7 +301,6 @@ func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
 	assert.Len(t, job.Spec.Containers, 1)
 	assert.False(t, job.Spec.Containers[0].Resources.Requests.Memory().IsZero())
 	assert.False(t, job.Spec.Containers[0].Resources.Requests.Cpu().IsZero())
-
 }
 
 // AssertThatContainerHasEnv checks if container has specified given environment variable
