@@ -19,7 +19,7 @@ func TestHackShowcaseJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
-	assert.Equal(t, 1, 1)
+	
 	actualPresubmit := kymaPresubmits[0]
 	expName := "pre-master-hack-showcase"
 	assert.Equal(t, expName, actualPresubmit.Name)
@@ -34,7 +34,7 @@ func TestHackShowcaseJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase/github-connector"}, actualPresubmit.Spec.Containers[0].Args)
 
 }
 
@@ -61,6 +61,6 @@ func TestHackShowcaseJobPostsubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase/github-connector"}, actualPost.Spec.Containers[0].Args)
 
 }
