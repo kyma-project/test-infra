@@ -9,7 +9,7 @@ import (
 )
 
 func TestBucReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller.yaml")

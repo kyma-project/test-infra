@@ -11,7 +11,7 @@ import (
 func TestApplicationConnectivityCertsSetupJobReleases(t *testing.T) {
 	// WHEN
 
-	for _, currentRelease := range tester.GetKymaReleaseBranchesSince(tester.Release13) {
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release13) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job.yaml")
 			// THEN

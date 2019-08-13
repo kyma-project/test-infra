@@ -47,7 +47,7 @@ func TestEtcdTlsSetupPostsubmit(t *testing.T) {
 
 func TestEtcdTlsSetupReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml")

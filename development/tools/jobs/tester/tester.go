@@ -131,11 +131,11 @@ type jobRunner interface {
 	RunsAgainstChanges([]string) bool
 }
 
-// GetKymaReleaseBranchesUntil filters all available releases earlier or the same as the given one
-func GetKymaReleaseBranchesUntil(lastRelease *SupportedRelease) []*SupportedRelease {
+// GetKymaReleasesUntil filters all available releases earlier or the same as the given one
+func GetKymaReleasesUntil(lastRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
-	for _, rel := range GetAllKymaReleaseBranches() {
+	for _, rel := range GetAllKymaReleases() {
 		if rel.Compare(lastRelease) <= 0 {
 			supportedReleases = append(supportedReleases, rel)
 		}
@@ -144,11 +144,11 @@ func GetKymaReleaseBranchesUntil(lastRelease *SupportedRelease) []*SupportedRele
 	return supportedReleases
 }
 
-// GetKymaReleaseBranchesSince filters all available releases later or the same as the given one
-func GetKymaReleaseBranchesSince(firstRelease *SupportedRelease) []*SupportedRelease {
+// GetKymaReleasesSince filters all available releases later or the same as the given one
+func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
-	for _, rel := range GetAllKymaReleaseBranches() {
+	for _, rel := range GetAllKymaReleases() {
 		if rel.Compare(firstRelease) >= 0 {
 			supportedReleases = append(supportedReleases, rel)
 		}

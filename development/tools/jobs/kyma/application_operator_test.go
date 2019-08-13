@@ -10,7 +10,7 @@ import (
 
 func TestApplicationOperatorReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/application-operator/application-operator.yaml")
 			// THEN

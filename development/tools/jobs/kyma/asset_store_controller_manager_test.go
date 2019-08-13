@@ -10,7 +10,7 @@ import (
 
 func TestAssetControllerReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml")
 			// THEN

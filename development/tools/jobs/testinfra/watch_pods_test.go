@@ -10,7 +10,7 @@ import (
 
 func TestWatchPodsReleases(t *testing.T) {
 
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")

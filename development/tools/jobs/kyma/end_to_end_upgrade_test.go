@@ -13,7 +13,7 @@ const e2eTestUpgradeJobPath = "./../../../../prow/jobs/kyma/tests/end-to-end/upg
 func TestEnd2EndUpgradeTestsJobsReleases(t *testing.T) {
 	// when
 
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig(e2eTestUpgradeJobPath)
 

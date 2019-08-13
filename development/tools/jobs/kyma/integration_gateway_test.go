@@ -9,7 +9,7 @@ import (
 )
 
 func TestIntegrationGatewayReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		if currentRelease == tester.Release14 {
 			continue
 		}

@@ -12,7 +12,7 @@ const apiControllerTestsJobConfigFilePath = "./../../../../prow/jobs/kyma/tests/
 
 func TestApiControllerAcceptanceTestsReleasesNew(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig(apiControllerTestsJobConfigFilePath)
 			// THEN

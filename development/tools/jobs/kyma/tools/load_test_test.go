@@ -45,7 +45,7 @@ func TestLoadTestPostsubmit(t *testing.T) {
 
 func TestLoadTestReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/load-test/load-test.yaml")
 			// THEN

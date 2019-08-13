@@ -9,7 +9,7 @@ import (
 )
 
 func TestGatewayTestsReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetKymaReleaseBranchesSince(tester.Release13) {
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release13) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/event-service/event-service.yaml")
 			// THEN

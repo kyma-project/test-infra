@@ -59,7 +59,7 @@ func TestMonitoringJobPostsubmit(t *testing.T) {
 
 func TestMonitoringTestSetupReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetKymaReleaseBranchesUntil(tester.Release13) {
+	for _, currentRelease := range tester.GetKymaReleasesUntil(tester.Release13) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/monitoring/monitoring.yaml")
 			// THEN
@@ -76,7 +76,7 @@ func TestMonitoringTestSetupReleases(t *testing.T) {
 		})
 	}
 	//WHEN
-	for _, currentRelease := range tester.GetKymaReleaseBranchesSince(tester.Release14) {
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release14) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/monitoring/monitoring.yaml")
 			// THEN

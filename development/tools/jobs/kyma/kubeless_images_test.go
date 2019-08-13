@@ -9,7 +9,7 @@ import (
 )
 
 func TestKubelessImagesNodeJSReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml")
 			// THEN

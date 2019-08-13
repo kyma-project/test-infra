@@ -9,7 +9,7 @@ import (
 )
 
 func TestK8SDashboardProxyReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml")
 			// THEN

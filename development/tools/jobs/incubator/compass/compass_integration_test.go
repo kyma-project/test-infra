@@ -13,7 +13,7 @@ const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/comp
 func TestCompassIntegrationVMJobsReleases(t *testing.T) {
 	// WHEN
 
-	for _, currentRelease := range tester.GetKymaReleaseBranchesSince(tester.Release13) {
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release13) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig(compassIntegrationTestJobPath)
 			// THEN

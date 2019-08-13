@@ -11,7 +11,7 @@ import (
 func TestIntegrationClusterUsersReleases(t *testing.T) {
 	// WHEN
 
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/cluster-users/cluster-users.yaml")
 			// THEN
