@@ -20,19 +20,19 @@ var (
 	}
 )
 
-// Config
+// Config represents configuration of all templates to render along with global values
 type Config struct {
 	Templates []TemplateConfig
 	Global    map[string]interface{}
 }
 
-// TemplateConfig
+// TemplateConfig specifies template to use and files to render
 type TemplateConfig struct {
 	From   string
 	Render []RenderConfig
 }
 
-// RenderConfig
+// RenderConfig specifies where to render template and values to use
 type RenderConfig struct {
 	To     string
 	Values map[string]interface{}
