@@ -20,16 +20,19 @@ var (
 	}
 )
 
+// Config
 type Config struct {
 	Templates []TemplateConfig
 	Global    map[string]interface{}
 }
 
+// TemplateConfig
 type TemplateConfig struct {
 	From   string
 	Render []RenderConfig
 }
 
+// RenderConfig
 type RenderConfig struct {
 	To     string
 	Values map[string]interface{}
