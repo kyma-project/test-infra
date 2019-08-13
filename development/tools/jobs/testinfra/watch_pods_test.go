@@ -11,12 +11,12 @@ import (
 func TestWatchPodsReleases(t *testing.T) {
 
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		t.Run(currentRelease, func(t *testing.T) {
+		t.Run(currentRelease.String(), func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], tester.GetReleaseJobName("test-infra-watch-pods", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], tester.GetReleaseJobName("test-infra-watch-pods", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)

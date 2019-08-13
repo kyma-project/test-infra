@@ -127,30 +127,8 @@ func mustParse(v string) *SupportedRelease {
 	return &parsed
 }
 
-// Release allows you to execute checks on given release
-type Release string
-
-// Matches checks if given releases contains the tested one.
-func (s Release) Matches(rel ...*SupportedRelease) bool {
-	parsed := mustParse(string(s))
-	return !contains(rel, parsed)
-}
-
 type jobRunner interface {
 	RunsAgainstChanges([]string) bool
-}
-
-// GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones
-func GetKymaReleaseBranchesBesides(absentInReleases []*SupportedRelease) []*SupportedRelease {
-	var supportedReleases []*SupportedRelease
-
-	for _, rel := range GetAllKymaReleaseBranches() {
-		if !contains(absentInReleases, rel) {
-			supportedReleases = append(supportedReleases, rel)
-		}
-	}
-
-	return supportedReleases
 }
 
 // GetKymaReleaseBranchesUntil filters all available releases earlier or the same as the given one
@@ -177,16 +155,6 @@ func GetKymaReleaseBranchesSince(firstRelease *SupportedRelease) []*SupportedRel
 	}
 
 	return supportedReleases
-}
-
-func contains(array []*SupportedRelease, str *SupportedRelease) bool {
-	for _, e := range array {
-		if str == e {
-			return true
-		}
-	}
-
-	return false
 }
 
 // ReadJobConfig reads job configuration from file

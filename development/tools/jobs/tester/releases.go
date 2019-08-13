@@ -1,9 +1,5 @@
 package tester
 
-import (
-	"github.com/Masterminds/semver"
-)
-
 // List of currently supported releases
 // Please always make it up to date
 // When we removing support for given version, there remove
