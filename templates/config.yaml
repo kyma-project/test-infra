@@ -9,13 +9,26 @@ go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpac
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+bootstrap_buildpack_v20181204: &bootstrap_buildpack_v20181204 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
 
 kyma_component: &kyma_component
   repository: github.com/kyma-project/kyma
-  preset: build
+  presets:
+    build: build
+    pushRepository: repository
+
+compass_component: &compass_component
+  repository: github.com/kyma-incubator/compass
+  presets:
+    build: build
+    pushRepository: repository-incubator
 
 go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
+  buildpack: *go_buildpack_1_11
+
+go_compass_component_1_11: &go_compass_component_1_11
+  <<: *compass_component
   buildpack: *go_buildpack_1_11
 
 go_kyma_component_1_12: &go_kyma_component_1_12
@@ -32,6 +45,10 @@ kubebuilder_kyma_component: &kubebuilder_kyma_component
 bootstrap_kyma_component: &bootstrap_kyma_component
   <<: *kyma_component
   buildpack: *bootstrap_buildpack_v20181121
+
+bootstrap_compass_component: &bootstrap_compass_component
+  <<: *compass_component
+  buildpack: *bootstrap_buildpack_v20181204
 
 go_kyma_component_v20181119: &go_kyma_component_v20181119
   <<: *kyma_component
@@ -56,6 +73,9 @@ templates:
   - from: templates/kyma-release-candidate.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
+  - from: templates/compass-integration.yaml
+    render:
+      - to: ../prow/jobs/incubator/compass/compass-integration.yaml
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
@@ -315,11 +335,49 @@ templates:
         values:
           <<: *kubebuilder_kyma_component
           path: components/asset-store-controller-manager
+      - to: ../prow/jobs/incubator/compass/components/connector/connector.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/connector
+          skipSlackReport: true
+          since: '1.3'
+      - to: ../prow/jobs/incubator/compass/components/director/director.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/director
+          skipSlackReport: true
+          since: '1.3'
+      - to: ../prow/jobs/incubator/compass/components/gateway/gateway.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/gateway
+          skipSlackReport: true
+          since: '1.3'
+      - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/healthchecker
+          skipSlackReport: true
+          since: '1.3'
+      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator.yaml
+        values:
+          <<: *bootstrap_compass_component
+          path: components/schema-migrator
+          skipSlackReport: true
+          since: '1.3'
+      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: tests/end-to-end
+          skipSlackReport: true
+          since: '1.3'
       - to: ../prow/jobs/console/core/core.yaml
         values:
           repository: github.com/kyma-project/console
           path: core
-          preset: build-console
+          presets:
+            build: build-console
+            pushRepository: repository
           noRelease: yes
           resources:
             cpu: 1.5
@@ -329,7 +387,9 @@ templates:
         values:
           repository: github.com/kyma-project/test-infra
           path: watch-pods
-          preset: build
+          presets:
+            build: build
+            pushRepository: repository
           buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net.yaml
         values:
