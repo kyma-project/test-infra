@@ -25,7 +25,7 @@ container_template: &container_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-components-kubeless-images
+    - name: pre-master-kyma-components-kubeless-images-nodejs
       branches:
         - ^master$
       <<: *job_template
@@ -35,15 +35,15 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images"
-      run_if_changed: "^components/kubeless-images/"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"
+      run_if_changed: "^components/kubeless-images/nodejs/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel14-kyma-components-kubeless-images
+    - name: pre-rel14-kyma-components-kubeless-images-nodejs
       branches:
         - release-1.4
       <<: *job_template
@@ -57,11 +57,11 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel13-kyma-components-kubeless-images
+    - name: pre-rel13-kyma-components-kubeless-images-nodejs
       branches:
         - release-1.3
       <<: *job_template
@@ -75,11 +75,11 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel12-kyma-components-kubeless-images
+    - name: pre-rel12-kyma-components-kubeless-images-nodejs
       branches:
         - release-1.2
       <<: *job_template
@@ -93,14 +93,14 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-components-kubeless-images
+    - name: post-master-kyma-components-kubeless-images-nodejs
       branches:
         - ^master$
       <<: *job_template
@@ -110,8 +110,8 @@ postsubmits:
           - <<: *container_template
             image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images"
-      run_if_changed: "^components/kubeless-images/"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"
+      run_if_changed: "^components/kubeless-images/nodejs/"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master

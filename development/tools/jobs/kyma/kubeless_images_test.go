@@ -11,7 +11,7 @@ import (
 func TestKubelessImagesNodeJSReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images-nodejs.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-kubeless-images-nodejs", currentRelease), currentRelease.Branch())
@@ -29,7 +29,7 @@ func TestKubelessImagesNodeJSReleases(t *testing.T) {
 
 func TestKubelessImagesNodeJSJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images-nodejs.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-components-kubeless-images-nodejs", "master")
@@ -41,7 +41,7 @@ func TestKubelessImagesNodeJSJobsPresubmit(t *testing.T) {
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "^components/kubeless-images/nodejs", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^components/kubeless-images/nodejs/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"}, actualPresubmit.Spec.Containers[0].Args)
@@ -49,7 +49,7 @@ func TestKubelessImagesNodeJSJobsPresubmit(t *testing.T) {
 
 func TestKubelessImagesNodeJSJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images/kubeless-images-nodejs.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -68,7 +68,7 @@ func TestKubelessImagesNodeJSJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/kyma", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "^components/kubeless-images/nodejs", actualPost.RunIfChanged)
+	assert.Equal(t, "^components/kubeless-images/nodejs/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/components/kubeless-images/nodejs"}, actualPost.Spec.Containers[0].Args)

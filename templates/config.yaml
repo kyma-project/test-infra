@@ -205,10 +205,10 @@ templates:
         values:
           <<: *kubebuilder_kyma_component
           path: components/knative-function-controller
-      - to: ../prow/jobs/kyma/components/kubeless-images/kubeless-images.yaml
+      - to: ../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml
         values:
           <<: *go_kyma_component_v20181119
-          path: components/kubeless-images
+          path: components/kubeless-images/nodejs
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
           <<: *go_kyma_component_v20181119
