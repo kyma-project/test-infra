@@ -184,10 +184,11 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/event-service
-      - to: ../prow/jobs/kyma/components/helm-broker/helm-broker.yaml
+      - to: ../prow/jobs/kyma/components/helm-broker/helm-broker-deprecated.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *kubebuilder_kyma_component
           path: components/helm-broker
+          until: '1.4'
       - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service.yaml
         values:
           <<: *go_kyma_component_v20181119
