@@ -108,6 +108,10 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: components/application-broker
+      - to: ../prow/jobs/kyma/components/application-operator/application-operator.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: components/application-operator
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job.yaml
         values:
           <<: *go_kyma_component_v20181119
