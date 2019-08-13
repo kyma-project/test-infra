@@ -1,6 +1,7 @@
 {{- $repositoryName := index (.Values.repository | splitList "/") 2 -}}
 {{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
 {{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
+{{- $watch := .Values.watch | default (print "^" .Values.path "/") }}
 {{- define "repoNoHost" -}}{{ replace "github.com/" "" . }}{{- end -}}
 
 {{- if or $releasable (not .Values.until) -}}
@@ -43,7 +44,7 @@ presubmits: # runs on PRs
             image: {{ .Values.buildpack }}
             args:
               - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
-      run_if_changed: "^{{ .Values.path }}/"
+      run_if_changed: "{{ $watch }}"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -88,7 +89,7 @@ postsubmits:
             image: {{ .Values.buildpack }}
             args:
               - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
-      run_if_changed: "^{{ .Values.path }}/"
+      run_if_changed: "{{ $watch }}"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master

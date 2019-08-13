@@ -58,8 +58,9 @@ func TestEndToEndBackupRstoreTestJobsPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-tests-end-to-end-backup-restore-test", "master")
-	expName := "post-master-tests-end-to-end-backup-restore-test"
+	expName := "post-master-kyma-tests-end-to-end-backup-restore-test"
+	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], expName, "master")
+	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	require.NotNil(t, actualPost)
 
