@@ -17,7 +17,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/hack-showcase"
+          - "/home/prow/go/src/github.com/kyma-incubator/hack-showcase/github-connector"
         resources:
 
           requests:
