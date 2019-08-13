@@ -1,4 +1,4 @@
-job_template: &job_template
+base_job_template: &base_job_template
   skip_report: false
   run_if_changed: "^hack-showcase/github-connector"
   decorate: true
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
     - name: pre-master-hack-showcase
       branches:
         - ^master$
-      <<: *job_template
+      <<: *base_job_template
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -44,7 +44,7 @@ postsubmits:
     - name: post-master-hack-showcase
       branches:
         - ^master$
-      <<: *job_template
+      <<: *base_job_template
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
