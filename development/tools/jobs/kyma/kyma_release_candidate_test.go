@@ -11,18 +11,18 @@ import (
 
 func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		t.Run(currentRelease, func(t *testing.T) {
+		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-release-candidate.yaml")
 			require.NoError(t, err)
 
-			actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], tester.GetReleasePostSubmitJobName("kyma-release-candidate", currentRelease), currentRelease)
+			actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], tester.GetReleasePostSubmitJobName("kyma-release-candidate", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualJob)
 
 			// then
 			assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 			assert.True(t, actualJob.Decorate)
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, currentRelease.Branch())
 			assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 			assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"}, actualJob.Spec.Containers[0].Args)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetDindEnabled, "preset-kyma-artifacts-bucket")
