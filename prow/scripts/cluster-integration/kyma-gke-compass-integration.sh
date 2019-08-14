@@ -213,9 +213,26 @@ function installKyma() {
     --data "tests.enabled=false" \
     --label "component=application-operator"
 
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-connector-overrides" \
+    --data "tests.application_connector_tests.enabled=false" \
+    --label "component=application-connector"
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
     --data "tests.enabled=false" \
     --label "component=application-registry"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "apiserver-proxy-overrides" \
+    --data "tests.enabled=false" \
+    --label "component=apiserver-proxy"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "console-backend-service-overrides" \
+    --data "tests.enabled=false" \
+    --label "component=console-backend-service"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-acceptance-overrides" \
+    --data "test.acceptance.core.enabled=false" \
+    --data "test.acceptance.external_solution.enabled=false" \
+    --label "component=core"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
