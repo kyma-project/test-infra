@@ -221,10 +221,6 @@ function installKyma() {
     --data "tests.enabled=false" \
     --label "component=application-registry"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "apiserver-proxy-overrides" \
-    --data "tests.enabled=false" \
-    --label "component=apiserver-proxy"
-
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "console-backend-service-overrides" \
     --data "tests.enabled=false" \
     --label "component=console-backend-service"
@@ -233,6 +229,10 @@ function installKyma() {
     --data "test.acceptance.core.enabled=false" \
     --data "test.acceptance.external_solution.enabled=false" \
     --label "component=core"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-console-overrides" \
+    --data "test.acceptance.enabled=false" \
+    --label "component=console"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
