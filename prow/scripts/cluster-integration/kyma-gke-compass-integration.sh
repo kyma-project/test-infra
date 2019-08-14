@@ -209,6 +209,14 @@ function installKyma() {
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-operator-overrides" \
+    --data "tests.enabled=false" \
+    --label "component=application-operator"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+    --data "tests.enabled=false" \
+    --label "component=application-registry"
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
