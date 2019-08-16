@@ -211,11 +211,11 @@ function installKyma() {
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
     --data "application-operator.tests.enabled=false" \
-    --data "application-connector.tests.application_connector_tests.enabled=false" \
+    --data "tests.application_connector_tests.enabled=false" \
     --data "application-registry.tests.enabled=false" \
     --data "console-backend-service.tests.enabled=false" \
-    --data "core.test.acceptance.core.enabled=false" \
-    --data "core.test.acceptance.external_solution.enabled=false" \
+    --data "test.acceptance.core.enabled=false" \
+    --data "test.acceptance.external_solution.enabled=false" \
     --data "console.test.acceptance.enabled=false"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
