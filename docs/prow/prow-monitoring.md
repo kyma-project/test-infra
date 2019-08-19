@@ -17,7 +17,7 @@ Follow these steps:
 
 2. Replace `{SLACK_URL}` in [values.yaml](./../../prow/cluster/resources/monitoring/values.yaml) with the Weebhook URL and `{SLACK_CHANNEL}` with the channel name.
 
-3. Replace `{PROW_SLACK_URL}` with prow channel Weebhook URL and `{PROW_SLACK_CHANNEL}` with the channel name in [prow-slack-config.yaml](./../../prow/cluster/resources/monitoring/prow-slack-config.yaml).
+3. Replace `{PROW_SLACK_URL}` with prow channel Weebhook URL and `{PROW_SLACK_CHANNEL}` with the channel name in [alertmanager-config.yaml](../../prow/cluster/resources/monitoring/alertmanager-config.yaml).
 
 ## Provision a monitoring chart
 

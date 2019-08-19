@@ -1,0 +1,24 @@
+prometheus-operator:
+  prometheus:
+    prometheusSpec:
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 50Gi
+          selector: {}
+    additionalServiceMonitors:
+      - name: prow-metrics
+        selector:
+          matchLabels:
+            app: pushgateway
+        namespaceSelector:
+          matchNames:
+            - default
+        endpoints:
+          - interval: 10s
+            scheme: http
+            targetPort: http
+            path: /metrics

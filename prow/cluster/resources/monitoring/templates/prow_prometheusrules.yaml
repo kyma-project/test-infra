@@ -1,0 +1,161 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+    creationTimestamp: null
+    labels:
+      app: prometheus-operator
+      chart: monitoring
+      role: alert-rules
+      #Thie lable is requried as it's define which prometheus server should include this rules.
+      prometheus: monitoring-prometheus-oper-prometheus
+      release: monitoring
+    name: monitoring-prometheus-oper-prow-custom-rules
+spec:
+    groups:
+        - name: prow_metrics
+          rules:
+              #Service alerts
+              #DECK
+              - alert: ProwDeckServiceNotPresent
+                expr: kube_service_info{service="deck", namespace="default"} < 1
+                for: 30s
+                labels:
+                    prowservice: deck
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: Deck service is not present on Prow k8s cluster.
+              #TIDE
+              - alert: ProwTideServiceNotPresent
+                expr: kube_service_info{service="tide", namespace="default"} < 1
+                for: 30s
+                labels:
+                    prowservice: tide
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: Tide service is not present on Prow k8s cluster.
+              #GCSWEB
+              - alert: ProwGCSWebServiceNotPresent
+                expr: kube_service_info{service="gcsweb", namespace="default"} < 1
+                for: 30s
+                labels:
+                    prowservice: gcsweb
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: GCSWeb service is not present on Prow k8s cluster.
+              #GHPROXY
+              - alert: ProwGHProxyServiceNotPresent
+                expr: kube_service_info{service="ghproxy", namespace="default"} < 1
+                for: 30s
+                labels:
+                    prowservice: ghproxy
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: GHproxy service is not present on Prow k8s cluster.
+              #HOOK
+              - alert: ProwHookServiceNotPresent
+                expr: kube_service_info{service="hook", namespace="default"} < 1
+                for: 30s
+                labels:
+                    prowservice: hook
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: Hook service is not present on Prow k8s cluster.
+              #PUSHGATEWAY
+              - alert: ProwPushgatewayServiceNotPresent
+                expr: kube_service_info{service="pushgateway", namespace="default"} < 1
+                for: 30s
+                labels:
+                    prowservice: pushgateway
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: Pushgateway service is not present on Prow k8s cluster.
+              #INGRESS-NGINX
+              - alert: ProwIngress-nginxServiceNotPresent
+                expr: kube_service_info{service="ingress-nginx", namespace="ingress-nginx"} < 1
+                for: 30s
+                labels:
+                    prowservice: ingress-nginx
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: Service not present.
+                    description: Ingress-nginx service is not present on Prow k8s cluster.
+              #Endpoints alerts
+              #TIDE
+              - alert: ProwTideEndpointNotPresent
+                expr: kube_endpoint_address_available{endpoint="tide"} < 1
+                for: 30s
+                labels:
+                    prowservice: tide
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: No endpoints assigned.
+                    description: Tide service doesn't have any endpoints assigned.
+              #GCSWEB
+              - alert: ProwGCSWebEndpointNotPresent
+                expr: kube_endpoint_address_available{endpoint="gcsweb"} < 1
+                for: 30s
+                labels:
+                    prowservice: gcsweb
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: No endpoints assigned.
+                    description: GCSWeb service doesn't have any endpoints assigned.
+              #GHPROXY
+              - alert: ProwGHProxyEndpointNotPresent
+                expr: kube_endpoint_address_available{endpoint="ghproxy"} < 1
+                for: 30s
+                labels:
+                    prowservice: ghproxy
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: No endpoints assigned.
+                    description: GHProxy service doesn't have any endpoints assigned.
+              #HOOK
+              - alert: ProwHookEndpointNotPresent
+                expr: kube_endpoint_address_available{endpoint="hook"} < 1
+                for: 30s
+                labels:
+                    prowservice: hook
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: No endpoints assigned.
+                    description: Hook service doesn't have any endpoints assigned.
+              #PUSHGATEWAY
+              - alert: ProwPushgatewayEndpointNotPresent
+                expr: kube_endpoint_address_available{endpoint="pushgateway"} < 1
+                for: 30s
+                labels:
+                    prowservice: pushgateway
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: No endpoints assigned.
+                    description: Pushgateway service doesn't have any endpoints assigned.
+              #INGRESS-NGINX
+              - alert: ProwIngress-nginxEndpointNotPresent
+                expr: kube_endpoint_address_available{endpoint="ingress-nginx"} < 1
+                for: 30s
+                labels:
+                    prowservice: ingress-nginx
+                    app: prow
+                    severity: critical
+                annotations:
+                    summary: No endpoints assigned.
+                    description: Ingress-nginx service doesn't have any endpoints assigned.
