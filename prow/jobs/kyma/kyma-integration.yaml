@@ -1043,6 +1043,7 @@ periodics:
 
 - name: kyma-whitesource-scan
   decorate: true
+  #cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
   cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
   labels:
     preset-kyma-wssagent-config: "true"
@@ -1062,6 +1063,8 @@ periodics:
         - "-c"
         - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
         env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
           - name : PROJECTNAME
             value: "kyma"
         resources:
