@@ -63,3 +63,4 @@ periodics: # runs periodic on master
           requests:
             memory: 10Mi
             cpu: 100m
+
