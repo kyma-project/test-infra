@@ -62,15 +62,6 @@
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
-  branch = "travis-1.9"
-  name = "github.com/golang/lint"
-  packages = [
-    ".",
-    "golint"
-  ]
-  revision = "883fe33ffc4344bad1ecd881f61afd5ec5d80e0a"
-
-[[projects]]
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -396,6 +387,15 @@
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   revision = "193df9c0f06f8bb35fba505183eaf0acc0136505"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/lint"
+  packages = [
+    ".",
+    "golint"
+  ]
+  revision = "959b441ac422379a43da2230f62be024250818b0"
 
 [[projects]]
   branch = "master"
@@ -832,6 +832,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ca6d541053d42bdf127c39e94d49184dfa54add130b3076b6d791ee1ea984105"
+  inputs-digest = "cffb7e1ff79c29d596ee3e888f9c42417ea571fd3d0ab6d31f9251bcdfa46844"
   solver-name = "gps-cdcl"
   solver-version = 1
