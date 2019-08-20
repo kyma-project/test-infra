@@ -10,7 +10,7 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
         securityContext:
           privileged: true
         command:
@@ -29,7 +29,7 @@ job_template_rel11x_rel12x: &job_template_rel11x_rel12x
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
         securityContext:
           privileged: true
         command:
