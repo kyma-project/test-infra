@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestHackShowcaseJobPresubmit(t *testing.T) {
+func TestGithubConnectorJobPresubmit(t *testing.T) {
 	//WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/hack-showcase.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/github-connector/github-connector.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -37,9 +37,9 @@ func TestHackShowcaseJobPresubmit(t *testing.T) {
 
 }
 
-func TestHackShowcaseJobPostsubmit(t *testing.T) {
+func TestGithubConnectorJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/hack-showcase.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/hack-showcase/github-connector/github-connector.yaml")
 	// THEN
 	require.NoError(t, err)
 
