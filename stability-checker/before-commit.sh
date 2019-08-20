@@ -57,23 +57,9 @@ else echo -e "${GREEN}√ dep status${NC}"
 fi
 
 ##
-# GO TEST
-##
-echo "? go test"
-go test ./...
-# Check if tests passed
-if [ $? != 0 ]; then
-	echo -e "${RED}✗ go test\n${NC}"
-	exit 1
-else echo -e "${GREEN}√ go test${NC}"
-fi
-
-goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|/pkg\/|_*export_test.go")
-
-##
 #  GO LINT
 ##
-go build -o golint-vendored ./vendor/github.com/golang/lint/golint
+go build -o golint-vendored ./vendor/golang.org/x/lint/golint
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
 	echo -e "${RED}✗ go build lint${NC}\n$buildLintResult${NC}"
@@ -121,3 +107,17 @@ for vPackage in "${packagesToVet[@]}"; do
 	else echo -e "${GREEN}√ go vet ${vPackage} ${NC}"
 	fi
 done
+
+##
+# GO TEST
+##
+echo "? go test"
+go test ./...
+# Check if tests passed
+if [ $? != 0 ]; then
+	echo -e "${RED}✗ go test\n${NC}"
+	exit 1
+else echo -e "${GREEN}√ go test${NC}"
+fi
+
+goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|/pkg\/|_*export_test.go")
