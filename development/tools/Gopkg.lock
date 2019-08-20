@@ -62,13 +62,13 @@
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
-  branch = "travis-1.9"
-  name = "github.com/golang/lint"
+  branch = "master"
+  name = "golang.org/x/lint"
   packages = [
     ".",
     "golint"
   ]
-  revision = "883fe33ffc4344bad1ecd881f61afd5ec5d80e0a"
+  revision = "959b441ac422379a43da2230f62be024250818b0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
