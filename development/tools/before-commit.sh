@@ -77,15 +77,6 @@ rm goimports-vendored
 check_result "goimports and fmt" "${#goImportsResult}" "${goImportsResult}"
 
 ##
-# GO TEST
-##
-echo "? go test"
-go test -count=1 ./...
-check_result "go test" $?
-
-goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")
-
-##
 # GO VET
 ##
 echo "? go vet"
@@ -95,3 +86,12 @@ for vPackage in "${packagesToVet[@]}"; do
 	vetResult=$(go vet "${vPackage}")
     check_result "go vet ${vPackage}" "${#vetResult}" "${vetResult}"
 done
+
+##
+# GO TEST
+##
+echo "? go test"
+go test -count=1 ./...
+check_result "go test" $?
+
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")
