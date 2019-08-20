@@ -53,19 +53,10 @@ dep status -v
 check_result "dep status" $?
 
 ##
-# GO TEST
-##
-echo "? go test"
-go test -count=1 ./...
-check_result "go test" $?
-
-goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")
-
-##
 #  GO LINT
 ##
 echo "? golint"
-go build -o golint-vendored ./vendor/github.com/golang/lint/golint
+go build -o golint-vendored ./vendor/golang.org/x/lint/golint
 check_result "go build lint" $?
 
 golintResult=$(echo "${goFilesToCheck}" | xargs -L1 ./golint-vendored)
@@ -84,6 +75,15 @@ goImportsResult=$(echo "${goFilesToCheck}" | xargs -L1 ./goimports-vendored -w -
 rm goimports-vendored
 
 check_result "goimports and fmt" "${#goImportsResult}" "${goImportsResult}"
+
+##
+# GO TEST
+##
+echo "? go test"
+go test -count=1 ./...
+check_result "go test" $?
+
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")
 
 ##
 # GO VET
