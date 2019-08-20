@@ -25,8 +25,8 @@
 #   unused-packages = true
 
 required = [
-    "github.com/golang/lint/golint",
-    "golang.org/x/tools/cmd/goimports",
+  "github.com/golang/lint/golint",
+  "golang.org/x/tools/cmd/goimports",
 ]
 
 [[constraint]]
