@@ -11,7 +11,7 @@ import (
 func TestTestEventBusReleases(t *testing.T) {
 	for _, currentRelease := range tester.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-event-bus", currentRelease), currentRelease.Branch())
@@ -29,7 +29,7 @@ func TestTestEventBusReleases(t *testing.T) {
 
 func TestTestEventBusJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-event-bus", "master")
@@ -49,7 +49,7 @@ func TestTestEventBusJobsPresubmit(t *testing.T) {
 
 func TestTestEventBusJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 

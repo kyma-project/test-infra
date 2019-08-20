@@ -61,7 +61,7 @@ func TestLoggingTestsReleases(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range tester.GetKymaReleasesUntil(tester.Release13) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/logging/logging.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/logging/logging-deprecated.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-logging", currentRelease), currentRelease.Branch())

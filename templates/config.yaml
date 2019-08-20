@@ -249,7 +249,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/asset-store
-      - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent.yaml
+      - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests.yaml
         values:
           <<: *go_kyma_component_1_11
           path: tests/compass-runtime-agent
@@ -261,7 +261,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/connector-service-tests
-      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service.yaml
+      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests.yaml
         values:
           <<: *go_kyma_component_1_11
           path: tests/console-backend-service
@@ -269,7 +269,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: common
-      - to: ../prow/jobs/kyma/tests/event-bus/event-bus.yaml
+      - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml
         values:
           <<: *go_kyma_component_1_11
           path: tests/event-bus
@@ -289,11 +289,11 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/test-namespace-controller
-      - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller.yaml
+      - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/api-controller
-      - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy.yaml
+      - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/apiserver-proxy
@@ -318,11 +318,11 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/dex
-      - to: ../prow/jobs/kyma/tests/integration/event-service/event-service.yaml
+      - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/event-service
-      - to: ../prow/jobs/kyma/tests/integration/gateway/gateway.yaml
+      - to: ../prow/jobs/kyma/tests/integration/gateway/gateway-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/integration/gateway
@@ -331,7 +331,7 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tests/integration/logging
           since: '1.4'
-      - to: ../prow/jobs/kyma/tests/logging/logging.yaml
+      - to: ../prow/jobs/kyma/tests/logging/logging-deprecated.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/logging
@@ -341,7 +341,7 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tests/integration/monitoring
           since: '1.4'
-      - to: ../prow/jobs/kyma/tests/monitoring/monitoring.yaml
+      - to: ../prow/jobs/kyma/tests/monitoring/monitoring-deprecated.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: tests/monitoring
