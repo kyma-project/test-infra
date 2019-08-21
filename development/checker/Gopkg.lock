@@ -93,12 +93,6 @@
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
-  branch = "travis-1.9"
-  name = "github.com/golang/lint"
-  packages = ["."]
-  revision = "883fe33ffc4344bad1ecd881f61afd5ec5d80e0a"
-
-[[projects]]
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -380,6 +374,12 @@
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   revision = "74369b46fc6756741c016591724fd1cb8e26845f"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/lint"
+  packages = ["."]
+  revision = "959b441ac422379a43da2230f62be024250818b0"
 
 [[projects]]
   branch = "master"
@@ -805,7 +805,7 @@
     "testgrid/metadata/junit",
     "testgrid/util/gcs"
   ]
-  revision = "4faaf685958cd79ea5b5a376fadabd8a9d1b4123"
+  revision = "e5e370fd14bacee1c15cdc50652ec0d3fb433700"
 
 [[projects]]
   name = "sigs.k8s.io/yaml"
@@ -822,6 +822,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eca2032f2c1f70014363c70282c63b3be997ddcd011b84cb3cd96a8d3704db8e"
+  inputs-digest = "83e19028e5e2075db0e8867529266491a3abada1a2ed6296fbbe5de0fa70bd77"
   solver-name = "gps-cdcl"
   solver-version = 1
