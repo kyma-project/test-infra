@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: k6-runner
+  name: k6-runner-gke
   namespace: perf-test
 spec:
   schedule: "0 22 * * sat"
@@ -94,7 +94,7 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: k6-runner
+  name: k6-runner-aks
   namespace: perf-test
 spec:
   schedule: "0 22 * * sat"
