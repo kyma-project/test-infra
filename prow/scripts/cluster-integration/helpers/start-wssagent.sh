@@ -12,6 +12,20 @@
 
 set -o errexit
 
+
+if [ -f "../../prow/scripts/library.sh" ]; then
+    export TEST_INFRA_SOURCES_DIR="../.."
+
+elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
+    export TEST_INFRA_SOURCES_DIR="../test-infra"
+
+else
+	echo "File 'library.sh' can't be found."
+    exit 1;
+fi
+
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
 gsutil cp "gs://kyma-prow-secrets/whitesource-userkey.encrypted" "." 
 gsutil cp "gs://kyma-prow-secrets/whitesource-apikey.encrypted" "." 
 
