@@ -33,7 +33,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"
       run_if_changed: "^tests/knative-build/"
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"
       labels:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"
       labels:
@@ -91,7 +91,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"
       labels:
@@ -108,7 +108,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"
       run_if_changed: "^tests/knative-build/"

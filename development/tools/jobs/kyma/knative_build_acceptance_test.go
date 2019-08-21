@@ -24,7 +24,7 @@ func TestKnativebuildAcceptanceJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^tests/knative-build/", actualPresubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -46,7 +46,7 @@ func TestKnativebuildAcceptanceJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^tests/knative-build/", actualPostsubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPostsubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build")
+	tester.AssertThatExecGolangBuildpack(t, actualPostsubmit.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tests/knative-build"}, actualPostsubmit.Spec.Containers[0].Args)
 
@@ -71,7 +71,7 @@ func TestKnativebuildAcceptanceReleases(t *testing.T) {
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.JobBase.Spec.Containers, 1)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, execArg)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_11, execArg)
 			assert.Len(t, actualPresubmit.JobBase.Spec.Containers[0].Command, 1)
 			assert.Equal(t, actualPresubmit.JobBase.Spec.Containers[0].Command[0], "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh")
 		})

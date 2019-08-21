@@ -1028,16 +1028,11 @@ periodics:
 
   - name: kyma-whitesource-scan
     decorate: true
-    cron: "0 4 * * *" # At 04:00 am every day
+    cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
     labels:
       preset-kyma-wssagent-config: "true"
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
     spec:
       containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190729-00275a3
@@ -1047,9 +1042,7 @@ periodics:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
-            - name: KYMA_PROJECT_DIR
-              value: "/home/prow/go/src/github.com/kyma-project"
-            - name: PROJECTNAME
+            - name : PROJECTNAME
               value: "kyma"
           resources:
             requests:

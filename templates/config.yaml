@@ -182,7 +182,7 @@ templates:
           path: components/event-bus
       - to: ../prow/jobs/kyma/components/event-service/event-service.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: components/event-service
       - to: ../prow/jobs/kyma/components/helm-broker/helm-broker-deprecated.yaml
         values:
@@ -199,15 +199,15 @@ templates:
           path: components/istio-kyma-patch
       - to: ../prow/jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: components/k8s-dashboard-proxy
       - to: ../prow/jobs/kyma/components/function-controller/function-controller.yaml
         values:
           <<: *kubebuilder_kyma_component
-          path: components/knative-function-controller
+          path: components/function-controller
       - to: ../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: components/kubeless-images/nodejs
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
@@ -275,15 +275,15 @@ templates:
           path: tests/event-bus
       - to: ../prow/jobs/kyma/tests/knative-build/knative-build.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: tests/knative-build
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: tests/knative-serving
       - to: ../prow/jobs/kyma/tests/kubeless/kubeless.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: tests/kubeless
       - to: ../prow/jobs/kyma/tests/test-namespace-controller/test-namespace-controller.yaml
         values:
@@ -304,7 +304,7 @@ templates:
           watch: '^tests/end-to-end/upgrade/[^chart]'
       - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: tests/end-to-end/kubeless-integration
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration.yaml
         values:
@@ -320,7 +320,7 @@ templates:
           path: tests/integration/dex
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_11
           path: tests/integration/event-service
       - to: ../prow/jobs/kyma/tests/integration/gateway/gateway-tests.yaml
         values:
