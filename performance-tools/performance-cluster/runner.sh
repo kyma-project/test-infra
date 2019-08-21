@@ -38,7 +38,7 @@ SLACK_URL=`echo $SLACK_URL`
 export SRC_DIR="$(mktemp -d -t src.XXXXXX)"
 
 # Create Kyma Cluster
-${SCRIPTS_DIR}/cluster.sh --action create --cluster-grade production
+${SCRIPTS_DIR}/cluster.sh --action create --cluster-grade production --infra "${INFRA}"
 if [[ $? != 0 ]]; then
     shoutFail "Cluster creation failed!!"
     DATE="$(date)"
@@ -134,7 +134,7 @@ shout "Deleting the deployed kyma cluster!!"
 
 service docker stop
 
-source "${SCRIPTS_DIR}/cluster.sh" "--action" "delete"
+source "${SCRIPTS_DIR}/cluster.sh" "--action" "delete" "--infra" "${INFRA}"
 
 DATE="$(date)"
 

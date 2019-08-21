@@ -43,6 +43,13 @@ do
             shift # past argument
             shift # past value
         ;;
+        --infra)
+            checkActionInputParameterValue "$2"
+            INFRA="$2"
+            checkInfraInputParameterValue "$2"
+            shift # past argument
+            shift # past value
+        ;;
         *)    # unknown option
             POSITIONAL+=("$1") # save it in an array for later
             shift # past argument
@@ -54,6 +61,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 export ACTION
 export CLUSTER_GRADE
+export INFRA
 
 if [[ "${ACTION}" == "" ]]; then
     shoutFail "--action is required"
@@ -84,7 +92,28 @@ if [[ "${CLUSTER_GRADE}" == "development" ]] && [[ ! -d "${GOPATH}/src/github.co
 fi
 
 
-setupCluster() {
+setupClusterGKE() {
+
+    if [[ ${INFRA} == "gke" ]]; then
+        setupClusterGKE
+    elif [[ ${INFRA} == "aks" ]]; then
+        setupClusterAKS
+    else
+        shoutFail "No cluster infra specified, make sure to either define 'gke' or 'aks'."
+        exit 1
+    fi
+
+}
+
+setupClusterGKE() {
+
+    set +o errexit
+    source "${SCRIPTS_DIR}/scripts/kyma-gke-cluster.sh"
+    set -o errexit
+
+}
+
+setupClusterAKS() {
 
     set +o errexit
     source "${SCRIPTS_DIR}/scripts/kyma-gke-cluster.sh"
