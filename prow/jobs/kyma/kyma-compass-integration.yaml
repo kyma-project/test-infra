@@ -49,6 +49,7 @@ presubmits: # runs on PRs
       - ^master$
     run_if_changed: "^(resources/compass|resources/compass-runtime-agent|installation)/"
     labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
       preset-build-pr: "true"
       <<: *gke_integration_job_labels_template
     extra_refs:
@@ -82,6 +83,7 @@ postsubmits:
     branches:
       - ^master$
     labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
       preset-build-master: "true"
       <<: *gke_integration_job_labels_template
     extra_refs:
