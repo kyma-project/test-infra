@@ -81,7 +81,9 @@ function cleanup() {
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
         echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${DNS_FULL_NAME=}" --address="${IP_ADDRESS}" --dryRun=false
+        IP_ADDRESS=${GATEWAY_IP_ADDRESS}
+        DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME}
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${DNS_FULL_NAME=}" --address="${IP_ADDRESS}" --dryRun=false
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -89,7 +91,9 @@ function cleanup() {
         APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
         APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
         if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-            IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project"${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${IP_ADDRESS}" --dryRun=false
+            IP_ADDRESS=${APISERVER_IP_ADDRESS}
+            DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME}
+            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project"${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${IP_ADDRESS}" --dryRun=false
             TMP_STATUS=$?
             if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
         fi
