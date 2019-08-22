@@ -110,6 +110,10 @@ function validate_metadata_schema_on_pr() {
 
         local schemas=""
         for file in ${files}; do
+            if [[ ! -f "${file}" ]]; then
+                echo "Skipping deleted file ${file}..."
+                continue
+            fi
             schemas="${schemas} /home/prow/go/src/github.com/kyma-project/kyma/${file}"
         done
         run_metadata_validation "${schemas}"

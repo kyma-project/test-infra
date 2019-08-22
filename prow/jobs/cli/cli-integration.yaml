@@ -1,5 +1,5 @@
 job_template: &job_template
-  optional: true
+  optional: false
   always_run: true
   skip_report: false
   decorate: true
