@@ -115,7 +115,13 @@ function validate_metadata_schema_on_pr() {
             fi
             schemas="${schemas} /home/prow/go/src/github.com/kyma-project/kyma/${file}"
         done
-        run_metadata_validation "${schemas}"
+
+        if [ -n "${schemas}" ]; then
+            run_metadata_validation "${schemas}"
+        else 
+            echo "No metadata files to validate"
+        fi 
+        
         rm -rf "${VOLUME_DIR}"
     else
         echo "No metadata files to validate"
