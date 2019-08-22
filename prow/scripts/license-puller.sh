@@ -59,6 +59,8 @@ function pullGoLicenses() {
 # TODO: This is temporary solution for Golang
 function pullGoLicensesByDir() {
     echo "Gathering dependencies for $PWD"
+    
+    mkdir -p "${TMP_DIR}"
     go list -json ./... > "${TMP_DIR}/golang.json"
 
     echo "Downloading license files to '${LICENSES_DIR}'"
