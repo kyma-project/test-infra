@@ -15,9 +15,7 @@ Follow these steps:
 
 1. Create a Slack channel and an [Incoming Webhook](https://api.slack.com/incoming-webhooks) for this channel. Copy the resulting Webhook URL.
 
-2. Replace `{SLACK_URL}` in [values.yaml](./../../prow/cluster/resources/monitoring/values.yaml) with the Weebhook URL and `{SLACK_CHANNEL}` with the channel name.
-
-3. Replace `{PROW_SLACK_URL}` with prow channel Weebhook URL and `{PROW_SLACK_CHANNEL}` with the channel name in [alertmanager-config.yaml](../../prow/cluster/resources/monitoring/alertmanager-config.yaml).
+2. Replace `{SLACK_URL}` with channel Weebhook URL and `{SLACK_CHANNEL}` with the channel name in [alertmanager-config.yaml](../../prow/cluster/resources/monitoring/alertmanager-config.yaml).
 
 ## Provision a monitoring chart
 
@@ -40,7 +38,7 @@ Follow these steps:
 4. Install the monitoring chart:
 
    ```bash
-   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring -f values.yaml,prow-prometheus-rules.yaml,prow-slack-config.yaml
+   helm install --name {releaseName} --namespace {namespaceName} resources/monitoring -f values.yaml,prometheus-config.yaml,alertmanager-config.yaml,grafana-config.yaml
    ```
 
 5. Open the Grafana dashboard.
@@ -83,3 +81,12 @@ Follow these steps to save the dashboard:
    ```
 
    > **NOTE:** `--recreate-pods` is required because the Secret with the Grafana password is regenerated during the upgrade and it needs to be populated to Grafana.
+
+## Add recording and alerting rules
+
+1. Add new recording or alerting rules to the prometheusrule spec [`prow_prometheusrules.yaml`](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
+
+2. Replace existing prometheusrule object with current file version.
+   ```bash
+   kubctl 
+   ```
