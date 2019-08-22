@@ -553,7 +553,7 @@ presubmits: # runs on PRs
       base_ref: master
   
   - name: pre-rel14-kyma-gke-backup
-    optional: true
+    optional: false
     branches:
       - release-1.4
     <<: *gke_backup_job_template
