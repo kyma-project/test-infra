@@ -26,7 +26,7 @@ function read_arguments() {
         esac
     done
 
-    if [ "${#dirs_to_pulling[@]}" -ne 0 ] && [ ! -z "${dirs_to_pulling}" ]; then
+    if [ "${#dirs_to_pulling[@]}" -ne 0 ]; then
         for d in "${dirs_to_pulling[@]}"; do
             DIRS_TO_PULLING+=($( cd "${CWD}/${d}" && pwd ))
         done
@@ -150,12 +150,12 @@ function mergeLicenses() {
 function removeTempFolders() {
     if [ "${#DIRS_TO_PULLING[@]}" -ne 0 ]; then
         for d in "${DIRS_TO_PULLING[@]}"; do
-            rm -rf "${d}/${TMP_DIR}" || true
-            rm -rf "${d}/${LICENSES_DIR}" || true
+            rm -rf "${d:?}/${TMP_DIR}" || true
+            rm -rf "${d:?}/${LICENSES_DIR}" || true
         done
     fi
 
-    rm -rf "${CWD}/${TMP_DIR}" || true
+    rm -rf "${CWD:?}/${TMP_DIR}" || true
 }
 
 function main() {
