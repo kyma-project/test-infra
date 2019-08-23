@@ -88,5 +88,5 @@ Follow these steps to save the dashboard:
 
 2. Replace existing prometheusrule object with current file version.
    ```bash
-   kubctl 
+   kubctl replace -f prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml
    ```
