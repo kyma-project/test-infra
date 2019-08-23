@@ -6,7 +6,7 @@ This folder contains the Buildpack Golang with Kubebuilder image that is based o
 
 The image consists of:
 
-- Kubebuilder 2.0.0-beta.0
+- Kubebuilder 2.0.0
 - Kustomize 3.1.0
 - Go 1.12
 - Dep 0.5.0
