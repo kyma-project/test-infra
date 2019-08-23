@@ -74,7 +74,7 @@ const (
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
 	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190808-77f1475"
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1"
 	// ImageNodeBuildpackLatest means Node.js buildpack image
 	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
 	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
