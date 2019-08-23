@@ -65,7 +65,7 @@ function removeCluster() {
 	date
 	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
 	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_DOMAIN}"
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTStest_infra_cluster_integration_scripts}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
