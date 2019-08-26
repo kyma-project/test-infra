@@ -849,52 +849,12 @@ periodics:
   - name: kyma-gke-backup-nightly
     cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
     labels:
-      preset-build-pr: "true"
+      preset-build-master: "true"
       <<: *gke_backup_job_labels_template
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
 
-{{- range (matchingReleases .Global.releases "1.4" nil) }}
-  - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-    optional: false
-    branches:
-      - release-{{ . }}
-    <<: *gke_backup_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
-      <<: *gke_backup_job_labels_template
-    decorate: true
-    extra_refs:
-      - org: kyma-project
-        repo: test-infra
-        base_ref: master
-        path_alias: github.com/kyma-project/test-infra
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-          securityContext:
-            privileged: true
-          command:
-            - "bash"
-          env:
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-c"
-            - name: REPO_OWNER
-              value: "kyma-project"
-            - name: REPO_NAME
-              value: "kyma"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
-{{ end }}
   - name: kyma-load-tests-weekly
     cron: "0 2 * * 1" # "At 2:00 on every Monday."
     labels:
