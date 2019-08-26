@@ -19,7 +19,6 @@ base_job_template: &base_job_template
         args:
           - "/home/prow/go/src/github.com/kyma-incubator/hack-showcase/slack-connector"
         resources:
-
           requests:
             memory: 1.5Gi
             cpu: 0.8

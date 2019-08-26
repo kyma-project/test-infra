@@ -31,7 +31,7 @@ func TestGithubConnectorJobPresubmit(t *testing.T) {
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12", actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_12, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase/github-connector"}, actualPresubmit.Spec.Containers[0].Args)
 
@@ -58,7 +58,7 @@ func TestGithubConnectorJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-incubator/hack-showcase", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12", actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_12, actualPost.Spec.Containers[0].Image)
 
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hack-showcase/github-connector"}, actualPost.Spec.Containers[0].Args)
