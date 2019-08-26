@@ -29,7 +29,7 @@ func TestConnectorTestsJobReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPre.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector")
+			tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests")
 		})
 	}
 }
@@ -52,7 +52,7 @@ func TestConnectorTestsJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^tests/connector-tests/", actualPre.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPre, "tests/connector-tests/some_random_file.go")
-	tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector")
+	tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests")
 }
 
 func TestConnectorTestsJobPostsubmit(t *testing.T) {
@@ -71,5 +71,5 @@ func TestConnectorTestsJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^tests/connector-tests/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "tests/connector-tests/some_random_file.go")
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests")
 }
