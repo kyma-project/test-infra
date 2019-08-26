@@ -9,11 +9,6 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-compass_ref: &compass_ref
-  org: kyma-incubator
-  repo: compass
-  path_alias: github.com/kyma-incubator/compass
-
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
   preset-kyma-encryption-key: "true"
@@ -32,7 +27,6 @@ presubmits: # runs on PRs
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
-    optional: true
     max_concurrency: 10
     spec:
       containers:
