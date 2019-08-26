@@ -65,15 +65,13 @@ function removeCluster() {
 	date
 	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
 	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_DOMAIN}"
-	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 	shout "Release Gateway IP Address"
 	date
-	GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
-	IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME}
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh -project="${GCLOUD_PROJECT_NAME}" -region="${CLOUDSDK_COMPUTE_REGION}" -dryRun=false -ipname="${IP_ADDRESS_NAME}"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh -project="${GCLOUD_PROJECT_NAME}" -region="${CLOUDSDK_COMPUTE_REGION}" -dryRun=false -ipname="${CLUSTER_NAME}"
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -81,9 +79,7 @@ function removeCluster() {
 	APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-		IP_ADDRESS=${APISERVER_IP_ADDRESS}
-		DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME}
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh" -project="${GCLOUD_PROJECT_NAME}" -zone="${CLOUDSDK_DNS_ZONE_NAME}" -dryRun=false -address="${IP_ADDRESS}" -name="${DNS_FULL_NAME}"
+		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh -project="${GCLOUD_PROJECT_NAME}" -zone="${CLOUDSDK_DNS_ZONE_NAME}" -dryRun=false -address="${APISERVER_IP_ADDRESS}" -name="${APISERVER_DNS_FULL_NAME}"
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 	fi
