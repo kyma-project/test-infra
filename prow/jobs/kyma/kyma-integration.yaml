@@ -538,7 +538,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-rel14-kyma-gke-backup
-      optional: true
+      optional: false
       branches:
         - release-1.4
       <<: *gke_backup_job_template
@@ -954,19 +954,7 @@ periodics:
   - name: kyma-gke-backup-nightly
     cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
     labels:
-      preset-build-pr: "true"
-      <<: *gke_backup_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-  - name: pre-rel14-kyma-gke-backup
-    optional: false
-    branches:
-      - release-1.4
-    <<: *gke_backup_job_template
-    always_run: false
-    labels:
-      preset-build-release: "true"
+      preset-build-master: "true"
       <<: *gke_backup_job_labels_template
     decorate: true
     extra_refs:
@@ -1040,11 +1028,16 @@ periodics:
 
   - name: kyma-whitesource-scan
     decorate: true
-    cron: "0 4 * * 1" # At 00:00 on day-of-month 15.
+    cron: "0 4 * * *" # At 04:00 am every day
     labels:
       preset-kyma-wssagent-config: "true"
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
     spec:
       containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190729-00275a3
@@ -1054,6 +1047,8 @@ periodics:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
+            - name: KYMA_PROJECT_DIR
+              value: "/home/prow/go/src/github.com/kyma-project"
             - name : PROJECTNAME
               value: "kyma"
           resources:
