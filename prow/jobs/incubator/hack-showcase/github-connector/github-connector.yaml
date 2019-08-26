@@ -11,7 +11,7 @@ base_job_template: &base_job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd #???
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd:go1.12
         securityContext:
           privileged: true
         command:
@@ -31,7 +31,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/hack-showcase:
-    - name: pre-master-hack-showcase
+    - name: pre-master-github-connector
       branches:
         - ^master$
       <<: *base_job_template
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/hack-showcase:
-    - name: post-master-hack-showcase
+    - name: post-master-github-connector
       branches:
         - ^master$
       <<: *base_job_template
