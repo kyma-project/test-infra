@@ -849,7 +849,21 @@ periodics:
   - name: kyma-gke-backup-nightly
     cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
     labels:
-      preset-build-master: "true"
+      preset-build-pr: "true"
+      <<: *gke_backup_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+
+{{- range (matchingReleases .Global.releases "1.4" nil) }}
+  - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
+    optional: false
+    branches:
+      - release-{{ . }}
+    <<: *gke_backup_job_template
+    always_run: false
+    labels:
+      preset-build-release: "true"
       <<: *gke_backup_job_labels_template
     decorate: true
     extra_refs:
@@ -880,7 +894,7 @@ periodics:
             requests:
               memory: 200Mi
               cpu: 80m
-
+{{ end }}
   - name: kyma-load-tests-weekly
     cron: "0 2 * * 1" # "At 2:00 on every Monday."
     labels:
