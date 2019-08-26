@@ -29,10 +29,10 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 gsutil cp "gs://kyma-prow-secrets/whitesource-userkey.encrypted" "." 
 gsutil cp "gs://kyma-prow-secrets/whitesource-apikey.encrypted" "." 
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-userkey.encrypted" "whitesource-userkey" 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-userkey" "whitesource-userkey.encrypted"
 USERKEY=$(cat "whitesource-userkey")
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-apikey.encrypted" "whitesource-apikey"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-apikey" "whitesource-apikey.encrypted"
 APIKEY=$(cat "whitesource-apikey")
 
 echo "***********************************"
