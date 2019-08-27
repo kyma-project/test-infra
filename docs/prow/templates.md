@@ -12,7 +12,7 @@ Config file is expected to have two keys:
 - `global` - a map of values available for all templates
 - `templates` - a list of files to generate
 
-Complete structure can be found [here](../development/tools/cmd/rendertemplates/main.go).
+Complete structure can be found [here](../../development/tools/cmd/rendertemplates/main.go).
 
 Other then that `config.yaml` uses YAML techniques for better organization, so normal YAML rules apply.
 
