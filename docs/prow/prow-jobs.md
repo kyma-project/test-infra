@@ -81,6 +81,8 @@ If you want to trigger your job again, add one of these comments to your PR:
 
 ## Create jobs
 
+Jobs should be generated from templates in `templates` directory. For details on how to do that see [Configure templates](./templates.md).
+
 For details on how to create jobs, see:
 
 - [Create component jobs](./component-jobs.md)
