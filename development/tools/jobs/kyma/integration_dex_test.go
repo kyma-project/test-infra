@@ -22,7 +22,7 @@ func TestIntegrationDexReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_12, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
 		})
 	}
 }
@@ -43,7 +43,7 @@ func TestIntegrationDexJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tests/integration/dex/fix")
 	assert.Equal(t, "^tests/integration/dex", actualPresubmit.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_12, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
 }
 
 func TestIntegrationDexJobPostsubmit(t *testing.T) {
@@ -68,5 +68,5 @@ func TestIntegrationDexJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^tests/integration/dex", actualPost.RunIfChanged)
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_12, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex")
 }
