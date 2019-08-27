@@ -94,11 +94,11 @@ templates:
     render:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: components/api-controller
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: components/apiserver-proxy
       - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
         values:
@@ -191,7 +191,7 @@ templates:
           until: '1.4'
       - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: components/iam-kubeconfig-service
       - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch.yaml
         values:
@@ -211,7 +211,7 @@ templates:
           path: components/kubeless-images/nodejs
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: components/kyma-operator
       - to: ../prow/jobs/kyma/components/namespace-controller/namespace-controller.yaml
         values:
@@ -291,11 +291,11 @@ templates:
           path: tests/test-namespace-controller
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: tests/integration/api-controller
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: tests/integration/apiserver-proxy
       - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade.yaml
         values:
@@ -316,7 +316,7 @@ templates:
           path: tests/end-to-end/backup-restore-test
       - to: ../prow/jobs/kyma/tests/integration/dex/dex.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_12
           path: tests/integration/dex
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests.yaml
         values:

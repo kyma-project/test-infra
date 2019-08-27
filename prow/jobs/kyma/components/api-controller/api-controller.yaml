@@ -33,7 +33,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
       run_if_changed: "^components/api-controller/"
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
       labels:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
       labels:
@@ -91,7 +91,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
       labels:
@@ -108,7 +108,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
       run_if_changed: "^components/api-controller/"
