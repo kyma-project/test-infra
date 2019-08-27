@@ -1,6 +1,6 @@
 # DO NOT EDIT. THIS FILE IS GENERATED
 
-{{- $repositoryName := index (.Values.repository | splitList "/") 2 -}}
+{{ $repositoryName := index (.Values.repository | splitList "/") 2 -}}
 {{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
 {{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
 {{- $watch := .Values.watch | default (print "^" .Values.path "/") }}
