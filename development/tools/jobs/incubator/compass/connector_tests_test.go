@@ -12,7 +12,7 @@ const connectorTestsJobPath = "./../../../../../prow/jobs/incubator/compass/test
 
 func TestConnectorTestsJobReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release12}
+	unsupportedReleases := []tester.SupportedRelease{tester.Release12, tester.Release13, tester.Release14}
 
 	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
 		t.Run(currentRelease, func(t *testing.T) {
