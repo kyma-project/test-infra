@@ -17,6 +17,9 @@ job_template: &job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
           - "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager"
+        env:
+          - name: GO111MODULE
+            value: "on"
         resources:
           requests:
             memory: 2.5Gi
