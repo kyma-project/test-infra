@@ -37,11 +37,12 @@ function cleanup() {
     OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
-	    shout "Delete old cluster"
-	    date
 	    for CLUSTER in $OLD_CLUSTERS; do
 		    removeCluster "${CLUSTER}"
+			removeResources
 	    done
+	else
+		removeResources
     fi
 
 }
@@ -51,7 +52,6 @@ function removeCluster() {
 	set +e
 
     # CLUSTER_NAME variable is used in other scripts so we need to change it for a while
-    ORIGINAL_CLUSTER_NAME=${CLUSTER_NAME}
 	CLUSTER_NAME=$1
 
 	EXIT_STATUS=$?
@@ -64,7 +64,17 @@ function removeCluster() {
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
+	MSG=""
+	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+	shout "Cluster removal is finished: ${MSG}"
+	date
+
+	set -e
+}
+
+function removeResources() {
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
+		set +e
 
 		shout "Delete Gateway DNS Record"
 		date
@@ -91,11 +101,9 @@ function removeCluster() {
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	shout "Job is finished ${MSG}"
+	shout "DNS, Gateway IP and Kyma installer image cleanup is finished: ${MSG}"
 	date
 
-    # Revert previous value for CLUSTER_NAME variable
-    CLUSTER_NAME=${ORIGINAL_CLUSTER_NAME}
 	set -e
 }
 
