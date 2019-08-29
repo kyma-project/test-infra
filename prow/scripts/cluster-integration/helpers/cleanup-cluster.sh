@@ -34,13 +34,11 @@ function cleanup() {
 	if [ "${discoverUnsetVar}" = true ] ; then
 		exit 1
 	fi
-    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
+    OLD_CLUSTER=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
     CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
-	    for CLUSTER in $OLD_CLUSTERS; do
-		    removeCluster "${CLUSTER}"
-			removeResources
-	    done
+		removeCluster
+		removeResources
 	else
 		removeResources
     fi
@@ -50,11 +48,6 @@ function cleanup() {
 function removeCluster() {
 	#Turn off exit-on-error so that next step is executed even if previous one fails.
 	set +e
-
-    # CLUSTER_NAME variable is used in other scripts so we need to change it for a while
-	CLUSTER_NAME=$1
-
-	EXIT_STATUS=$?
 
     shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
 	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
