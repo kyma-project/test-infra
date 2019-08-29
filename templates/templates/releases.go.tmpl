@@ -4,6 +4,7 @@ package tester
 
 // List of currently supported releases
 var (
+	Release{{ .Global.nextRelease | replace "." "" }} = mustParse("{{ .Global.nextRelease }}")
 {{- range .Global.releases }}
 	Release{{ . | replace "." "" }} = mustParse("{{ . }}")
 {{- end }}

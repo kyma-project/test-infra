@@ -4,6 +4,7 @@ package tester
 
 // List of currently supported releases
 var (
+	Release15 = mustParse("1.5")
 	Release14 = mustParse("1.4")
 	Release13 = mustParse("1.3")
 	Release12 = mustParse("1.2")

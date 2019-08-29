@@ -1,4 +1,5 @@
 global:
+  nextRelease: '1.5'
   releases:
     - '1.4'
     - '1.3'
@@ -367,6 +368,12 @@ templates:
           path: components/connector
           skipSlackReport: true
           since: '1.3'
+      - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: tests/connector-tests
+          skipSlackReport: true
+          since: '1.5'
       - to: ../prow/jobs/incubator/compass/components/director/director.yaml
         values:
           <<: *go_compass_component_1_11
