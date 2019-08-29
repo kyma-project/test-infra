@@ -40,3 +40,33 @@ To add new component find a `templates` entry for `templates/component.yaml`. Th
 ```
 
 If buildpack you're willing to use is not there yet you have to add it. The best would be to follow existing buildpacks.
+
+### Change component job configuration
+
+Whenever you need to change component job configuration follow this steps:
+1. In `config.yaml` change the name of the file where the jobs are generated. A suffix like `deprecated` should be enough. Change this path also in tests.
+2. Add `until: <last release>` to this configuration.
+3. Create new entry with new configuration. It should generate new jobs to the file used before.
+4. Add `since: <next release>` to new entry.
+
+Example: buildpack for api-controller has changed from go1.11 to go.12 in release 1.5. Before the change component configuration looked like this:
+```yaml
+      - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/api-controller
+```
+
+New configuration will look like follows:
+```yaml
+      - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
+        values:
+          <<: *go_kyma_component_1_12
+          path: components/api-controller
+          since: '1.5'
+      - to: ../prow/jobs/kyma/components/api-controller/api-controller-go1.11.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          path: components/api-controller
+          until: '1.4'
+```
