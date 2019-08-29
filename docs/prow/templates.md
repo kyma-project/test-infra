@@ -41,6 +41,8 @@ To add new component find a `templates` entry for `templates/component.yaml`. Th
 
 If buildpack you're willing to use is not there yet you have to add it. The best would be to follow existing buildpacks.
 
+When writing tests for new component use function `tester.GetKymaReleasesSince(<next release>)` to create release jobs tests. This will automatically check if new release jobs where created when doing release.
+
 ### Change component job configuration
 
 Whenever you need to change component job configuration follow this steps:
