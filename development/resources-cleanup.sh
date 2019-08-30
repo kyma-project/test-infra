@@ -52,7 +52,7 @@ if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
     popd
 fi
 
-echo "running ${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go $@"
+echo "running ${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go"
 go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go" "$@"
 status=$?
 
