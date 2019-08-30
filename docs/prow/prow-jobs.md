@@ -70,7 +70,7 @@ Prow runs presubmit and postsubmit jobs based on the following parameters:
 
 Prow allows you to use comments to rerun presubmit jobs on PRs.
 
-> **NOTE:** You can rerun only presubmit jobs.
+> **NOTE:** You can rerun only presubmit jobs.__
 
 If you want to trigger your job again, add one of these comments to your PR:
 

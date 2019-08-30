@@ -51,7 +51,7 @@ func TestCmsControllerManagerJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildPr)
 	assert.Equal(t, "^components/cms-controller-manager/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/cms-controller-manager/lets_play.go")
-	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
 }
 
 func TestCmsControllerManagerPostsubmit(t *testing.T) {
@@ -78,5 +78,5 @@ func TestCmsControllerManagerPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
 	assert.Equal(t, "^components/cms-controller-manager/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/cms-controller-manager/coco_jambo_i_do_przodu.go")
-	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
 }
