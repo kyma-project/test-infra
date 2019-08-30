@@ -17,7 +17,7 @@ To see the complete structure, see [this](../../development/tools/cmd/rendertemp
 ### Template development
 
 A template receives two objects as input:
-- `Values`, which contains all the values specified under `values` in the configuration file
+- `Values`, which contains all the values specified under `values` in the configuration file.
 - `Global` which contains values specified under `global` in the configuration file.
 
 All the functions from [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by helm, so if you know helm, you are already familiar with them. Also, a few additional functions are available:
