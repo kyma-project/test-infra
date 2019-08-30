@@ -71,3 +71,5 @@ New configuration will look like follows:
           path: components/api-controller
           until: '1.4'
 ```
+
+When changing tests, use the function `tester.GetKymaReleasesUntil(<last release>)` in place of `tester.GetAllKymaReleases` to test older releases. Use the function `tester.GetKymaReleasesSince(<next release>)` to create release jobs tests for future releases. This automatically checks whether new release jobs were created when doing release.
