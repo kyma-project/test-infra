@@ -34,9 +34,8 @@ function cleanup() {
 	if [ "${discoverUnsetVar}" = true ] ; then
 		exit 1
 	fi
-    OLD_CLUSTER=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
-    CLUSTERS_SIZE=$(echo "$OLD_CLUSTER" | wc -l)
-    if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
+    CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
+    if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
 		removeCluster
 		removeResources
 	else
