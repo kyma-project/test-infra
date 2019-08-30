@@ -35,7 +35,7 @@ function cleanup() {
 		exit 1
 	fi
     OLD_CLUSTER=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
-    CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
+    CLUSTERS_SIZE=$(echo "$OLD_CLUSTER" | wc -l)
     if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
 		removeCluster
 		removeResources

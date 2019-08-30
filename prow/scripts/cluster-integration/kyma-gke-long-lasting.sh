@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
-echo "running-----> $BASH_SOURCE"
 
 discoverUnsetVar=false
 
