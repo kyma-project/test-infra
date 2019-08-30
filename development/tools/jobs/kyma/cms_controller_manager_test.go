@@ -41,7 +41,7 @@ func TestCmsControllerManagerReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
 			tester.AssertThatContainerHasEnv(t, actualPresubmit.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 		})
 	}
