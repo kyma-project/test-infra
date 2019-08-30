@@ -38,7 +38,7 @@ This example defines a component in the Kyma repository using the `go1.12` build
     ...
 ```
 
-If the buildpack you're willing to use is not there yet you have to add it. When you add a new buildpack follow the example of already defined ones.
+If the buildpack you want to use is not there yet you have to add it. When you add a new buildpack follow the example of already defined ones.
 
 When writing tests for a new component, use the `tester.GetKymaReleasesSince(<next release>)` function to create release jobs tests. This automatically checks whether new release jobs were created in the release process.
 
@@ -63,7 +63,7 @@ This is what the configuration created after the buildpack change looks like:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
           <<: *go_kyma_component_1_12
-          path: components/api-controller
+          path: components/api-controllerf
           since: '1.5'
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-go1.11.yaml
         values:
