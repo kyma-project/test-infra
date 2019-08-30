@@ -5,7 +5,7 @@ Jobs and Prow configuration are generated from the templates in the `templates` 
 - `config.yaml` is the config file that describes files to generate.
 - `templates` is the directory to gather all the template files.
 
-### Config structure
+### The configuration file structure
 
 The config file has two keys:
 
@@ -13,8 +13,6 @@ The config file has two keys:
 - `templates` is a list of files to generate.
 
 To see the complete structure, go [here](../../development/tools/cmd/rendertemplates/main.go).
-
-Other then that `config.yaml` uses YAML techniques for better organization, so normal YAML rules apply.
 
 ### Template development
 
@@ -40,7 +38,7 @@ This example defines a component in the Kyma repository using go1.12 buildpack:
     ...
 ```
 
-If buildpack you're willing to use is not there yet you have to add it. The best would be to follow existing buildpacks.
+If buildpack you're willing to use is not there yet you have to add it. When you add a new buildpack follow the example of already defined ones.
 
 When writing tests for the new component, use the function `tester.GetKymaReleasesSince(<next release>)` to create release jobs tests. This automatically checks whether new release jobs were created when doing release.
 
