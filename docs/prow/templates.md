@@ -47,7 +47,7 @@ When writing tests for a new component, use the `tester.GetKymaReleasesSince(<ne
 To change component job configuration, follow these steps:
 1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the suffix `deprecated`. Change the path to this file in tests accordingly.
 2. Add `until: <last release>` to this configuration.
-3. Create a new entry with a new configuration. It should generate new jobs to the file used before.
+3. Create a new entry with the new configuration. Set the `to` field to point to the file responsible for storing jobs.
 4. Add `since: <next release>` to the new entry.
 
 Example: buildpack for the API Controller has changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
