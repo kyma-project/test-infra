@@ -13,6 +13,8 @@
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 function cleanup() {
+	
+	shout "Running cleanup-cluster process"
 	discoverUnsetVar=false
 
 	for var in CLUSTER_NAME TEST_INFRA_SOURCES_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS CLOUDSDK_COMPUTE_REGION; do
