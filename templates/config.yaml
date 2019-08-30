@@ -157,9 +157,9 @@ templates:
           <<: *kubebuilder2_kyma_component
           path: components/asset-store-controller-manager
           since: '1.5'
-      - to: ../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager-go1.11.yaml
+      - to: ../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager-kubebuilder.yaml
         values:
-          <<: *go_kyma_component_1_11
+          <<: *kubebuilder_kyma_component
           path: components/asset-store-controller-manager
           until: '1.4'
       - to: ../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml

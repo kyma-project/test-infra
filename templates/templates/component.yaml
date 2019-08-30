@@ -35,7 +35,7 @@ container_template: &container_template
   env:
   {{- range .Values.env }}
     - name: {{ .name }}
-      value: {{ .value }}
+      value: {{ .value | quote }}
   {{- end -}}
   {{- end }}
 

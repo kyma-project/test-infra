@@ -22,8 +22,8 @@ container_template: &container_template
     - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
   resources:
     requests:
-      memory: 1.5Gi
-      cpu: 0.8
+      memory: 2.5Gi
+      cpu: 2
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager"
       labels:
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager"
       labels:
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager"
       labels:

@@ -10,7 +10,24 @@ import (
 
 func TestAssetControllerReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range tester.GetKymaReleasesUntil(tester.Release14) {
+		t.Run(currentRelease.String(), func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager-kubebuilder.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-asset-store-controller-manager", currentRelease), currentRelease.Branch())
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager")
+		})
+	}
+
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release15) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml")
 			// THEN
@@ -23,7 +40,8 @@ func TestAssetControllerReleases(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager")
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager")
+			tester.AssertThatContainerHasEnv(t, actualPresubmit.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 		})
 	}
 }
@@ -51,6 +69,7 @@ func TestAssetControllerJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^components/asset-store-controller-manager/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/asset-store-controller-manager/lets_play.go")
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager")
+	tester.AssertThatContainerHasEnv(t, actualPresubmit.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 }
 
 func TestAssetControllerPostsubmit(t *testing.T) {
@@ -78,4 +97,5 @@ func TestAssetControllerPostsubmit(t *testing.T) {
 	assert.Equal(t, "^components/asset-store-controller-manager/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/asset-store-controller-manager/coco_jambo_i_do_przodu.go")
 	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/asset-store-controller-manager")
+	tester.AssertThatContainerHasEnv(t, actualPost.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 }
