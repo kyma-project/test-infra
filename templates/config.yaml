@@ -388,42 +388,49 @@ templates:
         values:
           <<: *go_compass_component_1_11
           path: components/connector
+          noRelease: yes
           skipSlackReport: true
           since: '1.3'
       - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests.yaml
         values:
           <<: *go_compass_component_1_11
           path: tests/connector-tests
+          noRelease: yes
           skipSlackReport: true
           since: '1.5'
       - to: ../prow/jobs/incubator/compass/components/director/director.yaml
         values:
           <<: *go_compass_component_1_11
           path: components/director
+          noRelease: yes
           skipSlackReport: true
           since: '1.3'
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway.yaml
         values:
           <<: *go_compass_component_1_11
           path: components/gateway
+          noRelease: yes
           skipSlackReport: true
           since: '1.3'
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker.yaml
         values:
           <<: *go_compass_component_1_11
           path: components/healthchecker
+          noRelease: yes
           skipSlackReport: true
           since: '1.3'
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator.yaml
         values:
           <<: *bootstrap_compass_component
           path: components/schema-migrator
+          noRelease: yes
           skipSlackReport: true
           since: '1.3'
       - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end.yaml
         values:
           <<: *go_compass_component_1_11
           path: tests/end-to-end
+          noRelease: yes
           skipSlackReport: true
           since: '1.3'
       - to: ../prow/jobs/console/core/core.yaml

@@ -10,33 +10,6 @@ import (
 
 const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/compass/compass-integration.yaml"
 
-func TestCompassIntegrationVMJobsReleases(t *testing.T) {
-	// WHEN
-
-	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release13) {
-		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig(compassIntegrationTestJobPath)
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tester.GetReleaseJobName("compass-integration", currentRelease), currentRelease.Branch())
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-incubator/compass", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasExtraRefs(t, actualPresubmit.JobBase.UtilityConfig, []string{"cli"})
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
-			assert.False(t, actualPresubmit.AlwaysRun)
-			assert.Len(t, actualPresubmit.Spec.Containers, 1)
-			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaClusterInfra20190528, testContainer.Image)
-			assert.Len(t, testContainer.Command, 1)
-			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh", testContainer.Command[0])
-			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-		})
-	}
-}
-
 func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName            string
