@@ -9,20 +9,20 @@ import (
 )
 
 func TestIntegrationGatewayReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
 		if currentRelease == tester.Release14 {
 			continue
 		}
-		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
+		t.Run(currentRelease.String(), func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-tests.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-gateway", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-integration-gateway", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/gateway")
@@ -32,7 +32,7 @@ func TestIntegrationGatewayReleases(t *testing.T) {
 
 func TestIntegrationGatewayJobsPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-tests-integration-gateway", "master")
@@ -53,7 +53,7 @@ func TestIntegrationGatewayJobsPresubmit(t *testing.T) {
 
 func TestIntegrationGatewayJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/tests/integration/gateway/gateway-tests.yaml")
 	// THEN
 	require.NoError(t, err)
 

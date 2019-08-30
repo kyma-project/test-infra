@@ -1,3 +1,5 @@
+# DO NOT EDIT. THIS FILE IS GENERATED
+
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -6,33 +8,36 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
   preset-docker-push-repository-incubator: "true"
 
+container_template: &container_template
+  securityContext:
+    privileged: true
+  command:
+    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+  resources:
+    requests:
+      memory: 1.5Gi
+      cpu: 0.8
+
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-master-compass-components-schema-migrator
       branches:
-        - master
+        - ^master$
       <<: *job_template
+      path_alias: github.com/kyma-incubator/compass
+      spec:
+        containers:
+          - <<: *container_template
+            image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
       run_if_changed: "^components/schema-migrator/"
       extra_refs:
         - <<: *test_infra_ref
@@ -42,23 +47,37 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
     - name: pre-rel14-compass-components-schema-migrator
       branches:
-      - release-1.4
+        - release-1.4
       <<: *job_template
+      path_alias: github.com/kyma-incubator/compass
       always_run: true
       extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.4
+        - <<: *test_infra_ref
+          base_ref: release-1.4
+      spec:
+        containers:
+          - <<: *container_template
+            image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
     - name: pre-rel13-compass-components-schema-migrator
       branches:
-      - release-1.3
+        - release-1.3
       <<: *job_template
+      path_alias: github.com/kyma-incubator/compass
       always_run: true
       extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.3
+        - <<: *test_infra_ref
+          base_ref: release-1.3
+      spec:
+        containers:
+          - <<: *container_template
+            image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -67,8 +86,15 @@ postsubmits:
   kyma-incubator/compass:
     - name: post-master-compass-components-schema-migrator
       branches:
-        - master
+        - ^master$
       <<: *job_template
+      path_alias: github.com/kyma-incubator/compass
+      spec:
+        containers:
+          - <<: *container_template
+            image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
       run_if_changed: "^components/schema-migrator/"
       extra_refs:
         - <<: *test_infra_ref
@@ -76,4 +102,4 @@ postsubmits:
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
-        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+        prow.kyma-project.io/slack.skipReport: "true"

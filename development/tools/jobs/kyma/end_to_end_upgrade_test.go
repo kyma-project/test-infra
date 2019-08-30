@@ -13,19 +13,19 @@ const e2eTestUpgradeJobPath = "./../../../../prow/jobs/kyma/tests/end-to-end/upg
 func TestEnd2EndUpgradeTestsJobsReleases(t *testing.T) {
 	// when
 
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		t.Run(currentRelease, func(t *testing.T) {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
+		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig(e2eTestUpgradeJobPath)
 
 			// then
 
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-end-to-end-upgrade", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-tests-end-to-end-upgrade", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			assert.True(t, actualPresubmit.AlwaysRun)
 			assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPresubmit.Spec.Containers[0].Image)
 			assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)

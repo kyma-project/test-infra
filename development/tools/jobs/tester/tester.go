@@ -3,8 +3,9 @@ package tester
 import (
 	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
+
+	"github.com/Masterminds/semver"
 
 	"k8s.io/test-infra/prow/kube"
 
@@ -104,45 +105,44 @@ const (
 )
 
 // SupportedRelease defines supported releases
-type SupportedRelease = string
+type SupportedRelease semver.Version
 
-// List of currently supported releases
-// Please always make it up to date
-// When we removing support for given version, there remove
-// its entry also here.
-const (
-	Release12 SupportedRelease = "release-1.2"
-	Release13 SupportedRelease = "release-1.3"
-	Release14 SupportedRelease = "release-1.4"
-)
+// Compare compares this version to another one. It returns -1, 0, or 1 if
+// the version smaller, equal, or larger than the other version.
+func (r *SupportedRelease) Compare(other *SupportedRelease) int {
+	return (*semver.Version)(r).Compare((*semver.Version)(other))
+}
 
-// Release allows you to execute checks on given release
-type Release string
+// Branch returns a git branch for this release
+func (r *SupportedRelease) Branch() string {
+	return fmt.Sprintf("release-%v.%v", (*semver.Version)(r).Major(), (*semver.Version)(r).Minor())
+}
 
-// Matches checks if given releases contains the tested one.
-func (s Release) Matches(rel ...SupportedRelease) bool {
-	if contains(rel, SupportedRelease(s)) {
-		return true
-	}
+// JobPrefix returns a prefix for all jobs for this release
+func (r *SupportedRelease) JobPrefix() string {
+	return fmt.Sprintf("rel%v%v", (*semver.Version)(r).Major(), (*semver.Version)(r).Minor())
+}
 
-	return false
+// String returns formatted release
+func (r *SupportedRelease) String() string {
+	return fmt.Sprintf("%v.%v", (*semver.Version)(r).Major(), (*semver.Version)(r).Minor())
+}
+
+func mustParse(v string) *SupportedRelease {
+	parsed := SupportedRelease(*semver.MustParse(v))
+	return &parsed
 }
 
 type jobRunner interface {
 	RunsAgainstChanges([]string) bool
 }
 
-// GetAllKymaReleaseBranches returns all supported kyma release branches
-func GetAllKymaReleaseBranches() []SupportedRelease {
-	return []SupportedRelease{Release12, Release13, Release14}
-}
+// GetKymaReleasesUntil filters all available releases earlier or the same as the given one
+func GetKymaReleasesUntil(lastRelease *SupportedRelease) []*SupportedRelease {
+	var supportedReleases []*SupportedRelease
 
-// GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones
-func GetKymaReleaseBranchesBesides(absentInReleases []SupportedRelease) []string {
-	var supportedReleases []string
-
-	for _, rel := range GetAllKymaReleaseBranches() {
-		if !contains(absentInReleases, rel) {
+	for _, rel := range GetAllKymaReleases() {
+		if rel.Compare(lastRelease) <= 0 {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -150,14 +150,17 @@ func GetKymaReleaseBranchesBesides(absentInReleases []SupportedRelease) []string
 	return supportedReleases
 }
 
-func contains(array []SupportedRelease, str SupportedRelease) bool {
-	for _, e := range array {
-		if str == e {
-			return true
+// GetKymaReleasesSince filters all available releases later or the same as the given one
+func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
+	var supportedReleases []*SupportedRelease
+
+	for _, rel := range GetAllKymaReleases() {
+		if rel.Compare(firstRelease) >= 0 {
+			supportedReleases = append(supportedReleases, rel)
 		}
 	}
 
-	return false
+	return supportedReleases
 }
 
 // ReadJobConfig reads job configuration from file
@@ -202,21 +205,13 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *confi
 }
 
 // GetReleaseJobName returns name of release job based on branch name by adding release prefix
-func GetReleaseJobName(moduleName, releaseBranch string) string {
-	rel := strings.Replace(releaseBranch, "release", "rel", -1)
-	rel = strings.Replace(rel, ".", "", -1)
-	rel = strings.Replace(rel, "-", "", -1)
-
-	return fmt.Sprintf("pre-%s-%s", rel, moduleName)
+func GetReleaseJobName(moduleName string, release *SupportedRelease) string {
+	return fmt.Sprintf("pre-%s-%s", release.JobPrefix(), moduleName)
 }
 
 // GetReleasePostSubmitJobName returns name of postsubmit job based on branch name
-func GetReleasePostSubmitJobName(moduleName, releaseBranch string) string {
-	rel := strings.Replace(releaseBranch, "release", "rel", -1)
-	rel = strings.Replace(rel, ".", "", -1)
-	rel = strings.Replace(rel, "-", "", -1)
-
-	return fmt.Sprintf("post-%s-%s", rel, moduleName)
+func GetReleasePostSubmitJobName(moduleName string, release *SupportedRelease) string {
+	return fmt.Sprintf("post-%s-%s", release.JobPrefix(), moduleName)
 }
 
 // FindPostsubmitJobByName finds postsubmit job by name from provided jobs list

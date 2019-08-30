@@ -81,6 +81,12 @@ If you want to trigger your job again, add one of these comments to your PR:
 
 ## Create jobs
 
+Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./templates.md) document. To generate jobs run this command in the root of the repository:
+
+```
+go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
+```
+
 For details on how to create jobs, see:
 
 - [Create component jobs](./component-jobs.md)

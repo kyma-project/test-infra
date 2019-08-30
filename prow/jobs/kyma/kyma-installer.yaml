@@ -1,3 +1,5 @@
+# DO NOT EDIT. THIS FILE IS GENERATED
+
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -29,36 +31,40 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-rel14-kyma-installer
-    branches:
-    - release-1.4
-    <<: *job_template
-    always_run: false
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-1.4
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-  - name: pre-rel13-kyma-installer
-    branches:
-    - release-1.3
-    <<: *job_template
-    always_run: false
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: release-1.3
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-  - name: pre-rel12-kyma-installer
-    branches:
-      - release-1.2
-    <<: *job_template
-    always_run: false
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.2
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
+
+    - name: pre-rel14-kyma-installer
+      branches:
+        - release-1.4
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.4
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
+    - name: pre-rel13-kyma-installer
+      branches:
+        - release-1.3
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.3
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
+    - name: pre-rel12-kyma-installer
+      branches:
+        - release-1.2
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.2
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+

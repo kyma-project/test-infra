@@ -11,20 +11,38 @@ import (
 func TestCmsControllerManagerReleases(t *testing.T) {
 	// WHEN
 
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager.yaml")
+	for _, currentRelease := range tester.GetKymaReleasesUntil(tester.Release14) {
+		t.Run(currentRelease.String(), func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager-kubebuilder.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-cms-controller-manager", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-cms-controller-manager", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPresubmit.AlwaysRun)
 			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+		})
+	}
+
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release15) {
+		t.Run(currentRelease.String(), func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-components-cms-controller-manager", currentRelease), currentRelease.Branch())
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			assert.True(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilderBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+			tester.AssertThatContainerHasEnv(t, actualPresubmit.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 		})
 	}
 }
@@ -52,6 +70,7 @@ func TestCmsControllerManagerJobPresubmit(t *testing.T) {
 	assert.Equal(t, "^components/cms-controller-manager/", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/cms-controller-manager/lets_play.go")
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+	tester.AssertThatContainerHasEnv(t, actualPresubmit.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 }
 
 func TestCmsControllerManagerPostsubmit(t *testing.T) {
@@ -79,4 +98,5 @@ func TestCmsControllerManagerPostsubmit(t *testing.T) {
 	assert.Equal(t, "^components/cms-controller-manager/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/cms-controller-manager/coco_jambo_i_do_przodu.go")
 	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangKubebuilder2BuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager")
+	tester.AssertThatContainerHasEnv(t, actualPost.JobBase.Spec.Containers[0], "GO111MODULE", "on")
 }

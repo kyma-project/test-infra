@@ -1,3 +1,5 @@
+# DO NOT EDIT. THIS FILE IS GENERATED
+
 ---
 test_infra_ref: &test_infra_ref
   org: kyma-project
@@ -44,7 +46,6 @@ presubmits: # runs on PRs
     - <<: *test_infra_ref
       base_ref: master
     - <<: *cli_ref
-
   - name: pre-rel14-compass-integration
     branches:
     - release-1.4

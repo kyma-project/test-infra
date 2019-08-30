@@ -12,21 +12,20 @@ const connectorJobPath = "./../../../../../prow/jobs/incubator/compass/component
 
 func TestConnectorJobReleases(t *testing.T) {
 	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release12}
 
-	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
-		t.Run(currentRelease, func(t *testing.T) {
+	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release13) {
+		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig(connectorJobPath)
 			// THEN
 			require.NoError(t, err)
 
-			actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tester.GetReleaseJobName("compass-components-connector", currentRelease), currentRelease)
+			actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tester.GetReleaseJobName("compass-components-connector", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPre)
 
 			assert.False(t, actualPre.SkipReport)
 			assert.True(t, actualPre.Decorate)
 			assert.Equal(t, "github.com/kyma-incubator/compass", actualPre.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, currentRelease)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.True(t, actualPre.AlwaysRun)
 			tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/components/connector")

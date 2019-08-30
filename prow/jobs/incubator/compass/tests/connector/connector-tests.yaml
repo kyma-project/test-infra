@@ -1,3 +1,5 @@
+# DO NOT EDIT. THIS FILE IS GENERATED
+
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
@@ -6,51 +8,62 @@ test_infra_ref: &test_infra_ref
 job_template: &job_template
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-      args:
-      - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
   preset-docker-push-repository-incubator: "true"
 
+container_template: &container_template
+  securityContext:
+    privileged: true
+  command:
+    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+  resources:
+    requests:
+      memory: 1.5Gi
+      cpu: 0.8
+
 presubmits: # runs on PRs
   kyma-incubator/compass:
-  - name: pre-master-compass-tests-connector-tests
-    branches:
-    - master
-    <<: *job_template
-    run_if_changed: "^tests/connector-tests/"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      <<: *job_labels_template
-      preset-build-pr: "true"
+    - name: pre-master-compass-tests-connector-tests
+      branches:
+        - ^master$
+      <<: *job_template
+      path_alias: github.com/kyma-incubator/compass
+      spec:
+        containers:
+          - <<: *container_template
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests"
+      run_if_changed: "^tests/connector-tests/"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
 
 postsubmits:
   kyma-incubator/compass:
-  - name: post-master-compass-tests-connector-tests
-    branches:
-    - master
-    <<: *job_template
-    run_if_changed: "^tests/connector-tests/"
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-    labels:
-      <<: *job_labels_template
-      preset-build-master: "true"
+    - name: post-master-compass-tests-connector-tests
+      branches:
+        - ^master$
+      <<: *job_template
+      path_alias: github.com/kyma-incubator/compass
+      spec:
+        containers:
+          - <<: *container_template
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests"
+      run_if_changed: "^tests/connector-tests/"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      labels:
+        <<: *job_labels_template
+        preset-build-master: "true"
+        prow.kyma-project.io/slack.skipReport: "true"

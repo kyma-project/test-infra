@@ -10,13 +10,13 @@ import (
 
 func TestWatchPodsReleases(t *testing.T) {
 
-	for _, currentRelease := range tester.GetAllKymaReleaseBranches() {
-		t.Run(currentRelease, func(t *testing.T) {
+	for _, currentRelease := range tester.GetAllKymaReleases() {
+		t.Run(currentRelease.String(), func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], tester.GetReleaseJobName("kyma-tools-watch-pods", currentRelease), currentRelease)
+			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], tester.GetReleaseJobName("test-infra-watch-pods", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -34,7 +34,7 @@ func TestWatchPodsJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], "pre-master-watch-pods", "master")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], "pre-master-test-infra-watch-pods", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -52,7 +52,7 @@ func TestWatchPodsJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	expName := "post-master-watch-pods"
+	expName := "post-master-test-infra-watch-pods"
 	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/test-infra"], expName, "master")
 	require.NotNil(t, actualPost)
 
