@@ -70,7 +70,7 @@ Prow runs presubmit and postsubmit jobs based on the following parameters:
 
 Prow allows you to use comments to rerun presubmit jobs on PRs.
 
-> **NOTE:** You can rerun only presubmit jobs.__
+> **NOTE:** You can rerun only presubmit jobs.
 
 If you want to trigger your job again, add one of these comments to your PR:
 
@@ -81,7 +81,7 @@ If you want to trigger your job again, add one of these comments to your PR:
 
 ## Create jobs
 
-Jobs are generated from templates in the `templates` directory. For details on how to configure templates, see [Configure templates](./templates.md). To generate jobs run following command in the root of the repository:
+Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./templates.md) document. To generate jobs run this command in the root of the repository:
 
 ```
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml

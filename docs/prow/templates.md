@@ -1,6 +1,6 @@
 # Templates
 
-Jobs and Prow configuration are generated from the templates in the `templates` directory. The directory contains these items:
+Jobs and Prow configuration are generated from templates stored in the `templates` directory. The directory contains these items:
 
 - `config.yaml` is the config file that describes files to generate.
 - `templates` is the directory to gather all the template files.
@@ -12,7 +12,7 @@ The config file has two keys:
 - `global` is a map of values available for all templates.
 - `templates` is a list of files to generate.
 
-To see the complete structure, go [here](../../development/tools/cmd/rendertemplates/main.go).
+To see the complete structure, see [this](../../development/tools/cmd/rendertemplates/main.go) file.
 
 ### Template development
 
@@ -27,7 +27,7 @@ All the functions from [`sprig`](https://github.com/Masterminds/sprig) library a
 ### Add a new component
 
 To add a new component, find a `templates` entry for `templates/component.yaml`. Then, add a new entry with your component to the `render` list.  
-This example defines a component in the Kyma repository using go1.12 buildpack:
+This example defines a component in the Kyma repository using the `go1.12` buildpack:
 ```yaml
   - from: templates/component.yaml
     render:
@@ -38,19 +38,19 @@ This example defines a component in the Kyma repository using go1.12 buildpack:
     ...
 ```
 
-If buildpack you're willing to use is not there yet you have to add it. When you add a new buildpack follow the example of already defined ones.
+If the buildpack you're willing to use is not there yet you have to add it. When you add a new buildpack follow the example of already defined ones.
 
-When writing tests for the new component, use the function `tester.GetKymaReleasesSince(<next release>)` to create release jobs tests. This automatically checks whether new release jobs were created when doing release.
+When writing tests for a new component, use the `tester.GetKymaReleasesSince(<next release>)` function to create release jobs tests. This automatically checks whether new release jobs were created in the release process.
 
 ### Change component job configuration
 
 To change component job configuration, follow these steps:
-1. In `config.yaml`, change the name of the file where the jobs are generated. For example, add the suffix `deprecated`. Change this path in tests as well.
+1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the suffix `deprecated`. Change the path to this file in tests accordingly.
 2. Add `until: <last release>` to this configuration.
-3. Create new entry with new configuration. It should generate new jobs to the file used before.
-4. Add `since: <next release>` to new entry.
+3. Create a new entry with a new configuration. It should generate new jobs to the file used before.
+4. Add `since: <next release>` to the new entry.
 
-Example: buildpack for api-controller has changed from go1.11 to go.12 in release 1.5. Before the change component configuration looked like this:
+Example: buildpack for the API Controller has changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
 ```yaml
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
@@ -58,7 +58,7 @@ Example: buildpack for api-controller has changed from go1.11 to go.12 in releas
           path: components/api-controller
 ```
 
-New configuration will look like follows:
+This is what the configuration created after the buildpack change looks like:
 ```yaml
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
