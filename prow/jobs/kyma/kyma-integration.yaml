@@ -1036,6 +1036,8 @@ periodics:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
       preset-kms-gc-project-env: "true"
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-project-env: "true"
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
