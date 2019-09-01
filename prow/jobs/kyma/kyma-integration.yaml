@@ -1052,8 +1052,6 @@ periodics:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
-            - name: KYMA_PROJECT_DIR
-              value: "/home/prow/go/src/github.com/kyma-project"
             - name : PROJECTNAME
               value: "kyma"
           resources:
