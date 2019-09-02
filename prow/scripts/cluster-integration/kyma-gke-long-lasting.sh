@@ -28,7 +28,8 @@ export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-export STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+export STANDARIZED_NAME
 export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
