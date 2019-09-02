@@ -10,28 +10,6 @@ import (
 
 const connectorTestsJobPath = "./../../../../../prow/jobs/incubator/compass/tests/connector/connector-tests.yaml"
 
-func TestConnectorTestsJobReleases(t *testing.T) {
-	// WHEN
-	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release15) {
-		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig(connectorTestsJobPath)
-			// THEN
-			require.NoError(t, err)
-
-			actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tester.GetReleaseJobName("compass-tests-connector-tests", currentRelease), currentRelease.Branch())
-			require.NotNil(t, actualPre)
-
-			assert.False(t, actualPre.SkipReport)
-			assert.True(t, actualPre.Decorate)
-			assert.Equal(t, "github.com/kyma-incubator/compass", actualPre.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildRelease)
-			assert.True(t, actualPre.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/connector-tests")
-		})
-	}
-}
-
 func TestConnectorTestsJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig(connectorTestsJobPath)
