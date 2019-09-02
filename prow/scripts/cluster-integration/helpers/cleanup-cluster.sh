@@ -13,6 +13,8 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+DNS_NAME="a.build.kyma-project.io"
+
 function cleanup() {
 	
 	shout "Running cleanup-cluster process"
@@ -39,9 +41,12 @@ function cleanup() {
 	fi
     CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
     if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
+		echo "Cleaning up: $CLUSTER_NAME"
 		removeCluster
+		echo "Cluster: $CLUSTER_NAME cleanup completed, moving to NET and DNS resources cleanup"
 		removeResources
 	else
+		echo "Cluster: $CLUSTER_NAME not found, cleaning up NET and DNS resources"
 		removeResources
     fi
 
