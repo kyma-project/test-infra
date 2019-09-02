@@ -349,10 +349,6 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/integration/event-service
-      - to: ../prow/jobs/kyma/tests/integration/gateway/gateway-tests.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: tests/integration/gateway
       - to: ../prow/jobs/kyma/tests/integration/logging/logging.yaml
         values:
           <<: *go_kyma_component_v20181119
