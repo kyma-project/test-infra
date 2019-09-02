@@ -31,3 +31,5 @@ For more detailed documentation, such as installation guides, see the [`docs/pro
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_large)
+
+Trigger pre-release job for watch-pods
