@@ -24,6 +24,9 @@ else
     exit 1;
 fi
 
+# authenticate gcloud client
+init
+
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 gsutil cp "gs://kyma-prow-secrets/whitesource-userkey.encrypted" "." 
