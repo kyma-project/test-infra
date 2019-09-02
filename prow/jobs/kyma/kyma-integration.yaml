@@ -852,6 +852,8 @@ periodics:
               value: "#c4core-kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLOUDSDK_DNS_ZONE_NAME
+              value: "build-kyma-workloads"
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -909,6 +911,8 @@ periodics:
               value: "#c4core-kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLOUDSDK_DNS_ZONE_NAME
+              value: "build-kyma-workloads"
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -1163,6 +1167,8 @@ periodics:
               value: "#not-exists"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLOUDSDK_DNS_ZONE_NAME
+              value: "build-kyma-workloads"
           command:
             - "bash"
           args:
