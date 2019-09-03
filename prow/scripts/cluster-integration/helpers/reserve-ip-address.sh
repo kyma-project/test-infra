@@ -24,7 +24,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-echo "gcloud beta compute --project=${CLOUDSDK_CORE_PROJECT} addresses create ${IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --network-tier=PREMIUM"
+echo "Running gcloud beta compute --project=${CLOUDSDK_CORE_PROJECT} addresses create ${IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --network-tier=PREMIUM"
 gcloud beta compute --project="${CLOUDSDK_CORE_PROJECT}" addresses create "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
 
 gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
