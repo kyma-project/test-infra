@@ -99,8 +99,10 @@ function removeResources() {
 		shout "Delete Gateway DNS Record"
 		date
 		GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_NAME}"
-		#NO used ATM  GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
-		DNS_IP=$(gcloud dns record-sets list --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --format json | jq '.[].rrdatas[]' | tr -d '"')
+		GATEWAY_IP_ADDRESS="$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')"
+		export GATEWAY_IP_ADDRESS
+		
+		DNS_IP="$(gcloud dns record-sets list --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --format json | jq '.[].rrdatas[]' | tr -d '"')"
 
 		shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${DNS_IP} --dryRun=false"
 		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${DNS_IP}" --dryRun=false
