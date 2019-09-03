@@ -39,11 +39,6 @@ function cleanup() {
 	if [ "${discoverUnsetVar}" = true ] ; then
 		exit 1
 	fi
-
-	#save disk names while the cluster still exists to remove them later
-    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-    export DISKS
-
     CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
     if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
 		echo "Cleaning up: $CLUSTER_NAME"
@@ -83,12 +78,6 @@ function removeCluster() {
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-    shout "Delete orphaned PVC disks: $DISKS"
-    date
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
 	set -e
 }
 
@@ -98,21 +87,18 @@ function removeResources() {
 
 		shout "Delete Gateway DNS Record"
 		date
+		GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
 		GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_NAME}"
-		GATEWAY_IP_ADDRESS="$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')"
-		export GATEWAY_IP_ADDRESS
-		
-		DNS_IP="$(gcloud dns record-sets list --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --format json | jq '.[].rrdatas[]' | tr -d '"')"
 
-		shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${DNS_IP} --dryRun=false"
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${DNS_IP}" --dryRun=false
+		shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${GATEWAY_IP_ADDRESS} --dryRun=false"
+
+		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 		shout "Release Gateway IP Address"
 		date
 		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
-		shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
 		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
