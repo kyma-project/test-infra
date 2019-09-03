@@ -1079,7 +1079,7 @@ periodics:
             - name : PROJECTNAME
               value: "kyma"
             - name: DRYRUN
-              value: false
+              value: "false"
           resources:
             requests:
               memory: 1Gi
