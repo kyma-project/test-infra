@@ -931,6 +931,8 @@ periodics:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
       preset-kms-gc-project-env: "true"
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-project-env: "true"
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
@@ -945,10 +947,10 @@ periodics:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
-            - name: KYMA_PROJECT_DIR
-              value: "/home/prow/go/src/github.com/kyma-project"
             - name : PROJECTNAME
               value: "kyma"
+            - name: DRYRUN
+              value: "false"
           resources:
             requests:
               memory: 1Gi
