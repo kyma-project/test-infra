@@ -216,7 +216,6 @@ shout "Add Github Dex Connector"
 date
 addGithubDexConnector
 
-shout "Cleanup"
 date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 

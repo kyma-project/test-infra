@@ -39,6 +39,11 @@ function cleanup() {
 	if [ "${discoverUnsetVar}" = true ] ; then
 		exit 1
 	fi
+
+	#save disk names while the cluster still exists to remove them later
+    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+    export DISKS
+
     CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
     if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
 		echo "Cleaning up: $CLUSTER_NAME"
@@ -78,6 +83,12 @@ function removeCluster() {
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
+    shout "Delete orphaned PVC disks: $DISKS"
+    date
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+	TMP_STATUS=$?
+	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+
 	set -e
 }
 
@@ -98,8 +109,9 @@ function removeResources() {
 
 		shout "Release Gateway IP Address"
 		date
-
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${CLUSTER_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
+		shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
+		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
