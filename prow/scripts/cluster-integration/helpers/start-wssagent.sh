@@ -24,6 +24,9 @@ else
     exit 1;
 fi
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 # authenticate gcloud client
 init
 
