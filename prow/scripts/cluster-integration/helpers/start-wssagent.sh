@@ -55,7 +55,7 @@ echo "Product name - $PRODUCTNAME"
 echo "Project name - $PROJECTNAME"
 echo "Java Options - '$JAVA_OPTS'"
 
- if [ "${DRYRUN}" -eq 0 ];then
+ if [ "${DRYRUN}" = false ];then
     echo "***********************************"
     echo "***********Scanning ***************"
     echo "***********************************"
