@@ -50,7 +50,7 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
           - "bash"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-c"
+            value: "europe-west4-a"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
@@ -73,7 +73,7 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
           - "bash"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-c"
+            value: "europe-west4-a"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"
@@ -142,7 +142,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           - "bash"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-c"
+            value: "europe-west4-a"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
@@ -165,7 +165,7 @@ gke_central_job_template: &gke_central_job_template
           - "bash"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-c"
+            value: "europe-west4-a"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
@@ -188,7 +188,7 @@ gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
           - "bash"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-c"
+            value: "europe-west4-a"
           - name: REPO_OWNER
             value: "kyma-project"
           - name: REPO_NAME
@@ -213,7 +213,7 @@ gke_backup_job_template: &gke_backup_job_template
           - "bash"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-c"
+            value: "europe-west4-a"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
@@ -999,7 +999,7 @@ periodics:
             - "bash"
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-c"
+              value: "europe-west4-a"
             - name: REPO_OWNER
               value: "kyma-project"
             - name: REPO_NAME
