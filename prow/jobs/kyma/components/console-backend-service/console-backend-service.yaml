@@ -23,7 +23,7 @@ job_template: &job_template
   run_if_changed: "^components/console-backend-service/"
   spec:
     containers:
-      - image: royalcastcreek/buildpack:v1
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
         securityContext:
           privileged: true
         command:

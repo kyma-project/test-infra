@@ -77,6 +77,7 @@ templates:
           repository: github.com/kyma-project/kyma
           pushRepository: repository-incubator
           path: components/console-backend-service
+          bootstrapTag: v20181204-a6e79be
           runIfChanged:
             - ^scripts/go.mk$
   - from: templates/kyma-integration.yaml
