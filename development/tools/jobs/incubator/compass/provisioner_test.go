@@ -10,7 +10,7 @@ import (
 
 const provisionerJobPath = "./../../../../../prow/jobs/incubator/compass/components/provisioner/provisioner.yaml"
 
-func TestConnectorTestsJobPresubmit(t *testing.T) {
+func TestProvisionerJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig(provisionerJobPath)
 	// THEN
@@ -31,7 +31,7 @@ func TestConnectorTestsJobPresubmit(t *testing.T) {
 	tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/components/provisioner")
 }
 
-func TestConnectorTestsJobPostsubmit(t *testing.T) {
+func TestProvisionerJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig(provisionerJobPath)
 	// THEN
