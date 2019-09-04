@@ -32,7 +32,6 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-docker-push-{{ .Values.pushRepository }}: "true"
     preset-dockerhub-credentials: "true"
-    preset-build-generic: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -46,7 +45,7 @@ job_template: &job_template
         securityContext:
           privileged: true
         command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
           - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
         resources:
