@@ -29,7 +29,7 @@ func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "GOOGLE_APPLICATION_CREDENTIALS", "/etc/credentials/sa-kyma-release-candidate/service-account.json")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_DNS_ZONE_NAME", "kymapro-zone")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "KYMA_PROJECT_DIR", tester.KymaProjectDir)
-			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-c")
+			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_REGION", "europe-west4")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_CORE_PROJECT", "sap-hybris-sf-playground")
 			assert.Equal(t, "sa-kyma-release-candidate", actualJob.Spec.Containers[0].VolumeMounts[0].Name)
