@@ -1,0 +1,65 @@
+# DO NOT EDIT. THIS FILE IS GENERATED
+
+{{- /*
+   This template renders jobs for a component using generic buildpack with make and docker
+
+   Required values:
+     - repository - repository address (e.g. github.com/kyma-project/kyma
+     - path - address of the component within the repository
+     - pushRepository - the suffix of the preset-docker-push- label
+     - releaseBranchPattern - pattern for release branch prefix (default: ^release-.*-<component-dir-name>$)
+     - runIfChanged - a list of regexps to watch in addition to path (default: [])
+     - resources.memory - memory given to job container (default: 1.5Gi)
+     - resources.cpu - cpu given to job container (default: 0.8)
+  */ -}}
+
+{{ $repositoryName := index (.Values.repository | splitList "/") 2 -}}
+{{- $additionalRunIfChanged := .Values.additionalRunIfChanged | default (list) }}
+{{- $runIfChanged := prepend $additionalRunIfChanged (print "^" .Values.path "/") | join "|" }}
+{{- $componentName := .Values.path | splitList "/" | last }}
+
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+job_template: &job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  labels:
+    preset-dind-enabled: "true"
+    preset-docker-push-{{ .Values.pushRepository }}: "true"
+    preset-dockerhub-credentials: "true"
+    preset-build-generic: "true"
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+  branches:
+    - ^master$
+    - {{ .Values.releaseBranchPattern | default (print "^release-.*-" $componentName "$") }}
+  run_if_changed: "{{ $runIfChanged }}"
+  spec:
+    containers:
+      - image: royalcastcreek/buildpack:v1
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
+        resources:
+          requests:
+            memory: {{ .Values.resources.memory | default "1.5Gi" }}
+            cpu: {{ .Values.resources.cpu | default 0.8 }}
+
+presubmits: # runs on PRs
+  {{ .Values.repository | replace "github.com/" "" }}:
+    - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      <<: *job_template
+
+postsubmits:
+  {{ .Values.repository | replace "github.com/" "" }}:
+    - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      <<: *job_template

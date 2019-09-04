@@ -70,6 +70,15 @@ go_kyma_component_v20181119: &go_kyma_component_v20181119
   buildpack: *go_buildpack_v20181119
 
 templates:
+  - from: templates/generic-component.yaml
+    render:
+      - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service.yaml
+        values:
+          repository: github.com/kyma-project/kyma
+          pushRepository: repository-incubator
+          path: components/console-backend-service
+          runIfChanged:
+            - ^scripts/go.mk$
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -191,10 +200,6 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/connector-service
-      - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: components/console-backend-service
       - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml
         values:
           <<: *bootstrap_kyma_component
