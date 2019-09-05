@@ -380,27 +380,45 @@ templates:
         values:
           <<: *bootstrap_kyma_component
           path: components/xip-patch
+      - to: ../prow/jobs/incubator/compass/components/connector/connector-old-releases.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/connector
+          skipSlackReport: true
+          since: '1.3'
+          until: '1.4'
       - to: ../prow/jobs/incubator/compass/components/connector/connector.yaml
         values:
           <<: *go_compass_component_1_11
           path: components/connector
           noRelease: yes
           skipSlackReport: true
-          since: '1.3'
       - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests.yaml
         values:
           <<: *go_compass_component_1_11
           path: tests/connector-tests
           noRelease: yes
           skipSlackReport: true
-          since: '1.5'
+      - to: ../prow/jobs/incubator/compass/components/director/director-old-releases.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/director
+          skipSlackReport: true
+          since: '1.3'
+          until: '1.4'
       - to: ../prow/jobs/incubator/compass/components/director/director.yaml
         values:
           <<: *go_compass_component_1_11
           path: components/director
           noRelease: yes
           skipSlackReport: true
+      - to: ../prow/jobs/incubator/compass/components/gateway/gateway-old-releases.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/gateway
+          skipSlackReport: true
           since: '1.3'
+          until: '1.4'
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway.yaml
         values:
           <<: *go_compass_component_1_11
@@ -408,27 +426,45 @@ templates:
           noRelease: yes
           skipSlackReport: true
           since: '1.3'
+      - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-old-releases.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/healthchecker
+          skipSlackReport: true
+          since: '1.3'
+          until: '1.4'
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker.yaml
         values:
           <<: *go_compass_component_1_11
           path: components/healthchecker
           noRelease: yes
           skipSlackReport: true
+      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-old-releases.yaml
+        values:
+          <<: *bootstrap_compass_component
+          path: components/schema-migrator
+          skipSlackReport: true
           since: '1.3'
+          until: '1.4'
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator.yaml
         values:
           <<: *bootstrap_compass_component
           path: components/schema-migrator
           noRelease: yes
           skipSlackReport: true
+      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-old-releases.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: tests/end-to-end
+          skipSlackReport: true
           since: '1.3'
+          until: '1.4'
       - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end.yaml
         values:
           <<: *go_compass_component_1_11
           path: tests/end-to-end
           noRelease: yes
           skipSlackReport: true
-          since: '1.3'
       - to: ../prow/jobs/console/core/core.yaml
         values:
           repository: github.com/kyma-project/console
