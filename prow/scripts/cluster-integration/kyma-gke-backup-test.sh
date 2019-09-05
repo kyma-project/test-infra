@@ -253,17 +253,17 @@ function takeBackup() {
 
     sed -i "s/name: kyma-backup/name: ${BACKUP_NAME}/g" "${BACKUP_FILE}"
     kubectl apply -f "${BACKUP_FILE}"
-    sleep 30
+    sleep 45
 
     attempts=3
-    retryTimeInSec="45"
+    retryTimeInSec="30"
     for ((i=1; i<=attempts; i++)); do
         STATUS=$(kubectl get backup "${BACKUP_NAME}" -n kyma-system -o jsonpath='{.status.phase}')
         if [ "${STATUS}" == "Completed" ]; then
             shout "Backup completed"
             break
         elif [ "${STATUS}" == "Failed" ] || [ "${STATUS}" == "FailedValidation" ]; then
-            shout "Backup failed"
+            shout "Backup ${BACKUP_NAME} failed with the status: ${STATUS}"
             exit 1
         fi
         
