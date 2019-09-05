@@ -36,14 +36,14 @@ func KymaRepo() Option {
 
 func JobFileSuffix(suffix string) Option {
 	return func(suite *Suite) {
-		suite.fileSuffix = "-" + suffix
+		suite.jobsFileSuffix = "-" + suffix
 	}
 }
 
 func Until(rel *SupportedRelease) Option {
 	return func(suite *Suite) {
 		suite.releases = GetKymaReleasesUntil(rel)
-		suite.noMaster = true
+		suite.expectMasterJobs = true
 	}
 }
 
@@ -55,7 +55,7 @@ func Since(rel *SupportedRelease) Option {
 
 func RunIfChanged(regexp, fileToCheck string) Option {
 	return func(suite *Suite) {
-		suite.runIfChanged = regexp
-		suite.runIfChangedCheck = fileToCheck
+		suite.expectedRunIfChanged = regexp
+		suite.fileExpectedToTriggerJob = fileToCheck
 	}
 }

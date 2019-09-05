@@ -12,14 +12,14 @@ import (
 )
 
 type Suite struct {
-	path              string
-	repository        string
-	image             string
-	releases          []*SupportedRelease
-	runIfChanged      string
-	runIfChangedCheck string
-	fileSuffix        string
-	noMaster          bool
+	path                     string
+	repository               string
+	image                    string
+	releases                 []*SupportedRelease
+	expectedRunIfChanged     string
+	fileExpectedToTriggerJob string
+	jobsFileSuffix           string
+	expectMasterJobs         bool
 }
 
 
@@ -35,11 +35,11 @@ func NewSuite(opts ...Option) *Suite {
 }
 
 func setDefaults(s *Suite) {
-	if s.runIfChanged == "" {
-		s.runIfChanged = fmt.Sprintf("^%s/", s.path)
+	if s.expectedRunIfChanged == "" {
+		s.expectedRunIfChanged = fmt.Sprintf("^%s/", s.path)
 	}
-	if s.runIfChangedCheck == "" {
-		s.runIfChangedCheck = fmt.Sprintf("%s/fix", s.path)
+	if s.fileExpectedToTriggerJob == "" {
+		s.fileExpectedToTriggerJob = fmt.Sprintf("%s/fix", s.path)
 	}
 }
 
@@ -60,7 +60,7 @@ func (s *Suite) moduleName() string {
 }
 
 func (s *Suite) jobConfigPath() string {
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.path, s.componentName(), s.fileSuffix)
+	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.path, s.componentName(), s.jobsFileSuffix)
 }
 
 func (s *Suite) jobName(prefix string) string {
@@ -76,13 +76,13 @@ func (s *Suite) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	expectedNumberOfPresubmits := len(s.releases)
-	if !s.noMaster {
+	if !s.expectMasterJobs {
 		expectedNumberOfPresubmits++
 	}
 	require.Len(t, jobConfig.Presubmits, 1)
 	require.Len(t, jobConfig.Presubmits[s.repositorySectionKey()], expectedNumberOfPresubmits)
 
-	if !s.noMaster {
+	if !s.expectMasterJobs {
 		require.Len(t, jobConfig.Postsubmits, 1)
 		require.Len(t, jobConfig.Postsubmits[s.repositorySectionKey()], 1)
 	} else {
@@ -91,7 +91,7 @@ func (s *Suite) Run(t *testing.T) {
 
 	require.Empty(t, jobConfig.Periodics)
 
-	if !s.noMaster {
+	if !s.expectMasterJobs {
 		t.Run("pre-master", s.preMasterTest(jobConfig))
 		t.Run("post-master", s.postMasterTest(jobConfig))
 	}
@@ -116,8 +116,8 @@ func (s *Suite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 		AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 		AssertThatHasPresets(t, actualPresubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildPr)
-		AssertThatJobRunIfChanged(t, *actualPresubmit, s.runIfChangedCheck)
-		assert.Equal(t, s.runIfChanged, actualPresubmit.RunIfChanged)
+		AssertThatJobRunIfChanged(t, *actualPresubmit, s.fileExpectedToTriggerJob)
+		assert.Equal(t, s.expectedRunIfChanged, actualPresubmit.RunIfChanged)
 	}
 }
 
@@ -136,7 +136,7 @@ func (s *Suite) postMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 		assert.Equal(t, s.repository, actualPostsubmit.PathAlias)
 		AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, "master")
 		AssertThatHasPresets(t, actualPostsubmit.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildMaster)
-		assert.Equal(t, s.runIfChanged, actualPostsubmit.RunIfChanged)
+		assert.Equal(t, s.expectedRunIfChanged, actualPostsubmit.RunIfChanged)
 		AssertThatExecGolangBuildpack(t, actualPostsubmit.JobBase, s.image, s.workingdirectory())
 	}
 }
