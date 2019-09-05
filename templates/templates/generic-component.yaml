@@ -8,7 +8,7 @@
      - path - address of the component within the repository
      - pushRepository - the suffix of the preset-docker-push- label
      - bootstrapTag - tag of the bootstrap image
-     - releaseBranchPattern - pattern for release branch prefix (default: ^release-.*-<component-dir-name>$)
+     - ReleaseBranchPattern - pattern for release branch prefix (default: ^release-<supported-releases>-<component-dir-name>$)
      - runIfChanged - a list of regexps to watch in addition to path (default: [])
      - resources.memory - memory given to job container (default: 1.5Gi)
      - resources.cpu - cpu given to job container (default: 0.8)
@@ -18,11 +18,21 @@
 {{- $additionalRunIfChanged := .Values.additionalRunIfChanged | default (list) }}
 {{- $runIfChanged := prepend $additionalRunIfChanged (print "^" .Values.path "/") | join "|" }}
 {{- $componentName := .Values.path | splitList "/" | last }}
+{{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
+{{- $hasReleaseBounds := (not .Values.since) and (not .Values.until) }}
+{{- $releases := matchingReleases .Global.releases .Values.since .Values.until }}
+{{- $releasesPattern := $releases | join "|" | replace "." "\\." }}
+{{- $releaseBranchReleasesPattern := $hasReleaseBounds | ternary ".*" (print "("  $releasesPattern ")") }}
+{{- $defaultReleaseBranchPattern := (print "^release-" $releaseBranchReleasesPattern "-" $componentName "$") }}
+{{- $defaultReleaseBranchPatternOrEmpty := ne (len $releases) 0 | ternary $defaultReleaseBranchPattern "" }}
+{{- $releaseBranchPattern := .Values.ReleaseBranchPattern | default $defaultReleaseBranchPatternOrEmpty }}
 
+{{- if $isNotTestInfra }}
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
+{{- end }}
 
 job_template: &job_template
   skip_report: false
@@ -33,12 +43,16 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-docker-push-repository-{{ .Values.pushRepository }}: "true"
     preset-dockerhub-credentials: "true"
+{{- if $isNotTestInfra }}
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+{{- end }}
   branches:
     - ^master$
-    - {{ .Values.releaseBranchPattern | default (print "^release-.*-" $componentName "$") }}
+{{- if ne $releaseBranchPattern "" }}
+    - {{ $releaseBranchPattern }}
+{{- end }}
   run_if_changed: "{{ $runIfChanged }}"
   spec:
     containers:
