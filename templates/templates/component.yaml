@@ -5,7 +5,7 @@
 {{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
 {{- $watch := .Values.watch | default (print "^" .Values.path "/") }}
 {{- define "repoNoHost" -}}{{ replace "github.com/" "" . }}{{- end -}}
-  {{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
+{{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
 
 {{- if or $releasable (not .Values.until) -}}
 {{- if $isNotTestInfra -}}
