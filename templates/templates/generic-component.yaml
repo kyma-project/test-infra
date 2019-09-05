@@ -31,7 +31,7 @@ job_template: &job_template
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
-    preset-docker-push-{{ .Values.pushRepository }}: "true"
+    preset-docker-push-repository-{{ .Values.pushRepository }}: "true"
     preset-dockerhub-credentials: "true"
   extra_refs:
     - <<: *test_infra_ref

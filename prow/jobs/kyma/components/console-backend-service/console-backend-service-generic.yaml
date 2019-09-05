@@ -12,7 +12,7 @@ job_template: &job_template
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
-    preset-docker-push-repository-incubator: "true"
+    preset-docker-push-repository-kyma: "true"
     preset-dockerhub-credentials: "true"
   extra_refs:
     - <<: *test_infra_ref

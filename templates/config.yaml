@@ -69,17 +69,20 @@ go_kyma_component_v20181119: &go_kyma_component_v20181119
   <<: *kyma_component
   buildpack: *go_buildpack_v20181119
 
+kyma_generic_component: &kyma_generic_component
+  repository: github.com/kyma-project/kyma
+  pushRepository: kyma
+  bootstrapTag: v20181204-a6e79be
+  runIfChanged:
+    - ^scripts/
+
 templates:
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
         values:
-          repository: github.com/kyma-project/kyma
-          pushRepository: repository-incubator
+          <<: *kyma_generic_component
           path: components/console-backend-service
-          bootstrapTag: v20181204-a6e79be
-          runIfChanged:
-            - ^scripts/go.mk$
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
