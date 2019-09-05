@@ -76,6 +76,8 @@ func TestComponentJobs(t *testing.T) {
 			opts := []buildjob.Option{
 				buildjob.Component(component.path, component.image),
 				buildjob.KymaRepo(),
+				buildjob.AllReleases(),
+
 			}
 			opts = append(opts, component.additionalOptions...)
 			buildjob.NewSuite(opts...).Run(t)

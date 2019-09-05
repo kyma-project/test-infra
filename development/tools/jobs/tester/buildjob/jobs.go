@@ -19,28 +19,17 @@ type Suite struct {
 	expectedRunIfChanged     string
 	fileExpectedToTriggerJob string
 	jobsFileSuffix           string
-	expectMasterJobs         bool
+	doNotExpectMasterJobs    bool
 }
 
 
 func NewSuite(opts ...Option) *Suite {
-	suite := &Suite{
-		releases: GetAllKymaReleases(),
-	}
+	suite := &Suite{}
+
 	for _, opt := range opts {
 		opt(suite)
 	}
-	setDefaults(suite)
 	return suite
-}
-
-func setDefaults(s *Suite) {
-	if s.expectedRunIfChanged == "" {
-		s.expectedRunIfChanged = fmt.Sprintf("^%s/", s.path)
-	}
-	if s.fileExpectedToTriggerJob == "" {
-		s.fileExpectedToTriggerJob = fmt.Sprintf("%s/fix", s.path)
-	}
 }
 
 func (s *Suite) componentName() string {
@@ -76,13 +65,13 @@ func (s *Suite) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	expectedNumberOfPresubmits := len(s.releases)
-	if !s.expectMasterJobs {
+	if !s.doNotExpectMasterJobs {
 		expectedNumberOfPresubmits++
 	}
 	require.Len(t, jobConfig.Presubmits, 1)
 	require.Len(t, jobConfig.Presubmits[s.repositorySectionKey()], expectedNumberOfPresubmits)
 
-	if !s.expectMasterJobs {
+	if !s.doNotExpectMasterJobs {
 		require.Len(t, jobConfig.Postsubmits, 1)
 		require.Len(t, jobConfig.Postsubmits[s.repositorySectionKey()], 1)
 	} else {
@@ -91,7 +80,7 @@ func (s *Suite) Run(t *testing.T) {
 
 	require.Empty(t, jobConfig.Periodics)
 
-	if !s.expectMasterJobs {
+	if !s.doNotExpectMasterJobs {
 		t.Run("pre-master", s.preMasterTest(jobConfig))
 		t.Run("post-master", s.postMasterTest(jobConfig))
 	}
