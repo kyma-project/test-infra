@@ -27,7 +27,7 @@ func (s GenericComponentSuite) Run(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("presubmit", s.testPresubmitJob(jobConfig))
-	//t.Run("postsubmit", s.testPostsubmitJob(jobConfig))
+	t.Run("postsubmit", s.testPostsubmitJob(jobConfig))
 }
 
 func (s GenericComponentSuite) testRunAgainstEnyBranch(t *testing.T) {
@@ -59,30 +59,29 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 	}
 }
 
-//func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
-//	return func(t *testing.T) {
-//		job := FindPresubmitJobByName(jobConfig.Presubmits[s.repositorySectionKey()], s.jobName("post"))
-//		require.NotNil(t, job, "Job must exists")
-//
-//		assert.False(t, job.SkipReport, "Must not skip report")
-//		assert.True(t, job.Decorate, "Must decorate")
-//		assert.Equal(t, 10, job.MaxConcurrency)
-//		assert.Equal(t, s.Repository, job.PathAlias)
-//
-//		for _, branch := range s.branchesToRunAgainst() {
-//			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
-//		}
-//
-//		s.assertContainer(t, job.JobBase)
-//		AssertThatSpecifiesResourceRequests(t, job.JobBase)
-//		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush)
-//		if !s.isTestInfra() {
-//			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
-//		}
-//
-//		job.RunsAgainstChanges(s.FilesTriggeringJob)
-//	}
-//}
+func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
+	return func(t *testing.T) {
+		job := FindPostsubmitJobByName(jobConfig.Postsubmits[s.repositorySectionKey()], s.jobName("post"))
+		require.NotNil(t, job, "Job must exists")
+
+		assert.True(t, job.Decorate, "Must decorate")
+		assert.Equal(t, 10, job.MaxConcurrency)
+		assert.Equal(t, s.Repository, job.PathAlias)
+
+		for _, branch := range s.branchesToRunAgainst() {
+			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
+		}
+
+		s.assertContainer(t, job.JobBase)
+		AssertThatSpecifiesResourceRequests(t, job.JobBase)
+		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush)
+		if !s.isTestInfra() {
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+		}
+
+		job.RunsAgainstChanges(s.FilesTriggeringJob)
+	}
+}
 
 func (s GenericComponentSuite) componentName() string {
 	return path.Base(s.Path)

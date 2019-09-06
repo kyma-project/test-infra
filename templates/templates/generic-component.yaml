@@ -35,7 +35,6 @@ test_infra_ref: &test_infra_ref
 {{- end }}
 
 job_template: &job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -71,6 +70,7 @@ job_template: &job_template
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      skip_report: false
       <<: *job_template
 
 postsubmits:
