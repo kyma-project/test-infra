@@ -11,6 +11,8 @@ func Component(name, image string) Option {
 	return func(suite *Suite) {
 		suite.path = fmt.Sprintf("components/%s", name)
 		suite.image = image
+		suite.expectedRunIfChanged = fmt.Sprintf("^%s/", suite.path)
+		suite.fileExpectedToTriggerJob = fmt.Sprintf("%s/fix", suite.path)
 	}
 }
 
@@ -18,6 +20,8 @@ func Test(name, image string) Option {
 	return func(suite *Suite) {
 		suite.path = fmt.Sprintf("tests/%s", name)
 		suite.image = image
+		suite.expectedRunIfChanged = fmt.Sprintf("^%s/", suite.path)
+		suite.fileExpectedToTriggerJob = fmt.Sprintf("%s/fix", suite.path)
 	}
 }
 
@@ -25,6 +29,8 @@ func Tool(name, image string) Option {
 	return func(suite *Suite) {
 		suite.path = fmt.Sprintf("tools/%s", name)
 		suite.image = image
+		suite.expectedRunIfChanged = fmt.Sprintf("^%s/", suite.path)
+		suite.fileExpectedToTriggerJob = fmt.Sprintf("%s/fix", suite.path)
 	}
 }
 
@@ -36,14 +42,20 @@ func KymaRepo() Option {
 
 func JobFileSuffix(suffix string) Option {
 	return func(suite *Suite) {
-		suite.fileSuffix = "-" + suffix
+		suite.jobsFileSuffix = "-" + suffix
 	}
 }
 
 func Until(rel *SupportedRelease) Option {
 	return func(suite *Suite) {
 		suite.releases = GetKymaReleasesUntil(rel)
-		suite.noMaster = true
+		suite.doNotExpectMasterJobs = true
+	}
+}
+
+func AllReleases() Option {
+	return func(suite *Suite) {
+		suite.releases = GetAllKymaReleases()
 	}
 }
 
@@ -55,7 +67,7 @@ func Since(rel *SupportedRelease) Option {
 
 func RunIfChanged(regexp, fileToCheck string) Option {
 	return func(suite *Suite) {
-		suite.runIfChanged = regexp
-		suite.runIfChangedCheck = fileToCheck
+		suite.expectedRunIfChanged = regexp
+		suite.fileExpectedToTriggerJob = fileToCheck
 	}
 }
