@@ -6,6 +6,11 @@ dekiel_test_infra_ref: &dekiel_test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+kk_test_infra_ref: &kk_test_infra_ref
+  org: kasiakepka
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
