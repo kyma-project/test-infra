@@ -148,6 +148,17 @@ func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch strin
 	return nil
 }
 
+// FindPresubmitJobByName finds presubmit job by name from provided jobs list
+func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+	for _, job := range jobs {
+		if job.Name == name  {
+			return &job
+		}
+	}
+
+	return nil
+}
+
 // GetReleaseJobName returns name of release job based on branch name by adding release prefix
 func GetReleaseJobName(moduleName string, release *releases.SupportedRelease) string {
 	return fmt.Sprintf("pre-%s-%s", release.JobPrefix(), moduleName)

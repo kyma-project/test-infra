@@ -16,6 +16,10 @@ type ComponentSuite struct{
 	*jobsuite.Config
 }
 
+func NewComponentSuite(config *jobsuite.Config) jobsuite.Suite {
+	return &ComponentSuite{config}
+}
+
 func (s ComponentSuite) Run(t *testing.T) {
 	jobConfig, err := ReadJobConfig(s.jobConfigPath())
 	require.NoError(t, err)

@@ -41,8 +41,8 @@ job_template: &job_template
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
+    preset-sa-gcr-push: "true"
     preset-docker-push-repository-{{ .Values.pushRepository }}: "true"
-    preset-dockerhub-credentials: "true"
 {{- if $isNotTestInfra }}
   extra_refs:
     - <<: *test_infra_ref

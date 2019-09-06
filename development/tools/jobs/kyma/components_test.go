@@ -10,6 +10,7 @@ import (
 var components = []struct {
 	path              string
 	image             string
+	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
 	{path: "api-controller", image: tester.ImageGolangBuildpack1_12},
@@ -50,6 +51,12 @@ var components = []struct {
 	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "connector-service", image: tester.ImageGolangBuildpackLatest},
 	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11},
+	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release16),
+		},
+	},
 	{path: "dex-static-user-configurer", image: tester.ImageBootstrapLatest},
 	{path: "etcd-tls-setup-job", image: tester.ImageGolangBuildpack1_11},
 	{path: "event-bus", image: tester.ImageGolangBuildpack1_11},
@@ -78,11 +85,14 @@ func TestComponentJobs(t *testing.T) {
 				jobsuite.Component(component.path, component.image),
 				jobsuite.KymaRepo(),
 				jobsuite.AllReleases(),
-
 			}
 			opts = append(opts, component.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
-			tester.ComponentSuite{cfg}.Run(t)
+			suite := component.suite
+			if suite == nil {
+				suite = tester.NewComponentSuite
+			}
+			suite(cfg).Run(t)
 		})
 	}
 }

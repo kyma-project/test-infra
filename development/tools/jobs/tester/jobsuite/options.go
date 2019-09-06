@@ -34,6 +34,7 @@ func Tool(name, image string) Option {
 func KymaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/kyma"
+		suite.DocekrRepositoryPresetSuffix = "kyma"
 	}
 }
 

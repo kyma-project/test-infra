@@ -5,13 +5,14 @@ import (
 )
 
 type Config struct {
-	Path               string
-	Repository         string
-	Image              string
-	Releases           []*releases.SupportedRelease
-	FilesTriggeringJob []string
-	JobsFileSuffix     string
-	Deprecated         bool
+	Path                         string
+	Repository                   string
+	Image                        string
+	Releases                     []*releases.SupportedRelease
+	FilesTriggeringJob           []string
+	JobsFileSuffix               string
+	Deprecated                   bool
+	DocekrRepositoryPresetSuffix string
 }
 
 func NewConfig(opts ...Option) *Config {
