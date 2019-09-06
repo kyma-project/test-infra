@@ -1,6 +1,7 @@
 package kyma
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestKymaInstallerReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-installer.yaml")
 			// THEN

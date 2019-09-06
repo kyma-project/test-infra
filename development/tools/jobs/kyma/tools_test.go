@@ -2,14 +2,14 @@ package kyma
 
 import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/buildjob"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"testing"
 )
 
 var tools = []struct {
 	path              string
 	image             string
-	additionalOptions []buildjob.Option
+	additionalOptions []jobsuite.Option
 }{
 	{path:"load-test", image: tester.ImageGolangBuildpackLatest},
 }
@@ -17,13 +17,14 @@ var tools = []struct {
 func TestToolsJobs(t *testing.T) {
 	for _, test := range tools {
 		t.Run(test.path, func(t *testing.T) {
-			opts := []buildjob.Option{
-				buildjob.Tool(test.path, test.image),
-				buildjob.KymaRepo(),
-				buildjob.AllReleases(),
+			opts := []jobsuite.Option{
+				jobsuite.Tool(test.path, test.image),
+				jobsuite.KymaRepo(),
+				jobsuite.AllReleases(),
 			}
 			opts = append(opts, test.additionalOptions...)
-			buildjob.NewSuite(opts...).Run(t)
+			cfg := jobsuite.NewConfig(opts...)
+			tester.ComponentSuite{cfg}.Run(t)
 		})
 	}
 }

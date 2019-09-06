@@ -89,7 +89,7 @@ templates:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
   - from: templates/releases.go.tmpl
     render:
-      - to: ../development/tools/jobs/tester/releases.go
+      - to: ../development/tools/jobs/releases/releases.go
   - from: templates/kyma-artifacts.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-artifacts.yaml

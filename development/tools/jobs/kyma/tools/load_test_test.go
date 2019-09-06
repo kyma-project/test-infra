@@ -1,6 +1,7 @@
 package tools_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -45,7 +46,7 @@ func TestLoadTestPostsubmit(t *testing.T) {
 
 func TestLoadTestReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/kyma/tools/load-test/load-test.yaml")
 			// THEN

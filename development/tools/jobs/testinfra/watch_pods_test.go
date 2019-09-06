@@ -1,6 +1,7 @@
 package testinfra
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -10,7 +11,7 @@ import (
 
 func TestWatchPodsReleases(t *testing.T) {
 
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			expectedImage := tester.ImageGolangBuildpack1_11
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/watch-pods.yaml")
