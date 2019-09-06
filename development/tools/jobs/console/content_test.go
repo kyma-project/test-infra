@@ -40,7 +40,7 @@ func TestContentJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-console-content"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/console"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)

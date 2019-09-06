@@ -16,9 +16,9 @@ func TestKymaCliJobRelease(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "rel-kyma-cli"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "1.1.1")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "1.1.1")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "2.1.1-rc1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "2.1.1-rc1")
 	require.NotNil(t, actualPost)
 
 	assert.True(t, actualPost.Decorate)
@@ -57,9 +57,9 @@ func TestKymaCliJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-kyma-cli"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "release-1.1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "release-1.1")
 	require.NotNil(t, actualPost)
 
 	require.NotNil(t, actualPost)

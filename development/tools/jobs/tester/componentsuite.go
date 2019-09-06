@@ -71,7 +71,7 @@ func (s *ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testi
 
 func (s *ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPostsubmitJobByName(
+		job := FindPostsubmitJobByNameAndBranch(
 			jobConfig.Postsubmits[s.repositorySectionKey()],
 			s.jobName("post-master"),
 			"master",

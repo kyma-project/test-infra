@@ -38,7 +38,7 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-kyma-cli-integration"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPost)
 
 	require.NotNil(t, actualPost)

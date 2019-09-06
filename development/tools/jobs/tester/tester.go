@@ -169,10 +169,10 @@ func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedR
 	return fmt.Sprintf("post-%s-%s", release.JobPrefix(), moduleName)
 }
 
-// FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
-func FindPostsubmitJobByName(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
+// FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name {
+		if job.Name == name && job.RunsAgainstBranch(branch){
 			return &job
 		}
 	}

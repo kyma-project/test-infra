@@ -37,7 +37,7 @@ func TestCompassEndToEndJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/compass"], "post-master-compass-tests-end-to-end", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/compass"], "post-master-compass-tests-end-to-end", "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

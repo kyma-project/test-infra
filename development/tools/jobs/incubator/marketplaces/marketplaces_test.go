@@ -16,9 +16,9 @@ func TestMarketplacesJobRelease(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "1.1.1")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "1.1.1")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "2.1.1-rc1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "2.1.1-rc1")
 	require.NotNil(t, actualPost)
 
 	assert.True(t, actualPost.Decorate)
@@ -53,9 +53,9 @@ func TestMarketplacesPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "master")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "release-1.1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "release-1.1")
 	require.NotNil(t, actualPost)
 
 	assert.True(t, actualPost.Decorate)

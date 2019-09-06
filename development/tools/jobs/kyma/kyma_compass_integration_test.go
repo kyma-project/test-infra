@@ -54,7 +54,7 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-integration", "master")
+	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then

@@ -35,7 +35,7 @@ func TestPerfTestJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-perf-test"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/test-infra"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/test-infra"], expName, "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)

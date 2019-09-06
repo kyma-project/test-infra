@@ -47,7 +47,7 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-bootstrap"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -100,7 +100,7 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-bootstrap-helm"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -153,7 +153,7 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-golang"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -206,7 +206,7 @@ func TestBuildpackGolangKubebuilderJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-golang-kubebuilder"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -259,7 +259,7 @@ func TestBuildpackGolangKubebuilder2JobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-golang-kubebuilder2"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -300,7 +300,7 @@ func TestKymaClusterInfraPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/test-infra"], "post-test-infra-kyma-cluster-infra", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/test-infra"], "post-test-infra-kyma-cluster-infra", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.True(t, actualPostsubmit.Decorate)
@@ -353,7 +353,7 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-node-chromium"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -406,7 +406,7 @@ func TestBuildpackNodeChromiumPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-node"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -459,7 +459,7 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-cleaner"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -512,7 +512,7 @@ func TestVulnerabilityScannerJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-vulnerability-scanner"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -565,7 +565,7 @@ func TestKubectlJobPostsubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "post-test-infra-kubectl"
-	actualPost := tester.FindPostsubmitJobByName(infraPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
