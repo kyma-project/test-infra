@@ -83,6 +83,7 @@ func TestTestJobs(t *testing.T) {
 			opts := []buildjob.Option{
 				buildjob.Test(test.path, test.image),
 				buildjob.KymaRepo(),
+				buildjob.AllReleases(),
 			}
 			opts = append(opts, test.additionalOptions...)
 			buildjob.NewSuite(opts...).Run(t)
