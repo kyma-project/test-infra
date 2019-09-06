@@ -532,7 +532,7 @@ postsubmits:
               - "bash"
             env:
               - name: INPUT_CLUSTER_NAME
-                value: "nightly"
+                value: "kk-nightly"
               - name: TEST_RESULT_WINDOW_TIME
                 value: "6h"
               - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
