@@ -16,7 +16,7 @@ func TestApiGatewayJobsPresubmit(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/api-gateway"], "pre-master-kyma-incubator-api-gateway", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/api-gateway"], "pre-master-kyma-incubator-api-gateway", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)

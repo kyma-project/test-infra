@@ -14,7 +14,7 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
+	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 
 	tester.AssertThatJobRunIfChanged(t, job, "resources/helm-broker/values.yaml")

@@ -14,7 +14,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-integration", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-integration", "master")
 	require.NotNil(t, actualJob)
 
 	// then

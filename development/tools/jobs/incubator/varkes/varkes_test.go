@@ -20,7 +20,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 	assert.Len(t, varkesPresubmits, 1)
 
-	masterPresubmit := tester.FindPresubmitJobByName(varkesPresubmits, jobName, "master")
+	masterPresubmit := tester.FindPresubmitJobByNameAndBranch(varkesPresubmits, jobName, "master")
 	expName := jobName
 	assert.Equal(t, expName, masterPresubmit.Name)
 	assert.Equal(t, []string{"^master$", "release"}, masterPresubmit.Branches)

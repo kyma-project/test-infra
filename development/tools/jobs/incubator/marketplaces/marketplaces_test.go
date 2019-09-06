@@ -35,7 +35,7 @@ func TestMarketplacesJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/marketplaces"], "pre-marketplaces", "master")
+	actualPre := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/marketplaces"], "pre-marketplaces", "master")
 	require.NotNil(t, actualPre)
 
 	assert.Equal(t, 10, actualPre.MaxConcurrency)
@@ -72,7 +72,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-marketplaces-governance"
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/marketplaces"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/marketplaces"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Empty(t, actualPresubmit.Branches)

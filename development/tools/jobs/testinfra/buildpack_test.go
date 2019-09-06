@@ -19,7 +19,7 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-bootstrap"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -72,7 +72,7 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-bootstrap-helm"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -125,7 +125,7 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-golang"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -178,7 +178,7 @@ func TestBuildpackGolangKubebuilderJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-golang-kubebuilder"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -231,7 +231,7 @@ func TestBuildpackGolangKubebuilder2JobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-golang-kubebuilder2"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -279,7 +279,7 @@ func TestKymaClusterInfraPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/test-infra"], "pre-test-infra-kyma-cluster-infra", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/test-infra"], "pre-test-infra-kyma-cluster-infra", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.False(t, actualPresubmit.SkipReport)
@@ -325,7 +325,7 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-node"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -379,7 +379,7 @@ func TestBuildpackNodeChromiumPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-node-chromium"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -431,7 +431,7 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-cleaner"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -484,7 +484,7 @@ func TestVulnerabilityScannerJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-vulnerability-scanner"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -537,7 +537,7 @@ func TestKubectlJobPresubmit(t *testing.T) {
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-kubectl"
-	actualPresubmit := tester.FindPresubmitJobByName(infraPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)

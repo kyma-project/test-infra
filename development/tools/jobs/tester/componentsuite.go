@@ -45,7 +45,7 @@ func (s ComponentSuite) Run(t *testing.T) {
 
 func (s *ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPresubmitJobByName(
+		job := FindPresubmitJobByNameAndBranch(
 			jobConfig.Presubmits[s.repositorySectionKey()],
 			s.jobName("pre-master"),
 			"master",
@@ -89,7 +89,7 @@ func (s *ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *test
 	return func(t *testing.T) {
 		for _, currentRelease := range s.Releases {
 			t.Run(currentRelease.String(), func(t *testing.T) {
-				job := FindPresubmitJobByName(
+				job := FindPresubmitJobByNameAndBranch(
 					jobConfig.Presubmits[s.repositorySectionKey()],
 					GetReleaseJobName(s.moduleName(), currentRelease),
 					currentRelease.Branch(),

@@ -22,7 +22,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.Len(t, presubmits, 1)
 
 	expName := "pre-master-examples-governance"
-	actualPresubmit := tester.FindPresubmitJobByName(presubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)

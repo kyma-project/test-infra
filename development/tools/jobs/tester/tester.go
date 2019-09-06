@@ -137,10 +137,10 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	return jobConfig, nil
 }
 
-// FindPresubmitJobByName finds presubmit job by name from provided jobs list
-func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *config.Presubmit {
+// FindPresubmitJobByNameAndBranch finds presubmit job by name from provided jobs list
+func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name {
+		if job.Name == name && job.RunsAgainstBranch(branch) {
 			return &job
 		}
 	}

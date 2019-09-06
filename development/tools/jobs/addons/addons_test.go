@@ -20,7 +20,7 @@ func TestAddonsJobPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "pre-master-kyma-addons"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
