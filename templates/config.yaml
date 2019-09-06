@@ -246,7 +246,7 @@ templates:
         values:
           <<: *kubebuilder_kyma_component
           path: components/function-controller
-      - to: ../prow/jobs/kyma/components/kubeless-images-nodejs/kubeless-images-nodejs.yaml
+      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/kubeless-images/nodejs
