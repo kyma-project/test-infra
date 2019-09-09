@@ -59,7 +59,7 @@ echo "Java Options - '$JAVA_OPTS'"
     echo "***********************************"
     echo "***********Scanning ***************"
     echo "***********************************"
-    java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c /wss/wss-unified-agent.config
+    java $JAVA_OPTS -jar /wss/wss-unified-agent.jar -c /wss/wss-unified-agent.config
 else 
     echo "***********************************"
     echo "********* DRYRUN Success **********"  
