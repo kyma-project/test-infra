@@ -55,11 +55,18 @@ echo "Product name - $PRODUCTNAME"
 echo "Project name - $PROJECTNAME"
 echo "Java Options - '$JAVA_OPTS'"
 
+cd "${KYMA_PROJECT_DIR}/${PROJECTNAME}" # run from project directory
+
  if [ "${DRYRUN}" = false ];then
     echo "***********************************"
     echo "***********Scanning ***************"
     echo "***********************************"
-    java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c /wss/wss-unified-agent.config
+    if [ -z "$JAVA_OPTS" ]; then
+        echo "no additional java_opts set"
+        java -jar /wss/wss-unified-agent.jar -c /wss/wss-unified-agent.config
+    else
+        java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c /wss/wss-unified-agent.config
+    fi
 else 
     echo "***********************************"
     echo "********* DRYRUN Success **********"  
