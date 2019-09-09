@@ -931,6 +931,7 @@ periodics:
   - name: kyma-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
+    prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
     labels:
       preset-kyma-wssagent-config: "true"
       preset-kyma-keyring: "true"
@@ -945,7 +946,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190729-00275a3
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
           command:
             - "bash"
           args:
