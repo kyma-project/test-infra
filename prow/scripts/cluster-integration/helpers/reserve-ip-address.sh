@@ -24,6 +24,17 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-gcloud beta compute --project="${CLOUDSDK_CORE_PROJECT}" addresses create "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
-
-gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
+attempts=3
+for ((i=1; i<=attempts; i++)); do
+    gcloud beta compute --project="${CLOUDSDK_CORE_PROJECT}" addresses create "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
+    if [[ $? -eq 0 ]]; then
+        GATEWAY_IP_ADDRESS="$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")"
+        echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+        break
+    elif [[ "${i}" -lt "${attempts}" ]]; then
+        echo "Unable to create address: ${IP_ADDRESS_NAME}. Attempts ${i} of ${attempts}."
+    else
+        echo "Unable to create DNS record after ${attempts} attempts, giving up."
+        exit 1
+    fi
+done
