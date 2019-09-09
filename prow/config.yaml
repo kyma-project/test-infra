@@ -410,6 +410,7 @@ branch-protection:
                   - pre-rel15-kyma-integration
                   - pre-rel15-kyma-gke-integration
                   - pre-rel15-kyma-gke-upgrade
+                  - pre-rel15-kyma-gke-backup
                   - pre-rel15-kyma-gke-central-connector
                   - pre-rel15-kyma-artifacts
                   - pre-rel15-kyma-installer
