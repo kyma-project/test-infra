@@ -55,6 +55,8 @@ echo "Product name - $PRODUCTNAME"
 echo "Project name - $PROJECTNAME"
 echo "Java Options - '$JAVA_OPTS'"
 
+cd "${KYMA_PROJECT_DIR}/${PROJECTNAME}" # run from project directory
+
  if [ "${DRYRUN}" = false ];then
     echo "***********************************"
     echo "***********Scanning ***************"
