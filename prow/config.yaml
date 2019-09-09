@@ -427,6 +427,7 @@ branch-protection:
                   - pre-rel14-kyma-integration
                   - pre-rel14-kyma-gke-integration
                   - pre-rel14-kyma-gke-upgrade
+                  - pre-rel14-kyma-gke-backup
                   - pre-rel14-kyma-gke-central-connector
                   - pre-rel14-kyma-artifacts
                   - pre-rel14-kyma-installer
@@ -438,6 +439,7 @@ branch-protection:
                   - pre-rel13-kyma-integration
                   - pre-rel13-kyma-gke-integration
                   - pre-rel13-kyma-gke-upgrade
+                  - pre-rel13-kyma-gke-backup
                   - pre-rel13-kyma-gke-central-connector
                   - pre-rel13-kyma-artifacts
                   - pre-rel13-kyma-installer

@@ -11,7 +11,7 @@ job_template: &job_template
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
-    preset-docker-push-repository-kyma: "true"
+    preset-docker-push-repository-test-infra: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
