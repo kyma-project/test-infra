@@ -116,7 +116,7 @@ func (s GenericComponentSuite) isTestInfra() bool {
 }
 
 func (s GenericComponentSuite) presetDockerPushRepository() Preset {
-	return Preset(fmt.Sprintf("%s-%s", PresetDockerPushRepo, s.DocekrRepositoryPresetSuffix))
+	return Preset(fmt.Sprintf("%s-%s", PresetDockerPushRepo, s.DockerRepositoryPresetSuffix))
 }
 
 func (s GenericComponentSuite) branchesToRunAgainst() []string {

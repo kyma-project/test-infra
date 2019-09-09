@@ -12,7 +12,7 @@ type Config struct {
 	FilesTriggeringJob           []string
 	JobsFileSuffix               string
 	Deprecated                   bool
-	DocekrRepositoryPresetSuffix string
+	DockerRepositoryPresetSuffix string
 }
 
 func NewConfig(opts ...Option) *Config {

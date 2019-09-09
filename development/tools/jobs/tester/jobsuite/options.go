@@ -34,7 +34,13 @@ func Tool(name, image string) Option {
 func KymaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/kyma"
-		suite.DocekrRepositoryPresetSuffix = "kyma"
+		suite.DockerRepositoryPresetSuffix = "kyma"
+	}
+}
+
+func DockerRepositoryPresetSuffix(suffix string) Option {
+	return func(suite *Config) {
+		suite.DockerRepositoryPresetSuffix = suffix
 	}
 }
 
