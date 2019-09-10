@@ -16,7 +16,7 @@ func TestSchemaMigratorJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], "pre-master-compass-components-schema-migrator", "master")
+	actualPre := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/compass"], "pre-master-compass-components-schema-migrator", "master")
 	require.NotNil(t, actualPre)
 
 	assert.Equal(t, 10, actualPre.MaxConcurrency)
@@ -39,7 +39,7 @@ func TestSchemaMigratorJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/compass"], "post-master-compass-components-schema-migrator", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/compass"], "post-master-compass-components-schema-migrator", "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

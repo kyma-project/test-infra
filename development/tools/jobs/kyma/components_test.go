@@ -1,15 +1,17 @@
 package kyma
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/buildjob"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"testing"
 )
 
 var components = []struct {
 	path              string
 	image             string
-	additionalOptions []buildjob.Option
+	suite             func(config *jobsuite.Config) jobsuite.Suite
+	additionalOptions []jobsuite.Option
 }{
 	{path: "api-controller", image: tester.ImageGolangBuildpack1_12},
 	{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12},
@@ -21,26 +23,26 @@ var components = []struct {
 	{path: "application-registry", image: tester.ImageGolangBuildpackLatest},
 	{path: "asset-metadata-service", image: tester.ImageGolangBuildpack1_11},
 	{path: "asset-store-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest,
-		additionalOptions: []buildjob.Option{
-			buildjob.Since(tester.Release15),
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release15),
 		},
 	},
 	{path: "asset-store-controller-manager", image: tester.ImageGolangKubebuilderBuildpackLatest,
-		additionalOptions: []buildjob.Option{
-			buildjob.Until(tester.Release14),
-			buildjob.JobFileSuffix("kubebuilder"),
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release14),
+			jobsuite.JobFileSuffix("kubebuilder"),
 		},
 	},
 	{path: "asset-upload-service", image: tester.ImageGolangBuildpack1_11},
 	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest,
-		additionalOptions: []buildjob.Option{
-			buildjob.Since(tester.Release15),
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release15),
 		},
 	},
 	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilderBuildpackLatest,
-		additionalOptions: []buildjob.Option{
-			buildjob.Until(tester.Release14),
-			buildjob.JobFileSuffix("kubebuilder"),
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release14),
+			jobsuite.JobFileSuffix("kubebuilder"),
 		},
 	},
 	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
@@ -49,14 +51,21 @@ var components = []struct {
 	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "connector-service", image: tester.ImageGolangBuildpackLatest},
 	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11},
+	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release16),
+			jobsuite.DockerRepositoryPresetSuffix("test-infra"),
+		},
+	},
 	{path: "dex-static-user-configurer", image: tester.ImageBootstrapLatest},
 	{path: "etcd-tls-setup-job", image: tester.ImageGolangBuildpack1_11},
 	{path: "event-bus", image: tester.ImageGolangBuildpack1_11},
 	{path: "event-service", image: tester.ImageGolangBuildpack1_11},
 	{path: "helm-broker", image: tester.ImageGolangKubebuilderBuildpackLatest,
-		additionalOptions: []buildjob.Option{
-			buildjob.Until(tester.Release14),
-			buildjob.JobFileSuffix("deprecated"),
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release14),
+			jobsuite.JobFileSuffix("deprecated"),
 		},
 	},
 	{path: "iam-kubeconfig-service", image: tester.ImageGolangBuildpack1_12},
@@ -73,14 +82,18 @@ var components = []struct {
 func TestComponentJobs(t *testing.T) {
 	for _, component := range components {
 		t.Run(component.path, func(t *testing.T) {
-			opts := []buildjob.Option{
-				buildjob.Component(component.path, component.image),
-				buildjob.KymaRepo(),
-				buildjob.AllReleases(),
-
+			opts := []jobsuite.Option{
+				jobsuite.Component(component.path, component.image),
+				jobsuite.KymaRepo(),
+				jobsuite.AllReleases(),
 			}
 			opts = append(opts, component.additionalOptions...)
-			buildjob.NewSuite(opts...).Run(t)
+			cfg := jobsuite.NewConfig(opts...)
+			suite := component.suite
+			if suite == nil {
+				suite = tester.NewComponentSuite
+			}
+			suite(cfg).Run(t)
 		})
 	}
 }

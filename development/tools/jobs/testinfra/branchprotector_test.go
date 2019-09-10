@@ -2,13 +2,13 @@ package testinfra
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
 
 	"github.com/ghodss/yaml"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
@@ -64,7 +64,7 @@ func TestBranchProtection(t *testing.T) {
 func TestBranchProtectionRelease(t *testing.T) {
 	actual := readConfig(t)
 
-	for _, currentRelease := range tester.GetKymaReleasesUntil(tester.Release14) {
+	for _, currentRelease := range releases.GetKymaReleasesUntil(releases.Release14) {
 		relBranch := currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
 			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)
@@ -84,7 +84,7 @@ func TestBranchProtectionRelease(t *testing.T) {
 		})
 	}
 
-	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release15) {
+	for _, currentRelease := range releases.GetKymaReleasesSince(releases.Release15) {
 		relBranch := currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
 			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)

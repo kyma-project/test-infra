@@ -14,7 +14,7 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
+	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 
 	tester.AssertThatJobRunIfChanged(t, job, "resources/helm-broker/values.yaml")
@@ -25,7 +25,7 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 	assert.False(t, job.AlwaysRun)
 	assert.True(t, job.Optional)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoKyma, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildPr)
 	require.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
 	assert.Equal(t, tester.ImageGolangBuildpack1_12, cont.Image)
@@ -46,11 +46,11 @@ func TestPostsubmitDevelopmentArtifcts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-development-artifacts", "master")
+	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 	assert.Empty(t, job.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, job.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoKyma, "preset-kyma-development-artifacts-bucket", tester.PresetGcrPush, tester.PresetBuildMaster)
 	require.Len(t, job.Spec.Containers, 1)
 	cont := job.Spec.Containers[0]
 	assert.Equal(t, tester.ImageGolangBuildpack1_12, cont.Image)

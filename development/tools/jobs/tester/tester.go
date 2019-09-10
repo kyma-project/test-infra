@@ -1,11 +1,10 @@
 package tester
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"io/ioutil"
 	"os"
 	"testing"
-
-	"github.com/Masterminds/semver"
 
 	"k8s.io/test-infra/prow/kube"
 
@@ -26,13 +25,13 @@ const (
 	// PresetGcrPush means GCR push service account
 	PresetGcrPush Preset = "preset-sa-gcr-push"
 	// PresetDockerPushRepo means Docker repository
-	PresetDockerPushRepo Preset = "preset-docker-push-repository"
+	PresetDockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
 	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
 	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
-	// PresetDockerPushRepoIncubator means Decker repository incubator images
+	// PresetDockerPushRepoIncubator means Docker repository incubator images
 	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
-	// PresetDockerPushGlobalRepo means Decker global repository for images
-	PresetDockerPushGlobalRepo Preset = "preset-docker-push-global-repository"
+	// PresetDockerPushRepoGlobal means Docker global repository for images
+	PresetDockerPushRepoGlobal Preset = "preset-docker-push-repository-global"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
@@ -104,63 +103,8 @@ const (
 	MetadataGovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
 )
 
-// SupportedRelease defines supported releases
-type SupportedRelease semver.Version
-
-// Compare compares this version to another one. It returns -1, 0, or 1 if
-// the version smaller, equal, or larger than the other version.
-func (r *SupportedRelease) Compare(other *SupportedRelease) int {
-	return (*semver.Version)(r).Compare((*semver.Version)(other))
-}
-
-// Branch returns a git branch for this release
-func (r *SupportedRelease) Branch() string {
-	return fmt.Sprintf("release-%v.%v", (*semver.Version)(r).Major(), (*semver.Version)(r).Minor())
-}
-
-// JobPrefix returns a prefix for all jobs for this release
-func (r *SupportedRelease) JobPrefix() string {
-	return fmt.Sprintf("rel%v%v", (*semver.Version)(r).Major(), (*semver.Version)(r).Minor())
-}
-
-// String returns formatted release
-func (r *SupportedRelease) String() string {
-	return fmt.Sprintf("%v.%v", (*semver.Version)(r).Major(), (*semver.Version)(r).Minor())
-}
-
-func mustParse(v string) *SupportedRelease {
-	parsed := SupportedRelease(*semver.MustParse(v))
-	return &parsed
-}
-
 type jobRunner interface {
 	RunsAgainstChanges([]string) bool
-}
-
-// GetKymaReleasesUntil filters all available releases earlier or the same as the given one
-func GetKymaReleasesUntil(lastRelease *SupportedRelease) []*SupportedRelease {
-	var supportedReleases []*SupportedRelease
-
-	for _, rel := range GetAllKymaReleases() {
-		if rel.Compare(lastRelease) <= 0 {
-			supportedReleases = append(supportedReleases, rel)
-		}
-	}
-
-	return supportedReleases
-}
-
-// GetKymaReleasesSince filters all available releases later or the same as the given one
-func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
-	var supportedReleases []*SupportedRelease
-
-	for _, rel := range GetAllKymaReleases() {
-		if rel.Compare(firstRelease) >= 0 {
-			supportedReleases = append(supportedReleases, rel)
-		}
-	}
-
-	return supportedReleases
 }
 
 // ReadJobConfig reads job configuration from file
@@ -193,10 +137,21 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	return jobConfig, nil
 }
 
-// FindPresubmitJobByName finds presubmit job by name from provided jobs list
-func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *config.Presubmit {
+// FindPresubmitJobByNameAndBranch finds presubmit job by name from provided jobs list
+func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name {
+		if job.Name == name && job.RunsAgainstBranch(branch) {
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// FindPresubmitJobByName finds presubmit job by name from provided jobs list
+func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+	for _, job := range jobs {
+		if job.Name == name  {
 			return &job
 		}
 	}
@@ -205,17 +160,28 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *confi
 }
 
 // GetReleaseJobName returns name of release job based on branch name by adding release prefix
-func GetReleaseJobName(moduleName string, release *SupportedRelease) string {
+func GetReleaseJobName(moduleName string, release *releases.SupportedRelease) string {
 	return fmt.Sprintf("pre-%s-%s", release.JobPrefix(), moduleName)
 }
 
 // GetReleasePostSubmitJobName returns name of postsubmit job based on branch name
-func GetReleasePostSubmitJobName(moduleName string, release *SupportedRelease) string {
+func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedRelease) string {
 	return fmt.Sprintf("post-%s-%s", release.JobPrefix(), moduleName)
 }
 
-// FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
-func FindPostsubmitJobByName(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
+// FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
+	for _, job := range jobs {
+		if job.Name == name && job.RunsAgainstBranch(branch){
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
 	for _, job := range jobs {
 		if job.Name == name {
 			return &job

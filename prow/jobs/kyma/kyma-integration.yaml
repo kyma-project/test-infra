@@ -628,6 +628,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
+
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-integration

@@ -1,6 +1,7 @@
 package kyma
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -9,11 +10,11 @@ import (
 )
 
 func TestKymaArtifactsReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-artifacts.yaml")
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-artifacts", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-artifacts", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)

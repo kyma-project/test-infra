@@ -123,6 +123,11 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project"
   - labels:
+      preset-docker-push-repository-kyma: "true"
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "eu.gcr.io/kyma-project"
+  - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
@@ -138,7 +143,7 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/incubator"
   - labels:
-      preset-docker-push-global-repository: "true"
+      preset-docker-push-repository-global: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
         value: "gcr.io/kyma-project"
@@ -422,6 +427,7 @@ branch-protection:
                   - pre-rel14-kyma-integration
                   - pre-rel14-kyma-gke-integration
                   - pre-rel14-kyma-gke-upgrade
+                  - pre-rel14-kyma-gke-backup
                   - pre-rel14-kyma-gke-central-connector
                   - pre-rel14-kyma-artifacts
                   - pre-rel14-kyma-installer
@@ -433,6 +439,7 @@ branch-protection:
                   - pre-rel13-kyma-integration
                   - pre-rel13-kyma-gke-integration
                   - pre-rel13-kyma-gke-upgrade
+                  - pre-rel13-kyma-gke-backup
                   - pre-rel13-kyma-gke-central-connector
                   - pre-rel13-kyma-artifacts
                   - pre-rel13-kyma-installer

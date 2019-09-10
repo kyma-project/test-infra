@@ -16,7 +16,7 @@ func TestDirectorJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], "pre-master-compass-components-director", "master")
+	actualPre := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/compass"], "pre-master-compass-components-director", "master")
 	require.NotNil(t, actualPre)
 
 	assert.Equal(t, 10, actualPre.MaxConcurrency)
@@ -37,7 +37,7 @@ func TestDirectorJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/compass"], "post-master-compass-components-director", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/compass"], "post-master-compass-components-director", "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

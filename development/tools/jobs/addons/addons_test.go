@@ -20,7 +20,7 @@ func TestAddonsJobPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "pre-master-kyma-addons"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -48,7 +48,7 @@ func TestAddonsJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 2)
 
 	expName := "post-master-kyma-addons"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
@@ -75,7 +75,7 @@ func TestAddonsReleaseJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 2)
 
 	expName := "post-rel-kyma-addons"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "1.2.3")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, expName, "1.2.3")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)

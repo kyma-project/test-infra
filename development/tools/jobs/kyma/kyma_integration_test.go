@@ -1,6 +1,7 @@
 package kyma_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -9,12 +10,12 @@ import (
 )
 
 func TestKymaIntegrationVMJobsReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-integration", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-integration", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -33,12 +34,12 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 }
 
 func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-integration", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-integration", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -56,12 +57,12 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 }
 
 func TestKymaGKEBackupJobsReleases(t *testing.T) {
-	for _, currentRelease := range tester.GetKymaReleasesSince(tester.Release14) {
+	for _, currentRelease := range releases.GetKymaReleasesSince(releases.Release14) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-backup", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-backup", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -150,7 +151,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], tc.givenJobName, "master")
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -184,7 +185,7 @@ func TestKymaIntegrationJobsPresubmitXipDebug(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration-xip-debug", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-integration-xip-debug", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -205,7 +206,7 @@ func TestKymaGKEMinioGatewayJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-minio-gateway", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-minio-gateway", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -232,7 +233,7 @@ func TestKymaGKEMinioGatewayMigrationJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-minio-gateway-migration", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-minio-gateway-migration", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -260,7 +261,7 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-upgrade", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-upgrade", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -287,7 +288,7 @@ func TestKymaBackupTestJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-backup", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-backup", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -353,7 +354,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], tc.givenJobName, "master")
+			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then

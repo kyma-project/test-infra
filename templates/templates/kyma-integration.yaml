@@ -451,6 +451,54 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-{{ . }}
 {{- end }}
+    - name: kk-gke-nightly
+      labels:
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-build-master: "true"
+        preset-stability-checker-slack-notifications: "false"
+        preset-nightly-github-integration: "true"
+        preset-kms-gc-project-env: "true"
+        <<: *gke_job_labels_template
+      decorate: true
+      optional: true
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+      extra_refs:
+        - <<: *kk_test_infra_ref
+          base_ref: kk-fix-nightly
+        - <<: *kyma_ref
+          base_ref: master
+      spec:
+        volumes:
+          - name: sa-stability-fluentd-storage-writer
+            secret:
+              secretName: sa-stability-fluentd-storage-writer
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+            securityContext:
+              privileged: true
+            volumeMounts:
+              - name: sa-stability-fluentd-storage-writer
+                mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                readOnly: true
+            command:
+              - "bash"
+            env:
+              - name: INPUT_CLUSTER_NAME
+                value: "kk-nightly"
+              - name: TEST_RESULT_WINDOW_TIME
+                value: "6h"
+              - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+                value: "cluster-access"
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kk-gke-long-lasting.sh"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
 
 postsubmits:
   kyma-project/kyma:
@@ -497,7 +545,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-                
+
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests

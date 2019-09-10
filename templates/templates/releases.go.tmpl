@@ -1,4 +1,4 @@
-package tester
+package releases
 
 // DO NOT EDIT. THIS FILE IS GENERATED
 

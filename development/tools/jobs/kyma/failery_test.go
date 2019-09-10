@@ -20,7 +20,7 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "pre-master-kyma-tools-failery"
-	actualPresubmit := tester.FindPresubmitJobByName(kymaPresubmits, expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -50,7 +50,7 @@ func TestFaileryJobPostsubmit(t *testing.T) {
 	assert.Len(t, kymaPost, 1)
 
 	expName := "post-master-kyma-tools-failery"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)

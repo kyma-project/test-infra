@@ -47,7 +47,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tc.givenJobName, "master")
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/compass"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -95,7 +95,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/compass"], tc.givenJobName, "master")
+			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/compass"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then

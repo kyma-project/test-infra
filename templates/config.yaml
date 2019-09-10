@@ -17,13 +17,13 @@ kyma_component: &kyma_component
   repository: github.com/kyma-project/kyma
   presets:
     build: build
-    pushRepository: repository
+    pushRepository: kyma
 
 compass_component: &compass_component
   repository: github.com/kyma-incubator/compass
   presets:
     build: build
-    pushRepository: repository-incubator
+    pushRepository: incubator
 
 go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
@@ -69,13 +69,27 @@ go_kyma_component_v20181119: &go_kyma_component_v20181119
   <<: *kyma_component
   buildpack: *go_buildpack_v20181119
 
+kyma_generic_component: &kyma_generic_component
+  repository: github.com/kyma-project/kyma
+  pushRepository: test-infra
+  bootstrapTag: v20181204-a6e79be
+  runIfChanged:
+    - ^scripts/
+
 templates:
+  - from: templates/generic-component.yaml
+    render:
+      - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/console-backend-service
+          since: '1.6'
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
   - from: templates/releases.go.tmpl
     render:
-      - to: ../development/tools/jobs/tester/releases.go
+      - to: ../development/tools/jobs/releases/releases.go
   - from: templates/kyma-artifacts.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-artifacts.yaml
@@ -472,7 +486,7 @@ templates:
           path: core
           presets:
             build: build-console
-            pushRepository: repository
+            pushRepository: kyma
           noRelease: yes
           resources:
             cpu: 1.5
@@ -484,7 +498,7 @@ templates:
           path: watch-pods
           presets:
             build: build
-            pushRepository: repository
+            pushRepository: kyma
           buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net.yaml
         values:

@@ -1,0 +1,79 @@
+# DO NOT EDIT. THIS FILE IS GENERATED
+
+{{- /*
+   This template renders jobs for a component using generic buildpack with make and docker
+
+   Required values:
+     - repository - repository address (e.g. github.com/kyma-project/kyma
+     - path - address of the component within the repository
+     - pushRepository - the suffix of the preset-docker-push- label
+     - bootstrapTag - tag of the bootstrap image
+     - ReleaseBranchPattern - pattern for release branch prefix (default: ^release-<supported-releases>-<component-dir-name>$)
+     - runIfChanged - a list of regexps to watch in addition to path (default: [])
+     - resources.memory - memory given to job container (default: 1.5Gi)
+     - resources.cpu - cpu given to job container (default: 0.8)
+  */ -}}
+
+{{ $repositoryName := index (.Values.repository | splitList "/") 2 -}}
+{{- $additionalRunIfChanged := .Values.additionalRunIfChanged | default (list) }}
+{{- $runIfChanged := prepend $additionalRunIfChanged (print "^" .Values.path "/") | join "|" }}
+{{- $componentName := .Values.path | splitList "/" | last }}
+{{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
+{{- $hasReleaseBounds := (not .Values.since) and (not .Values.until) }}
+{{- $releases := matchingReleases .Global.releases .Values.since .Values.until }}
+{{- $releasesPattern := $releases | join "|" | replace "." "\\." }}
+{{- $releaseBranchReleasesPattern := $hasReleaseBounds | ternary ".*" (print "("  $releasesPattern ")") }}
+{{- $defaultReleaseBranchPattern := (print "^release-" $releaseBranchReleasesPattern "-" $componentName "$") }}
+{{- $defaultReleaseBranchPatternOrEmpty := ne (len $releases) 0 | ternary $defaultReleaseBranchPattern "" }}
+{{- $releaseBranchPattern := .Values.ReleaseBranchPattern | default $defaultReleaseBranchPatternOrEmpty }}
+
+{{- if $isNotTestInfra }}
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+{{- end }}
+
+job_template: &job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  labels:
+    preset-dind-enabled: "true"
+    preset-sa-gcr-push: "true"
+    preset-docker-push-repository-{{ .Values.pushRepository }}: "true"
+{{- if $isNotTestInfra }}
+  extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+{{- end }}
+  branches:
+    - ^master$
+{{- if ne $releaseBranchPattern "" }}
+    - {{ $releaseBranchPattern }}
+{{- end }}
+  run_if_changed: "{{ $runIfChanged }}"
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:{{ .Values.bootstrapTag }}
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+        args:
+          - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
+        resources:
+          requests:
+            memory: {{ .Values.resources.memory | default "1.5Gi" }}
+            cpu: {{ .Values.resources.cpu | default 0.8 }}
+
+presubmits: # runs on PRs
+  {{ .Values.repository | replace "github.com/" "" }}:
+    - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      skip_report: false
+      <<: *job_template
+
+postsubmits:
+  {{ .Values.repository | replace "github.com/" "" }}:
+    - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      <<: *job_template
