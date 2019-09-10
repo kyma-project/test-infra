@@ -24,12 +24,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-attempts=3
-for ((i=1; i<=attempts; i++)); do
-    gcloud beta compute --project="${CLOUDSDK_CORE_PROJECT}" addresses create "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
-    if [[ "${i}" -eq "${attempts}" ]]; then
-        exit 1
-    fi
-done
+gcloud beta compute --project="${CLOUDSDK_CORE_PROJECT}" addresses create "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
 
 gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"

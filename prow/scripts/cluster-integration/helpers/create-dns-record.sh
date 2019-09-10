@@ -39,7 +39,7 @@ function createDNSWithRetries() {
             break
         fi
 
-        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
+        gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
 
         if [[ "${i}" -lt "${attempts}" ]]; then
             echo "Unable to create DNS record, let's wait ${retryTimeInSec} seconds and retry. Attempts ${i} of ${attempts}."
