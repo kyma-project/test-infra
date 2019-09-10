@@ -47,7 +47,7 @@ func (s ComponentSuite) Run(t *testing.T) {
 	t.Run("release", s.preReleaseTest(jobConfig))
 }
 
-func (s *ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
+func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		job := FindPresubmitJobByNameAndBranch(
 			jobConfig.Presubmits[s.repositorySectionKey()],
@@ -69,7 +69,7 @@ func (s *ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testi
 	}
 }
 
-func (s *ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
+func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		job := FindPostsubmitJobByNameAndBranch(
 			jobConfig.Postsubmits[s.repositorySectionKey()],
@@ -89,7 +89,7 @@ func (s *ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *test
 	}
 }
 
-func (s *ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testing.T) {
+func (s ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		for _, currentRelease := range s.Releases {
 			t.Run(currentRelease.String(), func(t *testing.T) {
@@ -116,31 +116,31 @@ func (s *ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *test
 	}
 }
 
-func (s *ComponentSuite) componentName() string {
+func (s ComponentSuite) componentName() string {
 	return path.Base(s.Path)
 }
 
-func (s *ComponentSuite) repositoryName() string {
+func (s ComponentSuite) repositoryName() string {
 	return path.Base(s.Repository)
 }
 
-func (s *ComponentSuite) repositorySectionKey() string {
+func (s ComponentSuite) repositorySectionKey() string {
 	return strings.Replace(s.Repository, "github.com/", "", 1)
 }
 
-func (s *ComponentSuite) moduleName() string {
+func (s ComponentSuite) moduleName() string {
 	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.Path, "/", "-", -1))
 }
 
-func (s *ComponentSuite) jobConfigPath() string {
+func (s ComponentSuite) jobConfigPath() string {
 	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
 }
 
-func (s *ComponentSuite) jobName(prefix string) string {
+func (s ComponentSuite) jobName(prefix string) string {
 	return fmt.Sprintf("%s-%s", prefix, s.moduleName())
 }
 
-func (s *ComponentSuite) workingDirectory() string {
+func (s ComponentSuite) workingDirectory() string {
 	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.Path)
 }
 
