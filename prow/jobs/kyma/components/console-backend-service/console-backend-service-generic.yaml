@@ -36,6 +36,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-console-backend-service
       skip_report: false
+      optional: true
       <<: *job_template
 
 postsubmits:
