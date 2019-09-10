@@ -23,7 +23,7 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
-  preset-docker-push-{{ .Values.presets.pushRepository }}: "true"
+  preset-docker-push-repository-{{ .Values.presets.pushRepository }}: "true"
 
 container_template: &container_template
   securityContext:

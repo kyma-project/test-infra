@@ -30,7 +30,7 @@ job_template: &job_template
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
-  preset-docker-push-repository: "true"
+  preset-docker-push-repository-kyma: "true"
   preset-kyma-development-artifacts-bucket: "true"
   preset-sa-gcr-push: "true"
 

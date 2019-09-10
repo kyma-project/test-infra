@@ -674,7 +674,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-                
+
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests

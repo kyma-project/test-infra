@@ -64,7 +64,7 @@ func (s *ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testi
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
 		AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
-		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildPr)
+		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush, PresetBuildPr)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
 	}
 }
@@ -83,7 +83,7 @@ func (s *ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *test
 		assert.True(t, job.Decorate)
 		assert.Equal(t, s.Repository, job.PathAlias)
 		AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
-		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildMaster)
+		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush, PresetBuildMaster)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 	}
@@ -109,7 +109,7 @@ func (s *ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *test
 				AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 				AssertThatSpecifiesResourceRequests(t, job.JobBase)
 				AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, currentRelease.Branch())
-				AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, PresetDockerPushRepo, PresetGcrPush, PresetBuildRelease)
+				AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush, PresetBuildRelease)
 				job.RunsAgainstChanges(s.FilesTriggeringJob)
 			})
 		}
@@ -142,4 +142,8 @@ func (s *ComponentSuite) jobName(prefix string) string {
 
 func (s *ComponentSuite) workingDirectory() string {
 	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.Path)
+}
+
+func (s ComponentSuite) presetDockerPushRepository() Preset {
+	return Preset(fmt.Sprintf("preset-docker-push-repository-%s", s.DockerRepositoryPresetSuffix))
 }

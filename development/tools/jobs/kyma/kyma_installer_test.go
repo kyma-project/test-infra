@@ -21,7 +21,7 @@ func TestKymaInstallerReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepo, tester.PresetGcrPush, tester.PresetBuildRelease)
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoKyma, tester.PresetGcrPush, tester.PresetBuildRelease)
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]

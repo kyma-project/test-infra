@@ -17,13 +17,13 @@ kyma_component: &kyma_component
   repository: github.com/kyma-project/kyma
   presets:
     build: build
-    pushRepository: repository
+    pushRepository: kyma
 
 compass_component: &compass_component
   repository: github.com/kyma-incubator/compass
   presets:
     build: build
-    pushRepository: repository-incubator
+    pushRepository: incubator
 
 go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
@@ -486,7 +486,7 @@ templates:
           path: core
           presets:
             build: build-console
-            pushRepository: repository
+            pushRepository: kyma
           noRelease: yes
           resources:
             cpu: 1.5
@@ -498,7 +498,7 @@ templates:
           path: watch-pods
           presets:
             build: build
-            pushRepository: repository
+            pushRepository: kyma
           buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net.yaml
         values:

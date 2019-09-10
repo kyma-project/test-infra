@@ -13,7 +13,7 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
-  preset-docker-push-repository: "true"
+  preset-docker-push-repository-kyma: "true"
 
 container_template: &container_template
   securityContext:

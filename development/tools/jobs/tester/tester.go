@@ -25,13 +25,13 @@ const (
 	// PresetGcrPush means GCR push service account
 	PresetGcrPush Preset = "preset-sa-gcr-push"
 	// PresetDockerPushRepo means Docker repository
-	PresetDockerPushRepo Preset = "preset-docker-push-repository"
+	PresetDockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
 	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
 	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
-	// PresetDockerPushRepoIncubator means Decker repository incubator images
+	// PresetDockerPushRepoIncubator means Docker repository incubator images
 	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
-	// PresetDockerPushGlobalRepo means Decker global repository for images
-	PresetDockerPushGlobalRepo Preset = "preset-docker-push-global-repository"
+	// PresetDockerPushRepoGlobal means Docker global repository for images
+	PresetDockerPushRepoGlobal Preset = "preset-docker-push-repository-global"
 	// PresetBuildPr means PR environment
 	PresetBuildPr Preset = "preset-build-pr"
 	// PresetBuildMaster means master environment
