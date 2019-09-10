@@ -84,7 +84,7 @@ Follow these steps to save the dashboard:
 
 ## Add recording and alerting rules
 
-1. Add new recording or alerting rules to the prometheusrule spec [`prow_prometheusrules.yaml`](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
+1. Add new recording or alerting rules to the [PrometheusRule specification](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
 
 2. Replace existing prometheusrule object with current file version.
    ```bash
