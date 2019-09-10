@@ -84,6 +84,7 @@ templates:
           <<: *kyma_generic_component
           path: components/console-backend-service
           since: '1.6'
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml

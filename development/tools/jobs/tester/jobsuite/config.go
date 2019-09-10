@@ -13,6 +13,7 @@ type Config struct {
 	JobsFileSuffix               string
 	Deprecated                   bool
 	DockerRepositoryPresetSuffix string
+	Optional                     bool
 }
 
 func NewConfig(opts ...Option) *Config {
