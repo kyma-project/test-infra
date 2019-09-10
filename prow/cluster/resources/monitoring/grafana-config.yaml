@@ -1,0 +1,35 @@
+prometheus-operator:
+  grafana:
+    env:
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_USERS_ALLOW_ORG_CREATE: false
+      GF_USERS_ALLOW_SIGN_UP: false
+    enabled: true
+    defaultDashboardsEnabled: true # Default Prometheus Operator dashboards like "Nodes"
+    adminPassword: # if set to empty then it will be generated
+    service:
+      type: NodePort
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.global-static-ip-name: kyma-prow-monitoring
+        kubernetes.io/ingress.class: "gce"
+        kubernetes.io/tls-acme: "true"
+        certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+        certmanager.k8s.io/acme-http01-edit-in-place: "true"
+        kubernetes.io/ingress.allow-http: "false"
+      labels: {}
+      path: /*
+      hosts:
+        - monitoring.build.kyma-project.io
+      tls:
+        - secretName: monitoring-tls
+          hosts:
+            - monitoring.build.kyma-project.io
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+      datasources:
+        enabled: true
+        label: grafana_datasource
