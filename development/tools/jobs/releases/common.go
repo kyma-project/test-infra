@@ -13,7 +13,7 @@ func GetKymaReleasesUntil(lastRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
 	for _, rel := range GetAllKymaReleases() {
-		if rel.Compare(lastRelease) <= 0 {
+		if rel.IsNotYoungerThen(lastRelease) {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -26,7 +26,7 @@ func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
 	for _, rel := range GetAllKymaReleases() {
-		if rel.Compare(firstRelease) >= 0 {
+		if rel.IsNotOlderThen(firstRelease) {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -38,6 +38,14 @@ func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 // the version smaller, equal, or larger than the other version.
 func (r *SupportedRelease) Compare(other *SupportedRelease) int {
 	return (*semver.Version)(r).Compare((*semver.Version)(other))
+}
+
+func (r *SupportedRelease) IsNotOlderThen(other *SupportedRelease) bool {
+	return r.Compare(other) >= 0
+}
+
+func (r *SupportedRelease) IsNotYoungerThen(other *SupportedRelease) bool {
+	return r.Compare(other) <= 0
 }
 
 // Branch returns a git branch for this release
