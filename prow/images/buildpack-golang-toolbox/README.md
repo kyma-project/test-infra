@@ -12,6 +12,7 @@ The image consists of:
 - errcheck
 - golint
 - mockery
+-failery
 
 ## Installation
 
