@@ -24,6 +24,20 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-gcloud beta compute --project="${CLOUDSDK_CORE_PROJECT}" addresses create "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
+export IP_ADDRESS_NAME
+
+echo "Checking if ${IP_ADDRESS_NAME} IP address resources does not exist"
+declare -i counter=0
+until [[ -z $(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)") ]]; do
+    echo "Waiting 15 seconds for ${IP_ADDRESS_NAME} IP address disappear"
+    sleep 15
+    let counter++
+    if (( $counter == 5 )); then
+        echo "${IP_ADDRESS_NAME} IP address is still present after one minute wait. Failing"
+        exit 1
+    fi
+done
+
+gcloud compute addresses create --project="${CLOUDSDK_CORE_PROJECT}" "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
 
 gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
