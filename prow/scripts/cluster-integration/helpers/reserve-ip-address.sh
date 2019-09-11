@@ -32,7 +32,7 @@ until [[ -z ${IP_ADDRESS} ]]; do
     sleep 15
     let counter++
     IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
-    if (( $counter == 5 )); then
+    if ( $counter == 5 ); then
         echo "${IP_ADDRESS_NAME} IP address is still present after one minute wait. Failing"
         exit 1
     fi
