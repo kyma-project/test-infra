@@ -123,10 +123,10 @@ function removeResources() {
 		shout "Release Cluster IP Address"
 		date
 		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
-		GATEWAY_IP_STATUS=$(gcloud compute addresses describe ${CLUSTER_NAME} --region ${CLOUDSDK_COMPUTE_REGION} --format "value(status)")
+		GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 
 		if [[ -n ${GATEWAY_IP_STATUS} ]]; then
-		    shout "running /release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false"
+		    shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
 
             "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
 		    TMP_STATUS=$?
