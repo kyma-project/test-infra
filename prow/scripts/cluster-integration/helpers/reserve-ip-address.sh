@@ -26,11 +26,11 @@ fi
 
 export IP_ADDRESS_NAME
 
-declare -i counter=0
+counter=0
 IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
 until [[ -z ${IP_ADDRESS} ]]; do
     sleep 15
-    let counter++
+    counter=$(( ${counter} + 1 ))
     IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
     if ( $counter == 5 ); then
         echo "${IP_ADDRESS_NAME} IP address is still present after one minute wait. Failing"
