@@ -123,19 +123,21 @@ function removeResources() {
 		shout "Release Cluster IP Address"
 		date
 		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
-		GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 
-		if [[ -n ${GATEWAY_IP_STATUS} ]]; then
-		    shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
+		if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --regions "${CLOUDSDK_COMPUTE_REGION}" --format "value(ADDRESS)") ]]; then
+		    GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+		    if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
+                echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
+                exit 1
+		    elif [[ -n ${GATEWAY_IP_STATUS} ]]; then
+		        shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
 
-            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-		    TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-		elif [[ ${GATEWAY_IP_STATUS} != "IN_USE" ]]; then
-            echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
-            exit 1
-		else
-	        echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+		        TMP_STATUS=$?
+		        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		    else
+	            echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
+		    fi
 		fi
 
     fi
