@@ -42,6 +42,8 @@ else
   DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
 fi
 
+readonly DOCKER_TAG
+export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
 
 make -C "${SOURCES_DIR}" release
