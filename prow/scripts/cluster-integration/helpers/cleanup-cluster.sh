@@ -124,7 +124,7 @@ function removeResources() {
 		date
 		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
 
-		if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --regions "${CLOUDSDK_COMPUTE_REGION}" --format "value(ADDRESS)") ]]; then
+		if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --format "value(ADDRESS)") ]]; then
 		    GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 		    if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
                 echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"

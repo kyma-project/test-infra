@@ -26,11 +26,9 @@ fi
 
 export IP_ADDRESS_NAME
 
-echo "Checking if ${IP_ADDRESS_NAME} IP address resources does not exist"
 declare -i counter=0
 IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
 until [[ -z ${IP_ADDRESS} ]]; do
-    echo "Waiting 15 seconds for ${IP_ADDRESS_NAME} IP address disappear"
     sleep 15
     let counter++
     IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
@@ -40,6 +38,6 @@ until [[ -z ${IP_ADDRESS} ]]; do
     fi
 done
 
-gcloud compute addresses create --project="${CLOUDSDK_CORE_PROJECT}" "${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
+gcloud compute addresses create "${IP_ADDRESS_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
 
 gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)"
