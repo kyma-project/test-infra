@@ -1,23 +1,22 @@
-# Buildpack Golang Docker Image
+# Buildpack Golang Toolbox Docker Image
 
 ## Overview
 
-This folder contains the Buildpack Golang image that is based on the Bootstrap image. Use it to build Golang components.
+This folder contains the Buildpack Golang Toolbox image that is based on the Buildpack Golang image. Use it to build Golang components using versioned set of build tools.
 
-The image consists of:
-
-- golang 1.12.7
-- dep 0.5.4
+In addition to version introduced in Buildpack Golang this image adds following tools:
 - goimports
 - errcheck
 - golint
 - mockery
--failery
+- failery
+
+They are downloaded using `go get` so their version will change to the newest one every time image is rebuilt. 
 
 ## Installation
 
 To build the Docker image, run this command:
 
 ```bash
-docker build -t buildpack-golang .
+docker build -t buildpack-golang-toolbox .
 ```
