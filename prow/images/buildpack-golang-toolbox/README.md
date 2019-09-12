@@ -2,9 +2,9 @@
 
 ## Overview
 
-This folder contains the Buildpack Golang Toolbox image that is based on the Buildpack Golang image. Use it to build Golang components using versioned set of build tools.
+This folder contains the Buildpack Golang Toolbox image that is based on the Buildpack Golang image. Use it to build Golang components using the versioned set of build tools.
 
-In addition to version introduced in Buildpack Golang this image adds following tools:
+In addition to the version introduced in Buildpack Golang, this image adds these tools:
 - goimports
 - errcheck
 - golint
