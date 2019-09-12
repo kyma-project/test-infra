@@ -11,7 +11,7 @@ In addition to the version introduced in Buildpack Golang, this image adds these
 - mockery
 - failery
 
-They are downloaded using the `go get` command, which always fetches the latest packages. Because of that, the image may contain different versions every time it is rebuilt.
+> **CAUTION:** The `go get` command that downloads these tools always fetches the latest packages. Because of that, the image may contain different versions of the tools every time it is rebuilt.
 
 ## Installation
 
