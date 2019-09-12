@@ -45,8 +45,8 @@ function cleanup() {
 	export CLUSTER_NAME
 	export CLOUDSDK_COMPUTE_REGION
 
-    CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
-    if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
+	CLUSTER_EXISTS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"' | wc -l)
+	if [[ "$CLUSTER_EXISTS" -gt 0 ]]; then
 		echo "Cleaning up: $CLUSTER_NAME"
 		removeCluster
 		echo "Cluster: $CLUSTER_NAME cleanup completed, moving to NET and DNS resources cleanup"
@@ -54,7 +54,7 @@ function cleanup() {
 	else
 		echo "Cluster: $CLUSTER_NAME not found, cleaning up NET and DNS resources"
 		removeResources
-    fi
+	fi
 
 }
 
@@ -62,7 +62,7 @@ function removeCluster() {
 	#Turn off exit-on-error so that next step is executed even if previous one fails.
 	set +e
 
-    shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
+	shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
 	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
 
 	shout "Delete cluster $CLUSTER_NAME"
@@ -88,7 +88,7 @@ function removeCluster() {
 }
 
 function removeResources() {
-    if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
+	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
 		set +e
 
 		shout "Delete Cluster DNS Record"
@@ -97,58 +97,58 @@ function removeResources() {
 		# Get cluster IP address from DNS record.
 		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format "value(rrdatas[0])")
 
-        # Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
+		# Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]]; then
-		    shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${GATEWAY_IP_ADDRESS} --dryRun=false"
+			shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${GATEWAY_IP_ADDRESS} --dryRun=false"
 
-		    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-		    TMP_STATUS=$?
-		    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+			TMP_STATUS=$?
+			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		else
-		    echo "DNS entry for ${GATEWAY_DNS_FULL_NAME} not found"
+			echo "DNS entry for ${GATEWAY_DNS_FULL_NAME} not found"
 		fi
 
-        shout "Delete Apiserver DNS Record"
+		shout "Delete Apiserver DNS Record"
 		date
 		APISERVER_DNS_FULL_NAME="apiserver.${CLUSTER_NAME}.${DNS_NAME}"
 		# Get apiserver IP address from DNS record.
-        APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 
-        # Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
-        if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-            shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${APISERVER_DNS_FULL_NAME} --address=${APISERVER_IP_ADDRESS} --dryRun=false"
+		# Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
+		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
+			shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${APISERVER_DNS_FULL_NAME} --address=${APISERVER_IP_ADDRESS} --dryRun=false"
 
-            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-            TMP_STATUS=$?
-            if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-        else
-            echo "DNS entry for ${APISERVER_DNS_FULL_NAME} not found"
-        fi
+			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+			TMP_STATUS=$?
+			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		else
+			echo "DNS entry for ${APISERVER_DNS_FULL_NAME} not found"
+		fi
 
 		shout "Release Cluster IP Address"
 		date
 		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
 
-        # Check if cluster IP address reservation exist.
+		# Check if cluster IP address reservation exist.
 		if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --format "value(ADDRESS)") ]]; then
-		    # Get usage status of IP address reservation.
-		    GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
-		    # Check if it's still in use. It shouldn't as we removed DNS records earlier.
-		    if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
-                echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
-                exit 1
-            # Remove IP address reservation.
-		    else
-		        shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
+			# Get usage status of IP address reservation.
+			GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+			# Check if it's still in use. It shouldn't as we removed DNS records earlier.
+			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
+				echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
+				exit 1
+			# Remove IP address reservation.
+			else
+				shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-		        TMP_STATUS=$?
-		        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-		    fi
+				"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+				TMP_STATUS=$?
+				if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+			fi
 		else
-	        echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
+			echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
 		fi
-    fi
+	fi
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi

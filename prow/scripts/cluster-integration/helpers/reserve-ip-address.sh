@@ -14,14 +14,14 @@ set -o errexit
 discoverUnsetVar=false
 
 for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION IP_ADDRESS_NAME; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
+	if [ -z "${!var}" ] ; then
+		echo "ERROR: $var is not set"
+		discoverUnsetVar=true
+	fi
 done
 
 if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
+	exit 1
 fi
 
 # Export variable used in subshell.
@@ -32,14 +32,14 @@ counter=0
 # Otherwise, creation will fail.
 IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
 until [[ -z ${IP_ADDRESS} ]]; do
-    sleep 15
-    counter=$(( counter + 1 ))
-    IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
-    if (( counter == 5 )); then
-        # Fail after one minute wait.
-        echo "${IP_ADDRESS_NAME} IP address is still present after one minute wait. Failing"
-        exit 1
-    fi
+	sleep 15
+	counter=$(( counter + 1 ))
+	IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
+	if (( counter == 5 )); then
+		# Fail after one minute wait.
+		echo "${IP_ADDRESS_NAME} IP address is still present after one minute wait. Failing"
+		exit 1
+	fi
 done
 
 gcloud compute addresses create "${IP_ADDRESS_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}" --network-tier=PREMIUM
