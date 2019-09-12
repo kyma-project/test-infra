@@ -90,7 +90,7 @@ buildpack_golang_toolbox_job_template: &buildpack_golang_toolbox_job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
         resources:
           requests:
             memory: 1.5Gi
