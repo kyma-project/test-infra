@@ -109,7 +109,7 @@ function cleanup() {
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	echo "---\nCleanup function is finished ${MSG}\n---"
+	echo -e "---\nCleanup function is finished ${MSG}\n---"
 
 	# Turn on exit-on-error
 	set -e
