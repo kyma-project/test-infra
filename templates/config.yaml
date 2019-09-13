@@ -84,6 +84,13 @@ templates:
           <<: *kyma_generic_component
           path: components/console-backend-service
           since: '1.6'
+  - from: templates/generic-component.yaml
+    render:
+      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/console-backend-service
+          since: '1.6'
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
