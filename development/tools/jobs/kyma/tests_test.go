@@ -10,6 +10,7 @@ import (
 var tests = []struct {
 	path              string
 	image             string
+	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
 	{path: "acceptance", image: tester.ImageGolangBuildpackLatest},
@@ -28,6 +29,14 @@ var tests = []struct {
 	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions:[]jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
+		},
+	},
+	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release16),
+			jobsuite.DockerRepositoryPresetSuffix("test-infra"),
+			jobsuite.Optional(),
 		},
 	},
 	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11},
@@ -88,7 +97,11 @@ func TestTestJobs(t *testing.T) {
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
-			tester.ComponentSuite{cfg}.Run(t)
+			suite := test.suite
+			if suite == nil {
+				suite = tester.NewComponentSuite
+			}
+			suite(cfg).Run(t)
 		})
 	}
 }
