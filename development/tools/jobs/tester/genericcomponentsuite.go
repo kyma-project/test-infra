@@ -41,6 +41,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 
 		assert.False(t, job.SkipReport, "Must not skip report")
 		assert.True(t, job.Decorate, "Must decorate")
+		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.Equal(t, s.Repository, job.PathAlias)
 
