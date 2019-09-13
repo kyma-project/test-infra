@@ -13,8 +13,6 @@ job_template: &job_template
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-        securityContext:
-          privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
         resources:
