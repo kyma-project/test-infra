@@ -72,7 +72,7 @@ function cleanup() {
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-        echo "---\nRemove DNS Record for Ingressgateway\n---"
+        echo -e "---\nRemove DNS Record for Ingressgateway\n---"
         GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
         GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
@@ -85,7 +85,7 @@ function cleanup() {
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-        echo "---\nRemove DNS Record for Apiserver Proxy IP\n---"
+        echo -e "---\nRemove DNS Record for Apiserver Proxy IP\n---"
         APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
         APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
         if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
@@ -94,7 +94,7 @@ function cleanup() {
             if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
         fi
 
-        echo "---\nRemove Cluster, IP Address for Ingressgateway\n---"
+        echo -e "---\nRemove Cluster, IP Address for Ingressgateway\n---"
         az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
