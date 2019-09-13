@@ -72,7 +72,7 @@ function cleanup() {
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-        echo "Remove DNS Record for Ingressgateway"
+        echo "---\nRemove DNS Record for Ingressgateway\n---"
         GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
         GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
@@ -85,16 +85,16 @@ function cleanup() {
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-        echo "Remove DNS Record for Apiserver Proxy IP"
+        echo "---\nRemove DNS Record for Apiserver Proxy IP\n---"
         APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
         APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
         if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project"${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
             TMP_STATUS=$?
             if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
         fi
 
-        echo "Remove Cluster, IP Address for Ingressgateway"
+        echo "---\nRemove Cluster, IP Address for Ingressgateway\n---"
         az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
         TMP_STATUS=$?
         if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -109,7 +109,7 @@ function cleanup() {
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    echo "Cleanup function is finished ${MSG}"
+    echo "---\nCleanup function is finished ${MSG}\n---"
 
     # Turn on exit-on-error
     set -e
