@@ -10,6 +10,7 @@ import (
 var tests = []struct {
 	path              string
 	image             string
+	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
 	{path: "acceptance", image: tester.ImageGolangBuildpackLatest},
@@ -96,7 +97,11 @@ func TestTestJobs(t *testing.T) {
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
-			tester.ComponentSuite{cfg}.Run(t)
+			suite := test.suite
+			if suite == nil {
+				suite = tester.NewComponentSuite
+			}
+			suite(cfg).Run(t)
 		})
 	}
 }
