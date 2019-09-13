@@ -50,13 +50,15 @@ var components = []struct {
 	{path: "connection-token-handler", image: tester.ImageGolangBuildpackLatest},
 	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "connector-service", image: tester.ImageGolangBuildpackLatest},
-	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11},
+	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release15),
+		},
+	},
 	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release16),
-			jobsuite.DockerRepositoryPresetSuffix("test-infra"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "dex-static-user-configurer", image: tester.ImageBootstrapLatest},
