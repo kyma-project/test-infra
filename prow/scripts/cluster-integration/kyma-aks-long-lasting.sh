@@ -119,7 +119,21 @@ function createGroup() {
 	shout "Create Azure group"
 	date
 
+	# Export variable for use in subshells.
+	export RS_GROUP
+
 	az group create --name "${RS_GROUP}" --location "${REGION}"
+
+	# Wait until resource group will be visible in azure.
+	counter=0
+	until [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; do
+		sleep 15
+		counter=$(( counter + 1 ))
+		if (( counter == 5 )); then
+			echo -e "---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
+			exit 1
+		fi
+	done
 }
 
 function installCluster() {
