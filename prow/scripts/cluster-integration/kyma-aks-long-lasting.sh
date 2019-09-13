@@ -67,7 +67,7 @@ function cleanup() {
 	EXIT_STATUS=$?
 
 	CHECK_GROUP=$(az group list --query '[?name==`'"${RS_GROUP}"'`].name' -otsv)
-	if [ "${CHECK_GROUP}" = "${RS_GROUP}" ]; then
+	if [ $(az group exists --name "${RS_GROUP}" -o json) == true ]; then
 		CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
@@ -79,7 +79,14 @@ function cleanup() {
 		GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-		echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
+			echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+		else
+			echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
+			exit 1
+		fi
+		TMP_STATUS=$?
+		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 		TMP_STATUS=$?
