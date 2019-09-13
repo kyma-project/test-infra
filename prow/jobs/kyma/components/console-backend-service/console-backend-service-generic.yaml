@@ -11,7 +11,7 @@ job_template: &job_template
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
-    preset-docker-push-repository-test-infra: "true"
+    preset-docker-push-repository-kyma: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -36,11 +36,10 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-console-backend-service
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-console-backend-service
-      prow.kyma-project.io/slack.skipReport: "true"
       <<: *job_template
