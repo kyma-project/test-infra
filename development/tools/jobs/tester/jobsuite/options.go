@@ -74,3 +74,9 @@ func RunIfChanged(filesTriggeringJob ...string) Option {
 		suite.FilesTriggeringJob = filesTriggeringJob
 	}
 }
+
+func Optional() Option {
+	return func(suite *Config) {
+		suite.Optional = true
+	}
+}

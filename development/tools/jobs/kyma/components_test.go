@@ -56,6 +56,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release16),
 			jobsuite.DockerRepositoryPresetSuffix("test-infra"),
+			jobsuite.Optional(),
 		},
 	},
 	{path: "dex-static-user-configurer", image: tester.ImageBootstrapLatest},

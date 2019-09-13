@@ -71,10 +71,13 @@ presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       skip_report: false
-      optional: true
+      optional: {{ .Values.optional | default false }}
       <<: *job_template
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      {{- if .Values.optional }}
+      prow.kyma-project.io/slack.skipReport: "true"
+      {{- end }}
       <<: *job_template
