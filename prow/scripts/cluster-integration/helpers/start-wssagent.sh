@@ -49,7 +49,7 @@ echo "***********Starting Scan***********"
 echo "***********************************"
 
 KYMA_SRC="${KYMA_PROJECT_DIR}/${PROJECTNAME}"
-KYMA_COMMONS="${KYMA_SRC}/commons"
+KYMA_COMMON="${KYMA_SRC}/common"
 KYMA_INSTALLATION="${KYMA_SRC}/installation"
 KYMA_COMPONENTS="${KYMA_SRC}/components"
 
@@ -96,7 +96,7 @@ s/projectName=/projectName=${PROJNAME}/g" /wss/wss-unified-agent.config
 }
 
 scanFolder "${KYMA_SRC}" "kyma"
-scanFolder "${KYMA_COMMONS}" "kyma/commons"
+scanFolder "${KYMA_COMMON}" "kyma/common"
 scanFolder "${KYMA_INSTALLATION}" "kyma/installation"
 
 cd "${KYMA_COMPONENTS}"
