@@ -101,6 +101,7 @@ for comp_dir in */;
 do
     # shellcheck disable=SC2001
     VAL=$(echo "${comp_dir}" | sed 's/.$//')
+    echo "Processing '${VAL}' for scan'"
     scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
 done
 
