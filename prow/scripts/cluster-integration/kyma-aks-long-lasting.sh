@@ -69,7 +69,6 @@ function cleanup() {
 	# Exporting for use in subshells.
 	export RS_GROUP
 
-	CHECK_GROUP=$(az group list --query '[?name==`'"${RS_GROUP}"'`].name' -otsv)
 	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
 		CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 		TMP_STATUS=$?
