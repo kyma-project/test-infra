@@ -11,8 +11,6 @@ job_template: &job_template
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
-        securityContext:
-          privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
