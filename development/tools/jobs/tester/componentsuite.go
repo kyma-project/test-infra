@@ -59,6 +59,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 		assert.True(t, job.RunsAgainstBranch("master"))
 		assert.False(t, job.SkipReport)
 		assert.True(t, job.Decorate)
+		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.Equal(t, s.Repository, job.PathAlias)
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
