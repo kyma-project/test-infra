@@ -49,6 +49,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *job_template
+{{- /* optional is in if to keep compatibility with old templates and not rerender all of them */ -}}
 {{- if .Values.optional }}
       optional: true
 {{- end }}
