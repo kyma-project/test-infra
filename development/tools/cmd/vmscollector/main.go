@@ -18,7 +18,7 @@ import (
 )
 
 const defaultVMNameRegexp = "^kyma-integration-test-.*|^compass-integration-test-*"
-const defaultJobLabelRegexp = "^kyma-integration$"
+const defaultJobLabelRegexp = "^kyma-integration$|^compass-integration*"
 
 var (
 	project        = flag.String("project", "", "Project ID [Required]")
