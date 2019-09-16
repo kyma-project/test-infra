@@ -68,10 +68,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
     /bin/cp /wss/wss-unified-agent.config.bak /wss/wss-unified-agent.config
 
-    sed -i.bak "s/apiKey=/apiKey=${APIKEY}/g
-s/productName=/productName=${PRODUCTNAME}/g
-s/userKey=/userKey=${USERKEY}/g
-s/projectName=/projectName=${PROJNAME}/g" /wss/wss-unified-agent.config
+    sed -i.bak "s/apiKey=/apiKey=${APIKEY}/g; s/productName=/productName=${PRODUCTNAME}/g; s/userKey=/userKey=${USERKEY}/g; s/projectName=/projectName=${PROJNAME}/g" /wss/wss-unified-agent.config
 
     echo "Product name - $PRODUCTNAME"
     echo "Project name - $PROJNAME"
@@ -104,6 +101,7 @@ for comp_dir in */;
 do
     # shellcheck disable=SC2001
     VAL=$(echo "${comp_dir}" | sed 's/.$//')
+    echo "Processing '${VAL}' for scan'"
     scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
 done
 
