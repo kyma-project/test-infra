@@ -42,7 +42,7 @@ USERKEY=$(cat "whitesource-userkey")
 APIKEY=$(cat "whitesource-apikey")
 
 # backup config for re-use
-/bin/cp /wss/wss-unified-agent.config /wss/wss-unified-agent.config.bak
+/bin/cp /wss/wss-unified-agent.config /wss/wss-unified-agent.config.backup
 
 echo "***********************************"
 echo "***********Starting Scan***********"
@@ -66,9 +66,9 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     cd "${FOLDER}" # change to passed parameter
     PROJNAME=$2
 
-    /bin/cp /wss/wss-unified-agent.config.bak /wss/wss-unified-agent.config
+    /bin/cp /wss/wss-unified-agent.config.backup /wss/wss-unified-agent.config
 
-    sed -i.bak "s/apiKey=/apiKey=${APIKEY}/g; s/productName=/productName=${PRODUCTNAME}/g; s/userKey=/userKey=${USERKEY}/g; s/projectName=/projectName=${PROJNAME}/g" /wss/wss-unified-agent.config
+    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" /wss/wss-unified-agent.config
 
     echo "Product name - $PRODUCTNAME"
     echo "Project name - $PROJNAME"
