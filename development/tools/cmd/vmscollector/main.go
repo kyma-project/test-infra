@@ -17,7 +17,7 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-const defaultVMNameRegexp = "^kyma-integration-test-.*"
+const defaultVMNameRegexp = "^kyma-integration-test-.*|^compass-integration-test-*"
 const defaultJobLabelRegexp = "^kyma-integration$"
 
 var (
