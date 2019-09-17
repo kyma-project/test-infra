@@ -44,7 +44,7 @@ do
             shift # past value
         ;;
         --infra)
-            checkActionInputParameterValue "$2"
+            checkInputParameterValue "$2"
             INFRA="$2"
             checkInfraInputParameterValue "$2"
             shift # past argument
