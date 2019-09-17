@@ -41,6 +41,8 @@ USERKEY=$(cat "whitesource-userkey")
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-apikey" "whitesource-apikey.encrypted"
 APIKEY=$(cat "whitesource-apikey")
 
+sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
+
 # backup config for re-use
 /bin/cp /wss/wss-unified-agent.config /wss/wss-unified-agent.config.backup
 
