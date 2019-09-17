@@ -53,7 +53,7 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_D4_v3"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
-export CLUSTER_K8S_VERSION="1.14"
+export CLUSTER_K8S_VERSION="1.13"
 export CLUSTER_ADDONS="monitoring,http_application_routing"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
