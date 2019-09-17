@@ -25,7 +25,7 @@
         "y": 0
       },
       "id": 14,
-      "title": "Success rate (24H)",
+      "title": "Success rate",
       "type": "row"
     },
     {
@@ -787,5 +787,5 @@
   "timezone": "",
   "title": "Prow",
   "uid": "rzdkVLPik",
-  "version": 2
+  "version": 3
 }
