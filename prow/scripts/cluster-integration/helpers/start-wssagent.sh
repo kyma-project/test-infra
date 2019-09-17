@@ -95,17 +95,17 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 }
 
 scanFolder "${KYMA_SRC}" "kyma"
-scanFolder "${KYMA_COMMON}" "kyma/common"
-scanFolder "${KYMA_INSTALLATION}" "kyma/installation"
+# scanFolder "${KYMA_COMMON}" "kyma/common"
+# scanFolder "${KYMA_INSTALLATION}" "kyma/installation"
 
-cd "${KYMA_COMPONENTS}"
-for comp_dir in */;
-do
-    # shellcheck disable=SC2001
-    VAL=$(echo "${comp_dir}" | sed 's/.$//')
-    echo "Processing '${VAL}' for scan'"
-    scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
-done
+# cd "${KYMA_COMPONENTS}"
+# for comp_dir in */;
+# do
+#     # shellcheck disable=SC2001
+#     VAL=$(echo "${comp_dir}" | sed 's/.$//')
+#     echo "Processing '${VAL}' for scan'"
+#     scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
+# done
 
 echo "***********************************"
 echo "*********Scanning Finished*********"
