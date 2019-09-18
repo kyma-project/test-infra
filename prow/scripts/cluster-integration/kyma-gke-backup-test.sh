@@ -57,7 +57,7 @@ function cleanup() {
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         shout "Release Gateway IP Address"
         date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
