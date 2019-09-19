@@ -51,9 +51,6 @@ echo "***********Starting Scan***********"
 echo "***********************************"
 
 KYMA_SRC="${KYMA_PROJECT_DIR}/${PROJECTNAME}"
-KYMA_COMMON="${KYMA_SRC}/common"
-KYMA_INSTALLATION="${KYMA_SRC}/installation"
-KYMA_COMPONENTS="${KYMA_SRC}/components"
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $1 == "" ]]; then
@@ -95,17 +92,21 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 }
 
 scanFolder "${KYMA_SRC}" "kyma"
-scanFolder "${KYMA_COMMON}" "kyma/common"
-scanFolder "${KYMA_INSTALLATION}" "kyma/installation"
 
-cd "${KYMA_COMPONENTS}"
-for comp_dir in */;
-do
-    # shellcheck disable=SC2001
-    VAL=$(echo "${comp_dir}" | sed 's/.$//')
-    echo "Processing '${VAL}' for scan'"
-    scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
-done
+# KYMA_COMMON="${KYMA_SRC}/common"
+# KYMA_INSTALLATION="${KYMA_SRC}/installation"
+# KYMA_COMPONENTS="${KYMA_SRC}/components"
+# scanFolder "${KYMA_COMMON}" "kyma/common"
+# scanFolder "${KYMA_INSTALLATION}" "kyma/installation"
+
+# cd "${KYMA_COMPONENTS}"
+# for comp_dir in */;
+# do
+#     # shellcheck disable=SC2001
+#     VAL=$(echo "${comp_dir}" | sed 's/.$//')
+#     echo "Processing '${VAL}' for scan'"
+#     scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
+# done
 
 echo "***********************************"
 echo "*********Scanning Finished*********"
