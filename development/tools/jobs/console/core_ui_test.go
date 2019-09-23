@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCoreJobPresubmit(t *testing.T) {
+func TestCoreUIJobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/core-ui/core-ui.yaml")
 	// THEN
@@ -33,7 +33,7 @@ func TestCoreJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/core-ui"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestCoreJobPostsubmit(t *testing.T) {
+func TestCoreUIJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/core-ui/core-ui.yaml")
 	// THEN
