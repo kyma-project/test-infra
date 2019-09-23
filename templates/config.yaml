@@ -495,7 +495,6 @@ templates:
             build: build-console
             pushRepository: kyma
           noRelease: yes
-          optional: yes
           resources:
             cpu: 1.5
             memory: 2Gi
@@ -508,6 +507,7 @@ templates:
             build: build-console
             pushRepository: kyma
           noRelease: yes
+          optional: yes
           resources:
             cpu: 1.5
             memory: 2Gi
