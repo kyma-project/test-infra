@@ -1,6 +1,3 @@
-# DO NOT EDIT. THIS FILE IS GENERATED
-
----
 dekiel_test_infra_ref: &dekiel_test_infra_ref
   org: dekiel
   repo: test-infra

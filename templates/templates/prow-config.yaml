@@ -1,5 +1,3 @@
-# DO NOT EDIT. THIS FILE IS GENERATED
-
 presets:
   - labels:
       preset-gc-compute-envs: "true"

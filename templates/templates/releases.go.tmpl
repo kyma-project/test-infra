@@ -1,7 +1,5 @@
 package releases
 
-// DO NOT EDIT. THIS FILE IS GENERATED
-
 // List of currently supported releases
 var (
 	Release{{ .Global.nextRelease | replace "." "" }} = mustParse("{{ .Global.nextRelease }}")

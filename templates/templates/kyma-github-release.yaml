@@ -1,5 +1,3 @@
-# DO NOT EDIT. THIS FILE IS GENERATED
-
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
