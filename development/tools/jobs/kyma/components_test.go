@@ -1,10 +1,11 @@
 package kyma
 
 import (
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
-	"testing"
 )
 
 var components = []struct {
@@ -46,7 +47,17 @@ var components = []struct {
 		},
 	},
 	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
-	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_11},
+	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release15),
+			jobsuite.JobFileSuffix("deprecated"),
+		},
+	},
+	{path: "compass-runtime-agent", image: tester.ImageGolangKubebuilder2BuildpackLatest,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release16),
+		},
+	},
 	{path: "connection-token-handler", image: tester.ImageGolangBuildpackLatest},
 	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "connector-service", image: tester.ImageGolangBuildpackLatest},

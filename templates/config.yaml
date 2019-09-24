@@ -195,10 +195,16 @@ templates:
         values:
           <<: *go_kyma_component_1_12
           path: components/cms-services
-      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent.yaml
+      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-deprecated.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/compass-runtime-agent
+          until: "1.5"
+      - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent.yaml
+        values:
+          <<: *kubebuilder2_kyma_component
+          path: components/compass-runtime-agent
+          since: "1.6"
       - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler.yaml
         values:
           <<: *go_kyma_component_v20181119
