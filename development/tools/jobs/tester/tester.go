@@ -22,6 +22,8 @@ type Preset string
 const (
 	// PresetDindEnabled means docker-in-docker preset
 	PresetDindEnabled Preset = "preset-dind-enabled"
+	// PresetKindVolumesMounts means kubernetes-in-docker preset
+	PresetKindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// PresetGcrPush means GCR push service account
 	PresetGcrPush Preset = "preset-sa-gcr-push"
 	// PresetDockerPushRepo means Docker repository
@@ -151,7 +153,7 @@ func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch strin
 // FindPresubmitJobByName finds presubmit job by name from provided jobs list
 func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name  {
+		if job.Name == name {
 			return &job
 		}
 	}
@@ -172,7 +174,7 @@ func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedR
 // FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch){
+		if job.Name == name && job.RunsAgainstBranch(branch) {
 			return &job
 		}
 	}

@@ -9,31 +9,58 @@ import (
 )
 
 func TestHelmBrokerJobsPresubmit(t *testing.T) {
-	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/helm-broker/helm-broker.yaml")
-	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/helm-broker"]
-	assert.True(t, ex)
-	assert.Len(t, kymaPresubmits, 1)
+	tests := map[string]struct {
+		givenJobName string
 
-	actualPresubmit := kymaPresubmits[0]
-	expName := "pre-master-helm-broker"
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
-	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-project/helm-broker", actualPresubmit.PathAlias)
-	assert.True(t, actualPresubmit.AlwaysRun)
-	assert.Empty(t, actualPresubmit.RunIfChanged)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetGcrPush, tester.PresetBuildPr, tester.PresetDockerPushRepoKyma)
-	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/helm-broker"}, actualPresubmit.Spec.Containers[0].Args)
+		expPresets      []tester.Preset
+		expContainerImg string
+		expCommand      string
+		expArgs         string
+	}{
+		"pre-master-helm-broker": {
+			givenJobName: "pre-master-helm-broker",
+
+			expPresets: []tester.Preset{
+				tester.PresetDindEnabled, tester.PresetGcrPush, tester.PresetBuildPr, tester.PresetDockerPushRepoKyma,
+			},
+			expContainerImg: tester.ImageGolangKubebuilderBuildpackLatest,
+			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
+			expArgs:         "/home/prow/go/src/github.com/kyma-project/helm-broker",
+		},
+		"pre-master-helm-broker-chart-test": {
+			givenJobName: "pre-master-helm-broker-chart-test",
+
+			expPresets: []tester.Preset{
+				tester.PresetDindEnabled, tester.PresetGcrPush, tester.PresetBuildPr, tester.PresetDockerPushRepoKyma, tester.PresetKindVolumesMounts,
+			},
+			expContainerImg: tester.ImageBootstrapLatest,
+			expCommand:      "make",
+			expArgs:         "charts-test",
+		},
+	}
+	for tn, tc := range tests {
+		t.Run(tn, func(t *testing.T) {
+			// when
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/helm-broker"], tc.givenJobName, "master")
+			require.NotNil(t, actualJob)
+
+			// then
+			assert.Equal(t, 10, actualJob.MaxConcurrency)
+			assert.False(t, actualJob.SkipReport)
+			assert.True(t, actualJob.Decorate)
+			assert.Equal(t, "github.com/kyma-project/helm-broker", actualJob.PathAlias)
+			assert.True(t, actualJob.AlwaysRun)
+			assert.Empty(t, actualJob.RunIfChanged)
+			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
+			assert.Equal(t, tc.expContainerImg, actualJob.Spec.Containers[0].Image)
+			assert.Equal(t, []string{tc.expCommand}, actualJob.Spec.Containers[0].Command)
+			assert.Equal(t, []string{tc.expArgs}, actualJob.Spec.Containers[0].Args)
+		})
+	}
 }
 
 func TestHelmBrokerCrdJobPostsubmit(t *testing.T) {
