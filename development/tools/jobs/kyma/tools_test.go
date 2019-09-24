@@ -1,9 +1,10 @@
 package kyma
 
 import (
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
-	"testing"
 )
 
 var tools = []struct {
@@ -11,7 +12,7 @@ var tools = []struct {
 	image             string
 	additionalOptions []jobsuite.Option
 }{
-	{path:"load-test", image: tester.ImageGolangBuildpackLatest},
+	{path: "load-test", image: tester.ImageGolangBuildpackLatest},
 }
 
 func TestToolsJobs(t *testing.T) {
@@ -24,7 +25,7 @@ func TestToolsJobs(t *testing.T) {
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
-			tester.ComponentSuite{cfg}.Run(t)
+			tester.ComponentSuite{Config: cfg}.Run(t)
 		})
 	}
 }
