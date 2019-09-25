@@ -1,5 +1,3 @@
-# DO NOT EDIT. THIS FILE IS GENERATED
-
 {{- /*
    This template renders jobs for a component using generic buildpack with make and docker
 
