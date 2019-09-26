@@ -37,6 +37,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release16),
+			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
 	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11},
