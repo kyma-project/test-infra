@@ -1,0 +1,48 @@
+{{- /*
+    This template renders jobs for test-infra validations jobs using golang buildpack
+  
+    Required values:
+      - repository - repository address (e.g. github.com/kyma-project/test-infra)
+      - goBuildpackTag - tag of the bootstrap image
+      - presubmits[].name - name of the presubmit job
+      - presubmits[].runIfChanged - a list of regexps to watch in addition to path (default: [])
+      - presubmits[].command - command to execute
+    
+    Optional values:
+      - presubmits[].args - args which passed to given command
+      - presubmits[].resources.memory - memory given to job container (default: 1.5Gi)
+      - presubmits[].resources.cpu - cpu given to job container (default: 0.8)
+    */ -}}
+  
+job_template: &job_template
+  decorate: true
+  max_concurrency: 10
+  skip_report: false
+  optional: false
+  branches:
+    - ^master$
+  
+{{ $goBuildpackTag := (.Values.goBuildpackTag) -}}
+
+presubmits: # runs on PRs
+  {{ .Values.repository | replace "github.com/" "" }}:
+    {{- range $job := .Values.presubmits }}
+    - name: pre-master-test-infra-validate-{{ $job.name }}
+      <<: *job_template
+      run_if_changed: "{{ $job.runIfChanged }}"
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:{{ $goBuildpackTag }}
+            command:
+              - "{{ $job.command }}"
+            {{- if $job.args }}
+            args:
+              {{- range $job.args }}
+              - {{ . | quote }}
+              {{- end }}
+            {{- end }}
+            resources:
+              requests:
+                memory: {{ $job.resources.memory | default "1.5Gi" }}
+                cpu: {{ $job.resources.cpu | default 0.8 }}
+    {{- end }}

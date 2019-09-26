@@ -3,6 +3,10 @@
 LICENSE_PULLER_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/license-puller.sh"
 export LICENSE_PULLER_PATH
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
 function start_docker() {
     echo "Docker in Docker enabled, initializing..."
     printf '=%.0s' {1..80}; echo
@@ -93,7 +97,7 @@ function shout() {
 #################################################################################################
 # $1
 #################################################################################################
-    "
+    ${NC}"
 }
 
 function shoutFail() {
@@ -101,7 +105,7 @@ function shoutFail() {
 #################################################################################################
 # $1
 #################################################################################################
-    "
+    ${NC}"
 }
 
 function checkInputParameterValue() {

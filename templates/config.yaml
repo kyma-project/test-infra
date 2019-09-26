@@ -89,6 +89,33 @@ templates:
           <<: *kyma_generic_component
           path: tests/console-backend-service
           since: "1.6"
+  - from: templates/test-infra-validation.yaml
+    render:
+      - to: ../prow/jobs/test-infra/validation.yaml
+        values:
+          repository: github.com/kyma-project/test-infra
+          goBuildpackTag: v20181119-afd3fbd
+          presubmits:
+            - name: scripts
+              runIfChanged: "^(development/.*.sh$|prow/.*.sh$)"
+              command: "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
+            - name: configs
+              runIfChanged: "^prow/((plugins|config).yaml|jobs/)"
+              command: "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-config.sh"
+              args:
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
+            - name: prow
+              runIfChanged: "^(development/tools|prow)" # Also for any changes in prow directory
+              command: "make"
+              args:
+                - "-C"
+                - "development/tools"
+                - "validate"
+            - name: generated-files
+              runIfChanged: "*" # Run always
+              command: "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-generated.sh"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
