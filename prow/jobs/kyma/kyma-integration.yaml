@@ -35,6 +35,22 @@ vm_job_labels_template: &vm_job_labels_template
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
+presets:
+  - labels:
+      preset-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+  - labels:
+      preset-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: kyma-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
+
 gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   skip_report: false
   decorate: true
@@ -254,7 +270,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.3
 
-    - name: pre-master-kyma-gke-minio-gateway
+    - name: pre-master-kyma-gke-minio-gcs-gateway
       branches:
         - ^master$
       <<: *gke_minio_gateway_job_template
@@ -262,6 +278,22 @@ presubmits: # runs on PRs
       optional: false
       labels:
         preset-build-pr: "true"
+        preset-minio-gcs-gateway: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: pre-master-kyma-gke-minio-az-gateway
+      branches:
+        - ^master$
+      <<: *gke_minio_gateway_job_template
+      run_if_changed: "^(resources\\/assetstore|installation)"
+      optional: false
+      labels:
+        preset-build-pr: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -303,7 +335,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.3
 
-    - name: pre-master-kyma-gke-minio-gateway-migration
+    - name: pre-master-kyma-gke-minio-gcs-gateway-migration
       branches:
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
@@ -311,6 +343,22 @@ presubmits: # runs on PRs
       optional: false
       labels:
         preset-build-pr: "true"
+        preset-minio-gcs-gateway: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: pre-master-kyma-gke-minio-az-gateway-migration
+      branches:
+        - ^master$
+      <<: *gke_minio_gateway_migration_job_template
+      run_if_changed: "^(resources\\/assetstore|installation)"
+      optional: false
+      labels:
+        preset-build-pr: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -606,6 +654,27 @@ periodics:
     spec:
       containers:
         - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 50m
+  - name: orphaned-az-storage-accounts-cleaner
+    cron: "00 00 * * *" # "At 00:00 each day"
+    labels:
+      preset-creds-aks-kyma-integration: "true"
+      preset-minio-az-gateway: "true"
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "prow/scripts/cluster-integration/minio/azure-cleaner.sh"
           resources:
             requests:
               memory: 100Mi
