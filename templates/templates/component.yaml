@@ -1,6 +1,6 @@
 {{ $repositoryName := index (.Values.repository | splitList "/") 2 -}}
 {{- $componentName := .Values.path | splitList "/" | last }}
-{{- $releases := matchingReleases (.Global.releases) .Values.since "1.5" -}}
+{{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
 {{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
 {{- $watch := .Values.watch | default (print "^" .Values.path "/") }}
 {{- define "repoNoHost" -}}{{ replace "github.com/" "" . }}{{- end -}}
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
 {{- end }}
 {{- if $releasable -}}
-{{- range $releases }}
+{{- range (matchingReleases $releases nil "1.5") }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
       branches:
         - release-{{ . }}

@@ -427,6 +427,18 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.6:
+              required_status_checks:
+                contexts:
+                  - pre-rel16-kyma-integration
+                  - pre-rel16-kyma-gke-integration
+                  - pre-rel16-kyma-gke-upgrade
+                  - pre-rel16-kyma-gke-backup
+                  - pre-rel16-kyma-gke-central-connector
+                  - pre-rel16-kyma-artifacts
+                  - pre-rel16-kyma-installer
+                  - pre-rel16-kyma-gke-minio-gateway
+                  - pre-rel16-kyma-gke-minio-gateway-migration
             release-1.5:
               required_status_checks:
                 contexts:

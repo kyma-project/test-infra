@@ -223,6 +223,16 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-integration
+      branches:
+        - release-1.6
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
     - name: pre-rel15-kyma-integration
       branches:
         - release-1.5
@@ -266,6 +276,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-gke-minio-gateway
+      branches:
+        - release-1.6
+      always_run: false
+      <<: *gke_minio_gateway_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-minio-gateway
       branches:
         - release-1.5
@@ -315,6 +337,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-gke-minio-gateway-migration
+      branches:
+        - release-1.6
+      always_run: false
+      <<: *gke_minio_gateway_migration_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-minio-gateway-migration
       branches:
         - release-1.5
@@ -378,6 +412,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-gke-integration
+      branches:
+        - release-1.6
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-integration
       branches:
         - release-1.5
@@ -430,6 +477,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-gke-upgrade
+      branches:
+        - release-1.6
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-upgrade
       branches:
         - release-1.5
@@ -476,6 +534,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-gke-central-connector
+      branches:
+        - release-1.6
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-central-connector
       branches:
         - release-1.5
@@ -523,6 +592,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel16-kyma-gke-backup
+      optional: false
+      branches:
+        - release-1.6
+      <<: *gke_backup_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_backup_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-backup
       optional: false
       branches:

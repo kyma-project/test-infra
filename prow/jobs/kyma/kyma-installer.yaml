@@ -32,6 +32,18 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
 
+    - name: pre-rel16-kyma-installer
+      branches:
+        - release-1.6
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
     - name: pre-rel15-kyma-installer
       branches:
         - release-1.5

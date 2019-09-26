@@ -1,6 +1,7 @@
 global:
-  nextRelease: "1.6"
+  nextRelease: "1.7"
   releases:
+    - "1.6"
     - "1.5"
     - "1.4"
     - "1.3"
@@ -163,6 +164,8 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/application-registry
+          patchReleases:
+            - "1.6"
       - to: ../prow/jobs/kyma/components/asset-metadata-service/asset-metadata-service.yaml
         values:
           <<: *go_kyma_component_1_11
