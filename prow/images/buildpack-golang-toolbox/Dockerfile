@@ -9,5 +9,5 @@ RUN go get golang.org/x/lint/golint
 RUN go get github.com/vektra/mockery
 RUN go get github.com/kisielk/errcheck
 
-COPY ./licence-puller.sh /licence-puller.sh
-ENV LICENSE_PULLER_PATH=/licence-puller.sh
+COPY ./license-puller.sh /license-puller.sh
+ENV LICENSE_PULLER_PATH=/license-puller.sh
