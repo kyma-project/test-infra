@@ -117,9 +117,7 @@ function main() {
     mkdir -p "${TMP_DIR}"
     mkdir -p "${LICENSES_DIR}"
 
-    echo "Pulling licenses for Golang dependencies"
-    pullGoLicenses
-
+    pullLicenses
     mergeLicenses
     removeTempFolders
 }
