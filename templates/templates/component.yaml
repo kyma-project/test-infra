@@ -1,5 +1,6 @@
 {{ $repositoryName := index (.Values.repository | splitList "/") 2 -}}
-{{- $releases := matchingReleases (.Global.releases) .Values.since .Values.until -}}
+{{- $componentName := .Values.path | splitList "/" | last }}
+{{- $releases := matchingReleases (.Global.releases) .Values.since "1.5" -}}
 {{- $releasable := and (not .Values.noRelease) (not (empty $releases)) -}}
 {{- $watch := .Values.watch | default (print "^" .Values.path "/") }}
 {{- define "repoNoHost" -}}{{ replace "github.com/" "" . }}{{- end -}}
@@ -91,6 +92,28 @@ presubmits: # runs on PRs
         <<: *job_labels_template
         preset-{{ $.Values.presets.build }}-release: "true"
 {{- end -}}
+{{- range .Values.patchReleases }}
+    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      branches:
+        - release-{{ . }}-{{ $componentName }}
+      <<: *job_template
+      path_alias: {{ $.Values.repository }}
+      run_if_changed: "{{ $watch }}"
+{{- if $isNotTestInfra }}
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+      spec:
+        containers:
+          - <<: *container_template
+            image: {{ $.Values.buildpack }}
+            args:
+              - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
+      labels:
+        <<: *job_labels_template
+        preset-{{ $.Values.presets.build }}-pr: "true"
+{{- end -}}
 {{- end }}
 
 {{ if not .Values.until -}}
@@ -122,5 +145,27 @@ postsubmits:
         {{- if .Values.skipSlackReport }}
         prow.kyma-project.io/slack.skipReport: "true"
         {{- end }}
-  {{- end -}}
+{{- range .Values.patchReleases }}
+    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      branches:
+        - release-{{ . }}-{{ $componentName }}
+      <<: *job_template
+      path_alias: {{ $.Values.repository }}
+      run_if_changed: "{{ $watch }}"
+{{- if $isNotTestInfra }}
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+      spec:
+        containers:
+          - <<: *container_template
+            image: {{ $.Values.buildpack }}
+            args:
+              - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
+      labels:
+        <<: *job_labels_template
+        preset-{{ $.Values.presets.build }}-master: "true"
+{{- end -}}
+{{- end -}}
 {{- end -}}
