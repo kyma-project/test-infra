@@ -223,8 +223,8 @@ func TestKymaGKEMinioAZGatewayJobPresubmit(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"}, actualJob.Spec.Containers[0].Args)
-	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-build-pr",
+	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.GCProjectEnv, preset.BuildPr,
+		preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-build-pr",
 		"preset-sa-gke-kyma-integration", "preset-gc-compute-envs",
 		"preset-gc-project-env", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket", "preset-minio-az-gateway", "preset-creds-aks-kyma-integration")
 }
@@ -304,8 +304,8 @@ func TestKymaGKEMinioAZGatewayMigrationJobPresubmit(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"}, actualJob.Spec.Containers[0].Args)
-	tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetGCProjectEnv, tester.PresetBuildPr,
-		tester.PresetDindEnabled, tester.PresetKymaGuardBotGithubToken, "preset-build-pr",
+	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.GCProjectEnv, preset.BuildPr,
+		preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-build-pr",
 		"preset-sa-gke-kyma-integration", "preset-gc-compute-envs",
 		"preset-gc-project-env", "preset-docker-push-repository-gke-integration", "preset-dind-enabled", "preset-kyma-artifacts-bucket", "preset-minio-az-gateway", "preset-creds-aks-kyma-integration")
 }
