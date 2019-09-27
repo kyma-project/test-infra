@@ -1,6 +1,7 @@
 package hydroform_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -30,7 +31,7 @@ func TestHydroformJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Empty(t, actualPresubmit.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.BuildPr)
 	assert.Equal(t, tester.ImageGolangBuildpack1_12, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/hydroform"}, actualPresubmit.Spec.Containers[0].Args)
@@ -56,7 +57,7 @@ func TestHydroformJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/hydroform", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.BuildMaster)
 	assert.Equal(t, tester.ImageGolangBuildpack1_12, actualPost.Spec.Containers[0].Image)
 	assert.Empty(t, actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)

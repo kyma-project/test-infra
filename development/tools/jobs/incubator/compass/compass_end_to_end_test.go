@@ -1,6 +1,7 @@
 package compass_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -25,7 +26,7 @@ func TestCompassEndToEndJobPresubmit(t *testing.T) {
 	assert.False(t, actualPre.Optional)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualPre.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPre.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^tests/end-to-end/", actualPre.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPre, "tests/end-to-end/some_random_file.go")
 	tester.AssertThatExecGolangBuildpack(t, actualPre.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/end-to-end")
@@ -44,7 +45,7 @@ func TestCompassEndToEndJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
 	assert.Equal(t, "^tests/end-to-end/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "tests/end-to-end/some_random_file.go")
 	tester.AssertThatExecGolangBuildpack(t, actualPost.JobBase, tester.ImageGolangBuildpack1_11, "/home/prow/go/src/github.com/kyma-incubator/compass/tests/end-to-end")

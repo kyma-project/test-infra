@@ -34,6 +34,19 @@ func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 	return supportedReleases
 }
 
+// GetKymaReleasesSince filters all available releases later or the same as the given one
+func GetKymaReleasesBetween(firstRelease *SupportedRelease, lastRelease *SupportedRelease) []*SupportedRelease {
+	var supportedReleases []*SupportedRelease
+
+	for _, rel := range GetAllKymaReleases() {
+		if rel.IsNotOlderThen(firstRelease) && rel.IsNotYoungerThen(lastRelease) {
+			supportedReleases = append(supportedReleases, rel)
+		}
+	}
+
+	return supportedReleases
+}
+
 // Compare compares this version to another one. It returns -1, 0, or 1 if
 // the version smaller, equal, or larger than the other version.
 func (r *SupportedRelease) Compare(other *SupportedRelease) int {

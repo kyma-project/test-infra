@@ -1,6 +1,7 @@
 package kymacli_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -26,7 +27,7 @@ func TestKymaCliIntegrationPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
@@ -47,7 +48,7 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster, tester.PresetGCProjectEnv, "preset-sa-vm-kyma-integration")
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.BuildMaster, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"}, actualPost.Spec.Containers[0].Command)
 }
