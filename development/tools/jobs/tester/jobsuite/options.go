@@ -2,6 +2,7 @@ package jobsuite
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 )
@@ -43,20 +44,30 @@ func Project(name, image string) Option {
 func KymaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/kyma"
-		suite.DockerRepositoryPresetSuffix = "kyma"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoKyma
+		suite.BuildPresetMaster = preset.BuildMaster
 	}
 }
 
 func TestInfraRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/test-infra"
-		suite.DockerRepositoryPresetSuffix = "test-infra"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoTestInfra
+		suite.BuildPresetMaster = preset.BuildMaster
 	}
 }
 
-func DockerRepositoryPresetSuffix(suffix string) Option {
+func ConsoleRepo() Option {
 	return func(suite *Config) {
-		suite.DockerRepositoryPresetSuffix = suffix
+		suite.Repository = "github.com/kyma-project/console"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoKyma
+		suite.BuildPresetMaster = preset.BuildConsoleMaster
+	}
+}
+
+func DockerRepositoryPreset(preset preset.Preset) Option {
+	return func(suite *Config) {
+		suite.DockerRepositoryPreset = preset
 	}
 }
 
@@ -94,5 +105,11 @@ func RunIfChanged(filesTriggeringJob ...string) Option {
 func Optional() Option {
 	return func(suite *Config) {
 		suite.Optional = true
+	}
+}
+
+func BuildPresetMaster(preset preset.Preset) Option {
+	return func(suite *Config) {
+		suite.BuildPresetMaster = preset
 	}
 }

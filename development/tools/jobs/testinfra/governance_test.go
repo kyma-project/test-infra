@@ -1,6 +1,7 @@
 package testinfra_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"fmt"
@@ -30,7 +31,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetDindEnabled)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
@@ -54,7 +55,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
-	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPeriodic.JobBase.UtilityConfig, "master")
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
