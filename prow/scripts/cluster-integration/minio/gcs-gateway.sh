@@ -27,8 +27,6 @@ afterTest() {
 installOverrides() {
     shout "Installing Google Cloud Storage Minio Gateway overrides"; date
 
-    kubectl create namespace "kyma-installer" -o yaml --dry-run | kubectl apply -f -
-
     local -r ASSET_STORE_RESOURCE_NAME="gcs-minio-overrides"
 
     kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"

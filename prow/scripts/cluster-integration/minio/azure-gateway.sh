@@ -86,8 +86,6 @@ installOverrides() {
 
     local -r AZURE_ACCOUNT_KEY=$(az storage account keys list --account-name "${AZURE_STORAGE_ACCOUNT_NAME}" --resource-group "${AZURE_RS_GROUP}" --query "[?keyName=='key1'].value" --output tsv)
 
-    kubectl create namespace "kyma-installer" -o yaml --dry-run | kubectl apply -f -
-
     local -r ASSET_STORE_RESOURCE_NAME="azure-minio-overrides"
     kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-literal "minio.secretKey=${AZURE_ACCOUNT_KEY}" --from-literal "minio.accessKey=${AZURE_STORAGE_ACCOUNT_NAME}"
     kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
