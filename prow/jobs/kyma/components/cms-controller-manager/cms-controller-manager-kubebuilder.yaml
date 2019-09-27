@@ -45,22 +45,4 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel13-kyma-components-cms-controller-manager
-      branches:
-        - release-1.3
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.3
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/cms-controller-manager"
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
 
