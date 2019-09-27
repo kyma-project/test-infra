@@ -42,4 +42,4 @@
 
 /templates/config.yaml @kyma-project/developers
 
-/templates/templates @kyma-project/prow sjanota
+/templates/templates @kyma-project/prow @sjanota
