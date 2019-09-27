@@ -329,19 +329,6 @@ presets:
             name: nightly-github-integration-app-client-secret
             key: client-secret
   - labels:
-      preset-service-catalog-crd-periodic-github-integration: "true"
-    env:
-    - name: GITHUB_INTEGRATION_APP_CLIENT_ID
-      valueFrom:
-        secretKeyRef:
-          name: service-catalog-crd-periodic-github-integration-app-client-id
-          key: client-id
-    - name: GITHUB_INTEGRATION_APP_CLIENT_SECRET
-      valueFrom:
-        secretKeyRef:
-          name: service-catalog-crd-periodic-github-integration-app-client-secret
-          key: client-secret
-  - labels:
       preset-weekly-github-integration: "true"
     env:
       - name: GITHUB_INTEGRATION_APP_CLIENT_ID

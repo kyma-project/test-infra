@@ -436,7 +436,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 17)
+	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -487,7 +487,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasExtraRefs(t, clustersCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", clustersCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, clustersCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,service-catalog-crd-periodic"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, clustersCleanerPeriodic.JobBase)
 
 	expName = "orphaned-vms-cleaner"
@@ -655,37 +655,4 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	//TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#test-alert-channel")
 	tester.AssertThatContainerHasEnv(t, verTestPeriodic.Spec.Containers[0], "OUT_OF_DATE_DAYS", "3")
-
-	expName = "kyma-gke-service-catalog-crd-periodic"
-	scPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, scPeriodic)
-	assert.True(t, scPeriodic.Decorate)
-	tester.AssertThatHasPresets(t, scPeriodic.JobBase,
-		"preset-kyma-keyring",
-		"preset-kyma-encryption-key",
-		"preset-stability-checker-slack-notifications",
-		"preset-service-catalog-crd-periodic-github-integration",
-		"preset-sa-gke-kyma-integration",
-		"preset-gc-compute-envs",
-		"preset-gc-project-env",
-		"preset-docker-push-repository-gke-integration",
-		"preset-dind-enabled",
-		"preset-kyma-artifacts-bucket",
-	)
-	tester.AssertThatHasExtraRefTestInfra(t, scPeriodic.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasExtraRefs(t, scPeriodic.JobBase.UtilityConfig, []string{"kyma"})
-	require.Len(t, scPeriodic.Spec.Containers, 1)
-	cont := scPeriodic.Spec.Containers[0]
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", cont.Image)
-	assert.Equal(t, []string{"bash"}, cont.Command)
-	require.Len(t, cont.Args, 2)
-	assert.Equal(t, "-c", cont.Args[0])
-	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh", cont.Args[1])
-	tester.AssertThatContainerHasEnv(t, cont, "INPUT_CLUSTER_NAME", "service-catalog-crd-periodic")
-	tester.AssertThatContainerHasEnv(t, cont, "TEST_RESULT_WINDOW_TIME", "24h")
-	tester.AssertThatContainerHasEnv(t, cont, "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-gopher-pr")
-	tester.AssertThatContainerHasEnv(t, cont, "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
-	tester.AssertThatContainerHasEnv(t, cont, "SERVICE_CATALOG_CRD", "true")
-	tester.AssertThatContainerHasEnv(t, cont, "KYMA_ALERTS_CHANNEL", "#not-exists")
-	tester.AssertThatContainerHasEnvFromSecret(t, cont, "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
 }
