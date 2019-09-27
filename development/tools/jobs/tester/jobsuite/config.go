@@ -16,6 +16,7 @@ type Config struct {
 	DockerRepositoryPreset preset.Preset
 	Optional               bool
 	BuildPresetMaster      preset.Preset
+	PatchReleases          []*releases.SupportedRelease
 }
 
 func NewConfig(opts ...Option) *Config {

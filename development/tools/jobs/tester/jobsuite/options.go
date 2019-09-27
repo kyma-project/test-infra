@@ -108,8 +108,8 @@ func Optional() Option {
 	}
 }
 
-func BuildPresetMaster(preset preset.Preset) Option {
+func PatchReleases(patchReleases ...*releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.BuildPresetMaster = preset
+		suite.PatchReleases = patchReleases
 	}
 }

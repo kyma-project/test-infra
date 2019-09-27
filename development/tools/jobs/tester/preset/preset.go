@@ -24,6 +24,8 @@ const (
 	BuildMaster Preset = "preset-build-master"
 	// BuildConsoleMaster means console master environment
 	BuildConsoleMaster Preset = "preset-build-console-master"
+	// BuildConsoleMaster means console PR environment
+	BuildConsolePr Preset = "preset-build-console-pr"
 	// BuildRelease means release environment
 	BuildRelease Preset = "preset-build-release"
 	// BotGithubToken means github token

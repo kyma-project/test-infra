@@ -113,7 +113,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
       labels:
         <<: *job_labels_template
-        preset-{{ $.Values.presets.build }}-pr: "true"
+        preset-build-pr: "true"
 {{- end }}
 
 {{ if not .Values.until -}}
