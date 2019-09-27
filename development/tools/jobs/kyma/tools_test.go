@@ -13,6 +13,7 @@ var tools = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{path: "load-test", image: tester.ImageGolangBuildpackLatest},
+	{path: "alpine-net", image: tester.ImageGolangBuildpackLatest},
 }
 
 func TestToolsJobs(t *testing.T) {

@@ -64,7 +64,9 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 		assert.Equal(t, s.Repository, job.PathAlias)
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
-		AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+		if !s.isTestInfra() {
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+		}
 		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush, PresetBuildPr)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
 	}
@@ -83,7 +85,9 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.True(t, job.Decorate)
 		assert.Equal(t, s.Repository, job.PathAlias)
-		AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+		if !s.isTestInfra() {
+			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
+		}
 		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush, PresetBuildMaster)
 		job.RunsAgainstChanges(s.FilesTriggeringJob)
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
@@ -109,7 +113,9 @@ func (s ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testi
 				assert.True(t, job.AlwaysRun)
 				AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 				AssertThatSpecifiesResourceRequests(t, job.JobBase)
-				AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, currentRelease.Branch())
+				if !s.isTestInfra() {
+					AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, currentRelease.Branch())
+				}
 				AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush, PresetBuildRelease)
 				job.RunsAgainstChanges(s.FilesTriggeringJob)
 			})
@@ -147,4 +153,8 @@ func (s ComponentSuite) workingDirectory() string {
 
 func (s ComponentSuite) presetDockerPushRepository() Preset {
 	return Preset(fmt.Sprintf("preset-docker-push-repository-%s", s.DockerRepositoryPresetSuffix))
+}
+
+func (s ComponentSuite) isTestInfra() bool {
+	return s.Repository == "github.com/kyma-project/test-infra"
 }

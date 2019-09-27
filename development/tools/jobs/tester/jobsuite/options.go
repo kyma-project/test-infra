@@ -2,6 +2,7 @@ package jobsuite
 
 import (
 	"fmt"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 )
 
@@ -31,10 +32,25 @@ func Tool(name, image string) Option {
 	}
 }
 
+func Project(name, image string) Option {
+	return func(suite *Config) {
+		suite.Path = name
+		suite.Image = image
+		suite.FilesTriggeringJob = []string{fmt.Sprintf("%s/fix", suite.Path)}
+	}
+}
+
 func KymaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/kyma"
 		suite.DockerRepositoryPresetSuffix = "kyma"
+	}
+}
+
+func TestInfraRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-project/test-infra"
+		suite.DockerRepositoryPresetSuffix = "test-infra"
 	}
 }
 
@@ -59,13 +75,13 @@ func Until(rel *releases.SupportedRelease) Option {
 
 func AllReleases() Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetAllKymaReleases()
+		suite.Releases = releases.GetKymaReleasesUntil(releases.Release15)
 	}
 }
 
 func Since(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesSince(rel)
+		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release15)
 	}
 }
 

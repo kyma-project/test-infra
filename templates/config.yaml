@@ -518,7 +518,7 @@ templates:
             cpu: 1.5
             memory: 2Gi
           buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
-      - to: ../prow/jobs/test-infra/watch-pods.yaml
+      - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         values:
           repository: github.com/kyma-project/test-infra
           path: watch-pods

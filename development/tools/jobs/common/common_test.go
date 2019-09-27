@@ -11,7 +11,7 @@ import (
 
 func TestCommonReleases(t *testing.T) {
 	// WHEN
-	for _, currentRelease := range releases.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetKymaReleasesUntil(releases.Release15) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/common/common.yaml")
 			// THEN
