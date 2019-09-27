@@ -737,7 +737,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,service-catalog-crd-periodic"
+            - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
           resources:
             requests:
               memory: 1Gi
@@ -1142,62 +1142,3 @@ periodics:
             requests:
               memory: 1Gi
               cpu: 400m
-
-  - name: kyma-gke-service-catalog-crd-periodic
-    cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
-    labels:
-      preset-kyma-keyring: "true"
-      preset-kyma-encryption-key: "true"
-      preset-build-master: "true"
-      preset-stability-checker-slack-notifications: "true"
-      preset-service-catalog-crd-periodic-github-integration: "true"
-      preset-kms-gc-project-env: "true"
-      <<: *gke_job_labels_template
-    decorate: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      volumes:
-        - name: sa-stability-fluentd-storage-writer
-          secret:
-            secretName: sa-stability-fluentd-storage-writer
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: sa-stability-fluentd-storage-writer
-              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-              readOnly: true
-          env:
-            - name: INPUT_CLUSTER_NAME
-              value: "service-catalog-crd-periodic"
-            - name: TEST_RESULT_WINDOW_TIME
-              value: "24h"
-            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-gopher-pr"
-            - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-              value: "cluster-access"
-            - name: SERVICE_CATALOG_CRD
-              value: "true"
-            - name: KYMA_ALERTS_SLACK_API_URL
-              valueFrom:
-                secretKeyRef:
-                  name: kyma-alerts-slack-api-url
-                  key: secret
-            - name: KYMA_ALERTS_CHANNEL
-              value: "#not-exists"
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-b"
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
