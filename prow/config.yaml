@@ -424,8 +424,10 @@ branch-protection:
                   - pre-rel16-kyma-gke-central-connector
                   - pre-rel16-kyma-artifacts
                   - pre-rel16-kyma-installer
-                  - pre-rel16-kyma-gke-minio-gateway
-                  - pre-rel16-kyma-gke-minio-gateway-migration
+                  - pre-rel16-kyma-gke-minio-gcs-gateway
+                  - pre-rel16-kyma-gke-minio-az-gateway
+                  - pre-rel16-kyma-gke-minio-gcs-gateway-migration
+                  - pre-rel16-kyma-gke-minio-az-gateway-migration
             release-1.5:
               required_status_checks:
                 contexts:

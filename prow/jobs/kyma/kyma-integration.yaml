@@ -298,7 +298,7 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: pre-rel16-kyma-gke-minio-gateway
+    - name: pre-rel16-kyma-gke-minio-gcs-gateway
       branches:
         - release-1.6
       always_run: false
@@ -306,6 +306,48 @@ presubmits: # runs on PRs
       optional: false
       labels:
         preset-build-release: "true"
+        preset-minio-gcs-gateway: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
+    - name: pre-rel16-kyma-gke-minio-az-gateway
+      branches:
+        - release-1.6
+      always_run: false
+      <<: *gke_minio_gateway_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
+    - name: pre-rel16-kyma-gke-minio-gcs-gateway-migration
+      branches:
+        - release-1.6
+      always_run: false
+      <<: *gke_minio_gateway_migration_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-gcs-gateway: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.6
+    - name: pre-rel16-kyma-gke-minio-az-gateway-migration
+      branches:
+        - release-1.6
+      always_run: false
+      <<: *gke_minio_gateway_migration_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -363,18 +405,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: pre-rel16-kyma-gke-minio-gateway-migration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_migration_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
     - name: pre-rel15-kyma-gke-minio-gateway-migration
       branches:
         - release-1.5
