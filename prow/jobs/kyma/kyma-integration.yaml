@@ -22,7 +22,7 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
@@ -58,7 +58,7 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         securityContext:
           privileged: true
         command:
@@ -81,7 +81,7 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         securityContext:
           privileged: true
         command:
@@ -104,7 +104,7 @@ gke_xip_job_template: &gke_xip_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         securityContext:
           privileged: true
         command:
@@ -127,7 +127,7 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         securityContext:
           privileged: true
         command:
@@ -150,7 +150,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         securityContext:
           privileged: true
         command:
@@ -173,7 +173,7 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
         securityContext:
           privileged: true
         command:
@@ -194,7 +194,7 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
         securityContext:
           privileged: true
         command:
@@ -711,7 +711,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
           command:
             - "bash"
           args:
@@ -894,7 +894,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
           securityContext:
             privileged: true
           volumeMounts:
@@ -951,7 +951,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
           securityContext:
             privileged: true
           volumeMounts:
@@ -1009,7 +1009,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
           securityContext:
             privileged: true
           volumeMounts:
@@ -1061,7 +1061,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
           securityContext:
             privileged: true
           command:
@@ -1097,7 +1097,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
           securityContext:
             privileged: true
           command:
