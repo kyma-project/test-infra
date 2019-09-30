@@ -29,7 +29,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository-incubator: "true"
 
 presubmits: # runs on PRs
-  kyma-incubator/hack-showcase:
+  kyma-incubator/github-slack-connectors:
     - name: pre-master-slack-connector
       branches:
         - ^master$
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
 
 postsubmits:
-  kyma-incubator/hack-showcase:
+  kyma-incubator/github-slack-connectors:
     - name: post-master-slack-connector
       branches:
         - ^master$
