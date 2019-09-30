@@ -27,8 +27,11 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(ls
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
 
+# Remove kubectl installed with gcloud
+RUN rm -rf "$(which kubectl)"
+
 # Install kubectl
 ENV KUBECTL_VERSION="v1.14.6"
-RUN curl -LO curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl &&\
-	chmod +x ./kubectl &&\
-	mv ./kubectl /usr/local/bin/kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl --fail &&\
+	chmod +x kubectl &&\
+	mv kubectl /usr/local/bin/kubectl
