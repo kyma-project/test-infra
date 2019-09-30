@@ -28,7 +28,7 @@ presubmits: # runs on PRs
     branches:
     - release-*
     <<: *job_template
-    always_run: false
+    always_run: true
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
