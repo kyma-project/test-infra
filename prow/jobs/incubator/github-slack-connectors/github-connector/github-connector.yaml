@@ -2,7 +2,7 @@ base_job_template: &base_job_template
   skip_report: false
   run_if_changed: "^github-connector"
   decorate: true
-  path_alias: github.com/kyma-incubator/github-slack-connector
+  path_alias: github.com/kyma-incubator/github-slack-connectors
   max_concurrency: 10
   extra_refs:
     - org: kyma-project
@@ -17,7 +17,7 @@ base_job_template: &base_job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connector/github-connector"
+          - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
         resources:
 
           requests:
