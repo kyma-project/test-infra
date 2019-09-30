@@ -43,7 +43,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 kubectl version --client
-./usr/local/bin/kubectl version --client
+/usr/local/bin/kubectl version --client
 
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
