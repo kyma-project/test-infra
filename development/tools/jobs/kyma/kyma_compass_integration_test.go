@@ -39,7 +39,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassCont.Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99", compassCont.Image)
 	assert.Equal(t, []string{"bash"}, compassCont.Command)
 	require.Len(t, compassCont.Args, 2)
 	assert.Equal(t, "-c", compassCont.Args[0])
@@ -77,7 +77,7 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", compassCont.Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190927-2687a99", compassCont.Image)
 	assert.Equal(t, []string{"bash"}, compassCont.Command)
 	require.Len(t, compassCont.Args, 2)
 	assert.Equal(t, "-c", compassCont.Args[0])
