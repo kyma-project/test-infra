@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.6)-console-backend-service$
   run_if_changed: "^tests/console-backend-service/|^scripts/"
   spec:
     containers:

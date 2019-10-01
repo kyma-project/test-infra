@@ -2,6 +2,7 @@ package kyma_test
 
 import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,7 +27,7 @@ func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, currentRelease.Branch())
 			assert.Equal(t, tester.ImageBootstrapHelm20181121, actualJob.Spec.Containers[0].Image)
 			assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"}, actualJob.Spec.Containers[0].Args)
-			tester.AssertThatHasPresets(t, actualJob.JobBase, tester.PresetDindEnabled, "preset-kyma-artifacts-bucket")
+			tester.AssertThatHasPresets(t, actualJob.JobBase, preset.DindEnabled, "preset-kyma-artifacts-bucket")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "GOOGLE_APPLICATION_CREDENTIALS", "/etc/credentials/sa-kyma-release-candidate/service-account.json")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_DNS_ZONE_NAME", "kymapro-zone")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "KYMA_PROJECT_DIR", tester.KymaProjectDir)

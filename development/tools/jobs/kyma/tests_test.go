@@ -77,14 +77,6 @@ var tests = []struct {
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
-	{path: "logging", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
-		jobsuite.Until(releases.Release13),
-		jobsuite.JobFileSuffix("deprecated"),
-	}},
-	{path: "monitoring", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
-		jobsuite.Until(releases.Release13),
-		jobsuite.JobFileSuffix("deprecated"),
-	}},
 	{path: "test-namespace-controller", image: tester.ImageGolangBuildpackLatest},
 }
 

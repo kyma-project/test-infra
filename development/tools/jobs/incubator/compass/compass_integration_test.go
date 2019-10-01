@@ -1,6 +1,7 @@
 package compass_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -13,7 +14,7 @@ const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/comp
 func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName            string
-		expPresets              []tester.Preset
+		expPresets              []preset.Preset
 		expRunIfChangedRegex    string
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
@@ -21,8 +22,8 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 		"Should contain the compass-integration job": {
 			givenJobName: "pre-master-compass-integration",
 
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, tester.PresetBuildPr, "preset-sa-vm-kyma-integration",
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
 			},
 
 			expRunIfChangedRegex: "^(chart|installation)/",
@@ -77,13 +78,13 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
-		expPresets   []tester.Preset
+		expPresets   []preset.Preset
 	}{
 		"Should contain the compass-integration job": {
 			givenJobName: "post-master-compass-integration",
 
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
 	}

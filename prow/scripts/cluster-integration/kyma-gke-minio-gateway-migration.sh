@@ -397,7 +397,7 @@ download_sample_file_from_minio "${PRIVATE_BUCKET}" sampledir/sample
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+"${KYMA_SCRIPTS_DIR}"/testing.sh --test-name assetstore --test-namespace kyma-system
 
 shout "Success"
 
