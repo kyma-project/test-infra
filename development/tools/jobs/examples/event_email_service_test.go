@@ -1,6 +1,7 @@
 package examples_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -28,7 +29,7 @@ func TestEventEmailServiceJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/examples", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoKyma, tester.PresetGcrPush, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^event-email-service/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
@@ -55,7 +56,7 @@ func TestEventEmailServiceJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/examples", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoKyma, tester.PresetGcrPush, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildMaster)
 	assert.Equal(t, "^event-email-service/", actualPost.RunIfChanged)
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)

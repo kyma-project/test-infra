@@ -1,6 +1,7 @@
 package helm_broker_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -15,7 +16,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
 
-		expPresets      []tester.Preset
+		expPresets      []preset.Preset
 		expContainerImg string
 		expCommand      string
 		expArgs         string
@@ -23,8 +24,8 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 		"pre-master-helm-broker": {
 			givenJobName: "pre-master-helm-broker",
 
-			expPresets: []tester.Preset{
-				tester.PresetDindEnabled, tester.PresetGcrPush, tester.PresetBuildPr, tester.PresetDockerPushRepoKyma,
+			expPresets: []preset.Preset{
+				preset.DindEnabled, preset.GcrPush, preset.BuildPr, preset.DockerPushRepoKyma,
 			},
 			expContainerImg: tester.ImageGolangKubebuilderBuildpackLatest,
 			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
@@ -33,8 +34,8 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 		"pre-master-helm-broker-chart-test": {
 			givenJobName: "pre-master-helm-broker-chart-test",
 
-			expPresets: []tester.Preset{
-				tester.PresetDindEnabled, tester.PresetGcrPush, tester.PresetBuildPr, tester.PresetDockerPushRepoKyma, tester.PresetKindVolumesMounts,
+			expPresets: []preset.Preset{
+				preset.DindEnabled, preset.GcrPush, preset.BuildPr, preset.DockerPushRepoKyma, preset.KindVolumesMounts,
 			},
 			expContainerImg: tester.ImageBootstrapLatest,
 			expCommand:      "make",
@@ -83,7 +84,7 @@ func TestHelmBrokerCrdJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/helm-broker", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetGcrPush, tester.PresetBuildMaster, tester.PresetDockerPushRepoKyma)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.GcrPush, preset.BuildMaster, preset.DockerPushRepoKyma)
 	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPost.Spec.Containers[0].Image)
 	assert.Empty(t, actualPost.RunIfChanged)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)

@@ -315,7 +315,7 @@ fi
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+"${KYMA_SCRIPTS_DIR}"/testing.sh --test-name assetstore --test-namespace kyma-system
 
 shout "Success"
 
