@@ -74,7 +74,13 @@ var tests = []struct {
 	{path: "integration/monitoring", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
 		jobsuite.Since(releases.Release14),
 	}},
-	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
+	{path: "knative-build", image: tester.ImageGolangBuildpack1_11, additionalOptions: []jobsuite.Option{
+		jobsuite.Since(releases.Release15),
+		jobsuite.Until(releases.Release16),
+	}},
+	{path: "tekton-pipelines", image: tester.ImageGolangBuildpack1_11, additionalOptions: []jobsuite.Option{
+		jobsuite.Since(releases.Release17),
+	}},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
 	{path: "test-namespace-controller", image: tester.ImageGolangBuildpackLatest},
