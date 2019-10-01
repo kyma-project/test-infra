@@ -34,11 +34,25 @@ func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 	return supportedReleases
 }
 
-// GetKymaReleasesSince filters all available releases later or the same as the given one
+// GetKymaReleasesSince filters all available releases for the ones between the given limits. The limits are included in the result
 func GetKymaReleasesBetween(firstRelease *SupportedRelease, lastRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
 	for _, rel := range GetAllKymaReleases() {
+		if rel.IsNotOlderThen(firstRelease) && rel.IsNotYoungerThen(lastRelease) {
+			supportedReleases = append(supportedReleases, rel)
+		}
+	}
+
+	return supportedReleases
+}
+
+
+// FilterReleasesBetween filters a given list of releases later for the ones between the given limits. The limits are included in the result
+func FilterReleasesBetween(Releases []*SupportedRelease, firstRelease, lastRelease *SupportedRelease ) []*SupportedRelease {
+	var supportedReleases []*SupportedRelease
+
+	for _, rel := range Releases {
 		if rel.IsNotOlderThen(firstRelease) && rel.IsNotYoungerThen(lastRelease) {
 			supportedReleases = append(supportedReleases, rel)
 		}
@@ -54,11 +68,11 @@ func (r *SupportedRelease) Compare(other *SupportedRelease) int {
 }
 
 func (r *SupportedRelease) IsNotOlderThen(other *SupportedRelease) bool {
-	return r.Compare(other) >= 0
+	return other == nil || r.Compare(other) >= 0
 }
 
 func (r *SupportedRelease) IsNotYoungerThen(other *SupportedRelease) bool {
-	return r.Compare(other) <= 0
+	return other == nil || r.Compare(other) <= 0
 }
 
 // Branch returns a git branch for this release

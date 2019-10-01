@@ -79,7 +79,12 @@ func JobFileSuffix(suffix string) Option {
 
 func Until(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesUntil(rel)
+		if suite.Releases == nil {
+			suite.Releases = releases.GetKymaReleasesUntil(rel)
+		} else {
+			suite.Releases = releases.FilterReleasesBetween(suite.Releases, nil, rel)
+		}
+
 		suite.Deprecated = true
 	}
 }
@@ -92,7 +97,11 @@ func AllReleases() Option {
 
 func Since(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release15)
+		if suite.Releases == nil {
+			suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release15)
+		} else {
+			suite.Releases = releases.FilterReleasesBetween(suite.Releases, rel, releases.Release15)
+		}
 	}
 }
 
