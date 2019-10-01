@@ -30,13 +30,14 @@ if [ -z "$WORKLOAD_CLUSTER_NAMER" ]; then
 
     echo "Adding high load node pool to cluster ${WORKLOAD_CLUSTER_NAME}' in project '${PROJECT}' and zone '${ZONE}'"
     gcloud container node-pools create high-load \
+        --project "${PROJECT}" \
         --cluster "${WORKLOAD_CLUSTER_NAME}" \
+        --zone "${ZONE}" \
         --machine-type n1-standard-16 \
         --node-taints resources-usage=high:NoSchedule \
         --num-nodes 0 \
         --enable-autoscaling \
         --max-nodes 5 \
-        --min-nodes 0 \
-        --zone "${ZONE}"
+        --min-nodes 0
 fi
 
