@@ -34,7 +34,7 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   decorate: true
-  path_alias: github.com/kyma-project/kyma
+  path_alias: {{ .Values.pathAlias }}
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
