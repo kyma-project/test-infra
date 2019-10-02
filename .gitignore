@@ -6,3 +6,4 @@
 .vscode/
 *.iml
 **/*.swp
+tmp/
