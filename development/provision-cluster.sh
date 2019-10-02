@@ -38,6 +38,7 @@ if [ -z "$WORKLOAD_CLUSTER_NAMER" ]; then
         --num-nodes 0 \
         --enable-autoscaling \
         --max-nodes 5 \
-        --min-nodes 0
+        --min-nodes 0 \
+        --disk-type pd-ssd
 fi
 
