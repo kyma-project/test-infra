@@ -2,7 +2,7 @@
 
 set -e
 
-readonly RESOURCES_PATH="/Users/i355395/go/src/github.com/kyma-project/kyma/resources"
+readonly RESOURCES_PATH="/home/prow/go/src/github.com/kyma-project/kyma/resources"
 
 # shellcheck disable=SC2126
 RES=$(grep -e 'version:\s*[Pp][Rr]-.*' -e 'image:.*:[Pp][Rr]-.*' -r "${RESOURCES_PATH}" -B 2 || true)
