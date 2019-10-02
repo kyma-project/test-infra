@@ -4,7 +4,7 @@ This document provides an overview of ProwJobs.
 
 ## Directory structure
 
-ProwJobs reside in the `prow/jobs` directory in the `test-infra` repository. Job definitions are configured in `yaml` files. ProwJobs can be connected to specific components or be more general, like for integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directories. Jobs configured for components are available in `jobs/{repository_name}`directories which include subdirectories representing each component and containing job definitions. 
+ProwJobs reside in the `prow/jobs` directory in the `test-infra` repository. Job definitions are configured in `yaml` files. ProwJobs can be connected to specific components or be more general, like for integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directories. Jobs configured for components are available in `jobs/{repository_name}`directories which include subdirectories representing each component and containing job definitions.
 
 
 This is a sample directory structure:
@@ -32,14 +32,14 @@ prow
 
 You can configure the following job types:
 
-- **Presubmit** jobs run on pull requests (PRs). They validate changes against the target repository. By default, all presubmit jobs must pass before you can merge the PR.  If you set the **optional** parameter to `true`, a job becomes optional and you can still merge your PR even if the job fails. 
+- **Presubmit** jobs run on pull requests (PRs). They validate changes against the target repository. By default, all presubmit jobs must pass before you can merge the PR.  If you set the **optional** parameter to `true`, a job becomes optional and you can still merge your PR even if the job fails.
 - **Postsubmit** jobs are almost the same as the already defined presubmit jobs, but they run when you merge the PR. You can notice the difference in labels as postsubmit jobs use **preset-build-master** instead of **preset-build-pr**.
-- **Periodic** jobs run automatically at a scheduled time. You don't need to modify or merge the PR to trigger them. 
+- **Periodic** jobs run automatically at a scheduled time. You don't need to modify or merge the PR to trigger them.
 
 The presubmit and postsubmit jobs for a PR run in a random order. Their number in a PR depends on the configuration in the `yaml` file. You can check the job status on [`https://status.build.kyma-project.io/`](https://status.build.kyma-project.io/).
 
 
-## Naming convention 
+## Naming convention
 
 When you define jobs for Prow, the **name** parameter of the job must follow one of these patterns:
 
@@ -54,11 +54,9 @@ Add `{prefix}` in front of all presubmit and postsubmit jobs. Use:
 - `pre-rel{release-number}` for presubmit jobs that run against the release branches. For example, write `pre-rel06-kyma-components-api-controller`.
 
 
-
-
 ## Triggers
 
-Prow runs presubmit and postsubmit jobs based on the following parameters: 
+Prow runs presubmit and postsubmit jobs based on the following parameters:
 
 - `always_run: true` for the job to run automatically at all times.
 - `run_if_changed: {regular expression}` for the job to run if a PR modifies files matching the pattern. If a PR does not modify the files, this job sends a notification to GitHub with the information that the job is skipped.
@@ -78,21 +76,19 @@ If you want to trigger your job again, add one of these comments to your PR:
 `/retest` to only rerun failed tests
 `/test {test-name}` or `/retest {test-name}` to only rerun a specific test. For example, run `/test pre-master-kyma-components-binding-usage-controller`.
 
+After you trigger the job, it appears on `https://status.build.kyma-project.io/`.
+
 
 ## Create jobs
 
-Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./templates.md) document. To generate jobs run this command in the root of the repository:
+Jobs are generated from templates stored in the `templates` directory. For details on how to configure templates, see [this](./manage-component-jobs-with-templates.md) document. To generate jobs, run this command in the root of the repository:
 
 ```
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
 ```
 
-For details on how to create jobs, see:
-
-- [Create component jobs](./component-jobs.md)
-- [Create release jobs](./release-jobs.md)
-
-For further reference, read a more technical insight into the Kubernetes [ProwJobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
+- For details on how to create jobs, see [Manage component jobs with templates](./manage-component-jobs-with-templates.md).
+- For further reference, read a more technical insight into the Kubernetes [ProwJobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
 
 ## Trigger jobs manually
 
