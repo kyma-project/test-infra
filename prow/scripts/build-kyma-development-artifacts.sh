@@ -60,9 +60,11 @@ export_variables
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export KYMA_PATH="/home/prow/go/src/github.com/kyma-project/kyma"
 
-buildTarget="ci-master"
+buildTarget="release"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
 	buildTarget="ci-pr"
+elif [[ "${BUILD_TYPE}" == "master" ]]; then
+    buildTarget="ci-master"
 fi
 
 shout "Build kyma-operator with target ${buildTarget}"
