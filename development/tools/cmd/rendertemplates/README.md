@@ -22,5 +22,5 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 This tool uses one flag:
 
 | Name | Required | Description                                                                                          |
-| : ------------------------ | :------: | --------------------------------------------------------------------------------------------------- : |
+| ------------------------ | :------: | --------------------------------------------------------------------------------------------------- |
 | **--config**  |   Yes    | Specifies the location of configuration file used to generate output files by the Render Templates tool. |        
