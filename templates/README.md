@@ -66,7 +66,7 @@ There are two templates that contain the default configuration for the Prow comp
 See the description of values used by both component templates:
 
 | Name | Required | Component template(s) | Description |
-| ---| : --- : | ---  | --- |
+|------| :-------------: |------| ------|
 | `additionalRunIfChanged` | Yes | `generic-component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. The default value is `[]`. |
 | `bootstrapTag` | Yes | `generic-component.yaml` | Provides the tag of the bootstrap image to use. |
 | `buildpack` | Yes | `component.yaml` | Specifies the buildpack version used to build the component. |
