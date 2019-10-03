@@ -2,23 +2,23 @@
 
 ## Overview
 
-Jobs and Prow configuration are generated from templates. The `templates` directory contains these items:
+Jobs and Prow configuration are generated from templates. The `templates` directory contains this configuration:
 
-- `templates` - the directory with all template files that supply the definition of [Prow jobs](https://github.com/kyma-project/test-infra/tree/master/prow/jobs) used in Kyma.
-- `config.yaml` - the configuration file that describes jobs that are to be generated using templates.
+- `templates` - the subdirectory with all template files that supply the definition of [Prow jobs](https://github.com/kyma-project/test-infra/tree/master/prow/jobs) used in Kyma.
+- `config.yaml` - the configuration file that describes jobs that the Render Templates should generate using job definitions from templates.
 
 The template list includes:
 
-- `compass-integration.yaml` - defines presubmit and postsubmit integration jobs that build Kyma to check its compatibility with the Compass component
-- `component.yaml` - defines component jobs with specified buildpacks.
-- `generic-component.yaml` - provides a new way of creating component jobs. Instead of a predefined buildpack, it uses a generic bootstrap that contains Makefile and Docker and no component-specific dependencies.
-- `kyma-artifacts.yaml`- for creating release artifacts
-- `kyma-github-release.yaml` - for creating the Github release after merging the release branch to the master branch
-- `kyma-installer.yaml` - fr building the installer used during the release
-- `kyma-integration.yaml` - a set of presubmit and postsubmit integration jobs that build Kyma on clusters to verify if the introduced changes did not affect other Kyma components
-- `kyma-release-candidate.yaml` - building the release cluster for testing purposes
-- `prow-config.yaml` - serves for creating the main Prow configuration without job definitions.
-- `releases.go.tmpl` - with a list of functions for the release that provide the list of currently supported releases and all supported Kyma release branches
+- `compass-integration.yaml` - that defines presubmit and postsubmit integration jobs that build Kyma to check its compatibility with the Compass component
+- `component.yaml` - that defines component jobs with specified buildpacks.
+- `generic-component.yaml` - that provides a new way of creating component jobs. Instead of a predefined buildpack, it uses a generic bootstrap that contains Makefile and Docker and no component-specific dependencies.
+- `kyma-artifacts.yaml`- that serves for creating release artifacts.
+- `kyma-github-release.yaml` - that is used for creating the GitHub release after merging the release branch to the master branch.
+- `kyma-installer.yaml` - that is used for building the installer used during the release.
+- `kyma-integration.yaml` - that defines a set of presubmit and postsubmit integration jobs that build Kyma on clusters to verify if the introduced changes do not affect the existing Kyma components.
+- `kyma-release-candidate.yaml` - that is used for building the release cluster for testing purposes.
+- `prow-config.yaml` - that serves for creating the main Prow configuration, without job definitions.
+- `releases.go.tmpl` - that contains a set of functions for the release which provide the list of currently supported releases and all supported Kyma release branches.
 
 ### Configuration file
 
@@ -58,10 +58,10 @@ templates:
 ### Component templates
 
 A template receives two objects as input:
-- `Values` which contains all the values specified under `values` in the configuration file.
-- `Global` which contains values specified under `global` in the configuration file.
+- `Values` which contains all the values specified under `values` in the `config.yaml` file.
+- `Global` which contains values specified under `global` in the `config.yaml` file.
 
-There are two templates that contain the default configuration for the Prow component jobs, `component.yaml` and `generic-component.yaml`. The recommended template is `generic-component.yaml` that is the new version of the `component.yaml` template that uses a generic bootstrap to build components, instead of various buildpacks.
+There are two templates that contain the default configuration for the Prow component jobs, `component.yaml` and `generic-component.yaml`. The recommended template is `generic-component.yaml` that is the new version of the `component.yaml` template and uses a generic bootstrap to build components, instead of various buildpacks.
 
 See the description of values used by both component templates:
 
@@ -78,15 +78,15 @@ See the description of values used by both component templates:
 | `presets.build` | Yes | `component.yaml` | _TODO_ |
 | `presets.pushRepository` | Yes | `component.yaml` | _TODO_ |
 | `pushRepository` | Yes | `generic-component.yaml` | Provides the suffix of the `preset-docker-push-` label to define the GCR image location, such as `kyma`. |
-| `ReleaseBranchPattern` | Yes | `generic-component.yaml` | Defines the prefix pattern of the release branch for which Prow should run the release job. The default value is `^release-{supported-releases}-{component-dir-name}$`. |
+| `ReleaseBranchPattern` | Yes | `generic-component.yaml` | Defines the prefix pattern for the release branch for which Prow should run the release job. The default value is `^release-{supported-releases}-{component-dir-name}$`. |
 | `repository` | Yes | Both | Specifies the component's GitHub repository address, such as `github.com/kyma-project/kyma`. |
 | `resources.memory` | Yes | Both | Specifies the memory assigned to the job container. The default value is `1.5Gi`. |
 | `resources.cpu` | Yes | Both | Specifies the CPU assigned to the job container. The default value is `0.8`. |
-| `since` | Yes | Both | Specifies the release from which the component is active. |
-| `until` | Yes | Both | Specifies the release till which the component is active.  |
+| `since` | Yes | Both | Specifies the release from which this component version is active. |
+| `until` | Yes | Both | Specifies the release till which this component version is active.  |
 | `watch` | No | `component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. |
 
 
-All the functions from [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by helm, so if you know helm, you are already familiar with them. Also, a few additional functions are available:
-- `releaseMatches <release> <since> <until>` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example: `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is younger than `1.2` and older than `1.5`.
-- `matchingReleases <all-releases> <since> <until>` returns a list of releases filtered to only those that fit in the range.
+All the functions from [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by Helm, so if you know Helm, you are already familiar with them. Also, a few additional functions are available:
+- `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is earlier than `1.2` and later than `1.5`.
+- `matchingReleases {all-releases} {since} {until}` returns a list of releases filtered to only those that fit in the range.
