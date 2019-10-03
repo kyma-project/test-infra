@@ -76,6 +76,12 @@ kyma_generic_component: &kyma_generic_component
   additionalRunIfChanged:
     - ^scripts/
 
+compass_generic_component: &compass_generic_component
+  repository: github.com/kyma-incubator/compass
+  build: build
+  pushRepository: incubator
+  bootstrapTag: v20181204-a6e79be
+
 templates:
   - from: templates/generic-component.yaml
     render:
@@ -93,6 +99,12 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/kyma-operator
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/director
           since: "1.7"
           optional: true
   - from: templates/kyma-integration.yaml
