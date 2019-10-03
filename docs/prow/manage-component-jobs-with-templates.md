@@ -2,15 +2,19 @@
 
 This document describes how to define, modify, and remove ProwJobs for Kyma components using predefined templates that create both presubmit and postsubmit jobs for your component. The purpose of this document is to provide steps required to prepare your component for the Prow CI pipeline.
 
-## Add component jobs
+>**NOTE:** There are two templates that you can use to generate your component jobs definitions, `component.yaml` and `generic-component.yaml`. Use the recommended `generic-component.yaml` template that is the latest version using a generic bootstrap. If you decide to use `component.yaml`, define a proper buildpack.
+
+<div tabs name="add-component-jobs">
+  <details>
+  <summary>
+  Add component jobs
+  </summary>
 
 Follow these steps:
 
 1. Edit the configuration file.
 
 Go to `templates/config.yaml` and add a new entry with your component to the `render` list under the `templates` section.
-
->**NOTE:** There are two templates that you can use to generate your component jobs definitions, `component.yaml` and `generic-component.yaml`. Use the recommended `generic-component.yaml` template that is the latest version using a generic bootstrap. If you decide to use `component.yaml`, define a proper buildpack.  
 
 See an example that defines the `api-controller` component in the Kyma repository using the `go1.12` buildpack:
 
@@ -106,7 +110,11 @@ If you have access to the Prow cluster, there is an option to test a ProwJob on 
 
 When writing tests for a new component, use the `tester.GetKymaReleasesSince(<next release>)` function to create release jobs tests. This automatically checks whether new release jobs were created in the release process.
 
-## Modify component jobs
+</details>
+<details>
+<summary>
+Modify component jobs
+</summary>
 
 To change component job configuration, follow these steps:
 
@@ -145,10 +153,17 @@ This is what the configuration created after the buildpack change looks like:
 
 When changing tests, use the function `tester.GetKymaReleasesUntil(<last release>)` in place of `tester.GetAllKymaReleases` to test older releases. Use the function `tester.GetKymaReleasesSince(<next release>)` to create release jobs tests for future releases. This automatically checks whether new release jobs were created when doing release.
 
-## Remove component jobs
+</details>
+<details>
+<summary>
+Remove component jobs
+</summary>
 
 To remove a component from Prow, follow these steps:
 
 1. In the `config.yaml` file, remove the entries under the `templates` section that refer to your component.
 2. Manually remove all files and the component folder from `/prow/jobs`.
 3. Delete tests for the component jobs.
+
+</details>
+</div>
