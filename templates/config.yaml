@@ -89,6 +89,12 @@ templates:
           <<: *kyma_generic_component
           path: tests/console-backend-service
           since: "1.6"
+      - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/kyma-operator
+          since: "1.7"
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
