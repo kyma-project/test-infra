@@ -119,9 +119,9 @@ Modify component jobs
 To change component job configuration, follow these steps:
 
 1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the suffix `deprecated`. Change the path to this file in tests accordingly.
-2. Add `until: {last release}` to this configuration.
+2. Add `until: {last release}` to this configuration. It specifies the release until which this component version is valid.
 3. Create a new entry with the new configuration. Set the `to` field to point to the file responsible for storing jobs.
-4. Add `since: {next release}` to the new entry.
+4. Add `since: {next release}` to the new entry. It specifies the release from which this component version is valid.
 
 See this example:
 
@@ -140,7 +140,7 @@ This is what the configuration created after the buildpack change looks like:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
           <<: *go_kyma_component_1_12
-          path: components/api-controllerf
+          path: components/api-controller
           since: '1.5'
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-go1.11.yaml
         values:
