@@ -38,10 +38,11 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-components-director
       skip_report: false
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
     - name: post-compass-components-director
+      prow.kyma-project.io/slack.skipReport: "true"
       <<: *job_template

@@ -136,7 +136,7 @@ templates:
           <<: *compass_generic_component
           path: components/schema-migrator
           since: "1.7"
-          optional: false
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
