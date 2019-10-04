@@ -5,6 +5,6 @@ set -e
 readonly RESOURCES_PATH="/home/prow/go/src/github.com/kyma-project/kyma/resources"
 
 # shellcheck disable=SC2126
-RES=$(grep -e 'version:\s*[Pp][Rr]-.*' -e 'image:.*:[Pp][Rr]-.*' -r "${RESOURCES_PATH}" | wc -l | xargs)
-
-exit "${RES}"
+RES=$(grep -e 'version:\s*[Pp][Rr]-.*' -e 'image:.*:[Pp][Rr]-.*' -r "${RESOURCES_PATH}" -B 2 || true)
+echo -n "$RES"
+exit "$(echo -n "$RES" | wc -l | xargs)"

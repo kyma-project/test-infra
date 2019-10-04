@@ -76,6 +76,12 @@ kyma_generic_component: &kyma_generic_component
   additionalRunIfChanged:
     - ^scripts/
 
+compass_generic_component: &compass_generic_component
+  repository: github.com/kyma-incubator/compass
+  build: build
+  pushRepository: incubator
+  bootstrapTag: v20181204-a6e79be
+
 templates:
   - from: templates/generic-component.yaml
     render:
@@ -89,6 +95,18 @@ templates:
           <<: *kyma_generic_component
           path: tests/console-backend-service
           since: "1.6"
+      - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/kyma-operator
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/director
+          since: "1.7"
+          optional: false
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -457,6 +475,7 @@ templates:
           path: components/director
           noRelease: yes
           skipSlackReport: true
+          until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
