@@ -14,7 +14,7 @@ job_template: &job_template
       securityContext:
         privileged: true
       command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-development-artifacts.sh"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-development-artifacts-tmp.sh"
       resources:
         requests:
           memory: 1Gi
@@ -36,7 +36,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-development-artifacts-idk
+  - name: pre-master-kyma-development-artifacts-tmp
     run_if_changed: "^installation|^resources|^components/kyma-operator|^tools/kyma-installer"
     branches:
     - ^master$
@@ -50,7 +50,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-  - name: post-master-kyma-development-artifacts-idk
+  - name: post-master-kyma-development-artifacts-tmp
     branches:
       - ^master$
     <<: *job_template
