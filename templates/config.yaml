@@ -362,11 +362,13 @@ templates:
           path: tests/knative-build
           since: "1.5"
           until: "1.6"
+          optional: true
       - to: ../prow/jobs/kyma/tests/tekton-pipelines/tekton-pipelines.yaml
         values:
           <<: *go_kyma_component_1_11
           path: tests/tekton-pipelines
           since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
         values:
           <<: *go_kyma_component_1_11

@@ -77,9 +77,11 @@ var tests = []struct {
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11, additionalOptions: []jobsuite.Option{
 		jobsuite.Since(releases.Release15),
 		jobsuite.Until(releases.Release16),
+		jobsuite.Optional(),
 	}},
 	{path: "tekton-pipelines", image: tester.ImageGolangBuildpack1_11, additionalOptions: []jobsuite.Option{
 		jobsuite.Since(releases.Release17),
+		jobsuite.Optional(),
 	}},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
