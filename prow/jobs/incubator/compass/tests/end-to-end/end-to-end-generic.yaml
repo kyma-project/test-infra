@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-tests-end-to-end
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
