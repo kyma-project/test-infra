@@ -140,7 +140,7 @@ templates:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: components/schema-migrator
+          path: components/api-controller
           since: "1.7"
           optional: true
   - from: templates/kyma-integration.yaml
