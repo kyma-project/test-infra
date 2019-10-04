@@ -21,6 +21,9 @@ job_template: &job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
+        env:
+          - name: GO111MODULE
+            value: "on"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
