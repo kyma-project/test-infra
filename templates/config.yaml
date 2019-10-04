@@ -112,7 +112,7 @@ templates:
           <<: *compass_generic_component
           path: components/director
           since: "1.7"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
           <<: *compass_generic_component
