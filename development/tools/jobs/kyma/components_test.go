@@ -88,6 +88,11 @@ var components = []struct {
 	{path: "k8s-dashboard-proxy", image: tester.ImageGolangBuildpack1_11},
 	{path: "function-controller", image: tester.ImageGolangKubebuilderBuildpackLatest},
 	{path: "kubeless-images/nodejs", image: tester.ImageGolangBuildpack1_11},
+	{path: "kyma-operator", image: tester.ImageGolangBuildpack1_12,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release15),
+		},
+	},
 	{path: "kyma-operator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
