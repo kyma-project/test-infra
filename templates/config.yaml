@@ -127,7 +127,7 @@ templates:
           <<: *compass_generic_component
           path: components/connector
           since: "1.7"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
         values:
           <<: *compass_generic_component
@@ -139,19 +139,19 @@ templates:
           <<: *compass_generic_component
           path: components/gateway
           since: "1.7"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-generic.yaml
         values:
           <<: *compass_generic_component
           path: components/healthchecker
           since: "1.7"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/provisioner/provisioner-generic.yaml
         values:
           <<: *compass_generic_component
           path: components/provisioner
           since: "1.7"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           <<: *compass_generic_component
@@ -613,6 +613,7 @@ templates:
           path: components/connector
           noRelease: yes
           skipSlackReport: true
+          until: "1.6"
       - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests.yaml
         values:
           <<: *go_compass_component_1_11
@@ -647,6 +648,7 @@ templates:
           noRelease: yes
           skipSlackReport: true
           since: "1.3"
+          until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
@@ -660,6 +662,7 @@ templates:
           path: components/healthchecker
           noRelease: yes
           skipSlackReport: true
+          until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-old-releases.yaml
         values:
           <<: *bootstrap_compass_component
@@ -673,6 +676,7 @@ templates:
           path: components/schema-migrator
           noRelease: yes
           skipSlackReport: true
+          until: "1.6"
       - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
