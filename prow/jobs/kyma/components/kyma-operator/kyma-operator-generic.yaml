@@ -38,10 +38,10 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-kyma-operator
       skip_report: false
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-kyma-operator
-      prow.kyma-project.io/slack.skipReport: "true"
       <<: *job_template

@@ -100,7 +100,6 @@ templates:
           <<: *kyma_generic_component
           path: components/kyma-operator
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *compass_generic_component
@@ -324,6 +323,7 @@ templates:
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
           <<: *go_kyma_component_1_12
+          until: "1.6"
           path: components/kyma-operator
       - to: ../prow/jobs/kyma/components/namespace-controller/namespace-controller.yaml
         values:
