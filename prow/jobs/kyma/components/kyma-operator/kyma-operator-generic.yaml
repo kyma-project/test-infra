@@ -38,7 +38,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-kyma-operator
       skip_report: false
-      optional: true
       <<: *job_template
 
 postsubmits:
