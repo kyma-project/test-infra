@@ -101,12 +101,42 @@ templates:
           path: components/kyma-operator
           since: "1.7"
           optional: true
+      - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/connector
+          since: "1.7"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
         values:
           <<: *compass_generic_component
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/gateway
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/healthchecker
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/components/provisioner/provisioner-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/provisioner
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/schema-migrator
+          since: "1.7"
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
