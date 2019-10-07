@@ -31,7 +31,6 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *job_template
-      optional: true
       path_alias: github.com/kyma-project/console
       spec:
         containers:
@@ -64,7 +63,6 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-      prow.kyma-project.io/slack.skipReport: "true"
       labels:
         <<: *job_labels_template
         preset-build-console-master: "true"

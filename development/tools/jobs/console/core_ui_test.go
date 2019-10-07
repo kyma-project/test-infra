@@ -1,8 +1,9 @@
 package console_test
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
@@ -23,7 +24,7 @@ func TestCoreUIJobPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.True(t, actualPresubmit.Optional)
+	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
