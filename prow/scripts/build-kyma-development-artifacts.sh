@@ -11,7 +11,7 @@ set -e
 
 discoverUnsetVar=false
 
-for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
+for var in DOCKER_PUSH_REPOSITORY KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -28,17 +28,13 @@ source "${SCRIPT_DIR}/library.sh"
 
 function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
-   if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    KYMA_INSTALLER_PUSH_DIR=""
+   if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
-        KYMA_INSTALLER_PUSH_DIR="pr/"
         BUCKET_DIR="PR-${PULL_NUMBER}"
-    elif [[ "${BUILD_TYPE}" == "master" ]]; then
-        DOCKER_TAG="master-${COMMIT_ID}"
-        KYMA_INSTALLER_PUSH_DIR="develop/"
-        BUCKET_DIR="master-${COMMIT_ID}"
     else
-        echo "Not supported build type - ${BUILD_TYPE}"
-        exit 1
+        DOCKER_TAG="master-${COMMIT_ID}"
+        BUCKET_DIR="master-${COMMIT_ID}"
     fi
 
    readonly DOCKER_TAG
@@ -59,13 +55,7 @@ export_variables
 #   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export KYMA_PATH="/home/prow/go/src/github.com/kyma-project/kyma"
-
 buildTarget="release"
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
-	buildTarget="ci-pr"
-elif [[ "${BUILD_TYPE}" == "master" ]]; then
-    buildTarget="ci-master"
-fi
 
 shout "Build kyma-operator with target ${buildTarget}"
 make -C "${KYMA_PATH}/components/kyma-operator" ${buildTarget}

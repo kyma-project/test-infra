@@ -38,6 +38,8 @@ const (
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 	// ImageBootstrap20181204 represents boostrap image published on 2018.12.04
 	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+	// ImageBootstrap20190604 represents boostrap image published on 2019.06.04
+	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
