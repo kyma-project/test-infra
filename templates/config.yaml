@@ -95,11 +95,13 @@ templates:
           <<: *kyma_generic_component
           path: components/application-broker
           since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/service-binding-usage-controller
           since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -110,11 +112,13 @@ templates:
           <<: *kyma_generic_component
           path: tests/acceptance
           since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/upgrade
           since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
         values:
           <<: *kyma_generic_component
