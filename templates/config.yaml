@@ -122,6 +122,12 @@ templates:
           <<: *kyma_generic_component
           path: components/kyma-operator
           since: "1.7"
+          optional: true
+      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/console-backend-service
+          since: "1.6"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *compass_generic_component
