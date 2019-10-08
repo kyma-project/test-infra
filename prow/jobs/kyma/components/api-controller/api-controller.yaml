@@ -27,24 +27,6 @@ container_template: &container_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-components-api-controller
-      branches:
-        - ^master$
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
-      run_if_changed: "^components/api-controller/"
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-      labels:
-        <<: *job_labels_template
-        preset-build-pr: "true"
     - name: pre-rel15-kyma-components-api-controller
       branches:
         - release-1.5
@@ -81,24 +63,3 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-
-postsubmits:
-  kyma-project/kyma:
-    - name: post-master-kyma-components-api-controller
-      branches:
-        - ^master$
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-controller"
-      run_if_changed: "^components/api-controller/"
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-      labels:
-        <<: *job_labels_template
-        preset-build-master: "true"
