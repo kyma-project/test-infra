@@ -275,7 +275,7 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_minio_gateway_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: false
+      optional: true
       labels:
         preset-build-pr: "true"
         preset-minio-gcs-gateway: "true"
@@ -289,7 +289,7 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_minio_gateway_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: false
+      optional: true
       labels:
         preset-build-pr: "true"
         preset-minio-az-gateway: "true"
@@ -382,7 +382,7 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: false
+      optional: true
       labels:
         preset-build-pr: "true"
         preset-minio-gcs-gateway: "true"
@@ -396,7 +396,7 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: false
+      optional: true
       labels:
         preset-build-pr: "true"
         preset-minio-az-gateway: "true"
