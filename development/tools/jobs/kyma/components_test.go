@@ -25,12 +25,15 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12},
+	{path: "apiserver-proxy", image: tester.ImageGolangBuildpack1_12,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release15),
+		},
+	},
 	{path: "apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "application-broker", image: tester.ImageGolangBuildpack1_11},
