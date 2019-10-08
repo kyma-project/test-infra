@@ -165,7 +165,6 @@ templates:
           <<: *kyma_generic_component
           path: components/api-controller
           since: "1.7"
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -436,6 +435,7 @@ templates:
         values:
           <<: *go_kyma_component_1_12
           path: tests/integration/api-controller
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
           <<: *go_kyma_component_1_12
