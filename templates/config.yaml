@@ -87,6 +87,12 @@ compass_generic_component: &compass_generic_component
 templates:
   - from: templates/generic-component.yaml
     render:
+      - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/application-broker
+          since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -146,21 +152,16 @@ templates:
           <<: *kyma_generic_component
           path: components/console-backend-service
           since: "1.6"
-      - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
+      - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: components/application-broker
+          path: components/kyma-operator
           since: "1.7"
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/service-binding-usage-controller
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/console-backend-service
-          since: "1.6"
       - to: ../prow/jobs/kyma/tests/acceptance/acceptance-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -222,6 +223,17 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/connector-service-tests
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/console-backend-service
+          since: "1.6"
+      - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/end-to-end/upgrade
           since: "1.7"
           optional: true
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
