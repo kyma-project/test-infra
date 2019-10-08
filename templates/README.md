@@ -67,26 +67,26 @@ See the description of values used by both component templates:
 
 | Name | Required | Component template(s) | Description |
 |------| :-------------: |------| ------|
-| `additionalRunIfChanged` | Yes | `generic-component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. The default value is `[]`. |
+| `additionalRunIfChanged` | No | `generic-component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. The default value is `[]`. |
 | `bootstrapTag` | Yes | `generic-component.yaml` | Provides the tag of the bootstrap image to use. |
 | `buildpack` | Yes | `component.yaml` | Specifies the buildpack version used to build the component. |
 | `env` | No | `component.yaml` | Specifies the environment variable that turns on Go modules required to build Kubebuilder v2. |
 | `noRelease` | No | `component.yaml` | Specifies that this component does not require a release job. |
 | `optional` | No | Both | Defines if this job is obligatory or optional on pull requests. Set it to `true` when you add a new component and remove it after the whole CI pipeline for the component is in place. |
-| `patchReleases` | No | `component.yaml` | _TODO_ |
+| `patchReleases` | No | `component.yaml` | A list of releases that patch the given component version. |
 | `path` | Yes | Both | Specifies the location of the component in the repository, such as `components/console-backend-service`. |
-| `presets.build` | Yes | `component.yaml` | _TODO_ |
-| `presets.pushRepository` | Yes | `component.yaml` | _TODO_ |
-| `pushRepository` | Yes | `generic-component.yaml` | Provides the suffix of the `preset-docker-push-` label to define the GCR image location, such as `kyma`. |
-| `ReleaseBranchPattern` | Yes | `generic-component.yaml` | Defines the prefix pattern for the release branch for which Prow should run the release job. The default value is `^release-{supported-releases}-{component-dir-name}$`. |
+| `presets.build` | Yes | `component.yaml` | The name of the Preset for building jobs on the `master` branch. For example, set to `build` to use the **preset-build-master** Preset. |
+| `presets.pushRepository` | Yes | `component.yaml` | Provides the suffix of the **preset-docker-push-** label to define the GCR image location, such as `kyma`.  |
+| `pushRepository` | Yes | `generic-component.yaml` | Provides the suffix of the **preset-docker-push-** label to define the GCR image location, such as `kyma`. |
+| `ReleaseBranchPattern` | No | `generic-component.yaml` | Defines the prefix pattern for the release branch for which Prow should run the release job. The default value is `^release-{supported-releases}-{component-dir-name}$`. |
 | `repository` | Yes | Both | Specifies the component's GitHub repository address, such as `github.com/kyma-project/kyma`. |
-| `resources.memory` | Yes | Both | Specifies the memory assigned to the job container. The default value is `1.5Gi`. |
-| `resources.cpu` | Yes | Both | Specifies the CPU assigned to the job container. The default value is `0.8`. |
+| `resources.memory` | No | Both | Specifies the memory assigned to the job container. The default value is `1.5Gi`. |
+| `resources.cpu` | No | Both | Specifies the CPU assigned to the job container. The default value is `0.8`. |
 | `since` | Yes | Both | Specifies the release from which this component version is active. |
 | `until` | Yes | Both | Specifies the release till which this component version is active.  |
 | `watch` | No | `component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. |
 
 
 All the functions from [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by Helm, so if you know Helm, you are already familiar with them. Also, a few additional functions are available:
-- `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is earlier than `1.2` and later than `1.5`.
+- `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is not earlier than `1.2` and not later than `1.5`.
 - `matchingReleases {all-releases} {since} {until}` returns a list of releases filtered to only those that fit in the range.
