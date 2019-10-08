@@ -81,6 +81,8 @@ compass_generic_component: &compass_generic_component
   build: build
   pushRepository: incubator
   bootstrapTag: v20181204-a6e79be
+  additionalRunIfChanged:
+    - ^scripts/
 
 templates:
   - from: templates/generic-component.yaml
@@ -158,6 +160,24 @@ templates:
         values:
           <<: *compass_generic_component
           path: components/schema-migrator
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/connector-tests
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/end-to-end
+          since: "1.7"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/tests/provisioner/provisioner-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/provisioner-tests
           since: "1.7"
           optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
