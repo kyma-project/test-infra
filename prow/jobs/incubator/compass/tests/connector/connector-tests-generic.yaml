@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/connector-tests/"
+  run_if_changed: "^tests/connector-tests/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be

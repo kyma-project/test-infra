@@ -81,6 +81,8 @@ compass_generic_component: &compass_generic_component
   build: build
   pushRepository: incubator
   bootstrapTag: v20181204-a6e79be
+  additionalRunIfChanged:
+    - ^scripts/
 
 templates:
   - from: templates/generic-component.yaml
