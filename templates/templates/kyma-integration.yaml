@@ -357,7 +357,7 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: trueiterm
+      optional: true
 
       labels:
         preset-build-pr: "true"
