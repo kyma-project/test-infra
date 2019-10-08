@@ -104,6 +104,13 @@ var components = []struct {
 		},
 	},
 	{path: "iam-kubeconfig-service", image: tester.ImageGolangBuildpack1_12},
+	{path: "iam-kubeconfig-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "istio-kyma-patch", image: tester.ImageBootstrapLatest},
 	{path: "k8s-dashboard-proxy", image: tester.ImageGolangBuildpack1_11},
 	{path: "function-controller", image: tester.ImageGolangKubebuilderBuildpackLatest},
