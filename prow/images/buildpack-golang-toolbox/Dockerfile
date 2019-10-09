@@ -17,7 +17,7 @@ RUN go get golang.org/x/tools/cmd/goimports  \
 
 # Increase watches and instances
 RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p \
-    echo fs.inotify.max_user_instances=512 | tee -a /etc/sysctl.conf && sysctl -p
+    && echo fs.inotify.max_user_instances=512 | tee -a /etc/sysctl.conf && sysctl -p
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
