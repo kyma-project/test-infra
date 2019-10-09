@@ -10,7 +10,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
@@ -22,6 +22,8 @@ job_template: &job_template
         env:
           - name: GO111MODULE
             value: "on"
+          - name: GOPROXY
+            value: "https://proxy.golang.org,direct"
 
 presubmits: # runs on PRs
   kyma-project/cli:
