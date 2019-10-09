@@ -34,7 +34,7 @@ const (
 	// ImageNode10Buildpack means Node.js buildpack image (node v10)
 	ImageNode10Buildpack = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
 	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
-	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20191009-19b4b28"
+	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20191009-19b4b28"
 	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
 	ImageNodeChromiumBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
 	// ImageBootstrapLatest means Bootstrap image
