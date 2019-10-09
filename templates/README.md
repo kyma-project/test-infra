@@ -75,7 +75,7 @@ See the description of values used by both component templates:
 | `optional` | No | Both | Defines if this job is obligatory or optional on pull requests. Set it to `true` when you add a new component and remove it after the whole CI pipeline for the component is in place. |
 | `patchReleases` | No | `component.yaml` | A list of releases that patch the given component version. |
 | `path` | Yes | Both | Specifies the location of the component in the repository, such as `components/console-backend-service`. |
-| `presets.build` | Yes | `component.yaml` | The name of the Preset for building jobs on the `master` branch. For example, set to `build` to use the **preset-build-master** Preset. |
+| `presets.build` | Yes | `component.yaml` | The name of the Preset for building components on the `master` branch. For example, set to `build` to use the **preset-build-master** Preset. |
 | `presets.pushRepository` | Yes | `component.yaml` | Provides the suffix of the **preset-docker-push-** label to define the GCR image location, such as `kyma`.  |
 | `pushRepository` | Yes | `generic-component.yaml` | Provides the suffix of the **preset-docker-push-** label to define the GCR image location, such as `kyma`. |
 | `ReleaseBranchPattern` | No | `generic-component.yaml` | Defines the prefix pattern for the release branch for which Prow should run the release job. The default value is `^release-{supported-releases}-{component-dir-name}$`. |
