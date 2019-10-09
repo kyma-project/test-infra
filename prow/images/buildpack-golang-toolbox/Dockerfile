@@ -4,6 +4,11 @@ FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
 
 # Install additional tools
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    rsync \
+    procps \
+    && apt-get clean
+
 RUN go get golang.org/x/tools/cmd/goimports  \
     golang.org/x/lint/golint \
     github.com/vektra/mockery \
