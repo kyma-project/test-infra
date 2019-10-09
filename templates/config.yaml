@@ -195,7 +195,6 @@ templates:
           <<: *kyma_generic_component
           path: components/iam-kubeconfig-service
           since: "1.7"
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -364,6 +363,7 @@ templates:
         values:
           <<: *go_kyma_component_1_12
           path: components/iam-kubeconfig-service
+          until: "1.6"
       - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch.yaml
         values:
           <<: *bootstrap_kyma_component
