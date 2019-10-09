@@ -1,8 +1,9 @@
 package console_test
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 )
@@ -10,7 +11,7 @@ import (
 func TestCore(t *testing.T) {
 	config := jobsuite.NewConfig(
 		jobsuite.ConsoleRepo(),
-		jobsuite.Project("core", tester.ImageNodeChromiumBuildpackLatest),
+		jobsuite.Project("core", tester.ImageNodeBuildpackLatest),
 	)
 	tester.NewComponentSuite(config).Run(t)
 }
