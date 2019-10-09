@@ -32,7 +32,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-incubator/varkes", masterPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, masterPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
-	assert.Equal(t, tester.ImageNodeBuildpackLatest, masterPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageNode10Buildpack, masterPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, masterPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, masterPresubmit.Spec.Containers[0].Args)
 }
@@ -58,7 +58,7 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-incubator/varkes", masterPostsubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPostsubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, masterPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
-	assert.Equal(t, tester.ImageNodeBuildpackLatest, masterPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageNode10Buildpack, masterPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, masterPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, masterPostsubmit.Spec.Containers[0].Args)
 }
@@ -84,7 +84,7 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-incubator/varkes", releasePostsubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, releasePostsubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, releasePostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildRelease)
-	assert.Equal(t, tester.ImageNodeBuildpackLatest, releasePostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageNode10Buildpack, releasePostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, releasePostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, releasePostsubmit.Spec.Containers[0].Args)
 }
