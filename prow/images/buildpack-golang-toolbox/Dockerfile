@@ -15,9 +15,5 @@ RUN go get golang.org/x/tools/cmd/goimports  \
     github.com/kisielk/errcheck && \
     GO111MODULE="on" go get sigs.k8s.io/kind@v0.5.1
 
-# Increase watches and instances
-RUN echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf && sysctl -p \
-    && echo fs.inotify.max_user_instances=512 >> /etc/sysctl.conf && sysctl -p
-
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
