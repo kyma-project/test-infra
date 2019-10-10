@@ -410,6 +410,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/xip-patch
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
         values:
           <<: *go_kyma_component_v20181119
@@ -541,6 +542,7 @@ templates:
         values:
           <<: *bootstrap_kyma_component
           path: components/xip-patch
+          until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
