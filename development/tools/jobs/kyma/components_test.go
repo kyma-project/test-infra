@@ -132,6 +132,12 @@ var components = []struct {
 	{path: "namespace-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "service-binding-usage-controller", image: tester.ImageGolangBuildpack1_11},
 	{path: "xip-patch", image: tester.ImageBootstrapLatest},
+	{path: "xip-patch", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

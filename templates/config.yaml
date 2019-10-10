@@ -195,6 +195,11 @@ templates:
           <<: *kyma_generic_component
           path: components/iam-kubeconfig-service
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/xip-patch/xip-patch-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/xip-patch
+          since: "1.7"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
