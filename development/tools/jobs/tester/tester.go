@@ -49,6 +49,8 @@ const (
 	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
+	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191004-f931536"
 
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
