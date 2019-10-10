@@ -43,7 +43,7 @@ var components = []struct {
 		},
 	},
 	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpackLatest},
-	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "application-connectivity-certs-setup-job", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
