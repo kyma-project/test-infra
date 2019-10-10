@@ -23,7 +23,7 @@ Use the following tools and configuration:
   - A [global static IP address](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address) with the `kyma-prow-status` name
   - A [DNS registry](https://cloud.google.com/dns/docs/quickstart#create_a_managed_public_zone) for the `status.build.kyma-project.io` domain that points to the `kyma-prow-status` address
 
-    
+
 ## Installation
 
 1. Prepare the workload cluster:
@@ -75,7 +75,7 @@ Use the following tools and configuration:
     export ENCRYPTION_KEY_NAME=kyma-prow-encryption
     export GOPATH=$GOPATH ### Ensure GOPATH is set
   ```
-where: 
+where:
    - **BUCKET_NAME** is a GCS bucket in the Google Cloud project that stores Prow Secrets.
    - **KEYRING_NAME** is the KMS key ring.
    - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
@@ -120,7 +120,7 @@ When you use the [`install-prow.sh`](../../prow/install-prow.sh) script to insta
 
 ### The config.yaml file
 
-The `config.yaml` file contains the basic Prow configuration. When you create a particular ProwJob, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
+The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
 
@@ -132,7 +132,7 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 ### The jobs directory
 
-The `jobs` directory contains the ProwJobs configuration. See the example of such a file [here](../../prow/jobs).
+The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
 

@@ -1,6 +1,6 @@
 # Manage component jobs with templates
 
-This document describes how to define, modify, and remove ProwJobs for Kyma components using predefined templates that create both presubmit and postsubmit jobs for your component. Also, this document gives you the steps required to prepare your component for the Prow CI pipeline.
+This document describes how to define, modify, and remove Prow jobs for Kyma components using predefined templates that create both presubmit and postsubmit jobs for your component. Also, this document gives you the steps required to prepare your component for the Prow CI pipeline.
 
 >**NOTE:** There are two templates that you can use to generate your component job definitions, `component.yaml` and `generic-component.yaml`. Use the recommended `generic-component.yaml` template that is the latest version using a generic bootstrap. If you decide to use `component.yaml`, define a proper buildpack.
 
@@ -32,9 +32,9 @@ See an example that defines the `application-broker` component from the `kyma` r
 
 Such an entry uses the `generic-component.yaml` template to create the `application-broker-generic.yaml` file under the `/prow/jobs/kyma/components/application-broker/` subfolder, specifying that the presubmit and postsubmit jobs for this component should apply from the `1.7` release onwards. Set the **optional** parameter to `true` for this job to be optional on pull requests (PRs), not to block others.
 
-> **NOTE:** Make sure that the `yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `yaml` files in the whole `jobs` structure need to have unique names.
+> **NOTE:** Make sure that the `.yaml` file and the component folder name are the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure need to have unique names.
 
-Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining ProwJobs. If the buildpack you want to use is not there yet, you have to add it. When you add a new buildpack, follow the example of the already defined ones.
+Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you have to add it. When you add a new buildpack, follow the example of the already defined ones.
 
 2. Define a test for your component.
 
@@ -55,9 +55,9 @@ See the example:
 ```
 Same as with component jobs, mark the component test as optional at this stage by adding the `jobsuite.Optional()` entry.
 
-If you have access to the Prow cluster, there is an option to test a ProwJob on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
+If you have access to a Prow cluster, you can test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
-When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs. This automatically checks whether new release jobs were created in the release process.
+When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs. These functions automatically checks whether new release jobs were created in the release process.
 
 3. Generate jobs.
 
@@ -139,14 +139,14 @@ Modify component jobs
 
 To change component job configuration, follow these steps:
 
-1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the suffix `deprecated`. Change the path to this file in tests accordingly.
+1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the `deprecated` suffix. Change the path to this file in tests accordingly.
 2. Add `until: {last release}` to this configuration. It specifies the release until which this component version applies.
 3. Create a new entry with the new configuration. Set the `to` field to point to the file responsible for storing jobs.
 4. Add `since: {next release}` to the new entry. It specifies the release from which this component version applies.
 
 See this example:
 
-Buildpack for the API Controller has changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
+Buildpack for the API Controller changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
 
 ```yaml
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
@@ -172,7 +172,7 @@ This is what the configuration created after the buildpack change looks like:
 
 5. Modify tests.
 
-When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs  for future releases. This automatically checks whether new release jobs were created when doing a release.
+When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases. This automatically checks whether new release jobs were created when doing a release.
 
 </details>
 <details>

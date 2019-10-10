@@ -1,10 +1,10 @@
-# ProwJobs
+# Prow Jobs
 
-This document provides an overview of ProwJobs.  
+This document provides an overview of Prow jobs.  
 
 ## Directory structure
 
-ProwJobs reside in the `prow/jobs` directory in the `test-infra` repository. Job definitions are configured in `yaml` files. ProwJobs can be connected to specific components or be more general, like for integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directories. Jobs configured for components are available in `jobs/{repository_name}`directories which include subdirectories representing each component and containing job definitions.
+Prow jobs reside in the `prow/jobs` directory in the `test-infra` repository. Job definitions are configured in YAML files. Prow jobs can be connected to specific components or be more general, like for integration jobs. General jobs are defined directly under the `jobs/{repository_name}` directories. Jobs configured for components are available in `jobs/{repository_name}`directories which include subdirectories representing each component and containing job definitions.
 
 
 This is a sample directory structure:
@@ -26,7 +26,7 @@ prow
 |- plugins.yaml
 ...
 ```
-> **NOTE:** All `yaml` files in the whole `jobs` structure need to have unique names.
+> **NOTE:** All YAML files in the whole `jobs` structure need to have unique names.
 
 ## Job types
 
@@ -36,7 +36,7 @@ You can configure the following job types:
 - **Postsubmit** jobs are almost the same as the already defined presubmit jobs, but they run when you merge the PR. You can notice the difference in labels as postsubmit jobs use **preset-build-master** instead of **preset-build-pr**.
 - **Periodic** jobs run automatically at a scheduled time. You don't need to modify or merge the PR to trigger them.
 
-The presubmit and postsubmit jobs for a PR run in a random order. Their number in a PR depends on the configuration in the `yaml` file. You can check the job status on [`https://status.build.kyma-project.io/`](https://status.build.kyma-project.io/).
+The presubmit and postsubmit jobs for a PR run in a random order. Their number in a PR depends on the configuration in the YAML file. You can check the job status on [`https://status.build.kyma-project.io/`](https://status.build.kyma-project.io/).
 
 
 ## Naming convention
@@ -88,12 +88,12 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 ```
 
 - For details on how to create jobs, see [Manage component jobs with templates](./manage-component-jobs-with-templates.md).
-- For further reference, read a more technical insight into the Kubernetes [ProwJobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
+- For further reference, read a more technical insight into the Kubernetes [Prow jobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
 
 ## Trigger jobs manually
 
 In most situations, re-running the job means that Prow uses the same commit. To make sure the job uses the updated code base, you can trigger the job manually.
-Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid `yaml` for the ProwJob. See the example of generating the `kyma-gke-nightly` target:
+Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid YAML for the Prow job. See the example of generating the `kyma-gke-nightly` target:
 ```shell
 go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
 ```

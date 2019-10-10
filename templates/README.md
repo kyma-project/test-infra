@@ -2,9 +2,9 @@
 
 ## Overview
 
-Jobs and Prow configuration are generated from templates. The `templates` directory has this structure:
+Jobs and Prow configuration are generated from templates. The `templates` directory has the following structure:
 
-- `templates` which is the subdirectory with all template files that supply the definition of [Prow jobs](../../prow/jobs) used in Kyma.
+- `templates` which is the subdirectory with all template files that supply the definition of [Prow jobs](../prow/jobs) used in Kyma.
 - `config.yaml` which is the configuration file that describes jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
 
 The template list includes:
@@ -12,12 +12,12 @@ The template list includes:
 - `compass-integration.yaml` that defines presubmit and postsubmit integration jobs which build Kyma to check its compatibility with the Compass component.
 - `component.yaml` that defines component jobs with specified buildpacks.
 - `generic-component.yaml` that provides a new way of creating component jobs. Instead of a predefined buildpack, it uses a generic bootstrap that contains Makefile and Docker but no component-specific dependencies.
-- `kyma-artifacts.yaml` that serves for creating release artifacts.
+- `kyma-artifacts.yaml` that serves to create release artifacts.
 - `kyma-github-release.yaml` that is used for creating the GitHub release after merging the release branch to the `master` branch.
-- `kyma-installer.yaml` that is used for building the Installer used during the release.
+- `kyma-installer.yaml` that is used for building the Installer during the release.
 - `kyma-integration.yaml` that defines a set of presubmit and postsubmit integration jobs that build Kyma on clusters to verify if the introduced changes do not affect the existing Kyma components.
 - `kyma-release-candidate.yaml` that is used for building the release cluster for testing purposes.
-- `prow-config.yaml` that serves for creating the main Prow configuration without job definitions.
+- `prow-config.yaml` that serves to create the main Prow configuration without job definitions.
 - `releases.go.tmpl` that contains a set of functions for the release which provide the list of currently supported releases and all supported Kyma release branches.
 
 ### Configuration file
@@ -29,7 +29,7 @@ The `config.yaml` file has two keys:
 
 The `config.yaml` serves as the input file for the Render Templates that generates the jobs based on the file definition and templates which it specifies. The `config.yaml` file defines the names of the output file, their location, and configuration referred to in `values`.
 
-See the example of `console-backend-service` in which the `generic-component.yaml` template is used to create the component and test-related `yaml` files using values defined by the **kyma_generic_component** parameter.
+See the example of `console-backend-service` in which the `generic-component.yaml` template is used to create the component and test-related YAML files using values defined by the **kyma_generic_component** parameter.
 
 ```yaml
 kyma_generic_component: &kyma_generic_component

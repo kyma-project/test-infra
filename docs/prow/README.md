@@ -18,7 +18,7 @@ Read the documents to learn how to:
 Find out more about:
 
 - [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
-- [ProwJobs](./prow-jobs.md) for details on ProwJobs.
+- [Prow jobs](./prow-jobs.md) for details on Prow jobs.
 - [Obligatory security measures](./obligatory-security-measures.md) to take regularly for the Prow production cluster and when someone leaves the Kyma project.
-- [Presets](./presets.md) you can use to define ProwJobs.
+- [Presets](./presets.md) you can use to define Prow jobs.
 - [Authorization](./authorization.md) concepts employed in Prow.

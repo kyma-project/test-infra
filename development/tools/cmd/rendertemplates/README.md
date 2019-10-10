@@ -5,9 +5,9 @@
 The Render Templates is a tool that reads the configuration in the [`templates/config.yaml`](../../../../templates/config.yaml) file to generate output files, such as Prow component jobs.
 
 The `config.yaml` file specifies the following for the Render Templates:
-- Templates it must use to generate the files
+- Templates it must use to generate the output files
 - The name and location of the output files
-- Values it must use to generate the files
+- Values it must use to generate the output files
 
 ## Usage
 

@@ -4,7 +4,7 @@
 
 Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.
 
-You interact with Prow using slash (/) commands, such as `/test all`. You add them on PRs or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in Google Cloud Platform (GCP). Each Prow component is a small Go service that has its own function in the management of ProwJobs.
+You interact with Prow using slash (/) commands, such as `/test all`. You add them on PRs or issues to trigger the predefined automation [plugins](https://status.build.kyma-project.io/plugins) that perform certain actions in respond to GitHub events. Upon proper configuration, GitHub events trigger jobs that are single-container Pods, created in dedicated builds and Kubernetes clusters by a microservice called Plank that is running in Google Cloud Platform (GCP). Each Prow component is a small Go service that has its own function in the management of Prow jobs.
 
 In the context of the `kyma-project` organization, the main purpose of Prow is to serve as an external CI test tool that replaces the internal CI system.
 
@@ -44,7 +44,7 @@ Its structure looks as follows:
 
   ├── branding              # Files related to Kyma branding for a Prow cluster
   ├── cluster               # Files for Prow cluster provisioning
-  ├── images                # Images for ProwJobs
+  ├── images                # Images for Prow jobs
   ├── jobs                  # Files with job definitions
   ├── scripts               # Scripts used by the test jobs
   ├── config.yaml           # The main Prow configuration without job definitions. For example, it contains Plank configuration and Preset definitions.
@@ -62,7 +62,7 @@ Read the [`docs`](../docs/prow/README.md) to learn how to configure the producti
 
 ### Prow jobs
 
-Read [this](../docs/prow/prow-jobs.md) document to learn more about ProwJob definitions.
+Read [this](../docs/prow/prow-jobs.md) document to learn more about Prow job definitions.
 
 ### Upload configuration to the production Prow cluster
 
@@ -108,11 +108,11 @@ The Branch Protector component updates the configuration every 30 minutes.
 
 If you modify scripts in the `test-infra` repository and you want to test the changes made, follow one of these scenarios:
 
-- Create a PR with your changes and wait for the existing ProwJobs to verify your code.
+- Create a PR with your changes and wait for the existing Prow jobs to verify your code.
 
 > **NOTE**: This scenario works only if you modify the existing code, and requires a PR for every consecutive change.
 
-- Add the **extra_refs** field to your ProwJob and work directly on your branch. This pulls the repository and branch you chose into the job and executes the code from that location.
+- Add the **extra_refs** field to your Prow job and work directly on your branch. This pulls the repository and branch you chose into the job and executes the code from that location.
 
 > **NOTE**: Remember to revert your changes after your merge the code.
 
