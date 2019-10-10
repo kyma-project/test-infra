@@ -47,6 +47,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Optional(),
 		},
 	},
 	{path: "application-connectivity-validator", image: tester.ImageGolangBuildpackLatest},
