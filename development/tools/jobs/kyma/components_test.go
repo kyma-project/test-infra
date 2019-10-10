@@ -36,7 +36,12 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "application-broker", image: tester.ImageGolangBuildpack1_11},
+	{path: "application-broker", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
 	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-connectivity-validator", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-gateway", image: tester.ImageGolangBuildpackLatest},
@@ -144,7 +149,12 @@ var components = []struct {
 		},
 	},
 	{path: "namespace-controller", image: tester.ImageGolangBuildpackLatest},
-	{path: "service-binding-usage-controller", image: tester.ImageGolangBuildpack1_11},
+	{path: "service-binding-usage-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
 	{path: "xip-patch", image: tester.ImageBootstrapLatest,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Until(releases.Release15),
