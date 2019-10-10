@@ -5,8 +5,8 @@ FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
 # Install additional tools
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    rsync=3.1.2-1 \
-    procps=2:3.3.12-3 \
+    rsync=3.1.2-1+deb9u2 \
+    procps=2:3.3.12-3+deb9u1 \
     && apt-get clean
 
 RUN go get golang.org/x/tools/cmd/goimports  \
