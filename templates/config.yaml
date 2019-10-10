@@ -213,7 +213,6 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -387,6 +386,7 @@ templates:
         values:
           <<: *bootstrap_kyma_component
           path: components/istio-kyma-patch
+          until: "1.6"
       - to: ../prow/jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml
         values:
           <<: *go_kyma_component_1_11
