@@ -22,8 +22,6 @@ job_template: &job_template
         env:
           - name: GO111MODULE
             value: "on"
-          - name: GOPROXY
-            value: "https://proxy.golang.org"
 
 presubmits: # runs on PRs
   kyma-project/cli:
