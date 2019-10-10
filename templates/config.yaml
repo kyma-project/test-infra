@@ -215,7 +215,7 @@ templates:
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: integration/dex
+          path: tests/integration/dex
           since: "1.7"
           optional: true
   - from: templates/kyma-integration.yaml
