@@ -31,7 +31,7 @@ func TestOctopusJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, "GOPROXY", actualPresubmit.Spec.Containers[0].Env[1].Name)
-	assert.Equal(t, "https://proxy.golang.org,direct", actualPresubmit.Spec.Containers[0].Env[1].Value)
+	assert.Equal(t, "https://proxy.golang.org", actualPresubmit.Spec.Containers[0].Env[1].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/octopus"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -54,7 +54,7 @@ func TestOctopusJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "GO111MODULE", actualPostsubmit.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPostsubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, "GOPROXY", actualPostsubmit.Spec.Containers[0].Env[1].Name)
-	assert.Equal(t, "https://proxy.golang.org,direct", actualPostsubmit.Spec.Containers[0].Env[1].Value)
+	assert.Equal(t, "https://proxy.golang.org", actualPostsubmit.Spec.Containers[0].Env[1].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/octopus"}, actualPostsubmit.Spec.Containers[0].Args)
 }

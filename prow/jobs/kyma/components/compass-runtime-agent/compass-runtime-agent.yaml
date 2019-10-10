@@ -28,7 +28,7 @@ container_template: &container_template
     - name: GO111MODULE
       value: "on"
     - name: GOPROXY
-      value: "https://proxy.golang.org,direct"
+      value: "https://proxy.golang.org"
       
 
 presubmits: # runs on PRs

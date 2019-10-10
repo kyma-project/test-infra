@@ -51,7 +51,7 @@ func TestKymaCliJobPresubmit(t *testing.T) {
 	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, "GOPROXY", actualPresubmit.Spec.Containers[0].Env[1].Name)
-	assert.Equal(t, "https://proxy.golang.org,direct", actualPresubmit.Spec.Containers[0].Env[1].Value)
+	assert.Equal(t, "https://proxy.golang.org", actualPresubmit.Spec.Containers[0].Env[1].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/cli"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -79,7 +79,7 @@ func TestKymaCliJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "GO111MODULE", actualPost.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPost.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, "GOPROXY", actualPost.Spec.Containers[0].Env[1].Name)
-	assert.Equal(t, "https://proxy.golang.org,direct", actualPost.Spec.Containers[0].Env[1].Value)
+	assert.Equal(t, "https://proxy.golang.org", actualPost.Spec.Containers[0].Env[1].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/cli"}, actualPost.Spec.Containers[0].Args)
 }
