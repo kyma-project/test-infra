@@ -207,7 +207,6 @@ templates:
           <<: *kyma_generic_component
           path: components/dex-static-user-configurer
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -357,10 +356,6 @@ templates:
           <<: *go_kyma_component_1_11
           path: components/console-backend-service
           until: "1.5"
-      - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml
-        values:
-          <<: *bootstrap_kyma_component
-          path: components/dex-static-user-configurer
       - to: ../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml
         values:
           <<: *go_kyma_component_1_11
