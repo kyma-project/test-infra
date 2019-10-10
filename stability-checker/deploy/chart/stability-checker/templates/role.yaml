@@ -14,12 +14,6 @@ rules:
   verbs: ["create", "get", "list"]
 
 - apiGroups: [""]
-  resources: ["configmaps"]
-  verbs: ["delete", "patch"]
-  resourceNames:
-    - "testing-addons"
-
-- apiGroups: [""]
   resources: ["pods"]
   verbs: ["list","get","delete"]
 
@@ -37,5 +31,6 @@ rules:
 
 - apiGroups: ["addons.kyma-project.io"]
   resources: ["clusteraddonsconfigurations"]
-  verbs: ["create", "delete", "get"]
-  nonResourceURLs: []
+  verbs: ["create", "delete", "get", "patch"]
+  resourceNames:
+    - "testing-addons"
