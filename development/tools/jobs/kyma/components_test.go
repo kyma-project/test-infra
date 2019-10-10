@@ -93,6 +93,11 @@ var components = []struct {
 			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
+	{path: "dex-static-user-configurer", image: tester.ImageBootstrapLatest,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release15),
+		},
+	},
 	{path: "dex-static-user-configurer", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
