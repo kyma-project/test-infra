@@ -63,6 +63,13 @@ var tests = []struct {
 	},
 	{path: "integration/cluster-users", image: tester.ImageBootstrapLatest},
 	{path: "integration/dex", image: tester.ImageGolangBuildpack1_12},
+	{path: "integration/dex", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "integration/event-service", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
