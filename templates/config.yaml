@@ -208,6 +208,12 @@ templates:
           path: components/dex-static-user-configurer
           since: "1.7"
           optional: true
+      - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/istio-kyma-patch
+          since: "1.7"
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
