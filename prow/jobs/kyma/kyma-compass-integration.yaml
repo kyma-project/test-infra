@@ -25,6 +25,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-gke-compass-integration
     decorate: true
+    optional: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
     max_concurrency: 10
