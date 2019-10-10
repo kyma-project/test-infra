@@ -81,7 +81,7 @@ function testPassed() {
 function testFailed() {
     local -r duration=$(($(date +%s)-CURRENT_TEST_START_TIME))
     FAILED_TESTS_COUNT=$((++FAILED_TESTS_COUNT))
-    echo "--- FAIL: ${CURRENT_TEST_CASE} (${duration}s) 💔"
+    echo "--- FAIL: ${CURRENT_TEST_CASE} (${duration}s) 💩"
     echo "        <testcase name=\"${CURRENT_TEST_CASE}\" time=\"${duration}\"><failure>$(< "${ARTIFACTS_DIR}/lastTestOutput.log" tr -cd '\11\12\15\40-\176' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')</failure></testcase>" >> "${ARTIFACTS_DIR}/junit_${TEST_SUITE_NAME}_suite.xml"
     return 1
 }
