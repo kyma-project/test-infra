@@ -24,8 +24,6 @@ job_template: &job_template
         env:
           - name: GO111MODULE
             value: "on"
-          - name: GOPROXY
-            value: "https://proxy.golang.org"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
