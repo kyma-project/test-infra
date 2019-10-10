@@ -93,12 +93,10 @@ var components = []struct {
 			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
-	{path: "dex-static-user-configurer", image: tester.ImageBootstrapLatest},
 	{path: "dex-static-user-configurer", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "etcd-tls-setup-job", image: tester.ImageGolangBuildpack1_11},
