@@ -27,6 +27,9 @@ container_template: &container_template
   env:
     - name: GO111MODULE
       value: "on"
+    - name: GOPROXY
+      value: "https://proxy.golang.org,direct"
+      
 
 presubmits: # runs on PRs
   kyma-project/kyma:
