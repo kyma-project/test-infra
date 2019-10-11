@@ -276,10 +276,12 @@ templates:
         values:
           <<: *go_kyma_component_1_12
           path: components/api-controller
+          until: "1.6"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
         values:
           <<: *go_kyma_component_1_12
           path: components/apiserver-proxy
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
         values:
           <<: *go_kyma_component_v20181119
