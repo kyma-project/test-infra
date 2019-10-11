@@ -60,7 +60,7 @@ var tests = []struct {
 	},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("testes-generic"),
 			jobsuite.Since(releases.Release17),
 			jobsuite.Optional(),
 		},
