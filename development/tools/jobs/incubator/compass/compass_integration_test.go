@@ -1,8 +1,9 @@
 package compass_test
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
@@ -63,7 +64,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
-			assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
+			assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
 				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
