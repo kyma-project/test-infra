@@ -121,6 +121,7 @@ var components = []struct {
 	{path: "compass-runtime-agent", image: tester.ImageGolangKubebuilder2BuildpackLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
+			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Optional(),
 		},
 	},
