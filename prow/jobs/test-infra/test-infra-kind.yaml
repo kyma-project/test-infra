@@ -79,7 +79,7 @@ periodics:
   cron: "00 06 * * *" # "At 06:00 UTC each day"
   labels:
     <<: *job_labels_template
-    preset-stability-checker-slack-notifications: "false"
+    prow.kyma-project.io/slack.skipReport: "true"
   decorate: true
   extra_refs:
   - base_ref: master
