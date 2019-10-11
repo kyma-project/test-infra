@@ -379,9 +379,9 @@ presets:
     env:
       - name: PRODUCTNAME
         value: "OOSS - KYMA"
-  # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
+    # kind needs /lib/modules and cgroups from the host
     volumeMounts:
       - mountPath: /lib/modules
         name: modules
