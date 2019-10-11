@@ -172,7 +172,7 @@ This is what the configuration created after the buildpack change looks like:
 
 5. Modify tests.
 
-Add a new entry to component [tests](https://github.com/kyma-project/test-infra/blob/master/development/tools/jobs/kyma/components_test.go) and modify the existing one to specify the release version until which the tests apply. 
+Add a new entry to component [tests](../../development/tools/jobs/kyma/components_test.go) and modify the existing one to specify the release version until which the tests apply.
 
 See the example of the Console Backend Service:
 
