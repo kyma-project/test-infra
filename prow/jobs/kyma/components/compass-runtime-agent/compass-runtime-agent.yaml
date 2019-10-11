@@ -27,7 +27,6 @@ container_template: &container_template
   env:
     - name: GO111MODULE
       value: "on"
-      
 
 presubmits: # runs on PRs
   kyma-project/kyma:
