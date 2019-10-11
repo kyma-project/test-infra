@@ -144,20 +144,20 @@ To change component job configuration, follow these steps:
 3. Create a new entry with the new configuration. Set the `to` field to point to the file responsible for storing jobs.
 4. Add `since: {next release}` to the new entry. It specifies the release from which this component version applies.
 
-See this example:
+   See this example:
 
-Buildpack for the API Controller changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
+   Buildpack for the API Controller changed from `go1.11` to `go.12` in release 1.5. This is the component configuration before the buildpack change:
 
-```yaml
+   ```yaml
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/api-controller
-```
+   ```
 
-This is what the configuration created after the buildpack change looks like:
+   This is what the configuration created after the buildpack change looks like:
 
-```yaml
+   ```yaml
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -168,31 +168,31 @@ This is what the configuration created after the buildpack change looks like:
           <<: *go_kyma_component_1_11
           path: components/api-controller
           until: '1.4'
-```
+   ```
 
 5. Modify tests.
 
 Add a new entry to component [tests](../../development/tools/jobs/kyma/components_test.go) and modify the existing one to specify the release version until which the tests apply.
 
-See the example of the Console Backend Service:
+   See the example of the Console Backend Service:
 
-```go
-...
-{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
-  additionalOptions: []jobsuite.Option{
-    jobsuite.Until(releases.Release15),
-  },
-},
-{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-  additionalOptions: []jobsuite.Option{
-    jobsuite.JobFileSuffix("generic"),
-    jobsuite.Since(releases.Release16),
-    jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
-  },
-},
-```
+   ```go
+   ...
+   {path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
+     additionalOptions: []jobsuite.Option{
+       jobsuite.Until(releases.Release15),
+     },
+   },
+   {path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+     additionalOptions: []jobsuite.Option{
+       jobsuite.JobFileSuffix("generic"),
+       jobsuite.Since(releases.Release16),
+       jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
+     },
+   },
+   ```
 
-When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases.
+   When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases.
 
 </details>
 <details>
