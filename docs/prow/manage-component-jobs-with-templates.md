@@ -57,7 +57,7 @@ Same as with component jobs, mark the component test as optional at this stage b
 
 If you have access to a Prow cluster, you can test a Prow job on it. For details, see the [official documentation](https://github.com/kubernetes/test-infra/blob/master/prow/build_test_update.md#how-to-test-a-prowjob).
 
-When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs. These functions automatically checks whether new release jobs were created in the release process.
+When writing tests for a new component, use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs.
 
 3. Generate jobs.
 
@@ -139,7 +139,7 @@ Modify component jobs
 
 To change component job configuration, follow these steps:
 
-1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the `deprecated` suffix. Change the path to this file in tests accordingly.
+1. In the `config.yaml` file, change the name of the file where the jobs are generated. For example, add the `deprecated` suffix.
 2. Add `until: {last release}` to this configuration. It specifies the release until which this component version applies.
 3. Create a new entry with the new configuration. Set the `to` field to point to the file responsible for storing jobs.
 4. Add `since: {next release}` to the new entry. It specifies the release from which this component version applies.
@@ -172,7 +172,27 @@ This is what the configuration created after the buildpack change looks like:
 
 5. Modify tests.
 
-When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases. This automatically checks whether new release jobs were created when doing a release.
+Add a new entry to component [tests](https://github.com/kyma-project/test-infra/blob/master/development/tools/jobs/kyma/components_test.go) and modify the existing one to specify the release version until which the tests apply. 
+
+See the example of the Console Backend Service:
+
+```go
+...
+{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
+  additionalOptions: []jobsuite.Option{
+    jobsuite.Until(releases.Release15),
+  },
+},
+{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+  additionalOptions: []jobsuite.Option{
+    jobsuite.JobFileSuffix("generic"),
+    jobsuite.Since(releases.Release16),
+    jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
+  },
+},
+```
+
+When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases.
 
 </details>
 <details>
