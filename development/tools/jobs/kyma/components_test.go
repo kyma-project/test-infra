@@ -43,7 +43,7 @@ var components = []struct {
 		},
 	},
 	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpackLatest},
-	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "application-connectivity-certs-setup-job", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -51,7 +51,7 @@ var components = []struct {
 		},
 	},
 	{path: "application-connectivity-validator", image: tester.ImageGolangBuildpackLatest},
-	{path: "application-connectivity-validator", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "application-connectivity-validator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -59,7 +59,7 @@ var components = []struct {
 		},
 	},
 	{path: "application-gateway", image: tester.ImageGolangBuildpackLatest},
-	{path: "application-gateway", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "application-gateway", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -67,7 +67,7 @@ var components = []struct {
 		},
 	},
 	{path: "application-operator", image: tester.ImageGolangBuildpackLatest},
-	{path: "application-operator", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "application-operator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -75,7 +75,7 @@ var components = []struct {
 		},
 	},
 	{path: "application-registry", image: tester.ImageGolangBuildpackLatest},
-	{path: "application-registry", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "application-registry", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -125,7 +125,7 @@ var components = []struct {
 		},
 	},
 	{path: "connection-token-handler", image: tester.ImageGolangBuildpackLatest},
-	{path: "connection-token-handler", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "connection-token-handler", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -133,7 +133,7 @@ var components = []struct {
 		},
 	},
 	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
-	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "connectivity-certs-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
@@ -141,7 +141,7 @@ var components = []struct {
 		},
 	},
 	{path: "connector-service", image: tester.ImageGolangBuildpackLatest},
-	{path: "connector-service", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
+	{path: "connector-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
