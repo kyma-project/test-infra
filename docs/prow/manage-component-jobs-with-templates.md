@@ -174,9 +174,9 @@ To change component job configuration, follow these steps:
 
 Add a new entry to component [tests](../../development/tools/jobs/kyma/components_test.go) and modify the existing one to specify the release version until which the tests apply.
 
-   See the example of the Console Backend Service:
+See the example of the Console Backend Service:
 
-   ```go
+```go
    ...
    {path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
      additionalOptions: []jobsuite.Option{
@@ -190,9 +190,9 @@ Add a new entry to component [tests](../../development/tools/jobs/kyma/component
        jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
      },
    },
-   ```
+```
 
-   When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases.
+When changing tests, use the `tester.GetKymaReleasesUntil({last release})` function in place of `tester.GetAllKymaReleases` to test older releases. Use the `tester.GetKymaReleasesSince({next release})` function to create tests for release jobs for future releases.
 
 </details>
 <details>
