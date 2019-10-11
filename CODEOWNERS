@@ -43,3 +43,6 @@
 /templates/config.yaml @kyma-project/developers
 
 /templates/templates @kyma-project/prow @sjanota
+
+# The `kind` environment
+/kind @michal-hudy @aerfio @magicmatatjahu @m00g3n
