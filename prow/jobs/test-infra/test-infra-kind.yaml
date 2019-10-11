@@ -46,7 +46,7 @@ presubmits:
 
 postsubmits:
   kyma-project/test-infra:
-  - name: pre-master-kind-kubernetes-image
+  - name: post-master-kind-kubernetes-image
     branches:
     - ^master$
     skip_report: false
