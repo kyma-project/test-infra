@@ -16,7 +16,7 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
       resources:
