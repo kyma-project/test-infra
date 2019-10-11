@@ -32,5 +32,3 @@ rules:
 - apiGroups: ["addons.kyma-project.io"]
   resources: ["clusteraddonsconfigurations"]
   verbs: ["create", "delete", "get", "patch"]
-  resourceNames:
-    - "testing-addons"
