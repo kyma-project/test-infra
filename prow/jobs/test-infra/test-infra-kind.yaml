@@ -9,7 +9,7 @@ job_image_template: &job_image_template
   imagePullPolicy: Always
 
 job_tolerations_template: &job_tolerations_template
-- key: resources-usage
+  key: resources-usage
   value: high
   operator: Equal
   effect: NoSchedule
@@ -42,7 +42,7 @@ presubmits:
             memory: 10Gi
             cpu: 5
       tolerations:
-        <<: *job_tolerations_template
+      - <<: *job_tolerations_template
 
 postsubmits:
   kyma-project/test-infra:
@@ -72,7 +72,7 @@ postsubmits:
             memory: 10Gi
             cpu: 5
       tolerations:
-        <<: *job_tolerations_template
+      - <<: *job_tolerations_template
 
 periodics:
 - name: kyma-kind-integration
@@ -109,4 +109,4 @@ periodics:
           cpu: 10
           memory: 18Gi
     tolerations:
-      <<: *job_tolerations_template
+    - <<: *job_tolerations_template
