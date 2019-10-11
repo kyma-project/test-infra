@@ -23,6 +23,9 @@ vm_job_template: &vm_job_template
         requests:
           memory: 100Mi
           cpu: 50m
+      env:
+      - name: GO111MODULE
+        value: "on"
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
