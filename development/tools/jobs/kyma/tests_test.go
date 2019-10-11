@@ -61,13 +61,13 @@ var tests = []struct {
 	{path: "integration/api-controller", image: tester.ImageGolangBuildpack1_12,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
+			jobsuite.Until(releases.Release15),
 		},
 	},
 	{path: "integration/api-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "integration/apiserver-proxy", image: tester.ImageGolangBuildpack1_12,
