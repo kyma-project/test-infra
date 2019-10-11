@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/end-to-end/upgrade/|^scripts/"
+  run_if_changed: "^tests/integration/apiserver-proxy/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -28,7 +28,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/upgrade"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/apiserver-proxy"
         resources:
           requests:
             memory: 1.5Gi
@@ -36,12 +36,13 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-end-to-end-upgrade
+    - name: pre-kyma-tests-integration-apiserver-proxy
       skip_report: false
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tests-end-to-end-upgrade
+    - name: post-kyma-tests-integration-apiserver-proxy
+      prow.kyma-project.io/slack.skipReport: "true"
       <<: *job_template
