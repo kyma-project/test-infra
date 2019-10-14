@@ -66,7 +66,21 @@ var tests = []struct {
 		},
 	},
 	{path: "connection-token-handler-tests", image: tester.ImageGolangBuildpackLatest},
+	{path: "connection-token-handler-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "connector-service-tests", image: tester.ImageGolangBuildpackLatest},
+	{path: "connector-service-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
