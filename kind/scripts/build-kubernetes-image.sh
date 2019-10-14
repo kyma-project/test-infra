@@ -46,5 +46,5 @@ testPassed
 
 testStart "createCluster"
 log "Creating cluster with image ${IMAGE_NAME}" 2>&1 | ${STORE_TEST_OUTPUT}
-"${SCRIPT_DIR}/install-kyma.sh" --only-cluster --delete-cluster 2>&1 | ${STORE_TEST_OUTPUT_APPEND}
+"${SCRIPT_DIR}/install-kyma.sh" --only-cluster --delete-cluster --ensure-kubectl --setup-inotify 2>&1 | ${STORE_TEST_OUTPUT_APPEND}
 testPassed
