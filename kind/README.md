@@ -1,5 +1,4 @@
-# kind Environment
-
+# kind
 ## Overview
 
 [`kind`](https://github.com/kubernetes-sigs/kind) is a tool for running local Kubernetes clusters with nodes deployed as Docker containers. It can be deployed as a multi-node container, which gives us an ability to test Kyma components in an environment similar to the production cluster.
@@ -31,8 +30,6 @@ To list available options, run:
 ```bash
 ./scripts/install-kyma.sh --help
 ```
-
-It may require more resources for Docker, adjust it in Docker preferences (cpu and memory)
 
 > **TIP:** You may have to adjust CPU and memory settings for Docker. Use 6 CPU and 12 GB as the recommended cluster values. Adjust these values in Docker preferences.
 
