@@ -34,6 +34,8 @@ To list available options, run:
 
 It may require more resources for Docker, adjust it in Docker preferences (cpu and memory)
 
+> **TIP:** You may have to adjust CPU and memory settings for Docker. Use 6 CPU and 12 GB as the recommended cluster values. Adjust these values in Docker preferences.
+
 ### Build a Kubernetes image
 
 Run the `scripts/build-kubernetes-image.sh` script to build a Kubernetes image used in `kind`. That script is specifically designed for the Prow pipeline.
