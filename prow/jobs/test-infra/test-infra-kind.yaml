@@ -80,6 +80,7 @@ periodics:
   labels:
     <<: *job_labels_template
     prow.kyma-project.io/slack.skipReport: "true"
+    preset-build-master: "true"
   decorate: true
   extra_refs:
   - base_ref: master
