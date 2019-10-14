@@ -95,6 +95,8 @@ periodics:
     - <<: *job_image_template
       command:
       - /home/prow/go/src/github.com/kyma-project/test-infra/kind/scripts/install-kyma.sh
+      securityContext:
+        privileged: true
       args:
       - --ensure-kubectl
       - --update-hosts
