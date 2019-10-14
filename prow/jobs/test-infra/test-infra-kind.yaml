@@ -80,6 +80,7 @@ periodics:
   labels:
     <<: *job_labels_template
     prow.kyma-project.io/slack.skipReport: "true"
+    preset-build-master: "true"
   decorate: true
   extra_refs:
   - base_ref: master
@@ -95,6 +96,8 @@ periodics:
     - <<: *job_image_template
       command:
       - /home/prow/go/src/github.com/kyma-project/test-infra/kind/scripts/install-kyma.sh
+      securityContext:
+        privileged: true
       args:
       - --ensure-kubectl
       - --update-hosts
