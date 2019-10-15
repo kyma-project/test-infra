@@ -206,6 +206,12 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/backup-plugins/backup-plugins-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/backup-plugins
+          since: "1.7"
+          optional: true
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -313,12 +319,6 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: components/asset-metadata-service
-      - to: ../prow/jobs/kyma/components/backup-plugins/backup-plugins.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: components/backup-plugins
-          since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager.yaml
         values:
           <<: *kubebuilder2_kyma_component
