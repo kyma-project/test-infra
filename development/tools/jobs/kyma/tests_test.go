@@ -14,7 +14,7 @@ var tests = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "acceptance", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "service-catalog", image: tester.ImageGolangBuildpackLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release17),
