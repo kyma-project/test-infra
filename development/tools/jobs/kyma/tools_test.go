@@ -3,6 +3,7 @@ package kyma
 import (
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -14,6 +15,12 @@ var tools = []struct {
 }{
 	{path: "load-test", image: tester.ImageGolangBuildpackLatest},
 	{path: "alpine-net", image: tester.ImageGolangBuildpackLatest},
+	{path: "backup-plugins", image: tester.ImageGolangBuildpackLatest,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestToolsJobs(t *testing.T) {
