@@ -65,6 +65,12 @@ var components = []struct {
 			jobsuite.Since(releases.Release15),
 		},
 	},
+	{path: "backup-plugins", image: tester.ImageGolangBuildpack1_12,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilderBuildpackLatest,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Until(releases.Release14),
