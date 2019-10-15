@@ -20,9 +20,9 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "acceptance", image: tester.ImageBootstrap20181204,
+	{path: "acceptance", image: tester.ImageGolangBuildpackLatest,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.Until(releases.Release16),
+			jobsuite.Until(releases.Release15),
 		},
 	},
 	{path: "application-connector-tests", image: tester.ImageGolangBuildpackLatest},
