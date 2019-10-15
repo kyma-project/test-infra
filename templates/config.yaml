@@ -692,3 +692,9 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tools/load-test
+      - to: ../prow/jobs/kyma/tools/backup-plugins/backup-plugins.yaml
+        values:
+          <<: *go_kyma_component_v20181119
+          path: tools/backup-plugins
+          since: "1.7"
+          optional: true
