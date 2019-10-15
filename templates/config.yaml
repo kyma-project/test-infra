@@ -222,7 +222,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/apiserver-proxy
           since: "1.7"
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
