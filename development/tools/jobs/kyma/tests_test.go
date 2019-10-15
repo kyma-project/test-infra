@@ -20,6 +20,11 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{path: "acceptance", image: tester.ImageBootstrap20181204,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release16),
+		},
+	},
 	{path: "application-connector-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-gateway-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-operator-tests", image: tester.ImageGolangBuildpackLatest},

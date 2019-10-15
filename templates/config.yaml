@@ -281,10 +281,6 @@ templates:
           <<: *go_kyma_component_1_12
           path: components/apiserver-proxy
           until: "1.6"
-      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: tests/service-catalog
       - to: ../prow/jobs/kyma/components/application-broker/application-broker.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -432,11 +428,11 @@ templates:
           <<: *go_kyma_component_v20181119
           path: components/xip-patch
           until: "1.6"
-      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog.yaml
+      - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
         values:
           <<: *go_kyma_component_v20181119
           until: "1.6"
-          path: tests/service-catalog
+          path: tests/acceptance
       - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
