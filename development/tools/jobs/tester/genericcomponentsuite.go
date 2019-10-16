@@ -94,7 +94,14 @@ func (s GenericComponentSuite) repositoryName() string {
 }
 
 func (s GenericComponentSuite) jobConfigPath() string {
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
+	if strings.Contains(s.Repository, "kyma-project") {
+		return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
+	}
+	// Components outside kyma-project need this workaround
+	repos := path.Dir(s.Repository)
+	org := path.Base(repos)
+	fakeRepoName := strings.Replace(org, "kyma-", "",1)
+	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", fakeRepoName, s.Path, s.componentName(), s.JobsFileSuffix)
 }
 
 func (s GenericComponentSuite) repositorySectionKey() string {
@@ -106,11 +113,20 @@ func (s GenericComponentSuite) jobName(prefix string) string {
 }
 
 func (s GenericComponentSuite) moduleName() string {
-	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.Path, "/", "-", -1))
+	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.getPath(), "/", "-", -1))
 }
 
 func (s GenericComponentSuite) workingDirectory() string {
-	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.Path)
+	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.getPath())
+}
+
+func (s GenericComponentSuite) getPath() string {
+	if strings.Contains(s.Repository, "kyma-project") {
+		return s.Path
+	}
+	//Remove first dir for component outside kyma
+	paths := strings.Split(s.Path, "/")
+	return strings.Join(paths[1:], "/")
 }
 
 func (s GenericComponentSuite) isTestInfra() bool {
