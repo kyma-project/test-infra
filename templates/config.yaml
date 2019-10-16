@@ -231,7 +231,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/cluster-users
           since: "1.7"
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -568,6 +567,7 @@ templates:
         values:
           <<: *bootstrap_kyma_component
           path: tests/integration/cluster-users
+          until: "1.6"
           resources:
             cpu: 0.2
             memory: 256Mi
