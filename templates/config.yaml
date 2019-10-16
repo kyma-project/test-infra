@@ -228,7 +228,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/apiserver-proxy
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-generic.yaml
+      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-test-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/cluster-users
@@ -565,7 +565,7 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tests/monitoring
           until: "1.3"
-      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users.yaml
+      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-tests.yaml
         values:
           <<: *bootstrap_kyma_component
           path: tests/integration/cluster-users
