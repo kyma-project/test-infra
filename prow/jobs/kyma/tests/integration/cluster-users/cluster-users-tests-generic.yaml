@@ -39,11 +39,10 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-integration-cluster-users
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tests-integration-cluster-users
-      prow.kyma-project.io/slack.skipReport: "true"
       <<: *job_template
