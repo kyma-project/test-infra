@@ -68,7 +68,6 @@ var components = []struct {
 	{path: "backup-plugins", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},

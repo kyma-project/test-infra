@@ -298,7 +298,8 @@ function restoreKyma() {
 
     sleep 15
 
-    velero plugin add eu.gcr.io/kyma-project/develop/velero-plugins:1.6-mk
+    echo "Add backup plugins"
+    velero plugin add eu.gcr.io/kyma-project/backup-plugins:e7df9098
 
     sleep 15
 
