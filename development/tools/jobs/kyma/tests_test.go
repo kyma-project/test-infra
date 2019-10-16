@@ -82,7 +82,11 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "integration/cluster-users", image: tester.ImageBootstrapLatest},
+	{path: "integration/cluster-users", image: tester.ImageBootstrapLatest,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests"),
+		},
+	},
 	{path: "integration/cluster-users", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
