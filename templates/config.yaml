@@ -158,19 +158,19 @@ templates:
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-tests-generic.yaml
         values:
           <<: *compass_generic_component
           path: tests/connector-tests
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-tests-generic.yaml
         values:
           <<: *compass_generic_component
           path: tests/end-to-end
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/provisioner/provisioner-tests-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/provisioner-tests/provisioner-tests-tests-generic.yaml
         values:
           <<: *compass_generic_component
           path: tests/provisioner-tests

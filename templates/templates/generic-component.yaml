@@ -40,7 +40,7 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-{{ .Values.pushRepository }}: "true"
-    {{- if or .Values.optional }}
+    {{- if .Values.optional }}
     prow.kyma-project.io/slack.skipReport: "true"
     {{- end }}
 {{- if $isNotTestInfra }}
