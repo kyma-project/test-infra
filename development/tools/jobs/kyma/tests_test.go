@@ -111,12 +111,18 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests"),
 		},
 	},
-	{path: "integration/logging", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
-		jobsuite.Since(releases.Release14),
-	}},
-	{path: "integration/monitoring", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
-		jobsuite.Since(releases.Release14),
-	}},
+	{path: "integration/logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
+	{path: "integration/monitoring", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
