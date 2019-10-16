@@ -33,7 +33,11 @@ func TestToolsJobs(t *testing.T) {
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
-			tester.ComponentSuite{Config: cfg}.Run(t)
+			suite := test.suite
+			if suite == nil {
+				suite = tester.NewComponentSuite
+			}
+			suite(cfg).Run(t)
 		})
 	}
 }
