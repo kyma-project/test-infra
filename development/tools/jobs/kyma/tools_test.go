@@ -3,6 +3,7 @@ package kyma
 import (
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -10,10 +11,16 @@ import (
 var tools = []struct {
 	path              string
 	image             string
+	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
 	{path: "load-test", image: tester.ImageGolangBuildpackLatest},
-	{path: "alpine-net", image: tester.ImageGolangBuildpackLatest},
+	{path: "alpine-net", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
 }
 
 func TestToolsJobs(t *testing.T) {
