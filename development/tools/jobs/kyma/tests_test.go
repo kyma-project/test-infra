@@ -95,7 +95,6 @@ var tests = []struct {
 			jobsuite.Optional(),
 		},
 	},
-	{path: "integration/dex", image: tester.ImageGolangBuildpack1_12},
 	{path: "integration/dex", image: tester.ImageGolangBuildpack1_12,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Until(releases.Release15),
