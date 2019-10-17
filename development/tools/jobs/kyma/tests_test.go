@@ -18,6 +18,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
 		},
 	},
 	{path: "acceptance", image: tester.ImageGolangBuildpackLatest,
