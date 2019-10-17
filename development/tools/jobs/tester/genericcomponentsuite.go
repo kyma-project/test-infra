@@ -97,11 +97,14 @@ func (s GenericComponentSuite) jobConfigPath() string {
 	if strings.Contains(s.Repository, "kyma-project") {
 		return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
 	}
-	// Components outside kyma-project need this workaround
+	// Components outside kyma-project need this workaround, because generic job will create for example:
+	// Repository = github.com/kyma-incubator/compass,
+	// will generate path: `kyma-incubator` which is not valid in current state
+	// Current valid path is `incubator`
 	repos := path.Dir(s.Repository)
 	org := path.Base(repos)
-	fakeRepoName := strings.Replace(org, "kyma-", "",1)
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", fakeRepoName, s.Path, s.componentName(), s.JobsFileSuffix)
+	orgPath := strings.Replace(org, "kyma-", "",1)
+	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, s.componentName(), s.JobsFileSuffix)
 }
 
 func (s GenericComponentSuite) repositorySectionKey() string {
@@ -124,7 +127,8 @@ func (s GenericComponentSuite) getPath() string {
 	if strings.Contains(s.Repository, "kyma-project") {
 		return s.Path
 	}
-	//Remove first dir for component outside kyma
+	// Components outside kyma-project need this workaround
+	// Remove first part of Path
 	paths := strings.Split(s.Path, "/")
 	return strings.Join(paths[1:], "/")
 }
