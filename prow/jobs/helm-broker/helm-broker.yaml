@@ -83,3 +83,13 @@ postsubmits:
         <<: *job_labels_template
         preset-build-master: "true"
         prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+    - name: post-release-helm-broker
+      # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
+      branches:
+        - '\d+\.\d+\.\d+$'
+      <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+        preset-bot-github-token: "true"
+        prow.kyma-project.io/slack.skipReport: "true"
