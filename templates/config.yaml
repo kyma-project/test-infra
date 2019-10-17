@@ -162,10 +162,15 @@ templates:
           <<: *kyma_generic_component
           path: components/service-binding-usage-controller
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/acceptance/acceptance-tests-generic.yaml
+      - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: tests/acceptance
+          path: tests/console-backend-service
+          since: "1.6"
+      - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/service-catalog
           since: "1.7"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
         values:
@@ -407,10 +412,6 @@ templates:
           <<: *go_kyma_component_1_12
           path: components/apiserver-proxy
           until: "1.6"
-      - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: tests/acceptance
       - to: ../prow/jobs/kyma/components/application-broker/application-broker.yaml
         values:
           <<: *go_kyma_component_1_11
