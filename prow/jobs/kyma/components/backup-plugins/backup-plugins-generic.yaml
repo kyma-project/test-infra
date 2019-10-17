@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/integration/dex/|^scripts/"
+  run_if_changed: "^components/backup-plugins/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -28,7 +28,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/dex"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/backup-plugins"
         resources:
           requests:
             memory: 1.5Gi
@@ -36,12 +36,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-integration-dex
+    - name: pre-kyma-components-backup-plugins
       skip_report: false
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tests-integration-dex
+    - name: post-kyma-components-backup-plugins
       <<: *job_template

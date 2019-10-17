@@ -11,14 +11,14 @@ import (
 var tools = []struct {
 	path              string
 	image             string
+	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
 	{path: "load-test", image: tester.ImageGolangBuildpackLatest},
-	{path: "alpine-net", image: tester.ImageGolangBuildpackLatest},
-	{path: "backup-plugins", image: tester.ImageGolangBuildpackLatest,
+	{path: "alpine-net", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 		},
 	},
 }
@@ -33,7 +33,11 @@ func TestToolsJobs(t *testing.T) {
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
-			tester.ComponentSuite{Config: cfg}.Run(t)
+			suite := test.suite
+			if suite == nil {
+				suite = tester.NewComponentSuite
+			}
+			suite(cfg).Run(t)
 		})
 	}
 }
