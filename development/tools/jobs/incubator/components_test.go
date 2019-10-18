@@ -14,7 +14,8 @@ var components = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{name: "connector",
+	{
+		name: "connector",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -22,7 +23,8 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "director",
+	{
+		name: "director",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -30,7 +32,8 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "gateway",
+	{
+		name: "gateway",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -38,7 +41,8 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "healthchecker",
+	{
+		name: "healthchecker",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -46,7 +50,8 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "provisioner",
+	{
+		name: "provisioner",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -54,7 +59,8 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "schema-migrator",
+	{
+		name: "schema-migrator",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),

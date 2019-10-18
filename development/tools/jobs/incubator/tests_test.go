@@ -14,7 +14,8 @@ var tests = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{name: "connector-tests",
+	{
+		name: "connector-tests",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -22,7 +23,8 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "end-to-end",
+	{
+		name: "end-to-end",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -30,7 +32,8 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{name: "provisioner-tests",
+	{
+		name: "provisioner-tests",
 		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),

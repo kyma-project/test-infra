@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+	"log"
 	"path"
 	"strings"
 	"testing"
@@ -94,17 +95,26 @@ func (s GenericComponentSuite) repositoryName() string {
 }
 
 func (s GenericComponentSuite) jobConfigPath() string {
-	if strings.Contains(s.Repository, "kyma-project") {
-		return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
-	}
-	// Components outside kyma-project need this workaround, because generic job will create for example:
+	// Components outside kyma-project need this switch, because generic job will create for example:
 	// Repository = github.com/kyma-incubator/compass,
 	// will generate path: `kyma-incubator` which is not valid in current state
 	// Current valid path is `incubator`
-	repos := path.Dir(s.Repository)
-	org := path.Base(repos)
-	orgPath := strings.Replace(org, "kyma-", "",1)
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, s.componentName(), s.JobsFileSuffix)
+	jobConfigPath := ""
+	switch {
+	case strings.Contains(s.Repository, "kyma-project"):
+		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
+
+	case strings.Contains(s.Repository, "kyma-incubator"):
+		repos := path.Dir(s.Repository)
+		org := path.Base(repos)
+		orgPath := strings.Replace(org, "kyma-", "", 1)
+		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, s.componentName(), s.JobsFileSuffix)
+
+	default:
+		log.Fatal("organization not supported: %s", s.Repository)
+	}
+
+	return jobConfigPath
 }
 
 func (s GenericComponentSuite) repositorySectionKey() string {
