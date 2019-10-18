@@ -20,7 +20,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/compass-runtime-agent/|^scripts/"
+  run_if_changed: "^tests/compass-runtime-agent/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
