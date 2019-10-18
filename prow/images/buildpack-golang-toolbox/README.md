@@ -10,6 +10,7 @@ In addition to the version introduced in Buildpack Golang, this image adds these
 - golint
 - mockery
 - failery
+- kind (v0.5.1)
 
 > **CAUTION:** The `go get` command that downloads these tools always fetches the latest packages. Because of that, the image may contain different versions of the tools every time it is rebuilt.
 

@@ -2,6 +2,8 @@ package tester
 
 import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -16,54 +18,7 @@ import (
 	"k8s.io/test-infra/prow/config"
 )
 
-// Preset represents a existing presets
-type Preset string
-
 const (
-	// PresetDindEnabled means docker-in-docker preset
-	PresetDindEnabled Preset = "preset-dind-enabled"
-	// PresetGcrPush means GCR push service account
-	PresetGcrPush Preset = "preset-sa-gcr-push"
-	// PresetDockerPushRepo means Docker repository
-	PresetDockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
-	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
-	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
-	// PresetDockerPushRepoIncubator means Docker repository incubator images
-	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
-	// PresetDockerPushRepoGlobal means Docker global repository for images
-	PresetDockerPushRepoGlobal Preset = "preset-docker-push-repository-global"
-	// PresetBuildPr means PR environment
-	PresetBuildPr Preset = "preset-build-pr"
-	// PresetBuildMaster means master environment
-	PresetBuildMaster Preset = "preset-build-master"
-	// PresetBuildConsoleMaster means console master environment
-	PresetBuildConsoleMaster Preset = "preset-build-console-master"
-	// PresetBuildRelease means release environment
-	PresetBuildRelease Preset = "preset-build-release"
-	// PresetBotGithubToken means github token
-	PresetBotGithubToken Preset = "preset-bot-github-token"
-	// PresetBotGithubSSH means github ssh
-	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
-	// PresetBotGithubIdentity means github identity
-	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
-	// PresetWebsiteBotGithubToken means github token
-	PresetWebsiteBotGithubToken Preset = "preset-website-bot-github-token"
-	// PresetKymaGuardBotGithubToken represents the Kyma Guard Bot token for GitHub
-	PresetKymaGuardBotGithubToken Preset = "preset-kyma-guard-bot-github-token"
-	// PresetWebsiteBotGithubSSH means github ssh
-	PresetWebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
-	// PresetWebsiteBotGithubIdentity means github identity
-	PresetWebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
-	// PresetWebsiteBotZenHubToken means zenhub token
-	PresetWebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
-	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
-	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
-	// PresetGCProjectEnv means project name is injected as env variable
-	PresetGCProjectEnv = "preset-gc-project-env"
-	// PresetKymaBackupRestoreBucket means the bucket used for backups and restore in Kyma
-	PresetKymaBackupRestoreBucket = "preset-kyma-backup-restore-bucket"
-	// PresetKymaBackupCredentials means the credentials for the service account
-	PresetKymaBackupCredentials = "preset-kyma-backup-credentials"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
@@ -83,6 +38,8 @@ const (
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 	// ImageBootstrap20181204 represents boostrap image published on 2018.12.04
 	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+	// ImageBootstrap20190604 represents boostrap image published on 2019.06.04
+	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
@@ -151,7 +108,7 @@ func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch strin
 // FindPresubmitJobByName finds presubmit job by name from provided jobs list
 func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name  {
+		if job.Name == name {
 			return &job
 		}
 	}
@@ -172,7 +129,7 @@ func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedR
 // FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch){
+		if job.Name == name && job.RunsAgainstBranch(branch) {
 			return &job
 		}
 	}
@@ -231,9 +188,9 @@ func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories 
 }
 
 // AssertThatHasPresets checks if JobBase has expected labels
-func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
+func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...preset.Preset) {
 	for _, p := range expected {
-		assert.Equal(t, "true", in.Labels[string(p)], "missing preset [%s]", p)
+		require.Equal(t, "true", in.Labels[string(p)], "missing preset [%v]", p)
 	}
 }
 

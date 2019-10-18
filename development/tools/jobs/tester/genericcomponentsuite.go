@@ -3,6 +3,7 @@ package tester
 import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
@@ -51,7 +52,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 
 		s.assertContainer(t, job.JobBase)
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
-		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush)
+		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush)
 		if !s.isTestInfra() {
 			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
 		}
@@ -75,7 +76,7 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 
 		s.assertContainer(t, job.JobBase)
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
-		AssertThatHasPresets(t, job.JobBase, PresetDindEnabled, s.presetDockerPushRepository(), PresetGcrPush)
+		AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush)
 		if !s.isTestInfra() {
 			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
 		}
@@ -114,10 +115,6 @@ func (s GenericComponentSuite) workingDirectory() string {
 
 func (s GenericComponentSuite) isTestInfra() bool {
 	return s.Repository == "github.com/kyma-project/test-infra"
-}
-
-func (s GenericComponentSuite) presetDockerPushRepository() Preset {
-	return Preset(fmt.Sprintf("preset-docker-push-repository-%s", s.DockerRepositoryPresetSuffix))
 }
 
 func (s GenericComponentSuite) branchesToRunAgainst() []string {

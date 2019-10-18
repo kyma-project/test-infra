@@ -38,6 +38,40 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-master-helm-broker-chart-test
+      always_run: true
+      branches:
+        - ^master$
+      labels:
+        <<: *job_labels_template
+        preset-kind-volume-mounts: "true"
+        preset-build-pr: "true"
+      skip_report: false
+      decorate: true
+      optional: false
+      path_alias: github.com/kyma-project/helm-broker
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+            securityContext:
+              privileged: true
+            command:
+              - make
+            args:
+              - charts-test
+            env:
+              - name: RUN_ON_PROW
+                value: "true"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
 
 postsubmits:
   kyma-project/helm-broker:

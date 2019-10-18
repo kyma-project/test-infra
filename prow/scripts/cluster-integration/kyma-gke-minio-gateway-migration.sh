@@ -49,6 +49,17 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
+if [[ "${MINIO_GATEWAY_MODE}" = "gcs" ]]; then
+    # shellcheck disable=SC1090
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/minio/gcs-gateway.sh"
+elif [[ "${MINIO_GATEWAY_MODE}" = "azure" ]]; then
+    # shellcheck disable=SC1090
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/minio/azure-gateway.sh"
+else
+    shout "Not supported Minio Gateway mode - ${MINIO_GATEWAY_MODE}"
+    exit 1
+fi
+
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -86,10 +97,6 @@ cleanup() {
         shout "Delete orphaned PVC disks..."
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-
-        shout "Delete Buckets"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-buckets.sh"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
@@ -115,6 +122,8 @@ cleanup() {
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh -project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
     fi
+
+    afterTest
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -145,6 +154,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     readonly COMMON_NAME_PREFIX="gke-minio-min-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    readonly AZURE_STORAGE_ACCOUNT_NAME=$(echo "mimpr${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gke-minio-mig-rel"
@@ -152,6 +162,7 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    readonly AZURE_STORAGE_ACCOUNT_NAME=$(echo "mimrel${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gke-minio-min-commit"
@@ -159,8 +170,11 @@ else
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
+    readonly AZURE_STORAGE_ACCOUNT_NAME=$(echo "mim${COMMIT_ID}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 fi
+export AZURE_STORAGE_ACCOUNT_NAME
 
+beforeTest
 
 ### Cluster name must be less than 40 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -339,20 +353,8 @@ upload_sample_file_to_minio "${PUBLIC_BUCKET}" sampledir/sample
 upload_sample_file_to_minio "${PRIVATE_BUCKET}" sample
 upload_sample_file_to_minio "${PRIVATE_BUCKET}" sampledir/sample
 
-# switch to minIO GCS gateway mode
-ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
-
-kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"
-kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
-    --data "minio.persistence.enabled=false" \
-    --data "minio.gcsgateway.enabled=true" \
-    --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
-    --data "minio.DeploymentUpdate.type=RollingUpdate" \
-    --data "minio.DeploymentUpdate.maxSurge=0" \
-    --data "minio.DeploymentUpdate.maxUnavailable=50%" \
-    --label "component=assetstore"
+# switch to minIO gateway mode
+installOverrides
 
 # trigger installation
 shout "Minio gateway GCP update triggered"
@@ -395,7 +397,7 @@ download_sample_file_from_minio "${PRIVATE_BUCKET}" sampledir/sample
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+"${KYMA_SCRIPTS_DIR}"/testing.sh --test-name assetstore --test-namespace kyma-system
 
 shout "Success"
 

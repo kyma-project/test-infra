@@ -1,13 +1,5 @@
-# DO NOT EDIT. THIS FILE IS GENERATED
-
----
 dekiel_test_infra_ref: &dekiel_test_infra_ref
   org: dekiel
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
-kk_test_infra_ref: &kk_test_infra_ref
-  org: kasiakepka
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
@@ -40,6 +32,22 @@ vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
+
+presets:
+  - labels:
+      preset-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+  - labels:
+      preset-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: kyma-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
 
 gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   skip_report: false
@@ -179,33 +187,6 @@ gke_central_job_template: &gke_central_job_template
             memory: 200Mi
             cpu: 80m
 
-gke_xip_upgrade_job_template: &gke_xip_upgrade_job_template
-  skip_report: true
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-a"
-          - name: REPO_OWNER
-            value: "kyma-project"
-          - name: REPO_NAME
-            value: "kyma"
-        args:
-          - "-c"
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-xip.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
 gke_backup_job_template: &gke_backup_job_template
   skip_report: false
   decorate: true
@@ -270,20 +251,93 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-    - name: pre-master-kyma-gke-minio-gateway
+    - name: pre-master-kyma-gke-minio-gcs-gateway
       branches:
         - ^master$
       <<: *gke_minio_gateway_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: false
+      optional: true
       labels:
         preset-build-pr: "true"
+        preset-minio-gcs-gateway: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range .Global.releases }}
+    - name: pre-master-kyma-gke-minio-az-gateway
+      branches:
+        - ^master$
+      <<: *gke_minio_gateway_job_template
+      run_if_changed: "^(resources\\/assetstore|installation)"
+      optional: true
+      labels:
+        preset-build-pr: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+{{- range (matchingReleases .Global.releases "1.6" nil) }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-gcs-gateway
+      branches:
+        - release-{{ . }}
+      always_run: false
+      <<: *gke_minio_gateway_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-gcs-gateway: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-az-gateway
+      branches:
+        - release-{{ . }}
+      always_run: false
+      <<: *gke_minio_gateway_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-gcs-gateway-migration
+      branches:
+        - release-{{ . }}
+      always_run: false
+      <<: *gke_minio_gateway_migration_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-gcs-gateway: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-az-gateway-migration
+      branches:
+        - release-{{ . }}
+      always_run: false
+      <<: *gke_minio_gateway_migration_job_template
+      optional: false
+      labels:
+        preset-build-release: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+
+{{- range (matchingReleases .Global.releases nil "1.5") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-gateway
       branches:
         - release-{{ . }}
@@ -298,20 +352,36 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-    - name: pre-master-kyma-gke-minio-gateway-migration
+    - name: pre-master-kyma-gke-minio-gcs-gateway-migration
       branches:
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
       run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: false
+      optional: true
       labels:
         preset-build-pr: "true"
+        preset-minio-gcs-gateway: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range (matchingReleases .Global.releases "1.3" nil) }}
+    - name: pre-master-kyma-gke-minio-az-gateway-migration
+      branches:
+        - ^master$
+      <<: *gke_minio_gateway_migration_job_template
+      run_if_changed: "^(resources\\/assetstore|installation)"
+      optional: true
+      labels:
+        preset-build-pr: "true"
+        preset-minio-az-gateway: "true"
+        preset-creds-aks-kyma-integration: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+{{- range (matchingReleases .Global.releases "1.3" "1.5") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-gateway-migration
       branches:
         - release-{{ . }}
@@ -451,54 +521,6 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-{{ . }}
 {{- end }}
-    - name: kk-gke-nightly
-      labels:
-        preset-kyma-keyring: "true"
-        preset-kyma-encryption-key: "true"
-        preset-build-master: "true"
-        preset-stability-checker-slack-notifications: "false"
-        preset-nightly-github-integration: "true"
-        preset-kms-gc-project-env: "true"
-        <<: *gke_job_labels_template
-      decorate: true
-      optional: true
-      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
-      extra_refs:
-        - <<: *kk_test_infra_ref
-          base_ref: kk-fix-nightly
-        - <<: *kyma_ref
-          base_ref: master
-      spec:
-        volumes:
-          - name: sa-stability-fluentd-storage-writer
-            secret:
-              secretName: sa-stability-fluentd-storage-writer
-        containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-            securityContext:
-              privileged: true
-            volumeMounts:
-              - name: sa-stability-fluentd-storage-writer
-                mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                readOnly: true
-            command:
-              - "bash"
-            env:
-              - name: INPUT_CLUSTER_NAME
-                value: "kk-nightly"
-              - name: TEST_RESULT_WINDOW_TIME
-                value: "6h"
-              - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-                value: "cluster-access"
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kk-gke-long-lasting.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
 
 postsubmits:
   kyma-project/kyma:
@@ -549,20 +571,6 @@ postsubmits:
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
-  - name: periodic-kyma-xip-gke-upgrade
-    cron: "30 */2 * * *" # "every 2 hours"
-    <<: *gke_xip_upgrade_job_template
-    labels:
-      preset-build-master: "true"
-      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
-      <<: *gke_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - org: kyma-project
-        repo: kyma
-        base_ref: master
-        path_alias: github.com/kyma-project/kyma
 
   - name: utilities-kyma-integration-cleaner
     cron: "30 * * * *" # "At 30 minutes past every hour"
@@ -572,6 +580,27 @@ periodics:
     spec:
       containers:
         - image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 50m
+  - name: orphaned-az-storage-accounts-cleaner
+    cron: "00 00 * * *" # "At 00:00 each day"
+    labels:
+      preset-creds-aks-kyma-integration: "true"
+      preset-minio-az-gateway: "true"
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "prow/scripts/cluster-integration/minio/azure-cleaner.sh"
           resources:
             requests:
               memory: 100Mi
@@ -634,7 +663,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,service-catalog-crd-periodic"
+            - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
           resources:
             requests:
               memory: 1Gi
@@ -979,7 +1008,6 @@ periodics:
   - name: kyma-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
-    prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
     labels:
       preset-kyma-wssagent-config: "true"
       preset-kyma-keyring: "true"
@@ -1040,62 +1068,3 @@ periodics:
             requests:
               memory: 1Gi
               cpu: 400m
-
-  - name: kyma-gke-service-catalog-crd-periodic
-    cron: "0 5 * * 2,5" # "At 05:00 on Tuesday and Friday
-    labels:
-      preset-kyma-keyring: "true"
-      preset-kyma-encryption-key: "true"
-      preset-build-master: "true"
-      preset-stability-checker-slack-notifications: "true"
-      preset-service-catalog-crd-periodic-github-integration: "true"
-      preset-kms-gc-project-env: "true"
-      <<: *gke_job_labels_template
-    decorate: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      volumes:
-        - name: sa-stability-fluentd-storage-writer
-          secret:
-            secretName: sa-stability-fluentd-storage-writer
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: sa-stability-fluentd-storage-writer
-              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-              readOnly: true
-          env:
-            - name: INPUT_CLUSTER_NAME
-              value: "service-catalog-crd-periodic"
-            - name: TEST_RESULT_WINDOW_TIME
-              value: "24h"
-            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-gopher-pr"
-            - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-              value: "cluster-access"
-            - name: SERVICE_CATALOG_CRD
-              value: "true"
-            - name: KYMA_ALERTS_SLACK_API_URL
-              valueFrom:
-                secretKeyRef:
-                  name: kyma-alerts-slack-api-url
-                  key: secret
-            - name: KYMA_ALERTS_CHANNEL
-              value: "#not-exists"
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-b"
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m

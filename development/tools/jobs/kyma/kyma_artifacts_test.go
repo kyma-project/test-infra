@@ -2,6 +2,7 @@ package kyma
 
 import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -20,7 +21,7 @@ func TestKymaArtifactsReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, "preset-sa-kyma-artifacts", "preset-kyma-artifacts-bucket")
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, "preset-sa-kyma-artifacts", "preset-kyma-artifacts-bucket")
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]

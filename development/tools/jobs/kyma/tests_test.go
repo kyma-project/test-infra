@@ -1,10 +1,11 @@
 package kyma
 
 import (
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
-	"testing"
 )
 
 var tests = []struct {
@@ -20,23 +21,23 @@ var tests = []struct {
 	{path: "application-registry-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "asset-store", image: tester.ImageGolangBuildpack1_11},
 	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions:[]jobsuite.Option{
+		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
 		},
 	},
 	{path: "connection-token-handler-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "connector-service-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "console-backend-service", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions:[]jobsuite.Option{
+		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
+			jobsuite.Until(releases.Release15),
 		},
 	},
 	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release16),
-			jobsuite.DockerRepositoryPresetSuffix("test-infra"),
-			jobsuite.Optional(),
+			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
 	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11},
@@ -46,24 +47,24 @@ var tests = []struct {
 		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
 	}},
 	{path: "event-bus", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions:[]jobsuite.Option{
+		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
 		},
 	},
 	{path: "integration/api-controller", image: tester.ImageGolangBuildpack1_12,
-		additionalOptions:[]jobsuite.Option{
+		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
 		},
 	},
 	{path: "integration/apiserver-proxy", image: tester.ImageGolangBuildpack1_12,
-		additionalOptions:[]jobsuite.Option{
+		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
 		},
 	},
 	{path: "integration/cluster-users", image: tester.ImageBootstrapLatest},
 	{path: "integration/dex", image: tester.ImageGolangBuildpack1_12},
 	{path: "integration/event-service", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions:[]jobsuite.Option{
+		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
 		},
 	},
@@ -76,14 +77,6 @@ var tests = []struct {
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
-	{path: "logging", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
-		jobsuite.Until(releases.Release13),
-		jobsuite.JobFileSuffix("deprecated"),
-	}},
-	{path: "monitoring", image: tester.ImageGolangBuildpackLatest, additionalOptions: []jobsuite.Option{
-		jobsuite.Until(releases.Release13),
-		jobsuite.JobFileSuffix("deprecated"),
-	}},
 	{path: "test-namespace-controller", image: tester.ImageGolangBuildpackLatest},
 }
 

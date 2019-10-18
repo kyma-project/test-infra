@@ -1,6 +1,7 @@
 package compass_test
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -25,7 +26,7 @@ func TestSchemaMigratorJobPresubmit(t *testing.T) {
 	assert.False(t, actualPre.Optional)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualPre.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPre.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^components/schema-migrator/", actualPre.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPre, "components/schema-migrator/some_random_file.sh")
 	assert.Len(t, actualPre.Spec.Containers, 1)
@@ -46,7 +47,7 @@ func TestSchemaMigratorJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
 	assert.Equal(t, "^components/schema-migrator/", actualPost.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPost, "components/schema-migrator/some_random_file.sh")
 	assert.Len(t, actualPost.Spec.Containers, 1)

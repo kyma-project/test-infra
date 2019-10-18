@@ -1,5 +1,3 @@
-# DO NOT EDIT. THIS FILE IS GENERATED
-
 job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
