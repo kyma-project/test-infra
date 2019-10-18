@@ -111,7 +111,7 @@ func (s GenericComponentSuite) jobConfigPath() string {
 		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, s.componentName(), s.JobsFileSuffix)
 
 	default:
-		log.Fatal("organization not supported: %s", s.Repository)
+		log.Fatalf("organization not supported: %s", s.Repository)
 	}
 
 	return jobConfigPath

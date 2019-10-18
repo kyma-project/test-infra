@@ -16,7 +16,8 @@ var tests = []struct {
 }{
 	{
 		name: "connector-tests",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -25,7 +26,8 @@ var tests = []struct {
 	},
 	{
 		name: "end-to-end",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -34,7 +36,8 @@ var tests = []struct {
 	},
 	{
 		name: "provisioner-tests",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),

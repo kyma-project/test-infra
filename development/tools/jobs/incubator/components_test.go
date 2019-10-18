@@ -16,7 +16,8 @@ var components = []struct {
 }{
 	{
 		name: "connector",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -25,7 +26,8 @@ var components = []struct {
 	},
 	{
 		name: "director",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -34,7 +36,8 @@ var components = []struct {
 	},
 	{
 		name: "gateway",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -43,7 +46,8 @@ var components = []struct {
 	},
 	{
 		name: "healthchecker",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -52,7 +56,8 @@ var components = []struct {
 	},
 	{
 		name: "provisioner",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
@@ -61,7 +66,8 @@ var components = []struct {
 	},
 	{
 		name: "schema-migrator",
-		image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
