@@ -103,3 +103,6 @@ fabric.properties
 /logs-printer
 /stability-checker
 /vendor
+
+/deploy/stability-checker/logs-printer
+/deploy/stability-checker/stability-checker
