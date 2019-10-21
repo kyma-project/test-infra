@@ -92,7 +92,6 @@ templates:
           <<: *kyma_generic_component
           path: components/application-broker
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -171,12 +170,6 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/service-catalog
-          since: "1.7"
-          optional: true
-      - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/kyma-operator
           since: "1.7"
           optional: true
       - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
