@@ -328,7 +328,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/apiserver-proxy
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-test-generic.yaml
+      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/cluster-users
