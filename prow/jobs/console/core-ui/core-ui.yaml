@@ -35,7 +35,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-node:v20191009-19b4b28
+            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
             args:
               - "/home/prow/go/src/github.com/kyma-project/console/core-ui"
       run_if_changed: "^core-ui/"
@@ -56,7 +56,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-node:v20191009-19b4b28
+            image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
             args:
               - "/home/prow/go/src/github.com/kyma-project/console/core-ui"
       run_if_changed: "^core-ui/"

@@ -497,6 +497,10 @@ presubmits: # runs on PRs
           base_ref: release-1.4
 
     - name: pre-master-kyma-gke-upgrade
+      annotations:
+        testgrid-dashboards: kyma-presubmit
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - ^master$
       <<: *gke_upgrade_job_template
@@ -594,7 +598,7 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_backup_job_template
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/backup\\S+|tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^((tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         <<: *gke_backup_job_labels_template
@@ -675,6 +679,10 @@ postsubmits:
 
     - name: post-master-kyma-gke-upgrade
       <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - ^master$
       labels:
@@ -690,6 +698,10 @@ periodics:
 
   - name: utilities-kyma-integration-cleaner
     cron: "30 * * * *" # "At 30 minutes past every hour"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-vm-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -702,6 +714,10 @@ periodics:
               cpu: 50m
   - name: orphaned-az-storage-accounts-cleaner
     cron: "00 00 * * *" # "At 00:00 each day"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-creds-aks-kyma-integration: "true"
       preset-minio-az-gateway: "true"
@@ -723,6 +739,10 @@ periodics:
               cpu: 50m
   - name: orphaned-assetstore-gcp-bucket-cleaner
     cron: "00 00 * * *" # "At 00:00 each day"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -744,6 +764,10 @@ periodics:
               cpu: 400m
   - name: orphaned-disks-cleaner
     cron: "30 * * * *" # "At 30 minutes past every hour"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -765,6 +789,10 @@ periodics:
               cpu: 400m
   - name: orphaned-clusters-cleaner
     cron: "0 * * * *" # "At 0 minute every hour"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -786,6 +814,10 @@ periodics:
               cpu: 400m
   - name: orphaned-vms-cleaner
     cron: "0 * * * *" # "At minute 0 past every hour"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -807,6 +839,10 @@ periodics:
               cpu: 400m
   - name: orphaned-loadbalancer-cleaner
     cron: "15 * * * *" # "At 15 past every hour"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -828,6 +864,10 @@ periodics:
               cpu: 400m
   - name: firewall-cleaner
     cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -849,6 +889,10 @@ periodics:
               cpu: 400m
   - name: orphaned-dns-cleaner
     cron: "30 * * * *" # "At minute 30 past every hour"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -872,6 +916,10 @@ periodics:
 
   - name: kyma-gke-nightly
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    annotations:
+      testgrid-dashboards: kyma-nightly
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
@@ -931,6 +979,10 @@ periodics:
 
   - name: kyma-gke-weekly
     cron: "0 6 * * 1" # "At 06:00 on Monday."
+    annotations:
+      testgrid-dashboards: kyma-weekly
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
@@ -988,6 +1040,10 @@ periodics:
 
   - name: kyma-aks-nightly
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    annotations:
+      testgrid-dashboards: kyma-nightly
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     labels:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
