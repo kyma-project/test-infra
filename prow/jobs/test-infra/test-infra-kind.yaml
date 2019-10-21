@@ -77,6 +77,10 @@ postsubmits:
 periodics:
 - name: kyma-kind-integration
   cron: "00 06 * * *" # "At 06:00 UTC each day"
+  annotations:
+    testgrid-dashboards: kyma-nightly
+    # testgrid-alert-email: email-here@sap.com
+    testgrid-num-failures-to-alert: '1'
   labels:
     <<: *job_labels_template
     prow.kyma-project.io/slack.skipReport: "true"
