@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+	"log"
 	"path"
 	"strings"
 	"testing"
@@ -94,7 +95,26 @@ func (s GenericComponentSuite) repositoryName() string {
 }
 
 func (s GenericComponentSuite) jobConfigPath() string {
-	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
+	// Components outside kyma-project need this switch, because generic job will create for example:
+	// Repository = github.com/kyma-incubator/compass,
+	// will generate path: `kyma-incubator` which is not valid in current state
+	// Current valid path is `incubator`
+	jobConfigPath := ""
+	switch {
+	case strings.Contains(s.Repository, "kyma-project"):
+		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
+
+	case strings.Contains(s.Repository, "kyma-incubator"):
+		repos := path.Dir(s.Repository)
+		org := path.Base(repos)
+		orgPath := strings.Replace(org, "kyma-", "", 1)
+		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, s.componentName(), s.JobsFileSuffix)
+
+	default:
+		log.Fatalf("organization not supported: %s", s.Repository)
+	}
+
+	return jobConfigPath
 }
 
 func (s GenericComponentSuite) repositorySectionKey() string {
@@ -106,11 +126,21 @@ func (s GenericComponentSuite) jobName(prefix string) string {
 }
 
 func (s GenericComponentSuite) moduleName() string {
-	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.Path, "/", "-", -1))
+	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.getPath(), "/", "-", -1))
 }
 
 func (s GenericComponentSuite) workingDirectory() string {
-	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.Path)
+	return fmt.Sprintf("/home/prow/go/src/%s/%s", s.Repository, s.getPath())
+}
+
+func (s GenericComponentSuite) getPath() string {
+	if strings.Contains(s.Repository, "kyma-project") {
+		return s.Path
+	}
+	// Components outside kyma-project need this workaround
+	// Remove first part of Path
+	paths := strings.Split(s.Path, "/")
+	return strings.Join(paths[1:], "/")
 }
 
 func (s GenericComponentSuite) isTestInfra() bool {
