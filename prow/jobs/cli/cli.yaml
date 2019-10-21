@@ -19,9 +19,9 @@ job_template: &job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-        env:
-          - name: GO111MODULE
-            value: "on"
+        # env:
+        #   - name: GO111MODULE
+        #     value: "on"
 
 presubmits: # runs on PRs
   kyma-project/cli:
