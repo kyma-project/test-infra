@@ -32,7 +32,7 @@ presubmits: # runs on PRs
   kyma-incubator/hydroform:
     - name: pre-master-hydroform
       annotations:
-        testgrid-dashboards: hydroform-presubmit
+        testgrid-dashboards: kyma-incubator
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '3'
       always_run: true
@@ -47,7 +47,7 @@ postsubmits:
   kyma-incubator/hydroform:
     - name: post-master-hydroform
       annotations:
-        testgrid-dashboards: hydroform-postsubmit
+        testgrid-dashboards: kyma-incubator
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '3'
       branches:
