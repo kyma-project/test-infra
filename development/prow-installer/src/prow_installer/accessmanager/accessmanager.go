@@ -8,74 +8,77 @@ import (
 	"google.golang.org/api/iam/v1"
 	"google.golang.org/api/option"
 	"log"
+	"prow_installer/installer"
 	"strings"
 )
 
 type AccessManager struct {
 	credentialsFile string
-	project         string
-	prefix          string
 
-	SaAccounts *saAccountsManager
-	Policies   *policiesManager
+	IAM *iamManager
+	Projects   *projectsManager
 }
 
-type saAccountsManager struct {
+type iamManager struct {
 	accessmanager *AccessManager
 	iamservice    *iam.Service
 }
 
-type policiesManager struct {
+type projectsManager struct {
 	accessmanager               *AccessManager
 	cloudresourcemanagerservice *cloudresourcemanager.Service
+	Projects                    map[string]*Project
+}
+
+type Project struct {
+	projectsManager             *projectsManager
+	gkeProject                  *cloudresourcemanager.Project
 	Bindings                    map[string]*cloudresourcemanager.Binding
 	Policy                      *cloudresourcemanager.Policy
 }
 
-func NewAccessManager(credentialsfile string, project string, prefix string) *AccessManager {
-	accessmanager := &AccessManager{credentialsFile: credentialsfile, project: project, prefix: prefix}
+func NewAccessManager(credentialsfile string) *AccessManager {
+	accessmanager := &AccessManager{credentialsFile: credentialsfile}
 
-	accessmanager.SaAccounts = accessmanager.newSaAccountsService()
-	accessmanager.Policies = accessmanager.newPoliciesService()
+	accessmanager.IAM = accessmanager.newIAMService()
+	accessmanager.Projects = accessmanager.newProjectsService()
 
 	return accessmanager
 }
 
-func (accessmanager *AccessManager) newSaAccountsService() *saAccountsManager {
-	saaccountsmanager := &saAccountsManager{accessmanager: accessmanager}
+func (accessmanager *AccessManager) newIAMService() *iamManager {
+	iammanager := &iamManager{accessmanager: accessmanager}
 	ctx := context.Background()
-	iamservice, err := iam.NewService(ctx, option.WithCredentialsFile(saaccountsmanager.accessmanager.credentialsFile))
+	iamservice, err := iam.NewService(ctx, option.WithCredentialsFile(iammanager.accessmanager.credentialsFile))
 	if err != nil {
 		log.Fatalf("Error %v when creating new IAM service.", err)
 	} else {
-		saaccountsmanager.iamservice = iamservice
+		iammanager.iamservice = iamservice
 	}
-	return saaccountsmanager
+	return iammanager
 }
 
-func (accessmanager *AccessManager) newPoliciesService() *policiesManager {
-	policiesmanager := &policiesManager{accessmanager: accessmanager}
+func (accessmanager *AccessManager) newProjectsService() *projectsManager {
+	projectsmanager := &projectsManager{accessmanager: accessmanager}
+	projectsmanager.Projects = make(map[string]*Project)
 	ctx := context.Background()
-	cloudresourcemanagerService, err := cloudresourcemanager.NewService(ctx, option.WithCredentialsFile(policiesmanager.accessmanager.credentialsFile))
+	cloudresourcemanagerService, err := cloudresourcemanager.NewService(ctx, option.WithCredentialsFile(projectsmanager.accessmanager.credentialsFile))
 	if err != nil {
 		log.Fatalf("Error %v when creating new cloudresourcemanager service.", err)
 	} else {
-		policiesmanager.cloudresourcemanagerservice = cloudresourcemanagerService
+		projectsmanager.cloudresourcemanagerservice = cloudresourcemanagerService
 	}
-	return policiesmanager
+	return projectsmanager
 }
 
-func (saaccountsmanager *saAccountsManager) CreateSAAccount(accounts) *iam.ServiceAccount {
+func (iammanager *iamManager) CreateSAAccount(name string, projectname string) *iam.ServiceAccount {
 	ctx := context.Background()
-	if saaccountsmanager.accessmanager.prefix != "" {
-		name = fmt.Sprintf("%s-%s", saaccountsmanager.accessmanager.prefix, name)
-	}
 	name = fmt.Sprintf("%.30s", name)
-	projectName := fmt.Sprintf("projects/%s", saaccountsmanager.accessmanager.project)
+	projectName := fmt.Sprintf("projects/%s", projectname)
 	createsaaccountrequest := iam.CreateServiceAccountRequest{
 		AccountId: name,
 	}
-	sa, err := saaccountsmanager.iamservice.Projects.ServiceAccounts.Create(projectName, &createsaaccountrequest).Context(ctx).Do()
+	sa, err := iammanager.iamservice.Projects.ServiceAccounts.Create(projectName, &createsaaccountrequest).Context(ctx).Do()
 	if err != nil && !googleapi.IsNotModified(err) {
 		log.Printf("Error %v when creating new service account.", err)
 	} else {
@@ -84,20 +87,73 @@ func (saaccountsmanager *saAccountsManager) CreateSAAccount(accounts) *iam.Servi
 	return sa
 }
 
-func (policiesmanager *policiesManager) GetProjectPolicy() {
-	policiesmanager.Bindings = make(map[string]*cloudresourcemanager.Binding)
-	iampolicyrequest := new(cloudresourcemanager.GetIamPolicyRequest)
-	projectpolicy, err := policiesmanager.cloudresourcemanagerservice.Projects.GetIamPolicy(policiesmanager.accessmanager.project, iampolicyrequest).Do()
-	if err != nil && !googleapi.IsNotModified(err) {
-		log.Fatalf("Error %v when getting %s project policy.", err, policiesmanager.accessmanager.project)
-	}
-	policiesmanager.Policy = projectpolicy
-	for _, binding := range policiesmanager.Policy.Bindings {
-		rolename := strings.TrimPrefix(binding.Role, "roles/")
-		policiesmanager.Bindings[rolename] = binding
+func (projectsmanager *projectsManager) getProject (projectname string) {
+	ctx := context.Background()
+	project, err := projectsmanager.cloudresourcemanagerservice.Projects.Get(projectname).Context(ctx).Do()
+	if err != nil {
+		log.Fatalf("Error %v when geting %s project details.", err, projectname)
+	} else {
+		projectsmanager.Projects[projectname] = &Project{projectsManager: projectsmanager}
+		projectsmanager.Projects[projectname].gkeProject = project
 	}
 }
 
-func SetSARoles(projectPolicy *cloudresourcemanager.Policy) (projectPolicy *cloudresourcemanager.Policy) {
+func (projectsmanager *projectsManager) GetProjectPolicy(projectname string) {
+	if _, present := projectsmanager.Projects[projectname]; !present {
+		projectsmanager.getProject(projectname)
+	}
+	projectsmanager.Projects[projectname].getPolicy()
+}
 
+func (project *Project) getPolicy() {
+	project.Bindings = make(map[string]*cloudresourcemanager.Binding)
+	iampolicyrequest := new(cloudresourcemanager.GetIamPolicyRequest)
+	projectpolicy, err := project.projectsManager.cloudresourcemanagerservice.Projects.GetIamPolicy(project.gkeProject.Name, iampolicyrequest).Do()
+	if err != nil && !googleapi.IsNotModified(err) {
+		log.Fatalf("Error %v when getting %s project policy.", err, project.gkeProject.Name)
+	}
+	project.Policy = projectpolicy
+	for _, binding := range project.Policy.Bindings {
+		rolename := strings.TrimPrefix(binding.Role, "roles/")
+		if _, ok := project.Bindings[rolename]; ok {
+			log.Fatalf("Binding for role %s already exist. Check if there are multiple bindings with conditions for this role.", rolename)
+		} else {
+			project.Bindings[rolename] = binding
+		}
+	}
+}
+
+func (projectsmanager *projectsManager) AssignRoles (projectname string, accounts []installer.Account) {
+	for _, account := range accounts {
+		var accountfqdn string
+		if account.Type == "serviceAccount" {
+			accountfqdn = fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", account.Name, projectname)
+		} else if account.Type == "user" {
+			accountfqdn = fmt.Sprintf("user:%s@sap.com", account.Name)
+
+		if _, exist := projectsmanager.Projects[projectname].Policy; exist {
+			for _, role := range account.Roles {
+				if _, ok := projectsmanager.Projects[projectname].Bindings[role]; ok {
+					projectsmanager.Projects[projectname].Bindings[role].Members = append(projectsmanager.Projects[projectname].Bindings[role].Members, accountfqdn)
+				} else {
+					bindingrole := fmt.Sprintf("roles/%s", role)
+					projectsmanager.Projects[projectname].Bindings[role] = &cloudresourcemanager.Binding{Role: bindingrole, Members: []string{accountfqdn}}
+				}
+			}
+		}
+	}
+	//TODO: Move this to separate function and call it from here.
+	var bindings []*cloudresourcemanager.Binding
+	for _, value := range projectsmanager.Projects[projectname].Bindings{
+		bindings = append(bindings, value)
+		projectsmanager.Projects[projectname].Policy.Bindings = bindings
+	}
+	ctx := context.Background()
+	setiampolicyrequest := cloudresourcemanager.SetIamPolicyRequest{
+		Policy: projectsmanager.Projects[projectname].Policy,
+	}
+	_, err := projectsmanager.cloudresourcemanagerservice.Projects.SetIamPolicy(projectname, setiampolicyrequest).Context(ctx).Do()
+	if err != nil {
+		log.Fatalf("Error %v when updating %s project policy.", err, projectname)
+	}
 }

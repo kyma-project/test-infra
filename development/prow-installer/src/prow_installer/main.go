@@ -2,9 +2,15 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"prow_installer/accessmanager"
+	"prow_installer/installer"
+)
+
+var (
+	config          = flag.String("config", "", "Config file path [Required]")
+	credentialsfile = flag.String("credentialsfile", "", "Google Application Credentials file path [Required]")
+	prefix          = flag.String("prefix", "", "Prefix for naming resources [Optional]")
 )
 
 func main() {
@@ -18,16 +24,15 @@ func main() {
 		log.Fatalf("Missing required argument : -credentialsfile")
 	}
 
-	var InstallerConfig installerConfig
-	_ = getInstallerConfig(*config, &InstallerConfig)
+	var InstallerConfig installer.InstallerConfig
+	InstallerConfig.ReadConfig(*config)
 
-	AccessManager := accessmanager.NewAccessManager(*credentialsfile, InstallerConfig.Project, *prefix)
+	AccessManager := accessmanager.NewAccessManager(*credentialsfile)
 
 	for _, account := range InstallerConfig.ServiceAccounts {
-		_ = AccessManager.SaAccounts.CreateSAAccount(account.Name)
+		_ = AccessManager.IAM.CreateSAAccount(account.Name, InstallerConfig.Project)
 	}
-	AccessManager.Policies.GetProjectPolicy()
-	for k, v := range AccessManager.Policies.Bindings {
-		fmt.Printf("key[%s] value[%s]\n", k, v.Members)
-	}
+	AccessManager.Projects.GetProjectPolicy(InstallerConfig.Project)
+	log.Printf("%+v", AccessManager.Projects.Projects[InstallerConfig.Project].Policy)
+	//AccessManager.Projects.AssignRoles(InstallerConfig.Project, InstallerConfig.ServiceAccounts)
 }

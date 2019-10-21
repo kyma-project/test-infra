@@ -1,22 +1,14 @@
 package installer
 
 import (
-	"flag"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
-	"prow_installer/accessmanager"
-)
-
-var (
-	config          = flag.String("config", "", "Config file path [Required]")
-	credentialsfile = flag.String("credentialsfile", "", "Google Application Credentials file path [Required]")
-	prefix          = flag.String("prefix", "", "Prefix for naming resources [Optional]")
 )
 
 //Configuration for prow installer.
-type installerConfig struct {
+type InstallerConfig struct {
 	ClusterName       string          `yaml:"cluster_name"`
 	Oauth             string          `yaml:"oauth"`
 	Project           string          `yaml:"project"`
@@ -26,33 +18,41 @@ type installerConfig struct {
 	KeyringName       string          `yaml:"keyring_name"`
 	EncryptionKeyName string          `yaml:"encryption_key_name"`
 	Kubeconfig        string          `yaml:"kubeconfig,omitempty"`
-	ServiceAccounts   serviceAccounts `yaml:"serviceAccounts"`
-	GenericSecrets    genericSecrets  `yaml:"generics,flow,omitempty"`
+	Prefix            string          `yaml:"prefix,omitempty"`
+	ServiceAccounts   []Account       `yaml:"serviceAccounts"`
+	GenericSecrets    []GenericSecret `yaml:"generics,flow,omitempty"`
 }
 
-type serviceAccounts []serviceAccount
+//type Accounts []Account
 
-type serviceAccount struct {
+//TODO: Should this be moved to accessmanager package and imported here? As methods from accessmanager pacakge expect this type as argument.
+type Account struct {
 	Name  string   `yaml:"name"`
-	Roles []string `yaml:"roles"`
+	Type  string   `yaml:"type"`
+	Roles []string `yaml:"roles,omitempty"`
 }
 
-type genericSecrets []genericSecret
+//type GenericSecrets []GenericSecret
 
-type genericSecret struct {
+type GenericSecret struct {
 	Name string `yaml:"prefix"`
 	Key  string `yaml:"key"`
 }
 
 //Get installer configuration from yaml file.
-func getInstallerConfig(configFilePath string, config *installerConfig) *installerConfig {
+func (installerconfig *InstallerConfig) ReadConfig(configFilePath string) {
 	configfile, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
 		log.Printf("Error %v when reading file %s", err, configFilePath)
 	}
-	err = yaml.Unmarshal(configfile, config)
+	err = yaml.Unmarshal(configfile, &installerconfig)
 	if err != nil {
 		log.Fatalf("Error %v when unmarshalling yaml file.", err)
 	}
-	return config
+	for i, account := range installerconfig.ServiceAccounts {
+		//TODO: add validation of Type property of Account type.
+		if installerconfig.Prefix != "" {
+			installerconfig.ServiceAccounts[i].Name = fmt.Sprintf("%s-%s", installerconfig.Prefix, account.Name)
+		}
+	}
 }
