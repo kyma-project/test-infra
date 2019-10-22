@@ -67,7 +67,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/helm-broker/helm-broker.yaml")
 	require.NoError(t, err)
-	assert.Len(t, jobConfig.Postsubmits, 1)
+	assert.Len(t, jobConfig.Postsubmits, 2)
 
 	kymaPost, ex := jobConfig.Postsubmits["kyma-project/helm-broker"]
 	assert.True(t, ex)
