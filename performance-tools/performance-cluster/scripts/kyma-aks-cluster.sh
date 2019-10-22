@@ -33,7 +33,14 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE GOOGLE_APPLICATION_CREDENTIALS DOCKER_IN_DOCKER_ENABLED ACTION; do
+if [ -f "../../prow/scripts/cluster-integration/helpers/aks-library.sh" ]; then
+    source "../../prow/scripts/cluster-integration/helpers/aks-library.sh"
+else
+    echo "File 'aks-library.sh' can't be found."
+    exit 1;
+fi
+
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY RS_GROUP REGION DOCKER_IN_DOCKER_ENABLED ACTION; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -56,14 +63,12 @@ fi
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-if [[ ! -f "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/aks-library.sh" ]];
+if [[ ! -f "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/aks-library.sh" ]]; then
     echo "File 'aks-library.sh' can't be found."
     exit 1; 
-then
+fi
 
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+export RS_GROUP="${RS_GROUP}"
 export BUILD_TYPE="master"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
@@ -88,7 +93,7 @@ date
 init
 
 shout "Authenticating"
-azureAuthenticating
+azureAuthentication
 
 function cleanup() {
     shout "Cleanup"
