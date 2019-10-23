@@ -3,6 +3,8 @@ package kymacli_test
 import (
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,16 +18,16 @@ func TestKymaCliJobRelease(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "rel-kyma-cli"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "1.1.1")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "1.1.1")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "2.1.1-rc1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "2.1.1-rc1")
 	require.NotNil(t, actualPost)
 
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildRelease, tester.PresetBotGithubToken)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.BuildRelease, preset.BotGithubToken)
 }
 
 func TestKymaCliJobPresubmit(t *testing.T) {
@@ -35,7 +37,7 @@ func TestKymaCliJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-kyma-cli"
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/cli"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -44,8 +46,10 @@ func TestKymaCliJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr)
-	assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPresubmit.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr)
+	assert.Equal(t, tester.ImageGolangToolboxLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/cli"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -57,9 +61,9 @@ func TestKymaCliJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-kyma-cli"
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "master")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/cli"], expName, "release-1.1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/cli"], expName, "release-1.1")
 	require.NotNil(t, actualPost)
 
 	require.NotNil(t, actualPost)
@@ -68,8 +72,10 @@ func TestKymaCliJobPostsubmit(t *testing.T) {
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, "github.com/kyma-project/cli", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetBuildMaster)
-	assert.Equal(t, tester.ImageGolangBuildpack1_11, actualPost.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.BuildMaster)
+	assert.Equal(t, tester.ImageGolangToolboxLatest, actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, "GO111MODULE", actualPost.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, "on", actualPost.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/cli"}, actualPost.Spec.Containers[0].Args)
 }

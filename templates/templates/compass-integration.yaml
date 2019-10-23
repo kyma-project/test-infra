@@ -1,0 +1,76 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+cli_ref: &cli_ref
+  org: kyma-project
+  repo: cli
+  path_alias: github.com/kyma-project/cli
+  base_ref: master
+
+vm_job_template: &vm_job_template
+  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
+  decorate: true
+  path_alias: github.com/kyma-incubator/compass
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
+      env:
+      - name: GO111MODULE
+        value: "on"
+
+vm_job_labels_template: &vm_job_labels_template
+  preset-kyma-guard-bot-github-token: "true"
+  preset-sa-vm-kyma-integration: "true"
+  preset-gc-project-env: "true"
+
+presubmits: # runs on PRs
+  kyma-incubator/compass:
+  - name: pre-master-compass-integration
+    branches:
+    - ^master$
+    <<: *vm_job_template
+    run_if_changed: "^(chart|installation)/"
+    labels:
+      preset-build-pr: "true"
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *cli_ref
+
+{{- range (matchingReleases .Global.releases "1.3" "1.4") }}
+  - name: pre-rel{{ . | replace "." "" }}-compass-integration
+    branches:
+    - release-{{ . }}
+    always_run: false
+    <<: *vm_job_template
+    labels:
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: release-{{ . }}
+    - <<: *cli_ref
+{{- end }}
+
+postsubmits:
+  kyma-incubator/compass:
+  - name: post-master-compass-integration
+    <<: *vm_job_template
+    branches:
+    - ^master$
+    labels:
+      preset-build-master: "true"
+      <<: *vm_job_labels_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *cli_ref

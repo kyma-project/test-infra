@@ -25,7 +25,7 @@
         "y": 0
       },
       "id": 14,
-      "title": "Success rate (24H)",
+      "title": "Success rate",
       "type": "row"
     },
     {
@@ -468,6 +468,283 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 20,
+      "panels": [],
+      "title": "Services and Endpoints",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Show number of prow services present on a kubernetes cluster.",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 21,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "kube_service_info{service=\"deck\", namespace=\"default\"}",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "deck",
+          "refId": "A"
+        },
+        {
+          "expr": "kube_service_info{service=\"gcsweb\", namespace=\"default\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "gcsweb",
+          "refId": "B"
+        },
+        {
+          "expr": "kube_service_info{service=\"ghproxy\", namespace=\"default\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "ghproxy",
+          "refId": "C"
+        },
+        {
+          "expr": "kube_service_info{service=\"hook\", namespace=\"default\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "hook",
+          "refId": "D"
+        },
+        {
+          "expr": "kube_service_info{service=\"pushgateway\", namespace=\"default\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "pushgateway",
+          "refId": "E"
+        },
+        {
+          "expr": "kube_service_info{service=\"tide\", namespace=\"default\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "tide",
+          "refId": "F"
+        },
+        {
+          "expr": "kube_service_info{service=\"prow-addons-controller-manager-service\", namespace=\"default\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "prow-addons-controller-manager-service",
+          "refId": "G"
+        },
+        {
+          "expr": "kube_service_info{service=\"ingress-nginx\", namespace=\"ingress-nginx\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "ingress-nginx",
+          "refId": "H"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Prow service availability",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 22,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"deck\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "deck_endpoints",
+          "refId": "A"
+        },
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"gcsweb\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "gcsweb_endpoints",
+          "refId": "B"
+        },
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"ghproxy\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "ghproxy_endpoints",
+          "refId": "C"
+        },
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"hook\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "hook_endpoints",
+          "refId": "D"
+        },
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"pushgateway\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "pushgateway_endpoints",
+          "refId": "E"
+        },
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"tide\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "tide_endpoints",
+          "refId": "F"
+        },
+        {
+          "expr": "kube_endpoint_address_available{endpoint=\"ingress-nginx\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "ingress-nginx_endpoints",
+          "refId": "G"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Prow endpoints count",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "endpoints_count",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "10s",
@@ -506,8 +783,9 @@
       "30d"
     ]
   },
+
   "timezone": "",
   "title": "Prow",
   "uid": "rzdkVLPik",
-  "version": 1
+  "version": 3
 }

@@ -3,6 +3,8 @@ package compass_test
 import (
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -10,38 +12,10 @@ import (
 
 const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/compass/compass-integration.yaml"
 
-func TestCompassIntegrationVMJobsReleases(t *testing.T) {
-	// WHEN
-	unsupportedReleases := []tester.SupportedRelease{tester.Release12}
-
-	for _, currentRelease := range tester.GetKymaReleaseBranchesBesides(unsupportedReleases) {
-		t.Run(currentRelease, func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig(compassIntegrationTestJobPath)
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tester.GetReleaseJobName("compass-integration", currentRelease), currentRelease)
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-incubator/compass", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease)
-			tester.AssertThatHasExtraRefs(t, actualPresubmit.JobBase.UtilityConfig, []string{"cli"})
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
-			assert.False(t, actualPresubmit.AlwaysRun)
-			assert.Len(t, actualPresubmit.Spec.Containers, 1)
-			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaClusterInfra20190528, testContainer.Image)
-			assert.Len(t, testContainer.Command, 1)
-			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh", testContainer.Command[0])
-			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-		})
-	}
-}
-
 func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName            string
-		expPresets              []tester.Preset
+		expPresets              []preset.Preset
 		expRunIfChangedRegex    string
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
@@ -49,8 +23,8 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 		"Should contain the compass-integration job": {
 			givenJobName: "pre-master-compass-integration",
 
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, tester.PresetBuildPr, "preset-sa-vm-kyma-integration",
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
 			},
 
 			expRunIfChangedRegex: "^(chart|installation)/",
@@ -75,7 +49,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/compass"], tc.givenJobName, "master")
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/compass"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -90,7 +64,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
-			assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
+			assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
 				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
@@ -105,13 +79,13 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
-		expPresets   []tester.Preset
+		expPresets   []preset.Preset
 	}{
 		"Should contain the compass-integration job": {
 			givenJobName: "post-master-compass-integration",
 
-			expPresets: []tester.Preset{
-				tester.PresetGCProjectEnv, tester.PresetKymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
 	}
@@ -123,7 +97,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/compass"], tc.givenJobName, "master")
+			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/compass"], tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -138,7 +112,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 			// the job specific expectation
-			assert.Equal(t, tester.ImageKymaClusterInfra20190528, actualJob.Spec.Containers[0].Image)
+			assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 		})
 	}

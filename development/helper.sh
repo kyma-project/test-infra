@@ -1,19 +1,39 @@
 #!/bin/bash
 
 # Adjust clustername if you want, this should not collide with any cluster on GKE that already exists
-CLUSTER_NAME=prow-$(whoami)
+if [ -z "${CLUSTER_NAME}" ]; then
+    CLUSTER_NAME=prow-$(whoami)
+fi
+
+#Add check and set for workload cluster.
 
 # temporary secret store location, should be deleted after installing the cluster
 SECRET_FOLDER=.secrets
 
-OAUTH="FILL_ME_IN"
-PROJECT="FILL_ME_IN"
-ZONE="FILL_ME_IN"
-LOCATION="FILL_ME_IN" # key locations for KMS
-BUCKET_NAME="FILL_ME_IN"
-KEYRING_NAME="FILL_ME_IN"
-ENCRYPTION_KEY_NAME="FILL_ME_IN"
-KUBECONFIG="FILL_ME_IN" # e.g. /Users/sample-user/.kube/config
+if [ -z "${OAUTH}" ]; then
+    OAUTH="FILL_ME_IN"
+fi
+if [ -z "${PROJECT}" ]; then
+    PROJECT="FILL_ME_IN"
+fi
+if [ -z "${ZONE}" ]; then
+    ZONE="FILL_ME_IN"
+fi
+if [ -z "${LOCATION}" ]; then
+    LOCATION="FILL_ME_IN" # key locations for KMS
+fi
+if [ -z "${BUCKET_NAME}" ]; then
+    BUCKET_NAME="FILL_ME_IN"
+fi
+if [ -z "${KEYRING_NAME}" ]; then
+    KEYRING_NAME="FILL_ME_IN"
+fi
+if [ -z "${ENCRYPTION_KEY_NAME}" ]; then
+    ENCRYPTION_KEY_NAME="FILL_ME_IN"
+fi
+if [ -z "${KUBECONFIG}" ]; then
+    KUBECONFIG="FILL_ME_IN" # e.g. /Users/sample-user/.kube/config
+fi
 
 ####
 #### DO NOT CHANGE ANYTHING BELOW THIS LINE

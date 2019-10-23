@@ -49,7 +49,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 trap cleanupOnError EXIT INT
 
-#!Put cleanup code in this function!
+#!Put cleanup code in this function! Function is executed at !!!exit from the script!!! and on interuption.
 cleanupOnError() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
@@ -88,19 +88,19 @@ cleanupOnError() {
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         shout "Delete Gateway DNS Record"
         date
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         shout "Release Gateway IP Address"
         date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         shout "Delete Apiserver proxy DNS Record"
         date
-        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
     fi
 
 

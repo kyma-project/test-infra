@@ -51,13 +51,13 @@ function cleanup() {
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         shout "Delete Gateway DNS Record"
         date
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         shout "Release Gateway IP Address"
         date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
@@ -253,17 +253,17 @@ function takeBackup() {
 
     sed -i "s/name: kyma-backup/name: ${BACKUP_NAME}/g" "${BACKUP_FILE}"
     kubectl apply -f "${BACKUP_FILE}"
-    sleep 30
+    sleep 45
 
     attempts=3
-    retryTimeInSec="45"
+    retryTimeInSec="30"
     for ((i=1; i<=attempts; i++)); do
         STATUS=$(kubectl get backup "${BACKUP_NAME}" -n kyma-system -o jsonpath='{.status.phase}')
         if [ "${STATUS}" == "Completed" ]; then
             shout "Backup completed"
             break
         elif [ "${STATUS}" == "Failed" ] || [ "${STATUS}" == "FailedValidation" ]; then
-            shout "Backup failed"
+            shout "Backup ${BACKUP_NAME} failed with the status: ${STATUS}"
             exit 1
         fi
         
@@ -295,6 +295,11 @@ function restoreKyma() {
     shout "Install Velero Server"
     date
     velero install --bucket "$BACKUP_RESTORE_BUCKET" --provider "$CLOUD_PROVIDER" --secret-file "$BACKUP_CREDENTIALS" --restore-only --wait
+
+    sleep 15
+
+    echo "Add backup plugins"
+    velero plugin add eu.gcr.io/kyma-project/backup-plugins:PR-6050
 
     sleep 15
 

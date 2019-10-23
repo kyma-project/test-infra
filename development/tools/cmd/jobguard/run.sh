@@ -18,4 +18,5 @@ env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
     JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
     PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
     PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
+    GO111MODULE=off \
     go run main.go

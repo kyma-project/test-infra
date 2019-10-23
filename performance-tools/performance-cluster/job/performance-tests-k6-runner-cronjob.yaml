@@ -131,6 +131,8 @@ spec:
               value: eu.gcr.io/sap-se-kyma-perf
             - name: DOCKER_PUSH_DIRECTORY
               value: /perf
+            - name: CLOUDSDK_DNS_ZONE_NAME
+              value: "build-kyma-workloads"
             - name: DOCKER_IN_DOCKER_ENABLED
               value: "true"
             - name: GOOGLE_APPLICATION_CREDENTIALS

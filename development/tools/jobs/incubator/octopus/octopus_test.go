@@ -3,6 +3,8 @@ package testinfra_test
 import (
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,7 +18,7 @@ func TestOctopusJobsPresubmit(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/octopus"], "pre-master-kyma-incubator-octopus", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/octopus"], "pre-master-kyma-incubator-octopus", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -24,8 +26,10 @@ func TestOctopusJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-incubator/octopus", actualPresubmit.PathAlias)
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildPr)
-	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
+	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/octopus"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -37,14 +41,16 @@ func TestOctopusJobPostsubmit(t *testing.T) {
 	// then
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/octopus"], "post-master-kyma-incubator-octopus", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/octopus"], "post-master-kyma-incubator-octopus", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
 	assert.True(t, actualPostsubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/octopus", actualPostsubmit.PathAlias)
-	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushRepoIncubator, tester.PresetGcrPush, tester.PresetBuildMaster)
-	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
+	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "GO111MODULE", actualPostsubmit.Spec.Containers[0].Env[0].Name)
+	assert.Equal(t, "on", actualPostsubmit.Spec.Containers[0].Env[0].Value)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/octopus"}, actualPostsubmit.Spec.Containers[0].Args)
 }

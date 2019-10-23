@@ -3,8 +3,11 @@ package tester
 import (
 	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"github.com/stretchr/testify/require"
 
 	"k8s.io/test-infra/prow/kube"
 
@@ -16,54 +19,7 @@ import (
 	"k8s.io/test-infra/prow/config"
 )
 
-// Preset represents a existing presets
-type Preset string
-
 const (
-	// PresetDindEnabled means docker-in-docker preset
-	PresetDindEnabled Preset = "preset-dind-enabled"
-	// PresetGcrPush means GCR push service account
-	PresetGcrPush Preset = "preset-sa-gcr-push"
-	// PresetDockerPushRepo means Docker repository
-	PresetDockerPushRepo Preset = "preset-docker-push-repository"
-	// PresetDockerPushRepoTestInfra means Docker repository test-infra images
-	PresetDockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
-	// PresetDockerPushRepoIncubator means Decker repository incubator images
-	PresetDockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
-	// PresetDockerPushGlobalRepo means Decker global repository for images
-	PresetDockerPushGlobalRepo Preset = "preset-docker-push-global-repository"
-	// PresetBuildPr means PR environment
-	PresetBuildPr Preset = "preset-build-pr"
-	// PresetBuildMaster means master environment
-	PresetBuildMaster Preset = "preset-build-master"
-	// PresetBuildConsoleMaster means console master environment
-	PresetBuildConsoleMaster Preset = "preset-build-console-master"
-	// PresetBuildRelease means release environment
-	PresetBuildRelease Preset = "preset-build-release"
-	// PresetBotGithubToken means github token
-	PresetBotGithubToken Preset = "preset-bot-github-token"
-	// PresetBotGithubSSH means github ssh
-	PresetBotGithubSSH Preset = "preset-bot-github-ssh"
-	// PresetBotGithubIdentity means github identity
-	PresetBotGithubIdentity Preset = "preset-bot-github-identity"
-	// PresetWebsiteBotGithubToken means github token
-	PresetWebsiteBotGithubToken Preset = "preset-website-bot-github-token"
-	// PresetKymaGuardBotGithubToken represents the Kyma Guard Bot token for GitHub
-	PresetKymaGuardBotGithubToken Preset = "preset-kyma-guard-bot-github-token"
-	// PresetWebsiteBotGithubSSH means github ssh
-	PresetWebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
-	// PresetWebsiteBotGithubIdentity means github identity
-	PresetWebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
-	// PresetWebsiteBotZenHubToken means zenhub token
-	PresetWebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
-	// PresetSaGKEKymaIntegration means access to service account capable of creating clusters and related resources
-	PresetSaGKEKymaIntegration = "preset-sa-gke-kyma-integration"
-	// PresetGCProjectEnv means project name is injected as env variable
-	PresetGCProjectEnv = "preset-gc-project-env"
-	// PresetKymaBackupRestoreBucket means the bucket used for backups and restore in Kyma
-	PresetKymaBackupRestoreBucket = "preset-kyma-backup-restore-bucket"
-	// PresetKymaBackupCredentials means the credentials for the service account
-	PresetKymaBackupCredentials = "preset-kyma-backup-credentials"
 
 	// ImageGolangBuildpackLatest means Golang buildpack image
 	ImageGolangBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd"
@@ -74,21 +30,27 @@ const (
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
 	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190808-77f1475"
-	// ImageNodeBuildpackLatest means Node.js buildpack image
-	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1"
+	// ImageNode10Buildpack means Node.js buildpack image (node v10)
+	ImageNode10Buildpack = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b"
+	// ImageNodeBuildpackLatest means Node.js buildpack image (node v12)
+	ImageNodeBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20191009-19b4b28"
 	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
 	ImageNodeChromiumBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 	// ImageBootstrap20181204 represents boostrap image published on 2018.12.04
 	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+	// ImageBootstrap20190604 represents boostrap image published on 2019.06.04
+	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
 	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
+	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191004-f931536"
 
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
@@ -103,61 +65,8 @@ const (
 	MetadataGovernanceScriptDir = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
 )
 
-// SupportedRelease defines supported releases
-type SupportedRelease = string
-
-// List of currently supported releases
-// Please always make it up to date
-// When we removing support for given version, there remove
-// its entry also here.
-const (
-	Release12 SupportedRelease = "release-1.2"
-	Release13 SupportedRelease = "release-1.3"
-	Release14 SupportedRelease = "release-1.4"
-)
-
-// Release allows you to execute checks on given release
-type Release string
-
-// Matches checks if given releases contains the tested one.
-func (s Release) Matches(rel ...SupportedRelease) bool {
-	if contains(rel, SupportedRelease(s)) {
-		return true
-	}
-
-	return false
-}
-
 type jobRunner interface {
 	RunsAgainstChanges([]string) bool
-}
-
-// GetAllKymaReleaseBranches returns all supported kyma release branches
-func GetAllKymaReleaseBranches() []SupportedRelease {
-	return []SupportedRelease{Release12, Release13, Release14}
-}
-
-// GetKymaReleaseBranchesBesides filters all available releases by given unsupported ones
-func GetKymaReleaseBranchesBesides(absentInReleases []SupportedRelease) []string {
-	var supportedReleases []string
-
-	for _, rel := range GetAllKymaReleaseBranches() {
-		if !contains(absentInReleases, rel) {
-			supportedReleases = append(supportedReleases, rel)
-		}
-	}
-
-	return supportedReleases
-}
-
-func contains(array []SupportedRelease, str SupportedRelease) bool {
-	for _, e := range array {
-		if str == e {
-			return true
-		}
-	}
-
-	return false
 }
 
 // ReadJobConfig reads job configuration from file
@@ -190,8 +99,8 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 	return jobConfig, nil
 }
 
-// FindPresubmitJobByName finds presubmit job by name from provided jobs list
-func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *config.Presubmit {
+// FindPresubmitJobByNameAndBranch finds presubmit job by name from provided jobs list
+func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
 		if job.Name == name && job.RunsAgainstBranch(branch) {
 			return &job
@@ -201,28 +110,42 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name, branch string) *confi
 	return nil
 }
 
-// GetReleaseJobName returns name of release job based on branch name by adding release prefix
-func GetReleaseJobName(moduleName, releaseBranch string) string {
-	rel := strings.Replace(releaseBranch, "release", "rel", -1)
-	rel = strings.Replace(rel, ".", "", -1)
-	rel = strings.Replace(rel, "-", "", -1)
+// FindPresubmitJobByName finds presubmit job by name from provided jobs list
+func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presubmit {
+	for _, job := range jobs {
+		if job.Name == name {
+			return &job
+		}
+	}
 
-	return fmt.Sprintf("pre-%s-%s", rel, moduleName)
+	return nil
+}
+
+// GetReleaseJobName returns name of release job based on branch name by adding release prefix
+func GetReleaseJobName(moduleName string, release *releases.SupportedRelease) string {
+	return fmt.Sprintf("pre-%s-%s", release.JobPrefix(), moduleName)
 }
 
 // GetReleasePostSubmitJobName returns name of postsubmit job based on branch name
-func GetReleasePostSubmitJobName(moduleName, releaseBranch string) string {
-	rel := strings.Replace(releaseBranch, "release", "rel", -1)
-	rel = strings.Replace(rel, ".", "", -1)
-	rel = strings.Replace(rel, "-", "", -1)
-
-	return fmt.Sprintf("post-%s-%s", rel, moduleName)
+func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedRelease) string {
+	return fmt.Sprintf("post-%s-%s", release.JobPrefix(), moduleName)
 }
 
-// FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
-func FindPostsubmitJobByName(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
+// FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
 		if job.Name == name && job.RunsAgainstBranch(branch) {
+			return &job
+		}
+	}
+
+	return nil
+}
+
+// FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
+func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
+	for _, job := range jobs {
+		if job.Name == name {
 			return &job
 		}
 	}
@@ -270,9 +193,9 @@ func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories 
 }
 
 // AssertThatHasPresets checks if JobBase has expected labels
-func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...Preset) {
+func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...preset.Preset) {
 	for _, p := range expected {
-		assert.Equal(t, "true", in.Labels[string(p)], "missing preset [%s]", p)
+		require.Equal(t, "true", in.Labels[string(p)], "missing preset [%v]", p)
 	}
 }
 
@@ -298,6 +221,7 @@ func AssertThatExecGolangBuildpack(t *testing.T, job config.JobBase, img string,
 	assert.Len(t, job.Spec.Containers[0].Command, 1)
 	assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh", job.Spec.Containers[0].Command[0])
 	assert.Equal(t, args, job.Spec.Containers[0].Args)
+	assert.True(t, *job.Spec.Containers[0].SecurityContext.Privileged)
 }
 
 // AssertThatSpecifiesResourceRequests checks if resources requests for memory and cpu are specified
@@ -305,7 +229,6 @@ func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
 	assert.Len(t, job.Spec.Containers, 1)
 	assert.False(t, job.Spec.Containers[0].Resources.Requests.Memory().IsZero())
 	assert.False(t, job.Spec.Containers[0].Resources.Requests.Cpu().IsZero())
-
 }
 
 // AssertThatContainerHasEnv checks if container has specified given environment variable

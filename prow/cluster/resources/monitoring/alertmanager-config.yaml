@@ -1,0 +1,47 @@
+prometheus-operator:
+  alertmanager:
+    config:
+      global:
+        resolve_timeout: 5m
+      receivers:
+      - name: "null"
+      - name: "slack"
+        slack_configs:
+        - channel: {SLACK_CHANNEL}
+          send_resolved: true
+          api_url: {SLACK_URL}
+          text: "<!channel> \nDescription: {{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
+      - name: "prow-slack"
+        slack_configs:
+        - api_url: {SLACK_URL}
+          channel: {SLACK_CHANNEL}
+          send_resolved: true
+          title: "<!channel>\n {{ template \"custom_title\" . }}"
+          text: '{{ template "custom_slack_message" . }}'
+      route:
+        routes:
+        - match:
+            app: prow
+            severity: critical
+            receiver: prow-slack
+      templates:
+        - '*.tmpl'
+    templateFiles:
+      prow-notification.tmpl: |-
+        {{ define "__single_message_title" }}{{ range .Alerts.Firing }}{{ .Labels.alertname }} @ {{ .Annotations.summary }}{{ end }}{{ range .Alerts.Resolved }}{{ .Labels.alertname }} @ {{ .Annotations.summary }}{{ end }}{{ end }}
+
+        {{ define "custom_title" }}[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ if or (and (eq (len .Alerts.Firing) 1) (eq (len .Alerts.Resolved) 0)) (and (eq (len .Alerts.Firing) 0) (eq (len .Alerts.Resolved) 1)) }}{{ template "__single_message_title" . }}{{ end }}{{ end }}
+
+        {{ define "custom_slack_message" }}{{ if or (and (eq (len .Alerts.Firing) 1) (eq (len .Alerts.Resolved) 0)) (and (eq (len .Alerts.Firing) 0) (eq (len .Alerts.Resolved) 1)) }}
+        {{ range .Alerts.Firing }}{{ .Annotations.description }}{{ end }}{{ range .Alerts.Resolved }}{{ .Annotations.description }}{{ end }}
+        {{ else }}
+        {{ if gt (len .Alerts.Firing) 0 }}
+        *Alerts Firing:*
+        {{ range .Alerts.Firing }}- {{ .Annotations.summary }}: {{ .Annotations.description }}
+        {{ end }}{{ end }}
+        {{ if gt (len .Alerts.Resolved) 0 }}
+        *Alerts Resolved:*
+        {{ range .Alerts.Resolved }}- {{ .Annotations.summary }}: {{ .Annotations.description }}
+        {{ end }}{{ end }}
+        {{ end }}
+        {{ end }}

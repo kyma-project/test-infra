@@ -1,0 +1,20 @@
+package releases
+
+// List of currently supported releases
+var (
+	Release{{ .Global.nextRelease | replace "." "" }} = mustParse("{{ .Global.nextRelease }}")
+{{- range .Global.releases }}
+	Release{{ . | replace "." "" }} = mustParse("{{ . }}")
+{{- end }}
+)
+
+// GetAllKymaReleaseBranches returns all supported kyma release branches
+func GetAllKymaReleases() []*SupportedRelease {
+	return []*SupportedRelease{
+{{- range .Global.releases }}
+		Release{{ . | replace "." "" }},
+{{- end }}
+	}
+}
+
+

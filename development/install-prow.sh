@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+######################################
+#THIS SCRIPT IS OUTDATED. DO NOT USE.#
+######################################
 set -o errexit
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

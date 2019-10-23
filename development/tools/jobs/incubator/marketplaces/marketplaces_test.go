@@ -2,6 +2,7 @@ package marketplaces_test
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -16,16 +17,16 @@ func TestMarketplacesJobRelease(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "1.1.1")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "1.1.1")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "2.1.1-rc1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "rel-marketplaces", "2.1.1-rc1")
 	require.NotNil(t, actualPost)
 
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushGlobalRepo, tester.PresetGcrPush, tester.PresetBuildRelease, tester.PresetBotGithubToken)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BuildRelease, preset.BotGithubToken)
 
 }
 
@@ -35,7 +36,7 @@ func TestMarketplacesJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPre := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/marketplaces"], "pre-marketplaces", "master")
+	actualPre := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/marketplaces"], "pre-marketplaces", "master")
 	require.NotNil(t, actualPre)
 
 	assert.Equal(t, 10, actualPre.MaxConcurrency)
@@ -45,7 +46,7 @@ func TestMarketplacesJobPresubmit(t *testing.T) {
 	assert.True(t, actualPre.AlwaysRun)
 	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPre.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPre.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPre.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushGlobalRepo, tester.PresetGcrPush, tester.PresetBuildPr)
+	tester.AssertThatHasPresets(t, actualPre.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BuildPr)
 }
 
 func TestMarketplacesPostsubmit(t *testing.T) {
@@ -53,16 +54,16 @@ func TestMarketplacesPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPost := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "master")
 	require.NotNil(t, actualPost)
-	actualPost = tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "release-1.1")
+	actualPost = tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/marketplaces"], "post-marketplaces", "release-1.1")
 	require.NotNil(t, actualPost)
 
 	assert.True(t, actualPost.Decorate)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, tester.PresetDindEnabled, tester.PresetDockerPushGlobalRepo, tester.PresetGcrPush, tester.PresetBuildMaster)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoGlobal, preset.GcrPush, preset.BuildMaster)
 }
 
 func TestGovernanceJobPresubmit(t *testing.T) {
@@ -72,7 +73,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-marketplaces-governance"
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-incubator/marketplaces"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/marketplaces"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Empty(t, actualPresubmit.Branches)
@@ -81,7 +82,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-incubator/marketplaces", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, tester.PresetBuildPr, tester.PresetDindEnabled)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
@@ -104,7 +105,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
-	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, tester.PresetDindEnabled)
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
 	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "marketplaces"})
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/marketplaces", tester.KymaIncubatorDir)

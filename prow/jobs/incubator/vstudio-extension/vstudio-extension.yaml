@@ -11,8 +11,6 @@ job_template: &job_template
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
-        securityContext:
-          privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
@@ -22,11 +20,6 @@ job_template: &job_template
             memory: 1.5Gi
             cpu: 0.8
 
-job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-incubator: "true"
-
 presubmits: # runs on PRs
   kyma-incubator/vstudio-extension:
     - name: pre-master-vstudio-extension
@@ -35,7 +28,6 @@ presubmits: # runs on PRs
         - ^master$
       <<: *job_template
       labels:
-        <<: *job_labels_template
         preset-build-pr: "true"
 
 postsubmits:
@@ -45,6 +37,5 @@ postsubmits:
         - ^master$
       <<: *job_template
       labels:
-        <<: *job_labels_template
         preset-build-master: "true"
         prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter

@@ -1,0 +1,51 @@
+base_job_template: &base_job_template
+  skip_report: false
+  run_if_changed: "^github-connector"
+  decorate: true
+  path_alias: github.com/kyma-incubator/github-slack-connectors
+  max_concurrency: 10
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
+        resources:
+
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-incubator: "true"
+
+presubmits: # runs on PRs
+  kyma-incubator/github-slack-connectors:
+    - name: pre-master-github-connector
+      branches:
+        - ^master$
+      <<: *base_job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
+
+postsubmits:
+  kyma-incubator/github-slack-connectors:
+    - name: post-master-github-connector
+      branches:
+        - ^master$
+      <<: *base_job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-master: "true"
+        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter

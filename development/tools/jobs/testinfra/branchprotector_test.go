@@ -2,13 +2,13 @@ package testinfra
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
 
 	"github.com/ghodss/yaml"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
@@ -64,7 +64,47 @@ func TestBranchProtection(t *testing.T) {
 func TestBranchProtectionRelease(t *testing.T) {
 	actual := readConfig(t)
 
-	for _, relBranch := range tester.GetAllKymaReleaseBranches() {
+	currentRelease := releases.Release14
+	relBranch := currentRelease.Branch()
+	t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
+		p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)
+		require.NoError(t, err)
+		assert.NotNil(t, p)
+		assert.True(t, *p.Protect)
+		require.NotNil(t, p.RequiredStatusChecks)
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-upgrade", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway-migration", relBranch))
+	})
+
+	currentRelease = releases.Release15
+	relBranch = currentRelease.Branch()
+	t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
+		p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)
+		require.NoError(t, err)
+		assert.NotNil(t, p)
+		assert.True(t, *p.Protect)
+		require.NotNil(t, p.RequiredStatusChecks)
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, "license/cla")
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-upgrade", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-backup", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway", relBranch))
+		assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway-migration", relBranch))
+	})
+
+	for _, currentRelease := range releases.GetKymaReleasesSince(releases.Release16) {
+		relBranch = currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
 			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)
 			require.NoError(t, err)
@@ -75,16 +115,17 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-upgrade", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-backup", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway", relBranch))
-
-			if !tester.Release(relBranch).Matches(tester.Release12) {
-				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gateway-migration", relBranch))
-			}
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway-migration", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway", relBranch))
+			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway-migration", relBranch))
 		})
 	}
+
 }
 
 // status check prefix uses shorten version of release branch, because of that we need to generate the name

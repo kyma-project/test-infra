@@ -1,11 +1,38 @@
 #!/usr/bin/env bash
 
-#Description: This script is responsible for downloading license files for dependencies
+# Description: This script is responsible for downloading license files for dependencies
 
 set -e
 
-readonly TMP_DIR="./.license-puller"
-readonly LICENSES_DIR="./licenses"
+readonly ARGS=("$@")
+readonly CWD=$PWD
+readonly TMP_DIR_NAME=".license-puller"
+readonly TMP_DIR="./${TMP_DIR_NAME}"
+readonly LICENSES_DIR_NAME="licenses"
+readonly LICENSES_DIR="./${LICENSES_DIR_NAME}"
+
+DIRS_TO_PULLING=()
+function read_arguments() {
+    for arg in "${ARGS[@]}"
+    do
+        case $arg in
+            --dirs-to-pulling=*)
+              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
+              shift # remove --dirs-to-pulling=
+            ;;
+            *)
+              # unknown option
+            ;;
+        esac
+    done
+
+    if [ "${#dirs_to_pulling[@]}" -ne 0 ]; then
+        for d in "${dirs_to_pulling[@]}"; do
+            DIRS_TO_PULLING+=($( cd "${CWD}/${d}" && pwd ))
+        done
+    fi
+    readonly DIRS_TO_PULLING
+}
 
 LANGUAGE=
 function init() {
@@ -19,11 +46,21 @@ function init() {
     echo "Will work in '${LANGUAGE}' mode"
 }
 
-# TODO: This is temporary solution for Golang
 function pullGoLicenses() {
-    echo "Pulling licenses for Golang dependencies"
+    if [ "${#DIRS_TO_PULLING[@]}" -ne 0 ]; then
+        for d in "${DIRS_TO_PULLING[@]}"; do
+            ( cd "${d}" && pullGoLicensesByDir ) || true
+        done
+    fi
+    
+    ( cd "${CWD}" && pullGoLicensesByDir ) || true
+}
 
-    echo "Gathering dependencies"
+# TODO: This is temporary solution for Golang
+function pullGoLicensesByDir() {
+    echo "Gathering dependencies for $PWD"
+    
+    mkdir -p "${TMP_DIR}"
     go list -json ./... > "${TMP_DIR}/golang.json"
 
     echo "Downloading license files to '${LICENSES_DIR}'"
@@ -37,12 +74,12 @@ function pullGoLicenses() {
             local outputDir="${LICENSES_DIR}/${repository}"
             mkdir -p "${outputDir}"
 
-            downloadLicense "${outputDir}" "${repository}"
+            downloadGoLicense "${outputDir}" "${repository}"
         done
 }
 
 # TODO: This is temporary solution for Golang
-function downloadLicense() {
+function downloadGoLicense() {
     local output=${1}
     local repository=${2}
     local url="https://${repository/github.com/raw.githubusercontent.com}/master"
@@ -67,13 +104,23 @@ function downloadLicense() {
     fi
 }
 
-function pullNodeLicenses() {
-    echo "Pulling licenses for Node dependencies"
-
-    echo "Installing license-checker"
+function installNodeLicensesChecker() {
+    echo "Installing license-checker for Node mode"
     npm i -g license-checker
+}
 
-    echo "Gathering dependencies"
+function pullNodeLicenses() {
+    if [ "${#DIRS_TO_PULLING[@]}" -ne 0 ]; then
+        for d in "${DIRS_TO_PULLING[@]}"; do
+            ( cd "${d}" && pullNodeLicensesByDir ) || true
+        done
+    fi
+
+    ( cd "${CWD}" && pullNodeLicensesByDir ) || true
+}
+
+function pullNodeLicensesByDir() {
+    echo "Gathering dependencies for $PWD"
     npx license-checker --production --json --direct --out "${TMP_DIR}/node.json"
 
     echo "Copying license files to '${LICENSES_DIR}'"
@@ -91,18 +138,43 @@ function pullNodeLicenses() {
         done
 }
 
+function mergeLicenses() {
+    if [ "${#DIRS_TO_PULLING[@]}" -ne 0 ]; then
+        for d in "${DIRS_TO_PULLING[@]}"; do
+            echo "Merging licenses from ${d} to ${CWD}"
+            cp -R "${d}/${LICENSES_DIR_NAME}/" "${CWD}/${LICENSES_DIR_NAME}/" || true
+        done
+    fi
+}
+
+function removeTempFolders() {
+    if [ "${#DIRS_TO_PULLING[@]}" -ne 0 ]; then
+        for d in "${DIRS_TO_PULLING[@]}"; do
+            rm -rf "${d:?}/${TMP_DIR}" || true
+            rm -rf "${d:?}/${LICENSES_DIR}" || true
+        done
+    fi
+
+    rm -rf "${CWD:?}/${TMP_DIR}" || true
+}
+
 function main() {
+    read_arguments "${ARGS[@]}"
     init
     mkdir -p "${TMP_DIR}"
     mkdir -p "${LICENSES_DIR}"
 
     if [[ ${LANGUAGE} == golang ]]; then
+        echo "Pulling licenses for Golang dependencies"
         pullGoLicenses
     else
+        echo "Pulling licenses for Node dependencies"
+        installNodeLicensesChecker
         pullNodeLicenses
     fi
 
-    rm -rf "${TMP_DIR}"
+    mergeLicenses
+    removeTempFolders
 }
 
 main

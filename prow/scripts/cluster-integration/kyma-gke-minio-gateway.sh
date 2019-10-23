@@ -49,7 +49,18 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-#!Put cleanup code in this function!
+if [[ "${MINIO_GATEWAY_MODE}" = "gcs" ]]; then
+    # shellcheck disable=SC1090
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/minio/gcs-gateway.sh"
+elif [[ "${MINIO_GATEWAY_MODE}" = "azure" ]]; then
+    # shellcheck disable=SC1090
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/minio/azure-gateway.sh"
+else
+    shout "Not supported Minio Gateway mode - ${MINIO_GATEWAY_MODE}"
+    exit 1
+fi
+
+#!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
@@ -86,22 +97,18 @@ cleanup() {
         shout "Delete orphaned PVC disks..."
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-
-        shout "Delete Buckets"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-buckets.sh"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         shout "Delete Gateway DNS Record"
         date
-        IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         shout "Release Gateway IP Address"
         date
-        IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/release-ip-address.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
     fi
     
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
@@ -113,8 +120,10 @@ cleanup() {
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         shout "Delete Apiserver proxy DNS Record"
         date
-        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
     fi
+
+    afterTest
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -145,6 +154,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     readonly COMMON_NAME_PREFIX="gke-minio-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    readonly AZURE_STORAGE_ACCOUNT_NAME=$(echo "minpr${PULL_NUMBER}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gke-minio-rel"
@@ -152,6 +162,7 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    readonly AZURE_STORAGE_ACCOUNT_NAME=$(echo "minrel${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gke-minio-commit"
@@ -159,8 +170,11 @@ else
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-minio-gateway/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
+    readonly AZURE_STORAGE_ACCOUNT_NAME=$(echo "min${COMMIT_ID}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 fi
+export AZURE_STORAGE_ACCOUNT_NAME
 
+beforeTest
 
 ### Cluster name must be less than 40 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -268,22 +282,7 @@ kubectl create namespace "kyma-installer"
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
 
-shout "Apply Asset Store configuration"
-date
-
-ASSET_STORE_RESOURCE_NAME="asset-store-overrides"
-
-kubectl create -n kyma-installer secret generic "${ASSET_STORE_RESOURCE_NAME}" --from-file=minio.gcsgateway.gcsKeyJson="${GOOGLE_APPLICATION_CREDENTIALS}"
-kubectl label -n kyma-installer secret "${ASSET_STORE_RESOURCE_NAME}" "installer=overrides" "component=assetstore" "kyma-project.io/installation="
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "${ASSET_STORE_RESOURCE_NAME}" \
-    --data "minio.persistence.enabled=false" \
-    --data "minio.gcsgateway.enabled=true" \
-    --data "minio.gcsgateway.projectId=${CLOUDSDK_CORE_PROJECT}" \
-    --data "minio.DeploymentUpdate.type=RollingUpdate" \
-    --data "minio.DeploymentUpdate.maxSurge=0" \
-    --data "minio.DeploymentUpdate.maxUnavailable=50%" \
-    --label "component=assetstore"
+installOverrides
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
@@ -316,7 +315,7 @@ fi
 
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+"${KYMA_SCRIPTS_DIR}"/testing.sh --test-name assetstore --test-namespace kyma-system
 
 shout "Success"
 

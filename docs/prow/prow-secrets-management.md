@@ -30,7 +30,7 @@ gcloud config set project $PROJECT
 
 ### Create a GCS bucket
 
-The purpose of the bucket is to store encrypted credentials necessary for ProwJobs like provisioning clusters or virtual machines.
+The purpose of the bucket is to store encrypted credentials necessary for Prow jobs like provisioning clusters or virtual machines.
 Run this command to create a bucket:
 ```
 gsutil mb -p $PROJECT gs://$BUCKET_NAME/

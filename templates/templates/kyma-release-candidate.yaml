@@ -1,0 +1,64 @@
+job_template: &job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 1
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/credentials/sa-kyma-release-candidate/service-account.json
+          - name: CLOUDSDK_DNS_ZONE_NAME
+            value: "kymapro-zone"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+          - name: CLOUDSDK_COMPUTE_REGION
+            value: "europe-west4"
+          - name: CLOUDSDK_CORE_PROJECT
+            value: "sap-hybris-sf-playground"
+        volumeMounts:
+          - name: sa-kyma-release-candidate
+            mountPath: /etc/credentials/sa-kyma-release-candidate
+            readOnly: true
+    volumes:
+      - name: sa-kyma-release-candidate
+        secret:
+          secretName: sa-kyma-release-candidate
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-kyma-artifacts-bucket: "true"
+
+
+postsubmits:
+  kyma-project/kyma:
+{{- range .Global.releases }}
+    - name: post-rel{{ . | replace "." "" }}-kyma-release-candidate
+      annotations:
+        testgrid-dashboards: kyma-release
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - release-{{ . }}
+      <<: *job_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-{{ . }}
+      labels:
+        <<: *job_labels_template
+{{- end }}

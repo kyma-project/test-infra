@@ -24,12 +24,13 @@ export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
-readonly REPO_OWNER="kyma-project"
-readonly REPO_NAME="kyma"
+export REPO_OWNER="kyma-project"
+export REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
-readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
-readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
+export STANDARIZED_NAME
+export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
@@ -42,69 +43,6 @@ fi
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-function removeCluster() {
-	#Turn off exit-on-error so that next step is executed even if previous one fails.
-	set +e
-
-    # CLUSTER_NAME variable is used in other scripts so we need to change it for a while
-    ORIGINAL_CLUSTER_NAME=${CLUSTER_NAME}
-	CLUSTER_NAME=$1
-
-	EXIT_STATUS=$?
-
-    shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
-
-	shout "Delete cluster $CLUSTER_NAME"
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-	shout "Delete Gateway DNS Record"
-	date
-	GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
-	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_DOMAIN}"
-	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-	shout "Release Gateway IP Address"
-	date
-	GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
-	IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME}
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh -project="${GCLOUD_PROJECT_NAME}" -region="${CLOUDSDK_COMPUTE_REGION}" -dryRun=false -ipname="${IP_ADDRESS_NAME}"
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-	echo "Remove DNS Record for Apiserver Proxy IP"
-	APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-		IP_ADDRESS=${APISERVER_IP_ADDRESS}
-		DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME}
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-dns-record.sh" -project="${GCLOUD_PROJECT_NAME}" -zone="${CLOUDSDK_DNS_ZONE_NAME}" -dryRun=false -address="${IP_ADDRESS}" -name="${DNS_FULL_NAME}"
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-	fi
-
-	shout "Delete temporary Kyma-Installer Docker image"
-	date
-
-
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-	MSG=""
-	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	shout "Job is finished ${MSG}"
-	date
-
-    # Revert previous value for CLUSTER_NAME variable
-    CLUSTER_NAME=${ORIGINAL_CLUSTER_NAME}
-	set -e
-}
 
 function createCluster() {
 	shout "Reserve IP Address for Ingressgateway"
@@ -237,19 +175,6 @@ function installKyma() {
 	fi
 }
 
-function cleanup() {
-    OLD_CLUSTERS=$(gcloud container clusters list --filter="name~^${CLUSTER_NAME}" --format json | jq '.[].name' | tr -d '"')
-    CLUSTERS_SIZE=$(echo "$OLD_CLUSTERS" | wc -l)
-    if [[ "$CLUSTERS_SIZE" -gt 0 ]]; then
-	    shout "Delete old cluster"
-	    date
-	    for CLUSTER in $OLD_CLUSTERS; do
-		    removeCluster "${CLUSTER}"
-	    done
-    fi
-
-}
-
 function addGithubDexConnector() {
     pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
     dep ensure -v -vendor-only
@@ -293,7 +218,7 @@ addGithubDexConnector
 
 shout "Cleanup"
 date
-cleanup
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
 shout "Create new cluster"
 date
