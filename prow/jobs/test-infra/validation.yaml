@@ -65,7 +65,7 @@ presubmits:
       path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20190116-69aa0a1
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20190116-69aa0a1
             securityContext:
               privileged: true
             command:
