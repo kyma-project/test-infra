@@ -61,7 +61,7 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-build-pr: "true"
-      run_if_changed: ".*"
+      run_if_changed: "^templates/|^prow/jobs/|^prow/scripts/|^development/tools/cmd/rendertemplates/"
       path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
