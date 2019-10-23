@@ -1,8 +1,9 @@
 package console_test
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 )
