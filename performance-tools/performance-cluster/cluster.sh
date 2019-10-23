@@ -44,8 +44,15 @@ do
             shift # past value
         ;;
         --infra)
-            checkActionInputParameterValue "$2"
+            checkInputParameterValue "$2"
             INFRA="$2"
+            checkInfraInputParameterValue "$2"
+            shift # past argument
+            shift # past value
+        ;;
+        --name)
+            checkInputParameterValue "$2"
+            INPUT_CLUSTER_NAME="$2"
             checkInfraInputParameterValue "$2"
             shift # past argument
             shift # past value
@@ -62,6 +69,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 export ACTION
 export CLUSTER_GRADE
 export INFRA
+export INPUT_CLUSTER_NAME
 
 if [[ "${ACTION}" == "" ]]; then
     shoutFail "--action is required"
@@ -81,7 +89,7 @@ if [[ "${INPUT_CLUSTER_NAME}" == "" ]]; then
     exit 1
 fi
 
-if [[ ! -f "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+if [[ "${INFRA}" != "aks" ]] && [[ ! -f "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
     shoutFail "Environment GOOGLE_APPLICATION_CREDENTIALS with service_account credentials is required."
     exit 1
 fi
@@ -92,7 +100,7 @@ if [[ "${CLUSTER_GRADE}" == "development" ]] && [[ ! -d "${GOPATH}/src/github.co
 fi
 
 
-setupClusterGKE() {
+setupCluster() {
 
     if [[ ${INFRA} == "gke" ]]; then
         setupClusterGKE
@@ -116,7 +124,7 @@ setupClusterGKE() {
 setupClusterAKS() {
 
     set +o errexit
-    source "${SCRIPTS_DIR}/scripts/kyma-gke-cluster.sh"
+    source "${SCRIPTS_DIR}/scripts/kyma-aks-cluster.sh"
     set -o errexit
 
 }
