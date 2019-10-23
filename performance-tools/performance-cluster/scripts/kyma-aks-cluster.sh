@@ -33,12 +33,6 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 discoverUnsetVar=false
 
-if [ -f "../../prow/scripts/cluster-integration/helpers/aks-library.sh" ]; then
-    source "../../prow/scripts/cluster-integration/helpers/aks-library.sh"
-else
-    echo "File 'aks-library.sh' can't be found."
-    exit 1;
-fi
 
 for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY RS_GROUP REGION DOCKER_IN_DOCKER_ENABLED ACTION; do
     if [ -z "${!var}" ] ; then
@@ -93,7 +87,7 @@ date
 init
 
 shout "Authenticating"
-azureAuthentication
+#azureAuthentication
 
 function cleanup() {
     shout "Cleanup"
@@ -278,7 +272,7 @@ elif [[ "${ACTION}" == "create" ]]; then
         export KYMA_SOURCES_DIR="${GOPATH}/src/github.com/kyma-project/kyma"
     fi
 
-    DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
+    #DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
     export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
     generateAndExportClusterName
