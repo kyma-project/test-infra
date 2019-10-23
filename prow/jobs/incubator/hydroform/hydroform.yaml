@@ -31,6 +31,10 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/hydroform:
     - name: pre-master-hydroform
+      annotations:
+        testgrid-dashboards: kyma-incubator
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '3'
       always_run: true
       branches:
         - ^master$
@@ -42,6 +46,10 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/hydroform:
     - name: post-master-hydroform
+      annotations:
+        testgrid-dashboards: kyma-incubator
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '3'
       branches:
         - ^master$
       <<: *job_template

@@ -1,0 +1,119 @@
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-test-infra: "true"
+  preset-kind-volume-mounts: "true"
+
+job_image_template: &job_image_template
+  image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191011-51ed45a
+  imagePullPolicy: Always
+
+job_tolerations_template: &job_tolerations_template
+  key: resources-usage
+  value: high
+  operator: Equal
+  effect: NoSchedule
+
+presubmits:
+  kyma-project/test-infra:
+  - name: pre-master-kind-kubernetes-image
+    branches:
+    - ^master$
+    skip_report: false
+    decorate: true
+    path_alias: github.com/kyma-project/test-infra
+    max_concurrency: 5
+    run_if_changed: "^kind/"
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+    spec:
+      containers:
+      - <<: *job_image_template
+        securityContext:
+          privileged: true
+        command:
+        - /home/prow/go/src/github.com/kyma-project/test-infra/kind/scripts/build-kubernetes-image.sh
+        resources:
+          requests:
+            memory: 8Gi
+            cpu: 4
+          limits:
+            memory: 10Gi
+            cpu: 5
+      tolerations:
+      - <<: *job_tolerations_template
+
+postsubmits:
+  kyma-project/test-infra:
+  - name: post-master-kind-kubernetes-image
+    branches:
+    - ^master$
+    skip_report: false
+    decorate: true
+    path_alias: github.com/kyma-project/test-infra
+    max_concurrency: 5
+    run_if_changed: "^kind/"
+    labels:
+      <<: *job_labels_template
+      preset-build-master: "true"
+    spec:
+      containers:
+      - <<: *job_image_template
+        securityContext:
+          privileged: true
+        command:
+        - /home/prow/go/src/github.com/kyma-project/test-infra/kind/scripts/build-kubernetes-image.sh
+        resources:
+          requests:
+            memory: 8Gi
+            cpu: 4
+          limits:
+            memory: 10Gi
+            cpu: 5
+      tolerations:
+      - <<: *job_tolerations_template
+
+periodics:
+- name: kyma-kind-integration
+  cron: "00 06 * * *" # "At 06:00 UTC each day"
+  annotations:
+    testgrid-dashboards: kyma-nightly
+    # testgrid-alert-email: email-here@sap.com
+    testgrid-num-failures-to-alert: '1'
+  labels:
+    <<: *job_labels_template
+    prow.kyma-project.io/slack.skipReport: "true"
+    preset-build-master: "true"
+  decorate: true
+  extra_refs:
+  - base_ref: master
+    repo: test-infra
+    org: kyma-project
+    path_alias: github.com/kyma-project/test-infra
+  - base_ref: master
+    repo: kyma
+    org: kyma-project
+    path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - <<: *job_image_template
+      command:
+      - /home/prow/go/src/github.com/kyma-project/test-infra/kind/scripts/install-kyma.sh
+      securityContext:
+        privileged: true
+      args:
+      - --ensure-kubectl
+      - --update-hosts
+      - --delete-cluster
+      - --run-tests
+      - --setup-inotify
+      resources:
+        limits:
+          cpu: 12
+          memory: 24Gi
+        requests:
+          cpu: 10
+          memory: 18Gi
+    tolerations:
+    - <<: *job_tolerations_template

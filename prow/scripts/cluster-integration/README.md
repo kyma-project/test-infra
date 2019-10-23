@@ -29,11 +29,11 @@ The integration job is a pipeline that consists of multiple steps:
 
 The structure of the folder looks as follows:
 
-``` 
+```
 ├── helpers # This directory contains helper scripts used by pipeline jobs.
 ├── kyma-gke-integration.sh # This script installs and tests Kyma on a real GKE cluster.
-├── kyma-gke-nightly.sh # This script creates a long-lived GKE cluster from the master branch. This cluster should be recreated once a day. 
-├── kyma-gke-upgrade.sh # This script installs the last Kyma release on a GKE cluster and upgrades it with current changes from the PR, master, or release branch. It also triggers the Kyma testing script. 
+├── kyma-gke-nightly.sh # This script creates a long-lived GKE cluster from the master branch. This cluster should be recreated once a day.
+├── kyma-gke-upgrade.sh # This script installs the last Kyma release on a GKE cluster and upgrades it with current changes from the PR, master, or release branch. It also triggers the Kyma testing script.
 └── kyma-gke-end-to-end-test.sh # This script installs and executes Kyma end-to-end tests on a real GKE cluster.
 ```
 
@@ -46,7 +46,7 @@ The following environment variables are required:
 
 - **REPO_OWNER** is the repository owner or organization. This variable is set up by Prow.
 - **REPO_NAME** is the repository name. This variable is set up by Prow.
-- **BUILD_TYPE** is one of pr/master/release. This variable is created by using the `preset-build` label in ProwJob definition
+- **BUILD_TYPE** is one of pr/master/release. This variable is created by using the `preset-build` label in the Prow job definition.
 - **DOCKER_PUSH_REPOSITORY** is the Docker repository hostname.
 - **DOCKER_PUSH_DIRECTORY** - the Docker top-level directory, preceded by a slash (/).
 - **KYMA_PROJECT_DIR** is a directory path with Kyma sources to use for the installation.

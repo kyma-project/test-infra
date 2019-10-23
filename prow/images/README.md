@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains a list of images used in ProwJobs.
+This folder contains a list of images used in Prow jobs.
 
 ### Project structure
 

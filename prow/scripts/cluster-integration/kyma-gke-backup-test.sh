@@ -298,6 +298,11 @@ function restoreKyma() {
 
     sleep 15
 
+    echo "Add backup plugins"
+    velero plugin add eu.gcr.io/kyma-project/backup-plugins:PR-6050
+
+    sleep 15
+
     shout "Check if the backup ${BACKUP_NAME} exists"
     date
     attempts=3

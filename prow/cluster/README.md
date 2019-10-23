@@ -19,7 +19,7 @@ The structure of the folder looks as follows:
   ├── 05-tiller.yaml                    # The definition of the Tiller that is used for Helm integration
   ├── 06-pushgateway_deployment.yaml    # The definition of the Pushgateway that is used for monitoring
   ├── 07-kube-system_poddisruptionbudgets.yaml # The definition of Pod Disruption Budgets for Pods in the  `kube-system` Namespace, used to unblock the node autoscaler.
-  ├── 08-prow-addons-ctrl-manager.yaml #  The definition of the prow addons controller manager resources, required i.a. to send Slack notification about ProwJob.
+  ├── 08-prow-addons-ctrl-manager.yaml #  The definition of the prow addons controller manager resources, required i.a. to send Slack notification about Prow jobs.
   ├── 09-gce-ssd-retain_storageclass.yaml #  The definition of the GCE SSD StorageClass required by ghProxy to store the GitHub token cache.
   ├── 10-ghproxy.yaml                   #  The definition of ghProxy that is a reverse proxy HTTP cache required by Prow to reduce API token usage.
   ├── 11-gcsweb.yaml                    # The definition of gcsweb deployment and service that is serving an artifact view for Spyglass.

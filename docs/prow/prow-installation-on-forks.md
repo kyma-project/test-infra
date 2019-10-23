@@ -159,7 +159,7 @@ When you use the [`install-prow.sh`](../../development/install-prow.sh) script t
 
 ### The config.yaml file
 
-The `config.yaml` file contains the basic Prow configuration. When you create a particular ProwJob, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
+The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
 For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#add-more-jobs-by-modifying-configyaml).
 
@@ -171,9 +171,9 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 ### The job configuration file
 
-You can define a test presubmit job for a component. However, remember to adjust its definition in the `yaml` file to point to your forked repository instead of the original repository.
+You can define a test presubmit job for a component. However, remember to adjust its definition in the YAML file to point to your forked repository instead of the original repository.
 
-For details on how to define a presubmit job, see the [Migration Guide](./component-jobs.md#create-a-presubmit-job).
+For details on how to define component jobs, see [this](./manage-component-jobs-with-templates.md).
 
 ### Verify the configuration
 
