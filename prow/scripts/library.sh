@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly NC='\033[0m' # No Color
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
 
 LICENSE_PULLER_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/license-puller.sh"
 export LICENSE_PULLER_PATH
