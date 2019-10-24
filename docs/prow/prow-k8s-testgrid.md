@@ -4,7 +4,7 @@ Due to **kubernetes TestGrid** not being fully Open Source yet, we're pushing ou
 
 ### Kyma configuration
 
-One part of the configuration lives on our job definitions in the form of annotations as can be seen on the [**kind** job](https://github.com/kyma-project/test-infra/blob/master/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83) for example: 
+One part of the configuration lives on our job definitions in the form of annotations as can be seen on the [**kind** job](https://github.com/kyma-project/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83) for example: 
 ```yaml
   annotations:
     testgrid-dashboards: kyma-nightly
@@ -32,7 +32,7 @@ This configuration itself has three important things.
     - kyma-weekly
     - kyma-incubator
     ```
-2) It holds the actual dashboard definitions. E.g. for the [nightly dashboard](https://github.com/kubernetes/test-infra/blob/master/config/testgrids/kyma/kyma.yaml#L355), the configuration partially looks like this:
+2) It holds the actual dashboard definitions. E.g. for the [nightly dashboard](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L355), the configuration partially looks like this:
     ```yaml
     dashboards:
     - name: kyma-nightly
@@ -49,7 +49,7 @@ This configuration itself has three important things.
     ```
 
     Notice that in the list of dashboards, there's also a **kyma-all** dashboard. This dashboard repeats all definitions of the other dashboards and has an overview of all jobs. We actually have to repeat the configuration for the *dashboard-tab* with the only difference being und which dashboard they show.
-3) At the very bottom of the file [**test_groups**](https://github.com/kubernetes/test-infra/blob/master/config/testgrids/kyma/kyma.yaml#L422) are defined. They are used on the **dashboard_tab** and need to be defined for a job to show up. In the above example the **kind** integration test has the test group defined as `kyma-kind-integration`. You'll find the same definition of this test group in the list:
+3) At the very bottom of the file [**test_groups**](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L422) are defined. They are used on the **dashboard_tab** and need to be defined for a job to show up. In the above example the **kind** integration test has the test group defined as `kyma-kind-integration`. You'll find the same definition of this test group in the list:
     ```yaml
     - name: kyma-kind-integration
       gcs_prefix: kyma-prow-logs/logs/kyma-kind-integration
