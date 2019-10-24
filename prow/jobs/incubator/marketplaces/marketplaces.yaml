@@ -23,7 +23,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191011-51ed45a
       securityContext:
         privileged: true
       command:
@@ -33,7 +33,7 @@ job_template: &job_template
       resources:
         requests:
           memory: 18Gi
-          cpu: 10
+          cpu: 7.5
     tolerations:
     - <<: *job_tolerations_template
 
