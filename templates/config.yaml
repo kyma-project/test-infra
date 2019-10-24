@@ -92,7 +92,6 @@ templates:
           <<: *kyma_generic_component
           path: components/application-broker
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
         values:
           <<: *kyma_generic_component
