@@ -234,6 +234,13 @@ function installKyma() {
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
 
+  # Create Config map for Provisioner Tests
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "compass.provisioner.tests.enabled=\"true\"" \
+    --data "compass.provisioner.tests.gcp.credentials=$GOOGLE_APPLICATION_CREDENTIALS" \
+    --data "compass.provisioner.tests.gcp.projectName=$GCLOUD_PROJECT_NAME" \
+    --label "component=compass"
+
   waitUntilInstallerApiAvailable
 
   shout "Trigger installation"
