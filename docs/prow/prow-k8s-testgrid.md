@@ -4,7 +4,7 @@ Due to **kubernetes TestGrid** not being fully Open Source yet, we're pushing ou
 
 ### Kyma configuration
 
-One part of the configuration lives on our job definitions in the form of annotations as can be seen on the [**kind** job](https://github.com/kyma-project/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83) for example: 
+One part of the configuration lives on our job definitions in the form of annotations as can be seen on the [**kind** job](https://github.com/kyma-project/test-infra/blob/60493dd61d77da363b8758b7e4c94f25d4b36501/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83) for example: 
 ```yaml
   annotations:
     testgrid-dashboards: kyma-nightly
