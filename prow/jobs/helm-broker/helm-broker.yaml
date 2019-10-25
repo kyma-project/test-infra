@@ -82,11 +82,12 @@ postsubmits:
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
+        preset-bot-github-token: "true"
         prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
     - name: post-release-helm-broker
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
-        - '\d+\.\d+\.\d+$'
+        - 'v\d+\.\d+\.\d+$'
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
@@ -97,43 +98,6 @@ postsubmits:
       decorate: true
       optional: false
       path_alias: github.com/kyma-project/helm-broker
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/helm-broker"
-            env:
-              - name: RUN_ON_PROW
-                value: "true"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
-  polskikiel/helm-broker:
-    - name: post-release-helm-broker-test
-      # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
-      branches:
-        - '\d+\.\d+\.\d+$'
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-        preset-bot-github-token: "true"
-        preset-kind-volume-mounts: "true"
-        prow.kyma-project.io/slack.skipReport: "true"
-      skip_report: false
-      decorate: true
-      optional: false
-      path_alias: github.com/polskikiel/helm-broker
       max_concurrency: 10
       extra_refs:
         - org: kyma-project

@@ -14,13 +14,12 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/integration/cluster-users/|^scripts/"
+  run_if_changed: "^tests/integration/cluster-users/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
