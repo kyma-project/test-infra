@@ -352,7 +352,19 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/integration/api-gateway
-          since: "1.7"     
+          since: "1.7"
+      - to: ../prow/jobs/kyma/components/event-service-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/event-service
+          since: '1.7'
+          optional: true
+      - to: ../prow/jobs/kyma/tests/integration/event-service-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/integration/event-service
+          since: '1.7'
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
