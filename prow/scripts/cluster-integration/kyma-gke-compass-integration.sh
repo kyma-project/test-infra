@@ -236,9 +236,9 @@ function installKyma() {
 
   # Create Config map for Provisioner Tests
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "provisioner-tests-overrides" \
-    --data "compass.provisioner.tests.enabled=\"true\"" \
-    --data "compass.provisioner.tests.gcp.credentials=$GOOGLE_APPLICATION_CREDENTIALS" \
-    --data "compass.provisioner.tests.gcp.projectName=$GCLOUD_PROJECT_NAME" \
+    --data "provisioner.tests.enabled=\"true\"" \
+    --data "provisioner.tests.gcp.credentials=$GOOGLE_APPLICATION_CREDENTIALS" \
+    --data "provisioner.tests.gcp.projectName=$GCLOUD_PROJECT_NAME" \
     --label "component=compass"
 
   waitUntilInstallerApiAvailable
