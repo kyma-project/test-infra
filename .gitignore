@@ -2,6 +2,7 @@
 /development/checker/vendor
 /development/tools/vendor
 
+tmp/
 .idea/
 .vscode/
 *.iml
