@@ -109,12 +109,10 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "connection-token-handler", image: tester.ImageGolangBuildpackLatest},
 	{path: "connection-token-handler", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
