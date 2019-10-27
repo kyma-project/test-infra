@@ -107,7 +107,6 @@ templates:
           <<: *kyma_generic_component
           path: components/application-gateway
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
         values:
           <<: *kyma_generic_component
