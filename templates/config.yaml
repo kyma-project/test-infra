@@ -183,7 +183,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/application-registry-tests
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -591,6 +590,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/application-registry-tests
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/asset-store/asset-store.yaml
         values:
           <<: *go_kyma_component_1_11
