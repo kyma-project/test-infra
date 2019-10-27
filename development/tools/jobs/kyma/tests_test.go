@@ -26,12 +26,10 @@ var tests = []struct {
 			jobsuite.Until(releases.Release15),
 		},
 	},
-	{path: "application-connector-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-connector-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "application-gateway-tests", image: tester.ImageGolangBuildpackLatest},

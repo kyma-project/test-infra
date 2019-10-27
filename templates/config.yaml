@@ -168,7 +168,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/application-connector-tests
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -496,10 +495,12 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/connectivity-certs-controller
+          until: "1.6"
       - to: ../prow/jobs/kyma/components/connector-service/connector-service.yaml
         values:
           <<: *go_kyma_component_v20181119
           path: components/connector-service
+          until: "1.6"
       - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -577,6 +578,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/application-connector-tests
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
