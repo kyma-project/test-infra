@@ -115,12 +115,10 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "connectivity-certs-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "connectivity-certs-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "connector-service", image: tester.ImageGolangBuildpackLatest},

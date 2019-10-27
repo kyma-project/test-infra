@@ -132,7 +132,6 @@ templates:
           <<: *kyma_generic_component
           path: components/connectivity-certs-controller
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
         values:
           <<: *kyma_generic_component
