@@ -42,12 +42,10 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "application-connectivity-certs-setup-job", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-connectivity-certs-setup-job", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "application-connectivity-validator", image: tester.ImageGolangBuildpackLatest},
