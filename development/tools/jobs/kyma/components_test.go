@@ -66,12 +66,10 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "application-registry", image: tester.ImageGolangBuildpackLatest},
 	{path: "application-registry", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "asset-metadata-service", image: tester.ImageGolangBuildpack1_11},
