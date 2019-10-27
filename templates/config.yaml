@@ -198,7 +198,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/connector-service-tests
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -607,6 +606,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/connector-service-tests
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests.yaml
         values:
           <<: *go_kyma_component_1_11
