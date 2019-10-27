@@ -173,7 +173,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/application-gateway-tests
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -583,6 +582,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/application-gateway-tests
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
