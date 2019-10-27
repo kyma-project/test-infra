@@ -134,12 +134,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("deprecated"),
 		},
 	},
-	{path: "compass-runtime-agent", image: tester.ImageGolangKubebuilder2BuildpackLatest,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release16),
-			jobsuite.Until(releases.Release16),
-		},
-	},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
