@@ -102,7 +102,6 @@ templates:
           <<: *kyma_generic_component
           path: components/application-connectivity-validator
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -440,6 +439,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/application-connectivity-validator
+          until: "1.6"
       - to: ../prow/jobs/kyma/components/application-gateway/application-gateway.yaml
         values:
           <<: *go_kyma_component_v20181119
