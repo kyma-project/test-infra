@@ -103,18 +103,6 @@ var components = []struct {
 		},
 	},
 	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
-	{path: "compass-runtime-agent", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Until(releases.Release15),
-			jobsuite.JobFileSuffix("deprecated"),
-		},
-	},
-	{path: "compass-runtime-agent", image: tester.ImageGolangKubebuilder2BuildpackLatest,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release16),
-			jobsuite.Until(releases.Release17),
-		},
-	},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
