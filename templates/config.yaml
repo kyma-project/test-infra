@@ -188,7 +188,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/compass-runtime-agent
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -599,6 +598,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/compass-runtime-agent
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests.yaml
         values:
           <<: *go_kyma_component_v20181119
