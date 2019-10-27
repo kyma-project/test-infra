@@ -193,7 +193,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/connection-token-handler-tests
           since: "1.7"
-          optional: true
       - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -603,6 +602,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tests/connection-token-handler-tests
+          until: "1.6"
       - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests.yaml
         values:
           <<: *go_kyma_component_v20181119

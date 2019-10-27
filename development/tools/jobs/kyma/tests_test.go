@@ -57,12 +57,10 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "connection-token-handler-tests", image: tester.ImageGolangBuildpackLatest},
 	{path: "connection-token-handler-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "connector-service-tests", image: tester.ImageGolangBuildpackLatest},
