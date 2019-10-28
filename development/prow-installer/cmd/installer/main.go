@@ -2,9 +2,11 @@ package main
 
 import (
 	"flag"
-	"log"
-	"prow_installer/accessmanager"
-	"prow_installer/installer"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/accessmanager"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
 )
 
 var (

@@ -3,20 +3,23 @@ package accessmanager
 import (
 	"context"
 	"fmt"
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iam/v1"
 	"google.golang.org/api/option"
-	"log"
-	"prow_installer/installer"
-	"strings"
+
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
 )
 
 type AccessManager struct {
 	credentialsFile string
 
-	IAM *iamManager
-	Projects   *projectsManager
+	IAM      *iamManager
+	Projects *projectsManager
 }
 
 type iamManager struct {
@@ -31,10 +34,10 @@ type projectsManager struct {
 }
 
 type Project struct {
-	projectsManager             *projectsManager
-	gkeProject                  *cloudresourcemanager.Project
-	Bindings                    map[string]*cloudresourcemanager.Binding
-	Policy                      *cloudresourcemanager.Policy
+	projectsManager *projectsManager
+	gkeProject      *cloudresourcemanager.Project
+	Bindings        map[string]*cloudresourcemanager.Binding
+	Policy          *cloudresourcemanager.Policy
 }
 
 func NewAccessManager(credentialsfile string) *AccessManager {
@@ -87,7 +90,7 @@ func (iammanager *iamManager) CreateSAAccount(name string, projectname string) *
 	return sa
 }
 
-func (projectsmanager *projectsManager) getProject (projectname string) {
+func (projectsmanager *projectsManager) getProject(projectname string) {
 	ctx := context.Background()
 	project, err := projectsmanager.cloudresourcemanagerservice.Projects.Get(projectname).Context(ctx).Do()
 	if err != nil {
@@ -123,7 +126,7 @@ func (project *Project) getPolicy() {
 	}
 }
 
-func (projectsmanager *projectsManager) AssignRoles (projectname string, accounts []installer.Account) {
+func (projectsmanager *projectsManager) AssignRoles(projectname string, accounts []installer.Account) {
 	for _, account := range accounts {
 		var accountfqdn string
 		if account.Type == "serviceAccount" {
@@ -131,29 +134,30 @@ func (projectsmanager *projectsManager) AssignRoles (projectname string, account
 		} else if account.Type == "user" {
 			accountfqdn = fmt.Sprintf("user:%s@sap.com", account.Name)
 
-		if _, exist := projectsmanager.Projects[projectname].Policy; exist {
-			for _, role := range account.Roles {
-				if _, ok := projectsmanager.Projects[projectname].Bindings[role]; ok {
-					projectsmanager.Projects[projectname].Bindings[role].Members = append(projectsmanager.Projects[projectname].Bindings[role].Members, accountfqdn)
-				} else {
-					bindingrole := fmt.Sprintf("roles/%s", role)
-					projectsmanager.Projects[projectname].Bindings[role] = &cloudresourcemanager.Binding{Role: bindingrole, Members: []string{accountfqdn}}
+			if _, exist := projectsmanager.Projects[projectname]; exist {
+				for _, role := range account.Roles {
+					if _, ok := projectsmanager.Projects[projectname].Bindings[role]; ok {
+						projectsmanager.Projects[projectname].Bindings[role].Members = append(projectsmanager.Projects[projectname].Bindings[role].Members, accountfqdn)
+					} else {
+						bindingrole := fmt.Sprintf("roles/%s", role)
+						projectsmanager.Projects[projectname].Bindings[role] = &cloudresourcemanager.Binding{Role: bindingrole, Members: []string{accountfqdn}}
+					}
 				}
 			}
 		}
-	}
-	//TODO: Move this to separate function and call it from here.
-	var bindings []*cloudresourcemanager.Binding
-	for _, value := range projectsmanager.Projects[projectname].Bindings{
-		bindings = append(bindings, value)
-		projectsmanager.Projects[projectname].Policy.Bindings = bindings
-	}
-	ctx := context.Background()
-	setiampolicyrequest := cloudresourcemanager.SetIamPolicyRequest{
-		Policy: projectsmanager.Projects[projectname].Policy,
-	}
-	_, err := projectsmanager.cloudresourcemanagerservice.Projects.SetIamPolicy(projectname, setiampolicyrequest).Context(ctx).Do()
-	if err != nil {
-		log.Fatalf("Error %v when updating %s project policy.", err, projectname)
+		//TODO: Move this to separate function and call it from here.
+		var bindings []*cloudresourcemanager.Binding
+		for _, value := range projectsmanager.Projects[projectname].Bindings {
+			bindings = append(bindings, value)
+			projectsmanager.Projects[projectname].Policy.Bindings = bindings
+		}
+		ctx := context.Background()
+		setiampolicyrequest := &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: projectsmanager.Projects[projectname].Policy,
+		}
+		_, err := projectsmanager.cloudresourcemanagerservice.Projects.SetIamPolicy(projectname, setiampolicyrequest).Context(ctx).Do()
+		if err != nil {
+			log.Fatalf("Error %v when updating %s project policy.", err, projectname)
+		}
 	}
 }

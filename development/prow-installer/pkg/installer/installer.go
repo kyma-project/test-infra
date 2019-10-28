@@ -2,9 +2,10 @@ package installer
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
+
+	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 //Configuration for prow installer.
