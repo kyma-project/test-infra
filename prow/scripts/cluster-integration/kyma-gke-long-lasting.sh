@@ -36,6 +36,10 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
+#Enable Stackdriver Kubernetes Engine Monitoring support. Mandatory requirement for stackdriver-prometheus collector.
+#https://cloud.google.com/monitoring/kubernetes-engine/prometheus
+export STACKDRIVER_KUBERNETES="true"
+
 if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 	export SERVICE_CATALOG_CRD="false"
 fi
@@ -202,6 +206,10 @@ data:
 EOF
 }
 
+function installStackdriverPrometheusCollector(){
+	shout "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
+	kubectl -n kyma-system patch prometheus "monitoring" --type merge --patch "$(cat ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
+}
 shout "Authenticate"
 date
 init
@@ -233,6 +241,10 @@ shout "Install kyma"
 date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+shout "Install stackdriver-prometheus collector"
+date
+installStackdriverPrometheusCollector
 
 shout "Install stability-checker"
 date
