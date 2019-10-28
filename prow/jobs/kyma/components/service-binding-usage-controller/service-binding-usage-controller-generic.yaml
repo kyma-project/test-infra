@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.7)-service-binding-usage-controller$
   run_if_changed: "^components/service-binding-usage-controller/|^common/makefiles/"
   spec:
     containers:

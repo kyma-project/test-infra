@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.7)-cluster-users$
   run_if_changed: "^tests/integration/cluster-users/|^common/makefiles/"
   spec:
     containers:
