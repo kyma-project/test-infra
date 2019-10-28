@@ -95,7 +95,7 @@ function finalize() {
     log "Print all docker processes" 2>&1 | ${STORE_TEST_OUTPUT_APPEND}
     docker ps -a 2>&1 | ${STORE_TEST_OUTPUT_APPEND}
 
-    if [[ ${CLUSTER_PROVISIONED} = "true" ]]; then
+    if [[ ${CLUSTER_PROVISIONED} = "true" ]]; then 
         log "Exporting cluster logs to ${ARTIFACTS_DIR}/cluster-logs" 2>&1 | ${STORE_TEST_OUTPUT_APPEND}
         mkdir -p "${ARTIFACTS_DIR}/cluster-logs" 2>&1 | ${STORE_TEST_OUTPUT_APPEND} || finalizationError="true"
         kind export logs "${ARTIFACTS_DIR}/cluster-logs" 2>&1 | ${STORE_TEST_OUTPUT_APPEND} || finalizationError="true"
