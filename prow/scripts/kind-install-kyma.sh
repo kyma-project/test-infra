@@ -95,7 +95,7 @@ function read_flags {
                 echo "     --kyma-overrides             Path to the Kyma overrides, default \`\${KYMA_SOURCES}/installation/resources/installer-config-local.yaml.tpl\`."
                 echo "     --kyma-installer             Path to the Kyma Installer yaml, default \`\${KYMA_SOURCES}/installation/resources/installer-local.yaml\`."
                 echo "     --kyma-installation-cr       Path to the Kyma Installation CR, default \`\${KYMA_SOURCES}/installation/resources/installer-cr.yaml.tpl\`."
-                echo "  -t --kyma-installation-timeout  The installation timeout, default \`30s\`."
+                echo "  -t --kyma-installation-timeout  The installation timeout, default \`30m\`."
                 echo " "
                 echo "Environment variables:"
                 echo "  ARTIFACTS  If not set, all artifacts are stored in \`tmp\` directory"
