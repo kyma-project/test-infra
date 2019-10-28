@@ -192,10 +192,6 @@ function tune_inotify {
 function main {
     junit::suite_init "Kyma_Integration"
 
-    junit::test_start "Read_Flags"
-    read_flags "$@" 2>&1 | junit::test_output
-    junit::test_pass
-
     junit::test_start "Tune_Inotify"
     if [[ ${TUNE_INOTIFY} = "true" ]]; then
         tune_inotify 2>&1 | junit::test_output
@@ -275,4 +271,5 @@ function main {
     junit::test_pass
 }
 
-main "$@"
+read_flags "$@"
+main
