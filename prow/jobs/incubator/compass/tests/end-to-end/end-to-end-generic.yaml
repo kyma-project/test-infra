@@ -38,11 +38,10 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-tests-end-to-end
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
     - name: post-compass-tests-end-to-end
-      prow.kyma-project.io/slack.skipReport: "true"
       <<: *job_template

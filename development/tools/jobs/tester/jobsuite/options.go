@@ -17,6 +17,22 @@ func Component(name, image string) Option {
 	}
 }
 
+func CompassComponent(name, image string) Option {
+	return func(suite *Config) {
+		suite.Path = fmt.Sprintf("compass/components/%s", name)
+		suite.Image = image
+		suite.FilesTriggeringJob = []string{fmt.Sprintf("%s/fix", suite.Path)}
+	}
+}
+
+func CompassTest(name, image string) Option {
+	return func(suite *Config) {
+		suite.Path = fmt.Sprintf("compass/tests/%s", name)
+		suite.Image = image
+		suite.FilesTriggeringJob = []string{fmt.Sprintf("%s/fix", suite.Path)}
+	}
+}
+
 func Test(name, image string) Option {
 	return func(suite *Config) {
 		suite.Path = fmt.Sprintf("tests/%s", name)
@@ -45,6 +61,14 @@ func KymaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/kyma"
 		suite.DockerRepositoryPreset = preset.DockerPushRepoKyma
+		suite.BuildPresetMaster = preset.BuildMaster
+	}
+}
+
+func CompassRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-incubator/compass"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoIncubator
 		suite.BuildPresetMaster = preset.BuildMaster
 	}
 }

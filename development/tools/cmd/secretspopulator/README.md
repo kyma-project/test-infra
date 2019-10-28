@@ -30,7 +30,7 @@ See the list of available flags:
 | **--key**                 |   Yes    | KMS key
 | **--location**            |   Yes    | KMS location            
 | **--kubeconfig**          |   Yes    | The path to the `kubeconfig` file that points to the Prow cluster    
-| **--secrets-def-file**    |   Yes    | The path to the `yaml` file that defines Secrets to populate. See the `RequiredSecretsData` type to learn about the syntax of the file.   
+| **--secrets-def-file**    |   Yes    | The path to the YAML file that defines Secrets to populate. See the `RequiredSecretsData` type to learn about the syntax of the file.   
 | **--project**             |   Yes    | Gcloud project name   
 
 ### Environment variables

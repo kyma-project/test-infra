@@ -48,6 +48,10 @@ job_labels_template: &job_labels_template
 postsubmits:
   kyma-project/kyma:
     - name: post-rel16-kyma-release-candidate
+      annotations:
+        testgrid-dashboards: kyma-release
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - release-1.6
       <<: *job_template
@@ -59,6 +63,10 @@ postsubmits:
       labels:
         <<: *job_labels_template
     - name: post-rel15-kyma-release-candidate
+      annotations:
+        testgrid-dashboards: kyma-release
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - release-1.5
       <<: *job_template
@@ -70,6 +78,10 @@ postsubmits:
       labels:
         <<: *job_labels_template
     - name: post-rel14-kyma-release-candidate
+      annotations:
+        testgrid-dashboards: kyma-release
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - release-1.4
       <<: *job_template

@@ -322,7 +322,6 @@ CONTENT_TYPE="application/octet-stream"
 # arg1: the name of the bucket the file will be uploaded to
 # arg2: the name of the created file
 function upload_sample_file_to_minio {
-    set -u
     BUCKET_NAME=$1
     FILE_NAME=$2
     RESOURCE="${BUCKET_NAME}"/"${FILE_NAME}"
@@ -337,7 +336,6 @@ function upload_sample_file_to_minio {
 	--silent \
 	--fail \
         "${MINIO_HOST}"/"${RESOURCE}"
-    set +u
 }
 
 set -e
@@ -367,7 +365,6 @@ shout "Minio switched to gateway GCP mode"
 
 # download samples from minIO to verify if the migration was successful
 function download_sample_file_from_minio {
-    set -u
     BUCKET_NAME=$1
     FILE_NAME=$2
     RESOURCE="${BUCKET_NAME}"/"${FILE_NAME}"
@@ -381,7 +378,6 @@ function download_sample_file_from_minio {
 	 --insecure \
 	 --fail \
          "${MINIO_HOST}"/"${RESOURCE}" > /dev/null
-    set +u
 }
 
 ACCESS_KEY=$(kubectl get secret assetstore-minio -n kyma-system -o jsonpath="{.data.accesskey}" | base64 -d | xargs -n1 echo)

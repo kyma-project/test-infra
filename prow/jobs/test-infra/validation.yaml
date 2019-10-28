@@ -52,3 +52,24 @@ presubmits:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+    - name: pre-master-test-infra-validate-generated-files
+      decorate: true
+      max_concurrency: 10
+      branches:
+        - ^master$
+      labels:
+        preset-dind-enabled: "true"
+        preset-build-pr: "true"
+      run_if_changed: "^templates/|^prow/jobs/|^prow/scripts/|^development/tools/cmd/rendertemplates/"
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20190731-600f4ac
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8

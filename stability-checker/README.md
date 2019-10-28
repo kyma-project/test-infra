@@ -5,6 +5,8 @@ The purpose of the Stability Checker is to check if a cluster is stable.
 To ensure the cluster's stability, install the Stability Checker in the cluster. 
 It runs a testing script in a loop and sends notifications with the test executions summary on a Slack channel.
 
+Use [Octopus](https://github.com/kyma-incubator/octopus) to run the tests.
+
 ## Prerequisites
 To set up the project, download these tools:
 * [Go](https://golang.org/dl/) 1.11.4

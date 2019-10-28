@@ -37,34 +37,6 @@ function installStabilityChecker() {
     kubectl cp "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh" stability-test-provisioner:/home/input/pre-start-scripts.sh -n kyma-system
 	kubectl delete pod -n kyma-system stability-test-provisioner
 
-	# grant privileges to create CTS and read them from Stability Checker
-    cat <<EOF | kubectl apply -f -
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: stability-checker-with-octopus
-rules:
-- apiGroups: ["testing.kyma-project.io"]
-  resources: ["clustertestsuites", "testdefinitions"]
-  verbs: ["*"]
-EOF
-
-    cat <<EOF | kubectl apply -f -
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  creationTimestamp: null
-  name: stability-checker-with-octopus
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: stability-checker-with-octopus
-subjects:
-- kind: ServiceAccount
-  name: stability-checker
-  namespace: kyma-system
-EOF
-
 	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"Test status: ([0-9A-Za-z_-]+) - Failed"}
 	STATS_SUCCESSFUL_TEST_REGEXP=${STATS_SUCCESSFUL_TEST_REGEXP:-"Test status: ([0-9A-Za-z_-]+) - Succeeded"}
 

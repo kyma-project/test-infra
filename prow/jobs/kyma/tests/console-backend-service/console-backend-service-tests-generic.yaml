@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^release-(1\.6)-console-backend-service$
-  run_if_changed: "^tests/console-backend-service/|^scripts/"
+  run_if_changed: "^tests/console-backend-service/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be

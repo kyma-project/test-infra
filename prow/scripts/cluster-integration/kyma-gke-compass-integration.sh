@@ -213,7 +213,7 @@ function installKyma() {
     --data "tests.application_connector_tests.enabled=false" \
     --data "application-registry.tests.enabled=false" \
     --data "console-backend-service.tests.enabled=false" \
-    --data "test.acceptance.core.enabled=false" \
+    --data "test.acceptance.service-catalog.enabled=false" \
     --data "test.acceptance.external_solution.enabled=false" \
     --data "console.test.acceptance.enabled=false"
 
