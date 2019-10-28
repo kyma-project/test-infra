@@ -1,7 +1,5 @@
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-test-infra: "true"
   preset-kind-volume-mounts: "true"
 
 job_image_template: &job_image_template
