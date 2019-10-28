@@ -101,7 +101,7 @@ else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gke-backup-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-test-backup" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-backup-test/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
