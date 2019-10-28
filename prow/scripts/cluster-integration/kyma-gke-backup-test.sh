@@ -370,7 +370,7 @@ then
 fi
 
 takeBackup
-#removeCluster
+removeCluster
 
 ### Restore phase starts here
 
