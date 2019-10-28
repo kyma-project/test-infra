@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eEo pipefail
+set -eo pipefail
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly LIB_DIR="$( cd "${SCRIPT_DIR}/lib" && pwd )"
@@ -52,7 +52,6 @@ function finalize {
     return "${exit_status}"
 }
 
-trap junit::test_fail ERR
 trap finalize EXIT
 
 CLUSTER_PROVISIONED="false"
@@ -190,6 +189,7 @@ function tune_inotify {
 }
 
 function main {
+    trap junit::test_fail ERR
     junit::suite_init "Kyma_Integration"
 
     junit::test_start "Tune_Inotify"

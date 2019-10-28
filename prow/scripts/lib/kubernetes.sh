@@ -3,7 +3,7 @@
 function kubernetes::ensure_kubectl {
     # TODO: (@michal-hudy) Install proper kubectl version for current system
     if command -v kubectl >/dev/null 2>&1; then
-        log "Removing built-in kubectl version"
+        echo "Removing built-in kubectl version"
         rm -f "$(command -v kubectl)"
     fi
 
