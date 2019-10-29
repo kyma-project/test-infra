@@ -55,7 +55,7 @@ This configuration contains these important definitions:
     ```
     The list of dashboards also includes the **kyma-all** dashboard which repeats all dashboard definitions and contains an overview of all jobs.
 
-3) [**test_groups**](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L422) defined at the end of the `kyma.yaml` file. These groups are used on the **dashboard_tab** and need to be defined for a job to show up on the dashboard. In the `kind` job example, the integration test has the test group defined as `kyma-kind-integration`. You can see the same definition of this test group on the list:
+3. [**test_groups**](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L422) defined at the end of the `kyma.yaml` file. These groups are used on the **dashboard_tab** and need to be defined for a job to show up on the dashboard. In the `kind` job example, the integration test has the test group defined as `kyma-kind-integration`. You can see the same definition of this test group on the list:
 
     ```yaml
     - name: kyma-kind-integration
