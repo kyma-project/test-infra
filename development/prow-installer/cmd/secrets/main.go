@@ -17,6 +17,8 @@ var (
 	prefix          = flag.String("prefix", "", "Prefix for naming resources [Optional]")
 )
 
+// TODO: To be deleted later. This is just for testing the storage tool separately.
+
 func main() {
 	flag.Parse()
 
