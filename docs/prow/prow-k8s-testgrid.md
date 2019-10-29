@@ -37,7 +37,7 @@ This configuration contains these important definitions:
       - kyma-incubator
     ```
 
-2) Actual dashboard definitions. For example, a part of the configuration for the [nightly dashboard](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L355) looks as follows:
+2. Actual dashboard definitions. For example, a part of the configuration for the [nightly dashboard](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L355) looks as follows:
 
     ```yaml
     dashboards:
