@@ -21,7 +21,7 @@ The other part of the configuration is stored in the [Kubernetes repository](htt
 
 This configuration contains these important definitions:
 
-1) A dashboard group called **kyma** and a number of sub-dashboards:
+1. A dashboard group called **kyma** and a number of sub-dashboards:
 
     ```yaml
     dashboard_groups:
