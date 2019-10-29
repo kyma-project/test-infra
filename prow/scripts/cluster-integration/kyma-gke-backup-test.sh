@@ -371,7 +371,7 @@ fi
 
 takeBackup
 #### Exiting
-exit 0
+#exit 0
 removeCluster
 
 ### Restore phase starts here
