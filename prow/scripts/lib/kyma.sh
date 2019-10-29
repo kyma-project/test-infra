@@ -32,7 +32,7 @@ function kyma::build_installer {
 function kyma::update_hosts {
     # TODO: (@michal-hudy) Switch to local DNS server if possible
     local -r hosts="$(kubectl get virtualservices --all-namespaces -o jsonpath='{.items[*].spec.hosts[*]}')"
-    echo "${1} ${hosts}" | tee -a /etc/hosts > /dev/null
+    echo "127.0.0.1 ${hosts}" | tee -a /etc/hosts > /dev/null
 }
 
 function kyma::install_tiller {

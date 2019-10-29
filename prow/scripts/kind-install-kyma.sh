@@ -259,7 +259,7 @@ function main {
     junit::test_start "Update_Hosts_File"
     if [[ ${UPDATE_HOSTS} = "true" ]]; then
         log::info "Updating hosts file" 2>&1 | junit::test_output
-        kyma::update_hosts "${worker_ip}" 2>&1 | junit::test_output
+        kyma::update_hosts 2>&1 | junit::test_output
         junit::test_pass
     else
         junit::test_skip
