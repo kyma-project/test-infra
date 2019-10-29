@@ -45,7 +45,10 @@ NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM=(--network=default)
 if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi
 CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},created-at-readable=${CURRENT_TIMESTAMP_READABLE_PARAM},ttl=${TTL_HOURS_PARAM}"
+#Optional arguments
+#Enable stackdriver kubernetes engine monitoring for cluster
 STACKDRIVER_KUBERNETES_PARAM=""
+#Enable SSD disks for cluster
 DISK_TYPE_PARAM=""
 
 
