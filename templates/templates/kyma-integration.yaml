@@ -666,7 +666,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint'"
+            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore'"
           resources:
             requests:
               memory: 1Gi
