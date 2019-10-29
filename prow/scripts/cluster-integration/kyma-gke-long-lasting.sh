@@ -43,11 +43,11 @@ export SIDECAR_IMAGE_TAG="${STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG}"
 
 #Enable SSD disks for k8s cluster
 if [ ${CLUSTER_USE_SSD} ]; then
-	CLUSTER_USE_SSD="${CLUSTER_USE_SSD^^}"
-	if [ $CLUSTER_USE_SSD == "TRUE" ] || [ $CLUSTER_USE_SSD == "YES" ]; then
+	CLUSTER_USE_SSD="$(echo ${CLUSTER_USE_SSD} | tr '[:upper:]' '[:lower:]')"
+	if [ $CLUSTER_USE_SSD == "true" ] || [ $CLUSTER_USE_SSD == "yes" ]; then
 		export CLUSTER_USE_SSD
 	else
-		echo "CLUSTER_USE_SSD prowjob env variable allowed values are TRUE or YES"
+		echo "CLUSTER_USE_SSD prowjob env variable allowed values are true or yes. Cluster will be build with standard disks."
 		unset CLUSTER_USE_SSD
 	fi
 fi
