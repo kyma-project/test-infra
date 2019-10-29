@@ -75,7 +75,7 @@ function cleanup() {
     exit "${EXIT_STATUS}"
 }
 
-trap cleanup EXIT INT
+#trap cleanup EXIT INT
 
 # Enforce lowercase
 readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
@@ -370,6 +370,8 @@ then
 fi
 
 takeBackup
+#### Exiting
+exit 0
 removeCluster
 
 ### Restore phase starts here
