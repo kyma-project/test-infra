@@ -36,10 +36,21 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
-#Enable Stackdriver Kubernetes Engine Monitoring support. Mandatory requirement for stackdriver-prometheus collector.
+#Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
 #https://cloud.google.com/monitoring/kubernetes-engine/prometheus
 export STACKDRIVER_KUBERNETES="true"
 export SIDECAR_IMAGE_TAG="${STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG}"
+
+#Enable SSD disks for k8s cluster
+if [ ${CLUSTER_USE_SSD} ]; then
+	CLUSTER_USE_SSD="${CLUSTER_USE_SSD^^}"
+	if [ $CLUSTER_USE_SSD == "TRUE" ] || [ $CLUSTER_USE_SSD == "YES" ]; then
+		export CLUSTER_USE_SSD
+	else
+		echo "CLUSTER_USE_SSD prowjob env variable allowed values are TRUE or YES"
+		unset CLUSTER_USE_SSD
+	fi
+fi
 
 if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 	export SERVICE_CATALOG_CRD="false"
@@ -209,11 +220,10 @@ EOF
 
 function installStackdriverPrometheusCollector(){
 	echo "Replace tags with current values in patch yaml file."
-	sed -i.bak 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/' ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
-	sed -i.bak 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/' ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
-	sed -i.bak 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/' ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
-	sed -i.bak 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
-	cat ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/' \
+		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/' \
+		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/' \
+		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }

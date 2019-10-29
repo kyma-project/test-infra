@@ -8,7 +8,6 @@ spec:
         - --prometheus.wal-directory=/data/prometheus-db/wal
         - --stackdriver.kubernetes.location=__GCP_REGION__
         - --stackdriver.kubernetes.cluster-name=__CLUSTER_NAME__
-        - --log.level=debug
       resources:
         limits:
           memory: 512Mi
