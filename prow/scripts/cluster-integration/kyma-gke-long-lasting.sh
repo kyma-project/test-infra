@@ -42,9 +42,9 @@ export STACKDRIVER_KUBERNETES="true"
 export SIDECAR_IMAGE_TAG="${STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG}"
 
 #Enable SSD disks for k8s cluster
-if [ ${CLUSTER_USE_SSD} ]; then
-	CLUSTER_USE_SSD="$(echo ${CLUSTER_USE_SSD} | tr '[:upper:]' '[:lower:]')"
-	if [ $CLUSTER_USE_SSD == "true" ] || [ $CLUSTER_USE_SSD == "yes" ]; then
+if [ "${CLUSTER_USE_SSD}" ]; then
+	CLUSTER_USE_SSD=$(echo "${CLUSTER_USE_SSD}" | tr '[:upper:]' '[:lower:]')
+	if [ "${CLUSTER_USE_SSD}" == "true" ] || [ "${CLUSTER_USE_SSD}" == "yes" ]; then
 		export CLUSTER_USE_SSD
 	else
 		echo "CLUSTER_USE_SSD prowjob env variable allowed values are true or yes. Cluster will be build with standard disks."
@@ -223,9 +223,9 @@ function installStackdriverPrometheusCollector(){
 	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/' \
 		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/' \
-		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
-	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat ${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
+	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat \"${TEST_INFRA_SOURCES_DIR}\"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
 shout "Authenticate"
