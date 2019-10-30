@@ -95,7 +95,7 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 In most situations, re-running the job means that Prow uses the same commit. To make sure the job uses the updated code base, you can trigger the job manually.
 Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid YAML for the Prow job. Follow these steps:
 
-Clone `kubernetes/test-infra` repository:
+1. Clone the `kubernetes/test-infra` repository. Run:
 ```shell
 git clone "git@github.com:kubernetes/test-infra.git"
 ```
