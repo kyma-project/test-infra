@@ -225,7 +225,7 @@ function installStackdriverPrometheusCollector(){
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/' \
 		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
-	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat \"${TEST_INFRA_SOURCES_DIR}\"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
+	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
 shout "Authenticate"
