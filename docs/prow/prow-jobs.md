@@ -105,6 +105,7 @@ git reset b9a576b397892c55487e495721d23b3a52ac9472 --hard
 ```
 
 See the example of generating the `kyma-gke-nightly` target:
+
 ```shell
 go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
 ```
