@@ -96,10 +96,13 @@ In most situations, re-running the job means that Prow uses the same commit. To 
 Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) that generates a valid YAML for the Prow job. Follow these steps:
 
 1. Clone the `kubernetes/test-infra` repository. Run:
+
 ```shell
 git clone "git@github.com:kubernetes/test-infra.git"
 ```
+
 2. Reset the compatible `kubernetes/test-infra` state:
+
 ```shell
 git reset b9a576b397892c55487e495721d23b3a52ac9472 --hard
 ```
@@ -109,9 +112,10 @@ See the example of generating the `kyma-gke-nightly` target:
 ```shell
 go run prow/cmd/mkpj/main.go --job=kyma-gke-nightly --config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/config.yaml" --job-config-path="$GOPATH/src/github.com/kyma-project/test-infra/prow/jobs/" > job.yaml
 ```
-**NOTE**: Do not edit generated YAML by hand, modify the file under `--job-config-path` parameter and use [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) again.
 
 You can trigger this job manually. Run:
 ```shell
 kubectl apply -f job.yaml
 ```
+
+**NOTE**: Do not edit the generated YAML by hand. Modify the file under the `--job-config-path` parameter, and use [mkpj](https://github.com/kubernetes/test-infra/tree/master/prow/cmd/mkpj) again.
