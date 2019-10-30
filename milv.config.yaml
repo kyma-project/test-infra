@@ -12,3 +12,6 @@ files:
   - path: "./test-infra/development/prow-addons-ctrl-manager/README.md"
     config:
       white-list-external: ["https://github.com/kubernetes/test-infra/blob/fbc4040f1824bfa126f873650848396a10f05e8a/prow/apis/prowjobs/v1/types.go#L33-L43", "https://github.com/kubernetes/test-infra/blob/fbc4040f1824bfa126f873650848396a10f05e8a/prow/apis/prowjobs/v1/types.go#L48-L62"]
+  - path: "./test-infra/docs/prow/prow-k8s-testgrid.md"
+    config:
+      white-list-external: ["https://github.com/kyma-project/test-infra/blob/60493dd61d77da363b8758b7e4c94f25d4b36501/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83"]
