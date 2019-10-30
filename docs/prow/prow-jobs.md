@@ -99,7 +99,7 @@ Clone `kubernetes/test-infra` repository:
 ```shell
 git clone "git@github.com:kubernetes/test-infra.git"
 ```
-Do not forget to reset the compatible `kubernetes/test-infra` state:
+2. Reset the compatible `kubernetes/test-infra` state:
 ```shell
 git reset b9a576b397892c55487e495721d23b3a52ac9472 --hard
 ```
