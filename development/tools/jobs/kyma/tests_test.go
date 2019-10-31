@@ -199,7 +199,6 @@ var tests = []struct {
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
-	{path: "test-namespace-controller", image: tester.ImageGolangBuildpackLatest},
 }
 
 func TestTestJobs(t *testing.T) {
