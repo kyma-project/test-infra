@@ -103,12 +103,6 @@ var components = []struct {
 			jobsuite.Since(releases.Release15),
 		},
 	},
-	{path: "asset-store-controller-manager", image: tester.ImageGolangKubebuilderBuildpackLatest,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Until(releases.Release14),
-			jobsuite.JobFileSuffix("kubebuilder"),
-		},
-	},
 	{path: "asset-upload-service", image: tester.ImageGolangBuildpack1_11},
 	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest,
 		additionalOptions: []jobsuite.Option{
@@ -119,12 +113,6 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilderBuildpackLatest,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Until(releases.Release14),
-			jobsuite.JobFileSuffix("kubebuilder"),
 		},
 	},
 	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
@@ -199,12 +187,6 @@ var components = []struct {
 	{path: "etcd-tls-setup-job", image: tester.ImageGolangBuildpack1_11},
 	{path: "event-bus", image: tester.ImageGolangBuildpack1_11},
 	{path: "event-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "helm-broker", image: tester.ImageGolangKubebuilderBuildpackLatest,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Until(releases.Release14),
-			jobsuite.JobFileSuffix("deprecated"),
-		},
-	},
 	{path: "iam-kubeconfig-service", image: tester.ImageGolangBuildpack1_12,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Until(releases.Release15),
@@ -241,7 +223,6 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "namespace-controller", image: tester.ImageGolangBuildpackLatest},
 	{path: "service-binding-usage-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),

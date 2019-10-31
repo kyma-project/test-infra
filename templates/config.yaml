@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.7"
+  nextRelease: "1.8"
   releases:
+    - "1.7"
     - "1.6"
     - "1.5"
-    - "1.4"
 
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
@@ -549,10 +549,6 @@ templates:
           <<: *go_kyma_component_1_12
           until: "1.6"
           path: components/kyma-operator
-      - to: ../prow/jobs/kyma/components/namespace-controller/namespace-controller.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: components/namespace-controller
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -632,10 +628,6 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/kubeless
-      - to: ../prow/jobs/kyma/tests/test-namespace-controller/test-namespace-controller.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: tests/test-namespace-controller
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
         values:
           <<: *go_kyma_component_1_12

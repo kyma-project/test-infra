@@ -45,22 +45,4 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-    - name: pre-rel14-kyma-components-istio-kyma-patch
-      branches:
-        - release-1.4
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.4
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/istio-kyma-patch"
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
 

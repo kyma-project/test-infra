@@ -30,6 +30,17 @@ job_labels_template: &job_labels_template
 
 postsubmits: 
   kyma-project/kyma:
+  - name: post-rel17-kyma-github-release
+    branches:
+      - release-1.7
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.7
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.7: "true"
   - name: post-rel16-kyma-github-release
     branches:
       - release-1.6
@@ -52,19 +63,13 @@ postsubmits:
       <<: *job_labels_template
       preset-build-release: "true"
       preset-target-commit-1.5: "true"
-  - name: post-rel14-kyma-github-release
-    branches:
-      - release-1.4
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.4
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.4: "true"
 
 presets:
+  - labels:
+      preset-target-commit-1.7: "true"
+    env:
+      - name: RELEASE_TARGET_COMMIT
+        value: release-1.7
   - labels:
       preset-target-commit-1.6: "true"
     env:
@@ -75,8 +80,3 @@ presets:
     env:
       - name: RELEASE_TARGET_COMMIT
         value: release-1.5
-  - labels:
-      preset-target-commit-1.4: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.4
