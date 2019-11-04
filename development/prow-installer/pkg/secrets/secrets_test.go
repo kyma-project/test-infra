@@ -38,33 +38,33 @@ func TestNew(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name:    "Only location options",
-			args:    args{ctx: passedCtx, opts: Option{LocationID: "hello"}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name:    "Only prefix, project options",
-			args:    args{ctx: passedCtx, opts: Option{Prefix: "hello", ProjectID: "hello"}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name:    "Only prefix, location options",
-			args:    args{ctx: passedCtx, opts: Option{Prefix: "hello", LocationID: "hello"}},
-			want:    nil,
-			wantErr: true,
-		},
-		{
 			name:    "Only project, location options",
 			args:    args{ctx: passedCtx, opts: Option{ProjectID: "hello", LocationID: "hello"}},
 			want:    nil,
 			wantErr: true,
 		},
 		{
+			name:    "Only project, location, kmsRing options",
+			args:    args{ctx: passedCtx, opts: Option{ProjectID: "hello", LocationID: "hello", KmsRing: "test"}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name:    "Only project, location, kmsRing, kmsKey options",
+			args:    args{ctx: passedCtx, opts: Option{ProjectID: "hello", LocationID: "hello", KmsRing: "test", KmsKey: "test"}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name:    "Only project, kmsRing, kmsKey, bucket options",
+			args:    args{ctx: passedCtx, opts: Option{ProjectID: "proj", KmsRing: "ring", KmsKey: "key", Bucket: "bucket"}},
+			want:    nil,
+			wantErr: true,
+		},
+		{
 			name:    "All required options",
-			args:    args{ctx: passedCtx, opts: Option{Prefix: "hello", ProjectID: "hello", LocationID: "hello"}},
-			want:    &Client{ctx: passedCtx, Option: Option{Prefix: "hello", ProjectID: "hello", LocationID: "hello"}},
+			args:    args{ctx: passedCtx, opts: Option{ProjectID: "proj", LocationID: "location", KmsRing: "ring", KmsKey: "key", Bucket: "bucket"}},
+			want:    &Client{ctx: passedCtx, Option: Option{ProjectID: "proj", LocationID: "location", KmsRing: "ring", KmsKey: "key", Bucket: "bucket"}},
 			wantErr: false,
 		},
 	}
