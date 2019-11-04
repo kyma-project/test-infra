@@ -25,7 +25,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in GCLOUD_SERVICE_KEY_PATH GCLOUD_PROJECT_NAME CLUSTER_NAME GCLOUD_COMPUTE_ZONE; do
+for var in GCLOUD_SERVICE_KEY_PATH GCLOUD_PROJECT_NAME CLUSTER_NAME GCLOUD_COMPUTE_ZONE TEST_INFRA_SOURCES_DIR TEST_INFRA_SOURCES_DIR; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -70,3 +70,6 @@ gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
 gcloud beta container clusters create "${CLUSTER_NAME}" "${CLUSTER_VERSION_PARAM}" "${MACHINE_TYPE_PARAM}" "${NUM_NODES_PARAM}" "${NETWORK_PARAM[@]}" "${LABELS_PARAM[@]}" ${STACKDRIVER_KUBERNETES_PARAM} ${DISK_TYPE_PARAM}
+
+kubectl -n kube-system patch cm kube-dns --type merge --patch \
+  "$(cat "${TEST_INFRA_SOURCES_DIR}" /prow/scripts/resources/kube-dns-stub-domains-patch.yaml)"
