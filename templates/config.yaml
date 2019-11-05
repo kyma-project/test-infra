@@ -390,6 +390,11 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/knative-build
+      - to: ../prow/jobs/kyma/tests/function-controller-e2e/function-controller-e2e.yaml
+        values:
+          <<: *go_kyma_component_1_11
+          optional: true
+          path: tests/function-controller-e2e
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
         values:
           <<: *go_kyma_component_1_11

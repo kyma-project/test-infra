@@ -75,6 +75,11 @@ var tests = []struct {
 		jobsuite.Since(releases.Release14),
 	}},
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
+	{path: "function-controller-e2e", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Optional(),
+		},
+	},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
 	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
 	{path: "test-namespace-controller", image: tester.ImageGolangBuildpackLatest},

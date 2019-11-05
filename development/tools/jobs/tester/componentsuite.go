@@ -14,7 +14,7 @@ import (
 )
 
 // Designed to check validity of jobs generated from /templates/templates/component.yaml
-type ComponentSuite struct{
+type ComponentSuite struct {
 	*jobsuite.Config
 }
 
@@ -44,7 +44,6 @@ func (s ComponentSuite) Run(t *testing.T) {
 		require.Empty(t, jobConfig.Postsubmits)
 	}
 
-
 	if !s.Deprecated {
 		t.Run("pre-master", s.preMasterTest(jobConfig))
 		t.Run("post-master", s.postMasterTest(jobConfig))
@@ -60,7 +59,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 			s.jobName("pre-master"),
 			"master",
 		)
-		require.NotNil(t, job)
+		require.NotNil(t, job, "pre-master job")
 
 		assert.True(t, job.RunsAgainstBranch("master"))
 		assert.False(t, job.SkipReport)
@@ -85,7 +84,7 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 			s.jobName("post-master"),
 			"master",
 		)
-		require.NotNil(t, job)
+		require.NotNil(t, job, "post-master job")
 
 		assert.Equal(t, []string{"^master$"}, job.Branches)
 		assert.Equal(t, 10, job.MaxConcurrency)
@@ -109,7 +108,7 @@ func (s ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testi
 					GetReleaseJobName(s.moduleName(), currentRelease),
 					currentRelease.Branch(),
 				)
-				require.NotNil(t, job)
+				require.NotNil(t, job, "pre-release job")
 
 				assert.Equal(t, []string{currentRelease.Branch()}, job.Branches)
 				assert.False(t, job.SkipReport)
@@ -161,7 +160,7 @@ func (s ComponentSuite) postReleaseTest(jobConfig config.JobConfig) func(t *test
 					GetReleasePostSubmitJobName(s.moduleName(), currentRelease),
 					s.patchReleaseBranch(currentRelease),
 				)
-				require.NotNil(t, job)
+				require.NotNil(t, job, "post-release job")
 
 				assert.Equal(t, 10, job.MaxConcurrency)
 				assert.True(t, job.Decorate)
