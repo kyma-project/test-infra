@@ -54,6 +54,10 @@ metadata:
   namespace: kube-system
 EOF
 
+# Configure stub-domains to speed up DNS propagation
+kubectl -n kube-system patch cm kube-dns --type merge --patch \
+  "$(cat "${PROW_WORKLOAD_CLUSTER_DIR}"/03-kube-dns-stub-domains-patch.yaml)"
+
 
 # Create secrets
 go run "${CURRENT_DIR}/../development/tools/cmd/secretspopulator/main.go" --project="${PROJECT}" --location "${LOCATION}" --bucket "${BUCKET_NAME}" --keyring "${KEYRING_NAME}" --key "${ENCRYPTION_KEY_NAME}" --kubeconfig "${KUBECONFIG}" --secrets-def-file="${PROW_WORKLOAD_CLUSTER_DIR}/required-secrets.yaml"
