@@ -656,7 +656,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/backup-restore-test
-      - to: ../prow/jobs/kyma/tests/integration/dex/dex.yaml
+      - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests.yaml
         values:
           <<: *go_kyma_component_1_12
           path: tests/integration/dex

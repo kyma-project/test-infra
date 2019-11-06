@@ -170,6 +170,7 @@ var tests = []struct {
 	},
 	{path: "integration/dex", image: tester.ImageGolangBuildpack1_12,
 		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests"),
 			jobsuite.Until(releases.Release15),
 		},
 	},
