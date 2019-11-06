@@ -257,10 +257,6 @@ shout "Create new cluster"
 date
 createCluster
 
-shout "Increase cluster max container memory limit"
-date
-limitrangepatch
-
 shout "Install tiller"
 date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
@@ -270,6 +266,10 @@ shout "Install kyma"
 date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+shout "Increase cluster max container memory limit"
+date
+limitrangepatch
 
 shout "Install stackdriver-prometheus collector"
 date
