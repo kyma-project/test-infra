@@ -1,4 +1,7 @@
 spec:
+  resources:
+    limits:
+      memory: 6Gi
   containers:
     - name: sidecar
       image: gcr.io/stackdriver-prometheus/stackdriver-prometheus-sidecar:__SIDECAR_IMAGE_TAG__
@@ -10,9 +13,9 @@ spec:
         - --stackdriver.kubernetes.cluster-name=__CLUSTER_NAME__
       resources:
         limits:
-          memory: 512Mi
+          memory: 6Gi
         requests:
-          memory: 256Mi
+          memory: 512Mi
       ports:
         - name: sidecar
           containerPort: 9091

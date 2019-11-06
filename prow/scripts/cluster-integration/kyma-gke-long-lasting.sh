@@ -228,6 +228,13 @@ function installStackdriverPrometheusCollector(){
 	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
+
+function limitrangepatch(){
+	echo "Patching kyma-default LimitRange"
+	kubectl -n kyma-system patch limitrange kyma-default --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/limitrange-patch.yaml)"
+
+}
+
 shout "Authenticate"
 date
 init
@@ -249,6 +256,10 @@ date
 shout "Create new cluster"
 date
 createCluster
+
+shout "Increase cluster max container memory limit"
+date
+limitrangepatch
 
 shout "Install tiller"
 date

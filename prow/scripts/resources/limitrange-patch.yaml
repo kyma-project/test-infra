@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: kyma-default
+spec:
+  limits:
+  - default:
+      memory: 96Mi
+    defaultRequest:
+      memory: 32Mi
+    max:
+      memory: 6Gi # Maximum memory that a container can request
+    type: Container
+      
