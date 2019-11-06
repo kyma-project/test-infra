@@ -1,6 +1,6 @@
 job_template: &job_template
-  skip_report: false
   always_run: true
+  skip_report: false
   decorate: true
   path_alias: github.com/kyma-incubator/dex
   max_concurrency: 10
