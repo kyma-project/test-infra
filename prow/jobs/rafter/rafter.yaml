@@ -30,10 +30,8 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/rafter:
-    - name: pre-master-rafter
+    - name: pre-rafter
       always_run: true
-      branches:
-        - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
@@ -41,24 +39,20 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/rafter:
-    - name: post-master-rafter
+    - name: post-rafter
       branches:
         - ^master$
       <<: *job_template
       labels:
         <<: *job_labels_template
-        preset-build-master: "true"
-        preset-bot-github-token: "true"
         prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
-    - name: post-release-rafter
+    - name: release-rafter
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
-        - 'v\d+\.\d+\.\d+$'
+        - 'v\d+\.\d+\.\d+(?:-.*)?$'
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
-        preset-bot-github-token: "true"
-        preset-kind-volume-mounts: "true"
         prow.kyma-project.io/slack.skipReport: "true"
       skip_report: false
       decorate: true
@@ -73,15 +67,17 @@ postsubmits:
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
+            env:
+            - name: BUILD_TYPE
+              value: master
+            - name: DOCKER_PUSH_DIRECTORY
+              value: ""
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/rafter"
-            env:
-              - name: RUN_ON_PROW
-                value: "true"
             resources:
               requests:
                 memory: 1.5Gi
