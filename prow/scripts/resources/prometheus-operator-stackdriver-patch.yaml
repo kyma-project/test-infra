@@ -13,7 +13,7 @@ spec:
         - --stackdriver.kubernetes.cluster-name=__CLUSTER_NAME__
       resources:
         limits:
-          memory: 6Gi
+          memory: 2Gi
         requests:
           memory: 512Mi
       ports:
