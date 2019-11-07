@@ -60,7 +60,7 @@ export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
-export TEST_CONTAINER_NAME="runner"
+export TEST_CONTAINER_NAME="tests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -434,16 +434,30 @@ function testKyma() {
         local HELM_ARGS="--tls"
     fi
 
+    suiteName="testsuite-upgrade-$(date '+%Y-%m-%d-%H-%M')"
+
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
-    testEndToEndResult=$?
+    cat <<EOF | kubectl apply -f -
+apiVersion: testing.kyma-project.io/v1alpha1
+kind: ClusterTestSuite
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: ${suiteName}
+spec:
+  maxRetries: 1
+  concurrency: 1
+  selectors:
+    matchNames:
+    - name: test-e2e-upgrade-execute-tests
+      namespace: ${UPGRADE_TEST_NAMESPACE}
+EOF
 
-    echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
-
-    if [ "${testEndToEndResult}" != 0 ]; then
-        echo "Helm test operation failed: ${testEndToEndResult}"
-        exit "${testEndToEndResult}"
+    waitForTestSuiteResult "${suiteName}"
+    testExitCode=$?
+    if [ "${testExitCode}" != 0 ]; then
+        echo "Helm test operation failed: ${testExitCode}"
+        exit "${testExitCode}"
     fi
     set -o errexit
 
