@@ -52,7 +52,6 @@ postsubmits:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
       labels:
         <<: *job_labels_template
-        preset-build-release: "true"
         prow.kyma-project.io/slack.skipReport: "true"
       skip_report: false
       decorate: true
