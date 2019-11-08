@@ -8,7 +8,6 @@ function kyma::install {
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
     
-    # TODO: Szostok wbijaj tutaj :)
     "${1}/installation/scripts/is-installed.sh" --timeout "${5}"
 }
 
@@ -21,8 +20,7 @@ function kyma::load_config {
 }
 
 function kyma::test {
-    # TODO: Szostok wbijaj tutaj :)
-    "${1}/installation/scripts/testing.sh" --cleanup "false" --concurrency 5
+    "${1}/kyma-testing.sh"
 }
 
 function kyma::build_installer {

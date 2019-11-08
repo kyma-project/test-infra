@@ -265,10 +265,7 @@ function main {
         junit::test_skip
     fi
 
-    junit::test_start "Test_Kyma"
-    log::info "Testing Kyma" 2>&1 | junit::test_output
-    kyma::test "${KYMA_SOURCES}" 2>&1 | junit::test_output
-    junit::test_pass
+    kyma::test "${SCRIPT_DIR}"
 }
 
 read_flags "$@"
