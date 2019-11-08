@@ -397,6 +397,12 @@ presets:
         hostPath:
           path: /sys/fs/cgroup
           type: Directory
+  - labels:
+      preset-cluster-use-ssd: "true"
+    env:
+    - name: CLUSTER_USE_SSD
+      value: "true"
+
 
 branch-protection:
   enforce_admins: false
@@ -414,6 +420,20 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.7:
+              required_status_checks:
+                contexts:
+                  - pre-rel17-kyma-integration
+                  - pre-rel17-kyma-gke-integration
+                  - pre-rel17-kyma-gke-upgrade
+                  - pre-rel17-kyma-gke-backup
+                  - pre-rel17-kyma-gke-central-connector
+                  - pre-rel17-kyma-artifacts
+                  - pre-rel17-kyma-installer
+                  - pre-rel17-kyma-gke-minio-gcs-gateway
+                  - pre-rel17-kyma-gke-minio-az-gateway
+                  - pre-rel17-kyma-gke-minio-gcs-gateway-migration
+                  - pre-rel17-kyma-gke-minio-az-gateway-migration
             release-1.6:
               required_status_checks:
                 contexts:
@@ -440,18 +460,6 @@ branch-protection:
                   - pre-rel15-kyma-installer
                   - pre-rel15-kyma-gke-minio-gateway
                   - pre-rel15-kyma-gke-minio-gateway-migration
-            release-1.4:
-              required_status_checks:
-                contexts:
-                  - pre-rel14-kyma-integration
-                  - pre-rel14-kyma-gke-integration
-                  - pre-rel14-kyma-gke-upgrade
-                  - pre-rel14-kyma-gke-backup
-                  - pre-rel14-kyma-gke-central-connector
-                  - pre-rel14-kyma-artifacts
-                  - pre-rel14-kyma-installer
-                  - pre-rel14-kyma-gke-minio-gateway
-                  - pre-rel14-kyma-gke-minio-gateway-migration
         website:
           required_status_checks:
             contexts:
@@ -499,6 +507,16 @@ branch-protection:
         documentation-component:
           protect: true
         hack-showcase:
+          branches:
+            master:
+              protect: true
+        dex:
+          branches:
+            master:
+              protect: true
+            kyma-master:
+              protect: true
+        api-gateway:
           branches:
             master:
               protect: true

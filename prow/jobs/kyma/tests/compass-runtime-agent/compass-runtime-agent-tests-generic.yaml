@@ -14,12 +14,12 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.7)-compass-runtime-agent$
   run_if_changed: "^tests/compass-runtime-agent/|^common/makefiles/"
   spec:
     containers:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-compass-runtime-agent
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
