@@ -30,12 +30,46 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/rafter:
-    - name: pre-rafter
+    - name: pre-master-rafter
       always_run: true
       <<: *job_template
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
+    - name: pre-master-rafter-integration
+      always_run: true
+      # branches:
+      #   - ^master$ - not sure
+      labels:
+        <<: *job_labels_template
+        preset-kind-volume-mounts: "true"
+        preset-build-pr: "true"
+      skip_report: false
+      decorate: true
+      optional: false
+      path_alias: github.com/kyma-project/rafter
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: master
+          path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+            securityContext:
+              privileged: true
+            command:
+              - make
+            args:
+              - integration-tests
+            env:
+              - name: RUN_ON_PROW
+                value: "true"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
 
 postsubmits:
   kyma-project/rafter:
@@ -67,10 +101,10 @@ postsubmits:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
             env:
-            - name: BUILD_TYPE
-              value: master
-            - name: DOCKER_PUSH_DIRECTORY
-              value: ""
+              - name: BUILD_TYPE
+                value: master
+              - name: DOCKER_PUSH_DIRECTORY
+                value: ""
             securityContext:
               privileged: true
             command:
