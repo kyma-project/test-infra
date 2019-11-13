@@ -14,7 +14,6 @@ var tools = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "load-test", image: tester.ImageGolangBuildpackLatest},
 	{path: "alpine-net", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
