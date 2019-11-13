@@ -52,6 +52,18 @@ if [ "${CLUSTER_USE_SSD}" ]; then
 	fi
 fi
 
+#Provision GKE regional cluster.
+if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
+	PROVISION_REGIONAL_CLUSTER=$(echo "${PROVISION_REGIONAL_CLUSTER}" | tr '[:upper:]' '[:lower:]')
+	if [ "${PROVISION_REGIONAL_CLUSTER}" == "true" ] || [ "${PROVISION_REGIONAL_CLUSTER}" == "yes" ]; then
+		export PROVISION_REGIONAL_CLUSTER
+		export CLOUDSDK_COMPUTE_REGION
+	else
+		echo "PROVISION_REGIONAL_CLUSTER prowjob env variable allowed values are true or yes. Cluster will be build with standard disks."
+		unset PROVISION_REGIONAL_CLUSTER
+	fi
+fi
+
 if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 	export SERVICE_CATALOG_CRD="false"
 fi
