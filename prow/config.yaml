@@ -402,12 +402,6 @@ presets:
     env:
     - name: CLUSTER_USE_SSD
       value: "true"
-  - labels:
-      preset-provision-regional-cluster: "true"
-    env:
-    - name: PROVISION_REGIONAL_CLUSTER
-      value: "true"
-
 
 branch-protection:
   enforce_admins: false

@@ -60,7 +60,7 @@ if [ "${NUM_NODES}" ]; then NUM_NODES_PARAM="--num-nodes=${NUM_NODES}"; fi
 if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then NETWORK_PARAM=(--network="${GCLOUD_NETWORK_NAME}" --subnetwork="${GCLOUD_SUBNET_NAME}"); fi
 if [ "${STACKDRIVER_KUBERNETES}" ];then STACKDRIVER_KUBERNETES_PARAM="--enable-stackdriver-kubernetes"; fi
 if [ "${CLUSTER_USE_SSD}" ];then DISK_TYPE_PARAM="--disk-type=pd-ssd"; fi
-if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ];then REGIONAL_CLUSTER_PARAM="--region=${CLOUDSDK_COMPUTE_REGION}"; fi
+if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then REGIONAL_CLUSTER_PARAM="--region=${CLOUDSDK_COMPUTE_REGION} --num-nodes=${NODES_PER_ZONE}"; fi
 
 APPENDED_LABELS=""
 if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi

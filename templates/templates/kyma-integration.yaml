@@ -881,6 +881,10 @@ periodics:
           command:
             - "bash"
           env:
+            - name: PROVISION_REGIONAL_CLUSTER
+              value: "true"
+            - name: NODES_PER_ZONE
+              value: 1
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
               value: "0.6.3"
             - name: INPUT_CLUSTER_NAME
