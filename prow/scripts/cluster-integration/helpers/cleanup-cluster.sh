@@ -135,6 +135,20 @@ function removeResources() {
 			GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 			# Check if it's still in use. It shouldn't as we removed DNS records earlier.
 			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
+				SECONDS=0
+				END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
+				echo "Waiting 600 seconds to unassigne cluster IP address."
+				while [ ${SECONDS} -lt ${END_TIME} ];do
+					sleep 10
+					echo "Checking if cluster IP is unassigned."
+					GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+					if [[ ${GATEWAY_IP_STATUS} != "IN_USE" ]]; then
+						echo "Cluster IP address sucessfully unassigned."
+						break
+					fi
+				done
+			fi
+			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
 				echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
 				exit 1
 			# Remove IP address reservation.
