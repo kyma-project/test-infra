@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# docker::start starts the Docker Daemon if not already started
 function docker::start {
     if docker info > /dev/null 2>&1 ; then
         echo "Docker already started"
@@ -31,6 +32,7 @@ function docker::start {
     echo "Done starting up docker."
 }
 
+# docker::print_processes prints running docker containers
 function docker::print_processes {
     docker ps -a
 }

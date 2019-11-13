@@ -3,13 +3,19 @@
 set -eo pipefail
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TMP_DIR="$(mktemp -d)"
+readonly TMP_BIN_DIR="${TMP_DIR}/bin"
 readonly LIB_DIR="$( cd "${SCRIPT_DIR}/lib" && pwd )"
-readonly ARTIFACTS_DIR="${ARTIFACTS:-"$( pwd )/tmp"}"
+readonly ARTIFACTS_DIR="${ARTIFACTS:-"${TMP_DIR}/artifacts"}"
 readonly KIND_RESOURCES_DIR="${SCRIPT_DIR}/kind/resources"
 mkdir -p "${ARTIFACTS_DIR}"
+mkdir -p "${TMP_BIN_DIR}"
+export PATH="${TMP_BIN_DIR}:${PATH}"
 
 # shellcheck disable=SC1090
 source "${LIB_DIR}/log.sh"
+# shellcheck disable=SC1090
+source "${LIB_DIR}/host.sh"
 # shellcheck disable=SC1090
 source "${LIB_DIR}/junit.sh"
 # shellcheck disable=SC1090
@@ -21,6 +27,7 @@ source "${LIB_DIR}/kubernetes.sh"
 # shellcheck disable=SC1090
 source "${LIB_DIR}/kyma.sh"
 
+# finalize stores logs, saves JUnit report and removes cluster
 function finalize {
     local -r exit_status=$?
     local finalization_failed="false"
@@ -49,6 +56,15 @@ function finalize {
 
     junit::suite_save
 
+    log::info "Deleting temporary dir ${TMP_DIR}"
+    rm -rf "${TMP_DIR}" || true
+
+    if [[ ${exit_status} -eq 0 ]]; then
+        log::success "Job finished with success"
+    else
+        log::error "Job finished with error"
+    fi
+
     return "${exit_status}"
 }
 
@@ -73,6 +89,10 @@ KYMA_INSTALLATION_TIMEOUT="30m"
 readonly KYMA_DOMAIN="kyma.local"
 readonly KYMA_INSTALLER_NAME="kyma-installer:kind"
 
+# read_flags analyzes provided arguments as flags
+#
+# Arguments:
+#   All arguments ar treated as flags
 function read_flags {
     while test $# -gt 0; do
         case "$1" in
@@ -182,12 +202,14 @@ function read_flags {
         KYMA_INSTALLATION_TIMEOUT
 }
 
+# tune_inotify configures INotify settings
 function tune_inotify {
     log::info "Increasing limits for inotify"
     sysctl -w fs.inotify.max_user_watches=524288
     sysctl -w fs.inotify.max_user_instances=512
 }
 
+# main is a entrypoint function
 function main {
     trap junit::test_fail ERR
     junit::suite_init "Kyma_Integration"
@@ -212,7 +234,7 @@ function main {
     junit::test_start "Ensure_Kubectl"
     if [[ ${ENSURE_KUBECTL} = "true" ]]; then
         log::info "Ensuring kubectl version" 2>&1 | junit::test_output
-        kubernetes::ensure_kubectl "${KUBERNETES_VERSION}" 2>&1 | junit::test_output
+        kubernetes::ensure_kubectl "${KUBERNETES_VERSION}" "$(host::os)" "${TMP_BIN_DIR}" 2>&1 | junit::test_output
         junit::test_pass
     else
         junit::test_skip
@@ -265,7 +287,10 @@ function main {
         junit::test_skip
     fi
 
-    kyma::test "${SCRIPT_DIR}"
+    # TODO(michal-hudy): not everything is covered with JUnit in kyma-testing.sh script
+    junit::test_start "Testing_Kyma"
+    kyma::test "${SCRIPT_DIR}" 2>&1 | junit::test_output
+    junit::test_pass
 }
 
 read_flags "$@"
