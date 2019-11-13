@@ -1,5 +1,6 @@
 job_template: &job_template
   skip_report: false
+  always_run: true
   decorate: true
   optional: false
   path_alias: github.com/kyma-project/rafter
@@ -31,7 +32,6 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/rafter:
     - name: pre-rafter
-      always_run: true
       <<: *job_template
       labels:
         <<: *job_labels_template
