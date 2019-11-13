@@ -12,7 +12,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
         securityContext:
           privileged: true
         command:
@@ -68,7 +68,7 @@ postsubmits:
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
             env:
             - name: BUILD_TYPE
               value: master
