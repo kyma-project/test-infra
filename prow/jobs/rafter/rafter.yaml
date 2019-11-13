@@ -17,6 +17,9 @@ job_template: &job_template
           privileged: true
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        env:
+        - name: GO111MODULE
+          value: "on"
         args:
           - "/home/prow/go/src/github.com/kyma-project/rafter"
         resources:
@@ -71,6 +74,8 @@ postsubmits:
               value: master
             - name: DOCKER_PUSH_DIRECTORY
               value: ""
+            - name: GO111MODULE
+              value: "on"
             securityContext:
               privileged: true
             command:
