@@ -59,7 +59,7 @@ if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
 		export PROVISION_REGIONAL_CLUSTER
 		export CLOUDSDK_COMPUTE_REGION
 	else
-		echo "PROVISION_REGIONAL_CLUSTER prowjob env variable allowed values are true or yes. Cluster will be build with standard disks."
+		echo "PROVISION_REGIONAL_CLUSTER prowjob env variable allowed values are true or yes. Provisioning standard cluster."
 		unset PROVISION_REGIONAL_CLUSTER
 	fi
 fi

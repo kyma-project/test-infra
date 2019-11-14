@@ -33,5 +33,11 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-gcloud container clusters delete "${CLUSTER_NAME}" --quiet
+# Check if removing regionl cluster.
+if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
+  #Pass gke region name to delete command.
+  gcloud container clusters delete "${CLUSTER_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --quiet
+else
+  gcloud container clusters delete "${CLUSTER_NAME}" --quiet
+fi
 
