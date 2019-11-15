@@ -105,20 +105,24 @@ function testComponents() {
   do
 
     echo "processing ${DIR}"
-
+    
     GOPKG_FILE_NAME="${DIR}"Gopkg.lock
 
     if [ -f "${GOPKG_FILE_NAME}" ]; then
+      set +e
       # fetch dependencies
       echo " ├── fetching dependencies..."
       cd "${DIR}"
       dep ensure --vendor-only
+      if [[ $? != 0 ]]; then
+        echo -e "\n-----------------------------------------------\nClould not test ${DIR}"
+        echo -e "\n---------------------RETRY---------------------"
+        dep ensure --vendor-only
 
+      fi
       # scan for vulnerabilities
       echo " ├── scanning for vulnerabilities..."
-      set +e
       snyk test --severity-threshold=high --json > snyk-out.json
-      set -e
 
       # send notifications to slack if vulnerabilities was found
       OK=$(jq '.ok' < snyk-out.json)
@@ -128,7 +132,9 @@ function testComponents() {
         COMPONENT_TO_TEST=$(basename "${DIR}")
         sendSlackNotification "${COMPONENT_TO_TEST}"
       fi
-      echo " └── finished"
+      echo " └── finished ${DIR}"
+      
+      set -e
     fi
   done
 }
