@@ -54,6 +54,7 @@ if [ "${NUM_NODES}" ]; then GCLOUD_PARAMS+=("--num-nodes=${NUM_NODES}"); else GC
 if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then GCLOUD_PARAMS+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else GCLOUD_PARAMS+=("${NETWORK_PARAM}"); fi
 if [ "${STACKDRIVER_KUBERNETES}" ];then GCLOUD_PARAMS+=("--enable-stackdriver-kubernetes"); fi
 if [ "${CLUSTER_USE_SSD}" ];then GCLOUD_PARAMS+=("--disk-type=pd-ssd"); fi
+#Must be added at the end to override --num-nodes parameter value set earlier.
 if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then GCLOUD_PARAMS+=("--region=${CLOUDSDK_COMPUTE_REGION}" "--num-nodes=${NODES_PER_ZONE}"); fi
 
 APPENDED_LABELS=""
