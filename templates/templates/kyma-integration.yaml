@@ -817,37 +817,37 @@ periodics:
               readOnly: true
         command:
             - "bash"
-          env:
-            - name: PROVISION_REGIONAL_CLUSTER
-              value: "true"
-            - name: NODES_PER_ZONE
-              value: "1"
-            - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
-              value: "0.6.3"
-            - name: INPUT_CLUSTER_NAME
-              value: "nightly"
-            - name: TEST_RESULT_WINDOW_TIME
-              value: "6h"
-            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
-            - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-              value: "cluster-access"
-            - name: KYMA_ALERTS_SLACK_API_URL
-              valueFrom:
-                secretKeyRef:
-                  name: kyma-alerts-slack-api-url
-                  key: secret
-            - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-b"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
+        env:
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
+          - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
+            value: "0.6.3"
+          - name: INPUT_CLUSTER_NAME
+            value: "nightly"
+          - name: TEST_RESULT_WINDOW_TIME
+            value: "6h"
+          - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+            value: "#c4core-kyma-ci-force"
+          - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+            value: "cluster-access"
+          - name: KYMA_ALERTS_SLACK_API_URL
+            valueFrom:
+              secretKeyRef:
+                name: kyma-alerts-slack-api-url
+                key: secret
+          - name: KYMA_ALERTS_CHANNEL
+            value: "#c4core-kyma-ci-force"
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
 
   - name: kyma-gke-weekly
     cron: "0 6 * * 1" # "At 06:00 on Monday."
