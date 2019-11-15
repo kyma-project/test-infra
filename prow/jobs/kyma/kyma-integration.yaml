@@ -961,7 +961,7 @@ periodics:
             - name: sa-stability-fluentd-storage-writer
               mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
               readOnly: true
-          command:
+        command:
             - "bash"
           env:
             - name: PROVISION_REGIONAL_CLUSTER
