@@ -37,31 +37,29 @@ fi
 
 readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
 readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
+declare -a GCLOUD_PARAMS
 
 TTL_HOURS_PARAM="3"
 CLUSTER_VERSION_PARAM="--cluster-version=1.13"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
-NETWORK_PARAM=(--network=default)
+NETWORK_PARAM="--network=default"
 if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi
 CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},created-at-readable=${CURRENT_TIMESTAMP_READABLE_PARAM},ttl=${TTL_HOURS_PARAM}"
-#Optional arguments
-#Enable stackdriver kubernetes engine monitoring for cluster
-STACKDRIVER_KUBERNETES_PARAM=""
-#Enable SSD disks for cluster
-DISK_TYPE_PARAM=""
 
-
-if [ "${CLUSTER_VERSION}" ]; then CLUSTER_VERSION_PARAM="--cluster-version=${CLUSTER_VERSION}"; fi
-if [ "${MACHINE_TYPE}" ]; then MACHINE_TYPE_PARAM="--machine-type=${MACHINE_TYPE}"; fi
-if [ "${NUM_NODES}" ]; then NUM_NODES_PARAM="--num-nodes=${NUM_NODES}"; fi
-if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then NETWORK_PARAM=(--network="${GCLOUD_NETWORK_NAME}" --subnetwork="${GCLOUD_SUBNET_NAME}"); fi
-if [ "${STACKDRIVER_KUBERNETES}" ];then STACKDRIVER_KUBERNETES_PARAM="--enable-stackdriver-kubernetes"; fi
-if [ "${CLUSTER_USE_SSD}" ];then DISK_TYPE_PARAM="--disk-type=pd-ssd"; fi
+GCLOUD_PARAMS+=("${CLUSTER_NAME}")
+if [ "${CLUSTER_VERSION}" ]; then GCLOUD_PARAMS+=("--cluster-version=${CLUSTER_VERSION}"); else GCLOUD_PARAMS+=("${CLUSTER_VERSION_PARAM}"); fi
+if [ "${MACHINE_TYPE}" ]; then GCLOUD_PARAMS=("--machine-type=${MACHINE_TYPE}"); else GCLOUD_PARAMS+=("${MACHINE_TYPE_PARAM}"); fi
+if [ "${NUM_NODES}" ]; then GCLOUD_PARAMS+=("--num-nodes=${NUM_NODES}"); else GCLOUD_PARAMS+=("${NUM_NODES_PARAM}"); fi
+if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then GCLOUD_PARAMS+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else GCLOUD_PARAMS+=("${NETWORK_PARAM}"); fi
+if [ "${STACKDRIVER_KUBERNETES}" ];then GCLOUD_PARAMS+=("--enable-stackdriver-kubernetes"); fi
+if [ "${CLUSTER_USE_SSD}" ];then GCLOUD_PARAMS+=("--disk-type=pd-ssd"); fi
+#Must be added at the end to override --num-nodes parameter value set earlier.
+if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then GCLOUD_PARAMS+=("--region=${CLOUDSDK_COMPUTE_REGION}" "--num-nodes=${NODES_PER_ZONE}"); fi
 
 APPENDED_LABELS=""
 if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
-LABELS_PARAM=(--labels="job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
+GCLOUD_PARAMS+=("--labels=job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
 
 command -v gcloud
 
@@ -69,4 +67,7 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-gcloud beta container clusters create "${CLUSTER_NAME}" "${CLUSTER_VERSION_PARAM}" "${MACHINE_TYPE_PARAM}" "${NUM_NODES_PARAM}" "${NETWORK_PARAM[@]}" "${LABELS_PARAM[@]}" ${STACKDRIVER_KUBERNETES_PARAM} ${DISK_TYPE_PARAM}
+echo -e "\n---> Creating cluster with follwing parameters."
+echo "${GCLOUD_PARAMS[@]}"
+echo -e "\n---> Creating cluster"
+gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"

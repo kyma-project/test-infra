@@ -403,7 +403,6 @@ presets:
     - name: CLUSTER_USE_SSD
       value: "true"
 
-
 branch-protection:
   enforce_admins: false
   required_pull_request_reviews:
