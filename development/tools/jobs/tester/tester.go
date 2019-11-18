@@ -27,6 +27,8 @@ const (
 	ImageGolangBuildpack1_11 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11"
 	// ImageGolangBuildpack1_12 means Golang buildpack image with Go 1.12.*
 	ImageGolangBuildpack1_12 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12"
+	// ImageGolangBuildpack1_13 means Golang buildpack image with Go 1.13.*
+	ImageGolangBuildpack1_13 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13"
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
 	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
