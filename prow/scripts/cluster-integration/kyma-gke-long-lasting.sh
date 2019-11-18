@@ -52,6 +52,18 @@ if [ "${CLUSTER_USE_SSD}" ]; then
 	fi
 fi
 
+#Provision GKE regional cluster.
+if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
+	PROVISION_REGIONAL_CLUSTER=$(echo "${PROVISION_REGIONAL_CLUSTER}" | tr '[:upper:]' '[:lower:]')
+	if [ "${PROVISION_REGIONAL_CLUSTER}" == "true" ] || [ "${PROVISION_REGIONAL_CLUSTER}" == "yes" ]; then
+		export PROVISION_REGIONAL_CLUSTER
+		export CLOUDSDK_COMPUTE_REGION
+	else
+		echo "PROVISION_REGIONAL_CLUSTER prowjob env variable allowed values are true or yes. Provisioning standard cluster."
+		unset PROVISION_REGIONAL_CLUSTER
+	fi
+fi
+
 if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 	export SERVICE_CATALOG_CRD="false"
 fi
@@ -228,6 +240,12 @@ function installStackdriverPrometheusCollector(){
 	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
+function patchlimitrange(){
+	echo "Patching kyma-default LimitRange"
+	kubectl -n kyma-system patch limitrange kyma-default --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/limitrange-patch.yaml)"
+
+}
+
 shout "Authenticate"
 date
 init
@@ -259,6 +277,11 @@ shout "Install kyma"
 date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+#Prometheus container need minimum 6Gi memory limit.
+shout "Increase cluster max container memory limit"
+date
+patchlimitrange
 
 shout "Install stackdriver-prometheus collector"
 date

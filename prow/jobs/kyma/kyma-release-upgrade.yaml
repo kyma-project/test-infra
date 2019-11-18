@@ -1,0 +1,44 @@
+gke_upgrade_job_template: &gke_upgrade_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-rel2rel-upgrade.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+job_labels_template: &job_labels_template
+  preset-bot-github-token: "true"
+  preset-gc-compute-envs: "true"
+  preset-gc-project-env: "true"
+  preset-dind-enabled: "true"
+
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+  base_ref: master
+
+postsubmits: # runs on merges
+  kyma-project/kyma:
+    - name: post-kyma-release-upgrade
+      <<: *gke_upgrade_job_template
+      branches:
+        - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags only
+      labels:
+        <<: *job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref

@@ -213,6 +213,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
+  preset-cluster-use-ssd: "true"
 
 gke_backup_job_labels_template: &gke_backup_job_labels_template
   preset-weekly-github-integration: "true"
@@ -963,10 +964,12 @@ periodics:
           command:
             - "bash"
           env:
+            - name: PROVISION_REGIONAL_CLUSTER
+              value: "true"
+            - name: NODES_PER_ZONE
+              value: "1"
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
               value: "0.6.3"
-            - name: CLUSTER_USE_SSD
-              value: "true"
             - name: INPUT_CLUSTER_NAME
               value: "nightly"
             - name: TEST_RESULT_WINDOW_TIME
@@ -1028,6 +1031,10 @@ periodics:
           command:
             - "bash"
           env:
+            - name: PROVISION_REGIONAL_CLUSTER
+              value: "true"
+            - name: NODES_PER_ZONE
+              value: "1"
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
               value: "0.6.3"
             - name: INPUT_CLUSTER_NAME
@@ -1149,46 +1156,6 @@ periodics:
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
-
-  - name: kyma-load-tests-weekly
-    cron: "0 2 * * 1" # "At 2:00 on every Monday."
-    labels:
-      preset-build-master: "true"
-      preset-sap-slack-bot-token: "true"
-      <<: *gke_job_labels_template
-    decorate: true
-    extra_refs:
-      - org: kyma-project
-        repo: test-infra
-        base_ref: master
-        path_alias: github.com/kyma-project/test-infra
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
-          securityContext:
-            privileged: true
-          command:
-            - "bash"
-          env:
-            - name: INPUT_CLUSTER_NAME
-              value: "load-test"
-            - name: LOAD_TEST_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4-xf-load-test"
-            - name: LT_TIMEOUT # Load test timeout in minutes
-              value: "30"
-            - name: LT_REQS_PER_ROUTINE # Number of requests to function per go routine
-              value: "1600"
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-b"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"
           resources:
             requests:
               memory: 200Mi

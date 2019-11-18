@@ -414,7 +414,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 16)
+	assert.Len(t, periodics, 15)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -532,9 +532,10 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, nightlyPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, nightlyPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, nightlyPeriodic.JobBase)
-	assert.Len(t, nightlyPeriodic.Spec.Containers[0].Env, 9)
+	assert.Len(t, nightlyPeriodic.Spec.Containers[0].Env, 10)
+	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
+	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "NODES_PER_ZONE", "1")
 	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG", "0.6.3")
-	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "CLUSTER_USE_SSD", "true")
 	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
 	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "6h")
 	tester.AssertThatContainerHasEnv(t, nightlyPeriodic.Spec.Containers[0], "STABILITY_SLACK_CLIENT_CHANNEL_ID", "#c4core-kyma-ci-force")
@@ -554,7 +555,9 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, weeklyPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"}, weeklyPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, weeklyPeriodic.JobBase)
-	assert.Len(t, weeklyPeriodic.Spec.Containers[0].Env, 8)
+	assert.Len(t, weeklyPeriodic.Spec.Containers[0].Env, 10)
+	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
+	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "NODES_PER_ZONE", "1")
 	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG", "0.6.3")
 	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "weekly")
 	tester.AssertThatContainerHasEnv(t, weeklyPeriodic.Spec.Containers[0], "TEST_RESULT_WINDOW_TIME", "24h")
@@ -601,24 +604,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_OWNER", "kyma-project")
 	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_NAME", "kyma")
-
-	expName = "kyma-load-tests-weekly"
-	loadTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, loadTestPeriodic)
-	assert.Equal(t, expName, loadTestPeriodic.Name)
-	assert.True(t, loadTestPeriodic.Decorate)
-	assert.Equal(t, "0 2 * * 1", loadTestPeriodic.Cron)
-	tester.AssertThatHasPresets(t, loadTestPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-sap-slack-bot-token")
-	tester.AssertThatHasExtraRefs(t, loadTestPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", loadTestPeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, loadTestPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-load-test.sh"}, loadTestPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, loadTestPeriodic.JobBase)
-	assert.Len(t, loadTestPeriodic.Spec.Containers[0].Env, 5)
-	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "load-test")
-	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LOAD_TEST_SLACK_CLIENT_CHANNEL_ID", "#c4-xf-load-test")
-	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_REQS_PER_ROUTINE", "1600")
-	tester.AssertThatContainerHasEnv(t, loadTestPeriodic.Spec.Containers[0], "LT_TIMEOUT", "30")
 
 	expName = "kyma-components-use-recent-versions"
 	verTestPeriodic := tester.FindPeriodicJobByName(periodics, expName)

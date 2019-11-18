@@ -397,6 +397,11 @@ presets:
         hostPath:
           path: /sys/fs/cgroup
           type: Directory
+  - labels:
+      preset-cluster-use-ssd: "true"
+    env:
+    - name: CLUSTER_USE_SSD
+      value: "true"
 
 branch-protection:
   enforce_admins: false
@@ -501,6 +506,16 @@ branch-protection:
         documentation-component:
           protect: true
         hack-showcase:
+          branches:
+            master:
+              protect: true
+        dex:
+          branches:
+            master:
+              protect: true
+            kyma-master:
+              protect: true
+        api-gateway:
           branches:
             master:
               protect: true

@@ -63,7 +63,13 @@ function removeCluster() {
 	set +e
 
 	shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+	# Check if removing regionl cluster.
+  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
+    #Pass gke region name instead zone name.
+	  readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+	else
+	  readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+	fi
 
 	shout "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
@@ -134,6 +140,20 @@ function removeResources() {
 			# Get usage status of IP address reservation.
 			GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
 			# Check if it's still in use. It shouldn't as we removed DNS records earlier.
+			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
+				SECONDS=0
+				END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
+				echo "Waiting 600 seconds to unassigne cluster IP address."
+				while [ ${SECONDS} -lt ${END_TIME} ];do
+					sleep 10
+					echo "Checking if cluster IP is unassigned."
+					GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+					if [[ ${GATEWAY_IP_STATUS} != "IN_USE" ]]; then
+						echo "Cluster IP address sucessfully unassigned."
+						break
+					fi
+				done
+			fi
 			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
 				echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
 				exit 1

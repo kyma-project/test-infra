@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
 
-# Description: Kyma Upgradeability plan on GKE. The purpose of this script is to install last Kyma release on real GKE cluster, upgrade it with current changes and trigger testing.
-#
+# Description: Kyma release-to-release Upgradability plan on GKE.
+# The purpose of this script is to install the previous Kyma release on real GKE cluster, upgrade it to the current release and trigger testing.
 #
 # Expected vars:
-#
 #  - REPO_OWNER - Set up by prow, repository owner/organization
 #  - REPO_NAME - Set up by prow, repository name
-#  - BUILD_TYPE - Set up by prow, pr/master/release
-#  - DOCKER_PUSH_REPOSITORY - Docker repository hostname
-#  - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
+#  - PULL_BASE_REF: Set up by prow, tag that triggered the build
 #  - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 #  - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 #  - CLOUDSDK_COMPUTE_REGION - GCP compute region
 #  - CLOUDSDK_DNS_ZONE_NAME - GCP zone name (not its DNS name!)
+#  - CLOUDSDK_COMPUTE_ZONE - GCP compute zone
 #  - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
+#  - BOT_GITHUB_TOKEN: Bot github token used for API queries
 #  - MACHINE_TYPE (optional): GKE machine type
 #  - CLUSTER_VERSION (optional): GKE cluster version
-#  - KYMA_ARTIFACTS_BUCKET: GCP bucket
-#  - BOT_GITHUB_TOKEN: Bot github token used for API queries
 #
 # Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 #  - Compute Admin
@@ -33,7 +30,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN; do
+for var in REPO_OWNER REPO_NAME KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS BOT_GITHUB_TOKEN CLOUDSDK_COMPUTE_ZONE; do
     if [[ -z "${!var}" ]] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -51,16 +48,14 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="25m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
-# timeout in sec for helm operation install/test
-export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
-# timeout in sec for e2e upgrade test pods until they reach the terminating state
-export UPGRADE_TEST_TIMEOUT_SEC=600
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000 # timeout in sec for helm operation install/test
+export UPGRADE_TEST_TIMEOUT_SEC=600 # timeout in sec for e2e upgrade test pods until they reach the terminating state
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
-export TEST_CONTAINER_NAME="tests"
+export TEST_CONTAINER_NAME="runner"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -131,41 +126,67 @@ cleanup() {
 
 trap cleanup EXIT INT
 
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
-fi
+getSourceVersion() {
+    releaseIndex=2
+    if [[ "${PULL_BASE_REF}" == *"-rc"* ]] ; then
+        releaseIndex=1
+    fi
 
-function generateAndExportClusterName() {
+    # shellcheck disable=SC2016
+    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" \
+     | jq -r --argjson index "${releaseIndex}" 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-$index].tag_name')
+
+    echo "${version}"
+}
+
+downloadAssets() {
+    mkdir -p /tmp/kyma-gke-upgradeability
+
+    SOURCE_VERSION=$(getSourceVersion)
+    TARGET_VERSION="${PULL_BASE_REF}"
+
+    shout "Upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
+    date
+
+    if [[ -z "$SOURCE_VERSION" ]]; then
+        shoutFail "Couldn't grab latest version from GitHub API, stopping."
+        exit 1
+    fi
+
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${SOURCE_VERSION}/installation/resources/tiller.yaml" \
+        --output /tmp/kyma-gke-upgradeability/original-tiller.yaml
+
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
+        --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
+        --output /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
+
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cluster.yaml" \
+        --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+}
+
+generateAndExportClusterName() {
     readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
     readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-    readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+    readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c5)
+    readonly COMMON_NAME_PREFIX="gke-rel-upgrade"
 
-    if [[ "$BUILD_TYPE" == "pr" ]]; then
-        readonly COMMON_NAME_PREFIX="gke-upgrade-pr"
-        # In case of PR, operate on PR number
-        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    elif [[ "$BUILD_TYPE" == "release" ]]; then
-        readonly COMMON_NAME_PREFIX="gke-upgrade-rel"
-        readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-        readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-        shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    else
-        # Otherwise (master), operate on triggering commit id
-        readonly COMMON_NAME_PREFIX="gke-upgrade-commit"
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    fi
+    local versionFrom
+    versionFrom=$(echo "${SOURCE_VERSION}" | tr -d ".-")
+
+    local versionTo
+    versionTo=$(echo "${TARGET_VERSION}" | tr -d ".-")
+
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${versionFrom}-${versionTo}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
     ### Cluster name must be less than 40 characters!
     export CLUSTER_NAME="${COMMON_NAME}"
-
     export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
     export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 }
 
-function reserveIPsAndCreateDNSRecords() {
+reserveIPsAndCreateDNSRecords() {
     DNS_SUBDOMAIN="${COMMON_NAME}"
     shout "Authenticate with GCP"
     date
@@ -190,7 +211,7 @@ function reserveIPsAndCreateDNSRecords() {
     export DOMAIN
 }
 
-function generateAndExportCerts() {
+generateAndExportCerts() {
     shout "Generate self-signed certificate"
     date
     CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
@@ -201,7 +222,7 @@ function generateAndExportCerts() {
     export TLS_KEY
 }
 
-function createNetwork() {
+createNetwork() {
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
     NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
     if [ "$NETWORK_EXISTS" -gt 0 ]; then
@@ -213,7 +234,7 @@ function createNetwork() {
     fi
 }
 
-function createCluster() {
+createCluster() {
     shout "Provision cluster: \"${CLUSTER_NAME}\""
     date
     ### For provision-gke-cluster.sh
@@ -231,29 +252,15 @@ function createCluster() {
     CLEANUP_CLUSTER="true"
 }
 
-function getLastReleaseVersion() {
-    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" \
-     | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
-
-    echo "${version}"
-}
-
-function installKyma() {
+installKyma() {
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-    mkdir -p /tmp/kyma-gke-upgradeability
-    LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
-    if [ -z "$LAST_RELEASE_VERSION" ]; then
-        shoutFail "Couldn't grab latest version from GitHub API, stopping."
-        exit 1
-    fi
-
-    shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
+    shout "Install Tiller from version ${SOURCE_VERSION}"
     date
-    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
+    kubectl apply -f /tmp/kyma-gke-upgradeability/original-tiller.yaml
     "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
-    shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
+    shout "Apply Kyma config"
     date
     kubectl create namespace "kyma-installer"
 
@@ -273,18 +280,16 @@ function installKyma() {
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
 
-    shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
+    shout "Use release artifacts from version ${SOURCE_VERSION}"
     date
-
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/original-release-installer.yaml
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
-function checkTestPodTerminated() {
+checkTestPodTerminated() {
     local retry=0
     local runningPods=0
     local succeededPods=0
@@ -370,46 +375,21 @@ createTestResources() {
     fi
 }
 
-function upgradeKyma() {
+upgradeKyma() {
     shout "Delete the kyma-installation CR"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
     kubectl delete Installation -n default kyma-installation
 
-    if [[ "$BUILD_TYPE" == "release" ]]; then
-        echo "Use released artifacts"
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
+    shout "Install Tiller from version ${TARGET_VERSION}"
+    date
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
+    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
-        shout "Update tiller"
-        kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
-
-        shout "Update kyma installer"
-        kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-    else
-        shout "Build Kyma Installer Docker image"
-        date
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
-        export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-        CLEANUP_DOCKER_IMAGE="true"
-
-        KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-        INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-        INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
-        shout "Update tiller"
-        kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
-
-        shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
-        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-        | sed -e "s/__VERSION__/0.0.1/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
-    fi
+    shout "Use release artifacts from version ${TARGET_VERSION}"
+    date
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
 
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
@@ -426,7 +406,7 @@ function upgradeKyma() {
     fi
 }
 
-function testKyma() {
+testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
@@ -434,30 +414,16 @@ function testKyma() {
         local HELM_ARGS="--tls"
     fi
 
-    suiteName="testsuite-upgrade-$(date '+%Y-%m-%d-%H-%M')"
-
     set +o errexit
-    cat <<EOF | kubectl apply -f -
-apiVersion: testing.kyma-project.io/v1alpha1
-kind: ClusterTestSuite
-metadata:
-  labels:
-    controller-tools.k8s.io: "1.0"
-  name: ${suiteName}
-spec:
-  maxRetries: 1
-  concurrency: 1
-  selectors:
-    matchNames:
-    - name: test-e2e-upgrade-execute-tests
-      namespace: ${UPGRADE_TEST_NAMESPACE}
-EOF
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    testEndToEndResult=$?
 
-    waitForTestSuiteResult "${suiteName}"
-    testExitCode=$?
-    if [ "${testExitCode}" != 0 ]; then
-        echo "Helm test operation failed: ${testExitCode}"
-        exit "${testExitCode}"
+    echo "Test e2e upgrade logs: "
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
+
+    if [ "${testEndToEndResult}" != 0 ]; then
+        echo "Helm test operation failed: ${testEndToEndResult}"
+        exit "${testEndToEndResult}"
     fi
     set -o errexit
 
@@ -468,6 +434,8 @@ EOF
 
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
+
+downloadAssets
 
 generateAndExportClusterName
 
