@@ -11,6 +11,7 @@ spec:
         - --prometheus.wal-directory=/data/prometheus-db/wal
         - --stackdriver.kubernetes.location=__GCP_REGION__
         - --stackdriver.kubernetes.cluster-name=__CLUSTER_NAME__
+        - --include={__name__=~"node_load.+"}
       resources:
         limits:
           memory: 2Gi
