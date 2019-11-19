@@ -104,8 +104,7 @@ function testComponents() {
   for DIR in ${KYMA_SOURCES_DIR}/components/*/
   do
 
-    echo "processing ${DIR}"
-    
+    echo "processing ${DIR}" 
     GOPKG_FILE_NAME="${DIR}"Gopkg.lock
 
     if [ -f "${GOPKG_FILE_NAME}" ]; then
@@ -113,13 +112,8 @@ function testComponents() {
       # fetch dependencies
       echo " ├── fetching dependencies..."
       cd "${DIR}"
-      dep ensure --vendor-only
-      if [[ $? != 0 ]]; then
-        echo -e "\n-----------------------------------------------\nClould not test ${DIR}"
-        echo -e "\n---------------------RETRY---------------------"
-        dep ensure --vendor-only
+      dep ensure --vendor-only || dep ensure --vendor-only
 
-      fi
       # scan for vulnerabilities
       echo " ├── scanning for vulnerabilities..."
       snyk test --severity-threshold=high --json > snyk-out.json
