@@ -1031,6 +1031,8 @@ periodics:
           command:
             - "bash"
           env:
+            - name: MACHINE_TYPE
+              value: "custom-8-15"
             - name: PROVISION_REGIONAL_CLUSTER
               value: "true"
             - name: NODES_PER_ZONE
