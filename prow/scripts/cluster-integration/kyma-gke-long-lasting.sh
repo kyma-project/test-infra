@@ -96,9 +96,6 @@ function createCluster() {
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
 	
-	if [ -z "$MACHINE_TYPE" ]; then
-		export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-	fi
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
