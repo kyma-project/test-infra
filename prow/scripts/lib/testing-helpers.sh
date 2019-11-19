@@ -118,7 +118,7 @@ function printImagesWithLatestTag() {
         tr -s '[:space:]' '\n' |\
         grep ":latest")
 
-        # TODO(michal-hudy): it shoudn't be done that way, grep return 1 when no lines match, same bug in kyma repository....
+        # TODO(michal-hudy): it shoudn't be done that way, grep returns 1 when no lines match, same bug in kyma repository....
         if [[ $? -lt 2 ]]; then
             break
         fi

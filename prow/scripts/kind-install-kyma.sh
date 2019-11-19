@@ -209,7 +209,7 @@ function tune_inotify {
     sysctl -w fs.inotify.max_user_instances=512
 }
 
-# main is a entrypoint function
+# main is the entrypoint function
 function main {
     trap junit::test_fail ERR
     junit::suite_init "Kyma_Integration"
@@ -287,7 +287,7 @@ function main {
         junit::test_skip
     fi
 
-    # TODO(michal-hudy): not everything is covered with JUnit in kyma-testing.sh script
+    # TODO(michal-hudy): not everything is covered with JUnit in the kyma-testing.sh script
     junit::test_start "Testing_Kyma"
     kyma::test "${SCRIPT_DIR}" 2>&1 | junit::test_output
     junit::test_pass

@@ -19,7 +19,7 @@ function log::info {
     echo -e "${INVERTED}$(log::date) [INFO] ${1}${NC}"
 }
 
-# log::info prints message with info level and green color
+# log::info prints a message with info level in green
 #
 # Arguments:
 #   $1 - Message
@@ -27,7 +27,7 @@ function log::success {
     echo -e "${GREEN}$(log::date) [INFO] ${1}${NC}"
 }
 
-# log::info prints message with warning level and yellow color
+# log::info prints a message with warning level in yellow
 #
 # Arguments:
 #   $1 - Message
@@ -35,7 +35,7 @@ function log::warn {
     echo -e "${YELLOW}$(log::date) [WARN] ${1}${NC}"
 }
 
-# log::info prints message with error level and red color
+# log::info prints a message with error level in red
 #
 # Arguments:
 #   $1 - Message

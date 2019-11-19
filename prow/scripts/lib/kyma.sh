@@ -40,7 +40,7 @@ function kyma::test {
     "${1}/kyma-testing.sh"
 }
 
-# kyma::build_installer build Kyma Installer Docker image
+# kyma::build_installer builds Kyma Installer Docker image
 #
 # Arguments:
 #   $1 - Path to the Kyma sources
@@ -49,7 +49,7 @@ function kyma::build_installer {
     docker build -t "${2}" -f "${1}/tools/kyma-installer/kyma.Dockerfile" "${1}"
 }
 
-# kyma::update_hosts append hosts file with Kyma DNS records
+# kyma::update_hosts appends hosts file with Kyma DNS records
 function kyma::update_hosts {
     # TODO(michal-hudy):  Switch to local DNS server if possible
     local -r hosts="$(kubectl get virtualservices --all-namespaces -o jsonpath='{.items[*].spec.hosts[*]}')"

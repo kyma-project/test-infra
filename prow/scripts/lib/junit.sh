@@ -56,14 +56,14 @@ function junit::test_start {
     echo "=== RUN: ${JUNIT_TEST_NAME} 🤔"
 }
 
-# junit::test_output writes JUnit test output the file
+# junit::test_output writes JUnit test output to the file
 function junit::test_output {
     while read -r data; do
         echo "${data}" | tee -a "$(junit::test_output_filename)"
     done
 }
 
-# junit::test_pass mark current JUnit test as passed
+# junit::test_pass marks current JUnit test as passed
 function junit::test_pass {
     if [[ -z ${JUNIT_TEST_NAME} ]]; then
         return 0
@@ -74,7 +74,7 @@ function junit::test_pass {
     JUNIT_TEST_NAME=""
 }
 
-# junit::test_pass mark current JUnit test as failed
+# junit::test_pass marks current JUnit test as failed
 function junit::test_fail {
     if [[ -z ${JUNIT_TEST_NAME} ]]; then
         return 0
@@ -87,7 +87,7 @@ function junit::test_fail {
     return 1
 }
 
-# junit::test_pass mark current JUnit test as skipped
+# junit::test_pass marks current JUnit test as skipped
 function junit::test_skip {
     if [[ -z ${JUNIT_TEST_NAME} ]]; then
         return 0

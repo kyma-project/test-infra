@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# kind::create_cluster creates a kind cluster and points to it in default kubeconfig
+# kind::create_cluster creates a kind cluster and points to it in the default kubeconfig
 #
 # Globals:
 #   HOME - Path to current user home directory
@@ -34,7 +34,7 @@ function kind::load_image {
     kind load docker-image "${2}" --name "${1}"
 }
 
-# kind::install_default installs a default resources in cluster - StorageClass and provided files
+# kind::install_default installs default resources in cluster - StorageClass and provided files
 #
 # Arguments:
 #   $1 - Path to the resource yaml file or directory with resources yamls
@@ -56,7 +56,7 @@ function kind::worker_ip {
     docker inspect -f "{{ .NetworkSettings.IPAddress }}" "${1}-worker"
 }
 
-# kind::export_logs exports all logs from the cluster to the artifacts directory. Creates also archive with logs.
+# kind::export_logs exports all logs from the cluster to the artifacts directory. Creates also an archive with logs.
 #
 # Globals:
 #   ARTIFACTS_DIR - Path to the artifacts directory

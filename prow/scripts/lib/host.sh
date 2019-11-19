@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# host::os return host operating system
+# host::os returns host operating system
 #
 # Returns:
 #   Name of the operating system - linux or darwin
