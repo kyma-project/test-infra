@@ -28,6 +28,7 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(ls
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
 
 # Install kubectl
+ENV PATH="/usr/local/bin:${PATH}"
 ENV KUBECTL_VERSION="v1.14.6"
 RUN curl -LO curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl &&\
 	chmod +x ./kubectl &&\
