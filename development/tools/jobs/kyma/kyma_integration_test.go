@@ -576,7 +576,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "0 4 * * 1-5", nightlyAksPeriodic.Cron)
 	tester.AssertThatHasPresets(t, nightlyAksPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-stability-checker-slack-notifications", "preset-creds-aks-kyma-integration", "preset-docker-push-repository-gke-integration", "preset-nightly-aks-github-integration")
 	tester.AssertThatHasExtraRefs(t, nightlyAksPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
-	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828", nightlyAksPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac", nightlyAksPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, nightlyAksPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"}, nightlyAksPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, nightlyAksPeriodic.JobBase)
