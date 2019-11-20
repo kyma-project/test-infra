@@ -509,10 +509,6 @@ presubmits: # runs on PRs
           base_ref: release-1.5
 
     - name: pre-master-kyma-gke-upgrade
-      annotations:
-        testgrid-dashboards: kyma-presubmit
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
       branches:
         - ^master$
       <<: *gke_upgrade_job_template
