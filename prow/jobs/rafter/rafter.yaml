@@ -18,8 +18,8 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         env:
-        - name: GO111MODULE
-          value: "on"
+          - name: GO111MODULE
+            value: "on"
         args:
           - "/home/prow/go/src/github.com/kyma-project/rafter"
         resources:
@@ -82,8 +82,8 @@ postsubmits:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
             env:
-            - name: GO111MODULE
-              value: "on"
+              - name: GO111MODULE
+                value: "on"
             securityContext:
               privileged: true
             command:
