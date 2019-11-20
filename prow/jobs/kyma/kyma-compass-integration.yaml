@@ -59,6 +59,10 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-gke-compass-integration
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
