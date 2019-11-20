@@ -82,7 +82,9 @@ function junit::test_fail {
     local -r duration=$(($(date +%s)-JUNIT_TEST_START_TIME))
     JUNIT_FAILED_TESTS_COUNT=$((++JUNIT_FAILED_TESTS_COUNT))
     echo "--- FAIL: ${JUNIT_TEST_NAME} (${duration}s) 💩"
-    echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"><failure><![CDATA[$(< "$(junit::test_output_filename)")]]></failure></testcase>" >> "$(junit::suite_filename)"
+    echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"><failure><![CDATA[
+$(< "$(junit::test_output_filename)" tr -cd '\11\12\15\40-\176' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
+        ]]></failure></testcase>" >> "$(junit::suite_filename)"
     JUNIT_TEST_NAME=""
     return 1
 }
@@ -95,6 +97,8 @@ function junit::test_skip {
     local -r duration=$(($(date +%s)-JUNIT_TEST_START_TIME))
     JUNIT_SKIPPED_TESTS_COUNT=$((++JUNIT_SKIPPED_TESTS_COUNT))
     echo "--- SKIP: ${JUNIT_TEST_NAME} (${duration}s) 🙈"
-    echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"><skipped><![CDATA[${1}]]></skipped></testcase>" >> "$(junit::suite_filename)"
+    echo "        <testcase name=\"${JUNIT_TEST_NAME}\" time=\"${duration}\"><skipped><![CDATA[
+$(echo "${1}" | tr -cd '\11\12\15\40-\176' | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
+        ]]></skipped></testcase>" >> "$(junit::suite_filename)"
     JUNIT_TEST_NAME=""
 }
