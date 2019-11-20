@@ -18,8 +18,8 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         env:
-        - name: GO111MODULE
-          value: "on"
+          - name: GO111MODULE
+            value: "on"
         args:
           - "/home/prow/go/src/github.com/kyma-project/rafter"
         resources:
@@ -38,6 +38,7 @@ presets:
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
+  preset-kind-volume-mounts: "true"
   preset-sa-gcr-push: "true"
   preset-docker-push-repository-kyma: "true"
 
@@ -81,8 +82,8 @@ postsubmits:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
             env:
-            - name: GO111MODULE
-              value: "on"
+              - name: GO111MODULE
+                value: "on"
             securityContext:
               privileged: true
             command:
