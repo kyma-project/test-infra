@@ -463,7 +463,7 @@ EOF
 
     shout "Test Kyma"
     date
-    "${KYMA_SCRIPTS_DIR}"/testing.sh
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 }
 
 # Used to detect errors for logging purposes

@@ -523,6 +523,10 @@ postsubmits:
 
     - name: post-master-kyma-gke-integration
       <<: *gke_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - ^master$
       labels:
@@ -534,6 +538,10 @@ postsubmits:
 
     - name: post-master-kyma-gke-central-connector
       <<: *gke_central_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
       branches:
         - ^master$
       labels:

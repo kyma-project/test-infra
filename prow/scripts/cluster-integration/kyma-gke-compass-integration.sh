@@ -285,4 +285,4 @@ installKyma
 
 shout "Test Kyma with Compass"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh --concurrency 5
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
