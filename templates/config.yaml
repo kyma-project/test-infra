@@ -348,6 +348,11 @@ templates:
           path: tests/integration/event-service
           since: '1.7'
           optional: true
+      - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/event-sources
+          since: '1.9'
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -512,11 +517,6 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: components/event-bus
-      - to: ../prow/jobs/kyma/components/event-sources/event-sources.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/event-sources
-          since: "1.9"
       - to: ../prow/jobs/kyma/components/event-service/event-service.yaml
         values:
           <<: *go_kyma_component_1_11
