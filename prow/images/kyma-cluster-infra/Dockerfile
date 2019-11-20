@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20191120-c285b8e3
 
 # Install packages required by az
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -26,9 +26,3 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(ls
         --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
-
-# Install kubectl
-ENV KUBECTL_VERSION="v1.14.6"
-RUN curl -LO curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl &&\
-	chmod +x ./kubectl &&\
-	mv ./kubectl /usr/local/bin/kubectl
