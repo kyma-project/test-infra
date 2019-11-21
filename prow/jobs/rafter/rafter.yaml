@@ -10,14 +10,16 @@ test_infra_ref: &test_infra_ref
   base_ref: master
   path_alias: github.com/kyma-project/test-infra
 
-
-job_build_template: &job_build_template
+common_config: &common_config
   skip_report: false
   always_run: true
   decorate: true
   optional: false
   path_alias: github.com/kyma-project/rafter
   max_concurrency: 10
+
+
+job_build_template: &job_build_template
   extra_refs:
     - <<: *test_infra_ref
   spec:
@@ -44,16 +46,10 @@ job_template: &job_template
   labels:
     <<: *job_labels_template
     preset-build-pr: "true"
-  skip_report: false
-  decorate: true
-  optional: false
-  always_run: true
-  path_alias: github.com/kyma-project/rafter
-  max_concurrency: 10
+  <<: *common_config
   extra_refs:
     - <<: *test_infra_ref
  
-
 presets:
   - labels:
       preset-build-rafter-master: "true"
@@ -62,8 +58,6 @@ presets:
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
-
-
 
 presubmits: # runs on PRs
   kyma-project/rafter:
@@ -109,11 +103,7 @@ postsubmits:
         <<: *job_labels_template
         preset-build-release: "true"
         prow.kyma-project.io/slack.skipReport: "true"
-      skip_report: false
-      decorate: true
-      optional: false
-      path_alias: github.com/kyma-project/rafter
-      max_concurrency: 10
+      <<: *common_config
       extra_refs:
       - <<: *test_infra_ref
       spec:
