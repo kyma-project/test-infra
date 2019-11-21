@@ -4,7 +4,8 @@ CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 readonly TMP_DIR=$(mktemp -d)
 readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite.xml"
 readonly CONCURRENCY=5
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
+# Should be fixed name, it is displayed in TestGrid
+readonly SUITE_NAME="testsuite-all"
 
 # shellcheck disable=SC1090
 source "${CURRENT_PATH}/lib/testing-helpers.sh"
