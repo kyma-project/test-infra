@@ -1,4 +1,17 @@
-job_template: &job_template
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-kind-volume-mounts: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-kyma: "true"
+
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  base_ref: master
+  path_alias: github.com/kyma-project/test-infra
+
+
+job_build_template: &job_build_template
   skip_report: false
   always_run: true
   decorate: true
@@ -6,10 +19,7 @@ job_template: &job_template
   path_alias: github.com/kyma-project/rafter
   max_concurrency: 10
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
-      base_ref: master
-      path_alias: github.com/kyma-project/test-infra
+    - <<: *test_infra_ref
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
@@ -27,6 +37,23 @@ job_template: &job_template
             memory: 1.5Gi
             cpu: 0.8
 
+job_template: &job_template
+  always_run: true
+  branches:
+    - ^master$
+  labels:
+    <<: *job_labels_template
+    preset-build-pr: "true"
+  skip_report: false
+  decorate: true
+  optional: false
+  always_run: true
+  path_alias: github.com/kyma-project/rafter
+  max_concurrency: 10
+  extra_refs:
+    - <<: *test_infra_ref
+ 
+
 presets:
   - labels:
       preset-build-rafter-master: "true"
@@ -36,37 +63,17 @@ presets:
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
 
-job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
-  preset-kind-volume-mounts: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-kyma: "true"
+
 
 presubmits: # runs on PRs
   kyma-project/rafter:
     - name: pre-rafter
-      <<: *job_template
+      <<: *job_build_template
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
     - name: pre-rafter-integration-test
-      always_run: true
-      branches:
-        - ^master$
-      labels:
-        <<: *job_labels_template
-        preset-build-pr: "true"
-      skip_report: false
-      decorate: true
-      optional: false
-      always_run: true
-      path_alias: github.com/kyma-project/rafter
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
+      <<: *job_template
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
@@ -89,7 +96,7 @@ postsubmits:
     - name: post-rafter
       branches:
         - ^master$
-      <<: *job_template
+      <<: *job_build_template
       labels:
         <<: *job_labels_template
         preset-build-rafter-master: "true"
@@ -108,10 +115,7 @@ postsubmits:
       path_alias: github.com/kyma-project/rafter
       max_concurrency: 10
       extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: master
-          path_alias: github.com/kyma-project/test-infra
+      - <<: *test_infra_ref
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
