@@ -95,6 +95,24 @@ postsubmits:
         <<: *job_labels_template
         preset-build-rafter-master: "true"
         prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+    - name: post-rafter-integration-test
+      <<: *job_template
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+            securityContext:
+              privileged: true
+            command:
+              - make
+            args:
+              - integration-test
+            env:
+              - name: GO111MODULE
+                value: "on"  
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8  
     - name: release-rafter
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
