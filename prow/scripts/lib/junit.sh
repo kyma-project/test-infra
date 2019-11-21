@@ -24,7 +24,8 @@ function junit::suite_init {
 # junit::suite_save saves the test suite to the file
 function junit::suite_save {
     local -r duration=$(($(date +%s)-JUNIT_SUITE_START_TIME))
-    echo "<testsuite failures=\"${JUNIT_FAILED_TESTS_COUNT}\" name=\"${JUNIT_SUITE_NAME}\" skipped=\"${JUNIT_SKIPPED_TESTS_COUNT}\" tests=\"${JUNIT_TOTAL_TESTS_COUNT}\" time=\"${duration}\">
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<testsuite failures=\"${JUNIT_FAILED_TESTS_COUNT}\" name=\"${JUNIT_SUITE_NAME}\" skipped=\"${JUNIT_SKIPPED_TESTS_COUNT}\" tests=\"${JUNIT_TOTAL_TESTS_COUNT}\" time=\"${duration}\">
 $(cat "$(junit::suite_filename)")
 </testsuite>" > "$(junit::suite_filename)"
 }
