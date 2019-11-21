@@ -427,43 +427,9 @@ function upgradeKyma() {
 }
 
 function testKyma() {
-    shout "Test Kyma end-to-end upgrade scenarios"
-    date
-
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
-    suiteName="testsuite-upgrade-$(date '+%Y-%m-%d-%H-%M')"
-
-    set +o errexit
-    cat <<EOF | kubectl apply -f -
-apiVersion: testing.kyma-project.io/v1alpha1
-kind: ClusterTestSuite
-metadata:
-  labels:
-    controller-tools.k8s.io: "1.0"
-  name: ${suiteName}
-spec:
-  maxRetries: 1
-  concurrency: 1
-  selectors:
-    matchNames:
-    - name: test-e2e-upgrade-execute-tests
-      namespace: ${UPGRADE_TEST_NAMESPACE}
-EOF
-
-    waitForTestSuiteResult "${suiteName}"
-    testExitCode=$?
-    if [ "${testExitCode}" != 0 ]; then
-        echo "Helm test operation failed: ${testExitCode}"
-        exit "${testExitCode}"
-    fi
-    set -o errexit
-
     shout "Test Kyma"
     date
-    "${KYMA_SCRIPTS_DIR}"/testing.sh
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 }
 
 # Used to detect errors for logging purposes
