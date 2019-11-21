@@ -134,7 +134,7 @@ function main() {
   fi
 
   log::info "- Generate JUnit test summary"
-  kyma test status "${SUITE_NAME}" -ojunit > "${JUNIT_REPORT_PATH}"
+  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
 
   log::info "All test pods should be terminated. Checking..."
   waitForTestPodsTermination "${SUITE_NAME}"
