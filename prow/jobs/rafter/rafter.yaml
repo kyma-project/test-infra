@@ -18,8 +18,8 @@ common_config: &common_config
   path_alias: github.com/kyma-project/rafter
   max_concurrency: 10
 
-
 job_build_template: &job_build_template
+  <<: *common_config
   extra_refs:
     - <<: *test_infra_ref
   spec:
