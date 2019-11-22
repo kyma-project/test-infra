@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.7)-api-controller$
+    - ^release-(1\.8|1\.7)-api-controller$
   run_if_changed: "^tests/integration/api-controller/|^common/makefiles/"
   spec:
     containers:
