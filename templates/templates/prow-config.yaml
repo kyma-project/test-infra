@@ -286,6 +286,13 @@ presets:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
   - labels:
+      preset-kyma-cli-stable: "true"
+    env:
+      - name: KYMA_CLI_STABLE_BUCKET
+        value: gs://kyma-cli-stable
+      - name: STABLE
+        value: "true"
+  - labels:
       preset-kyma-backup-restore-bucket: "true"
     env:
       - name: KYMA_BACKUP_RESTORE_BUCKET
