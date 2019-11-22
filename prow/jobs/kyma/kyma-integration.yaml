@@ -969,7 +969,7 @@ periodics:
             - "bash"
           env:
             - name: MACHINE_TYPE
-              value: "custom-6-15360"
+              value: "custom-8-15360"
             - name: PROVISION_REGIONAL_CLUSTER
               value: "true"
             - name: NODES_PER_ZONE
@@ -1038,7 +1038,7 @@ periodics:
             - "bash"
           env:
             - name: MACHINE_TYPE
-              value: "custom-8-15360"
+              value: "custom-12-15360"
             - name: PROVISION_REGIONAL_CLUSTER
               value: "true"
             - name: NODES_PER_ZONE
