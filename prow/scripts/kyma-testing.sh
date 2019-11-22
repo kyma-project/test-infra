@@ -83,17 +83,6 @@ function main() {
 
   cts::delete
 
-  matchTests="" # match all tests
-
-  ${kc} get cm dex-config -n kyma-system -ojsonpath="{.data}" | grep --silent "#__STATIC_PASSWORDS__"
-  if [[ $? -eq 1 ]]
-  then
-    # if static users are not available, do not execute tests which requires them
-    matchTests=$(${kc} get testdefinitions --all-namespaces -l 'require-static-users!=true' -o=go-template='{{- range .items}} {{.metadata.name}}{{- end}}')
-    echo "WARNING: following tests will be skipped due to the lack of static users:"
-    ${kc} get testdefinitions --all-namespaces -l 'require-static-users=true' -o=go-template --template='{{- range .items}}{{printf " - %s\n" .metadata.name}}{{- end}}'
-  fi
-
   log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
   injectTestingAddons
   if [[ $? -eq 1 ]]; then
@@ -104,7 +93,7 @@ function main() {
 
   log::info "- Running Kyma tests"
   # shellcheck disable=SC2086
-  kyma test run ${matchTests} \
+  kyma test run \ # match all tests
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
