@@ -83,8 +83,6 @@ function main() {
 
   cts::delete
 
-  matchTests="" # match all tests
-
   log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
   injectTestingAddons
   if [[ $? -eq 1 ]]; then
@@ -95,7 +93,7 @@ function main() {
 
   log::info "- Running Kyma tests"
   # shellcheck disable=SC2086
-  kyma test run ${matchTests} \
+  kyma test run \ # match all tests
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
