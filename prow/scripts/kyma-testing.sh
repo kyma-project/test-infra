@@ -92,8 +92,9 @@ function main() {
   trap removeTestingAddons EXIT
 
   log::info "- Running Kyma tests"
+  # match all tests
   # shellcheck disable=SC2086
-  kyma test run \ # match all tests
+  kyma test run \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
