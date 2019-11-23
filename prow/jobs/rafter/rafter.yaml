@@ -1,25 +1,25 @@
 presets:
   - labels:
-      preset-build-rafter-master: "true"
+      preset-rafter-build-master: "true"
     env:
       - name: BUILD_TYPE
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
   - labels:
-      preset-minio-gcs-gateway: "true"
+      preset-rafter-minio-gcs-gateway: "true"
     env:
       - name: MINIO_GATEWAY_MODE
         value: gcs
       - name: CLOUDSDK_COMPUTE_ZONE
         value: "europe-west4-a"
   - labels:
-      preset-minio-az-gateway: "true"
+      preset-rafter-minio-az-gateway: "true"
     env:
       - name: MINIO_GATEWAY_MODE
         value: azure
       - name: AZURE_RS_GROUP
-        value: kyma-minio-gateway
+        value: rafter-minio-gateway
       - name: AZURE_REGION
         value: westeurope
 
@@ -32,18 +32,18 @@ common_job_labels_push_template: &common_job_labels_push_template
   preset-docker-push-repository-kyma: "true"
 
 common_job_labels_minio_gcs_gateway_template: &common_job_labels_minio_gcs_gateway_template
-  preset-minio-gcs-gateway: "true"
+  preset-rafter-minio-gcs-gateway: "true"
   preset-sa-gke-kyma-integration: "true"
 
 common_job_labels_minio_az_gateway_template: &common_job_labels_minio_az_gateway_template
-  preset-minio-az-gateway: "true"
+  preset-rafter-minio-az-gateway: "true"
   preset-creds-aks-kyma-integration: "true"
 
+additional_postsubmit_job_labels_template: &additional_postsubmit_job_labels_template
+  prow.kyma-project.io/slack.skipReport: "true"
+
 common_job_config_template: &common_job_config_template
-  skip_report: false
-  always_run: true
   decorate: true
-  optional: false
   path_alias: github.com/kyma-project/rafter
   max_concurrency: 10
   extra_refs:
@@ -51,6 +51,11 @@ common_job_config_template: &common_job_config_template
       repo: test-infra
       base_ref: master
       path_alias: github.com/kyma-project/test-infra
+
+additional_presubmit_job_config_template: &additional_presubmit_job_config_template
+  skip_report: false
+  always_run: true
+  optional: false
 
 common_container_template: &common_container_template
   image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
@@ -64,7 +69,7 @@ common_container_template: &common_container_template
       memory: 1.5Gi
       cpu: 0.8
 
-common_job_build_template: &common_job_build_template
+common_build_job_template: &common_build_job_template
   <<: *common_job_config_template
   spec:
     containers:
@@ -74,7 +79,7 @@ common_job_build_template: &common_job_build_template
         args:
           - "/home/prow/go/src/github.com/kyma-project/rafter"
 
-common_job_integration_template: &common_job_integration_template
+common_integration_test_job_template: &common_integration_test_job_template
   <<: *common_job_config_template
   spec:
     containers:
@@ -84,7 +89,7 @@ common_job_integration_template: &common_job_integration_template
         args:
           - integration-test
 
-common_job_minio_gateway_template: &common_job_minio_gateway_template
+common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
   <<: *common_job_config_template
   spec:
     containers:
@@ -92,9 +97,9 @@ common_job_minio_gateway_template: &common_job_minio_gateway_template
         command:
           - make
         args:
-          - minio-gateway
+          - minio-gateway-test
 
-common_job_minio_gateway_migration_template: &common_job_minio_gateway_migration_template
+common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
   <<: *common_job_config_template
   spec:
     containers:
@@ -102,49 +107,57 @@ common_job_minio_gateway_migration_template: &common_job_minio_gateway_migration
         command:
           - make
         args:
-          - minio-gateway-migration
+          - minio-gateway-migration-test
 
 presubmits: # runs on PRs
   kyma-project/rafter:
     ## BUILDS
     - name: pre-rafter
-      <<: *common_job_build_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_build_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_push_template
         preset-build-pr: "true"
 
-    ## INTEGRATION TESTS
+    ## INTEGRATION TEST
     - name: pre-rafter-integration-test
-      <<: *common_job_integration_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_integration_test_job_template
       labels:
         <<: *common_job_labels_template
 
-    ## MINIO GATEWAY
+    ## MINIO GATEWAY TEST
     - name: pre-rafter-minio-gcs-gateway
-      <<: *common_job_minio_gateway_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: pre-rafter-minio-az-gateway
-      <<: *common_job_minio_gateway_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
+        preset-build-pr: "true"
 
-    ## MINIO GATEWAY MIGRATION
+    ## MINIO GATEWAY MIGRATION TEST
     - name: pre-rafter-minio-gcs-gateway-migration
-      <<: *common_job_minio_gateway_migration_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: pre-rafter-minio-az-gateway-migration
-      <<: *common_job_minio_gateway_migration_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
+        preset-build-pr: "true"
 
 postsubmits:
   kyma-project/rafter:
@@ -152,111 +165,115 @@ postsubmits:
     - name: post-rafter
       branches:
         - ^master$
-      <<: *common_job_build_template
+      <<: *common_build_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_push_template
-        preset-build-rafter-master: "true"
-        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+        <<: *additional_postsubmit_job_labels_template
+        preset-rafter-build-master: "true"
 
     - name: release-rafter
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
-      <<: *common_job_build_template
+      <<: *common_build_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_push_template
+        <<: *additional_postsubmit_job_labels_template
         preset-build-release: "true"
-        prow.kyma-project.io/slack.skipReport: "true"
 
-    ## INTEGRATION TESTS
+    ## INTEGRATION TEST
     - name: post-rafter-integration-test
       branches:
         - ^master$
-      <<: *common_job_integration_template
+      <<: *common_integration_test_job_template
       labels:
         <<: *common_job_labels_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
 
     - name: release-rafter-integration-test
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
-      <<: *common_job_integration_template
+      <<: *common_integration_test_job_template
       labels:
         <<: *common_job_labels_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
 
-    ## MINIO GATEWAY
+    ## MINIO GATEWAY TEST
     - name: post-rafter-minio-gcs-gateway
       branches:
         - ^master$
-      <<: *common_job_minio_gateway_template
+      <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
 
     - name: release-rafter-minio-gcs-gateway
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
-      <<: *common_job_minio_gateway_template
+      <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
 
     - name: post-rafter-minio-az-gateway
       branches:
         - ^master$
-      <<: *common_job_minio_gateway_template
+      <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
+        preset-rafter-build-master: "true"
 
     - name: release-rafter-minio-az-gateway
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
-      <<: *common_job_minio_gateway_template
+      <<: *common_minio_gateway_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
+        preset-build-release: "true"
 
-    ## MINIO GATEWAY MIGRATION
+    ## MINIO GATEWAY MIGRATION TEST
     - name: post-rafter-minio-gcs-gateway-migration
       branches:
         - ^master$
-      <<: *common_job_minio_gateway_migration_template
+      <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
 
     - name: release-rafter-minio-gcs-gateway-migration
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
-      <<: *common_job_minio_gateway_migration_template
+      <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
 
     - name: post-rafter-minio-az-gateway-migration
       branches:
         - ^master$
-      <<: *common_job_minio_gateway_migration_template
+      <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
+        preset-rafter-build-master: "true"
 
     - name: release-rafter-minio-az-gateway-migration
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
-      <<: *common_job_minio_gateway_migration_template
+      <<: *common_minio_gateway_migration_test_job_template
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        prow.kyma-project.io/slack.skipReport: "true"
+        <<: *additional_postsubmit_job_labels_template
+        preset-build-release: "true"

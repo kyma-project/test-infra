@@ -4,8 +4,6 @@ package preset
 type Preset string
 
 const (
-	// WebsiteBotZenHubToken means zenhub token
-	WebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
 	// KindVolumesMounts means kubernetes-in-docker preset
 	KindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// GcrPush means GCR push service account
@@ -30,18 +28,8 @@ const (
 	BuildRelease Preset = "preset-build-release"
 	// BotGithubToken means github token
 	BotGithubToken Preset = "preset-bot-github-token"
-	// BotGithubSSH means github ssh
-	BotGithubSSH Preset = "preset-bot-github-ssh"
-	// BotGithubIdentity means github identity
-	BotGithubIdentity Preset = "preset-bot-github-identity"
-	// WebsiteBotGithubToken means github token
-	WebsiteBotGithubToken Preset = "preset-website-bot-github-token"
 	// KymaGuardBotGithubToken represents the Kyma Guard Bot token for GitHub
 	KymaGuardBotGithubToken Preset = "preset-kyma-guard-bot-github-token"
-	// WebsiteBotGithubSSH means github ssh
-	WebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
-	// WebsiteBotGithubIdentity means github identity
-	WebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
 	// DindEnabled means docker-in-docker preset
 	DindEnabled Preset = "preset-dind-enabled"
 	// SaGKEKymaIntegration means access to service account capable of creating clusters and related resources
@@ -52,4 +40,6 @@ const (
 	KymaBackupRestoreBucket Preset = "preset-kyma-backup-restore-bucket"
 	// KymaBackupCredentials means the credentials for the service account
 	KymaBackupCredentials Preset = "preset-kyma-backup-credentials"
+	// ProwKymaProjectIoSlackSkipReport means the skip report on slack
+	ProwKymaProjectIoSlackSkipReport Preset = "prow.kyma-project.io/slack.skipReport"
 )
