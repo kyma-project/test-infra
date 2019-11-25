@@ -292,7 +292,7 @@ fi
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 shout "Test Kyma"
 date
-"${KYMA_SCRIPTS_DIR}"/testing.sh
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 shout "Success"
 

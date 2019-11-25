@@ -21,6 +21,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
             cpu: 80m
 
 job_labels_template: &job_labels_template
+  preset-sa-gke-kyma-integration: "true"
   preset-bot-github-token: "true"
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"

@@ -4,7 +4,8 @@ CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 readonly TMP_DIR=$(mktemp -d)
 readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite.xml"
 readonly CONCURRENCY=5
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
+# Should be fixed name, it is displayed in TestGrid
+readonly SUITE_NAME="testsuite-all"
 
 # shellcheck disable=SC1090
 source "${CURRENT_PATH}/lib/testing-helpers.sh"
@@ -44,7 +45,7 @@ install::kyma_cli() {
 
     log::info "- Install kyma CLI ${os} locally to a tempdir..."
 
-    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-develop-version/kyma-${os}?alt=media"
+    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
 
     log::success "OK"
@@ -82,17 +83,6 @@ function main() {
 
   cts::delete
 
-  matchTests="" # match all tests
-
-  ${kc} get cm dex-config -n kyma-system -ojsonpath="{.data}" | grep --silent "#__STATIC_PASSWORDS__"
-  if [[ $? -eq 1 ]]
-  then
-    # if static users are not available, do not execute tests which requires them
-    matchTests=$(${kc} get testdefinitions --all-namespaces -l 'require-static-users!=true' -o=go-template='{{- range .items}} {{.metadata.name}}{{- end}}')
-    echo "WARNING: following tests will be skipped due to the lack of static users:"
-    ${kc} get testdefinitions --all-namespaces -l 'require-static-users=true' -o=go-template --template='{{- range .items}}{{printf " - %s\n" .metadata.name}}{{- end}}'
-  fi
-
   log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
   injectTestingAddons
   if [[ $? -eq 1 ]]; then
@@ -102,8 +92,9 @@ function main() {
   trap removeTestingAddons EXIT
 
   log::info "- Running Kyma tests"
+  # match all tests
   # shellcheck disable=SC2086
-  kyma test run ${matchTests} \
+  kyma test run \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
@@ -133,7 +124,7 @@ function main() {
   fi
 
   log::info "- Generate JUnit test summary"
-  kyma test status "${SUITE_NAME}" -ojunit > "${JUNIT_REPORT_PATH}"
+  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
 
   log::info "All test pods should be terminated. Checking..."
   waitForTestPodsTermination "${SUITE_NAME}"
@@ -142,7 +133,8 @@ function main() {
   log::info "- ClusterTestSuite details"
   kubectl get cts "${SUITE_NAME}" -oyaml
 
-  cts::delete
+  # TODO (mhudy): cts shouldn't be deleted because all test pods are deleted too and kind export will not store them
+  # cts::delete
 
   log::info "Images with tag latest are not allowed. Checking..."
   printImagesWithLatestTag

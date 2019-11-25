@@ -286,6 +286,13 @@ presets:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
   - labels:
+      preset-kyma-cli-stable: "true"
+    env:
+      - name: KYMA_CLI_STABLE_BUCKET
+        value: gs://kyma-cli-stable
+      - name: STABLE
+        value: "true"
+  - labels:
       preset-kyma-backup-restore-bucket: "true"
     env:
       - name: KYMA_BACKUP_RESTORE_BUCKET
@@ -498,7 +505,7 @@ plank:
     timeout: 7200000000000 # 2h
     grace_period: 600000000000 # 10min
     utility_images:
-      clonerefs: "gcr.io/k8s-prow/clonerefs:v20190312-abfe0e0"
+      clonerefs: "eu.gcr.io/kyma-project/test-infra/pr/clonerefs:PR-1198"
       initupload: "gcr.io/k8s-prow/initupload:v20190312-abfe0e0"
       entrypoint: "gcr.io/k8s-prow/entrypoint:v20190312-abfe0e0"
       sidecar: "gcr.io/k8s-prow/sidecar:v20190312-abfe0e0"

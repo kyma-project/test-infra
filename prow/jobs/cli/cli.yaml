@@ -42,8 +42,16 @@ postsubmits: # runs on merges
       preset-build-master: "true"
   - name: rel-kyma-cli
     branches:
-    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags
+    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # release tags
     <<: *job_template
     labels:
       preset-build-release: "true"
       preset-bot-github-token: "true"
+  - name: stable-kyma-cli
+    branches:
+    - "^stable$" # stable tag
+    <<: *job_template
+    labels:
+      preset-build-master: "true"
+      preset-kyma-cli-stable: "true"
+      preset-sa-kyma-artifacts: "true"

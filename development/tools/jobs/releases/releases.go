@@ -4,18 +4,18 @@ package releases
 
 // List of currently supported releases
 var (
+	Release19 = mustParse("1.9")
 	Release18 = mustParse("1.8")
 	Release17 = mustParse("1.7")
 	Release16 = mustParse("1.6")
-	Release15 = mustParse("1.5")
 )
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
 func GetAllKymaReleases() []*SupportedRelease {
 	return []*SupportedRelease{
+		Release18,
 		Release17,
 		Release16,
-		Release15,
 	}
 }
 
