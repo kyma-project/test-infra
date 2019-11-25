@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+echo "Testing network state"
+until nslookup google.com > /dev/null 2>&1
+do
+  echo "Waiting for network..."
+  sleep 1
+done
+echo "Network is ready!"
+
+/prow-clonerefs
