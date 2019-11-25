@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+set -eu
+
+echo_json() {
+ local date_with_time=`date "+%Y-%m-%dT%H:%M:%SZ"`
+ echo '{"command":"'$1'","component":"clonerefs","error":null,"level":"info","msg":"Ran command","output":"'$2'","time":"'${date_with_time}'"}'
+}
+
+echo_json " Testing network state" ""
+until nslookup google.com > /dev/null 2>&1
+do
+  echo_json "Waiting for network..." ""
+  sleep 1
+done
+echo_json "Network is ready!" ""
+
+/prow-clonerefs
