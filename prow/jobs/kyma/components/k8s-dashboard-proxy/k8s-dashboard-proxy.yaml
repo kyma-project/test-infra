@@ -45,24 +45,6 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-    - name: pre-rel15-kyma-components-k8s-dashboard-proxy
-      branches:
-        - release-1.5
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.5
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/components/k8s-dashboard-proxy"
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
 
 postsubmits:
   kyma-project/kyma:

@@ -1,34 +1,14 @@
 package common_test
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-func TestCommonReleases(t *testing.T) {
-	// WHEN
-	for _, currentRelease := range releases.GetKymaReleasesUntil(releases.Release15) {
-		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/common/common.yaml")
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-common", currentRelease), currentRelease.Branch())
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildRelease)
-			assert.True(t, actualPresubmit.AlwaysRun)
-			tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpackLatest, "/home/prow/go/src/github.com/kyma-project/kyma/common")
-		})
-	}
-}
 
 func TestCommonJobsPresubmit(t *testing.T) {
 	// WHEN

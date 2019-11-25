@@ -26,7 +26,7 @@ func (s ComponentSuite) Run(t *testing.T) {
 	jobConfig, err := ReadJobConfig(s.jobConfigPath())
 	require.NoError(t, err)
 
-	expectedNumberOfPresubmits := len(s.Releases) + len(s.PatchReleases)
+	expectedNumberOfPresubmits := len(s.PatchReleases)
 	if !s.Deprecated {
 		expectedNumberOfPresubmits++
 	}
@@ -102,30 +102,6 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 
 func (s ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		for _, currentRelease := range s.Releases {
-			t.Run(currentRelease.String(), func(t *testing.T) {
-				job := FindPresubmitJobByNameAndBranch(
-					jobConfig.Presubmits[s.repositorySectionKey()],
-					GetReleaseJobName(s.moduleName(), currentRelease),
-					currentRelease.Branch(),
-				)
-				require.NotNil(t, job)
-
-				assert.Equal(t, []string{currentRelease.Branch()}, job.Branches)
-				assert.False(t, job.SkipReport)
-				assert.True(t, job.Decorate)
-				assert.Equal(t, 10, job.MaxConcurrency)
-				assert.Equal(t, s.Repository, job.PathAlias)
-				assert.True(t, job.AlwaysRun)
-				AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
-				AssertThatSpecifiesResourceRequests(t, job.JobBase)
-				if !s.isTestInfra() {
-					AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, currentRelease.Branch())
-				}
-				AssertThatHasPresets(t, job.JobBase, preset.DindEnabled, s.DockerRepositoryPreset, preset.GcrPush, preset.BuildRelease)
-				job.RunsAgainstChanges(s.FilesTriggeringJob)
-			})
-		}
 		for _, currentRelease := range s.PatchReleases {
 			t.Run(currentRelease.String(), func(t *testing.T) {
 				job := FindPresubmitJobByNameAndBranch(

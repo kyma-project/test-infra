@@ -153,7 +153,7 @@ func (s GenericComponentSuite) branchesToRunAgainst() []string {
 		result = append(result, "master")
 	}
 
-	for _, rel := range s.Releases {
+	for _, rel := range s.PatchReleases {
 		result = append(result, rel.Branch())
 	}
 
