@@ -33,6 +33,7 @@ common_job_labels_push_template: &common_job_labels_push_template
 
 common_job_labels_minio_gcs_gateway_template: &common_job_labels_minio_gcs_gateway_template
   preset-rafter-minio-gcs-gateway: "true"
+  preset-gc-project-env: "true"
   preset-sa-gke-kyma-integration: "true"
 
 common_job_labels_minio_az_gateway_template: &common_job_labels_minio_az_gateway_template

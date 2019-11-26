@@ -27,7 +27,7 @@ const (
 var (
 	commonPresets = []preset.Preset{preset.DindEnabled, preset.KindVolumesMounts}
 	commonPushPresets = []preset.Preset{preset.GcrPush, preset.DockerPushRepoKyma}
-	minIOGCPPresets = []preset.Preset{"preset-rafter-minio-gcs-gateway", "preset-sa-gke-kyma-integration"}
+	minIOGCPPresets = []preset.Preset{"preset-rafter-minio-gcs-gateway", "preset-sa-gke-kyma-integration", "preset-gc-project-env"}
 	minIOAzurePresets = []preset.Preset{"preset-rafter-minio-az-gateway", "preset-creds-aks-kyma-integration"}
 
 	preBuildPresets = append(append(commonPresets, commonPushPresets...), preset.BuildPr)
