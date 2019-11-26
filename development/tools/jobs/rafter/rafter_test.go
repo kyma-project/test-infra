@@ -9,6 +9,8 @@ import (
 )
 
 const (
+	testInfraExtraRefSHA = "1eb63a0f829878dda83e67b62416c28c23d71d54"
+
 	rafterJobConfigPath = "./../../../../prow/jobs/rafter/rafter.yaml"
 	rafterPathAlias = "github.com/kyma-project/rafter"
 
@@ -33,15 +35,15 @@ var (
 	preMinIOGCPGatewayPresets = append(commonPresets, minIOGCPPresets...)
 	preMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), preset.BuildPr)
 
-	postBuildPresets = append(append(commonPresets, commonPushPresets...), presetRafterBuildMaster, preset.ProwKymaProjectIoSlackSkipReport)
-	postIntegrationTestPresets = append(commonPresets, preset.ProwKymaProjectIoSlackSkipReport)
-	postMinIOGCPGatewayPresets = append(append(commonPresets, minIOGCPPresets...), preset.ProwKymaProjectIoSlackSkipReport)
-	postMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), presetRafterBuildMaster, preset.ProwKymaProjectIoSlackSkipReport)
+	postBuildPresets = append(append(commonPresets, commonPushPresets...), presetRafterBuildMaster)
+	postIntegrationTestPresets = commonPresets
+	postMinIOGCPGatewayPresets = append(commonPresets, minIOGCPPresets...)
+	postMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), presetRafterBuildMaster)
 
-	releaseBuildPresets = append(append(commonPresets, commonPushPresets...), preset.BuildRelease, preset.ProwKymaProjectIoSlackSkipReport)
-	releaseIntegrationTestPresets = append(commonPresets, preset.ProwKymaProjectIoSlackSkipReport)
-	releaseMinIOGCPGatewayPresets = append(append(commonPresets, minIOGCPPresets...), preset.ProwKymaProjectIoSlackSkipReport)
-	releaseMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), preset.BuildRelease, preset.ProwKymaProjectIoSlackSkipReport)
+	releaseBuildPresets = append(append(commonPresets, commonPushPresets...), preset.BuildRelease)
+	releaseIntegrationTestPresets = commonPresets
+	releaseMinIOGCPGatewayPresets = append(commonPresets, minIOGCPPresets...)
+	releaseMinIOAzureGatewayPresets = append(append(commonPresets, minIOAzurePresets...), preset.BuildRelease)
 
 	postBranches = []string{"^master$"}
 	releaseBranches = []string{"v\\d+\\.\\d+\\.\\d+(?:-.*)?$"}
@@ -71,25 +73,25 @@ func TestRafterJobsPresubmits(t *testing.T) {
 		},
 		"pre-rafter-minio-gcs-gateway": {
 			presets: preMinIOGCPGatewayPresets,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"pre-rafter-minio-az-gateway": {
 			presets: preMinIOAzureGatewayPresets,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"pre-rafter-minio-gcs-gateway-migration": {
 			presets: preMinIOGCPGatewayPresets,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"pre-rafter-minio-az-gateway-migration": {
 			presets: preMinIOAzureGatewayPresets,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
@@ -105,7 +107,7 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			assert.False(t, preJob.Optional)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfra(t, preJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, testInfraExtraRefSHA)
 			tester.AssertThatHasPresets(t, preJob.JobBase, actualJob.presets...)
 			assert.Empty(t, preJob.RunIfChanged)
 
@@ -164,56 +166,56 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 		"post-rafter-minio-gcs-gateway": {
 			presets: postMinIOGCPGatewayPresets,
 			branches: postBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"release-rafter-minio-gcs-gateway": {
 			presets: releaseMinIOGCPGatewayPresets,
 			branches: releaseBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"post-rafter-minio-az-gateway": {
 			presets: postMinIOAzureGatewayPresets,
 			branches: postBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"release-rafter-minio-az-gateway": {
 			presets: releaseMinIOAzureGatewayPresets,
 			branches: releaseBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"post-rafter-minio-gcs-gateway-migration": {
 			presets: postMinIOGCPGatewayPresets,
 			branches: postBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"release-rafter-minio-gcs-gateway-migration": {
 			presets: releaseMinIOGCPGatewayPresets,
 			branches: releaseBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"post-rafter-minio-az-gateway-migration": {
 			presets: postMinIOAzureGatewayPresets,
 			branches: postBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"release-rafter-minio-az-gateway-migration": {
 			presets: releaseMinIOAzureGatewayPresets,
 			branches: releaseBranches,
-			containerImg: tester.ImageGolangKubebuilder2BuildpackLatest,
+			containerImg: tester.ImageKymaClusterInfra20191120,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
@@ -229,7 +231,7 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			assert.True(t, preJob.Decorate)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
-			tester.AssertThatHasExtraRefTestInfra(t, preJob.JobBase.UtilityConfig, "master")
+			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, testInfraExtraRefSHA)
 			tester.AssertThatHasPresets(t, preJob.JobBase, actualJob.presets...)
 			assert.Empty(t, preJob.RunIfChanged)
 

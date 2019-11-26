@@ -39,9 +39,6 @@ common_job_labels_minio_az_gateway_template: &common_job_labels_minio_az_gateway
   preset-rafter-minio-az-gateway: "true"
   preset-creds-aks-kyma-integration: "true"
 
-additional_postsubmit_job_labels_template: &additional_postsubmit_job_labels_template
-  prow.kyma-project.io/slack.skipReport: "true"
-
 common_job_config_template: &common_job_config_template
   decorate: true
   path_alias: github.com/kyma-project/rafter
@@ -49,7 +46,7 @@ common_job_config_template: &common_job_config_template
   extra_refs:
     - org: kyma-project
       repo: test-infra
-      base_ref: master
+      base_sha: "1eb63a0f829878dda83e67b62416c28c23d71d54"
       path_alias: github.com/kyma-project/test-infra
 
 additional_presubmit_job_config_template: &additional_presubmit_job_config_template
@@ -58,7 +55,6 @@ additional_presubmit_job_config_template: &additional_presubmit_job_config_templ
   optional: false
 
 common_container_template: &common_container_template
-  image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
   securityContext:
     privileged: true
   env:
@@ -74,6 +70,7 @@ common_build_job_template: &common_build_job_template
   spec:
     containers:
       - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
@@ -84,6 +81,7 @@ common_integration_test_job_template: &common_integration_test_job_template
   spec:
     containers:
       - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
         command:
           - make
         args:
@@ -94,6 +92,7 @@ common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
   spec:
     containers:
       - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
         command:
           - make
         args:
@@ -104,6 +103,7 @@ common_minio_gateway_migration_test_job_template: &common_minio_gateway_migratio
   spec:
     containers:
       - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
         command:
           - make
         args:
@@ -169,7 +169,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_push_template
-        <<: *additional_postsubmit_job_labels_template
         preset-rafter-build-master: "true"
 
     - name: release-rafter
@@ -180,7 +179,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_push_template
-        <<: *additional_postsubmit_job_labels_template
         preset-build-release: "true"
 
     ## INTEGRATION TEST
@@ -190,7 +188,6 @@ postsubmits:
       <<: *common_integration_test_job_template
       labels:
         <<: *common_job_labels_template
-        <<: *additional_postsubmit_job_labels_template
 
     - name: release-rafter-integration-test
       branches:
@@ -198,7 +195,6 @@ postsubmits:
       <<: *common_integration_test_job_template
       labels:
         <<: *common_job_labels_template
-        <<: *additional_postsubmit_job_labels_template
 
     ## MINIO GATEWAY TEST
     - name: post-rafter-minio-gcs-gateway
@@ -208,7 +204,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        <<: *additional_postsubmit_job_labels_template
 
     - name: release-rafter-minio-gcs-gateway
       branches:
@@ -217,7 +212,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        <<: *additional_postsubmit_job_labels_template
 
     - name: post-rafter-minio-az-gateway
       branches:
@@ -226,7 +220,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        <<: *additional_postsubmit_job_labels_template
         preset-rafter-build-master: "true"
 
     - name: release-rafter-minio-az-gateway
@@ -236,7 +229,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        <<: *additional_postsubmit_job_labels_template
         preset-build-release: "true"
 
     ## MINIO GATEWAY MIGRATION TEST
@@ -247,7 +239,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        <<: *additional_postsubmit_job_labels_template
 
     - name: release-rafter-minio-gcs-gateway-migration
       branches:
@@ -256,7 +247,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_gcs_gateway_template
-        <<: *additional_postsubmit_job_labels_template
 
     - name: post-rafter-minio-az-gateway-migration
       branches:
@@ -265,7 +255,6 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        <<: *additional_postsubmit_job_labels_template
         preset-rafter-build-master: "true"
 
     - name: release-rafter-minio-az-gateway-migration
@@ -275,5 +264,4 @@ postsubmits:
       labels:
         <<: *common_job_labels_template
         <<: *common_job_labels_minio_az_gateway_template
-        <<: *additional_postsubmit_job_labels_template
         preset-build-release: "true"
