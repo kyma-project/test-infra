@@ -385,7 +385,6 @@ upgradeKyma() {
     shout "Install Tiller from version ${TARGET_VERSION}"
     date
     kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
