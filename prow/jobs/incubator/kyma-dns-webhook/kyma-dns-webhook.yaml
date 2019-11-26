@@ -1,6 +1,5 @@
 job_template_webhook: &job_template_webhook
   skip_report: false
-  always_run: true
   decorate: true
   path_alias: github.com/kyma-incubator/kyma-dns-webhook
   max_concurrency: 10
@@ -25,7 +24,6 @@ job_template_webhook: &job_template_webhook
 
 job_template_challenger: &job_template_challenger
   skip_report: false
-  always_run: true
   decorate: true
   path_alias: github.com/kyma-incubator/kyma-dns-webhook
   max_concurrency: 10
