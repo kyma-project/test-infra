@@ -62,10 +62,10 @@ presubmits:
         resources:
           requests:
             memory: 8Gi
-            cpu: 4
+            cpu: 5
           limits:
             memory: 10Gi
-            cpu: 5
+            cpu: 6
       tolerations:
       - <<: *job_tolerations_template
 
@@ -112,9 +112,9 @@ presubmits:
         resources:
           requests:
             memory: 18Gi
-            cpu: 6
+            cpu: 8
           limits:
             memory: 24Gi
-            cpu: 8
+            cpu: 10
       tolerations:
       - <<: *job_tolerations_template
