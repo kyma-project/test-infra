@@ -270,7 +270,8 @@ function installKyma() {
 		--data "global.tlsKey=${TLS_KEY}"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-		--data "test.acceptance.ui.logging.enabled=true" \
+		--data "console.test.acceptance.ui.logging.enabled=true" \
+		--data "console.test.acceptance.enabled=false" \
 		--label "component=core"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
