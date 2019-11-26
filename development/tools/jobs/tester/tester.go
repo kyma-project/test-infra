@@ -182,11 +182,12 @@ func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig, expec
 }
 
 // AssertThatHasExtraRefTestInfraWithSHA checks if job has configured extra ref to test-infra repository with appropriate sha
-func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig, expectedBaseSHA string) {
+func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig, expectedBaseRef, expectedBaseSHA string) {
 	for _, curr := range in.ExtraRefs {
 		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
 			curr.Org == "kyma-project" &&
 			curr.Repo == "test-infra" &&
+			curr.BaseRef == expectedBaseRef &&
 			curr.BaseSHA == expectedBaseSHA {
 			return
 		}
