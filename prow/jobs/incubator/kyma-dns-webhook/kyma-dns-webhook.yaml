@@ -52,7 +52,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository-incubator: "true"
 
 presubmits: # runs on PRs
-  kyma-incubator/api-gateway:
+  kyma-incubator/kyma-dns-webhook:
   - name: pre-master-kyma-incubator-dns-challenger
     run_if_changed: "^dns-challenger/"
     branches:
@@ -71,7 +71,7 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
 
 postsubmits:
-  kyma-incubator/api-gateway:
+  kyma-incubator/kyma-dns-webhook:
   - name: post-master-kyma-incubator-dns-challenger
     branches:
     - ^master$
