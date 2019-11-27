@@ -48,7 +48,7 @@ common_job_config_template: &common_job_config_template
     - org: kyma-project
       repo: test-infra
       base_ref: master
-      base_sha: "1eb63a0f829878dda83e67b62416c28c23d71d54"
+      base_sha: "b973e815bb8124a19a82fe6df722ce174d4a7566"
       path_alias: github.com/kyma-project/test-infra
 
 additional_presubmit_job_config_template: &additional_presubmit_job_config_template
@@ -90,6 +90,7 @@ common_integration_test_job_template: &common_integration_test_job_template
           - integration-test
 
 common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
+  optional: true
   <<: *common_job_config_template
   spec:
     containers:
@@ -101,6 +102,7 @@ common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
           - minio-gateway-test
 
 common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
+  optional: true
   <<: *common_job_config_template
   spec:
     containers:
