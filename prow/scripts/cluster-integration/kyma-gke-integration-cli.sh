@@ -237,11 +237,6 @@ echo "ClusterTestSuite details"
 kubectl get cts "${SUITE_NAME}" -oyaml
 
 
-shout "Uninstalling Kyma"
-date
-kyma uninstall --non-interactive
-
-
 shout "Success"
 
 #!!! Must be at the end of the script !!!
