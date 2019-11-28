@@ -29,7 +29,6 @@ fi
 
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
-readonly TMP_DIR=$(mktemp -d)
 
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
