@@ -90,3 +90,28 @@ Follow these steps to save the dashboard:
    ```bash
    kubctl replace -f prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml
    ```
+## Stackdriver Monitoring
+
+### Workload clusters
+
+Stackdriver Monitoring dashboards provide visibility into the performance, uptime, and overall health of long running Kyma test clusters:
+ - [nightly](https://app.google.stackdriver.com/dashboards/2395169590273002360?project=sap-kyma-prow-workloads)
+ - [weekly](https://app.google.stackdriver.com/dashboards/7169385145780812191?project=sap-kyma-prow-workloads)
+
+Stackdriver provides set of built-in metric types, see the [Metrics](https://cloud.google.com/monitoring/api/metrics) or [Metrics explorer](https://cloud.google.com/monitoring/charts/metrics-explorer)
+
+Gathering additional metrics requires [stackdriver-prometheus collector](https://cloud.google.com/monitoring/kubernetes-engine/prometheus). Adding `--enable-stackdriver-kubernetes` is required for enabling Stackdriver Kubernetes Engine Monitoring support on k8s cluster. 
+
+There is `--include={__name__=~"node_load.+"}` metric filter applied to limit the volume of data send to stackdriver. Collecting all the data is not possible due to high costs (hundreds of dollars per day).
+
+Kyma developers have necessary permissions to create custom dashboards however it is required to follow dashboard naming convention that looks as follows:
+`dev - {team_name}`
+![msg](./assets/dashboards.png)
+
+### Prow clusters
+
+[This page shows performance of our Prow cluster](https://storage.cloud.google.com/kyma-prow-logs/stats/index.html?authuser=1&orgonly=true)
+
+There is also a possibility to create log-based metrics with dashboards.
+
+[Prow infra checks](https://storage.cloud.google.com/kyma-prow-logs/stats/checks.html?authuser=1&orgonly=true)
