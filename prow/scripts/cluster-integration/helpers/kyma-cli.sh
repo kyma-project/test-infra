@@ -17,3 +17,20 @@ install::kyma_cli() {
 
     popd
 }
+
+host::os() {
+  local host_os
+  case "$(uname -s)" in
+    Darwin)
+      host_os=darwin
+      ;;
+    Linux)
+      host_os=linux
+      ;;
+    *)
+      log::error "Unsupported host OS. Must be Linux or Mac OS X."
+      exit 1
+      ;;
+  esac
+  echo "${host_os}"
+}
