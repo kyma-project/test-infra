@@ -6,27 +6,18 @@
 #Expected vars:
 #
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
-# - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
-# - CLOUDSDK_COMPUTE_REGION - GCP compute region
-# - CLOUDSDK_DNS_ZONE_NAME - GCP zone name (not its DNS name!)
-# - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
-# - MACHINE_TYPE (optional): GKE machine type
-# - CLUSTER_VERSION (optional): GKE cluster version
+# - GARDENER_REGION - Gardener compute region
+# - GARDENER_APPLICATION_CREDENTIALS - GCP Service Account key file path
+# - MACHINE_TYPE (optional): AKS machine type
+# - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
 #
-#Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
-# - Compute Admin
-# - Kubernetes Engine Admin
-# - Kubernetes Engine Cluster Admin
-# - DNS Administrator
-# - Service Account User
-# - Storage Admin
-# - Compute Network Admin
+#Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
 set -o errexit
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -63,22 +54,26 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    # if [ -n "${CLEANUP_CLUSTER}" ]; then
-    #     shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-    #     date
+    if [ -n "${CLEANUP_CLUSTER}" ]; then
+        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
+        date
 
-    #     #save disk names while the cluster still exists to remove them later
-    #     DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-    #     export DISKS
+        #save disk names while the cluster still exists to remove them later
+        # DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        # export DISKS
 
-    #     #Delete cluster
-    #     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+        #Delete cluster
+        # Export envvars for the script
+        export GARDENER_PROJECT_NAME = ${CLUSTER_NAME}
+        export GARDENER_CLUSTER_NAME = ${PROJECT_NAME}
+        export GARDENER_CREDENTIALS = ${GARDENER_APPLICATION_CREDENTIALS}
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh"
 
-    #     #Delete orphaned disks
-    #     shout "Delete orphaned PVC disks..."
-    #     date
-    #     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-    # fi
+        #Delete orphaned disks
+        # shout "Delete orphaned PVC disks..."
+        # date
+        # "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+    fi
 
     # if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
     #     shout "Delete Gateway DNS Record"
@@ -106,18 +101,12 @@ cleanup() {
 trap cleanup EXIT INT
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-readonly COMMON_NAME_PREFIX="cli-integration-test-gke"
+readonly COMMON_NAME_PREFIX="int-grdnr"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
-### Cluster name must be less than 40 characters!
+### Cluster name must be less than 20 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
-
-export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
-
-### For provision-gke-cluster.sh
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+export PROJECT_NAME="borja" # TODO comes from the preset
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
@@ -132,52 +121,30 @@ install::kyma_cli
 
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""
-kyma provision gardener --target-provider az --name "${CLUSTER_NAME}"
+
+if [ -z "$MACHINE_TYPE" ]; then
+      export MACHINE_TYPE="Standard_D2_v3"
+fi
+
+kyma provision gardener \
+        --target-provider azure --secret kyma-azure \
+        --name "${CLUSTER_NAME}" --project "${PROJECT_NAME}" --credentials "${GARDENER_APPLICATION_CREDENTIALS}" \
+        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk_type=Standard_LRS --extra vnetcidr="10.250.0.0/19"
 
 
-# shout "Authenticate"
+# shout "Generate self-signed certificate"
 # date
-# init
-
-# DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-
-
-# NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-# if [ "$NETWORK_EXISTS" -gt 0 ]; then
-#     shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-#     date
-#     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-# else
-#     shout "Network ${GCLOUD_NETWORK_NAME} exists"
-# fi
-
-
-# shout "Provision cluster: \"${CLUSTER_NAME}\""
-# date
-# export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-# if [ -z "$MACHINE_TYPE" ]; then
-#       export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-# fi
-# if [ -z "${CLUSTER_VERSION}" ]; then
-#       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-# fi
-# CLEANUP_CLUSTER="true"
-# "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
-
-
-shout "Generate self-signed certificate"
-date
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-export DOMAIN
-CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
-TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+# DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+# export DOMAIN
+# CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+# TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+# TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 
 
 shout "Installing Kyma"
 date
-yes | kyma install --non-interactive --source latest --domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+yes | kyma install --non-interactive --source latest #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
 
 shout "Checking the versions"
@@ -185,23 +152,23 @@ date
 kyma version
 
 
-# if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
-#     shout "Create DNS Record for Ingressgateway IP"
-#     date
-#     GATEWAY_IP_ADDRESS=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-#     GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-#     CLEANUP_GATEWAY_DNS_RECORD="true"
-#     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-# fi
+if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
+    shout "Create DNS Record for Ingressgateway IP"
+    date
+    GATEWAY_IP_ADDRESS=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" TODO add a proper domain
+    CLEANUP_GATEWAY_DNS_RECORD="true"
+    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+fi
 
-# if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-#     shout "Create DNS Record for Apiserver proxy IP"
-#     date
-#     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-#     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-#     CLEANUP_APISERVER_DNS_RECORD="true"
-#     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-# fi
+if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+    shout "Create DNS Record for Apiserver proxy IP"
+    date
+    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" TODO add proper domain
+    CLEANUP_APISERVER_DNS_RECORD="true"
+    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+fi
 
 
 shout "Running Kyma tests"
@@ -245,12 +212,6 @@ fi
 
 echo "ClusterTestSuite details"
 kubectl get cts "${SUITE_NAME}" -oyaml
-
-
-shout "Uninstalling Kyma"
-date
-kyma uninstall --non-interactive
-
 
 shout "Success"
 
