@@ -27,9 +27,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-readonly CONCURRENCY=5
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
