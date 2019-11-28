@@ -7,7 +7,7 @@
 #
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - GARDENER_REGION - Gardener compute region
-# - GARDENER_APPLICATION_CREDENTIALS - GCP Service Account key file path
+# - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - MACHINE_TYPE (optional): AKS machine type
 # - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
 #
@@ -17,7 +17,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_APPLICATION_CREDENTIALS; do
+for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -66,7 +66,7 @@ cleanup() {
         # Export envvars for the script
         export GARDENER_PROJECT_NAME = ${CLUSTER_NAME}
         export GARDENER_CLUSTER_NAME = ${PROJECT_NAME}
-        export GARDENER_CREDENTIALS = ${GARDENER_APPLICATION_CREDENTIALS}
+        export GARDENER_CREDENTIALS = ${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh"
 
         #Delete orphaned disks
@@ -128,7 +128,7 @@ fi
 
 kyma provision gardener \
         --target-provider azure --secret kyma-azure \
-        --name "${CLUSTER_NAME}" --project "${PROJECT_NAME}" --credentials "${GARDENER_APPLICATION_CREDENTIALS}" \
+        --name "${CLUSTER_NAME}" --project "${PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk_type=Standard_LRS --extra vnetcidr="10.250.0.0/19"
 
 
