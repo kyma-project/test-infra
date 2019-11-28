@@ -223,7 +223,7 @@ gke_backup_job_labels_template: &gke_backup_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-master-kyma-integration
+    - name: pre-master-kyma-integration-k8s-1-14
       branches:
         - ^master$
       <<: *vm_job_template
@@ -236,7 +236,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-minio-gcs-gateway
+    - name: pre-master-kyma-gke-minio-gcs-gateway-k8s-1-14
       branches:
         - ^master$
       <<: *gke_minio_gateway_job_template
@@ -250,7 +250,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-minio-az-gateway
+    - name: pre-master-kyma-gke-minio-az-gateway-k8s-1-14
       branches:
         - ^master$
       <<: *gke_minio_gateway_job_template
@@ -265,7 +265,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-minio-gcs-gateway-migration
+    - name: pre-master-kyma-gke-minio-gcs-gateway-migration-k8s-1-14
       branches:
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
@@ -279,7 +279,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-minio-az-gateway-migration
+    - name: pre-master-kyma-gke-minio-az-gateway-migration-k8s-1-14
       branches:
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
@@ -294,7 +294,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-integration
+    - name: pre-master-kyma-gke-integration-k8s-1-14
       branches:
         - ^master$
       <<: *gke_job_template
@@ -307,7 +307,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-upgrade
+    - name: pre-master-kyma-gke-upgrade-k8s-1-14
       branches:
         - ^master$
       <<: *gke_upgrade_job_template
@@ -320,7 +320,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-central-connector
+    - name: pre-master-kyma-gke-central-connector-k8s-1-14
       branches:
         - ^master$
       <<: *gke_central_job_template
@@ -333,7 +333,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-backup
+    - name: pre-master-kyma-gke-backup-k8s-1-14
       optional: false
       branches:
         - ^master$
