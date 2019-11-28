@@ -222,6 +222,7 @@ gke_backup_job_labels_template: &gke_backup_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-integration-k8s-1-14
+      optional: true
       branches:
         - ^master$
       <<: *vm_job_template
@@ -293,6 +294,7 @@ presubmits: # runs on PRs
           base_ref: master
 
     - name: pre-master-kyma-gke-integration-k8s-1-14
+      optional: true
       branches:
         - ^master$
       <<: *gke_job_template
@@ -306,6 +308,7 @@ presubmits: # runs on PRs
           base_ref: master
 
     - name: pre-master-kyma-gke-upgrade-k8s-1-14
+      optional: true
       branches:
         - ^master$
       <<: *gke_upgrade_job_template
@@ -319,6 +322,7 @@ presubmits: # runs on PRs
           base_ref: master
 
     - name: pre-master-kyma-gke-central-connector-k8s-1-14
+      optional: true
       branches:
         - ^master$
       <<: *gke_central_job_template
@@ -332,7 +336,7 @@ presubmits: # runs on PRs
           base_ref: master
 
     - name: pre-master-kyma-gke-backup-k8s-1-14
-      optional: false
+      optional: true
       branches:
         - ^master$
       <<: *gke_backup_job_template
