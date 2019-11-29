@@ -105,7 +105,7 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			assert.False(t, preJob.SkipReport)
 			assert.True(t, preJob.AlwaysRun)
 			assert.True(t, preJob.Decorate)
-			// assert.False(t, preJob.Optional) uncomment it later!
+			assert.False(t, preJob.Optional)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
 			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, "master", testInfraExtraRefSHA)
