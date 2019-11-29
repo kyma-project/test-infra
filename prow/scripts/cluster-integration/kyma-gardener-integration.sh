@@ -117,7 +117,6 @@ install::kyma_cli
 
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""
-ls -la /etc/credentials/gardener-kyma-prow
 
 if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="Standard_D2_v3"
