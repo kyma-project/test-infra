@@ -226,8 +226,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *vm_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      always_run: false
       labels:
         preset-build-pr: "true"
         <<: *vm_job_labels_template
@@ -239,7 +238,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
+      always_run: false
       optional: true
       labels:
         preset-build-pr: "true"
@@ -253,7 +252,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
+      always_run: false
       optional: true
       labels:
         preset-build-pr: "true"
@@ -268,7 +267,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
+      always_run: false
       optional: true
       labels:
         preset-build-pr: "true"
@@ -282,7 +281,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
+      always_run: false
       optional: true
       labels:
         preset-build-pr: "true"
@@ -298,8 +297,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      always_run: false
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
@@ -312,8 +310,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_upgrade_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      always_run: false
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
@@ -326,8 +323,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_central_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      always_run: false
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
@@ -340,8 +336,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_backup_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/backup\\S+|tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      always_run: false
       labels:
         preset-build-pr: "true"
         <<: *gke_backup_job_labels_template
