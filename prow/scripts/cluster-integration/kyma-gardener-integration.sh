@@ -125,7 +125,7 @@ fi
 kyma provision gardener \
         --target-provider azure --secret kyma-azure \
         --name "${CLUSTER_NAME}" --project "${PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk_type=Standard_LRS --extra vnetcidr="10.250.0.0/19"
+        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19"
 
 
 # shout "Generate self-signed certificate"
