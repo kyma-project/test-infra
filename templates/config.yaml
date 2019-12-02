@@ -296,6 +296,12 @@ templates:
           <<: *kyma_generic_component
           path: components/backup-plugins
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/health-check-proxy/health-check-proxy.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/health-check-proxy
+          since: "1.9"
+          optional: true
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -331,12 +337,6 @@ templates:
           <<: *kyma_generic_component
           path: tools/alpine-net
           since: "1.7"
-      - to: ../prow/jobs/kyma/tools/health-check-proxy/health-check-proxy.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tools/health-check-proxy
-          since: "1.9"
-          optional: true
       - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-test-generic.yaml
         values:
           <<: *kyma_generic_component
