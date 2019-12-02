@@ -377,6 +377,12 @@ templates:
           path: tests/event-bus
           since: '1.9'
           optional: true
+      - to: ../prow/jobs/kyma/components/function-controller-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/function-controller
+          since: '1.9'
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
