@@ -369,13 +369,13 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/event-bus
-          since: '1.7'
+          since: '1.9'
           optional: true
       - to: ../prow/jobs/kyma/tests/event-bus-test-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/event-bus
-          since: '1.7'
+          since: '1.9'
           optional: true
   - from: templates/kyma-integration.yaml
     render:
