@@ -346,7 +346,7 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/kubeless-images/nodejs
-          since: '1.7'
+          since: '1.9'
           optional: true
       - to: ../prow/jobs/kyma/components/event-service-generic.yaml
         values:
