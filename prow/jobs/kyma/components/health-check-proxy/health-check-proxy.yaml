@@ -20,7 +20,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tools/health-check-proxy/|^common/makefiles/"
+  run_if_changed: "^components/health-check-proxy/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +29,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/health-check-proxy"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/health-check-proxy"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,12 +37,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tools-health-check-proxy
+    - name: pre-kyma-components-health-check-proxy
       skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tools-health-check-proxy
+    - name: post-kyma-components-health-check-proxy
       <<: *job_template
