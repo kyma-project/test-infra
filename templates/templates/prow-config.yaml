@@ -86,6 +86,10 @@ presets:
     env:
     - name: GARDENER_KYMA_PROW_KUBECONFIG
       value: /etc/credentials/gardener-kyma-prow/kubeconfig
+    - name: GARDENER_KYMA_PROW_PROJECT_NAME
+      value: "kyma-prow"
+    - name: GARDENER_KYMA_PROW_AZURE_SECRET_NAME
+      value: "kyma-azure"
     volumes:
     - name: gardener-kyma-prow-kubeconfig
       secret:
