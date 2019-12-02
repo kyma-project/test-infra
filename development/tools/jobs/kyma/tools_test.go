@@ -20,6 +20,12 @@ var tools = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{path: "health-check-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release19),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestToolsJobs(t *testing.T) {
