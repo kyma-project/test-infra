@@ -84,6 +84,22 @@ presets:
     - name: knative-sa
       mountPath: /etc/credentials/knative-sa
   - labels:
+      preset-gardener-kyma-integration: "true"
+    env:
+    - name: GARDENER_KYMA_PROW_KUBECONFIG
+      value: /etc/credentials/gardener-kyma-prow/kubeconfig
+    - name: GARDENER_KYMA_PROW_PROJECT_NAME
+      value: "kyma-prow"
+    - name: GARDENER_KYMA_PROW_AZURE_SECRET_NAME
+      value: "kyma-azure"
+    volumes:
+    - name: gardener-kyma-prow-kubeconfig
+      secret:
+        secretName: gardener-kyma-prow-kubeconfig
+    volumeMounts:
+    - name: gardener-kyma-prow-kubeconfig
+      mountPath: /etc/credentials/gardener-kyma-prow
+  - labels:
       preset-creds-aks-kyma-integration: "true"
     env:
     - name: AZURE_SUBSCRIPTION_ID
@@ -288,6 +304,13 @@ presets:
       - name: KYMA_ARTIFACTS_BUCKET
         value: gs://kyma-prow-artifacts
   - labels:
+      preset-kyma-cli-stable: "true"
+    env:
+      - name: KYMA_CLI_STABLE_BUCKET
+        value: gs://kyma-cli-stable
+      - name: STABLE
+        value: "true"
+  - labels:
       preset-kyma-backup-restore-bucket: "true"
     env:
       - name: KYMA_BACKUP_RESTORE_BUCKET
@@ -397,6 +420,11 @@ presets:
         hostPath:
           path: /sys/fs/cgroup
           type: Directory
+  - labels:
+      preset-cluster-use-ssd: "true"
+    env:
+    - name: CLUSTER_USE_SSD
+      value: "true"
 
 branch-protection:
   enforce_admins: false
@@ -414,6 +442,34 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.8:
+              required_status_checks:
+                contexts:
+                  - pre-rel18-kyma-integration
+                  - pre-rel18-kyma-gke-integration
+                  - pre-rel18-kyma-gke-upgrade
+                  - pre-rel18-kyma-gke-backup
+                  - pre-rel18-kyma-gke-central-connector
+                  - pre-rel18-kyma-artifacts
+                  - pre-rel18-kyma-installer
+                  - pre-rel18-kyma-gke-minio-gcs-gateway
+                  - pre-rel18-kyma-gke-minio-az-gateway
+                  - pre-rel18-kyma-gke-minio-gcs-gateway-migration
+                  - pre-rel18-kyma-gke-minio-az-gateway-migration
+            release-1.7:
+              required_status_checks:
+                contexts:
+                  - pre-rel17-kyma-integration
+                  - pre-rel17-kyma-gke-integration
+                  - pre-rel17-kyma-gke-upgrade
+                  - pre-rel17-kyma-gke-backup
+                  - pre-rel17-kyma-gke-central-connector
+                  - pre-rel17-kyma-artifacts
+                  - pre-rel17-kyma-installer
+                  - pre-rel17-kyma-gke-minio-gcs-gateway
+                  - pre-rel17-kyma-gke-minio-az-gateway
+                  - pre-rel17-kyma-gke-minio-gcs-gateway-migration
+                  - pre-rel17-kyma-gke-minio-az-gateway-migration
             release-1.6:
               required_status_checks:
                 contexts:
@@ -428,30 +484,6 @@ branch-protection:
                   - pre-rel16-kyma-gke-minio-az-gateway
                   - pre-rel16-kyma-gke-minio-gcs-gateway-migration
                   - pre-rel16-kyma-gke-minio-az-gateway-migration
-            release-1.5:
-              required_status_checks:
-                contexts:
-                  - pre-rel15-kyma-integration
-                  - pre-rel15-kyma-gke-integration
-                  - pre-rel15-kyma-gke-upgrade
-                  - pre-rel15-kyma-gke-backup
-                  - pre-rel15-kyma-gke-central-connector
-                  - pre-rel15-kyma-artifacts
-                  - pre-rel15-kyma-installer
-                  - pre-rel15-kyma-gke-minio-gateway
-                  - pre-rel15-kyma-gke-minio-gateway-migration
-            release-1.4:
-              required_status_checks:
-                contexts:
-                  - pre-rel14-kyma-integration
-                  - pre-rel14-kyma-gke-integration
-                  - pre-rel14-kyma-gke-upgrade
-                  - pre-rel14-kyma-gke-backup
-                  - pre-rel14-kyma-gke-central-connector
-                  - pre-rel14-kyma-artifacts
-                  - pre-rel14-kyma-installer
-                  - pre-rel14-kyma-gke-minio-gateway
-                  - pre-rel14-kyma-gke-minio-gateway-migration
         website:
           required_status_checks:
             contexts:
@@ -502,18 +534,32 @@ branch-protection:
           branches:
             master:
               protect: true
+        dex:
+          branches:
+            master:
+              protect: true
+            kyma-master:
+              protect: true
+        api-gateway:
+          branches:
+            master:
+              protect: true
+        kyma-dns-webhook:
+          branches:
+            master:
+              protect: true
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
   job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
-  max_concurrency: 50 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
+  max_concurrency: 70 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_config:
     timeout: 7200000000000 # 2h
     grace_period: 600000000000 # 10min
     utility_images:
-      clonerefs: "gcr.io/k8s-prow/clonerefs:v20190312-abfe0e0"
+      clonerefs: "eu.gcr.io/kyma-project/test-infra/pr/clonerefs:PR-1198"
       initupload: "gcr.io/k8s-prow/initupload:v20190312-abfe0e0"
       entrypoint: "gcr.io/k8s-prow/entrypoint:v20190312-abfe0e0"
       sidecar: "gcr.io/k8s-prow/sidecar:v20190312-abfe0e0"

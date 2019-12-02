@@ -27,6 +27,8 @@ const (
 	ImageGolangBuildpack1_11 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11"
 	// ImageGolangBuildpack1_12 means Golang buildpack image with Go 1.12.*
 	ImageGolangBuildpack1_12 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12"
+	// ImageGolangBuildpack1_13 means Golang buildpack image with Go 1.13.*
+	ImageGolangBuildpack1_13 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13"
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
 	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
@@ -45,6 +47,8 @@ const (
 	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageKymaClusterInfraLatest represents boostrap image published on 20.11.2019
+	ImageKymaClusterInfraLatest = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
 	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
@@ -175,6 +179,20 @@ func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig, expec
 		}
 	}
 	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s]", expectedBaseRef))
+}
+
+// AssertThatHasExtraRefTestInfraWithSHA checks if job has configured extra ref to test-infra repository with appropriate sha
+func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig, expectedBaseRef, expectedBaseSHA string) {
+	for _, curr := range in.ExtraRefs {
+		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
+			curr.Org == "kyma-project" &&
+			curr.Repo == "test-infra" &&
+			curr.BaseRef == expectedBaseRef &&
+			curr.BaseSHA == expectedBaseSHA {
+			return
+		}
+	}
+	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s] sha", expectedBaseSHA))
 }
 
 // AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined

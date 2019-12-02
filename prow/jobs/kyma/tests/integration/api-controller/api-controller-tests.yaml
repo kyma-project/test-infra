@@ -27,40 +27,4 @@ container_template: &container_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-rel15-kyma-tests-integration-api-controller
-      branches:
-        - release-1.5
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.5
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/api-controller"
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-    - name: pre-rel14-kyma-tests-integration-api-controller
-      branches:
-        - release-1.4
-      <<: *job_template
-      path_alias: github.com/kyma-project/kyma
-      always_run: true
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.4
-      spec:
-        containers:
-          - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/tests/integration/api-controller"
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
 

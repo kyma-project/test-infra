@@ -15,6 +15,7 @@ source "${SCRIPT_DIR}/library.sh"
 cleanup() {
     ARG=$?
     shout "Removing instance cli-integration-test-${RANDOM_ID}"
+    date
     gcloud compute instances delete --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     exit $ARG
 }
@@ -66,7 +67,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [[ -z "$IMAGE" ]]; then
     shout "Provisioning vm using the latest default custom image ..."
-
+    date
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
 
@@ -80,6 +81,7 @@ EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMI
 
 for ZONE in ${EU_ZONES}; do
     shout "Attempting to create a new instance named cli-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+    date
     gcloud compute instances create "cli-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
@@ -93,38 +95,34 @@ done || exit 1
 trap cleanup exit INT
 
 shout "Building Kyma CLI"
-
+date
 cd "${KYMA_PROJECT_DIR}/cli"
-
-make resolve
-make build
-
+make build-linux
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
 shout "Copying Kyma CLI to the instance"
-
+date
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --quiet --zone="${ZONE}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "cli-integration-test-${RANDOM_ID}":~/bin/kyma && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
-
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 shout "Provisioning Minikube"
-
+date
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
 
 shout "Installing Kyma"
-
+date
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive"
 
 shout "Checking the versions"
-
+date
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma version"
 
 shout "Running a simple test on Kyma"
-
+date
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test run dex-connection"
 
 echo "Check if the test succeeds"
@@ -144,6 +142,6 @@ for ((i=1; i<=attempts; i++)); do
 done
 
 shout "Uninstalling Kyma"
-
+date
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma uninstall --non-interactive"
 

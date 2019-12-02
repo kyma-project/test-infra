@@ -1,3 +1,13 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+cli_ref: &cli_ref
+  org: kyma-project
+  repo: cli
+  path_alias: github.com/kyma-project/cli
+
 job_template: &job_template
   optional: false
   always_run: true
@@ -6,10 +16,8 @@ job_template: &job_template
   path_alias: github.com/kyma-project/cli
   max_concurrency: 10
   extra_refs:
-    - org: kyma-project
-      repo: test-infra
+    - <<: *test_infra_ref
       base_ref: master
-      path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
@@ -42,3 +50,34 @@ postsubmits: # runs on merge
       preset-build-master: "true"
       preset-sa-vm-kyma-integration: "true"
       preset-gc-project-env: "true"
+
+periodics:
+  - name: kyma-cli-integration-gke
+    decorate: true
+    cron: "00 00 * * *" # "At 00:00 each day"
+    labels:
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-compute-envs: "true"
+      preset-gc-project-env: "true"
+      preset-cluster-use-ssd: "true"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *cli_ref
+      base_ref: master
+    spec:
+      containers:
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+        securityContext:
+          privileged: true
+        command:
+        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"
+        env:
+        - name: GO111MODULE
+          value: "on"
+        - name: CLOUDSDK_COMPUTE_ZONE
+          value: "europe-west4-a"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m

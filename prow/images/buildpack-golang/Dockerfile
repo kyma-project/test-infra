@@ -1,10 +1,10 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20191120-ef8b2357
 
 # Versions
 
-ENV GO_VERSION 1.12.7
+ENV GO_VERSION 1.13.4
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go

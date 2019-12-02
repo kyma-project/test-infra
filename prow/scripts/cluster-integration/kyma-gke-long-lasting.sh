@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID; do
+for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -35,6 +35,34 @@ export DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
+
+#Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
+#https://cloud.google.com/monitoring/kubernetes-engine/prometheus
+export STACKDRIVER_KUBERNETES="true"
+export SIDECAR_IMAGE_TAG="${STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG}"
+
+#Enable SSD disks for k8s cluster
+if [ "${CLUSTER_USE_SSD}" ]; then
+	CLUSTER_USE_SSD=$(echo "${CLUSTER_USE_SSD}" | tr '[:upper:]' '[:lower:]')
+	if [ "${CLUSTER_USE_SSD}" == "true" ] || [ "${CLUSTER_USE_SSD}" == "yes" ]; then
+		export CLUSTER_USE_SSD
+	else
+		echo "CLUSTER_USE_SSD prowjob env variable allowed values are true or yes. Cluster will be build with standard disks."
+		unset CLUSTER_USE_SSD
+	fi
+fi
+
+#Provision GKE regional cluster.
+if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
+	PROVISION_REGIONAL_CLUSTER=$(echo "${PROVISION_REGIONAL_CLUSTER}" | tr '[:upper:]' '[:lower:]')
+	if [ "${PROVISION_REGIONAL_CLUSTER}" == "true" ] || [ "${PROVISION_REGIONAL_CLUSTER}" == "yes" ]; then
+		export PROVISION_REGIONAL_CLUSTER
+		export CLOUDSDK_COMPUTE_REGION
+	else
+		echo "PROVISION_REGIONAL_CLUSTER prowjob env variable allowed values are true or yes. Provisioning standard cluster."
+		unset PROVISION_REGIONAL_CLUSTER
+	fi
+fi
 
 if [ -z "${SERVICE_CATALOG_CRD}" ]; then
 	export SERVICE_CATALOG_CRD="false"
@@ -68,9 +96,6 @@ function createCluster() {
 	shout "Provision cluster: \"${CLUSTER_NAME}\""
 	date
 	
-	if [ -z "$MACHINE_TYPE" ]; then
-		export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-	fi
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
@@ -202,6 +227,22 @@ data:
 EOF
 }
 
+function installStackdriverPrometheusCollector(){
+	echo "Replace tags with current values in patch yaml file."
+	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/' \
+		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/' \
+		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/' \
+		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
+	kubectl -n kyma-system patch prometheus monitoring --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
+}
+
+function patchlimitrange(){
+	echo "Patching kyma-default LimitRange"
+	kubectl -n kyma-system patch limitrange kyma-default --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/limitrange-patch.yaml)"
+
+}
+
 shout "Authenticate"
 date
 init
@@ -233,6 +274,15 @@ shout "Install kyma"
 date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+#Prometheus container need minimum 6Gi memory limit.
+shout "Increase cluster max container memory limit"
+date
+patchlimitrange
+
+shout "Install stackdriver-prometheus collector"
+date
+installStackdriverPrometheusCollector
 
 shout "Install stability-checker"
 date

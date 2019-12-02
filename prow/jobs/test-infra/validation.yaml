@@ -53,7 +53,6 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-generated-files
-      optional: true
       decorate: true
       max_concurrency: 10
       branches:
@@ -61,7 +60,7 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-build-pr: "true"
-      run_if_changed: "^templates/|^prow/jobs/|^prow/scripts/|^development/tools/cmd/rendertemplates/"
+      run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)"
       path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
