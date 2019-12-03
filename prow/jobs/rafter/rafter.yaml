@@ -90,7 +90,6 @@ common_integration_test_job_template: &common_integration_test_job_template
           - integration-test
 
 common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
-  optional: true
   <<: *common_job_config_template
   spec:
     containers:
@@ -102,7 +101,6 @@ common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
           - minio-gateway-test
 
 common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
-  optional: true
   <<: *common_job_config_template
   spec:
     containers:
