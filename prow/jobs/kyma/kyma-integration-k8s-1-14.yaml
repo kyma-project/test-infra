@@ -341,3 +341,5 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *gke_backup_job_labels_template
       extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
