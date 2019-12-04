@@ -3,11 +3,11 @@ package secrets
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 
 	kms "cloud.google.com/go/kms/apiv1"
-	gcs "cloud.google.com/go/storage"
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
+
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 )
 
 // Option wrapper for relevant Options for the client
@@ -53,7 +53,13 @@ func (sc *Client) StoreSecret(plaintext []byte, storageObject string) error {
 		return fmt.Errorf("Encrypting secret failed: %w", err)
 	}
 
-	if err := sc.write(data, sc.Bucket, sc.prefixedName(storageObject)); err != nil {
+	client, err := storage.New(sc.ctx, storage.Option{Prefix: sc.Prefix, ProjectID: sc.ProjectID, LocationID: sc.LocationID})
+	if err != nil {
+		return fmt.Errorf("Could not create GCS Storage Client: %v", err)
+
+	}
+
+	if err := client.Write(data, sc.Bucket, sc.prefixedName(storageObject)); err != nil {
 		return fmt.Errorf("Storing secret failed: %w", err)
 	}
 	return nil
@@ -61,7 +67,12 @@ func (sc *Client) StoreSecret(plaintext []byte, storageObject string) error {
 
 // ReadSecret reads a secret value and decrypts it using KMS and GCS API.
 func (sc *Client) ReadSecret(storageObject string) ([]byte, error) {
-	data, err := sc.read(sc.Bucket, sc.prefixedName(storageObject))
+	client, err := storage.New(sc.ctx, storage.Option{Prefix: sc.Prefix, ProjectID: sc.ProjectID, LocationID: sc.LocationID})
+	if err != nil {
+		return nil, fmt.Errorf("Could not create GCS Storage Client: %v", err)
+	}
+
+	data, err := client.Read(sc.Bucket, sc.prefixedName(storageObject))
 	if err != nil {
 		return nil, fmt.Errorf("Reading secret failed: %w", err)
 	}
@@ -109,41 +120,6 @@ func (sc *Client) decrypt(ciphertext []byte) ([]byte, error) {
 		return nil, fmt.Errorf("Decrypting secret failed: %w", err)
 	}
 	return resp.Plaintext, nil
-}
-
-func (sc *Client) read(bucket, storageObject string) ([]byte, error) {
-	client, err := gcs.NewClient(sc.ctx)
-	if err != nil {
-		return nil, fmt.Errorf("Initializing storage client failed: %w", err)
-	}
-
-	rc, err := client.Bucket(bucket).Object(storageObject).NewReader(sc.ctx)
-	if err != nil {
-		return nil, fmt.Errorf("Creating bucket reader failed: %w", err)
-	}
-	defer rc.Close()
-
-	data, err := ioutil.ReadAll(rc)
-	if err != nil {
-		return nil, fmt.Errorf("Reading from bucket failed: %w", err)
-	}
-	return data, nil
-}
-
-func (sc *Client) write(data []byte, bucket, storageObject string) error {
-	client, err := gcs.NewClient(sc.ctx)
-	if err != nil {
-		return fmt.Errorf("Initializing storage client failed: %w", err)
-	}
-
-	wc := client.Bucket(bucket).Object(storageObject).NewWriter(sc.ctx)
-	if _, err := wc.Write(data); err != nil {
-		return fmt.Errorf("Writing to bucket failed: %w", err)
-	}
-	if err := wc.Close(); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (sc *Client) prefixedName(name string) string {
