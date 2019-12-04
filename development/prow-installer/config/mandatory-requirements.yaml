@@ -1,0 +1,54 @@
+projects :
+  - name : "sap-kyma-neighbors-dev"
+    requiredbindings :
+      - role : "organizations/363385237196/roles/sap_admin"
+        members :
+          - "user:andre.russ@sap.com"
+          - "user:arkadiusz.szczyrba@sap.com"
+          - "user:daniel.roth02@sap.com"
+          - "user:francois-yanick.bourassa@sap.com"
+          - "user:mathieu.sauve@sap.com"
+          - "user:maxime.desrosiers@sap.com"
+          - "user:przemyslaw.pokrywka@sap.com"
+          - "user:rene.welches@sap.com"
+      - role : "roles/cloudkms.admin"
+        members :
+          - "serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com"
+      - role : "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+        members :
+          - "serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com"
+      - role : "roles/compute.admin"
+        members :
+          - "serviceAccount:neighbors-gardener@sap-kyma-neighbors-dev.iam.gserviceaccount.com"
+      - role : "roles/container.hostServiceAgentUser"
+        members :
+          - "serviceAccount:service-727270599349@container-engine-robot.iam.gserviceaccount.com"
+      - role : "roles/container.serviceAgent"
+        members :
+          - "serviceAccount:service-727270599349@container-engine-robot.iam.gserviceaccount.com"
+      - role : "roles/editor"
+        members :
+          - "serviceAccount:727270599349-compute@developer.gserviceaccount.com"
+          - "serviceAccount:727270599349@cloudservices.gserviceaccount.com"
+          - "serviceAccount:service-727270599349@containerregistry.iam.gserviceaccount.com"
+      - role : "roles/iam.serviceAccountAdmin"
+        members :
+          - "serviceAccount:neighbors-gardener@sap-kyma-neighbors-dev.iam.gserviceaccount.com"
+      - role : "roles/iam.serviceAccountTokenCreator"
+        members :
+          - "serviceAccount:neighbors-gardener@sap-kyma-neighbors-dev.iam.gserviceaccount.com"
+      - role : "roles/iam.serviceAccountUser"
+        members :
+          - "serviceAccount:neighbors-gardener@sap-kyma-neighbors-dev.iam.gserviceaccount.com"
+      - role : "roles/owner"
+        members :
+          - "serviceAccount:account-creator@sap-mce-tooling.iam.gserviceaccount.com"
+          - "user:daniel.roth02@sap.com"
+          - "user:katarzyna.kepka@sap.com"
+          - "user:przemyslaw.pokrywka@sap.com"
+      - role : "roles/storage.admin"
+        members :
+          - "serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com"
+      - role : "roles/viewer"
+        members :
+          - "serviceAccount:rightscale@sap-kyma-neighbors-dev.iam.gserviceaccount.com"

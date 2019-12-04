@@ -13,7 +13,7 @@ import (
 
 var (
 	projectID  = flag.String("proj", "", "ProjectID of the GCP project [Required]")
-	bucketName = flag.String("bucket", "", "Name of the storage bucket that contains the key [Required]")
+	bucketName = flag.String("bucket", "", "name of the storage bucket that contains the key [Required]")
 	kmsRing    = flag.String("ring", "", "Key Ring name of the symmetric KMS key to use [Required]")
 	kmsKey     = flag.String("key", "", "KMS Key mame from Key Ring to use [Required]")
 	locationID = flag.String("loc", "global", "Location of the keyring used for encryption/decryption [Optional]")

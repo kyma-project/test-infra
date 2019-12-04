@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/accessmanager"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/gcpaccessmanager"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
 )
 
@@ -26,15 +26,15 @@ func main() {
 		log.Fatalf("Missing required argument : -credentialsfile")
 	}
 
-	var InstallerConfig installer.InstallerConfig
+	var InstallerConfig installer.Config
 	InstallerConfig.ReadConfig(*config)
 
-	AccessManager := accessmanager.NewAccessManager(*credentialsfile)
+	AccessManager := gcpaccessmanager.NewAccessManager(*credentialsfile)
 
 	for _, account := range InstallerConfig.ServiceAccounts {
-		_ = AccessManager.IAM.CreateSAAccount(account.Name, InstallerConfig.Project)
+		_ = AccessManager.iam.createSAAccount(account.Name, InstallerConfig.Project)
 	}
-	AccessManager.Projects.GetProjectPolicy(InstallerConfig.Project)
-	log.Printf("%+v", AccessManager.Projects.Projects[InstallerConfig.Project].Policy)
-	//AccessManager.Projects.AssignRoles(InstallerConfig.Project, InstallerConfig.ServiceAccounts)
+	AccessManager.projects.GetProjectPolicy(InstallerConfig.Project)
+	log.Printf("%+v", AccessManager.projects.projects[InstallerConfig.Project].policy)
+	//AccessManager.projects.AssignRoles(InstallerConfig.Project, InstallerConfig.ServiceAccounts)
 }
