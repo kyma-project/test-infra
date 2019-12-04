@@ -41,6 +41,8 @@ presubmits: # runs on PRs
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLUSTER_VERSION
+              value: "1.14"
           resources:
             requests:
               memory: 200Mi
@@ -80,6 +82,8 @@ postsubmits:
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLUSTER_VERSION
+              value: "1.14"
           resources:
             requests:
               memory: 200Mi
