@@ -452,7 +452,7 @@ periodics:
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
               value: "0.6.3"
             - name: INPUT_CLUSTER_NAME
-              value: "nightly"
+              value: "nightly-k8s-1-14"
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
@@ -468,6 +468,8 @@ periodics:
               value: "#c4core-kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLUSTER_VERSION
+              value: "1.14"
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -502,6 +504,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
+        # TODO: update kyma-cluster-infra images
         - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
           securityContext:
             privileged: true
@@ -521,7 +524,7 @@ periodics:
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
               value: "0.6.3"
             - name: INPUT_CLUSTER_NAME
-              value: "weekly"
+              value: "weekly-k8s-1-14"
             - name: TEST_RESULT_WINDOW_TIME
               value: "24h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
@@ -537,6 +540,8 @@ periodics:
               value: "#c4core-kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: CLUSTER_VERSION
+              value: "1.14"
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
@@ -585,7 +590,7 @@ periodics:
             - name: REGION
               value: "northeurope"
             - name: INPUT_CLUSTER_NAME
-              value: "nightly-aks"
+              value: "nightly-aks-k8s-1-14"
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
@@ -599,6 +604,8 @@ periodics:
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
               value: "#c4core-kyma-ci-force"
+            - name: CLUSTER_K8S_VERSION
+              value: "1.14"
           command:
             - "bash"
           args:
@@ -636,6 +643,8 @@ periodics:
               value: "kyma-project"
             - name: REPO_NAME
               value: "kyma"
+            - name: CLUSTER_VERSION
+              value: "1.14"
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
