@@ -405,10 +405,10 @@ postsubmits:
 
 periodics:
 
-  - name: kyma-gke-nightly
+  - name: kyma-gke-nightly-k8s-1-14
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma-nightly
+      testgrid-dashboards: kyma-nightly-k8s-1-14
       # testgrid-alert-email: email-here@sap.com
       testgrid-num-failures-to-alert: '1'
     labels:
@@ -476,10 +476,10 @@ periodics:
               memory: 200Mi
               cpu: 80m
 
-  - name: kyma-gke-weekly
+  - name: kyma-gke-weekly-k8s-1-14
     cron: "0 6 * * 1" # "At 06:00 on Monday."
     annotations:
-      testgrid-dashboards: kyma-weekly
+      testgrid-dashboards: kyma-weekly-k8s-1-14
       # testgrid-alert-email: email-here@sap.com
       testgrid-num-failures-to-alert: '1'
     labels:
@@ -545,10 +545,10 @@ periodics:
               memory: 200Mi
               cpu: 80m
 
-  - name: kyma-aks-nightly
+  - name: kyma-aks-nightly-k8s-1-14
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma-nightly
+      testgrid-dashboards: kyma-nightly-k8s-1-14
       # testgrid-alert-email: email-here@sap.com
       testgrid-num-failures-to-alert: '1'
     labels:
@@ -609,7 +609,7 @@ periodics:
               memory: 200Mi
               cpu: 80m
 
-  - name: kyma-gke-backup-nightly
+  - name: kyma-gke-backup-nightly-k8s-1-14
     cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
     labels:
       preset-build-master: "true"
