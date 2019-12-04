@@ -346,18 +346,6 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    # TODO:
-    - name: post-master-kyma-integration-k8s-1-14
-      <<: *vm_job_template
-      branches:
-        - ^master$
-      labels:
-        preset-build-master: "true"
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
     - name: post-master-kyma-gke-integration-k8s-1-14
       <<: *gke_job_template
       annotations:
