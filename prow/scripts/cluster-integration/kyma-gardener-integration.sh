@@ -98,8 +98,8 @@ cleanup() {
 
 trap cleanup EXIT INT
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-readonly COMMON_NAME_PREFIX="int-grdnr"
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+readonly COMMON_NAME_PREFIX="grdnr"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 
 ### Cluster name must be less than 20 characters!
