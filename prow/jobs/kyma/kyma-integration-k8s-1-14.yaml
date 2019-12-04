@@ -346,7 +346,8 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-master-kyma-integration
+    # TODO:
+    - name: post-master-kyma-integration-k8s-1-14
       <<: *vm_job_template
       branches:
         - ^master$
@@ -357,7 +358,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: post-master-kyma-gke-integration
+    - name: post-master-kyma-gke-integration-k8s-1-14
       <<: *gke_job_template
       annotations:
         testgrid-dashboards: kyma-postsubmit
@@ -372,7 +373,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: post-master-kyma-gke-central-connector
+    - name: post-master-kyma-gke-central-connector-k8s-1-14
       <<: *gke_central_job_template
       annotations:
         testgrid-dashboards: kyma-postsubmit
@@ -387,7 +388,7 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: post-master-kyma-gke-upgrade
+    - name: post-master-kyma-gke-upgrade-k8s-1-14
       <<: *gke_upgrade_job_template
       annotations:
         testgrid-dashboards: kyma-postsubmit
