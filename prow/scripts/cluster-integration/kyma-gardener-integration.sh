@@ -8,6 +8,8 @@
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - GARDENER_REGION - Gardener compute region
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
+# - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
+# - GARDENER_KYMA_PROW_AZURE_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
 # - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
 #
@@ -17,7 +19,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG; do
+for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_AZURE_SECRET_NAME; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -61,7 +63,7 @@ cleanup() {
         #Delete cluster
         # Export envvars for the script
         export GARDENER_PROJECT_NAME = ${CLUSTER_NAME}
-        export GARDENER_CLUSTER_NAME = ${PROJECT_NAME}
+        export GARDENER_CLUSTER_NAME = ${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS = ${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh"
 
@@ -102,7 +104,6 @@ COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]
 
 ### Cluster name must be less than 20 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
-export PROJECT_NAME="borja" # TODO comes from the preset
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
@@ -123,8 +124,8 @@ if [ -z "$MACHINE_TYPE" ]; then
 fi
 
 kyma provision gardener \
-        --target-provider azure --secret kyma-azure \
-        --name "${CLUSTER_NAME}" --project "${PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --target-provider azure --secret ${GARDENER_KYMA_PROW_AZURE_SECRET_NAME} \
+        --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19"
 
 
@@ -148,23 +149,23 @@ date
 kyma version
 
 
-if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
-    shout "Create DNS Record for Ingressgateway IP"
-    date
-    GATEWAY_IP_ADDRESS=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" TODO add a proper domain
-    CLEANUP_GATEWAY_DNS_RECORD="true"
-    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-fi
+# if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
+#     shout "Create DNS Record for Ingressgateway IP"
+#     date
+#     GATEWAY_IP_ADDRESS=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#     GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" # TODO add a proper domain
+#     CLEANUP_GATEWAY_DNS_RECORD="true"
+#     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+# fi
 
-if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    shout "Create DNS Record for Apiserver proxy IP"
-    date
-    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" TODO add proper domain
-    CLEANUP_APISERVER_DNS_RECORD="true"
-    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-fi
+# if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+#     shout "Create DNS Record for Apiserver proxy IP"
+#     date
+#     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" # TODO add proper domain
+#     CLEANUP_APISERVER_DNS_RECORD="true"
+#     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+# fi
 
 
 shout "Running Kyma tests"
