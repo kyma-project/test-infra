@@ -55,22 +55,12 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
-
-        #save disk names while the cluster still exists to remove them later
-        # DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        # export DISKS
-
         #Delete cluster
         # Export envvars for the script
         export GARDENER_PROJECT_NAME = ${CLUSTER_NAME}
         export GARDENER_CLUSTER_NAME = ${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS = ${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh"
-
-        #Delete orphaned disks
-        # shout "Delete orphaned PVC disks..."
-        # date
-        # "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
     fi
 
     # if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
@@ -128,7 +118,7 @@ kyma provision gardener \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19" \
 
-
+CLEANUP_CLUSTER="true"
 # shout "Generate self-signed certificate"
 # date
 # DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -176,6 +166,7 @@ if [[ $? -eq 1 ]]; then
     exit 1
 fi
 
+readonly CONCURRENCY=5
 kyma test run \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
