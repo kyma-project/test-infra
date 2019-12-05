@@ -347,12 +347,12 @@ templates:
           <<: *kyma_generic_component
           path: components/kubeless-images/nodejs
           since: '1.9'
-      - to: ../prow/jobs/kyma/components/event-service-generic.yaml
+      - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-service
           since: '1.7'
-      - to: ../prow/jobs/kyma/tests/integration/event-service-tests-generic.yaml
+      - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/event-service
@@ -372,7 +372,7 @@ templates:
           <<: *kyma_generic_component
           path: components/event-sources
           since: '1.9'
-      - to: ../prow/jobs/kyma/components/event-bus-generic.yaml
+      - to: ../prow/jobs/kyma/components/event-bus/event-bus-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-bus
@@ -382,7 +382,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/event-bus
           since: '1.9'
-      - to: ../prow/jobs/kyma/components/function-controller-generic.yaml
+      - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/function-controller
