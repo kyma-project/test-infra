@@ -559,10 +559,12 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: components/event-bus
+        until: "1.8"
       - to: ../prow/jobs/kyma/components/event-service/event-service.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/event-service
+        until: "1.8"
       - to: ../prow/jobs/kyma/components/helm-broker/helm-broker-deprecated.yaml
         values:
           <<: *kubebuilder_kyma_component
@@ -586,10 +588,12 @@ templates:
         values:
           <<: *kubebuilder_kyma_component
           path: components/function-controller
+        until: "1.8"
       - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/kubeless-images/nodejs
+        until: "1.8"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -662,6 +666,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/event-bus
+        until: "1.8"
       - to: ../prow/jobs/kyma/tests/knative-build/knative-build.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -674,6 +679,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/kubeless
+        until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -694,6 +700,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/kubeless-integration
+        until: "1.8"
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -711,6 +718,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/integration/event-service
+        until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging.yaml
         values:
           <<: *go_kyma_component_v20181119
