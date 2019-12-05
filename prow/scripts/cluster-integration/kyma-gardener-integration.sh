@@ -126,7 +126,7 @@ fi
 kyma provision gardener \
         --target-provider azure --secret ${GARDENER_KYMA_PROW_AZURE_SECRET_NAME} \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19"
+        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19" \
 
 
 # shout "Generate self-signed certificate"
@@ -141,7 +141,7 @@ kyma provision gardener \
 
 shout "Installing Kyma"
 date
-yes | kyma install --non-interactive --source latest #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+yes | kyma install --non-interactive --source latest --timeout=2h #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
 
 shout "Checking the versions"
