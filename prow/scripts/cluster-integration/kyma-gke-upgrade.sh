@@ -133,7 +133,7 @@ trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+#    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
 fi
 
 function generateAndExportClusterName() {
@@ -426,6 +426,21 @@ function upgradeKyma() {
     fi
 }
 
+remove_addons_if_necessary() {
+  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
+
+  if [ -z "$tdWithAddon" ]
+  then
+      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
+      removeTestingAddons
+      if [[ $? -eq 1 ]]; then
+        exit 1
+      fi
+  else
+      echo "- Skipping removing ClusterAddonsConfiguration"
+  fi
+}
+
 function testKyma() {
     shout "Test Kyma"
     date
@@ -452,6 +467,8 @@ installKyma
 createTestResources
 
 upgradeKyma
+
+remove_addons_if_necessary
 
 testKyma
 
