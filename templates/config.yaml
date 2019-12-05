@@ -366,6 +366,12 @@ templates:
           path: tests/kubeless
           since: '1.9'
           optional: true
+      - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/end-to-end/kubeless-integration
+          since: '1.9'
+          optional: true
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
           <<: *kyma_generic_component
