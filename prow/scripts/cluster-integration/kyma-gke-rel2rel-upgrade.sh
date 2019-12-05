@@ -408,9 +408,9 @@ inject_addons_if_necessary() {
 
   if [ -z "$tdWithAddon" ]
   then
-      log::info "- Skipping injecting ClusterAddonsConfiguration"
+      echo "- Skipping injecting ClusterAddonsConfiguration"
   else
-      log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
+      echo "- Creating ClusterAddonsConfiguration which provides the testing addons"
       injectTestingAddons
       if [[ $? -eq 1 ]]; then
         exit 1
@@ -423,13 +423,13 @@ remove_addons_if_necessary() {
 
   if [ -z "$tdWithAddon" ]
   then
-      log::info "- Removing ClusterAddonsConfiguration which provides the testing addons"
+      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
       removeTestingAddons
       if [[ $? -eq 1 ]]; then
         exit 1
       fi
   else
-      log::info "- Skipping removing ClusterAddonsConfiguration"
+      echo "- Skipping removing ClusterAddonsConfiguration"
   fi
 }
 
