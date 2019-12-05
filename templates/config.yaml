@@ -377,7 +377,7 @@ templates:
           <<: *kyma_generic_component
           path: components/event-bus
           since: "1.9"
-      - to: ../prow/jobs/kyma/tests/event-bus-test-generic.yaml
+      - to: ../prow/jobs/kyma/tests/event-bus/event-bus-test-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/event-bus
