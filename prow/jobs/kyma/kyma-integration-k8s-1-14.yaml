@@ -343,3 +343,299 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+
+postsubmits:
+  kyma-project/kyma:
+    - name: post-master-kyma-gke-integration-k8s-1-14
+      <<: *gke_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit-k8s-1-14
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-central-connector-k8s-1-14
+      <<: *gke_central_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit-k8s-1-14
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-upgrade-k8s-1-14
+      <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit-k8s-1-14
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+periodics:
+
+  - name: kyma-gke-nightly-k8s-1-14
+    cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    annotations:
+      testgrid-dashboards: kyma-nightly-k8s-1-14
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    labels:
+      preset-kyma-keyring: "true"
+      preset-kyma-encryption-key: "true"
+      preset-build-master: "true"
+      preset-stability-checker-slack-notifications: "true"
+      preset-nightly-github-integration: "true"
+      preset-kms-gc-project-env: "true"
+      <<: *gke_job_labels_template
+    decorate: true
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        base_ref: master
+        path_alias: github.com/kyma-project/test-infra
+      - <<: *kyma_ref
+        base_ref: master
+    spec:
+      volumes:
+        - name: sa-stability-fluentd-storage-writer
+          secret:
+            secretName: sa-stability-fluentd-storage-writer
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: sa-stability-fluentd-storage-writer
+              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+              readOnly: true
+          command:
+            - "bash"
+          env:
+            - name: MACHINE_TYPE
+              value: "custom-8-15360"
+            - name: PROVISION_REGIONAL_CLUSTER
+              value: "true"
+            - name: NODES_PER_ZONE
+              value: "1"
+            - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
+              value: "0.6.3"
+            - name: INPUT_CLUSTER_NAME
+              value: "nightly-k8s-1-14"
+            - name: TEST_RESULT_WINDOW_TIME
+              value: "6h"
+            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+              value: "#c4core-kyma-ci-force"
+            - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+              value: "cluster-access"
+            - name: KYMA_ALERTS_SLACK_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: kyma-alerts-slack-api-url
+                  key: secret
+            - name: KYMA_ALERTS_CHANNEL
+              value: "#c4core-kyma-ci-force"
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
+            - name: CLUSTER_VERSION
+              value: "1.14"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+
+  - name: kyma-gke-weekly-k8s-1-14
+    cron: "0 6 * * 1" # "At 06:00 on Monday."
+    annotations:
+      testgrid-dashboards: kyma-weekly-k8s-1-14
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    labels:
+      preset-kyma-keyring: "true"
+      preset-kyma-encryption-key: "true"
+      preset-build-master: "true"
+      preset-stability-checker-slack-notifications: "true"
+      preset-weekly-github-integration: "true"
+      preset-kms-gc-project-env: "true"
+      <<: *gke_job_labels_template
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
+    spec:
+      volumes:
+        - name: sa-stability-fluentd-storage-writer
+          secret:
+            secretName: sa-stability-fluentd-storage-writer
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: sa-stability-fluentd-storage-writer
+              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+              readOnly: true
+          command:
+            - "bash"
+          env:
+            - name: MACHINE_TYPE
+              value: "custom-12-15360"
+            - name: PROVISION_REGIONAL_CLUSTER
+              value: "true"
+            - name: NODES_PER_ZONE
+              value: "1"
+            - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
+              value: "0.6.3"
+            - name: INPUT_CLUSTER_NAME
+              value: "weekly-k8s-1-14"
+            - name: TEST_RESULT_WINDOW_TIME
+              value: "24h"
+            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+              value: "#c4core-kyma-ci-force"
+            - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+              value: "cluster-access"
+            - name: KYMA_ALERTS_SLACK_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: kyma-alerts-slack-api-url
+                  key: secret
+            - name: KYMA_ALERTS_CHANNEL
+              value: "#c4core-kyma-ci-force"
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
+            - name: CLUSTER_VERSION
+              value: "1.14"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-long-lasting.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+
+  - name: kyma-aks-nightly-k8s-1-14
+    cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    annotations:
+      testgrid-dashboards: kyma-nightly-k8s-1-14
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    labels:
+      preset-kyma-keyring: "true"
+      preset-kyma-encryption-key: "true"
+      preset-build-master: "true"
+      preset-stability-checker-slack-notifications: "true"
+      preset-nightly-aks-github-integration: "true"
+      preset-creds-aks-kyma-integration: "true"
+      preset-kms-gc-project-env: "true"
+      <<: *gke_job_labels_template
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
+    spec:
+      volumes:
+        - name: sa-stability-fluentd-storage-writer
+          secret:
+            secretName: sa-stability-fluentd-storage-writer
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: sa-stability-fluentd-storage-writer
+              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+              readOnly: true
+          env:
+            - name: RS_GROUP
+              value: "kyma-nightly-aks"
+            - name: REGION
+              value: "northeurope"
+            - name: INPUT_CLUSTER_NAME
+              value: "nightly-aks-k8s-1-14"
+            - name: TEST_RESULT_WINDOW_TIME
+              value: "6h"
+            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
+              value: "#c4core-kyma-ci-force"
+            - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
+              value: "cluster-access"
+            - name: KYMA_ALERTS_SLACK_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: kyma-alerts-slack-api-url
+                  key: secret
+            - name: KYMA_ALERTS_CHANNEL
+              value: "#c4core-kyma-ci-force"
+            - name: CLUSTER_K8S_VERSION
+              value: "1.14"
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+
+  - name: kyma-gke-backup-nightly-k8s-1-14
+    cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+    labels:
+      preset-build-master: "true"
+      <<: *gke_backup_job_labels_template
+    decorate: true
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        base_ref: master
+        path_alias: github.com/kyma-project/test-infra
+      - <<: *kyma_ref
+        base_ref: master
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          env:
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-a"
+            - name: REPO_OWNER
+              value: "kyma-project"
+            - name: REPO_NAME
+              value: "kyma"
+            - name: CLUSTER_VERSION
+              value: "1.14"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
