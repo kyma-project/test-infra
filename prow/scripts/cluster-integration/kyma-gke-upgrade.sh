@@ -335,39 +335,11 @@ function checkTestPodTerminated() {
     return 1
 }
 
-inject_addons_if_necessary() {
-  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
-
-  if [ -z "$tdWithAddon" ]
-  then
-      echo "- Skipping injecting ClusterAddonsConfiguration"
-  else
-      echo "- Creating ClusterAddonsConfiguration which provides the testing addons"
-      injectTestingAddons
-      if [[ $? -eq 1 ]]; then
-        exit 1
-      fi
-  fi
-}
-
-remove_addons_if_necessary() {
-  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
-
-  if [ -z "$tdWithAddon" ]
-  then
-      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
-      removeTestingAddons
-      if [[ $? -eq 1 ]]; then
-        exit 1
-      fi
-  else
-      echo "- Skipping removing ClusterAddonsConfiguration"
-  fi
-}
-
 createTestResources() {
     shout "Create e2e upgrade test resources"
     date
+
+    injectTestingAddons
 
     if [  -f "$(helm home)/ca.pem" ]; then
         local HELM_ARGS="--tls"
@@ -454,7 +426,6 @@ function upgradeKyma() {
     fi
 }
 
-
 function testKyma() {
     shout "Test Kyma"
     date
@@ -478,13 +449,9 @@ installKyma
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-inject_addons_if_necessary
-
 createTestResources
 
 upgradeKyma
-
-remove_addons_if_necessary
 
 testKyma
 
