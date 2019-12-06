@@ -45,6 +45,7 @@ cleanup() {
     EXIT_STATUS=$?
 
     shout "Cleaning up..."
+    echo "CLEANUP_CLUSTER = ${CLEANUP_CLUSTER}"
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         shout "AN ERROR OCCURED! Take a look at preceding log entries."
