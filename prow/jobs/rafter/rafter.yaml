@@ -40,6 +40,12 @@ common_job_labels_minio_az_gateway_template: &common_job_labels_minio_az_gateway
   preset-rafter-minio-az-gateway: "true"
   preset-creds-aks-kyma-integration: "true"
 
+job_tolerations_template: &job_tolerations_template
+  key: resources-usage
+  value: high
+  operator: Equal
+  effect: NoSchedule
+
 common_job_config_template: &common_job_config_template
   decorate: true
   path_alias: github.com/kyma-project/rafter
@@ -70,6 +76,8 @@ common_container_template: &common_container_template
 common_build_job_template: &common_build_job_template
   <<: *common_job_config_template
   spec:
+    tolerations:
+      - <<: *job_tolerations_template
     containers:
       - <<: *common_container_template
         image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
@@ -81,6 +89,8 @@ common_build_job_template: &common_build_job_template
 common_integration_test_job_template: &common_integration_test_job_template
   <<: *common_job_config_template
   spec:
+    tolerations:
+      - <<: *job_tolerations_template
     containers:
       - <<: *common_container_template
         image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
@@ -90,9 +100,10 @@ common_integration_test_job_template: &common_integration_test_job_template
           - integration-test
 
 common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
-  optional: true
   <<: *common_job_config_template
   spec:
+    tolerations:
+      - <<: *job_tolerations_template
     containers:
       - <<: *common_container_template
         image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
@@ -102,9 +113,10 @@ common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
           - minio-gateway-test
 
 common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
-  optional: true
   <<: *common_job_config_template
   spec:
+    tolerations:
+      - <<: *job_tolerations_template
     containers:
       - <<: *common_container_template
         image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac

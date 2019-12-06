@@ -5,6 +5,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	v1 "k8s.io/api/core/v1"
 	"testing"
 )
 
@@ -105,7 +106,7 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			assert.False(t, preJob.SkipReport)
 			assert.True(t, preJob.AlwaysRun)
 			assert.True(t, preJob.Decorate)
-			// assert.False(t, preJob.Optional) uncomment it later!
+			assert.False(t, preJob.Optional)
 			assert.Equal(t, rafterPathAlias, preJob.PathAlias)
 			assert.Equal(t, 10, preJob.MaxConcurrency)
 			tester.AssertThatHasExtraRefTestInfraWithSHA(t, preJob.JobBase.UtilityConfig, "master", testInfraExtraRefSHA)
@@ -113,6 +114,12 @@ func TestRafterJobsPresubmits(t *testing.T) {
 			assert.Empty(t, preJob.RunIfChanged)
 
 			assert.True(t, *preJob.Spec.Containers[0].SecurityContext.Privileged)
+
+			assert.Equal(t, "resources-usage", preJob.Spec.Tolerations[0].Key)
+			assert.Equal(t, "high", preJob.Spec.Tolerations[0].Value)
+			assert.Equal(t, v1.TolerationOpEqual, preJob.Spec.Tolerations[0].Operator)
+			assert.Equal(t, v1.TaintEffectNoSchedule, preJob.Spec.Tolerations[0].Effect)
+
 			assert.Equal(t, "GO111MODULE", preJob.Spec.Containers[0].Env[0].Name)
 			assert.Equal(t, "on", preJob.Spec.Containers[0].Env[0].Value)
 			assert.Equal(t, "1536Mi", preJob.Spec.Containers[0].Resources.Requests.Memory().String())
@@ -237,6 +244,12 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 			assert.Empty(t, preJob.RunIfChanged)
 
 			assert.True(t, *preJob.Spec.Containers[0].SecurityContext.Privileged)
+
+			assert.Equal(t, "resources-usage", preJob.Spec.Tolerations[0].Key)
+			assert.Equal(t, "high", preJob.Spec.Tolerations[0].Value)
+			assert.Equal(t, v1.TolerationOpEqual, preJob.Spec.Tolerations[0].Operator)
+			assert.Equal(t, v1.TaintEffectNoSchedule, preJob.Spec.Tolerations[0].Effect)
+
 			assert.Equal(t, "GO111MODULE", preJob.Spec.Containers[0].Env[0].Name)
 			assert.Equal(t, "on", preJob.Spec.Containers[0].Env[0].Value)
 			assert.Equal(t, "1536Mi", preJob.Spec.Containers[0].Resources.Requests.Memory().String())
