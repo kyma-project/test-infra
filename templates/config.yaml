@@ -358,55 +358,47 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/kubeless-images/nodejs
-          since: '1.9'
-          optional: true
-      - to: ../prow/jobs/kyma/components/event-service-generic.yaml
+          since: "1.9"
+      - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-service
           since: '1.7'
-          optional: true
-      - to: ../prow/jobs/kyma/tests/integration/event-service-tests-generic.yaml
+      - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/event-service
           since: '1.7'
-          optional: true
-      - to: ../prow/jobs/kyma/tests/kubeless/kubeless-generic.yaml
+      - to: ../prow/jobs/kyma/tests/kubeless/kubeless-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/kubeless
-          since: '1.9'
-          optional: true
-      - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration-generic.yaml
+          since: "1.9"
+      - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/kubeless-integration
-          since: '1.9'
-          optional: true
+          since: "1.9"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-sources
-          since: '1.9'
-      - to: ../prow/jobs/kyma/components/event-bus-generic.yaml
+          since: "1.9"
+      - to: ../prow/jobs/kyma/components/event-bus/event-bus-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-bus
-          since: '1.9'
-          optional: true
-      - to: ../prow/jobs/kyma/tests/event-bus-test-generic.yaml
+          since: "1.9"
+      - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/event-bus
-          since: '1.9'
-          optional: true
-      - to: ../prow/jobs/kyma/components/function-controller-generic.yaml
+          since: "1.9"
+      - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/function-controller
-          since: '1.9'
-          optional: true
+          since: "1.9"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -571,10 +563,12 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: components/event-bus
+          until: "1.8"
       - to: ../prow/jobs/kyma/components/event-service/event-service.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/event-service
+          until: "1.8"
       - to: ../prow/jobs/kyma/components/helm-broker/helm-broker-deprecated.yaml
         values:
           <<: *kubebuilder_kyma_component
@@ -598,10 +592,12 @@ templates:
         values:
           <<: *kubebuilder_kyma_component
           path: components/function-controller
+          until: "1.8"
       - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs.yaml
         values:
           <<: *go_kyma_component_1_11
           path: components/kubeless-images/nodejs
+          until: "1.8"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -674,6 +670,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/event-bus
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/knative-build/knative-build.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -686,6 +683,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/kubeless
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -706,6 +704,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/kubeless-integration
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -723,6 +722,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/integration/event-service
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging.yaml
         values:
           <<: *go_kyma_component_v20181119

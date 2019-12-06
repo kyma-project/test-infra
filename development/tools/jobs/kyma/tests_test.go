@@ -72,15 +72,55 @@ var tests = []struct {
 	},
 	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11},
 	{path: "end-to-end/external-solution-integration", image: tester.ImageGolangBuildpack1_11},
-	{path: "end-to-end/kubeless-integration", image: tester.ImageGolangBuildpack1_11},
 	{path: "end-to-end/upgrade", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
 		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
 		jobsuite.JobFileSuffix("tests-generic"),
 		jobsuite.Since(releases.Release17),
 	}},
+	{path: "end-to-end/kubeless-integration", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release18),
+		},
+	},
 	{path: "event-bus", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests"),
+			jobsuite.Until(releases.Release18),
+		},
+	},
+	{path: "integration/event-service", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests"),
+			jobsuite.Until(releases.Release18),
+		},
+	},
+	{path: "kubeless", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release18),
+		},
+	},
+	{path: "end-to-end/kubeless-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "integration/event-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "kubeless", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{path: "integration/api-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -107,11 +147,6 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "integration/event-service", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests"),
-		},
-	},
 	{path: "integration/logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -126,7 +161,6 @@ var tests = []struct {
 	},
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11},
-	{path: "kubeless", image: tester.ImageGolangBuildpack1_11},
 }
 
 func TestTestJobs(t *testing.T) {
