@@ -902,7 +902,7 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: components/controller
           optional: true
-      - to: ../prow/jobs/incubator/knative-kafka/common.yaml
+      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka-common.yaml
         values:
           <<: *go_knative_kafka_component_1_12
           path: components/common
