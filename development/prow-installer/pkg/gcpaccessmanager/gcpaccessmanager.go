@@ -35,7 +35,7 @@ type projectsManager struct {
 	accessmanager               *AccessManager
 	cloudresourcemanagerservice *cloudresourcemanager.Service
 	projects                    map[string]*Project
-	requirementsFile            string // Path to the file with project requirements to validate. Defaults to ./config/mandatory-requirements.yaml
+	requirementsFile            string // Path to the file with projects requirements to validate. Defaults to ./config/mandatory-requirements.yaml
 }
 
 // GKE project object.
