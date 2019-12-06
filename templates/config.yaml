@@ -892,3 +892,19 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: components/channel
           optional: true
+      - to: ../prow/jobs/incubator/knative-kafka/dispatcher.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/dispatcher
+          optional: true
+      - to: ../prow/jobs/incubator/knative-kafka/controller.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/controller
+          optional: true
+      - to: ../prow/jobs/incubator/knative-kafka/common.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/common
+          optional: true
+
