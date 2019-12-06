@@ -60,7 +60,7 @@ cleanup() {
         export GARDENER_PROJECT_NAME = ${CLUSTER_NAME}
         export GARDENER_CLUSTER_NAME = ${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS = ${GARDENER_KYMA_PROW_KUBECONFIG}
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh"
+        ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh
     fi
 
     # if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
