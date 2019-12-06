@@ -1,12 +1,11 @@
 .DEFAULT_GOAL := jobs
 
-rendertemplates:
-	$(MAKE) -C development/tools ARGS=--config=../../templates/config.yaml $@-run
-
+jobs-definitions:
+	go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
 jobs-tests:
 	$(MAKE) -C development/tools $@
 
-jobs: rendertemplates jobs-tests ;
+jobs: jobs-definitions jobs-tests ;
 
 
 
