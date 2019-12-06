@@ -414,7 +414,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 15)
+	assert.Len(t, periodics, 16)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -519,6 +519,17 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, dnsCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"}, dnsCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, dnsCleanerPeriodic.JobBase)
+
+	expName = "github-stats"
+	githubStatsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, githubStatsPeriodic)
+	assert.Equal(t, expName, githubStatsPeriodic.Name)
+	assert.True(t, githubStatsPeriodic.Decorate)
+	assert.Equal(t, "0 6 * * *", githubStatsPeriodic.Cron)
+	assert.Equal(t, tester.ImageGolangBuildpackLatest, dnsCleanerPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"bash"}, githubStatsPeriodic.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"-c", "development/github-stats.sh"}, githubStatsPeriodic.Spec.Containers[0].Args)
+	tester.AssertThatSpecifiesResourceRequests(t, githubStatsPeriodic.JobBase)
 
 	expName = "kyma-gke-nightly"
 	nightlyPeriodic := tester.FindPeriodicJobByName(periodics, expName)
