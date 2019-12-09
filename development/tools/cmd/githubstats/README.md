@@ -1,8 +1,8 @@
-# Github Statistics
+# GitHub Statistics
 
 ## Overview
 
-`githubstats` fetches statistics for github issues and prints following JSON object:
+`githubstats` fetches statistics for GitHub issues and prints the following JSON object:
 ```json
 {
   "Issues": {
@@ -30,10 +30,10 @@
 }
 ```
 
-This tool is executed periodically on kyma-workload cluster.
-The output is grabbed by StackDriver export (filter is set to "GithubStatsReport" keyword).
-JSON object is saved as set of columns in BigQuery database. 
-Report can be previewed here: https://datastudio.google.com/s/jlYzET3duNo (access restricted to Kyma developers)
+This tool is executed periodically on the `kyma-workload` cluster.
+The output is grabbed by a StackDriver export (the filter is set to the "GithubStatsReport" keyword).
+JSON object is saved as a set of columns in the BigQuery database. 
+The report preview is available [here](https://datastudio.google.com/s/jlYzET3duNo) (the access is restricted to the Kyma developers).
 
 ## Usage
 
@@ -47,11 +47,13 @@ go run main.go \
 
 ### Flags
 
-```bash 
 Usage:
+```
   githubstats [flags]
+```
 
 Flags:
+```
   -t, --github-access-token string   GitHub token [Required] [APP_GITHUB_ACCESS_TOKEN]
   -r, --github-repo-name string      repository name [Required] [APP_GITHUB_REPO_NAME]
   -o, --github-repo-owner string     owner/organisation name [Required] [APP_GITHUB_REPO_OWNER]
@@ -61,10 +63,10 @@ Flags:
 
 ### Environment variables
 
-All flags can be also set using environment variables:
+All flags can also be set using the environment variables:
 
 | Name                           | Required | Description                                                           |
 | :----------------------------- | :------: | :-------------------------------------------------------------------- |
 | **APP_GITHUB_ACCESS_TOKEN**    |    Yes   | The string value with the name of the GitHub OAuth2 access token.     |
-| **APP_GITHUB_REPO_OWNER**      |    Yes   | The string value with the name of the organisation/owner.             |
+| **APP_GITHUB_REPO_OWNER**      |    Yes   | The string value with the name of the organization/owner.             |
 | **APP_GITHUB_REPO_NAME**       |    Yes   | The string value with the name of the repository.                     |

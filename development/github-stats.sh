@@ -5,7 +5,7 @@ set -eu
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "--------------------------------------------------------------------------------"
-echo "Generating Github stats..."
+echo "Generating GitHub stats..."
 echo "--------------------------------------------------------------------------------"
 
 if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
