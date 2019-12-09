@@ -14,13 +14,12 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/end-to-end/kubeless-integration/|^common/makefiles/"
+  run_if_changed: "^tests/event-bus/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +28,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/kubeless-integration"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/event-bus"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,12 +36,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-end-to-end-kubeless-integration
+    - name: pre-kyma-tests-event-bus
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tests-end-to-end-kubeless-integration
+    - name: post-kyma-tests-event-bus
       <<: *job_template

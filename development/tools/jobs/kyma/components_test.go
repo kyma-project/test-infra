@@ -111,8 +111,14 @@ var components = []struct {
 		},
 	},
 	{path: "etcd-tls-setup-job", image: tester.ImageGolangBuildpack1_11},
-	{path: "event-bus", image: tester.ImageGolangBuildpack1_11},
-	{path: "event-service", image: tester.ImageGolangBuildpack1_11},
+	{path: "event-bus", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release18),
+		}},
+	{path: "event-service", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release18),
+		}},
 	{path: "iam-kubeconfig-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -126,8 +132,14 @@ var components = []struct {
 		},
 	},
 	{path: "k8s-dashboard-proxy", image: tester.ImageGolangBuildpack1_11},
-	{path: "function-controller", image: tester.ImageGolangKubebuilderBuildpackLatest},
-	{path: "kubeless-images/nodejs", image: tester.ImageGolangBuildpack1_11},
+	{path: "function-controller", image: tester.ImageGolangKubebuilderBuildpackLatest,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release18),
+		}},
+	{path: "kubeless-images/nodejs", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Until(releases.Release18),
+		}},
 	{path: "kyma-operator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -150,6 +162,25 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release19),
 			jobsuite.Optional(),
+		},
+	},
+
+	{path: "function-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "event-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 }
