@@ -12,7 +12,7 @@
 # - kubectl
 ###
 
-local NAMESPACE = "garden-${GARDENER_PROJECT_NAME}"
+readonly NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
 
 RES=$(kubectl --kubeconfig ${GARDENER_CREDENTIALS} -n ${NAMESPACE} annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.garden.sapcloud.io/deletion=true --overwrite)
 echo "Annotate shoot for deletion: ${RES}"
