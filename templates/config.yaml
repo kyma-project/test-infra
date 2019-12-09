@@ -399,6 +399,18 @@ templates:
           <<: *kyma_generic_component
           path: components/function-controller
           since: "1.9"
+      - to: ../prow/jobs/kyma/tests/knative-build/knative-build-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/knative-build
+          since: "1.9"
+          optional: "true"
+      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/knative-serving
+          since: "1.9"
+          optional: "true"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
