@@ -15,20 +15,11 @@ import (
 )
 
 type Issues struct {
-	Open   IssuesOpen
-	Closed IssuesClosed
+	Open   IssuesStats
+	Closed IssuesStats
 }
 
-type IssuesOpen struct {
-	TotalCount       int64
-	Bugs             int64
-	PriorityCritical int64
-	Regressions      int64
-	TestFailing      int64
-	TestMissing      int64
-}
-
-type IssuesClosed struct {
+type IssuesStats struct {
 	TotalCount       int64
 	Bugs             int64
 	PriorityCritical int64
