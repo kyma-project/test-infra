@@ -262,9 +262,9 @@ ifndef ARTIFACTS
 ARTIFACTS:=/tmp/artifacts
 endif
 
-CONTAINER_LIST=$(kubectl get pods --all-namespaces -o jsonpath="{..image}" | tr -s '[:space:]' '\n' | sort | uniq)
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o jsonpath="{..image}" | tr -s '[:space:]' '\n' | sort | uniq)
 
-echo "${CONTAINER_LIST}" > "${ARTIFACTS}/${RELEASE_VERSION}.txt" # should write all the containers to a text file under the artifacts folder
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/${RELEASE_VERSION}.txt" # should write all the containers to a text file under the artifacts folder
 
 shout "Success"
 
