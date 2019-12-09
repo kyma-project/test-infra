@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/jamiealquiza/envy"
@@ -65,7 +66,6 @@ func getStats(cfg Config) {
 		&oauth2.Token{AccessToken: cfg.GithubAccessToken},
 	)
 	httpClient := oauth2.NewClient(context.Background(), src)
-
 	client := githubv4.NewClient(httpClient)
 
 	r := Report{
@@ -83,16 +83,14 @@ func getStats(cfg Config) {
 	// Total count
 	variables["state"] = githubv4.IssueState("OPEN")
 	err := client.Query(context.Background(), &query_no_labels, variables)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatalOnError(err, "while fetching number of open issues")
+
 	r.Issues.Open.TotalCount = query_no_labels.Repository.Issues.TotalCount
 
 	variables["state"] = githubv4.IssueState("CLOSED")
 	err = client.Query(context.Background(), &query_no_labels, variables)
-	if err != nil {
-		log.Fatal(err)
-	}
+	fatalOnError(err, "while fetching number of closed issues")
+
 	r.Issues.Closed.TotalCount = query_no_labels.Repository.Issues.TotalCount
 
 	// Closed
@@ -135,9 +133,8 @@ func getStats(cfg Config) {
 
 func executeQuery(client *githubv4.Client, variables map[string]interface{}) int64 {
 	err := client.Query(context.Background(), &query, variables)
-	if err != nil {
-		fatalOnError(err, "while executing query")
-	}
+	fatalOnError(err, "while executing query")
+
 	return query.Repository.Issues.TotalCount
 }
 
@@ -162,13 +159,13 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&cfg.GithubRepoOwner, "github-repo-owner", "o", "", "owner/organisation name [Required]")
 	rootCmd.PersistentFlags().StringVarP(&cfg.GithubRepoName, "github-repo-name", "r", "", "repository name [Required]")
 
-	rootCmd.MarkPersistentFlagRequired("github-token")
-	rootCmd.MarkPersistentFlagRequired("owner")
-	rootCmd.MarkPersistentFlagRequired("repo")
+	rootCmd.MarkPersistentFlagRequired("github-access-token")
+	rootCmd.MarkPersistentFlagRequired("github-repo-owner")
+	rootCmd.MarkPersistentFlagRequired("github-repo-name")
 
 	envy.ParseCobra(rootCmd, envy.CobraConfig{Prefix: "APP", Persistent: true, Recursive: false})
 
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatal(err)
+		os.Exit(1)
 	}
 }

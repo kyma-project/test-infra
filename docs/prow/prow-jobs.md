@@ -98,9 +98,7 @@ Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/pr
 1. Clone the `kubernetes/test-infra` repository into `k8s.io` directory. Run:
 
 ```shell
-mkdir -p $GOPATH/src/k8s.io/
-cd $GOPATH/src/k8s.io
-git clone "git@github.com:kubernetes/test-infra.git"
+git clone "git@github.com:kubernetes/test-infra.git" $GOPATH/src/k8s.io
 ```
 
 2. Reset the compatible `kubernetes/test-infra` state:
