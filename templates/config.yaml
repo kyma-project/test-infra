@@ -404,13 +404,11 @@ templates:
           <<: *kyma_generic_component
           path: tests/knative-build
           since: "1.9"
-          optional: "true"
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/knative-serving
           since: "1.9"
-          optional: "true"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -687,10 +685,12 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/knative-build
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
         values:
           <<: *go_kyma_component_1_11
           path: tests/knative-serving
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/kubeless/kubeless.yaml
         values:
           <<: *go_kyma_component_1_11
