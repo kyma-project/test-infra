@@ -173,7 +173,7 @@ kyma test run \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
-                --timeout "45m" \
+                --timeout "1h" \
                 --watch \
                 --non-interactive
 
