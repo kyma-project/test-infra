@@ -116,3 +116,9 @@ Data collected in sap-kyma-prow workspace are mainly Prow perofrmance metrics an
 
 Although the workspace is not available for Kyma developers they can see dashboards showing [Prow performance](https://storage.cloud.google.com/kyma-prow-logs/stats/index.html?authuser=1&orgonly=true) and [Prow infrastructure log-based checks](https://storage.cloud.google.com/kyma-prow-logs/stats/checks.html?authuser=1&orgonly=true). Creating new log-based metrics is possible and requires creating new [issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team.
 
+### Quality metrics
+
+We are also providing dashboards showing:
+
+- [Number of github issues and bugs](https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR)
+- [Kyma test coverage metrics](https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR)
