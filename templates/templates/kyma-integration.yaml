@@ -784,8 +784,31 @@ periodics:
               memory: 1Gi
               cpu: 400m
 
+  - name: github-stats
+    cron: "0 6 * * *" # "At 6:00 every day"
+    annotations:
+    labels:
+      preset-bot-github-token: "true"
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "development/github-stats.sh"
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+
+
   - name: kyma-gke-nightly
-    cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
     annotations:
       testgrid-dashboards: kyma-nightly
       # testgrid-alert-email: email-here@sap.com
