@@ -129,14 +129,14 @@ kyma provision gardener \
 
 
 
-# shout "Installing Kyma"
-# date
-# yes | kyma install --non-interactive --source latest --timeout=2h #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+shout "Installing Kyma"
+date
+ yes | kyma install --non-interactive --source latest --timeout=1h #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
 
-# shout "Checking the versions"
-# date
-# kyma version
+shout "Checking the versions"
+date
+kyma version
 
 
 # if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
@@ -158,26 +158,26 @@ kyma provision gardener \
 # fi
 
 
-# shout "Running Kyma tests"
-# date
-# echo "- Creating ClusterAddonsConfiguration which provides the testing addons"
-# injectTestingAddons
-# if [[ $? -eq 1 ]]; then
-#     exit 1
-# fi
+shout "Running Kyma tests"
+date
+echo "- Creating ClusterAddonsConfiguration which provides the testing addons"
+injectTestingAddons
+if [[ $? -eq 1 ]]; then
+    exit 1
+fi
 
-# readonly CONCURRENCY=5
-# kyma test run \
-#                 --name "${SUITE_NAME}" \
-#                 --concurrency "${CONCURRENCY}" \
-#                 --max-retries 1 \
-#                 --timeout "1h" \
-#                 --watch \
-#                 --non-interactive
+readonly CONCURRENCY=5
+kyma test run \
+                --name "${SUITE_NAME}" \
+                --concurrency "${CONCURRENCY}" \
+                --max-retries 1 \
+                --timeout "1h" \
+                --watch \
+                --non-interactive
 
 
-# echo "Test Summary"
-# kyma test status "${SUITE_NAME}" -owide
+echo "Test Summary"
+kyma test status "${SUITE_NAME}" -owide
 
 # statusSucceeded=$(kubectl get cts "${SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
 # if [[ "${statusSucceeded}" != *"True"* ]]; then
