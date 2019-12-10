@@ -48,12 +48,12 @@ go run main.go \
 ### Flags
 
 Usage:
-```
+```bash
   githubstats [flags]
 ```
 
 Flags:
-```
+```bash
   -t, --github-access-token string   GitHub token [Required] [APP_GITHUB_ACCESS_TOKEN]
   -r, --github-repo-name string      repository name [Required] [APP_GITHUB_REPO_NAME]
   -o, --github-repo-owner string     owner/organisation name [Required] [APP_GITHUB_REPO_OWNER]
