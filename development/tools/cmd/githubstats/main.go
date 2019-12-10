@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/jamiealquiza/envy"
@@ -65,6 +67,10 @@ func getStats(cfg Config) {
 	src := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: cfg.GithubAccessToken},
 	)
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+	cancelOnInterrupt(ctx, cancelFunc)
+
 	httpClient := oauth2.NewClient(context.Background(), src)
 	client := githubv4.NewClient(httpClient)
 
@@ -82,57 +88,57 @@ func getStats(cfg Config) {
 
 	// Total count
 	variables["state"] = githubv4.IssueState("OPEN")
-	err := client.Query(context.Background(), &query_no_labels, variables)
+	err := client.Query(ctx, &query_no_labels, variables)
 	fatalOnError(err, "while fetching number of open issues")
 
 	r.Issues.Open.TotalCount = query_no_labels.Repository.Issues.TotalCount
 
 	variables["state"] = githubv4.IssueState("CLOSED")
-	err = client.Query(context.Background(), &query_no_labels, variables)
+	err = client.Query(ctx, &query_no_labels, variables)
 	fatalOnError(err, "while fetching number of closed issues")
 
 	r.Issues.Closed.TotalCount = query_no_labels.Repository.Issues.TotalCount
 
 	// Closed
 	variables["labels"] = []githubv4.String{"bug"}
-	r.Issues.Closed.Bugs = executeQuery(client, variables)
+	r.Issues.Closed.Bugs = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"regression"}
-	r.Issues.Closed.Regressions = executeQuery(client, variables)
+	r.Issues.Closed.Regressions = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"test-failing"}
-	r.Issues.Closed.TestFailing = executeQuery(client, variables)
+	r.Issues.Closed.TestFailing = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"test-missing"}
-	r.Issues.Closed.TestMissing = executeQuery(client, variables)
+	r.Issues.Closed.TestMissing = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"priority/critical"}
-	r.Issues.Closed.PriorityCritical = executeQuery(client, variables)
+	r.Issues.Closed.PriorityCritical = executeQuery(ctx, client, variables)
 
 	// Open
 	variables["state"] = githubv4.IssueState("OPEN")
 	variables["labels"] = []githubv4.String{"bug"}
-	r.Issues.Open.Bugs = executeQuery(client, variables)
+	r.Issues.Open.Bugs = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"regression"}
-	r.Issues.Open.Regressions = executeQuery(client, variables)
+	r.Issues.Open.Regressions = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"test-failing"}
-	r.Issues.Open.TestFailing = executeQuery(client, variables)
+	r.Issues.Open.TestFailing = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"test-missing"}
-	r.Issues.Open.TestMissing = executeQuery(client, variables)
+	r.Issues.Open.TestMissing = executeQuery(ctx, client, variables)
 
 	variables["labels"] = []githubv4.String{"priority/critical"}
-	r.Issues.Open.PriorityCritical = executeQuery(client, variables)
+	r.Issues.Open.PriorityCritical = executeQuery(ctx, client, variables)
 
 	json, err := json.Marshal(r)
 	fatalOnError(err, "while marshaling json")
 	fmt.Println(string(json))
 }
 
-func executeQuery(client *githubv4.Client, variables map[string]interface{}) int64 {
-	err := client.Query(context.Background(), &query, variables)
+func executeQuery(ctx context.Context, client *githubv4.Client, variables map[string]interface{}) int64 {
+	err := client.Query(ctx, &query, variables)
 	fatalOnError(err, "while executing query")
 
 	return query.Repository.Issues.TotalCount
@@ -142,6 +148,19 @@ func fatalOnError(err error, context string) {
 	if err != nil {
 		log.Fatal(errors.Wrap(err, context))
 	}
+}
+
+// cancelOnInterrupt calls cancel func when os.Interrupt or SIGTERM is received
+func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		select {
+		case <-ctx.Done():
+		case <-c:
+			cancel()
+		}
+	}()
 }
 
 func main() {
