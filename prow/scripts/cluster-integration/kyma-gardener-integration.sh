@@ -118,6 +118,7 @@ kyma provision gardener \
         --target-provider azure --secret ${GARDENER_KYMA_PROW_AZURE_SECRET_NAME} \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19" \
+        --nodes 4
 
 # shout "Generate self-signed certificate"
 # date
@@ -166,6 +167,7 @@ if [[ $? -eq 1 ]]; then
     exit 1
 fi
 
+readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
 kyma test run \
                 --name "${SUITE_NAME}" \
