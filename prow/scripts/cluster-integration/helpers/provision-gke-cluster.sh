@@ -40,7 +40,7 @@ readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
 declare -a GCLOUD_PARAMS
 
 TTL_HOURS_PARAM="3"
-CLUSTER_VERSION_PARAM="--cluster-version=1.13"
+CLUSTER_VERSION_PARAM="--cluster-version=1.14"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM="--network=default"
