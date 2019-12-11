@@ -7,7 +7,7 @@ import (
 
 type Option struct {
 	ProjectID      string // GCP project ID
-	LocationID     string // location of the cluster
+	ZoneID         string // zone of the cluster
 	ServiceAccount string // filename of the serviceaccount to use
 }
 
@@ -30,8 +30,8 @@ func New(opts Option, api API) (*Client, error) {
 	if opts.ProjectID == "" {
 		return nil, fmt.Errorf("ProjectID is required to initialize a client")
 	}
-	if opts.LocationID == "" {
-		return nil, fmt.Errorf("LocationID is required to initialize a client")
+	if opts.ZoneID == "" {
+		return nil, fmt.Errorf("ZoneID is required to initialize a client")
 	}
 	if opts.ServiceAccount == "" {
 		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")

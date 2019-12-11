@@ -16,11 +16,14 @@ import (
 // http://blog.ralch.com/categories/design-patterns/
 
 var (
-	projectID  = flag.String("proj", "", "ProjectID of the GCP project [Required]")
-	locationID = flag.String("loc", "global", "Location of the keyring used for encryption/decryption [Optional]")
+	projectID = flag.String("proj", "", "ProjectID of the GCP project [Required]")
+	zoneID    = flag.String("zone", "global", "GCP zone for the cluster to be created [Required]")
 )
 
 func main() {
+
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\daniel\\Documents\\workspace\\.gcloud-sa\\daroth-neighbors-dev-sa.json")
+
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" {
 		log.Fatalf("Requires the environment variable GOOGLE_APPLICATION_CREDENTIALS to be set to a GCP service account file.")
 	}
@@ -28,6 +31,9 @@ func main() {
 	flag.Parse()
 	if *projectID == "" {
 		log.Fatalf("Missing required argument : -proj")
+	}
+	if *zoneID == "" {
+		log.Fatalf("Missing required argument : -zone")
 	}
 	ctx := context.Background()
 
@@ -38,12 +44,12 @@ func main() {
 	clusterService := containerService.Projects.Zones.Clusters
 
 	wrappedAPI := &cluster.APIWrapper{
-		ProjectID: *projectID,
-		LocationID: *locationID,
+		ProjectID:      *projectID,
+		ZoneID:         *zoneID,
 		ClusterService: clusterService,
 	}
 
-	gkeClient, err := cluster.New(cluster.Option{ProjectID: *projectID, LocationID: *locationID, ServiceAccount: os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")}, wrappedAPI)
+	gkeClient, err := cluster.New(cluster.Option{ProjectID: *projectID, ZoneID: *zoneID, ServiceAccount: os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")}, wrappedAPI)
 	if err != nil {
 		log.Errorf("Could not create GKE Client: %v", err)
 		os.Exit(1)
