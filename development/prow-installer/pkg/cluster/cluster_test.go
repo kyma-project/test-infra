@@ -69,7 +69,7 @@ func TestClient_Create(t *testing.T) {
 			t.Fail()
 		}
 
-		if err := mockClient.Create(ctx, "", labelSet1, -1, true); err == nil {
+		if err := mockClient.Create(ctx, "", labelSet1, 1, true); err == nil {
 			t.Errorf("Client.Create() expecting an error but was nil %w", err)
 		}
 
