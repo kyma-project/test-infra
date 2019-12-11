@@ -46,7 +46,9 @@ func main() {
 		ClusterService: clusterService,
 	}
 
-	gkeClient, err := cluster.New(cluster.Option{ProjectID: *projectID, ZoneID: *zoneID, ServiceAccount: os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")}, wrappedAPI)
+	clientOpts := cluster.Option{}
+
+	gkeClient, err := cluster.New(clientOpts.WithProjectID(*projectID).WithZoneID(*zoneID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")), wrappedAPI)
 	if err != nil {
 		log.Errorf("Could not create GKE Client: %v", err)
 		os.Exit(1)
@@ -59,7 +61,7 @@ func main() {
 	// if err != nil {
 	// 	log.Fatalf("Couldn't create cluster %w", err)
 	// }
-	err = gkeClient.Delete(ctx, "daniel-test-cluster")
+	err = gkeClient.Delete(ctx, "")
 	if err != nil {
 		log.Fatalf("Couldn't delete cluster %w", err)
 	}

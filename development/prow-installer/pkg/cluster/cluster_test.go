@@ -22,10 +22,11 @@ func TestClient_Create(t *testing.T) {
 		ctx := context.Background()
 		labelSet1 := make(map[string]string)
 		labelSet1["test"] = "yes"
+		opts := Option{}
 
 		mockAPI.On("Create", ctx, testClusterName, labelSet1, 1, true).Return(nil)
 
-		mockClient, err := New(Option{ProjectID: testClusterProj, ZoneID: testClusterZone, ServiceAccount: "not-empty-gcp-will-validate"}, mockAPI)
+		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 			t.Fail()
@@ -42,8 +43,9 @@ func TestClient_Create(t *testing.T) {
 		ctx := context.Background()
 		labelSet1 := make(map[string]string)
 		labelSet1["test"] = "yes"
+		opts := Option{}
 
-		mockClient, err := New(Option{ProjectID: testClusterProj, ZoneID: testClusterZone, ServiceAccount: "not-empty-gcp-will-validate"}, mockAPI)
+		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 			t.Fail()
@@ -62,8 +64,9 @@ func TestClient_Create(t *testing.T) {
 		ctx := context.Background()
 		labelSet1 := make(map[string]string)
 		labelSet1["test"] = "yes"
+		opts := Option{}
 
-		mockClient, err := New(Option{ProjectID: testClusterProj, ZoneID: testClusterZone, ServiceAccount: "not-empty-gcp-will-validate"}, mockAPI)
+		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 			t.Fail()
@@ -85,10 +88,11 @@ func TestClient_Delete(t *testing.T) {
 		ctx := context.Background()
 		labelSet1 := make(map[string]string)
 		labelSet1["test"] = "yes"
+		opts := Option{}
 
 		mockAPI.On("Delete", ctx, testClusterName).Return(nil)
 
-		mockClient, err := New(Option{ProjectID: testClusterProj, ZoneID: testClusterZone, ServiceAccount: "not-empty-gcp-will-validate"}, mockAPI)
+		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 			t.Fail()
@@ -105,8 +109,9 @@ func TestClient_Delete(t *testing.T) {
 		ctx := context.Background()
 		labelSet1 := make(map[string]string)
 		labelSet1["test"] = "yes"
+		opts := Option{}
 
-		mockClient, err := New(Option{ProjectID: testClusterProj, ZoneID: testClusterZone, ServiceAccount: "not-empty-gcp-will-validate"}, mockAPI)
+		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 			t.Fail()
@@ -124,7 +129,8 @@ func TestNew(t *testing.T) {
 	t.Run("New() should not throw errors", func(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
-		opts := Option{ProjectID: "string", ZoneID: "string", ServiceAccount: "string"}
+		opts := Option{}
+		opts = opts.WithProjectID("string").WithZoneID("string").WithServiceAccount("string")
 
 		c, err := New(opts, mockAPI)
 		if err != nil {
@@ -140,7 +146,8 @@ func TestNew(t *testing.T) {
 	t.Run("New() should throw errors, because ProjectID is not satisfied", func(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
-		opts := Option{ProjectID: "", ZoneID: "string", ServiceAccount: "string"}
+		opts := Option{}
+		opts = opts.WithZoneID("string").WithServiceAccount("string")
 
 		c, err := New(opts, mockAPI)
 		if err == nil {
@@ -155,7 +162,8 @@ func TestNew(t *testing.T) {
 	t.Run("New() should throw errors, because ZoneID is not satisfied", func(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
-		opts := Option{ProjectID: "string", ZoneID: "", ServiceAccount: "string"}
+		opts := Option{}
+		opts = opts.WithProjectID("string").WithServiceAccount("string")
 
 		c, err := New(opts, mockAPI)
 		if err == nil {
@@ -170,7 +178,8 @@ func TestNew(t *testing.T) {
 	t.Run("New() should throw errors, because ServiceAccount is not satisfied", func(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
-		opts := Option{ProjectID: "string", ZoneID: "string", ServiceAccount: ""}
+		opts := Option{}
+		opts = opts.WithProjectID("string").WithZoneID("string")
 
 		c, err := New(opts, mockAPI)
 		if err == nil {
