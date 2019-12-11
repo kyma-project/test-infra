@@ -2,8 +2,8 @@ package cluster
 
 import (
 	"context"
+	"reflect"
 	"testing"
-	// "errors"
 
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster/automock"
 )
@@ -116,6 +116,70 @@ func TestClient_Delete(t *testing.T) {
 			t.Errorf("Client.Delete() expecting an error but was nil %w", err)
 		}
 
+		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+	})
+}
+
+func TestNew(t *testing.T) {
+	t.Run("New() should not throw errors", func(t *testing.T) {
+		mockAPI := &automock.API{}
+		defer mockAPI.AssertExpectations(t)
+		opts := Option{ProjectID: "string", ZoneID: "string", ServiceAccount: "string"}
+
+		c, err := New(opts, mockAPI)
+		if err != nil {
+			t.Errorf("New() error = %v, should've not thrown an error", err)
+		}
+		want := &Client{Option: opts, api: mockAPI}
+		if !reflect.DeepEqual(c, want) {
+			t.Errorf("New() %v, want = %v", c, want)
+		}
+		mockAPI.AssertNumberOfCalls(t, "Create", 0)
+		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+	})
+	t.Run("New() should throw errors, because ProjectID is not satisfied", func(t *testing.T) {
+		mockAPI := &automock.API{}
+		defer mockAPI.AssertExpectations(t)
+		opts := Option{ProjectID: "", ZoneID: "string", ServiceAccount: "string"}
+
+		c, err := New(opts, mockAPI)
+		if err == nil {
+			t.Errorf("New() expected an error")
+		}
+		if c != nil {
+			t.Errorf("New() %v, want = %v", c, nil)
+		}
+		mockAPI.AssertNumberOfCalls(t, "Create", 0)
+		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+	})
+	t.Run("New() should throw errors, because ZoneID is not satisfied", func(t *testing.T) {
+		mockAPI := &automock.API{}
+		defer mockAPI.AssertExpectations(t)
+		opts := Option{ProjectID: "string", ZoneID: "", ServiceAccount: "string"}
+
+		c, err := New(opts, mockAPI)
+		if err == nil {
+			t.Errorf("New() expected an error")
+		}
+		if c != nil {
+			t.Errorf("New() %v, want = %v", c, nil)
+		}
+		mockAPI.AssertNumberOfCalls(t, "Create", 0)
+		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+	})
+	t.Run("New() should throw errors, because ServiceAccount is not satisfied", func(t *testing.T) {
+		mockAPI := &automock.API{}
+		defer mockAPI.AssertExpectations(t)
+		opts := Option{ProjectID: "string", ZoneID: "string", ServiceAccount: ""}
+
+		c, err := New(opts, mockAPI)
+		if err == nil {
+			t.Errorf("New() expected an error")
+		}
+		if c != nil {
+			t.Errorf("New() %v, want = %v", c, nil)
+		}
+		mockAPI.AssertNumberOfCalls(t, "Create", 0)
 		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
 	})
 }
