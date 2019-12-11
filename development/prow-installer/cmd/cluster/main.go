@@ -13,8 +13,6 @@ import (
 	"google.golang.org/api/option"
 )
 
-// http://blog.ralch.com/categories/design-patterns/
-
 var (
 	projectID = flag.String("proj", "", "ProjectID of the GCP project [Required]")
 	zoneID    = flag.String("zone", "global", "GCP zone for the cluster to be created [Required]")
