@@ -998,6 +998,8 @@ periodics:
           command:
             - "bash"
           env:
+            - name: CLUSTER_VERSION
+              value: "1.13"
             - name: MACHINE_TYPE
               value: "custom-8-15360"
             - name: PROVISION_REGIONAL_CLUSTER
