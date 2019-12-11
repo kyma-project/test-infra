@@ -89,7 +89,6 @@ function cleanup() {
 			echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 		else
 			echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
-			exit 1
 		fi
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
