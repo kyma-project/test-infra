@@ -58,6 +58,7 @@ func (cc *Client) Delete(ctx context.Context, name string) error {
 	}
 	return cc.api.Delete(ctx, name)
 }
+
 // WithProjectID modifies option to have a project id
 func (o Option) WithProjectID(pid string) Option {
 	o.ProjectID = pid

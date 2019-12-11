@@ -45,8 +45,9 @@ func main() {
 	}
 
 	clientOpts := cluster.Option{}
+	clientOpts = clientOpts.WithProjectID(*projectID).WithZoneID(*zoneID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
-	gkeClient, err := cluster.New(clientOpts.WithProjectID(*projectID).WithZoneID(*zoneID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")), wrappedAPI)
+	gkeClient, err := cluster.New(clientOpts, wrappedAPI)
 	if err != nil {
 		log.Errorf("Could not create GKE Client: %v", err)
 		os.Exit(1)
