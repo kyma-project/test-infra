@@ -21,9 +21,6 @@ var (
 )
 
 func main() {
-
-	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\daniel\\Documents\\workspace\\.gcloud-sa\\daroth-neighbors-dev-sa.json")
-
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" {
 		log.Fatalf("Requires the environment variable GOOGLE_APPLICATION_CREDENTIALS to be set to a GCP service account file.")
 	}
