@@ -14,19 +14,12 @@ type API struct {
 }
 
 // Create provides a mock function with given fields: ctx, name, labels
-func (_m *API) Create(ctx context.Context, name string, labels ...string) error {
-	_va := make([]interface{}, len(labels))
-	for _i := range labels {
-		_va[_i] = labels[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, ctx, name)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
+func (_m *API) Create(ctx context.Context, name string, labels map[string]string) error {
+	ret := _m.Called(ctx, name, labels)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, ...string) error); ok {
-		r0 = rf(ctx, name, labels...)
+	if rf, ok := ret.Get(0).(func(context.Context, string, map[string]string) error); ok {
+		r0 = rf(ctx, name, labels)
 	} else {
 		r0 = ret.Error(0)
 	}

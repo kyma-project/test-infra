@@ -21,6 +21,9 @@ var (
 )
 
 func main() {
+
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", "C:\\Users\\daniel\\Documents\\workspace\\.gcloud-sa\\daroth-neighbors-dev-sa.json")
+
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" {
 		log.Fatalf("Requires the environment variable GOOGLE_APPLICATION_CREDENTIALS to be set to a GCP service account file.")
 	}
@@ -35,9 +38,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Couldn't create service handle for GCP: %w", err)
 	}
-	clusterService := containerService.Projects.Locations.Clusters
+	clusterService := containerService.Projects.Zones.Clusters
 
 	wrappedAPI := &cluster.APIWrapper{
+		ProjectID: *projectID,
+		LocationID: *locationID,
 		ClusterService: clusterService,
 	}
 
@@ -47,5 +52,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	gkeClient.Create(ctx, "hello")
+	labels := make(map[string]string)
+	labels["created-for"] = "testing"
+
+	// err = gkeClient.Create(ctx, "daniel-test-cluster", labels)
+	// if err != nil {
+	// 	log.Fatalf("Couldn't create cluster %w", err)
+	// }
+	err = gkeClient.Delete(ctx, "daniel-test-cluster")
+	if err != nil {
+		log.Fatalf("Couldn't delete cluster %w", err)
+	}
 }

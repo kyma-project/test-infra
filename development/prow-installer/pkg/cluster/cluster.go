@@ -21,7 +21,7 @@ type Client struct {
 
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
-	Create(ctx context.Context, name string, labels ...string) error
+	Create(ctx context.Context, name string, labels map[string]string) error
 	Delete(ctx context.Context, name string) error
 }
 
@@ -41,8 +41,8 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
-func (cc *Client) Create(ctx context.Context, name string, labels ...string) error {
-	return cc.api.Create(ctx, name, labels...)
+func (cc *Client) Create(ctx context.Context, name string, labels map[string]string) error {
+	return cc.api.Create(ctx, name, labels)
 }
 
 // Delete attempts to delete a GKE cluster
