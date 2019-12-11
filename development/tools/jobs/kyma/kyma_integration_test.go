@@ -74,7 +74,7 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2", testContainer.Image)
+			assert.Equal(t, tester.ImageKymaClusterInfraLatest, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
