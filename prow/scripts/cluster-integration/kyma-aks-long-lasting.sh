@@ -66,7 +66,8 @@ function cleanup() {
 	shout "Cleanup"
 	date
 
-	#Turn off exit-on-error so that next step is executed even if previous one fails.
+	# Turn off exit-on-error so that next step is executed even if previous one fails.
+	# Cleanup is best-effort since we don't know in which state the previous cluster is, if there is any.
 	set +e
 	EXIT_STATUS=$?
 
@@ -87,14 +88,13 @@ function cleanup() {
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
 			echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+			# only try to delete the dns record if the ip address has been found
+			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+			TMP_STATUS=$?
+			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		else
 			echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
-			exit 1
 		fi
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
