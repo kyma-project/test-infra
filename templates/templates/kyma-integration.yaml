@@ -187,7 +187,7 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190129-c951cf2
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
         securityContext:
           privileged: true
         command:
