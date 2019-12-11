@@ -13,13 +13,13 @@ type API struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: ctx, name, labels
-func (_m *API) Create(ctx context.Context, name string, labels map[string]string) error {
-	ret := _m.Called(ctx, name, labels)
+// Create provides a mock function with given fields: ctx, name, labels, minPoolSize, autoScaling
+func (_m *API) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
+	ret := _m.Called(ctx, name, labels, minPoolSize, autoScaling)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, map[string]string) error); ok {
-		r0 = rf(ctx, name, labels)
+	if rf, ok := ret.Get(0).(func(context.Context, string, map[string]string, int, bool) error); ok {
+		r0 = rf(ctx, name, labels, minPoolSize, autoScaling)
 	} else {
 		r0 = ret.Error(0)
 	}

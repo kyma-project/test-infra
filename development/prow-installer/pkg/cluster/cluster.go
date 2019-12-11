@@ -21,7 +21,7 @@ type Client struct {
 
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
-	Create(ctx context.Context, name string, labels map[string]string) error
+	Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error
 	Delete(ctx context.Context, name string) error
 }
 
@@ -41,11 +41,20 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
-func (cc *Client) Create(ctx context.Context, name string, labels map[string]string) error {
-	return cc.api.Create(ctx, name, labels)
+func (cc *Client) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
+	if minPoolSize < 1 {
+		return fmt.Errorf("could not create cluster, minPoolSize should be > 0")
+	}
+	if name == "" {
+		return fmt.Errorf("name cannot be empty")
+	}
+	return cc.api.Create(ctx, name, labels, minPoolSize, autoScaling)
 }
 
 // Delete attempts to delete a GKE cluster
 func (cc *Client) Delete(ctx context.Context, name string) error {
+	if name == "" {
+		return fmt.Errorf("name cannot be empty")
+	}
 	return cc.api.Delete(ctx, name)
 }

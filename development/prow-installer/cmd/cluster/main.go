@@ -55,7 +55,7 @@ func main() {
 	labels := make(map[string]string)
 	labels["created-for"] = "testing"
 
-	// err = gkeClient.Create(ctx, "daniel-test-cluster", labels)
+	// err = gkeClient.Create(ctx, "daniel-test-cluster", labels, 1, true)
 	// if err != nil {
 	// 	log.Fatalf("Couldn't create cluster %w", err)
 	// }
