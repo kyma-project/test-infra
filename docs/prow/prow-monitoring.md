@@ -118,30 +118,26 @@ Kyma developers have necessary permissions to create custom dashboards in [sap-k
 #### Metrics explorer
 
 [Metrics explorer](https://cloud.google.com/monitoring/charts/metrics-explorer) lets you build ad-hoc charts for any metric collected by the project.
-Stackdriver provides set of built-in metric types, see the [Metrics](https://cloud.google.com/monitoring/api/metrics).
+Stackdriver provides a set of built-in metric types, see the [Metrics](https://cloud.google.com/monitoring/api/metrics).
 
-#### Log based metrics
+#### Log-based metrics
 
-Log-based metrics can be created based on anything that was printed to logs from any gke cluster.
-This means that you can grab any logs from our long and short leaving clusters and create a metric based on that - 
-it can count occurrences of a particular error or aggregate numbers extracted from a message.
+Log-based metrics can be created based on anything that was printed to logs from any GKE cluster.
+This means that you can grab any logs from our long and short-living clusters and create a metric based on that, 
+it can count occurrences of a particular error or aggregate numbers extracted from the message.
 
+Creating new log-based metrics is possible and requires creating new [issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team.
 
 #### Prometheus collector
 Gathering additional metrics requires [stackdriver-prometheus collector](https://cloud.google.com/monitoring/kubernetes-engine/prometheus). 
-Adding `--enable-stackdriver-kubernetes` is required for enabling Stackdriver Kubernetes Engine Monitoring support on k8s cluster. 
+Adding `--enable-stackdriver-kubernetes` is required for enabling Stackdriver Kubernetes Engine Monitoring support on Kubernetes cluster. 
 
-Collecting all the data is not possible due to high costs (hundreds of dollars per day) therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to Stackdriver.
+Collecting all the data is not possible due to high costs (hundreds of dollars per day) therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to the Stackdriver.
 
 ### Workspace sap-kyma-prow
 
-Data collected in sap-kyma-prow workspace are mainly Prow performance metrics and metrics that are based on the content of log entries, 
-they help us track ongoing and most common issues.
+Data collected in sap-kyma-prow workspace are mainly Prow performance metrics and metrics that are based on the content of log entries, they help us track ongoing and most common issues.
 
 Although the workspace is not available for Kyma developers they can see following dashboards: 
  - [Prow cluster performance](https://storage.cloud.google.com/kyma-prow-logs/stats/index.html?authuser=1&orgonly=true) 
  - [Prow infrastructure log-based checks](https://storage.cloud.google.com/kyma-prow-logs/stats/checks.html?authuser=1&orgonly=true)
-
-
-Creating new log-based metrics is possible and requires creating new [issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team.
-Log-based metrics can be created based on anything that was printed to logs from any Prow job.
