@@ -9,7 +9,7 @@ In the output of (almost) every job there is the "Total test coverage: xx%" stri
 
 ![test coverage logs](./assets/test-coverage-logs.png)
 
-Since all logs from build infrastructure are gathered by StackDriver, the build-in "Export" (data sink) feature is used to filter out all these lines and send them to BigQuery:
+Since all logs from build infrastructure are gathered by Stackdriver, the build-in "Export" (data sink) feature is used to filter out all these lines and send them to BigQuery:
 
 ![gcp export ui](./assets/gcp-export-ui.png)
 
@@ -78,7 +78,7 @@ It creates the following output:
 }
 ```
 It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day.
-Data (logs) are grabbed by StackDriver export (data sink) and forwarded to BigQuery.
+Data (logs) are grabbed by Stackdriver export (data sink) and forwarded to BigQuery.
 JSON object is automatically flattened into multiple columns. 
 Following SQL statement is used to pre-format data:
 
