@@ -38,4 +38,4 @@ spec:
           containerPort: 9091
       volumeMounts:
         - mountPath: /data
-          name: prometheus-monitoring-db
+          name: prometheus-monitoring-prometheus-db

@@ -249,6 +249,12 @@ templates:
           path: components/provisioner
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/kyma-environment-broker
+          since: "1.9"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           <<: *compass_generic_component
@@ -308,12 +314,6 @@ templates:
           <<: *kyma_generic_component
           path: components/backup-plugins
           since: "1.7"
-      - to: ../prow/jobs/kyma/components/health-check-proxy/health-check-proxy.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/health-check-proxy
-          since: "1.9"
-          optional: true
       - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests-generic.yaml
         values:
           <<: *kyma_generic_component

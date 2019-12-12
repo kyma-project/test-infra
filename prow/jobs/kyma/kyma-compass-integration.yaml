@@ -30,7 +30,7 @@ presubmits: # runs on PRs
     max_concurrency: 10
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
           securityContext:
             privileged: true
           command:
@@ -69,7 +69,7 @@ postsubmits:
     max_concurrency: 10
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
           securityContext:
             privileged: true
           command:
