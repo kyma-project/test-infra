@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma CLI Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on real GKE cluster.
+#Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
 #
 #
 #Expected vars:
@@ -101,11 +101,8 @@ export CLUSTER_NAME="${COMMON_NAME}"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-
-
 export INSTALL_DIR=${TMP_DIR}
 install::kyma_cli
-
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""
 
@@ -128,17 +125,13 @@ kyma provision gardener \
 # TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 # TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
-
-
 shout "Installing Kyma"
 date
 yes | kyma install --non-interactive --source latest --timeout=45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
-
 shout "Checking the versions"
 date
 kyma version
-
 
 # if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
 #     shout "Create DNS Record for Ingressgateway IP"
@@ -157,7 +150,6 @@ kyma version
 #     CLEANUP_APISERVER_DNS_RECORD="true"
 #     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 # fi
-
 
 shout "Running Kyma tests"
 date

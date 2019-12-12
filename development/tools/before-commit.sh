@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-readonly CI_FLAG=ci
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly INVERTED='\033[7m'
-readonly NC='\033[0m' # No Color
+CI_FLAG=ci
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+INVERTED='\033[7m'
+NC='\033[0m' # No Color
 
 echo -e "${INVERTED}"
 echo "USER: ${USER}"
