@@ -79,6 +79,7 @@ RUN helm init --client-only
 RUN mkdir /test-infra
 
 COPY prow/scripts/library.sh /test-infra/prow/scripts/library.sh
+COPY prow/scripts/cluster-integration/helpers/aks-library.sh /test-infra/prow/scripts/cluster-integration/helpers/aks-library.sh
 COPY prow/scripts/cluster-integration/helpers/cleanup-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/cleanup-cluster.sh
 COPY prow/scripts/cluster-integration/helpers/create-cluster.sh /test-infra/prow/scripts/cluster-integration/helpers/create-cluster.sh
 COPY prow/scripts/cluster-integration/helpers/create-image.sh /test-infra/prow/scripts/cluster-integration/helpers/create-image.sh
@@ -95,6 +96,7 @@ COPY performance-tools/performance-cluster/runner.sh /perf-tests/runner.sh
 COPY performance-tools/performance-cluster/cluster.sh /perf-tests/cluster.sh
 COPY performance-tools/performance-cluster/scripts/k6-runner.sh /perf-tests/scripts/k6-runner.sh
 COPY performance-tools/performance-cluster/scripts/kyma-gke-cluster.sh /perf-tests/scripts/kyma-gke-cluster.sh
+COPY performance-tools/performance-cluster/scripts/kyma-aks-cluster.sh /perf-tests/scripts/kyma-aks-cluster.sh
 
 WORKDIR /perf-tests
 
