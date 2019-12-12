@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-readonly RED='\033[0;31m'
-readonly GREEN='\033[0;32m'
-readonly INVERTED='\033[7m'
-readonly YELLOW='\e[33m'
-readonly NC='\033[0m' # No Color
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+INVERTED='\033[7m'
+YELLOW='\e[33m'
+NC='\033[0m' # No Color
 
 # log::date retruns current date in format expected by logs
 function log::date {
