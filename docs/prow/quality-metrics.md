@@ -1,6 +1,6 @@
 # Quality metrics
 
-More information about topics related to gathering of quality metrics can be find in [this epic](https://github.com/kyma-project/kyma/issues/5472)
+More information about topics related to gathering quality metrics can be found in [this epic](https://github.com/kyma-project/kyma/issues/5472)
 
 ## Test Coverage
 
@@ -9,7 +9,7 @@ In the output of (almost) every job there is the "Total test coverage: xx%" stri
 
 ![test coverage logs](./assets/test-coverage-logs.png)
 
-Since all logs from build infrastructure are gathered by Stackdriver, the build-in "Export" (data sink) feature is used to filter out all these lines and send them to BigQuery:
+Since all logs from build infrastructure are gathered by Stackdriver, the build-in "export" (data sink) feature is used to filter out all these lines and send them to BigQuery:
 
 ![gcp export ui](./assets/gcp-export-ui.png)
 
@@ -42,15 +42,17 @@ where k8s_pod_prow_k8s_io_job not like 'pre%'
 order by 2 desc
 ```
 
-This query is used as a data source for a report created in DataStudio
+This query is used as a data source for a report created in DataStudio.
 You can check this report here: https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR
 
 
 ## Bugs and regression metrics
 
-It works in a similar same way as [test-coverage](#test-coverage) report, but in this case a separate [GithubStats application](https://github.com/kyma-project/test-infra/tree/master/development/tools/cmd/githubstats) 
-is used to gather data.
-It creates the following output:
+[GithubStats application](https://github.com/kyma-project/test-infra/tree/master/development/tools/cmd/githubstats) 
+is used to gather data on bugs and regressions. It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day. The data are grabbed by Stackdriver export (data sink) and forwarded to BigQuery.
+JSON object is automatically flattened into multiple columns. 
+
+ProwJob creates the following output:
 ```
 {
   "Issues": {
@@ -77,9 +79,6 @@ It creates the following output:
   "Timestamp": "2019-12-11T06:01:18.770743384Z"
 }
 ```
-It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day.
-Data (logs) are grabbed by Stackdriver export (data sink) and forwarded to BigQuery.
-JSON object is automatically flattened into multiple columns. 
 Following SQL statement is used to pre-format data:
 
 ```
@@ -95,5 +94,5 @@ from `sap-kyma-prow.stats_github.stdout`
 order by jsonPayload.timestamp desc	
 ```
 
-This query is used as a data source for a report created in DataStudio
+Above query is used as a data source for a report created in DataStudio.
 You can check this report here: https://datastudio.google.com/open/1YbERoxkmrpLBPHpf00CINKcETkV810Tg
