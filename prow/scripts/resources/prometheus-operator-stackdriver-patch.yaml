@@ -11,8 +11,6 @@ spec:
         - --prometheus.wal-directory=/data/prometheus-db/wal
         - --stackdriver.kubernetes.location=__GCP_REGION__
         - --stackdriver.kubernetes.cluster-name=__CLUSTER_NAME__
-        - --stackdriver.generic.location=__GCP_REGION__
-        - --stackdriver.generic.namespace=kyma-system
         - --include={__name__=~"node_load.+"}
         - --include={__name__="up",job=~"apiserver|kube-scheduller|kube-controller-manager"}
         - --include={__name__="apiserver_request_total",job="apiserver"}
