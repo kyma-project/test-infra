@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-CI_FLAG=ci
+readonly CI_FLAG=ci
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 INVERTED='\033[7m'
