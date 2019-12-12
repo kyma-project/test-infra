@@ -173,7 +173,7 @@ kyma test run \
 echo "Test Summary"
 kyma test status "${SUITE_NAME}" -owide
 
-statusSucceeded=$(kubectl get cts "${SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
+statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
 if [[ "${statusSucceeded}" != *"True"* ]]; then
     echo "- Fetching logs due to test suite failure"
 
