@@ -60,7 +60,7 @@ cleanup() {
         export GARDENER_CLUSTER_NAME=${CLUSTER_NAME}
         export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
-        ${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gardener-cluster.sh
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
     fi
 
     # if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
@@ -95,8 +95,8 @@ COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]
 ### Cluster name must be less than 20 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
-#Local variables
-DNS_SUBDOMAIN="${COMMON_NAME}"
+# Local variables
+# DNS_SUBDOMAIN="${COMMON_NAME}"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -115,7 +115,7 @@ fi
 
 CLEANUP_CLUSTER="true"
 kyma provision gardener \
-        --target-provider azure --secret ${GARDENER_KYMA_PROW_AZURE_SECRET_NAME} \
+        --target-provider azure --secret "${GARDENER_KYMA_PROW_AZURE_SECRET_NAME}" \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19" \
         --nodes 4
@@ -132,7 +132,7 @@ kyma provision gardener \
 
 shout "Installing Kyma"
 date
- yes | kyma install --non-interactive --source latest --timeout=45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+yes | kyma install --non-interactive --source latest --timeout=45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
 
 shout "Checking the versions"
