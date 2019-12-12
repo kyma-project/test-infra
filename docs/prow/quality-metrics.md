@@ -43,7 +43,7 @@ order by 2 desc
 ```
 
 This query is used as a data source for a report created in DataStudio.
-You can check this report here: https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR
+[You can check this report here.](https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR)
 
 
 ## Bugs and regression metrics
@@ -52,7 +52,7 @@ You can check this report here: https://datastudio.google.com/open/1TmjzxgO8yTGV
 is used to gather data on bugs and regressions. It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day. The data are grabbed by Stackdriver export (data sink) and forwarded to BigQuery.
 JSON object is automatically flattened into multiple columns. 
 
-ProwJob creates the following output:
+Prow Job creates the following output:
 ```
 {
   "Issues": {
@@ -95,4 +95,4 @@ order by jsonPayload.timestamp desc
 ```
 
 Above query is used as a data source for a report created in DataStudio.
-You can check this report here: https://datastudio.google.com/open/1YbERoxkmrpLBPHpf00CINKcETkV810Tg
+[You can check this report here.](https://datastudio.google.com/open/1YbERoxkmrpLBPHpf00CINKcETkV810Tg)
