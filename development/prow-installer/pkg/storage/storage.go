@@ -3,96 +3,111 @@ package storage
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-
-	gcs "cloud.google.com/go/storage"
 )
 
 // Option wrapper for relevant Options for the client
 type Option struct {
-	Prefix     string // storage prefix
-	ProjectID  string // GCP project ID
-	LocationID string // location of the key rings
+	Prefix         string // storage prefix
+	ProjectID      string // GCP project ID
+	LocationID     string // location of the key rings
+	ServiceAccount string // filename of the serviceaccount to use
 }
+
+//go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
 
 // Client wrapper for GCS storage API
 type Client struct {
 	Option
-	ctx context.Context
+	api API
+}
+
+// API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
+type API interface {
+	CreateBucket(ctx context.Context, name string) error
+	DeleteBucket(ctx context.Context, name string) error
+	Read(ctx context.Context, bucket, storageObject string) ([]byte, error)
+	Write(ctx context.Context, data []byte, bucket, storageObject string) error
 }
 
 // New returns a new Client, wrapping gcs for storage management on GCP
-func New(ctx context.Context, opts Option) (*Client, error) {
+func New(opts Option, api API) (*Client, error) {
 	if opts.ProjectID == "" {
 		return nil, fmt.Errorf("ProjectID is required to initialize a client")
 	}
 	if opts.LocationID == "" {
 		return nil, fmt.Errorf("LocationID is required to initialize a client")
 	}
-	return &Client{Option: opts, ctx: ctx}, nil
+	if opts.ServiceAccount == "" {
+		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")
+	}
+	if api == nil {
+		return nil, fmt.Errorf("api is required to initialize a client")
+	}
+
+	return &Client{Option: opts, api: api}, nil
 }
 
-func (sc *Client) CreateBucket(name string) error {
-	client, err := gcs.NewClient(sc.ctx)
-	if err != nil {
-		return fmt.Errorf("Initializing storage client failed: %w", err)
+// CreateBucket attempts to create a storage bucket
+func (sc *Client) CreateBucket(ctx context.Context, name string) error {
+	if name == "" {
+		return fmt.Errorf("name cannot be empty")
 	}
-
-	attrs := &gcs.BucketAttrs{
-		Name: name,
-	}
-
-	err = client.Bucket(name).Create(sc.ctx, sc.ProjectID, attrs)
-	if err != nil {
-		return fmt.Errorf("Error creating the bucket: %w", err)
-	}
-	return nil
+	return sc.api.CreateBucket(ctx, name)
 }
 
-func (sc *Client) DeleteBucket(name string) error {
-	client, err := gcs.NewClient(sc.ctx)
-	if err != nil {
-		return fmt.Errorf("Initializing storage client failed: %w", err)
+// DeleteBucket attempts to delete a storage bucket
+func (sc *Client) DeleteBucket(ctx context.Context, name string) error {
+	if name == "" {
+		return fmt.Errorf("name cannot be empty")
 	}
-
-	err = client.Bucket(name).Delete(sc.ctx)
-	if err != nil {
-		return fmt.Errorf("Error deleting the bucket: %w", err)
-	}
-	return nil
+	return sc.api.DeleteBucket(ctx, name)
 }
 
-func (sc *Client) Read(bucket, storageObject string) ([]byte, error) {
-	client, err := gcs.NewClient(sc.ctx)
-	if err != nil {
-		return nil, fmt.Errorf("Initializing storage client failed: %w", err)
+// Read attempts to read from a storage bucket
+func (sc *Client) Read(ctx context.Context, bucket, storageObject string) ([]byte, error) {
+	if bucket == "" {
+		return nil, fmt.Errorf("bucket cannot be empty")
 	}
-
-	rc, err := client.Bucket(bucket).Object(storageObject).NewReader(sc.ctx)
-	if err != nil {
-		return nil, fmt.Errorf("Creating bucket reader failed: %w", err)
+	if storageObject == "" {
+		return nil, fmt.Errorf("storageObject cannot be empty")
 	}
-	defer rc.Close()
-
-	data, err := ioutil.ReadAll(rc)
-	if err != nil {
-		return nil, fmt.Errorf("Reading from bucket failed: %w", err)
-	}
-	return data, nil
+	return sc.api.Read(ctx, bucket, storageObject)
 }
 
-func (sc *Client) Write(data []byte, bucket, storageObject string) error {
-	client, err := gcs.NewClient(sc.ctx)
-	if err != nil {
-		return fmt.Errorf("Initializing storage client failed: %w", err)
+// Write attempts to write to a storage bucket
+func (sc *Client) Write(ctx context.Context, data []byte, bucket, storageObject string) error {
+	if len(data) == 0 {
+		return fmt.Errorf("cannot write zero data")
 	}
+	if bucket == "" {
+		return fmt.Errorf("bucket cannot be empty")
+	}
+	if storageObject == "" {
+		return fmt.Errorf("storageObject cannot be empty")
+	}
+	return sc.api.Write(ctx, data, bucket, storageObject)
+}
 
-	wc := client.Bucket(bucket).Object(storageObject).NewWriter(sc.ctx)
-	if _, err := wc.Write(data); err != nil {
-		return fmt.Errorf("Writing to bucket failed: %w", err)
-	}
-	if err := wc.Close(); err != nil {
-		return err
-	}
-	return nil
+// WithPrefix modifies option to have a prefix
+func (o Option) WithPrefix(pre string) Option {
+	o.Prefix = pre
+	return o
+}
+
+// WithProjectID modifies option to have a project id
+func (o Option) WithProjectID(pid string) Option {
+	o.ProjectID = pid
+	return o
+}
+
+// WithLocationID modifies option to have a zone id
+func (o Option) WithLocationID(l string) Option {
+	o.LocationID = l
+	return o
+}
+
+// WithServiceAccount modifies option to have a service account
+func (o Option) WithServiceAccount(sa string) Option {
+	o.ServiceAccount = sa
+	return o
 }
