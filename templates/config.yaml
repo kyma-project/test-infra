@@ -656,6 +656,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/rafter
+          optional: true
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests.yaml
         values:
           <<: *go_kyma_component_1_11
