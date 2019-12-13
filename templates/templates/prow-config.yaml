@@ -496,7 +496,7 @@ branch-protection:
           protect: true
         documentation-component:
           protect: true
-        hack-showcase:
+        github-slack-connectors:
           branches:
             master:
               protect: true
