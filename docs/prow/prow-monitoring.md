@@ -1,6 +1,7 @@
 # Prow Cluster Monitoring Setup
 
-This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. This document also describes how to create and manage Grafana dashboards.
+This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
+This document also describes how to create and manage Grafana dashboards.
 
 ## Prerequisites
 
@@ -92,33 +93,50 @@ Follow these steps to save the dashboard:
    ```
 ## Stackdriver Monitoring
 
-### Workspace sap-kyma-prow-workload
+### `sap-kyma-prow-workload` workspace
 
-Stackdriver Monitoring dashboards provide visibility into the performance, uptime, and overall health of long running Kyma test clusters:
- - [nightly](https://app.google.stackdriver.com/dashboards/2395169590273002360?project=sap-kyma-prow-workloads)
- - [weekly](https://app.google.stackdriver.com/dashboards/7169385145780812191?project=sap-kyma-prow-workloads)
- It also provides information about overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads) of long-running clusters and test-infra infrastructure.
+The `sap-kyma-prow-workload` workspace is used for two purposes:
+ - Short-living GKE clusters, which are used to test jobs
+ - Long-running GKE clusters (`weekly` and `nightly` clusters)
+
+#### Dashboards
+Stackdriver Monitoring dashboards provide visibility into the performance, uptime, and overall health of long-running Kyma test clusters. Here are the available dashboards:
+ - For the [nightly cluster](https://app.google.stackdriver.com/dashboards/2395169590273002360?project=sap-kyma-prow-workloads)
+ - For the [weekly cluster](https://app.google.stackdriver.com/dashboards/7169385145780812191?project=sap-kyma-prow-workloads)
+
+Stackdriver Monitoring also provides information about overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads) 
+of long-running clusters and test-infra infrastructure:
  
-    ![msg](./assets/uptime-checks.png)
+![uptime checks](./assets/uptime-checks.png)
 
-Kyma developers have necessary permissions to create custom dashboards in [sap-kyma-prow-workload workspace](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads) however it is required to follow dashboard naming convention that looks as follows:
-`dev - {team_name}`
-![msg](./assets/dashboards.png)
+
+Kyma developers have the necessary permissions to create custom dashboards in the [`sap-kyma-prow-workload` workspace](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads), however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
+
+![dashboards](./assets/dashboards.png)
+
+#### Metrics explorer
+
 [Metrics explorer](https://cloud.google.com/monitoring/charts/metrics-explorer) lets you build ad-hoc charts for any metric collected by the project.
+Stackdriver provides a set of built-in metric types. [Here](https://cloud.google.com/monitoring/api/metrics) you can see the list of available metrics.
 
-Stackdriver provides set of built-in metric types, see the [Metrics](https://cloud.google.com/monitoring/api/metrics). Gathering additional metrics requires [stackdriver-prometheus collector](https://cloud.google.com/monitoring/kubernetes-engine/prometheus). Adding `--enable-stackdriver-kubernetes` is required for enabling Stackdriver Kubernetes Engine Monitoring support on k8s cluster. 
+#### Log-based metrics
 
-Collecting all the data is not possible due to high costs (hundreds of dollars per day) therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to Stackdriver.
+You can create log-based metrics on any outcome that was printed to logs from any GKE cluster.
+This means that you can grab any logs from our long and short-living clusters and create a metric. 
+It can count occurrences of a particular error or aggregate numbers extracted from the message.
 
-### Workspace sap-kyma-prow
+Creating new log-based metrics is possible and requires creating a new [issue](https://github.com/kyma-project/test-infra/issues/new/choose) to the **Neighbors** team.
 
-Data collected in sap-kyma-prow workspace are mainly Prow perofrmance metrics and metrics that are based on the content of log entries, they help us to track ongoing and most common issues.
+#### Prometheus collector
+Gathering additional metrics requires [Stackdriver Prometheus collector](https://cloud.google.com/monitoring/kubernetes-engine/prometheus). 
+Adding `--enable-stackdriver-kubernetes` is required for enabling Stackdriver Kubernetes Engine Monitoring support on Kubernetes cluster. 
 
-Although the workspace is not available for Kyma developers they can see dashboards showing [Prow performance](https://storage.cloud.google.com/kyma-prow-logs/stats/index.html?authuser=1&orgonly=true) and [Prow infrastructure log-based checks](https://storage.cloud.google.com/kyma-prow-logs/stats/checks.html?authuser=1&orgonly=true). Creating new log-based metrics is possible and requires creating new [issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team.
+Collecting all the data is not possible due to high costs, therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to the Stackdriver.
 
-### Quality metrics
+### `sap-kyma-prow` workspace
 
-We are also providing dashboards showing:
+Data collected in the `sap-kyma-prow` workspace are mainly Prow performance metrics and metrics that are based on the content of log entries. They help to track the ongoing and most common issues.
 
-- [Number of github issues and bugs](https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR)
-- [Kyma test coverage metrics](https://datastudio.google.com/open/1TmjzxgO8yTGVdG5kQ0Y-99M-bBysfyTR)
+Although the workspace is not available for Kyma developers, they can see the following dashboards: 
+ - [Prow cluster performance](https://storage.cloud.google.com/kyma-prow-logs/stats/index.html?authuser=1&orgonly=true) 
+ - [Prow infrastructure log-based checks](https://storage.cloud.google.com/kyma-prow-logs/stats/checks.html?authuser=1&orgonly=true)
