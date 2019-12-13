@@ -93,6 +93,8 @@ Follow these steps to save the dashboard:
    ```
 ## Stackdriver Monitoring
 
+Stackdriver monitoring service provided by Google provides additional metrics and data related to Prow clusters as well as workloads clusters.
+
 ### `sap-kyma-prow-workload` workspace
 
 The `sap-kyma-prow-workload` workspace is used for two purposes:
@@ -107,12 +109,12 @@ Stackdriver Monitoring dashboards provide visibility into the performance, uptim
 Stackdriver Monitoring also provides information about overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads) 
 of long-running clusters and test-infra infrastructure:
  
-![uptime checks](./assets/uptime-checks.png)
+![uptime checks](./assets/uptime-checks.jpg)
 
 
 Kyma developers have the necessary permissions to create custom dashboards in the [`sap-kyma-prow-workload` workspace](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads), however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
 
-![dashboards](./assets/dashboards.png)
+![dashboards](./assets/dashboards.)
 
 #### Metrics explorer
 
