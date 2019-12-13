@@ -652,7 +652,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/asset-store
-      - to: ../prow/jobs/kyma/tests/rafter/rafter.yaml
+      - to: ../prow/jobs/kyma/tests/rafter/rafter-test.yaml
         values:
           <<: *go_kyma_component_1_11
           path: tests/rafter
