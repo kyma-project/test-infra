@@ -36,7 +36,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
       run_if_changed: "^tests/rafter/"
@@ -57,7 +57,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
             args:
               - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
       run_if_changed: "^tests/rafter/"
