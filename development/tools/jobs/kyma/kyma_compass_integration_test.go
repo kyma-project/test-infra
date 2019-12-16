@@ -19,7 +19,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 
 	// then
 	assert.True(t, actualJob.Decorate)
-	assert.Equal(t, "^(resources/compass|resources/compass-runtime-agent|installation)/", actualJob.RunIfChanged)
+	assert.Equal(t, "^(resources/compass|resources/compass-runtime-agent|resources/ory|installation)/", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.False(t, actualJob.SkipReport)
