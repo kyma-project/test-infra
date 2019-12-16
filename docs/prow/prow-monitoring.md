@@ -114,7 +114,7 @@ of long-running clusters and test-infra infrastructure:
 
 Kyma developers have the necessary permissions to create custom dashboards in the [`sap-kyma-prow-workload` workspace](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads), however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
 
-![dashboards](./assets/dashboards.)
+![dashboards](./assets/dashboards.jpg)
 
 #### Metrics explorer
 

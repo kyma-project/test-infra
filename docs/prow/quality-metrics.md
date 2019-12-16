@@ -8,7 +8,7 @@ See [this epic](https://github.com/kyma-project/kyma/issues/5472) for more infor
 Code coverage metrics are gathered directly from component build logs.
 In the output of almost every job, there is the `Total test coverage: xx%` string. See the example:
 
-![test coverage logs](./assets/test-coverage-logs.jpg)
+![test coverage logs](./assets/test-coverage-logs.png)
 
 Since all logs from the build infrastructure are gathered by Stackdriver, the build-in export feature is used to filter out all these lines and send them to BigQuery:
 
