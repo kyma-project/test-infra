@@ -852,7 +852,7 @@ periodics:
             - name: NODES_PER_ZONE
               value: "1"
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
-              value: "0.6.3"
+              value: "0.6.4"
             - name: INPUT_CLUSTER_NAME
               value: "nightly"
             - name: TEST_RESULT_WINDOW_TIME
@@ -921,7 +921,7 @@ periodics:
             - name: NODES_PER_ZONE
               value: "1"
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
-              value: "0.6.3"
+              value: "0.6.4"
             - name: INPUT_CLUSTER_NAME
               value: "weekly"
             - name: TEST_RESULT_WINDOW_TIME
