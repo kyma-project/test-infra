@@ -25,20 +25,20 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: {{ .name }}
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: {{ .language }}
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
 {{ end }}

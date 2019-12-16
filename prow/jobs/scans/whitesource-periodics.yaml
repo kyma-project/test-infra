@@ -27,22 +27,22 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: kyma
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: golang
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
 
   - name: console-whitesource-scan
     decorate: true
@@ -63,22 +63,22 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: console
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: javascript
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
 
   - name: cli-whitesource-scan
     decorate: true
@@ -99,22 +99,22 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: cli
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: golang
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
 
   - name: helm-broker-whitesource-scan
     decorate: true
@@ -135,22 +135,22 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: helm-broker
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: golang
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
 
   - name: rafter-whitesource-scan
     decorate: true
@@ -171,22 +171,22 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: rafter
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: golang
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
 
   - name: compass-whitesource-scan
     decorate: true
@@ -207,19 +207,19 @@ periodics:
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-            command:
+          command:
             - "bash"
-            args:
+          args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
+          env:
             - name : PROJECTNAME
               value: compass
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
               value: golang
-            resources:
+          resources:
             requests:
-                memory: 1Gi
-                cpu: 400m
+              memory: 1Gi
+              cpu: 400m
