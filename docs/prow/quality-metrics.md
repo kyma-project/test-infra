@@ -12,7 +12,7 @@ In the output of almost every job, there is the `Total test coverage: xx%` strin
 
 Since all logs from the build infrastructure are gathered by Stackdriver, the build-in export feature is used to filter out all these lines and send them to BigQuery:
 
-![gcp export ui](./assets/gcp-export-ui.jpg)
+![gcp export ui](./assets/gcp-export-ui.png)
 
 The following SQL statement aggregates data to the present comparison between last and previous test coverage:
 ```SQL
