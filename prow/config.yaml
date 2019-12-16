@@ -425,6 +425,41 @@ presets:
     env:
     - name: CLUSTER_USE_SSD
       value: "true"
+  # whitesource labels
+  - labels:
+      preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: GITHUB_ORG_DIR
+        value: "/home/prow/go/src/github.com/kyma-incubator"
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
+  - labels:
+      preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: GITHUB_ORG_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
 
 branch-protection:
   enforce_admins: false
