@@ -90,7 +90,7 @@ Create a PR with your changes in the `config.yaml` file and the job files genera
 
 After your PR is reviewed and approved, merge the changes to the `test-infra` repository. The job configuration is automatically applied to the Prow production cluster. The `config_updater` plugin configured in the `prow/plugins.yaml` file adds a comment to the PR:
 
-![msg](./assets/msg-updated-config.jpg).
+![msg](./assets/msg-updated-config.png).
 
 6. Create a Makefile for your component.
 

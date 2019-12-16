@@ -109,12 +109,12 @@ Stackdriver Monitoring dashboards provide visibility into the performance, uptim
 Stackdriver Monitoring also provides information about overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads) 
 of long-running clusters and test-infra infrastructure:
  
-![uptime checks](./assets/uptime-checks.jpg)
+![uptime checks](./assets/uptime-checks.png)
 
 
 Kyma developers have the necessary permissions to create custom dashboards in the [`sap-kyma-prow-workload` workspace](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads), however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
 
-![dashboards](./assets/dashboards.jpg)
+![dashboards](./assets/dashboards.png)
 
 #### Metrics explorer
 
