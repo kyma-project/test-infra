@@ -1,6 +1,6 @@
 # Quality metrics
 
-This document describes reports that provide overview of basic quality measures of the Kyma project.
+This document describes reports that provide an overview of the basic quality measures for the Kyma project.
 See [this epic](https://github.com/kyma-project/kyma/issues/5472) for more information on gathering quality metrics.
 
 ## Test coverage

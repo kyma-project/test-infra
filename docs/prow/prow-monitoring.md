@@ -93,11 +93,11 @@ Follow these steps to save the dashboard:
    ```
 ## Stackdriver Monitoring
 
-Stackdriver monitoring service provided by Google provides additional metrics and data related to Prow clusters as well as workloads clusters.
+Stackdriver Monitoring service provides additional metrics and data related to Prow and workload clusters.
 
 ### `sap-kyma-prow-workload` workspace
 
-The `sap-kyma-prow-workload` workspace is used for two purposes:
+The [`sap-kyma-prow-workload`](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads) workspace is used for two purposes:
  - Short-living GKE clusters, which are used to test jobs
  - Long-running GKE clusters (`weekly` and `nightly` clusters)
 
@@ -112,13 +112,13 @@ of long-running clusters and test-infra infrastructure:
 ![uptime checks](./assets/uptime-checks.png)
 
 
-Kyma developers have the necessary permissions to create custom dashboards in the [`sap-kyma-prow-workload` workspace](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads), however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
+Kyma developers have the necessary permissions to create custom dashboards in the `sap-kyma-prow-workload` workspace, however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
 
 ![dashboards](./assets/dashboards.png)
 
 #### Metrics explorer
 
-[Metrics explorer](https://cloud.google.com/monitoring/charts/metrics-explorer) lets you build ad-hoc charts for any metric collected by the project.
+[Metrics explorer](https://cloud.google.com/monitoring/charts/metrics-explorer) allows you to build ad-hoc charts for any metric collected by the project.
 Stackdriver provides a set of built-in metric types. [Here](https://cloud.google.com/monitoring/api/metrics) you can see the list of available metrics.
 
 #### Log-based metrics
@@ -131,7 +131,7 @@ Creating new log-based metrics is possible and requires creating a new [issue](h
 
 #### Prometheus collector
 Gathering additional metrics requires [Stackdriver Prometheus collector](https://cloud.google.com/monitoring/kubernetes-engine/prometheus). 
-Adding `--enable-stackdriver-kubernetes` is required for enabling Stackdriver Kubernetes Engine Monitoring support on Kubernetes cluster. 
+Adding the `--enable-stackdriver-kubernetes` flag is required for enabling the Stackdriver Kubernetes Engine Monitoring support on a Kubernetes cluster. 
 
 Collecting all the data is not possible due to high costs, therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to the Stackdriver.
 
