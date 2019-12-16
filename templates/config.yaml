@@ -8,6 +8,7 @@ global:
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
+go_buildpack_1_13: &go_buildpack_1_13 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
 kubebuilder2_buildpack_v20190823: &kubebuilder2_buildpack_v20190823 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
@@ -28,6 +29,10 @@ compass_component: &compass_component
 go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
   buildpack: *go_buildpack_1_11
+
+go_kyma_component_1_13: &go_kyma_component_1_13
+  <<: *kyma_component
+  buildpack: *go_buildpack_1_13
 
 go_compass_component_1_11: &go_compass_component_1_11
   <<: *compass_component
@@ -650,7 +655,7 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/asset-store/asset-store.yaml
         values:
-          <<: *go_kyma_component_1_11
+          <<: *go_kyma_component_1_13
           path: tests/asset-store
       - to: ../prow/jobs/kyma/tests/rafter/rafter-test.yaml
         values:
