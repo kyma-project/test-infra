@@ -85,7 +85,7 @@ See the description of values used by both component templates:
 | **since** | Yes | Both | Specifies the release from which this component version applies. |
 | **until** | Yes | Both | Specifies the release till which this component version applies.  |
 | **watch** | No | `component.yaml` | Provides a list of regexps for Prow to watch in addition to `path`. Prow runs the job if it notices any changes in the specified files or folders. |
-
+| **skipReport** | No | `component.yaml` | Defines if this job is reported on pull requests  |
 
 All the functions from the [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by Helm, so if you know Helm, you are already familiar with them. Also, a few additional functions are available:
 - `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is not earlier than `1.2` and not later than `1.5`.
