@@ -30,6 +30,10 @@ go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
   buildpack: *go_buildpack_1_11
 
+go_kyma_component_1_12: &go_kyma_component_1_12
+  <<: *kyma_component
+  buildpack: *go_buildpack_1_12
+
 go_kyma_component_1_13: &go_kyma_component_1_13
   <<: *kyma_component
   buildpack: *go_buildpack_1_13
@@ -37,10 +41,6 @@ go_kyma_component_1_13: &go_kyma_component_1_13
 go_compass_component_1_11: &go_compass_component_1_11
   <<: *compass_component
   buildpack: *go_buildpack_1_11
-
-go_kyma_component_1_12: &go_kyma_component_1_12
-  <<: *kyma_component
-  buildpack: *go_buildpack_1_12
 
 kubebuilder_kyma_component: &kubebuilder_kyma_component
   <<: *kyma_component
