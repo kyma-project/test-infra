@@ -16,7 +16,7 @@
 # - ADDITIONAL_LABELS - labels applied on the cluster
 # - GCLOUD_NETWORK_NAME - network name for the cluster, must be specified together with $GCLOUD_NETWORK_NAME
 # - GCLOUD_SUBNET_NAME - subnet name from $GCLOUD_NETWORK_NAME, must be specified together with $GCLOUD_NETWORK_NAME
-# - GCLOUD_SECURITY_GROUP_DOMAIN - domain of a Google Group that is itself a member of the Google Group gke-security-groups@[yourdomain.com]
+# - GCLOUD_SECURITY_GROUP_DOMAIN - G Suite Google Group address on a verified domain
 #
 # REQUIREMENTS:
 # - gcloud
