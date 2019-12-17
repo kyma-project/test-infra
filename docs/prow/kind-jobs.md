@@ -47,7 +47,7 @@ This document describes how to execute kind jobs locally without Prow cluster.
 3. Run Docker container with configuration based on ProwJob definition, for example configuration for `pre-master-kyma-kind-upgrade`:
 
 ```bash
-sudo docker run \
+docker run \
     --rm \
     --privileged \
     --volume "$HOME/repositories:/home/prow/go/src/github.com/kyma-project" \
