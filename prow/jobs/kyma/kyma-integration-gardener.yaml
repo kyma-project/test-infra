@@ -1,6 +1,9 @@
 periodics: 
 - name: kyma-gardener-integration
   decorate: true
+  decoration_config:
+    timeout: 10800000000000 # 3h
+    grace_period: 600000000000 # 10min
   cron: "00 00 * * *"
   extra_refs:
     - org: kyma-project
