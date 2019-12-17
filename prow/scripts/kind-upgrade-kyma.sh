@@ -80,14 +80,16 @@ DELETE_CLUSTER="false"
 TUNE_INOTIFY="false"
 START_DOCKER="false"
 
+ENSURE_HELM="false"
+readonly HELM_VERSION="v2.10.0"
+
 CLUSTER_NAME="kyma"
 KUBERNETES_VERSION="v1.14.6"
-HELM_VERSION="v2.10.0"
 CLUSTER_CONFIG="${KIND_RESOURCES_DIR}/../cluster.yaml"
 KYMA_SOURCES="${GOPATH}/src/github.com/kyma-project/kyma"
-KYMA_OVERRIDES="${KYMA_SOURCES}/installation/resources/installer-config-local.yaml.tpl"
-KYMA_INSTALLER="${KYMA_SOURCES}/installation/resources/installer-local.yaml"
-KYMA_INSTALLATION_CR="${KYMA_SOURCES}/installation/resources/installer-cr.yaml.tpl"
+readonly KYMA_OVERRIDES="${KYMA_SOURCES}/installation/resources/installer-config-kind.yaml.tpl"
+readonly KYMA_INSTALLER="${KYMA_SOURCES}/installation/resources/installer.yaml"
+readonly KYMA_INSTALLATION_CR="${KYMA_SOURCES}/installation/resources/installer-cr-cluster.yaml.tpl"
 KYMA_INSTALLATION_TIMEOUT="30m"
 readonly KYMA_DOMAIN="kyma.local"
 readonly KYMA_INSTALLER_NAME="kyma-installer:kind"
@@ -118,6 +120,7 @@ function read_flags {
                 echo "Options:"
                 echo "  -h --help                       Print usage."
                 echo "     --ensure-kubectl             Update kubectl to the same version as cluster."
+                echo "     --ensure-helm                Update helm client to the version expected by Kyma."
                 echo "     --update-hosts               Append hosts file with Kyma hosts assigned to worker node."
                 echo "     --delete-cluster             Deletes cluster at the end of script execution."
                 echo "     --tune-inotify               Tune inotify instances and watches."
@@ -126,9 +129,6 @@ function read_flags {
                 echo "     --cluster-config             Path to kind cluster configuration, default \`kind/cluster.yaml\`."
                 echo "     --kubernetes-version         Kubernetes version, default \`v1.14.6\`."
                 echo "     --kyma-sources               Path to the Kyma sources, default \`\${GOPATH}/src/github.com/kyma-project/kyma\`."
-                echo "     --kyma-overrides             Path to the Kyma overrides, default \`\${KYMA_SOURCES}/installation/resources/installer-config-local.yaml.tpl\`."
-                echo "     --kyma-installer             Path to the Kyma Installer yaml, default \`\${KYMA_SOURCES}/installation/resources/installer-local.yaml\`."
-                echo "     --kyma-installation-cr       Path to the Kyma Installation CR, default \`\${KYMA_SOURCES}/installation/resources/installer-cr.yaml.tpl\`."
                 echo "  -t --kyma-installation-timeout  The installation timeout, default \`30m\`."
                 echo " "
                 echo "Environment variables:"
@@ -138,6 +138,10 @@ function read_flags {
             --ensure-kubectl)
                 shift
                 ENSURE_KUBECTL="true"
+                ;;
+            --ensure-helm)
+                shift
+                ENSURE_HELM="true"
                 ;;
             --update-hosts)
                 shift
@@ -175,21 +179,6 @@ function read_flags {
                 KYMA_SOURCES="${1}"
                 shift
                 ;;
-            --kyma-overrides)
-                shift
-                KYMA_OVERRIDES="${1}"
-                shift
-                ;;
-            --kyma-installer)
-                shift
-                KYMA_INSTALLER="${1}"
-                shift
-                ;;
-            --kyma-installation-cr)
-                shift
-                KYMA_INSTALLATION_CR="${1}"
-                shift
-                ;;
             -t|--kyma-installation-timeout)
                 shift
                 KYMA_INSTALLATION_TIMEOUT="${1}"
@@ -203,6 +192,7 @@ function read_flags {
     done
 
     readonly ENSURE_KUBECTL \
+        ENSURE_HELM \
         UPDATE_HOSTS \
         DELETE_CLUSTER \
         TUNE_INOTIFY \
@@ -310,7 +300,7 @@ function main {
     fi
 
     junit::test_start "Ensure_Helm_Client"
-    if [[ ${ENSURE_KUBECTL} = "true" ]]; then
+    if [[ ${ENSURE_HELM} = "true" ]]; then
         log::info "Ensuring Helm client version" 2>&1 | junit::test_output
         helm::ensure_client "${HELM_VERSION}" "$(host::os)" "${TMP_BIN_DIR}" 2>&1 | junit::test_output
         junit::test_pass

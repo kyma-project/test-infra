@@ -19,7 +19,7 @@ test_infra_ref: &test_infra_ref
 
 presubmits:
   kyma-project/kyma:
-  - name: pre-master-kyma-kind-lite
+  - name: pre-master-kyma-kind-lite-integration
     branches:
     - ^master$
     # Temporarly
@@ -69,7 +69,7 @@ presubmits:
       tolerations:
       - <<: *job_tolerations_template
 
-  - name: pre-master-kyma-kind
+  - name: pre-master-kyma-kind-integration
     branches:
     - ^master$
     # Temporarly
@@ -118,3 +118,102 @@ presubmits:
             cpu: 10
       tolerations:
       - <<: *job_tolerations_template
+
+  - name: pre-master-kyma-kind-upgrade
+    branches:
+    - ^master$
+    # Temporarly
+    skip_report: true
+    decorate: true
+    path_alias: github.com/kyma-project/kyma
+    max_concurrency: 10
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+    spec:
+      containers:
+      - <<: *job_image_template
+        securityContext:
+          privileged: true
+        command:
+        - /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kind-upgrade-kyma.sh
+        args:
+        - --ensure-kubectl
+        - --ensure-helm
+        - --update-hosts
+        - --delete-cluster
+        - --tune-inotify
+        - --start-docker
+        - --kubernetes-version
+        - v1.14.6
+        - --kyma-sources
+        - /home/prow/go/src/github.com/kyma-project/kyma
+        - --kyma-installation-timeout
+        - 30m
+        resources:
+          requests:
+            memory: 18Gi
+            cpu: 8
+          limits:
+            memory: 24Gi
+            cpu: 10
+      tolerations:
+      - <<: *job_tolerations_template
+
+periodics:
+- name: kyma-kind-k8s-1-16
+  cron: "00 06 * * *" # "At 06:00 UTC each day"
+  annotations:
+    testgrid-dashboards: kyma-nightly
+    # testgrid-alert-email: email-here@sap.com
+    testgrid-num-failures-to-alert: '1'
+  labels:
+    <<: *job_labels_template
+    prow.kyma-project.io/slack.skipReport: "true"
+    preset-build-master: "true"
+  decorate: true
+  extra_refs:
+  - <<: *test_infra_ref
+    base_ref: master
+  - repo: kyma
+    org: kyma-project
+    base_ref: master
+    path_alias: github.com/kyma-project/kyma
+  spec:
+    containers:
+    - <<: *job_image_template
+      securityContext:
+        privileged: true
+      command:
+      - /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kind-install-kyma.sh
+      args:
+      - --ensure-kubectl
+      - --update-hosts
+      - --delete-cluster
+      - --tune-inotify
+      - --start-docker
+      - --kubernetes-version
+      - v1.16.4
+      - --kyma-sources
+      - /home/prow/go/src/github.com/kyma-project/kyma
+      - --kyma-overrides
+      - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-config-kind.yaml.tpl
+      - --kyma-installer
+      - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer.yaml
+      - --kyma-installation-cr
+      - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-cr-cluster.yaml.tpl
+      - --kyma-installation-timeout
+      - 30m
+      resources:
+        requests:
+          memory: 18Gi
+          cpu: 8
+        limits:
+          memory: 24Gi
+          cpu: 10
+    tolerations:
+    - <<: *job_tolerations_template
