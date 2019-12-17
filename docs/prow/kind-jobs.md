@@ -56,6 +56,7 @@ sudo docker run \
     --volume "/lib/modules:/lib/modules" \
     --volume "$HOME/docker-graph:/docker-graph" \
     --env ARTIFACTS="/artifacts" \
+    --env GOPATH="/home/prow/go" \
     eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191011-51ed45a \
     /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kind-upgrade-kyma.sh \
     --ensure-kubectl \
