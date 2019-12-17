@@ -127,7 +127,7 @@ kyma provision gardener \
 
 shout "Installing Kyma"
 date
-yes | kyma install --non-interactive --source latest --timeout=45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+yes | kyma install --non-interactive --source latest --timeout 45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
 shout "Checking the versions"
 date
@@ -165,7 +165,7 @@ kyma test run \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
-                --timeout "1h" \
+                --timeout 90m \
                 --watch \
                 --non-interactive
 
