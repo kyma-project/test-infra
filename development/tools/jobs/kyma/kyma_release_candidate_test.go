@@ -34,6 +34,7 @@ func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_REGION", "europe-west4")
 			assert.Equal(t, "true", actualJob.JobBase.Labels["preset-sa-vm-kyma-integration"])
 			assert.Equal(t, "true", actualJob.JobBase.Labels["preset-gc-project-env"])
+			assert.Equal(t, "true", actualJob.JobBase.Labels["preset-gke-kyma-developers-group"])
 			assert.Equal(t, "sa-kyma-release-candidate", actualJob.Spec.Volumes[0].Name)
 			assert.Equal(t, "sa-kyma-release-candidate", actualJob.Spec.Volumes[0].Secret.SecretName)
 		})

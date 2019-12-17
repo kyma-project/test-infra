@@ -37,7 +37,7 @@ job_labels_template: &job_labels_template
   preset-kyma-artifacts-bucket: "true"
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
-
+  preset-gke-kyma-developers-group: "true"
 
 postsubmits:
   kyma-project/kyma:
