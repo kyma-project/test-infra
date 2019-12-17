@@ -169,6 +169,11 @@ templates:
           <<: *kyma_generic_component
           path: components/service-binding-usage-controller
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/uaa-activator
+          since: "1.9"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
