@@ -256,6 +256,16 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
+shout "Collect container labels"
+date
+ifndef ARTIFACTS
+ARTIFACTS:=/tmp/artifacts
+endif
+
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o jsonpath="{..image}" | tr -s '[:space:]' '\n' | sort | uniq)
+
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/${RELEASE_VERSION}.txt" # should write all the images to a text file under the artifacts folder
+
 shout "Success"
 
 #!!! Must be at the end of the script !!!

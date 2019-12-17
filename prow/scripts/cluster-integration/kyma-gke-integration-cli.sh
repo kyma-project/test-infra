@@ -196,11 +196,6 @@ fi
 
 shout "Running Kyma tests"
 date
-echo "- Creating ClusterAddonsConfiguration which provides the testing addons"
-injectTestingAddons
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
 
 kyma test run \
                 --name "${SUITE_NAME}" \
@@ -235,11 +230,6 @@ fi
 
 echo "ClusterTestSuite details"
 kubectl get cts "${SUITE_NAME}" -oyaml
-
-
-shout "Uninstalling Kyma"
-date
-kyma uninstall --non-interactive
 
 
 shout "Success"

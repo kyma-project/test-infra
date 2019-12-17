@@ -1,142 +1,283 @@
-job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
-  preset-kind-volume-mounts: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-kyma: "true"
-
-test_infra_ref: &test_infra_ref
-  org: kyma-project
-  repo: test-infra
-  base_ref: master
-  path_alias: github.com/kyma-project/test-infra
-
-common_config: &common_config
-  skip_report: false
-  always_run: true
-  decorate: true
-  optional: false
-  path_alias: github.com/kyma-project/rafter
-  max_concurrency: 10
-
-job_build_template: &job_build_template
-  <<: *common_config
-  extra_refs:
-    - <<: *test_infra_ref
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-        env:
-        - name: GO111MODULE
-          value: "on"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/rafter"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-job_template: &job_template
-  always_run: true
-  branches:
-    - ^master$
-  labels:
-    <<: *job_labels_template
-    preset-build-pr: "true"
-  <<: *common_config
-  extra_refs:
-    - <<: *test_infra_ref
- 
 presets:
   - labels:
-      preset-build-rafter-master: "true"
+      preset-rafter-build-master: "true"
     env:
       - name: BUILD_TYPE
         value: master
       - name: DOCKER_PUSH_DIRECTORY
         value: ""
+  - labels:
+      preset-rafter-minio-gcs-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: gcs
+      - name: CLOUDSDK_COMPUTE_ZONE
+        value: "europe-west4-a"
+  - labels:
+      preset-rafter-minio-az-gateway: "true"
+    env:
+      - name: MINIO_GATEWAY_MODE
+        value: azure
+      - name: AZURE_RS_GROUP
+        value: rafter-minio-gateway
+      - name: AZURE_REGION
+        value: westeurope
+
+common_job_labels_template: &common_job_labels_template
+  preset-dind-enabled: "true"
+  preset-kind-volume-mounts: "true"
+
+common_job_labels_push_template: &common_job_labels_push_template
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-kyma: "true"
+
+common_job_labels_minio_gcs_gateway_template: &common_job_labels_minio_gcs_gateway_template
+  preset-rafter-minio-gcs-gateway: "true"
+  preset-gc-project-env: "true"
+  preset-sa-gke-kyma-integration: "true"
+
+common_job_labels_minio_az_gateway_template: &common_job_labels_minio_az_gateway_template
+  preset-rafter-minio-az-gateway: "true"
+  preset-creds-aks-kyma-integration: "true"
+
+job_tolerations_template: &job_tolerations_template
+  key: resources-usage
+  value: high
+  operator: Equal
+  effect: NoSchedule
+
+common_job_config_template: &common_job_config_template
+  decorate: true
+  path_alias: github.com/kyma-project/rafter
+  max_concurrency: 10
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      base_sha: "b973e815bb8124a19a82fe6df722ce174d4a7566"
+      path_alias: github.com/kyma-project/test-infra
+
+additional_presubmit_job_config_template: &additional_presubmit_job_config_template
+  skip_report: false
+  always_run: true
+  optional: false
+
+common_container_template: &common_container_template
+  securityContext:
+    privileged: true
+  env:
+    - name: GO111MODULE
+      value: "on"
+  resources:
+    requests:
+      memory: 1.5Gi
+      cpu: 0.8
+
+common_build_job_template: &common_build_job_template
+  <<: *common_job_config_template
+  spec:
+    tolerations:
+      - <<: *job_tolerations_template
+    containers:
+      - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/rafter"
+
+common_integration_test_job_template: &common_integration_test_job_template
+  <<: *common_job_config_template
+  spec:
+    tolerations:
+      - <<: *job_tolerations_template
+    containers:
+      - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+        command:
+          - make
+        args:
+          - integration-test
+
+common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
+  <<: *common_job_config_template
+  spec:
+    tolerations:
+      - <<: *job_tolerations_template
+    containers:
+      - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        command:
+          - make
+        args:
+          - minio-gateway-test
+
+common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
+  <<: *common_job_config_template
+  spec:
+    tolerations:
+      - <<: *job_tolerations_template
+    containers:
+      - <<: *common_container_template
+        image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        command:
+          - make
+        args:
+          - minio-gateway-migration-test
 
 presubmits: # runs on PRs
   kyma-project/rafter:
+    ## BUILDS
     - name: pre-rafter
-      <<: *job_build_template
+      <<: *additional_presubmit_job_config_template
+      <<: *common_build_job_template
       labels:
-        <<: *job_labels_template
+        <<: *common_job_labels_template
+        <<: *common_job_labels_push_template
         preset-build-pr: "true"
+
+    ## INTEGRATION TEST
     - name: pre-rafter-integration-test
-      <<: *job_template
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
-            securityContext:
-              privileged: true
-            command:
-              - make
-            args:
-              - integration-test
-            env:
-              - name: GO111MODULE
-                value: "on"  
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+      <<: *additional_presubmit_job_config_template
+      <<: *common_integration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+
+    ## MINIO GATEWAY TEST
+    - name: pre-rafter-minio-gcs-gateway
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_gcs_gateway_template
+
+    - name: pre-rafter-minio-az-gateway
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_az_gateway_template
+        preset-build-pr: "true"
+
+    ## MINIO GATEWAY MIGRATION TEST
+    - name: pre-rafter-minio-gcs-gateway-migration
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_migration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_gcs_gateway_template
+
+    - name: pre-rafter-minio-az-gateway-migration
+      <<: *additional_presubmit_job_config_template
+      <<: *common_minio_gateway_migration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_az_gateway_template
+        preset-build-pr: "true"
 
 postsubmits:
   kyma-project/rafter:
+    ## BUILDS
     - name: post-rafter
       branches:
         - ^master$
-      <<: *job_build_template
+      <<: *common_build_job_template
       labels:
-        <<: *job_labels_template
-        preset-build-rafter-master: "true"
-        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
-    - name: post-rafter-integration-test
-      <<: *job_template
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
-            securityContext:
-              privileged: true
-            command:
-              - make
-            args:
-              - integration-test
-            env:
-              - name: GO111MODULE
-                value: "on"  
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8  
+        <<: *common_job_labels_template
+        <<: *common_job_labels_push_template
+        preset-rafter-build-master: "true"
+
     - name: release-rafter
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
+      <<: *common_build_job_template
       labels:
-        <<: *job_labels_template
+        <<: *common_job_labels_template
+        <<: *common_job_labels_push_template
         preset-build-release: "true"
-        prow.kyma-project.io/slack.skipReport: "true"
-      <<: *common_config
-      extra_refs:
-      - <<: *test_infra_ref
-      spec:
-        containers:
-          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
-            env:
-            - name: GO111MODULE
-              value: "on"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/rafter"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+
+    ## INTEGRATION TEST
+    - name: post-rafter-integration-test
+      branches:
+        - ^master$
+      <<: *common_integration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+
+    - name: release-rafter-integration-test
+      branches:
+        - 'v\d+\.\d+\.\d+(?:-.*)?$'
+      <<: *common_integration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+
+    ## MINIO GATEWAY TEST
+    - name: post-rafter-minio-gcs-gateway
+      branches:
+        - ^master$
+      <<: *common_minio_gateway_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_gcs_gateway_template
+
+    - name: release-rafter-minio-gcs-gateway
+      branches:
+        - 'v\d+\.\d+\.\d+(?:-.*)?$'
+      <<: *common_minio_gateway_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_gcs_gateway_template
+
+    - name: post-rafter-minio-az-gateway
+      branches:
+        - ^master$
+      <<: *common_minio_gateway_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_az_gateway_template
+        preset-rafter-build-master: "true"
+
+    - name: release-rafter-minio-az-gateway
+      branches:
+        - 'v\d+\.\d+\.\d+(?:-.*)?$'
+      <<: *common_minio_gateway_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_az_gateway_template
+        preset-build-release: "true"
+
+    ## MINIO GATEWAY MIGRATION TEST
+    - name: post-rafter-minio-gcs-gateway-migration
+      branches:
+        - ^master$
+      <<: *common_minio_gateway_migration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_gcs_gateway_template
+
+    - name: release-rafter-minio-gcs-gateway-migration
+      branches:
+        - 'v\d+\.\d+\.\d+(?:-.*)?$'
+      <<: *common_minio_gateway_migration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_gcs_gateway_template
+
+    - name: post-rafter-minio-az-gateway-migration
+      branches:
+        - ^master$
+      <<: *common_minio_gateway_migration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_az_gateway_template
+        preset-rafter-build-master: "true"
+
+    - name: release-rafter-minio-az-gateway-migration
+      branches:
+        - 'v\d+\.\d+\.\d+(?:-.*)?$'
+      <<: *common_minio_gateway_migration_test_job_template
+      labels:
+        <<: *common_job_labels_template
+        <<: *common_job_labels_minio_az_gateway_template
+        preset-build-release: "true"

@@ -65,6 +65,17 @@ var components = []struct {
 		},
 	},
 	{
+		name: "kyma-environment-broker",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release19),
+			jobsuite.Optional(),
+		},
+	},
+	{
 		name: "schema-migrator",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
