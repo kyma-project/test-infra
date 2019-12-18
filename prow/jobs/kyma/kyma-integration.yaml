@@ -853,7 +853,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly -strategy=time"
+            - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
           resources:
             requests:
               memory: 1Gi
