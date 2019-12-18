@@ -419,6 +419,12 @@ templates:
           <<: *kyma_generic_component
           path: tests/knative-serving
           since: "1.9"
+      - to: ../prow/jobs/kyma/tests/end-to-end/backup-restore-test/backup-restore-test-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/end-to-end/backup-restore-test
+          optional: "true"
+          since: "1.9"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml

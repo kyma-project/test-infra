@@ -171,6 +171,13 @@ var tests = []struct {
 			jobsuite.Since(releases.Release19),
 		},
 	},
+	{path: "end-to-end/backup-restore-test", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Until(releases.Release18),
