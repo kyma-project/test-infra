@@ -25,3 +25,9 @@ You can define two kinds of Secrets:
 The `secretspopulator` function looks for the `{prefix}.encrypted` object in the bucket and creates a Kubernetes Secret with a `{prefix}`.
 For service accounts, the Secret key is `service-account.json`. For generic Secrets, you must provide a key.
 For details on the file syntax, see the `RequiredSecretsData` type in [`secretspopulator`](../../development/tools/cmd/secretspopulator/main.go).
+
+## Configuring your cluster to use Google Groups
+
+Creating a cluster with `--security-group="gke-security-groups@sap.com` parameter allows you to apply set of custom privileges to the specific group of people.
+You can ask Neighbors team to create custom Google Group containing certain members, additionally, the group itself has to be a member of the already created Google Group gke-security-groups@sap.com.
+When it is done you can create Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings that reference your G Suite Google Groups.
