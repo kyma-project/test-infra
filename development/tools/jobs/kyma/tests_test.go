@@ -70,7 +70,10 @@ var tests = []struct {
 			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
-	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11},
+	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11,
+		additionalOptions: []jobsuite.Option{
+				jobsuite.Until(releases.Release18),
+		}},
 	{path: "end-to-end/external-solution-integration", image: tester.ImageGolangBuildpack1_11},
 	{path: "end-to-end/upgrade", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
 		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
@@ -175,7 +178,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release19),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11,
