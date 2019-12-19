@@ -423,7 +423,6 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/backup-restore-test
-          optional: "true"
           since: "1.9"
   - from: templates/kyma-integration.yaml
     render:
@@ -746,6 +745,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/backup-restore-test
+          until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests.yaml
         values:
           <<: *go_kyma_component_1_12
