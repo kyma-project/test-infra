@@ -1,6 +1,7 @@
 # Prow Cluster Monitoring Setup
 
-This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. This document also describes how to create and manage Grafana dashboards.
+This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
+This document also describes how to create and manage Grafana dashboards.
 
 ## Prerequisites
 
@@ -90,3 +91,54 @@ Follow these steps to save the dashboard:
    ```bash
    kubctl replace -f prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml
    ```
+## Stackdriver Monitoring
+
+Stackdriver Monitoring service provides additional metrics and data related to Prow and workload clusters.
+
+### `sap-kyma-prow-workload` workspace
+
+The [`sap-kyma-prow-workload`](https://app.google.stackdriver.com/?project=sap-kyma-prow-workloads) workspace is used for two purposes:
+ - Short-living GKE clusters, which are used to test jobs
+ - Long-running GKE clusters (`weekly` and `nightly` clusters)
+
+#### Dashboards
+Stackdriver Monitoring dashboards provide visibility into the performance, uptime, and overall health of long-running Kyma test clusters. Here are the available dashboards:
+ - For the [nightly cluster](https://app.google.stackdriver.com/dashboards/2395169590273002360?project=sap-kyma-prow-workloads)
+ - For the [weekly cluster](https://app.google.stackdriver.com/dashboards/7169385145780812191?project=sap-kyma-prow-workloads)
+
+Stackdriver Monitoring also provides information about overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads) 
+of long-running clusters and test-infra infrastructure:
+ 
+![uptime checks](./assets/uptime-checks.png)
+
+
+Kyma developers have the necessary permissions to create custom dashboards in the `sap-kyma-prow-workload` workspace, however, it is required to follow the `dev - {team_name}` convention to name a dashboard. See the example:
+
+![dashboards](./assets/dashboards.png)
+
+#### Metrics explorer
+
+[Metrics explorer](https://cloud.google.com/monitoring/charts/metrics-explorer) allows you to build ad-hoc charts for any metric collected by the project.
+Stackdriver provides a set of built-in metric types. [Here](https://cloud.google.com/monitoring/api/metrics) you can see the list of available metrics.
+
+#### Log-based metrics
+
+You can create log-based metrics on any outcome that was printed to logs from any GKE cluster.
+This means that you can grab any logs from our long and short-living clusters and create a metric. 
+It can count occurrences of a particular error or aggregate numbers extracted from the message.
+
+Creating new log-based metrics is possible and requires creating a new [issue](https://github.com/kyma-project/test-infra/issues/new/choose) to the **Neighbors** team.
+
+#### Prometheus collector
+Gathering additional metrics requires [Stackdriver Prometheus collector](https://cloud.google.com/monitoring/kubernetes-engine/prometheus). 
+Adding the `--enable-stackdriver-kubernetes` flag is required for enabling the Stackdriver Kubernetes Engine Monitoring support on a Kubernetes cluster. 
+
+Collecting all the data is not possible due to high costs, therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to the Stackdriver.
+
+### `sap-kyma-prow` workspace
+
+Data collected in the `sap-kyma-prow` workspace are mainly Prow performance metrics and metrics that are based on the content of log entries. They help to track the ongoing and most common issues.
+
+Although the workspace is not available for Kyma developers, they can see the following dashboards: 
+ - [Prow cluster performance](https://storage.cloud.google.com/kyma-prow-logs/stats/index.html?authuser=1&orgonly=true) 
+ - [Prow infrastructure log-based checks](https://storage.cloud.google.com/kyma-prow-logs/stats/checks.html?authuser=1&orgonly=true)

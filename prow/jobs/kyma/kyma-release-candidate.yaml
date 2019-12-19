@@ -19,8 +19,6 @@ job_template: &job_template
             memory: 200Mi
             cpu: 80m
         env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /etc/credentials/sa-kyma-release-candidate/service-account.json
           - name: CLOUDSDK_DNS_ZONE_NAME
             value: "kymapro-zone"
           - name: KYMA_PROJECT_DIR
@@ -29,12 +27,6 @@ job_template: &job_template
             value: "europe-west4-a"
           - name: CLOUDSDK_COMPUTE_REGION
             value: "europe-west4"
-          - name: CLOUDSDK_CORE_PROJECT
-            value: "sap-hybris-sf-playground"
-        volumeMounts:
-          - name: sa-kyma-release-candidate
-            mountPath: /etc/credentials/sa-kyma-release-candidate
-            readOnly: true
     volumes:
       - name: sa-kyma-release-candidate
         secret:
@@ -43,7 +35,9 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
-
+  preset-sa-vm-kyma-integration: "true"
+  preset-gc-project-env: "true"
+  preset-gke-kyma-developers-group: "true"
 
 postsubmits:
   kyma-project/kyma:
