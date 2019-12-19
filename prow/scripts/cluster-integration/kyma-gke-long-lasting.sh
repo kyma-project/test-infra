@@ -228,6 +228,8 @@ EOF
 }
 
 function installStackdriverPrometheusCollector(){
+  echo "Create additional scrape config secret."
+  kubectl -n kyma-system apply -f "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/stackdriver-collector-scrape-config-secret.yaml
 	echo "Replace tags with current values in patch yaml file."
 	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
 		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/g' \
