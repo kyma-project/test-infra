@@ -176,6 +176,12 @@ var components = []struct {
 			jobsuite.Since(releases.Release19),
 		},
 	},
+	{path: "uaa-activator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {
