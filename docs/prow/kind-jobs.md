@@ -1,6 +1,6 @@
 # kind Jobs
 
-This document describes how to execute kind jobs locally without Prow cluster.
+This document describes how to run kind jobs locally without a Prow cluster.
 
 ## Prerequisites
 
@@ -12,39 +12,39 @@ This document describes how to execute kind jobs locally without Prow cluster.
 
 ### Clone repositories
 
-1. Create directory for repositories:
+1. Create a directory for the repositories you are about to clone:
    
    ```bash
    mkdir -p "$HOME/repositories"
    ```
 
-2. Clone `kyma` repository:
+2. Clone the `kyma` repository:
 
    ```bash
    git clone https://github.com/kyma-project/kyma.git "$HOME/repositories/kyma"
    ```
 
-3. Clone `test-infra` repository:
+3. Clone the `test-infra` repository:
 
    ```bash
    git clone https://github.com/kyma-project/test-infra.git "$HOME/repositories/test-infra"
    ```
 
-### Start job
+### Run a kind job
 
-1. Create `artifacts` directory:
+1. Create the `artifacts` directory:
 
    ```bash
    mkdir -p "$HOME/artifacts"
    ```
 
-2. Create `docker-graph` directory:
+2. Create the `docker-graph` directory:
 
    ```bash
    mkdir -p "$HOME/docker-graph"
    ```
 
-3. Run Docker container with configuration based on ProwJob definition, for example configuration for `pre-master-kyma-kind-upgrade`:
+3. Run a Docker container with configuration based on a ProwJob definition. For example, use the configuration for `pre-master-kyma-kind-upgrade`:
 
 ```bash
 docker run \
