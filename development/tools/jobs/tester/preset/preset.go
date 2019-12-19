@@ -43,7 +43,7 @@ const (
 	// ProwKymaProjectIoSlackSkipReport means the skip report on slack
 	ProwKymaProjectIoSlackSkipReport Preset = "prow.kyma-project.io/slack.skipReport"
 	// GardenerIntegration contains all necessary configuration to deploy on gardener from prow
-	GardenerIntegration Preset = "preset-gardener-kyma-integration"
+	GardenerAzureIntegration Preset = "preset-gardener-azure-kyma-integration"
 	// KymaCLIStable contains all the configuraion to be able to download the stable master kyma CLI binary
 	KymaCLIStable Preset = "preset-kyma-cli-stable"
 	// KymaSlackChannel contains the configuration for slack
