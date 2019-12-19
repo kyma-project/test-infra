@@ -62,6 +62,12 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
+	{path: "backup-plugins", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release17),
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),

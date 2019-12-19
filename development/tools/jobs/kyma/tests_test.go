@@ -44,6 +44,12 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release17),
+		},
+	},
 	{path: "connection-token-handler-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
