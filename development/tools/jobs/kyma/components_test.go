@@ -62,17 +62,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "asset-metadata-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "asset-store-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest},
-	{path: "asset-upload-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest},
-	{path: "backup-plugins", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release17),
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
-	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
