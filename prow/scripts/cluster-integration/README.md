@@ -68,3 +68,11 @@ This service account must have GCP permissions equivalent to the following GCP r
 - DNS Administrator (`roles/dns.admin`)
 - Service Account User (`roles/iam.serviceAccountUser`)
 - Storage Admin (`roles/storage.admin`)
+
+### Stackdriver monitoring
+
+Long running clusters on GKE are using Stackdriver monitoring to expose some performance metrics scraped by Kyma Prometheus instance.
+To send metrics to Stackdriver,collector sidecar container is injected in to Prometheus pod.
+Add container enviroment variable to instruct script to provision cluster with Stackdriver collector.
+    - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
+      value: "0.6.4"
