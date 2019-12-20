@@ -265,35 +265,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.6
-
-    - name: pre-master-kyma-gke-minio-gcs-gateway
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: pre-master-kyma-gke-minio-az-gateway
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
     - name: pre-rel18-kyma-gke-minio-gcs-gateway
       branches:
         - release-1.8
@@ -456,35 +427,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.6
-
-    - name: pre-master-kyma-gke-minio-gcs-gateway-migration
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: pre-master-kyma-gke-minio-az-gateway-migration
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
 
     - name: pre-master-kyma-gke-integration
       branches:

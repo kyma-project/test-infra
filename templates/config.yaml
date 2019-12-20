@@ -424,6 +424,11 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/backup-restore-test
           since: "1.9"
+      - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/rafter       
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -512,38 +517,6 @@ templates:
           <<: *go_kyma_component_v20181119
           path: components/application-registry
           until: "1.6"
-      - to: ../prow/jobs/kyma/components/asset-metadata-service/asset-metadata-service.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: components/asset-metadata-service
-      - to: ../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager.yaml
-        values:
-          <<: *kubebuilder2_kyma_component
-          path: components/cms-controller-manager
-          since: "1.5"
-      - to: ../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml
-        values:
-          <<: *kubebuilder2_kyma_component
-          path: components/asset-store-controller-manager
-          since: "1.5"
-      - to: ../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager-kubebuilder.yaml
-        values:
-          <<: *kubebuilder_kyma_component
-          path: components/asset-store-controller-manager
-          until: "1.4"
-      - to: ../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: components/asset-upload-service
-      - to: ../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager-kubebuilder.yaml
-        values:
-          <<: *kubebuilder_kyma_component
-          path: components/cms-controller-manager
-          until: "1.4"
-      - to: ../prow/jobs/kyma/components/cms-services/cms-services.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: components/cms-services
       - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-deprecated.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -663,15 +636,6 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tests/application-registry-tests
           until: "1.6"
-      - to: ../prow/jobs/kyma/tests/asset-store/asset-store.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/asset-store
-      - to: ../prow/jobs/kyma/tests/rafter/rafter-test.yaml
-        values:
-          <<: *go_kyma_component_1_13
-          path: tests/rafter
-          optional: true
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests.yaml
         values:
           <<: *go_kyma_component_1_11

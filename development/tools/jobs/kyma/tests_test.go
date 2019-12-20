@@ -44,7 +44,6 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
-	{path: "asset-store", image: tester.ImageGolangBuildpack1_11},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -72,7 +71,7 @@ var tests = []struct {
 	},
 	{path: "end-to-end/backup-restore-test", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions: []jobsuite.Option{
-				jobsuite.Until(releases.Release18),
+			jobsuite.Until(releases.Release18),
 		}},
 	{path: "end-to-end/external-solution-integration", image: tester.ImageGolangBuildpack1_11},
 	{path: "end-to-end/upgrade", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
