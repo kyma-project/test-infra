@@ -72,3 +72,5 @@ docker run \
     --kyma-installation-timeout \
     30m
 ```
+
+All logs and artifacts generated during job run are stored in `artifacts` directory created in step 1.
