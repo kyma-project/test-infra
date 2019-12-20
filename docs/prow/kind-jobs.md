@@ -73,4 +73,5 @@ docker run \
     30m
 ```
 
-All logs and artifacts generated during a job run are stored in the `artifacts` directory created in step 1 of the [**Run a kind job**](#Run a kind job) section.
+All logs and artifacts generated during a job run are stored in the `artifacts` directory created in step 1 of the [**Run a kind job**](#Run-a 
+-kind-job) section.
