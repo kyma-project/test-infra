@@ -2,6 +2,13 @@
 
 presets:
   - labels:
+      preset-gke-kyma-developers-group: "true"
+    env:
+      - name: GCLOUD_SECURITY_GROUP
+        value: "kyma_developers"
+      - name: GCLOUD_SECURITY_GROUP_DOMAIN
+        value: "sap.com"
+  - labels:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_REGION
@@ -84,13 +91,13 @@ presets:
     - name: knative-sa
       mountPath: /etc/credentials/knative-sa
   - labels:
-      preset-gardener-kyma-integration: "true"
+      preset-gardener-azure-kyma-integration: "true"
     env:
     - name: GARDENER_KYMA_PROW_KUBECONFIG
       value: /etc/credentials/gardener-kyma-prow/kubeconfig
     - name: GARDENER_KYMA_PROW_PROJECT_NAME
       value: "kyma-prow"
-    - name: GARDENER_KYMA_PROW_AZURE_SECRET_NAME
+    - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
       value: "kyma-azure"
     volumes:
     - name: gardener-kyma-prow-kubeconfig
@@ -442,6 +449,20 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.9:
+              required_status_checks:
+                contexts:
+                  - pre-rel19-kyma-integration
+                  - pre-rel19-kyma-gke-integration
+                  - pre-rel19-kyma-gke-upgrade
+                  - pre-rel19-kyma-gke-backup
+                  - pre-rel19-kyma-gke-central-connector
+                  - pre-rel19-kyma-artifacts
+                  - pre-rel19-kyma-installer
+                  - pre-rel19-kyma-gke-minio-gcs-gateway
+                  - pre-rel19-kyma-gke-minio-az-gateway
+                  - pre-rel19-kyma-gke-minio-gcs-gateway-migration
+                  - pre-rel19-kyma-gke-minio-az-gateway-migration
             release-1.8:
               required_status_checks:
                 contexts:
@@ -470,20 +491,6 @@ branch-protection:
                   - pre-rel17-kyma-gke-minio-az-gateway
                   - pre-rel17-kyma-gke-minio-gcs-gateway-migration
                   - pre-rel17-kyma-gke-minio-az-gateway-migration
-            release-1.6:
-              required_status_checks:
-                contexts:
-                  - pre-rel16-kyma-integration
-                  - pre-rel16-kyma-gke-integration
-                  - pre-rel16-kyma-gke-upgrade
-                  - pre-rel16-kyma-gke-backup
-                  - pre-rel16-kyma-gke-central-connector
-                  - pre-rel16-kyma-artifacts
-                  - pre-rel16-kyma-installer
-                  - pre-rel16-kyma-gke-minio-gcs-gateway
-                  - pre-rel16-kyma-gke-minio-az-gateway
-                  - pre-rel16-kyma-gke-minio-gcs-gateway-migration
-                  - pre-rel16-kyma-gke-minio-az-gateway-migration
         website:
           required_status_checks:
             contexts:
@@ -530,7 +537,7 @@ branch-protection:
           protect: true
         documentation-component:
           protect: true
-        hack-showcase:
+        github-slack-connectors:
           branches:
             master:
               protect: true

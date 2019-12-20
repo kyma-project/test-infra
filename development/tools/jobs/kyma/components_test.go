@@ -62,17 +62,12 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "asset-metadata-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "asset-store-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest},
-	{path: "asset-upload-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest},
 	{path: "backup-plugins", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
@@ -100,7 +95,7 @@ var components = []struct {
 	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release16),
+			jobsuite.AllReleases(),
 			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
@@ -171,6 +166,12 @@ var components = []struct {
 		},
 	},
 	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "uaa-activator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release19),

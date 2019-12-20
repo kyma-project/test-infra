@@ -235,6 +235,16 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-integration
+      branches:
+        - release-1.9
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-integration
       branches:
         - release-1.8
@@ -255,45 +265,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-integration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *vm_job_template
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-
-    - name: pre-master-kyma-gke-minio-gcs-gateway
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: pre-master-kyma-gke-minio-az-gateway
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
     - name: pre-rel18-kyma-gke-minio-gcs-gateway
       branches:
         - release-1.8
@@ -402,89 +373,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-minio-gcs-gateway
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-    - name: pre-rel16-kyma-gke-minio-az-gateway
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-    - name: pre-rel16-kyma-gke-minio-gcs-gateway-migration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_migration_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-    - name: pre-rel16-kyma-gke-minio-az-gateway-migration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_migration_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-
-    - name: pre-master-kyma-gke-minio-gcs-gateway-migration
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: pre-master-kyma-gke-minio-az-gateway-migration
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
 
     - name: pre-master-kyma-gke-integration
       branches:
@@ -498,6 +386,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-integration
+      branches:
+        - release-1.9
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-integration
       branches:
         - release-1.8
@@ -524,19 +425,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-integration
-      branches:
-        - release-1.6
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.6
 
     - name: pre-master-kyma-gke-upgrade
       branches:
@@ -550,6 +438,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-upgrade
+      branches:
+        - release-1.9
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-upgrade
       branches:
         - release-1.8
@@ -572,17 +471,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-upgrade
-      branches:
-        - release-1.6
-      <<: *gke_upgrade_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
 
     - name: pre-master-kyma-gke-central-connector
       branches:
@@ -596,6 +484,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-central-connector
+      branches:
+        - release-1.9
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-central-connector
       branches:
         - release-1.8
@@ -618,17 +517,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-central-connector
-      branches:
-        - release-1.6
-      <<: *gke_central_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
 
     - name: pre-master-kyma-gke-backup
       optional: false
@@ -643,6 +531,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-backup
+      optional: false
+      branches:
+        - release-1.9
+      <<: *gke_backup_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_backup_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-backup
       optional: false
       branches:
@@ -667,18 +567,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-backup
-      optional: false
-      branches:
-        - release-1.6
-      <<: *gke_backup_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
 
 postsubmits:
   kyma-project/kyma:
@@ -828,7 +716,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore'"
+            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release'"
           resources:
             requests:
               memory: 1Gi
@@ -1030,7 +918,7 @@ periodics:
             - name: NODES_PER_ZONE
               value: "1"
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
-              value: "0.6.3"
+              value: "0.6.4"
             - name: INPUT_CLUSTER_NAME
               value: "nightly"
             - name: TEST_RESULT_WINDOW_TIME
@@ -1099,7 +987,7 @@ periodics:
             - name: NODES_PER_ZONE
               value: "1"
             - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
-              value: "0.6.3"
+              value: "0.6.4"
             - name: INPUT_CLUSTER_NAME
               value: "weekly"
             - name: TEST_RESULT_WINDOW_TIME

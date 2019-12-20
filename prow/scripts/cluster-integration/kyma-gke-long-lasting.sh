@@ -228,11 +228,13 @@ EOF
 }
 
 function installStackdriverPrometheusCollector(){
+  echo "Create additional scrape config secret."
+  kubectl -n kyma-system apply -f "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/stackdriver-collector-scrape-config-secret.yaml
 	echo "Replace tags with current values in patch yaml file."
-	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/' \
-		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/' \
+	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
+		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/g' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/g' \
-		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }

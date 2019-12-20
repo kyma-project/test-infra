@@ -41,8 +41,5 @@
 
 /templates/templates @kyma-project/prow @sjanota
 
-# The `kind` environment
-/kind @michal-hudy @aerfio @magicmatatjahu @m00g3n
-
 # All .md files
 *.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc @mmitoraj @majakurcius @alexandra-simeonova
