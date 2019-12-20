@@ -64,10 +64,10 @@ func TestBranchProtection(t *testing.T) {
 func TestBranchProtectionRelease(t *testing.T) {
 	actual := readConfig(t)
 
-	currentRelease := releases.Release16
+	currentRelease := releases.Release17
 	relBranch := currentRelease.Branch()
 
-	for _, currentRelease := range releases.GetKymaReleasesSince(releases.Release16) {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		relBranch = currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
 			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)

@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-application-connectivity-validator$
+    - ^release-(1\.9|1\.8|1\.7)-application-connectivity-validator$
   run_if_changed: "^components/application-connectivity-validator/|^common/makefiles/"
   spec:
     containers:
