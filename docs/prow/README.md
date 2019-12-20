@@ -14,6 +14,7 @@ Read the documents to learn how to:
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
 - [Create, modify, and remove component jobs using templates](./manage-component-jobs-with-templates.md) for the Prow pipeline.
 - [Update](./prow-cluster-update.md) a Prow cluster.
+- [Run kind jobs manually](./kind-jobs.md) in a local environment.
 
 Find out more about:
 
