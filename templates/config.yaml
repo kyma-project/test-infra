@@ -428,7 +428,6 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/rafter       
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
