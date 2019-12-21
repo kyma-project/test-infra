@@ -459,10 +459,6 @@ branch-protection:
                   - pre-rel19-kyma-gke-central-connector
                   - pre-rel19-kyma-artifacts
                   - pre-rel19-kyma-installer
-                  - pre-rel19-kyma-gke-minio-gcs-gateway
-                  - pre-rel19-kyma-gke-minio-az-gateway
-                  - pre-rel19-kyma-gke-minio-gcs-gateway-migration
-                  - pre-rel19-kyma-gke-minio-az-gateway-migration
             release-1.8:
               required_status_checks:
                 contexts:
