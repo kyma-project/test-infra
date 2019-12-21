@@ -83,10 +83,12 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway-migration", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway-migration", relBranch))
+			if releases.Release18.IsNotYoungerThen(currentRelease) {
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway", relBranch))
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway-migration", relBranch))
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway", relBranch))
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway-migration", relBranch))
+			}
 		})
 	}
 
