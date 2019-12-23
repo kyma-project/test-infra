@@ -464,17 +464,16 @@ templates:
             - name: kyma-installer
             - name: kyma-gke-minio-gcs-gateway
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-az-gateway
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-gcs-gateway-migration
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-az-gateway-migration
               since: "1.6"
-            - name: kyma-gke-minio-gateway
-              until: "1.5"
-            - name: kyma-gke-minio-gateway-migration
-              since: "1.3"
-              until: "1.5"
+              until: "1.8"
   - from: templates/component.yaml
     render:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
