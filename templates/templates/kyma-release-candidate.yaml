@@ -4,7 +4,7 @@ job_template: &job_template
   max_concurrency: 1
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8
         securityContext:
           privileged: true
         command:
