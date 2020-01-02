@@ -6,7 +6,7 @@ job_template: &job_template
   max_concurrency: 1
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8
         securityContext:
           privileged: true
         command:
@@ -47,6 +47,21 @@ job_labels_template: &job_labels_template
 
 postsubmits:
   kyma-project/kyma:
+    - name: post-rel19-kyma-release-candidate
+      annotations:
+        testgrid-dashboards: kyma-release
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - release-1.9
+      <<: *job_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.9
+      labels:
+        <<: *job_labels_template
     - name: post-rel18-kyma-release-candidate
       annotations:
         testgrid-dashboards: kyma-release
@@ -75,20 +90,5 @@ postsubmits:
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.7
-      labels:
-        <<: *job_labels_template
-    - name: post-rel16-kyma-release-candidate
-      annotations:
-        testgrid-dashboards: kyma-release
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
-      branches:
-        - release-1.6
-      <<: *job_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.6
       labels:
         <<: *job_labels_template

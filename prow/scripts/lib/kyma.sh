@@ -15,7 +15,16 @@ function kyma::install {
         | sed -e "s/__.*__//g" \
         | kubectl apply -f-
     
-    "${1}/installation/scripts/is-installed.sh" --timeout "${5}"
+    kyma::is_installed "${1}" "${5}"
+}
+
+# kyma::is_installed waits for Kyma installation finish
+#
+# Arguments:
+#   $1 - Path to the Kyma sources
+#   $2 - Installation timeout
+function kyma::is_installed {
+    "${1}/installation/scripts/is-installed.sh" --timeout "${2}"
 }
 
 # kyma::load_config loads Kyma overrides to the cluster. Also sets domain and cluster IP
@@ -25,7 +34,7 @@ function kyma::install {
 #   $2 - Domain name
 #   $3 - Path to the overrides file
 function kyma::load_config {
-    kubectl create namespace "kyma-installer"
+    kubectl create namespace "kyma-installer" || echo "Ignore namespace creation"
 
     < "${3}" sed 's/\.minikubeIP: .*/\.minikubeIP: '"${1}"'/g' \
         | sed 's/\.domainName: .*/\.domainName: '"${2}"'/g' \
@@ -66,10 +75,12 @@ function kyma::install_tiller {
 
 # kyma::get_last_release_version returns latest Kyma release version
 #
+# Arguments:
+#   $1 - GitHub token
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
-    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" \
+    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${1}" \
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
 
     echo "${version}"

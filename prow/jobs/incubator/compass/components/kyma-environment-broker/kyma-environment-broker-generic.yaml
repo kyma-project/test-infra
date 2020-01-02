@@ -20,6 +20,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.9)-kyma-environment-broker$
   run_if_changed: "^components/kyma-environment-broker/|^scripts/"
   spec:
     containers:

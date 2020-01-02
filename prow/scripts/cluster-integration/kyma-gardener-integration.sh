@@ -9,7 +9,7 @@
 # - GARDENER_REGION - Gardener compute region
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
-# - GARDENER_KYMA_PROW_AZURE_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
+# - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
 # - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
 #
@@ -19,7 +19,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_AZURE_SECRET_NAME; do
+for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -111,11 +111,14 @@ if [ -z "$MACHINE_TYPE" ]; then
 fi
 
 CLEANUP_CLUSTER="true"
+(
+set -x
 kyma provision gardener \
-        --target-provider azure --secret "${GARDENER_KYMA_PROW_AZURE_SECRET_NAME}" \
+        --target-provider azure --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19" \
         --nodes 4
+)
 
 # shout "Generate self-signed certificate"
 # date
@@ -127,7 +130,11 @@ kyma provision gardener \
 
 shout "Installing Kyma"
 date
-yes | kyma install --non-interactive --source latest --timeout=45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+
+(
+set -x
+yes | kyma install --non-interactive --source latest --timeout 45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+)
 
 shout "Checking the versions"
 date
@@ -161,14 +168,16 @@ fi
 
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
+(
+set -x
 kyma test run \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
-                --timeout "1h" \
+                --timeout 90m \
                 --watch \
                 --non-interactive
-
+)
 
 echo "Test Summary"
 kyma test status "${SUITE_NAME}" -owide
