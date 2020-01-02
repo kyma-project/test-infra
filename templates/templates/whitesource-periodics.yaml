@@ -1,0 +1,44 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+  base_ref: master
+
+periodics:
+{{ range .Global.whitesource }}
+  - name: {{ .name }}-whitesource-scan
+    decorate: true
+    cron: "0 4 * * *" # At 04:00 am every day
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-{{ .project }}-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: {{ .project }}
+          repo: {{ .name }}
+          path_alias: github.com/{{ .project }}/{{ .name }}
+          base_ref: master
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: {{ .name }}
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: {{ .language }}
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+{{ end }}
