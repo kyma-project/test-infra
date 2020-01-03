@@ -259,7 +259,7 @@ fi
 shout "Collect container labels"
 date
 if [ -z "$ARTIFACTS" ] ; then
-        ARTIFACTS:=/tmp/artifacts
+    ARTIFACTS:=/tmp/artifacts
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o jsonpath="{..image}" | tr -s '[:space:]' '\n' | sort | uniq)
