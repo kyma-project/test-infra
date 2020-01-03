@@ -29,7 +29,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: {{ .name }}
