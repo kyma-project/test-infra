@@ -10,7 +10,6 @@
 #Permissions: In order to run this script you need to use a service account with "Compute Network Admin" role
 
 set -o errexit
-set -x
 
 discoverUnsetVar=false
 
