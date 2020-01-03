@@ -15,7 +15,7 @@ var tests = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{
-		name: "connector-tests",
+		name:  "connector-tests",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
@@ -25,17 +25,29 @@ var tests = []struct {
 		},
 	},
 	{
-		name: "end-to-end",
+		name:  "end-to-end",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release17),
+			jobsuite.Optional(),
 		},
 	},
 	{
-		name: "provisioner-tests",
+		name:  "director-tests",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
+	{
+		name:  "provisioner-tests",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
