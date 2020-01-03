@@ -258,7 +258,7 @@ fi
 
 shout "Collect container labels"
 date
-ifndef ARTIFACTS
+ifdef ARTIFACTS
 ARTIFACTS:=/tmp/artifacts
 endif
 
