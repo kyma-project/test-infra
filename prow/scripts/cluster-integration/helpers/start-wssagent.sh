@@ -84,7 +84,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
         echo "need language parameter for config"
         exit 1
     fi
-    SCANLANG=$3
 
     /bin/cp /wss/wss-unified-agent.config.backup /wss/wss-unified-agent.config
 
