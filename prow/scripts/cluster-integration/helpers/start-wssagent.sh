@@ -43,7 +43,7 @@ USERKEY=$(cat "whitesource-userkey")
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-apikey" "whitesource-apikey.encrypted"
 APIKEY=$(cat "whitesource-apikey")
 
-case "${SCANLANG}" in
+case "${SCAN_LANGUAGE}" in
     golang)
         sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
         ;;
@@ -84,7 +84,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
         echo "need language parameter for config"
         exit 1
     fi
-    SCANLANG=$3
 
     /bin/cp /wss/wss-unified-agent.config.backup /wss/wss-unified-agent.config
 
