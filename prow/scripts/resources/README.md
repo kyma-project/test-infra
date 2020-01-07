@@ -5,7 +5,7 @@ The folder Contains files which are directly used by prow pipeline scripts.
 ## Content
 
 ```
-├── kube-dns-stub-domains-patch.yaml                          # Enable stubdomain build.kyma-project.io and provide Google root DNS servers IPs.
+├── kube-dns-stub-domains-patch.yaml                          # Enables stubdomain build.kyma-project.io and provides Google root DNS servers IPs.
 ├── limitrange-patch.yaml                                     # Increase kyma-system namespace max memory request for containers.
 ├── prometheus-operator-stackdriver-patch.yaml                # Inject stackdriver collector sidecar, set metrics filters, enable scraping stackdriver target.
 └── prometheus-operator-additional-scrape-config.yaml         # Additionall scrape config for prometheus oeprator.
