@@ -140,7 +140,7 @@ Stackdriver Monitoring allows you to set up alerting policies that send notifica
 The time of sending a notification is determined by criteria that have to be met to trigger an alert. It is possible to define complex criteria by using multiple rules and logical operators.
 Triggering alerts can be based on different sources, such as regular monitoring metrics, log-based metrics, or uptime checks.
 
-To learn current active alerts you consult incidents [incidents](https://app.google.stackdriver.com/incidents?project=sap-kyma-prow-workloads) dashboard.
+To see the currently active alerts, go to the [incidents dashboard](https://app.google.stackdriver.com/incidents?project=sap-kyma-prow-workloads).
 
 ### `sap-kyma-prow` workspace
 
