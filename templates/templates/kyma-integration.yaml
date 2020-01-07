@@ -564,7 +564,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release'"
+            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore'"
           resources:
             requests:
               memory: 1Gi
@@ -957,39 +957,6 @@ periodics:
             requests:
               memory: 200Mi
               cpu: 80m
-
-  - name: kyma-whitesource-scan
-    decorate: true
-    cron: "0 4 * * *" # At 04:00 am every day
-    labels:
-      preset-kyma-wssagent-config: "true"
-      preset-kyma-keyring: "true"
-      preset-kyma-encryption-key: "true"
-      preset-kms-gc-project-env: "true"
-      preset-sa-gke-kyma-integration: "true"
-      preset-gc-project-env: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-          env:
-            - name : PROJECTNAME
-              value: "kyma"
-            - name: DRYRUN
-              value: "false"
-          resources:
-            requests:
-              memory: 1Gi
-              cpu: 400m
 
   - name: kyma-components-use-recent-versions
     decorate: true
