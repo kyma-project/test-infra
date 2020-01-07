@@ -136,11 +136,11 @@ Adding the `--enable-stackdriver-kubernetes` flag is required for enabling the S
 Collecting all the data is not possible due to high costs, therefore there is a metric [filter](https://github.com/kyma-project/test-infra/blob/97f2b403f3e2ae6a4309da7e2293430f555442e8/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml#L14) applied to limit the volume of data sent to the Stackdriver.
 
 #### Alerting policies
-Stackdriver monitoring allow setup alerting policies. Alerting policies are able to send notifications through multiple communication channels like email or slack channel.
-When to send a notification is determined by criteria which has to be meet to trigger alert. It's possible to defined complex criteria by using multiple rules and logical operators.
-Triggering alerts can be based by different sources like regular monitoring metrics, log based metrics or uptime checks.
+Stackdriver Monitoring allows you to set up alerting policies that send notifications through multiple communication channels, such as email or Slack.
+The time of sending a notification is determined by criteria that have to be met to trigger an alert. It is possible to define complex criteria by using multiple rules and logical operators.
+Triggering alerts can be based on different sources, such as regular monitoring metrics, log-based metrics, or uptime checks.
 
-To learn current active alerts you consult incidents [incidents](https://app.google.stackdriver.com/incidents?project=sap-kyma-prow-workloads) dashboard.
+To see the currently active alerts, go to the [incidents dashboard](https://app.google.stackdriver.com/incidents?project=sap-kyma-prow-workloads).
 
 ### `sap-kyma-prow` workspace
 

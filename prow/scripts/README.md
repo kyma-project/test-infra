@@ -14,7 +14,7 @@ The structure of the folder looks as follows:
   ├── cluster-integration                # Scripts for executing the multi-step integration job on a Google Kubernetes Engine (GKE) cluster. This job provisions a cluster, sets up a DNS record, an IP address, and a TLS certificate. It also installs Kyma on the cluster and performs tests on it.
   ├── kind                               # Resources and configuration for the kind cluster
   ├── lib                                # Helper bash scripts for creating pipelines
-  ├── resources                          # Files used directly by pipelines.
+  ├── resources                          # Files used directly by pipelines
   ├── build.sh                           # This script builds and tests a given Kyma component by running the respective "Makefile" target.
   ├── governance.sh                      # This script runs the "milv" bot for validating internal and external links in Markdown files. It checks all internal and external links in ".md" files changed in PRs. It also checks all links on the master branch once a day.
   ├── kind-install-kyma.sh               # This script installs and tests Kyma on kind
