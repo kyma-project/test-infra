@@ -15,6 +15,3 @@ files:
   - path: "./test-infra/docs/prow/prow-k8s-testgrid.md"
     config:
       white-list-external: ["https://github.com/kyma-project/test-infra/blob/60493dd61d77da363b8758b7e4c94f25d4b36501/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83"]
-  - path: "./test-infra/docs/prow/prow-monitoring.md"
-    config:
-      white-list-external: ["https://monitoring.build.kyma-project.io", "https://monitoring.build.kyma-project.io/loginhttps://monitoring.build.kyma-project.io/login"]
