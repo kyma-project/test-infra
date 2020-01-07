@@ -4,7 +4,7 @@ job_template: &job_template
   max_concurrency: 1
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8
+      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
         securityContext:
           privileged: true
         command:
@@ -17,23 +17,15 @@ job_template: &job_template
             memory: 200Mi
             cpu: 80m
         env:
-          - name: CLOUDSDK_DNS_ZONE_NAME
-            value: "kymapro-zone"
-          - name: KYMA_PROJECT_DIR
-            value: "/home/prow/go/src/github.com/kyma-project"
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
           - name: CLOUDSDK_COMPUTE_REGION
             value: "europe-west4"
-    volumes:
-      - name: sa-kyma-release-candidate
-        secret:
-          secretName: sa-kyma-release-candidate
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
-  preset-sa-vm-kyma-integration: "true"
+  preset-sa-gke-kyma-integration: "true"
   preset-gc-project-env: "true"
   preset-gke-kyma-developers-group: "true"
 
