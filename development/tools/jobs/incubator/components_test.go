@@ -72,7 +72,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release19),
-			jobsuite.Optional(),
 		},
 	},
 	{
