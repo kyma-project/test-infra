@@ -137,7 +137,7 @@ Collecting all the data is not possible due to high costs, therefore there is a 
 
 #### Alerting policies
 Stackdriver Monitoring allows you to set up alerting policies that send notifications through multiple communication channels, such as email or Slack.
-When to send a notification is determined by criteria which has to be meet to trigger alert. It's possible to defined complex criteria by using multiple rules and logical operators.
+The time of sending a notification is determined by criteria that have to be met to trigger an alert. It is possible to define complex criteria by using multiple rules and logical operators.
 Triggering alerts can be based by different sources like regular monitoring metrics, log based metrics or uptime checks.
 
 To learn current active alerts you consult incidents [incidents](https://app.google.stackdriver.com/incidents?project=sap-kyma-prow-workloads) dashboard.
