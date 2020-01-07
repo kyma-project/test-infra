@@ -2,6 +2,13 @@
 
 presets:
   - labels:
+      preset-gke-kyma-developers-group: "true"
+    env:
+      - name: GCLOUD_SECURITY_GROUP
+        value: "kyma_developers"
+      - name: GCLOUD_SECURITY_GROUP_DOMAIN
+        value: "sap.com"
+  - labels:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_REGION
