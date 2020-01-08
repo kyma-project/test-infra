@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.9)-kubeless$
   run_if_changed: "^tests/kubeless/|^common/makefiles/"
   spec:
     containers:

@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-schema-migrator$
+    - ^release-(1\.9|1\.8|1\.7)-schema-migrator$
   run_if_changed: "^components/schema-migrator/|^scripts/"
   spec:
     containers:

@@ -1,9 +1,28 @@
 global:
-  nextRelease: "1.9"
+  nextRelease: "1.10"
   releases:
+    - "1.9"
     - "1.8"
     - "1.7"
-    - "1.6"
+  whitesource:
+    - name: "kyma"
+      language: "golang"
+      project: "kyma-project"
+    - name: "console"
+      language: "javascript"
+      project: "kyma-project"
+    - name: "cli"
+      language: "golang"
+      project: "kyma-project"
+    - name: "helm-broker"
+      language: "golang"
+      project: "kyma-project"
+    - name: "rafter"
+      language: "golang"
+      project: "kyma-project"
+    - name: "compass"
+      language: "golang"
+      project: "kyma-incubator"
 
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
@@ -264,7 +283,6 @@ templates:
           <<: *compass_generic_component
           path: components/kyma-environment-broker
           since: "1.9"
-          optional: true
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           <<: *compass_generic_component
@@ -428,7 +446,6 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/rafter       
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -464,17 +481,16 @@ templates:
             - name: kyma-installer
             - name: kyma-gke-minio-gcs-gateway
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-az-gateway
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-gcs-gateway-migration
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-az-gateway-migration
               since: "1.6"
-            - name: kyma-gke-minio-gateway
-              until: "1.5"
-            - name: kyma-gke-minio-gateway-migration
-              since: "1.3"
-              until: "1.5"
+              until: "1.8"
   - from: templates/component.yaml
     render:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
@@ -904,4 +920,6 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: components/common
           optional: false
-
+  - from: templates/whitesource-periodics.yaml
+    render:
+      - to: ../prow/jobs/scans/whitesource-periodics.yaml

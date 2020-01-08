@@ -1,6 +1,10 @@
 ---
 name: Feature request
 about: Suggest an improvement to the project
+title: ''
+labels: area/ci, enhancement
+assignees: ''
+
 ---
 
 <!-- Thank you for your contribution. Before you submit the issue:

@@ -64,10 +64,10 @@ func TestBranchProtection(t *testing.T) {
 func TestBranchProtectionRelease(t *testing.T) {
 	actual := readConfig(t)
 
-	currentRelease := releases.Release16
+	currentRelease := releases.Release17
 	relBranch := currentRelease.Branch()
 
-	for _, currentRelease := range releases.GetKymaReleasesSince(releases.Release16) {
+	for _, currentRelease := range releases.GetAllKymaReleases() {
 		relBranch = currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
 			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)
@@ -83,10 +83,12 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway-migration", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway-migration", relBranch))
+			if releases.Release18.IsNotOlderThen(currentRelease) {
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway", relBranch))
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway-migration", relBranch))
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway", relBranch))
+				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway-migration", relBranch))
+			}
 		})
 	}
 
