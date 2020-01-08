@@ -28,13 +28,18 @@ For details on the file syntax, see the `RequiredSecretsData` type in [`secretsp
 
 ## Configuring cluster to use Google Groups
 
-[Google Groups](https://groups.google.com/a/sap.com/forum/#!overview) give you possibility to gather Kyma Developers accounts and manage GCP Project permissions (IAM) based on the group name. Additionally, it is possible to set Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings on your clusters and assign them to specific Google Group.
+[Google Groups](https://groups.google.com/a/sap.com/forum/#!overview) give you possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings to the specific Google Group on your cluster.
 
-Creating a cluster with `--security-group="gke-security-groups@sap.com` parameter allows you to apply set of custom privileges to the specific group of people. For example Kyma release cluster is build with [--security-group="gke-security-groups@sap.com](https://github.com/kyma-project/test-infra/blob/7b84900e56679fccfbc9e6839a85ade1dabe72bd/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh#L60) parameter.
+For example on Kyma release cluster `cluster-admin` ClusterRole is granted to all mambers of kyma_developers@sap.group group. 
 
-In a next step standard pivileges are extended and `cluster-admin` ClusterRole is granted to all mambers of kyma_developers@sap.group group that is itself a member of gke-security-groups@sap.com.
-```
-kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="kyma_developers@sap.com"
-```
+- First, there was kyma_developers@sap.group created and added as a member of gke-security-groups@sap.com.
 
-You can ask Neighbors team to create new G Suite Google Group in sap.com  domain, that represents group of users  who should have custom set of permissions on your clusters. In the next step it is necessary to add these groups to the membership of gke-security-groups@[yourdomain.com].
+- In the next step release cluster was build with [--security-group="gke-security-groups@sap.com](https://github.com/kyma-project/test-infra/blob/7b84900e56679fccfbc9e6839a85ade1dabe72bd/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh#L60) parameter. 
+
+- The last step was to create ClusterRoleBindings for the custom group, in this case it was kyma_developers@sap.com.
+
+  ```
+  kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="kyma_developers@sap.com"
+  ```
+
+You can ask Neighbors team to create new G Suite Google Group in sap.com  domain. In the next step it is necessary to add these groups to the membership of gke-security-groups@[yourdomain.com].
