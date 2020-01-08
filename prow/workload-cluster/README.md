@@ -30,7 +30,7 @@ For details on the file syntax, see the `RequiredSecretsData` type in [`secretsp
 
 [Google Groups](https://groups.google.com/a/sap.com/forum/#!overview) give you possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings to the specific Google Group on your cluster.
 
-For example on Kyma release cluster `cluster-admin` ClusterRole is granted to all mambers of kyma_developers@sap.group group. 
+For example on Kyma release cluster `cluster-admin` ClusterRole is granted to all mambers of kyma_developers@sap.group group. How it was done:
 
 - First, there was kyma_developers@sap.group created and added as a member of gke-security-groups@sap.com.
   ![dashboards](/docs/prow/assets/GGroups.png)
