@@ -45,4 +45,4 @@ For example on Kyma release cluster `cluster-admin` ClusterRole is granted to al
   kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="kyma_developers@sap.com"
   ```
 
-If you would liek to leverage this solution just ask [Neighbors](https://github.com/orgs/kyma-project/teams/prow/members?utf8=%E2%9C%93&query=role%3Amaintainer) team to create new G Suite Google Group in sap.com domain. In the next step it is necessary to add this group to the membership of gke-security-groups@[yourdomain.com].
+If you would like to leverage this solution just ask [Neighbors](https://github.com/orgs/kyma-project/teams/prow/members?utf8=%E2%9C%93&query=role%3Amaintainer) team to create new G Suite Google Group in sap.com domain. In the next step it is necessary to add this group to the membership of gke-security-groups@[yourdomain.com].
