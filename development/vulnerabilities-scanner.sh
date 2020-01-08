@@ -123,12 +123,12 @@ function testComponents() {
       SNYK_MONITOR_STATUS=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${TESTED_COMPONENT}" --json)
       set -e
       
-      if [[ $(echo $SNYK_MONITOR_STATUS | jq -r '.ok') == "false" ]]; then
-        echo "$(echo $SNYK_MONITOR_STATUS | jq -r '.error')"
+      if [[ $(echo "$SNYK_MONITOR_STATUS" | jq -r '.ok') == "false" ]]; then
+        echo "$SNYK_MONITOR_STATUS" | jq -r '.error'
         echo "There was an error with Snyk monitor command. Check above response for more information."
         exit 1
       else
-        PROJECT_URI=$(echo $SNYK_MONITOR_STATUS | jq -r '.uri')
+        PROJECT_URI=$(echo "$SNYK_MONITOR_STATUS" | jq -r '.uri')
       fi
       # send notifications to slack if vulnerabilities was found
       OK=$(jq '.ok' < snyk-out.json)
