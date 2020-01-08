@@ -2,17 +2,28 @@
 
 set -eu
 
+limit=30
+
 echo_json() {
  local date_with_time=`date "+%Y-%m-%dT%H:%M:%SZ"`
  echo '{"command":"'$1'","component":"clonerefs","error":null,"level":"info","msg":"Ran command","output":"'$2'","time":"'${date_with_time}'"}'
 }
 
-echo_json " Testing network state" ""
+echo_json "Testing network state" ""
+
+counter=0;
 until nslookup google.com > /dev/null 2>&1
 do
-  echo_json "Waiting for network..." ""
+  counter=$((counter+1))
+  if [[ "$counter" -gt "$limit" ]]; then
+    echo_json "Failure - timeout reached!" ""
+    exit 1
+  fi
+
+  echo_json "Waiting for network ($counter)" ""
   sleep 1
 done
-echo_json "Network is ready!" ""
+
+echo_json "Success - network is ready!" ""
 
 /prow-clonerefs
