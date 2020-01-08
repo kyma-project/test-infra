@@ -28,7 +28,7 @@ For details on the file syntax, see the `RequiredSecretsData` type in [`secretsp
 
 ## Configuring cluster to use Google Groups
 
-[Google Groups](https://groups.google.com/a/sap.com/forum/#!overview) give you possibility to gather Kyma Developers accounts and manage GCP Project permissions (IAM) based on the groups. Additionally, it is possible to set Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings on your clusters and assign them to specific Google Group.
+[Google Groups](https://groups.google.com/a/sap.com/forum/#!overview) give you possibility to gather Kyma Developers accounts and manage GCP Project permissions (IAM) based on the group name. Additionally, it is possible to set Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings on your clusters and assign them to specific Google Group.
 
 Creating a cluster with `--security-group="gke-security-groups@sap.com` parameter allows you to apply set of custom privileges to the specific group of people. For example Kyma release cluster is build with [--security-group="gke-security-groups@sap.com](https://github.com/kyma-project/test-infra/blob/7b84900e56679fccfbc9e6839a85ade1dabe72bd/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh#L60) parameter.
 
