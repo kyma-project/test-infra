@@ -33,6 +33,7 @@ For details on the file syntax, see the `RequiredSecretsData` type in [`secretsp
 For example on Kyma release cluster `cluster-admin` ClusterRole is granted to all mambers of kyma_developers@sap.group group. 
 
 - First, there was kyma_developers@sap.group created and added as a member of gke-security-groups@sap.com.
+  ![dashboards](/docs/prow/assets/GGroups.png)
 
 - In the next step release cluster was build with [--security-group="gke-security-groups@sap.com](https://github.com/kyma-project/test-infra/blob/7b84900e56679fccfbc9e6839a85ade1dabe72bd/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh#L60) parameter. 
 
