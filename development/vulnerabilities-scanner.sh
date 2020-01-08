@@ -28,10 +28,8 @@ function authenticate() {
 }
 
 function sendSlackNotification() {
-
   AFFECTED_COMPONENT="$1"
-  KYMA_PROJECT="kyma-project"
-  RESULTS_URI=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${AFFECTED_COMPONENT}" --json | jq -r '.uri')
+  SNYK_URI="$2"
   SLACK_CHANNEL="#kyma-snyk-test"
 
   DATA='
@@ -47,7 +45,7 @@ function sendSlackNotification() {
           {
             "type": "button",
             "text": "Show in snyk.io",
-            "url": "'${RESULTS_URI}'"
+            "url": "'${SNYK_URI}'"
           }
         ]
       }
@@ -103,7 +101,8 @@ function sendSlackNotification() {
 function testComponents() {
   for DIR in ${KYMA_SOURCES_DIR}/components/*/
   do
-
+    TESTED_COMPONENT=$(basename "${DIR}")
+    KYMA_PROJECT="kyma-project"
     echo "processing ${DIR}"
 
     GOPKG_FILE_NAME="${DIR}"Gopkg.lock
@@ -118,18 +117,34 @@ function testComponents() {
       echo " ├── scanning for vulnerabilities..."
       set +e
       snyk test --severity-threshold=high --json > snyk-out.json
+      
+      # check if snyk project is 
+      echo " ├── sending snyk report..."
+      SNYK_MONITOR_STATUS=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${TESTED_COMPONENT}" --json)
       set -e
-
+      
+      if [[ $(echo $SNYK_MONITOR_STATUS | jq -r '.ok') == "false" ]]; then
+        echo "$(echo $SNYK_MONITOR_STATUS | jq -r '.error')"
+        echo "There was an error with Snyk monitor command. Check above response for more information."
+        exit 1
+      else
+        PROJECT_URI=$(echo $SNYK_MONITOR_STATUS | jq -r '.uri')
+      fi
       # send notifications to slack if vulnerabilities was found
       OK=$(jq '.ok' < snyk-out.json)
       if [[ ${OK} == "false" ]]; then
         echo " ├── sending notifications to slack..."
 
-        COMPONENT_TO_TEST=$(basename "${DIR}")
-        sendSlackNotification "${COMPONENT_TO_TEST}"
+        # COMPONENT_TO_TEST=$(basename "${DIR}")
+        sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
+      else
+        echo " ├── No vulnerabilities found."
       fi
-      echo " └── finished"
+      
+    else
+      echo " ├── No Gopkg.lock found"
     fi
+    echo " └── finished"
   done
 }
 
