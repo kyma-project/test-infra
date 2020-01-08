@@ -28,6 +28,8 @@ For details on the file syntax, see the `RequiredSecretsData` type in [`secretsp
 
 ## Configuring cluster to use Google Groups
 
+Previously, you could only grant roles to Google Cloud user accounts or Cloud IAM service accounts. Google Groups for GKE (Beta) allows you to grant roles to the members of a G Suite Google Group. With this mechanism, the users and groups themselves are maintained by your G Suite administrators, completely outside of Kubernetes or Cloud Console.
+
 [Google Groups](https://groups.google.com/a/sap.com/forum/#!overview) give you possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings to the specific Google Group on your cluster.
 
 For example on Kyma release cluster `cluster-admin` ClusterRole is granted to all mambers of kyma_developers@sap.group group. How it was done:
