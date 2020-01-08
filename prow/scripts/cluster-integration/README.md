@@ -71,7 +71,7 @@ This service account must have GCP permissions equivalent to the following GCP r
 
 ### Stackdriver Monitoring
 
-Long-running clusters on GKE use Stackdriver Monitoring to expose some performance metrics scraped by Kyma Prometheus instance.
+Long-running clusters on GKE use Stackdriver Monitoring to expose some performance metrics collected by Kyma Prometheus instance.
 To send metrics to Stackdriver, the collector sidecar container is injected into Prometheus Pod.
 Add the container's environment variable to instruct the script to provision cluster with the Stackdriver collector.
 Long running clusters on GKE are using Stackdriver monitoring to expose some performance metrics scraped by Kyma Prometheus instance.
