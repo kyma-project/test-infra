@@ -31,7 +31,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: kyma
@@ -67,7 +67,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: console
@@ -103,7 +103,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: cli
@@ -139,7 +139,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: helm-broker
@@ -175,7 +175,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: rafter
@@ -211,7 +211,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "${GITHUB_ORG_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
               value: compass

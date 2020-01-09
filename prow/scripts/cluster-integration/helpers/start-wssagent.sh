@@ -49,9 +49,9 @@ case "${SCAN_LANGUAGE}" in
         ;;
         
     javascript)
-        sed -i.bak "go.resolveDependencies=true|# go.resolveDependencies=true" /wss/wss-unified-agent.config
-        sed -i.bak "go.collectDependenciesAtRuntime=false|# go.collectDependenciesAtRuntime=false" /wss/wss-unified-agent.config
-        sed -i.bak "go.dependencyManager=godep|# go.dependencyManager=godep" /wss/wss-unified-agent.config
+        sed -i.bak "s|go.resolveDependencies=true|# go.resolveDependencies=true|g" /wss/wss-unified-agent.config
+        sed -i.bak "s|go.collectDependenciesAtRuntime=false|# go.collectDependenciesAtRuntime=false|g" /wss/wss-unified-agent.config
+        sed -i.bak "s|go.dependencyManager=godep|# go.dependencyManager=godep|g" /wss/wss-unified-agent.config
         ;;
         
     *)
@@ -80,10 +80,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     fi
     cd "${FOLDER}" # change to passed parameter
     PROJNAME=$2
-    if [[ $3 == "" ]]; then
-        echo "need language parameter for config"
-        exit 1
-    fi
 
     /bin/cp /wss/wss-unified-agent.config.backup /wss/wss-unified-agent.config
 
