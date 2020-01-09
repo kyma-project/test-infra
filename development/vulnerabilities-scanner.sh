@@ -118,7 +118,7 @@ function testComponents() {
       set +e
       snyk test --severity-threshold=high --json > snyk-out.json
       
-      # check if snyk project is 
+      # send snyk report
       echo " ├── sending snyk report..."
       SNYK_MONITOR_STATUS=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${TESTED_COMPONENT}" --json)
       set -e
