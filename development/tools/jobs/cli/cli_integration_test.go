@@ -30,8 +30,7 @@ func TestKymaCliIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
-	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
+	tester.AssertThatContainerHasEnv(t, actualPresubmit.Spec.Containers[0], "GO111MODULE", "on")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
 
@@ -53,7 +52,30 @@ func TestKymaCliIntegrationJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.BuildMaster, preset.GCProjectEnv, "preset-sa-vm-kyma-integration")
 	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, "GO111MODULE", actualPost.Spec.Containers[0].Env[0].Name)
-	assert.Equal(t, "on", actualPost.Spec.Containers[0].Env[0].Value)
+	tester.AssertThatContainerHasEnv(t, actualPost.Spec.Containers[0], "GO111MODULE", "on")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"}, actualPost.Spec.Containers[0].Command)
+}
+
+func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig(cliIntegrationJobPath)
+	// THEN
+	require.NoError(t, err)
+
+	periodics := jobConfig.Periodics
+	assert.Len(t, periodics, 1)
+
+	expName := "kyma-cli-integration-gke"
+	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, actualPeriodic)
+	assert.Equal(t, expName, actualPeriodic.Name)
+	assert.True(t, actualPeriodic.Decorate)
+	assert.Equal(t, "00 00 * * *", actualPeriodic.Cron)
+	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"})
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, "preset-gc-compute-envs", "preset-cluster-use-ssd")
+	assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualPeriodic.Spec.Containers[0].Image)
+	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GO111MODULE", "on")
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"}, actualPeriodic.Spec.Containers[0].Command)
 }

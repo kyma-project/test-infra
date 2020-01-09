@@ -14,13 +14,13 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/application-operator-tests/|^scripts/"
+    - ^release-(1\.8|1\.7)-application-operator-tests$
+  run_if_changed: "^tests/application-operator-tests/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-application-operator-tests
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:

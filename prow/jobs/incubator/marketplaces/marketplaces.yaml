@@ -1,3 +1,15 @@
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-global: "true"
+  preset-kind-volume-mounts: "true"
+
+job_tolerations_template: &job_tolerations_template
+  key: resources-usage
+  value: high
+  operator: Equal
+  effect: NoSchedule
+  
 job_template: &job_template
   skip_report: false
   always_run: true
@@ -11,7 +23,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191011-51ed45a
       securityContext:
         privileged: true
       command:
@@ -20,13 +32,10 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
       resources:
         requests:
-          memory: 1.5Gi
-          cpu: 0.8
-
-job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-global: "true"
+          memory: 18Gi
+          cpu: 7.5
+    tolerations:
+    - <<: *job_tolerations_template
 
 presubmits: # runs on PRs
   kyma-incubator/marketplaces:

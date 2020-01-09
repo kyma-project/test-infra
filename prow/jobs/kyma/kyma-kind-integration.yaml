@@ -1,0 +1,120 @@
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-kind-volume-mounts: "true"
+
+job_image_template: &job_image_template
+  image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191011-51ed45a
+  imagePullPolicy: Always
+
+job_tolerations_template: &job_tolerations_template
+  key: resources-usage
+  value: high
+  operator: Equal
+  effect: NoSchedule
+
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+presubmits:
+  kyma-project/kyma:
+  - name: pre-master-kyma-kind-lite
+    branches:
+    - ^master$
+    # Temporarly
+    skip_report: true
+    decorate: true
+    path_alias: github.com/kyma-project/kyma
+    max_concurrency: 10
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+    spec:
+      containers:
+      - <<: *job_image_template
+        securityContext:
+          privileged: true
+        command:
+        - /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kind-install-kyma.sh
+        args:
+        - --ensure-kubectl
+        - --update-hosts
+        - --delete-cluster
+        - --tune-inotify
+        - --start-docker
+        - --kubernetes-version
+        - v1.14.6
+        - --kyma-sources
+        - /home/prow/go/src/github.com/kyma-project/kyma
+        - --kyma-overrides
+        - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-config-local.yaml.tpl
+        - --kyma-installer
+        - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-local.yaml
+        - --kyma-installation-cr
+        - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-cr.yaml.tpl
+        - --kyma-installation-timeout
+        - 30m
+        resources:
+          requests:
+            memory: 8Gi
+            cpu: 4
+          limits:
+            memory: 10Gi
+            cpu: 5
+      tolerations:
+      - <<: *job_tolerations_template
+
+  - name: pre-master-kyma-kind
+    branches:
+    - ^master$
+    # Temporarly
+    skip_report: true
+    decorate: true
+    path_alias: github.com/kyma-project/kyma
+    max_concurrency: 10
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+    spec:
+      containers:
+      - <<: *job_image_template
+        securityContext:
+          privileged: true
+        command:
+        - /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/kind-install-kyma.sh
+        args:
+        - --ensure-kubectl
+        - --update-hosts
+        - --delete-cluster
+        - --tune-inotify
+        - --start-docker
+        - --kubernetes-version
+        - v1.14.6
+        - --kyma-sources
+        - /home/prow/go/src/github.com/kyma-project/kyma
+        - --kyma-overrides
+        - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-config-kind.yaml.tpl
+        - --kyma-installer
+        - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer.yaml
+        - --kyma-installation-cr
+        - /home/prow/go/src/github.com/kyma-project/kyma/installation/resources/installer-cr-cluster.yaml.tpl
+        - --kyma-installation-timeout
+        - 30m
+        resources:
+          requests:
+            memory: 18Gi
+            cpu: 6
+          limits:
+            memory: 24Gi
+            cpu: 8
+      tolerations:
+      - <<: *job_tolerations_template

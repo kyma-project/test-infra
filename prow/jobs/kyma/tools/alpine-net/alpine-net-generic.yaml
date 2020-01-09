@@ -19,7 +19,8 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tools/alpine-net/|^scripts/"
+    - ^release-(1\.8|1\.7)-alpine-net$
+  run_if_changed: "^tools/alpine-net/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be

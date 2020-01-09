@@ -60,7 +60,7 @@ export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
-export TEST_CONTAINER_NAME="runner"
+export TEST_CONTAINER_NAME="tests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -427,29 +427,9 @@ function upgradeKyma() {
 }
 
 function testKyma() {
-    shout "Test Kyma end-to-end upgrade scenarios"
-    date
-
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
-    set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
-    testEndToEndResult=$?
-
-    echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
-
-    if [ "${testEndToEndResult}" != 0 ]; then
-        echo "Helm test operation failed: ${testEndToEndResult}"
-        exit "${testEndToEndResult}"
-    fi
-    set -o errexit
-
     shout "Test Kyma"
     date
-    "${KYMA_SCRIPTS_DIR}"/testing.sh
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 }
 
 # Used to detect errors for logging purposes

@@ -1,0 +1,25 @@
+spec:
+  resources:
+    limits:
+      memory: 6Gi
+  containers:
+    - name: sidecar
+      image: gcr.io/stackdriver-prometheus/stackdriver-prometheus-sidecar:__SIDECAR_IMAGE_TAG__
+      imagePullPolicy: Always
+      args:
+        - --stackdriver.project-id=__GCP_PROJECT__
+        - --prometheus.wal-directory=/data/prometheus-db/wal
+        - --stackdriver.kubernetes.location=__GCP_REGION__
+        - --stackdriver.kubernetes.cluster-name=__CLUSTER_NAME__
+        - --include={__name__=~"node_load.+"}
+      resources:
+        limits:
+          memory: 2Gi
+        requests:
+          memory: 256Mi
+      ports:
+        - name: sidecar
+          containerPort: 9091
+      volumeMounts:
+        - mountPath: /data
+          name: prometheus-monitoring-db

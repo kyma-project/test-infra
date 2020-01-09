@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# DEPRECATED - use scripts from `lib` directory
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
 LICENSE_PULLER_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/license-puller.sh"
 export LICENSE_PULLER_PATH
 

@@ -19,7 +19,8 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/integration/monitoring/|^scripts/"
+    - ^release-(1\.8|1\.7)-monitoring$
+  run_if_changed: "^tests/integration/monitoring/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
