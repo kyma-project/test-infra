@@ -151,3 +151,4 @@ authenticate
 
 # test components with snyk
 testComponents
+echo "Vulnerability scan completed."
