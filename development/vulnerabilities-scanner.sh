@@ -134,8 +134,6 @@ function testComponents() {
       OK=$(jq '.ok' < snyk-out.json)
       if [[ ${OK} == "false" ]]; then
         echo " ├── sending notifications to slack..."
-
-        # COMPONENT_TO_TEST=$(basename "${DIR}")
         sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
       else
         echo " ├── No vulnerabilities found."
