@@ -24,6 +24,7 @@ readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 readonly TMP_DIR="$(mktemp -d)"
 readonly ARTIFACTS_DIR="${ARTIFACTS:-"${TMP_DIR}/artifacts"}"
+mkdir -p "${ARTIFACTS_DIR}"
 
 function authenticate() {
   snyk auth "${SNYK_TOKEN}"
