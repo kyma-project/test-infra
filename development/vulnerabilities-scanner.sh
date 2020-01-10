@@ -137,9 +137,15 @@ function testComponents() {
       OK=$(jq '.ok' < snyk-out.json)
       if [[ ${OK} == "false" ]]; then
         cp "snyk-out.json" "${ARTIFACTS_DIR}/${TESTED_COMPONENT}-snyk-out.json" # copy snyk-out.json as artifact
-        echo " ├── vulnerabilities found..."
-        echo " ├── sending notifications to slack..."
-        sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
+
+        # send slack notification only if vulnerabilities were found.
+        if [[  $(jq 'has("vulnerabilities")' < snyk-out.json) == "true" ]]; then
+          echo " ├── vulnerabilities found..."
+          echo " ├── sending notifications to slack..."
+          sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
+        else
+          echo  "An error occured during test. Check ${TESTED_COMPONENT}-snyk-out.json for more information."
+        fi
       else
         echo " ├── No vulnerabilities found."
       fi
