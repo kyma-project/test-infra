@@ -137,6 +137,7 @@ function testComponents() {
       OK=$(jq '.ok' < snyk-out.json)
       if [[ ${OK} == "false" ]]; then
         cp "snyk-out.json" "${ARTIFACTS_DIR}/${TESTED_COMPONENT}-snyk-out.json" # copy snyk-out.json as artifact
+        echo " ├── vulnerabilities found..."
         echo " ├── sending notifications to slack..."
         sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
       else
