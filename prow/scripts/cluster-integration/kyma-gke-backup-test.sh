@@ -31,12 +31,12 @@ removeCluster() {
     export DISKS
 
     #Delete cluster
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
 
     #Delete orphaned disks
     shout "Delete orphaned PVC disks..."
     date
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-disks.sh"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
 }
 
 function cleanup() {
