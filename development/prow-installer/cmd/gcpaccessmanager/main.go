@@ -1,17 +1,11 @@
 package main
 
-import "flag"
-
-imrpot (
+import (
 	"flag"
-	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/gcpaccessmanager"
 )
 
 var (
-	name 			= flag.String("name", "", "Service account name. [Required]")
-	roles			= flag.String("roles", "", "Role name which assign to sa. Multiple flag")
+	name            = flag.String("name", "", "Service account name. [Required]")
 	credentialsfile = flag.String("credentialsfile", "", "Google Application Credentials file path. [Required]")
 	prefix          = flag.String("prefix", "", "Prefix for naming resources. [Optional]")
 )
@@ -30,6 +24,6 @@ func (i *arrayFlags) Set(value string) error {
 var myFlags arrayFlags
 
 func main() {
-	flag.Var(&myFlags, "list1", "Some description for this param.")
+	flag.Var(&myFlags, "role", "Role name which assign to sa. Multiple flag instances allowed.")
 	flag.Parse()
 }

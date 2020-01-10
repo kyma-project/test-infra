@@ -1,96 +1,106 @@
-package gcpaccessmanager
+package serviceaccount
 
 import (
 	"context"
 	"fmt"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"regexp"
-	"strings"
+	//	"gopkg.in/yaml.v2"
+	//	"io/ioutil"
+	//	"regexp"
+	//	"strings"
 
 	log "github.com/sirupsen/logrus"
 
-	"google.golang.org/api/cloudresourcemanager/v1"
+	//	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iam/v1"
 	"google.golang.org/api/option"
 )
 
 // Access management object.
-type AccessManager struct {
+/*type AccessManager struct {
 	credentialsFile string
 	iam             *iamManager
 	projects        *projectsManager
 	Prefix          string
 	ctx             context.Context
-}
+}*/
 
 // iam management object.
-type iamManager struct {
-	accessmanager *AccessManager
-	iamservice    *iam.Service
+type iamClient struct {
+	//accessmanager *AccessManager
+	iamservice      *iam.Service
+	credentialsFile string
+	prefix          string
+	ctx             context.Context
 }
 
 // projects management object.
-type projectsManager struct {
+/*type projectsManager struct {
 	accessmanager               *AccessManager
 	cloudresourcemanagerservice *cloudresourcemanager.Service
 	projects                    map[string]*Project
 	requirementsFile            string // Path to the file with projects requirements to validate. Defaults to ./config/mandatory-requirements.yaml
-}
+}*/
 
 // GKE project object.
-type Project struct {
+/*type Project struct {
 	projectsManager *projectsManager
 	gkeProject      *cloudresourcemanager.Project
 	bindings        map[string]*cloudresourcemanager.Binding // bindings map for adding role members and new bindings to avoid multiple searches in policy bindings list.
 	policy          *cloudresourcemanager.Policy             // policy generated after placing changes.
-}
+}*/
 
-// GKE account representation object.
-type ServiceAccount struct {
-	Name  string   `yaml:"name"`
-	Roles []string `yaml:"roles,omitempty"`
+// GKE serviceaccount options.
+type SAOptions struct {
+	Name    string   `yaml:"name"`
+	Roles   []string `yaml:"roles,omitempty"`
+	Project string   `yaml:"project,omitempty"`
 }
 
 // projectRequirements holds data against which project is validated.
-type projectRequirements struct {
+/*type projectRequirements struct {
 	name             string            `yaml:"name"`
 	requiredBindings []requiredBinding `yaml:"requiredbindings"` // bindings which must exist in project policy. These are checked before policy binding is generated.
-}
+}*/
 
 // Binding which must exist in project policy.
-type requiredBinding struct {
+/*type requiredBinding struct {
 	role    string   `yaml:"role"`
 	members []string `yaml:"members"`
-}
+}*/
 
 // NewAccessManager returns AccessManager instance, wrapping iamManager and projectsManager for managing project permissions.
 // Expects path to the gcp json credentials file. Same as value of GOOGLE_APPLICATION_CREDENTIALS.
-func NewAccessManager(credentialsfile string, prefix string) *AccessManager {
+/*func NewAccessManager(credentialsfile string, prefix string) *AccessManager {
 	ctx = context.Background()
 	accessmanager := &AccessManager{credentialsFile: credentialsfile, Prefix: prefix}
 	log.Printf("AccessManager created.")
 	accessmanager.iam = accessmanager.newIAMManager()
 	accessmanager.projects = accessmanager.newProjectsManager()
 	return accessmanager
-}
+}*/
 
 // newIAMManager establish iam service client and returns IAMManager instance with it.
-func (accessManager *AccessManager) newIAMManager() *iamManager {
-	iammanager := &iamManager{accessmanager: accessManager}
-	iamservice, err := iam.NewService(accessManager.ctx, option.WithCredentialsFile(iammanager.accessmanager.credentialsFile))
+//func (accessManager *AccessManager) newIAMManager() *iamManager {
+func NewIAMClient(credentialsfile string, prefix string, ctx context.Context) *iamClient {
+	var iamclient *iamClient
+	iamservice, err := iam.NewService(ctx, option.WithCredentialsFile(credentialsfile))
 	if err != nil {
 		log.Fatalf("Error %v when creating new IAMService.", err)
 	} else {
-		iammanager.iamservice = iamservice
+		iamclient = &iamClient{
+			iamservice:      iamservice,
+			credentialsFile: credentialsfile,
+			prefix:          prefix,
+			ctx:             ctx,
+		}
 		log.Printf("IAMService client created.")
 	}
-	return iammanager
+	return iamclient
 }
 
 // newProjectsManager establish cloudresourcemanager service client and returns ProjectManager instance with it.
-func (accessManager *AccessManager) newProjectsManager() *projectsManager {
+/*func (accessManager *AccessManager) newProjectsManager() *projectsManager {
 	projectsmanager := &projectsManager{accessmanager: accessManager, requirementsFile: "./config/mandatory-requirements.yaml"}
 	projectsmanager.projects = make(map[string]*Project)
 	cloudresourcemanagerService, err := cloudresourcemanager.NewService(accessManager.ctx, option.WithCredentialsFile(projectsmanager.accessmanager.credentialsFile))
@@ -101,31 +111,33 @@ func (accessManager *AccessManager) newProjectsManager() *projectsManager {
 		log.Printf("CloudresourcemanagerService client created.")
 	}
 	return projectsmanager
-}
+}*/
 
 // Creates GKE Service Account. SA name is trimed to 30 characters per GCP limits.
-// If AccessManager has non zero value prefix field, created SAs are prefixed.
-func (iamManager *iamManager) createSAAccount(name string, projectname string) *iam.ServiceAccount {
-	if iamManager.accessmanager.Prefix != "" {
-		name = fmt.Sprintf("%s-%s", iamManager.accessmanager.Prefix, name)
+// If AccessManager has non zero value of prefix field, created ServiceAccounts are prefixed.
+func (iamClient *iamClient) CreateSAAccount(options SAOptions) *iam.ServiceAccount {
+	if iamClient.prefix != "" {
+		options.Name = fmt.Sprintf("%s-%s", iamClient.prefix, options.Name)
 	}
-	name = fmt.Sprintf("%.30s", name)
-	log.Printf("Trimed SA name to 30 characters.")
-	projectName := fmt.Sprintf("projects/%s", projectname)
-	log.Printf("Prefixed name %s with projects/", projectname)
+	options.Name = fmt.Sprintf("%.30s", options.Name)
+	//TODO: this log statement should be executed only in debug mode.
+	//log.Printf("Trimed SA name to 30 characters.")
+	options.Project = fmt.Sprintf("projects/%s", options.Project)
+	//TODO: this log statement should be executed only in debug mode.
+	//log.Printf("Prefixed name %s with projects/", projectname)
 	createsaaccountrequest := iam.CreateServiceAccountRequest{
-		AccountId: name,
+		AccountId: options.Name,
 	}
-	sa, err := iamManager.iamservice.Projects.ServiceAccounts.Create(projectName, &createsaaccountrequest).Context(iamManager.accessmanager.ctx).Do()
+	serviceaccount, err := iamClient.iamservice.Projects.ServiceAccounts.Create(options.Project, &createsaaccountrequest).Context(iamClient.ctx).Do()
 	if err != nil && !googleapi.IsNotModified(err) {
 		log.Printf("Error %v when creating new service account.", err)
 	} else {
-		log.Printf("Created service account:\n %s", sa.Name)
+		log.Printf("Created service account:\n %s", options.Name)
 	}
-	return sa
+	return serviceaccount
 }
 
-func (projectsManager *projectsManager) getProject(projectname string) (project *Project) {
+/*func (projectsManager *projectsManager) getProject(projectname string) (project *Project) {
 	gkeproject, err := projectsManager.cloudresourcemanagerservice.Projects.Get(projectname).Context(projectsManager.accessmanager.ctx).Do()
 	if err != nil {
 		log.Fatalf("Error %v when getting %s project details.", err, projectname)
@@ -135,9 +147,9 @@ func (projectsManager *projectsManager) getProject(projectname string) (project 
 		log.Printf("Downloaded project: %s ", gkeproject.Name)
 	}
 	return projectsManager.projects[projectname]
-}
+}*/
 
-func (project *Project) getPolicy() {
+/*func (project *Project) getPolicy() {
 	project.bindings = make(map[string]*cloudresourcemanager.Binding)
 	iampolicyrequest := new(cloudresourcemanager.GetIamPolicyRequest)
 	projectpolicy, err := project.projectsManager.cloudresourcemanagerservice.Projects.GetIamPolicy(project.gkeProject.Name, iampolicyrequest).Context(project.projectsManager.accessmanager.ctx).Do()
@@ -154,10 +166,10 @@ func (project *Project) getPolicy() {
 			project.bindings[rolename] = binding
 		}
 	}
-}
+}*/
 
 // Add account to the role binding members list. If role binding doesn't exist, call project.addBinding first to create it.
-func (project *Project) assignRole(accountfqdn string, role string) {
+/*func (project *Project) assignRole(accountfqdn string, role string) {
 	if _, present := project.bindings[role]; present {
 		project.bindings[role].Members = append(project.bindings[role].Members, accountfqdn)
 		log.Printf("Added %s to %s role.", accountfqdn, role)
@@ -167,15 +179,15 @@ func (project *Project) assignRole(accountfqdn string, role string) {
 		project.bindings[role].Members = append(project.bindings[role].Members, accountfqdn)
 		log.Printf("Added %s to %s role.", accountfqdn, role)
 	}
-}
+}*/
 
-func (serviceAccount *ServiceAccount) MakeSAFQDN(project *Project) (safqdn string) {
+/*func (serviceAccount *ServiceAccount) MakeSAFQDN(project *Project) (safqdn string) {
 	safqdn = fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", serviceAccount.Name, project.gkeProject.Name)
 	return
-}
+}*/
 
 // Function generate valid binding name, create it and add it to the bindings map.
-func (project *Project) addBinding(role string) {
+/*func (project *Project) addBinding(role string) {
 	var roleName string
 	if prefixed, _ := regexp.MatchString("^(roles|organizations)/.*", role); !prefixed {
 		log.Printf("Missing roles or organization prefix in role: %s rolename.", role)
@@ -184,10 +196,10 @@ func (project *Project) addBinding(role string) {
 	}
 	project.bindings[role] = &cloudresourcemanager.Binding{Role: roleName}
 	log.Printf("Added new binding for role: %s", role)
-}
+}*/
 
 // Function generate bindings list from bindings map and assign it to the policy.
-func (project *Project) generatePolicyBindings() {
+/*func (project *Project) generatePolicyBindings() {
 	var bindings []*cloudresourcemanager.Binding
 	// Calling validation function to make sure all mandatory policy items are present.
 	project.validatePolicy(project.projectsManager.requirementsFile)
@@ -197,10 +209,10 @@ func (project *Project) generatePolicyBindings() {
 	}
 	project.policy.Bindings = bindings
 	log.Printf("Generated policy bindings for project: %s", project.gkeProject.Name)
-}
+}*/
 
 // Calls project.generatePolicyBindings and apply new policy on GKE project.
-func (project *Project) setIamPolicy() {
+/*func (project *Project) setIamPolicy() {
 	project.generatePolicyBindings() // Calling here so policy bindings list is up to date and validated before applying on GKE.
 	setiampolicyrequest := &cloudresourcemanager.SetIamPolicyRequest{
 		Policy: project.policy,
@@ -210,10 +222,10 @@ func (project *Project) setIamPolicy() {
 		log.Fatalf("Error %v when updating %s project policy.", err, project.gkeProject.Name)
 	}
 	log.Printf("Applied new policy on GKE project: %s", project.gkeProject.Name)
-}
+}*/
 
 // Wrapper function for policy vaildation steps. Loads project requirements file and execute policy validation functions.
-func (project *Project) validatePolicy(requirementsFilePath string) {
+/*func (project *Project) validatePolicy(requirementsFilePath string) {
 	var projectRequirements projectRequirements
 	requirements, err := ioutil.ReadFile(requirementsFilePath)
 	if err != nil {
@@ -226,11 +238,11 @@ func (project *Project) validatePolicy(requirementsFilePath string) {
 	log.Printf("Loaded project requirements.")
 	// Call validation functions here.
 	projectRequirements.validateBindings(project)
-}
+}*/
 
 // Validating if all bindings exist for mandatory roles with mandatory members.
 // It's to prevent removing mandatory permissions from google SA or removing all user or sa accounts.
-func (projectRequirements *projectRequirements) validateBindings(project *Project) {
+/*func (projectRequirements *projectRequirements) validateBindings(project *Project) {
 	for _, required := range projectRequirements.requiredBindings {
 		if _, present := project.bindings[required.role]; !present {
 			log.Printf("Mssing mandatory role: %s", required.role)
@@ -251,25 +263,25 @@ func (projectRequirements *projectRequirements) validateBindings(project *Projec
 
 		}
 	}
-}
+}*/
 
 // Downloads GKE project and retrieve it's iam policy.
-func (accessManager *AccessManager) GetGKEProject(projectName string) {
+/*func (accessManager *AccessManager) GetGKEProject(projectName string) {
 	project := accessManager.projects.getProject(projectName)
 	project.getPolicy()
-}
+}*/
 
 // Wrapper function implementing logic for creating GKE service account.
 // It will create SA and assign SA to the specified roles.
-func (accessManager *AccessManager) AddServiceAccount(project *Project, sa ServiceAccount) {
+/*func (accessManager *AccessManager) AddServiceAccount(project *Project, sa ServiceAccount) {
 	accessManager.iam.createSAAccount(sa.Name, project.gkeProject.Name)
 	safqdn := sa.MakeSAFQDN(project)
 	for _, role := range sa.Roles {
 		project.assignRole(safqdn, role)
 	}
-}
+}*/
 
 // Apply iam policy on a GKE project.
-func (accessManager *AccessManager) CommitIAMPolicy(projectName string) {
+/*func (accessManager *AccessManager) CommitIAMPolicy(projectName string) {
 	accessManager.projects.projects[projectName].setIamPolicy()
-}
+}*/
