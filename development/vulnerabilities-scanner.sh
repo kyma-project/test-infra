@@ -120,7 +120,7 @@ function testComponents() {
       echo " ├── scanning for vulnerabilities..."
       set +e
       snyk test --severity-threshold=high --json > snyk-out.json
-      cp "snyk-out.json" "${ARTIFACTS_DIR}/${TESTED_COMPONENT}-snyk-out.json"
+      
       # send snyk report
       echo " ├── sending snyk report..."
       SNYK_MONITOR_STATUS=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${TESTED_COMPONENT}" --json)
@@ -136,6 +136,7 @@ function testComponents() {
       # send notifications to slack if vulnerabilities was found
       OK=$(jq '.ok' < snyk-out.json)
       if [[ ${OK} == "false" ]]; then
+        cp "snyk-out.json" "${ARTIFACTS_DIR}/${TESTED_COMPONENT}-snyk-out.json" # copy snyk-out.json as artifact
         echo " ├── sending notifications to slack..."
         sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
       else
