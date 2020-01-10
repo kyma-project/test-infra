@@ -22,6 +22,8 @@ fi
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+readonly TMP_DIR="$(mktemp -d)"
+readonly ARTIFACTS_DIR="${ARTIFACTS:-"${TMP_DIR}/artifacts"}"
 
 function authenticate() {
   snyk auth "${SNYK_TOKEN}"
@@ -117,7 +119,7 @@ function testComponents() {
       echo " ├── scanning for vulnerabilities..."
       set +e
       snyk test --severity-threshold=high --json > snyk-out.json
-      
+      cp "snyk-out.json" "${ARTIFACTS_DIR}/${TESTED_COMPONENT}-snyk-out.json"
       # send snyk report
       echo " ├── sending snyk report..."
       SNYK_MONITOR_STATUS=$(snyk monitor --org="${KYMA_PROJECT}" --project-name="${TESTED_COMPONENT}" --json)
