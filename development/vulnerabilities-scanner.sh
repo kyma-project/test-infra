@@ -22,6 +22,9 @@ fi
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+readonly TMP_DIR="$(mktemp -d)"
+readonly ARTIFACTS_DIR="${ARTIFACTS:-"${TMP_DIR}/artifacts"}"
+mkdir -p "${ARTIFACTS_DIR}"
 
 function authenticate() {
   snyk auth "${SNYK_TOKEN}"
@@ -133,8 +136,16 @@ function testComponents() {
       # send notifications to slack if vulnerabilities was found
       OK=$(jq '.ok' < snyk-out.json)
       if [[ ${OK} == "false" ]]; then
-        echo " ├── sending notifications to slack..."
-        sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
+        cp "snyk-out.json" "${ARTIFACTS_DIR}/${TESTED_COMPONENT}-snyk-out.json" # copy snyk-out.json as artifact
+
+        # send slack notification only if vulnerabilities were found.
+        if [[  $(jq 'has("vulnerabilities")' < snyk-out.json) == "true" ]]; then
+          echo " ├── vulnerabilities found..."
+          echo " ├── sending notifications to slack..."
+          sendSlackNotification "${TESTED_COMPONENT}" "${PROJECT_URI}"
+        else
+          echo  "An error occured during test. Check ${TESTED_COMPONENT}-snyk-out.json for more information."
+        fi
       else
         echo " ├── No vulnerabilities found."
       fi
