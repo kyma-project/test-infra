@@ -17,13 +17,13 @@ Google Groups give you the possibility to gather Kyma Developers accounts and ma
 
 For example, all members of the `kyma_developers@sap.com` group receive the **cluster-admin** ClusterRole on the Kyma release cluster built by `post-relXX-kyma-release-candidate` Prow job.
 
-If you want to leverage this solution, [raise issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team. The process used to look as follows:
+If you want to leverage this solution, [raise issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team. The process looks as follows:
 
 1. Neighbors team creates your custom Google Group (eg. `your_custom_group@sap.com`) and adds it as a member of `gke-security-groups@sap.com`.
 
     ![dashboards](/docs/prow/assets/GGroups.png)
 
-2. You write a test pipeline where you build the cluster with additional paremeter called [**--security-group="gke-security-groups@sap.com**](https://github.com/kyma-project/test-infra/blob/7b84900e56679fccfbc9e6839a85ade1dabe72bd/prow/scripts/cluster-integration/helpers/provision-gke-cluster.sh#L60). 
+2. You write a test pipeline where you build the cluster with additional paremeter called **--security-group="gke-security-groups@sap.com**. 
 
 3. In the next step of your test pipeline you create ClusterRoleBindings for the `your_custom_group@sap.com` custom group:
 
