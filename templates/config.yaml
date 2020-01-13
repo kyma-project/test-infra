@@ -260,6 +260,12 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/connectivity-adapter
+          since: "1.10"
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
           <<: *compass_generic_component
@@ -804,27 +810,6 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
-      - to: ../prow/jobs/incubator/compass/components/director/director-old-releases.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: components/director
-          skipSlackReport: true
-          since: "1.3"
-          until: "1.4"
-      - to: ../prow/jobs/incubator/compass/components/director/director.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: components/director
-          noRelease: yes
-          skipSlackReport: true
-          until: "1.6"
-      - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: components/connectivity-adapter
-          noRelease: yes
-          skipSlackReport: true
-          since: "1.10"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
