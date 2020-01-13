@@ -818,6 +818,13 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
+      - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter.yaml
+        values:
+          <<: *go_compass_component_1_11
+          path: components/connectivity-adapter
+          noRelease: yes
+          skipSlackReport: true
+          since: "1.10"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
