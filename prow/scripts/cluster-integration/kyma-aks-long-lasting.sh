@@ -53,7 +53,7 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_D4_v3"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
-export DEFAULT_CLUSTER_VERSION="1.16"
+export DEFAULT_CLUSTER_VERSION="1.14"
 if [ -z "${CLUSTER_K8S_VERSION}" ]; then
     export CLUSTER_K8S_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
