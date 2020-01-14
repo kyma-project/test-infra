@@ -36,7 +36,7 @@ var tests = []struct {
 		},
 	},
 	{
-		name:  "director-tests",
+		name:  "director",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
