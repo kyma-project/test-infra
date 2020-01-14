@@ -36,14 +36,13 @@ var tests = []struct {
 		},
 	},
 	{
-		name:  "director-tests",
+		name:  "director",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("generic-approach"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release110),
-			jobsuite.Optional(),
 		},
 	},
 	{
