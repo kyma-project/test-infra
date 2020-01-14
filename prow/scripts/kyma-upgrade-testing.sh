@@ -106,7 +106,7 @@ function main() {
   log::info "- Running Kyma tests"
   # match all tests
   # shellcheck disable=SC2086
-  kyma test run knative-serving application-connector application-operator application-registry connection-token-handler connector-service api-gateway core-api-controller \
+  kyma test run knative-serving application-connector application-operator application-registry connection-token-handler connector-service api-gateway core-api-controller test-e2e-upgrade-execute-tests \
    core-apiserver-proxy core-cluster-users core-kubeless core-test-external-solution dex-connection dex-integration event-bus kiali logging monitoring rafter service-catalog \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
