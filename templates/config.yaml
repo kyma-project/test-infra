@@ -315,8 +315,7 @@ templates:
           bootstrapTag: v20181204-a6e79be
           additionalRunIfChanged:
           - ^scripts/
-          - components/director
-          path: tests/director-tests
+          path: tests/director
           since: "1.10"
           optional: true
       - to: ../prow/jobs/incubator/compass/tests/provisioner-tests/provisioner-tests-generic.yaml

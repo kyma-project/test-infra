@@ -20,7 +20,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/director-tests/|^scripts/|components/director"
+  run_if_changed: "^tests/director/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +29,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/director-tests"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/director"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,12 +37,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-compass-tests-director-tests
+    - name: pre-compass-tests-director
       skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-compass-tests-director-tests
+    - name: post-compass-tests-director
       <<: *job_template
