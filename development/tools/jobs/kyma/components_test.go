@@ -147,6 +147,13 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{path: "permission-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release19),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "service-binding-usage-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
