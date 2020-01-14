@@ -1,6 +1,6 @@
 # Golang buildpack with kubebuilder
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191011-51ed45a
 
 # Buildpack variables
 
