@@ -19,7 +19,6 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.9)-istio-installer$
   run_if_changed: "^components/istio-installer/|^common/makefiles/"
   spec:
     containers:
