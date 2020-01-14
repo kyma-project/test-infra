@@ -468,7 +468,7 @@ templates:
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: tests/rafter
+          path: tests/rafter       
       - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
         values:
           <<: *kyma_generic_component
