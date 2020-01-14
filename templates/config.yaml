@@ -307,7 +307,7 @@ templates:
           path: tests/end-to-end
           since: "1.7"
           optional: true
-      - to: ../prow/jobs/incubator/compass/tests/director/director-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
         values:
           <<: *compass_generic_component
           path: tests/director
