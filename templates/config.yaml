@@ -309,15 +309,9 @@ templates:
           optional: true
       - to: ../prow/jobs/incubator/compass/tests/director/director-generic.yaml
         values:
-          repository: github.com/kyma-incubator/compass
-          build: build
-          pushRepository: incubator
-          bootstrapTag: v20181204-a6e79be
-          additionalRunIfChanged:
-          - ^scripts/
+          <<: *compass_generic_component
           path: tests/director
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/incubator/compass/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *compass_generic_component
