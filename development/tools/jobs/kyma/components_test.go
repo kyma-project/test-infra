@@ -126,6 +126,12 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{path: "istio-installer", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release110),
+		},
+	},
 	{path: "k8s-dashboard-proxy", image: tester.ImageGolangBuildpack1_11},
 	{path: "function-controller", image: tester.ImageGolangKubebuilderBuildpackLatest,
 		additionalOptions: []jobsuite.Option{

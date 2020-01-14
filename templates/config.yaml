@@ -355,6 +355,11 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/istio-installer
+          since: "1.10"
       - to: ../prow/jobs/kyma/components/backup-plugins/backup-plugins-generic.yaml
         values:
           <<: *kyma_generic_component
