@@ -219,7 +219,7 @@ func TestKymaBackupTestJobPresubmit(t *testing.T) {
 	// then
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.Optional)
-	assert.Equal(t, "^((resources/backup\\S+|tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	assert.Equal(t, "^((resources/backup\\S+|tests/end-to-end/backup/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.KymaBackupRestoreBucket, preset.KymaBackupCredentials, preset.GCProjectEnv, preset.BuildPr,
 		preset.SaGKEKymaIntegration, "preset-weekly-github-integration")
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
