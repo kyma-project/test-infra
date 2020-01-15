@@ -1,13 +1,13 @@
-# Prow test clusters
+# Prow Test Clusters
 
-This document gathers information about test clusters that are build by Prow jobs. All test clusters (a.k.a. workload clusters) are build in sap-kyma-prow-workloads project.
+This document gathers information about test clusters that Prow jobs build. All test clusters (a.k.a. workload clusters) are built in the `sap-kyma-prow-workloads` project.
 
 
 ## Cluster authorization
 
 ### Permissions
 
-Kyma developers are gathered in `kyma_developers@sap.com` Google Group administrated by [Neighbors team](https://github.com/orgs/kyma-project/teams/prow/members?utf8=%E2%9C%93&query=role%3Amaintainer). All the group permission are managed in IAM, where the `kyma_developers@sap.com` group has `kyma_developer` role assigned so that its members can access test clusters and VMs in read-only mode.
+Kyma developers are gathered in the `kyma_developers@sap.com` Google Group administrated by the [Neighbors team](https://github.com/orgs/kyma-project/teams/prow/members?utf8=%E2%9C%93&query=role%3Amaintainer). All the group permissions are managed in IAM, where the `kyma_developers@sap.com` group has the **kyma_developer** role assigned so that its members can access test clusters and VMs in read-only mode.
 
 ### Custom permissions
 
@@ -15,15 +15,15 @@ Previously, you could only grant roles to Google Cloud user accounts or Cloud IA
 
 Google Groups give you the possibility to gather Kyma Developers accounts and manage GCP Project permissions based on the group name. Additionally, you can grant Kubernetes Roles, ClusterRoles, RoleBindings, and ClusterRoleBindings to the specific Google Group on your cluster.
 
-For example, all members of the `kyma_developers@sap.com` group receive the **cluster-admin** ClusterRole on the Kyma release cluster built by `post-relXX-kyma-release-candidate` Prow job.
+For example, all members of the `kyma_developers@sap.com` group receive the **cluster-admin** ClusterRole on the Kyma release cluster built by the **post-relXX-kyma-release-candidate** Prow job.
 
-If you want to leverage this solution, [raise issue](https://github.com/kyma-project/test-infra/issues/new/choose) with Neighbors team. The process looks as follows:
+If you want to leverage this solution, [raise an issue](https://github.com/kyma-project/test-infra/issues/new/choose) with the Neighbors team. The process looks as follows:
 
-1. Neighbors team creates your custom Google Group (eg. `your_custom_group@sap.com`) and adds it as a member of `gke-security-groups@sap.com`.
+1. The Neighbors team creates your custom Google Group, such as `your_custom_group@sap.com`, and adds it as a member of `gke-security-groups@sap.com`.
 
     ![dashboards](/docs/prow/assets/GGroups.png)
 
-2. You write a test pipeline where you build the cluster with additional paremeter called **--security-group="gke-security-groups@sap.com**. 
+2. You write a test pipeline where you build the cluster with an additional parameter called **--security-group="gke-security-groups@sap.com**. 
 
 3. In the next step of your test pipeline you create ClusterRoleBindings for the `your_custom_group@sap.com` custom group:
 
@@ -31,4 +31,4 @@ If you want to leverage this solution, [raise issue](https://github.com/kyma-pro
     kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="your_custom_group@sap.com"
     ```
 
-When all steps are completed members of your custom group are able to access the cluster with elevated privileges.
+When you complete all the steps, members of your custom group are able to access the cluster with elevated privileges.
