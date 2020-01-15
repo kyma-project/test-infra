@@ -27,7 +27,7 @@ removeCluster() {
     date
 
     #save disk names while the cluster still exists to remove them later
-    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+    DISKS=$(kubectl get pv --all-namespaces -o jsonpath="{.items[*].spec.gcePersistentDisk.pdName}" | xargs -n1 echo)
     export DISKS
 
     #Delete cluster
