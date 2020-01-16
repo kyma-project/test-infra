@@ -220,18 +220,13 @@ func TestCompassPrototypeGKEUpgradeJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources/compass/\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	//tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/compass/values.yaml")
-
-	//tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
-	//tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
+	assert.Equal(t, "", actualJob.RunIfChanged)
+	assert.False(t, actualJob.AlwaysRun)
 	assert.True(t, actualJob.Decorate)
 	assert.True(t, actualJob.Optional)
 	assert.True(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	AssertThatHasExtraRefTestInfraToFork(t, actualJob.JobBase.UtilityConfig, "dbadura", "compass-upgrade-prototype-scripts")
+	assertThatHasExtraRefTestInfraToFork(t, actualJob.JobBase.UtilityConfig, "dbadura", "compass-upgrade-prototype-scripts")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 	assert.Equal(t, tester.ImageKymaClusterInfraLatest, actualJob.Spec.Containers[0].Image)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.GCProjectEnv, preset.BuildPr,
@@ -239,8 +234,8 @@ func TestCompassPrototypeGKEUpgradeJobsPresubmit(t *testing.T) {
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 }
 
-// AssertThatHasExtraRefTestInfra checks if job has configured extra ref to test-infra repository
-func AssertThatHasExtraRefTestInfraToFork(t *testing.T, in config.UtilityConfig, forkOwner, expectedBaseRef string) {
+//TODO: remove it after implementing gke-compass-upgrade job
+func assertThatHasExtraRefTestInfraToFork(t *testing.T, in config.UtilityConfig, forkOwner, expectedBaseRef string) {
 	for _, curr := range in.ExtraRefs {
 		if curr.PathAlias == fmt.Sprintf("github.com/%s/test-infra",forkOwner) &&
 			curr.Org == forkOwner &&

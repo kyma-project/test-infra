@@ -474,8 +474,9 @@ presubmits: # runs on PRs
       optional: true
       path_alias: github.com/kyma-project/kyma
       # following regexp won't start build if only Markdown files were changed
-      # TODO: Location set to compass is temporary
-      run_if_changed: "^((resources/compass/\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      # TODO: currently this job will be executed only on demand for test purpose only
+#      run_if_changed: "^((resources/compass/\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      always_run: false
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
