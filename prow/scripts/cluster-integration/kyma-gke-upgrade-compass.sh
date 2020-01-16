@@ -256,10 +256,11 @@ function addCompass() {
       namespace: "compass-system"
 ---
 EOF
+    cat $FILE
     shout "Compass added to ${FILE}"
 }
 function installKyma() {
-#    kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+    kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
     mkdir -p /tmp/kyma-gke-upgradeability
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
@@ -268,30 +269,30 @@ function installKyma() {
         exit 1
     fi
 
-#    shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
-#    date
-#    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
-#    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
-#
-#    shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
-#    date
-#    kubectl create namespace "kyma-installer"
-#
-#    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-#        --data "global.domainName=${DOMAIN}" \
-#        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-#
-#    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-#        --data "test.acceptance.ui.logging.enabled=true" \
-#        --label "component=core"
-#
-#    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-#        --data "global.tlsCrt=${TLS_CERT}" \
-#        --data "global.tlsKey=${TLS_KEY}"
-#
-#    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-#        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-#        --label "component=istio"
+    shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
+    date
+    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
+    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
+
+    shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
+    date
+    kubectl create namespace "kyma-installer"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "global.domainName=${DOMAIN}" \
+        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+        --data "test.acceptance.ui.logging.enabled=true" \
+        --label "component=core"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+        --data "global.tlsCrt=${TLS_CERT}" \
+        --data "global.tlsKey=${TLS_KEY}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+        --label "component=istio"
 
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
