@@ -220,11 +220,13 @@ func TestCompassPrototypeGKEUpgradeJobsPresubmit(t *testing.T) {
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
-	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+	assert.Equal(t, "^((resources/compass/\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	//tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
 	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/compass/values.yaml")
+
+	//tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+	//tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
 	assert.True(t, actualJob.Decorate)
 	assert.True(t, actualJob.Optional)
 	assert.True(t, actualJob.SkipReport)
