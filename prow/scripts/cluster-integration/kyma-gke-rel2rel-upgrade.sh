@@ -443,7 +443,7 @@ testKyma() {
 
     shout "Test Kyma"
     date
-    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-upgrade-testing.sh
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 }
 
 # Used to detect errors for logging purposes
