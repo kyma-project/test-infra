@@ -173,7 +173,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release110),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "knative-build", image: tester.ImageGolangBuildpack1_11,
