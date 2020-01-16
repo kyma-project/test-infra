@@ -452,7 +452,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/backup
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *kyma_generic_component
