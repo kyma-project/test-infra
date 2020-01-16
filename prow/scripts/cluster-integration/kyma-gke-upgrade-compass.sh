@@ -299,7 +299,6 @@ function installKyma() {
     INSTALLER_CR_LOCATION="/tmp/kyma-gke-upgradeability/last-release-installer.yaml"
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output $INSTALLER_CR_LOCATION
     addCompass $INSTALLER_CR_LOCATION
-    exit 0
     kubectl apply -f $INSTALLER_CR_LOCATION
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
