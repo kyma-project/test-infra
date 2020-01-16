@@ -1,6 +1,8 @@
 package kyma_test
 
 import (
+	"fmt"
+	"k8s.io/test-infra/prow/config"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
@@ -205,6 +207,47 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.GCProjectEnv, preset.BuildPr,
 		preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
+}
+
+func TestCompassPrototypeGKEUpgradeJobsPresubmit(t *testing.T) {
+	// given
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+	require.NoError(t, err)
+
+	// when
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-compass-prototype-gke-upgrade", "master")
+	require.NotNil(t, actualJob)
+
+	// then
+	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
+	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
+	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
+	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
+	assert.True(t, actualJob.Decorate)
+	assert.True(t, actualJob.Optional)
+	assert.True(t, actualJob.SkipReport)
+	assert.Equal(t, 10, actualJob.MaxConcurrency)
+	AssertThatHasExtraRefTestInfraToFork(t, actualJob.JobBase.UtilityConfig, "dbadura", "compass-upgrade-prototype-scripts")
+	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
+	assert.Equal(t, tester.ImageKymaClusterInfraLatest, actualJob.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.GCProjectEnv, preset.BuildPr,
+		preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
+		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
+}
+
+// AssertThatHasExtraRefTestInfra checks if job has configured extra ref to test-infra repository
+func AssertThatHasExtraRefTestInfraToFork(t *testing.T, in config.UtilityConfig, forkOwner, expectedBaseRef string) {
+	for _, curr := range in.ExtraRefs {
+		if curr.PathAlias == fmt.Sprintf("github.com/%s/test-infra",forkOwner) &&
+			curr.Org == forkOwner &&
+			curr.Repo == "test-infra" &&
+			curr.BaseRef == expectedBaseRef {
+			return
+		}
+	}
+	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s]", expectedBaseRef))
 }
 
 func TestKymaBackupTestJobPresubmit(t *testing.T) {
