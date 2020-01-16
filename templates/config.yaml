@@ -301,12 +301,6 @@ templates:
           path: tests/connector-tests
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: tests/end-to-end
-          since: "1.7"
-          optional: true
       - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
         values:
           <<: *compass_generic_component
@@ -850,20 +844,6 @@ templates:
         values:
           <<: *bootstrap_compass_component
           path: components/schema-migrator
-          noRelease: yes
-          skipSlackReport: true
-          until: "1.6"
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-old-releases.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: tests/end-to-end
-          skipSlackReport: true
-          since: "1.3"
-          until: "1.4"
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: tests/end-to-end
           noRelease: yes
           skipSlackReport: true
           until: "1.6"

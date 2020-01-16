@@ -25,17 +25,6 @@ var tests = []struct {
 		},
 	},
 	{
-		name:  "end-to-end",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
-			jobsuite.Optional(),
-		},
-	},
-	{
 		name:  "director",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
