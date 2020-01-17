@@ -430,8 +430,10 @@ function upgradeKyma() {
         "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
         | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
         | sed -e "s/__VERSION__/0.0.1/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
+        | sed -e "s/__.*__//g" > /tmp/kyma-gke-upgradeability/upgrade-installer.yaml
+
+        cat /tmp/kyma-gke-upgradeability/upgrade-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/upgrade-installer.yaml
     fi
 
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
