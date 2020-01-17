@@ -111,8 +111,7 @@ cleanup() {
     if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
-        shout "Kyma-Installer Docker Image deleting is disabled temporary"
-#        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
@@ -418,11 +417,13 @@ function upgradeKyma() {
         KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
         export KYMA_INSTALLER_IMAGE
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-        CLEANUP_DOCKER_IMAGE="true"
+        CLEANUP_DOCKER_IMAGE="false"
 
         KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
         INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
         INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+        addCompass $INSTALLER_CR
 
         shout "Update tiller"
         kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
