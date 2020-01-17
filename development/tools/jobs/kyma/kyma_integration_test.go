@@ -237,7 +237,7 @@ func TestCompassPrototypeGKEUpgradeJobsPresubmit(t *testing.T) {
 //TODO: remove it after implementing gke-compass-upgrade job
 func assertThatHasExtraRefTestInfraToFork(t *testing.T, in config.UtilityConfig, forkOwner, expectedBaseRef string) {
 	for _, curr := range in.ExtraRefs {
-		if curr.PathAlias == "github.com/test-infra/test-infra" &&
+		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
 			curr.Org == forkOwner &&
 			curr.Repo == "test-infra" &&
 			curr.BaseRef == expectedBaseRef {

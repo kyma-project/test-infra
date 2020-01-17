@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 dbadura_infra_ref: &dbadura_infra_ref
   org: dbadura
   repo: test-infra
-  path_alias: github.com/test-infra/test-infra
+  path_alias: github.com/kyma-project/test-infra
 
 kyma_ref: &kyma_ref
   org: kyma-project
@@ -181,7 +181,7 @@ gke_compass_prototype_upgrade_job_template: &gke_compass_prototype_upgrade_job_t
             value: "europe-west4-a"
         args:
           - "-c"
-          - "/home/prow/go/src/github.com/test-infra/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-compass.sh"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-compass.sh"
         resources:
           requests:
             memory: 200Mi
