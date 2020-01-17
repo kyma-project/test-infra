@@ -111,7 +111,8 @@ cleanup() {
     if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
         shout "Delete temporary Kyma-Installer Docker image"
         date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        shout "Kyma-Installer Docker Image deleting is disabled temporary"
+#        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
