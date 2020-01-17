@@ -17,19 +17,13 @@ import (
 )
 
 // Access management object.
-type AccessManager struct {
-	credentialsFile string
-	iam             *iamManager
-	projects        *projectsManager
-	Prefix          string
-	ctx             context.Context
-}
-
-// iam management object.
-type iamManager struct {
-	accessmanager *AccessManager
-	iamservice    *iam.Service
-}
+//type AccessManager struct {
+//	credentialsFile string
+//	iam             *iamManager
+//	projects        *projectsManager
+//	Prefix          string
+//	ctx             context.Context
+//}
 
 // projects management object.
 type projectsManager struct {
@@ -47,12 +41,6 @@ type Project struct {
 	policy          *cloudresourcemanager.Policy             // policy generated after placing changes.
 }
 
-// GKE account representation object.
-type ServiceAccount struct {
-	Name  string   `yaml:"name"`
-	Roles []string `yaml:"roles,omitempty"`
-}
-
 // projectRequirements holds data against which project is validated.
 type projectRequirements struct {
 	name             string            `yaml:"name"`
@@ -67,27 +55,14 @@ type requiredBinding struct {
 
 // NewAccessManager returns AccessManager instance, wrapping iamManager and projectsManager for managing project permissions.
 // Expects path to the gcp json credentials file. Same as value of GOOGLE_APPLICATION_CREDENTIALS.
-func NewAccessManager(credentialsfile string, prefix string) *AccessManager {
-	ctx = context.Background()
-	accessmanager := &AccessManager{credentialsFile: credentialsfile, Prefix: prefix}
-	log.Printf("AccessManager created.")
-	accessmanager.iam = accessmanager.newIAMManager()
-	accessmanager.projects = accessmanager.newProjectsManager()
-	return accessmanager
-}
-
-// newIAMManager establish iam service client and returns IAMManager instance with it.
-func (accessManager *AccessManager) newIAMManager() *iamManager {
-	iammanager := &iamManager{accessmanager: accessManager}
-	iamservice, err := iam.NewService(accessManager.ctx, option.WithCredentialsFile(iammanager.accessmanager.credentialsFile))
-	if err != nil {
-		log.Fatalf("Error %v when creating new IAMService.", err)
-	} else {
-		iammanager.iamservice = iamservice
-		log.Printf("IAMService client created.")
-	}
-	return iammanager
-}
+//func NewAccessManager(credentialsfile string, prefix string) *AccessManager {
+//	ctx = context.Background()
+//	accessmanager := &AccessManager{credentialsFile: credentialsfile, Prefix: prefix}
+//	log.Printf("AccessManager created.")
+//	accessmanager.iam = accessmanager.newIAMManager()
+//	accessmanager.projects = accessmanager.newProjectsManager()
+//	return accessmanager
+//}
 
 // newProjectsManager establish cloudresourcemanager service client and returns ProjectManager instance with it.
 func (accessManager *AccessManager) newProjectsManager() *projectsManager {
@@ -101,28 +76,6 @@ func (accessManager *AccessManager) newProjectsManager() *projectsManager {
 		log.Printf("CloudresourcemanagerService client created.")
 	}
 	return projectsmanager
-}
-
-// Creates GKE Service Account. SA name is trimed to 30 characters per GCP limits.
-// If AccessManager has non zero value prefix field, created SAs are prefixed.
-func (iamManager *iamManager) createSAAccount(name string, projectname string) *iam.ServiceAccount {
-	if iamManager.accessmanager.Prefix != "" {
-		name = fmt.Sprintf("%s-%s", iamManager.accessmanager.Prefix, name)
-	}
-	name = fmt.Sprintf("%.30s", name)
-	log.Printf("Trimed SA name to 30 characters.")
-	projectName := fmt.Sprintf("projects/%s", projectname)
-	log.Printf("Prefixed name %s with projects/", projectname)
-	createsaaccountrequest := iam.CreateServiceAccountRequest{
-		AccountId: name,
-	}
-	sa, err := iamManager.iamservice.Projects.ServiceAccounts.Create(projectName, &createsaaccountrequest).Context(iamManager.accessmanager.ctx).Do()
-	if err != nil && !googleapi.IsNotModified(err) {
-		log.Printf("Error %v when creating new service account.", err)
-	} else {
-		log.Printf("Created service account:\n %s", sa.Name)
-	}
-	return sa
 }
 
 func (projectsManager *projectsManager) getProject(projectname string) (project *Project) {
