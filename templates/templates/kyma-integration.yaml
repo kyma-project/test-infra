@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 dbadura_infra_ref: &dbadura_infra_ref
   org: dbadura
   repo: test-infra
-  path_alias: github.com/dbadura/test-infra
+  path_alias: github.com/kyma-project/test-infra
 
 kyma_ref: &kyma_ref
   org: kyma-project
