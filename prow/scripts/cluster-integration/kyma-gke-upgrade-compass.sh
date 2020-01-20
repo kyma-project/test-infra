@@ -245,8 +245,10 @@ function addCompass() {
     COUNT=$(cat $FILE | wc -l)
     echo Lines: $COUNT
     head -n $(( $COUNT -5 )) $FILE > $TMP_FILE
-    cat $TMP_FILE > $FILE
-    cat "${FILE}"
+    #temporary workaround to remove flakky upgrade of monitoring.
+    cat $TMP_FILE | sed -n 'x;/name:\ \"monitoring\"/!g;//!p' > $FILE
+#    cat $TMP_FILE > $FILE
+#    cat "${FILE}"
     rm $TMP_FILE
 
     cat <<EOF >> $FILE
