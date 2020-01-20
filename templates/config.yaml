@@ -460,8 +460,7 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/permission-controller
-          since: "1.9"
-          optional: true
+          since: "1.10"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
