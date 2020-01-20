@@ -23,7 +23,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
-	assert.Equal(t, "00 00 * * *", job.Cron)
+	assert.Equal(t, "00 11 * * *", job.Cron)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.NightlyGithubIntegration, preset.KymaKeyring, preset.KymaEncriptionKey)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1", job.Spec.Containers[0].Image)
