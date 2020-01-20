@@ -307,6 +307,7 @@ function installKyma() {
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
+    kubectl get pod -n compass-system
 }
 
 function checkTestPodTerminated() {
@@ -418,6 +419,8 @@ function upgradeKyma() {
         COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
         KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
         export KYMA_INSTALLER_IMAGE
+        shout $KYMA_INSTALLER_IMAGE
+
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
         CLEANUP_DOCKER_IMAGE="true"
 
@@ -443,7 +446,7 @@ function upgradeKyma() {
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
-
+    kubectl get pod -n compass-system
 
     if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
         shout "Create DNS Record for Apiserver proxy IP"
