@@ -24,14 +24,11 @@ type IAM interface {
 type SAOptions struct {
 	Name    string   `yaml:"name"`
 	Roles   []string `yaml:"roles,omitempty"`
-	Project string   `yaml:"project,omitempty"`
+	Project string   `yaml:"project"`
 }
 
 //
 func NewClient(prefix string, iamservice IAM) *Client {
-	if iamservice == nil {
-		log.Fatalf("Can't create client with nil iamservice.")
-	}
 	return &Client{
 		iamservice: iamservice,
 		prefix:     prefix,
@@ -40,7 +37,7 @@ func NewClient(prefix string, iamservice IAM) *Client {
 
 // Creates GKE Service Account. SA name is trimed to 30 characters per GCP limits.
 // If AccessManager has non zero value of prefix field, created ServiceAccounts are prefixed.
-func (client *Client) CreateSA(options SAOptions) *iam.ServiceAccount {
+func (client *Client) CreateSA(options SAOptions) (*iam.ServiceAccount, error) {
 	if client.prefix != "" {
 		options.Name = fmt.Sprintf("%s-%s", client.prefix, options.Name)
 	}
@@ -48,9 +45,10 @@ func (client *Client) CreateSA(options SAOptions) *iam.ServiceAccount {
 	options.Project = fmt.Sprintf("projects/%s", options.Project)
 	sa, err := client.iamservice.CreateSA(options.Name, options.Project)
 	if err != nil && !googleapi.IsNotModified(err) {
-		log.Printf("Error %v when creating new service account.", err)
+		log.Printf("Error: {%v} when creating %s service account in %s project.", err, options.Name, options.Project)
+		return &iam.ServiceAccount{}, err
 	} else {
 		log.Printf("Created service account:\n %s", options.Name)
+		return sa, nil
 	}
-	return sa
 }

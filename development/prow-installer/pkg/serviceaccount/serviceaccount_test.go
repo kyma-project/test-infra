@@ -1,21 +1,111 @@
 package serviceaccount
 
 import (
+	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount/mocks"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/api/iam/v1"
 	"testing"
 )
 
-func TestNewClient(t *testing.T) {
-	t.Run("NewClient() succeed.", func(t *testing.T) {
-		mockIAM := &mocks.IAM{}
-		prefix := "test_prefix"
-		client := NewClient(prefix, mockIAM)
-		assert.Equal(t, prefix, client.prefix)
-		assert.Equal(t, mockIAM, client.iamservice)
-		assert.NotNilf(t, client.iamservice, "")
-	})
-	t.Run("NewClient() fail because passed nil value for iamservice.", func(t *testing.T) {
+const checkMark = "\u2713"
+const ballotX = "\u2717"
 
-	})
+var testvalues = []struct {
+	prefix  string
+	saname  string
+	project string
+}{
+	{"test_prefix", "test_sa", "test_project"},
+	{"", "test_sa", "test_project"},
+	{"very_long_test_prefix", "very_long_sa_name", "test_project"},
+}
+
+func Test_NewClient(t *testing.T) {
+	for _, tv := range testvalues {
+		t.Logf("Testing with values:\n\tprefix: %s", tv.prefix)
+		prefix := tv.prefix
+		t.Run("NewClient() should be able to create Client object without errors.", func(t *testing.T) {
+			mockIAM := &mocks.IAM{}
+			client := NewClient(prefix, mockIAM)
+			if test := assert.Equal(t, prefix, client.prefix, "Prefix field should be equal to passed prefix string as argument. %s", ballotX); test {
+				t.Log("\tPrefix field is equal to prefix string passed as argument", checkMark)
+			}
+			if test := assert.Equal(t, mockIAM, client.iamservice, "Imaservice field should be equal to passed argument of IAM type. %s", ballotX); test {
+				t.Log("\tIamservice field is equal to iamservice IAM type object passed as argument.", checkMark)
+			}
+			if test := assert.NotNil(t, client.iamservice, "Iamservice field should not have nil value. %s", ballotX); test {
+				t.Log("\tImaservice field is not nil.", checkMark)
+			}
+		})
+	}
+}
+
+func TestClient_CreateSA(t *testing.T) {
+	for _, tv := range testvalues {
+		t.Logf("Testing with values:\n\tprefix: %s\n\tsaname: %s\n\tproject: %s", tv.prefix, tv.saname, tv.project)
+		var prefixedsa string
+		project := tv.project
+		saname := tv.saname
+		prefix := tv.prefix
+		prefixedproject := fmt.Sprintf("projects/%s", project)
+		if prefix != "" {
+			prefixedsa = fmt.Sprintf("%s-%s", prefix, saname)
+		} else {
+			prefixedsa = saname
+		}
+		prefixedsa = fmt.Sprintf("%.30s", prefixedsa)
+		fqdnsa := prefixedsa + "@" + project + ".iam.gserviceaccount.com"
+		options := SAOptions{
+			Name:    saname,
+			Roles:   nil,
+			Project: project,
+		}
+		t.Run("CreateSA method should create serviceaccount.", func(t *testing.T) {
+			mockIAM := &mocks.IAM{}
+			client := NewClient(prefix, mockIAM)
+			mockIAM.On("CreateSA", prefixedsa, prefixedproject).Return(&iam.ServiceAccount{Name: fqdnsa}, nil)
+			defer mockIAM.AssertExpectations(t)
+			sa, err := client.CreateSA(options)
+			if test := assert.Nil(t, err, "Client.CreateSA() method returned not nil error. %s", ballotX); test {
+				t.Log("Client.CreateSA() method returned nil error", checkMark)
+			}
+			if test := assert.NotEmpty(t, sa, "Client.CrateSA() method returned empty serviceaccount object. %s", ballotX); test {
+				t.Log("Client.CrateSA() method returned not empty serviceaccount object.", checkMark)
+			}
+			if test := mockIAM.AssertCalled(t, "CreateSA", prefixedsa, prefixedproject); test {
+				t.Log("Clietn.CreateSA() method was called with expected arguments.", checkMark)
+			} else {
+				t.Errorf("Client.CreateSA() method was not called or called with unexpected arguments. %s", ballotX)
+			}
+			if test := mockIAM.AssertNumberOfCalls(t, "CreateSA", 1); test {
+				t.Log("Client.CreateSA() method was called expected number of times.", checkMark)
+			} else {
+				t.Errorf("Client.CreateSA() method was called unexpected number of times. %s", ballotX)
+			}
+		})
+		t.Run("CreateSA method fail and should return error", func(t *testing.T) {
+			mockIAM := &mocks.IAM{}
+			client := NewClient(prefix, mockIAM)
+			mockIAM.On("CreateSA", prefixedsa, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", prefixedsa))
+			defer mockIAM.AssertExpectations(t)
+			sa, err := client.CreateSA(options)
+			if test := assert.NotNil(t, err, "Client.CreateSA() method returned nil error. %s", ballotX); test {
+				t.Log("Client.CreateSA() method returned not nil error", checkMark)
+			}
+			if test := assert.Empty(t, sa, "Client.CrateSA() method returned non empty serviceaccount object. %s", ballotX); test {
+				t.Log("Client.CrateSA() method returned empty serviceaccount object.", checkMark)
+			}
+			if test := mockIAM.AssertCalled(t, "CreateSA", prefixedsa, prefixedproject); test {
+				t.Log("Clietn.CreateSA() method was called with expected arguments.", checkMark)
+			} else {
+				t.Errorf("Client.CreateSA() method was not called or called with unexpected arguments. %s", ballotX)
+			}
+			if test := mockIAM.AssertNumberOfCalls(t, "CreateSA", 1); test {
+				t.Log("Client.CreateSA() method was called expected number of times.", checkMark)
+			} else {
+				t.Errorf("Client.CreateSA() method was called unexpected number of times. %s", ballotX)
+			}
+		})
+	}
 }
