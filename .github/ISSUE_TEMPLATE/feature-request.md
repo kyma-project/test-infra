@@ -20,6 +20,10 @@ assignees: ''
 
 <!-- Explain why we should add this feature. Provide use cases to illustrate its benefits. -->
 
+**Acceptance Criteria**
+
+<!-- Describe quickly what criteria should be met in order to consider it closed -->
+
 **Attachments**
 
 <!-- Attach any files, links, code samples, or screenshots that will convince us to your idea. -->
