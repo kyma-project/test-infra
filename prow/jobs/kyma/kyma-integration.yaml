@@ -5,11 +5,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-dbadura_infra_ref: &dbadura_infra_ref
-  org: dbadura
-  repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
-
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -161,29 +156,6 @@ gke_upgrade_job_template: &gke_upgrade_job_template
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-gke_compass_prototype_upgrade_job_template: &gke_compass_prototype_upgrade_job_template
-  skip_report: true
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-a"
-        args:
-          - "-c"
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-compass.sh"
         resources:
           requests:
             memory: 200Mi
@@ -466,23 +438,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-
-    - name: pre-master-compass-prototype-gke-upgrade
-      branches:
-        - ^master$
-      <<: *gke_compass_prototype_upgrade_job_template
-      optional: true
-      path_alias: github.com/kyma-project/kyma
-      # following regexp won't start build if only Markdown files were changed
-      # TODO: currently this job will be executed only on demand for test purpose only
-#      run_if_changed: "^((resources/compass/\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      always_run: false
-      labels:
-        preset-build-pr: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *dbadura_infra_ref
-          base_ref: compass-upgrade-prototype-scripts
     - name: pre-rel19-kyma-gke-upgrade
       branches:
         - release-1.9
