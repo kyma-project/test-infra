@@ -1,16 +1,6 @@
 projects :
   - name : "sap-kyma-neighbors-dev"
     requiredbindings :
-      - role : "organizations/363385237196/roles/sap_admin"
-        members :
-          - "user:andre.russ@sap.com"
-          - "user:arkadiusz.szczyrba@sap.com"
-          - "user:daniel.roth02@sap.com"
-          - "user:francois-yanick.bourassa@sap.com"
-          - "user:mathieu.sauve@sap.com"
-          - "user:maxime.desrosiers@sap.com"
-          - "user:przemyslaw.pokrywka@sap.com"
-          - "user:rene.welches@sap.com"
       - role : "roles/cloudkms.admin"
         members :
           - "serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com"
@@ -39,13 +29,11 @@ projects :
           - "serviceAccount:neighbors-gardener@sap-kyma-neighbors-dev.iam.gserviceaccount.com"
       - role : "roles/iam.serviceAccountUser"
         members :
+          - "group:prow_admins@sap.com",
           - "serviceAccount:neighbors-gardener@sap-kyma-neighbors-dev.iam.gserviceaccount.com"
       - role : "roles/owner"
         members :
           - "serviceAccount:account-creator@sap-mce-tooling.iam.gserviceaccount.com"
-          - "user:daniel.roth02@sap.com"
-          - "user:katarzyna.kepka@sap.com"
-          - "user:przemyslaw.pokrywka@sap.com"
       - role : "roles/storage.admin"
         members :
           - "serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com"

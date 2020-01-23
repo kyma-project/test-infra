@@ -20,7 +20,7 @@ type IAM interface {
 	CreateSA(saname string, projectname string) (*iam.ServiceAccount, error)
 }
 
-// GKE serviceaccount options.
+// GCP serviceaccount options.
 type SAOptions struct {
 	Name    string   `yaml:"name"`
 	Roles   []string `yaml:"roles,omitempty"`
