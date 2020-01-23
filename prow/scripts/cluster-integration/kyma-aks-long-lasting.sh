@@ -261,7 +261,6 @@ function installKyma() {
 		| kubectl apply -f-
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-		--data "global.proxy.excludeIPRanges=10.0.0.1" \
 		--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 		--label "component=istio"
 
