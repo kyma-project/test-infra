@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install gcloud
 ENV CLOUD_SDK_VERSION=276.0.0
+
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -40,6 +41,9 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
     gcloud info | tee /workspace/gcloud-info.txt
+
+# Kubectl 1.16
+RUN mv /google-cloud-sdk/bin/kubectl.1.16 /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
 RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg \
