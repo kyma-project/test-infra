@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20191120-c285b8e3
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20200124-deef6b8c
 
 # Install packages required by az
 RUN apt-get update && apt-get install -y --no-install-recommends \
