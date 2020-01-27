@@ -44,6 +44,17 @@ var tests = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{
+		name:  "kyma-environment-broker",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {
