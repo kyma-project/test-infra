@@ -385,7 +385,7 @@ function main {
 
     junit::test_start "Update_Tiller"
     log::info "Updating Tiller" 2>&1 | junit::test_output
-    kyma::install_tiller "${KYMA_SOURCES}" 2>&1 | junit::test_output
+    kubectl apply -f "${KYMA_SOURCES}/installation/resources/tiller.yaml" 2>&1 | junit::test_output
     junit::test_pass
 
     junit::test_start "Load_Kyma_Configuration"
