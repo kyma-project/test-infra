@@ -16,7 +16,7 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-const defaultAddressRegexpList = "(?!nightly|weekly).*"
+const defaultAddressRegexpList = "*[^nightly]"
 const minAgeInHours = 1
 const minPatternLength = 5
 
