@@ -961,34 +961,3 @@ periodics:
             requests:
               memory: 200Mi
               cpu: 80m
-
-  - name: kyma-components-use-recent-versions
-    decorate: true
-    cron: "0 4 * * 1" # At 04:00 on every Monday
-    labels:
-      preset-sap-slack-bot-token: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/development/tools/scripts/synchronizer-entrypoint.sh ${KYMA_PROJECT_DIR}/test-infra/development"
-          env:
-            - name: KYMA_PROJECT_DIR
-              value: "/home/prow/go/src/github.com/kyma-project"
-            #TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
-            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#test-alert-channel"
-            - name: OUT_OF_DATE_DAYS
-              value: "3"
-          resources:
-            requests:
-              memory: 1Gi
-              cpu: 400m
