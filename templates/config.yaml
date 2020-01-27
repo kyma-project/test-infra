@@ -312,6 +312,12 @@ templates:
           path: tests/provisioner-tests
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/tests/kyma-environment-broker/kyma-environment-broker-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/kyma-environment-broker
+          since: "1.10"
+          optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
           <<: *kyma_generic_component
