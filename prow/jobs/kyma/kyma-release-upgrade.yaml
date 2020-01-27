@@ -1,10 +1,14 @@
+# Kubectl 1.14, CLUSTER_VERSION=1.14
+k8s_1-14: &k8s_1-14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
 gke_upgrade_job_template: &gke_upgrade_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
