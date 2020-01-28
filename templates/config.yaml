@@ -458,6 +458,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/contract/knative-channel-kafka
           since: "1.10"
+          optional: true
       - to: ../prow/jobs/kyma/tests/end-to-end/backup/backup-generic.yaml
         values:
           <<: *kyma_generic_component
