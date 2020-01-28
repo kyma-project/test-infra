@@ -45,11 +45,11 @@ var tests = []struct {
 		},
 	},
 	{
-		name:  "kyma-environment-broker",
+		name:  "kyma-environment-broker/e2e-provisioning",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.JobFileSuffix("test-generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release110),
 			jobsuite.Optional(),
