@@ -16,7 +16,7 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-const defaultAddressRegexpList = "*[^nightly]"
+const defaultAddressRegexpList = "(remoteenvs-)?gkeint-(pr|commit|rel)-.*,(remoteenvs-)?gke-upgrade-(pr|commit|rel)-.*,(remoteenvs-)?(e2etest),gke-central-(pr|commit|rel)-.*,gke-backup-(pr|commit)-.*,gkecompint-(pr|commit)-.*,gke-minio-(pr|commit)-.*,gke-minio-min-(pr|commit).*,service-catalog.*,apiserver.gke.*"
 const minAgeInHours = 1
 const minPatternLength = 5
 
