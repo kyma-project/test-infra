@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-contract-knative-channel-kafka
       skip_report: false
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
