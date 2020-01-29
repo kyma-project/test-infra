@@ -131,3 +131,10 @@ function checkActionInputParameterValue() {
         exit 1
     fi
 }
+
+function checkInfraInputParameterValue() {
+    if [[ "${INFRA}" != "aks" ]] && [[ "${ACTION}" != "gke" ]]; then
+        shoutFail "--infra  possible values are 'aks' or 'gke'"
+        exit 1
+    fi
+}

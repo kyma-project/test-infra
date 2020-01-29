@@ -55,7 +55,7 @@ export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
-export TEST_CONTAINER_NAME="runner"
+export TEST_CONTAINER_NAME="tests"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -385,7 +385,6 @@ upgradeKyma() {
     shout "Install Tiller from version ${TARGET_VERSION}"
     date
     kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
 
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
@@ -404,6 +403,21 @@ upgradeKyma() {
         CLEANUP_APISERVER_DNS_RECORD="true"
         IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
     fi
+}
+
+remove_addons_if_necessary() {
+  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
+
+  if [ -z "$tdWithAddon" ]
+  then
+      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
+      removeTestingAddons
+      if [[ $? -eq 1 ]]; then
+        exit 1
+      fi
+  else
+      echo "- Skipping removing ClusterAddonsConfiguration"
+  fi
 }
 
 testKyma() {
@@ -454,6 +468,8 @@ installKyma
 createTestResources
 
 upgradeKyma
+
+remove_addons_if_necessary
 
 testKyma
 

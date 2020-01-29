@@ -1,0 +1,48 @@
+job_template: &job_template
+  always_run: true
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-incubator/fluentbit
+  max_concurrency: 10
+  extra_refs:
+  - org: kyma-project
+    repo: test-infra
+    base_ref: master
+    path_alias: github.com/kyma-project/test-infra
+  branches:
+  - ^master$
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-incubator/fluentbit"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-incubator: "true"
+
+presubmits: # runs on PRs
+  kyma-incubator/fluentbit:
+  - name: pre-master-fluentbit
+    <<: *job_template
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+
+postsubmits:
+  kyma-incubator/fluentbit:
+  - name: post-master-fluentbit
+    <<: *job_template
+    labels:
+      <<: *job_labels_template
+      preset-build-master: "true"
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter

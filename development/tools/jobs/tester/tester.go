@@ -47,10 +47,13 @@ const (
 	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
+	// ImageKymaClusterInfraLatest represents boostrap image published on 20.11.2019
+	ImageKymaClusterInfraLatest = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
 	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
+	ImageBootstrapHelm20191227 = "eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191004-f931536"
 
@@ -177,6 +180,20 @@ func AssertThatHasExtraRefTestInfra(t *testing.T, in config.UtilityConfig, expec
 		}
 	}
 	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s]", expectedBaseRef))
+}
+
+// AssertThatHasExtraRefTestInfraWithSHA checks if job has configured extra ref to test-infra repository with appropriate sha
+func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig, expectedBaseRef, expectedBaseSHA string) {
+	for _, curr := range in.ExtraRefs {
+		if curr.PathAlias == "github.com/kyma-project/test-infra" &&
+			curr.Org == "kyma-project" &&
+			curr.Repo == "test-infra" &&
+			curr.BaseRef == expectedBaseRef &&
+			curr.BaseSHA == expectedBaseSHA {
+			return
+		}
+	}
+	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s] sha", expectedBaseSHA))
 }
 
 // AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined

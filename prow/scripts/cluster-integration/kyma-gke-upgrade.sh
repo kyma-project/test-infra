@@ -363,7 +363,8 @@ createTestResources() {
     set -o errexit
 
     echo "Logs for prepare data operation to test e2e upgrade: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -c "${TEST_CONTAINER_NAME}"
+    # shellcheck disable=SC2046
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" $(kubectl get pod -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
     if [ "${prepareTestResult}" != 0 ]; then
         echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
         exit "${prepareTestResult}"
@@ -426,6 +427,21 @@ function upgradeKyma() {
     fi
 }
 
+remove_addons_if_necessary() {
+  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
+
+  if [ -z "$tdWithAddon" ]
+  then
+      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
+      removeTestingAddons
+      if [[ $? -eq 1 ]]; then
+        exit 1
+      fi
+  else
+      echo "- Skipping removing ClusterAddonsConfiguration"
+  fi
+}
+
 function testKyma() {
     shout "Test Kyma"
     date
@@ -452,6 +468,8 @@ installKyma
 createTestResources
 
 upgradeKyma
+
+remove_addons_if_necessary
 
 testKyma
 

@@ -58,15 +58,14 @@ function kind::worker_ip {
 
 # kind::export_logs exports all logs from the cluster to the artifacts directory. Creates also an archive with logs.
 #
-# Globals:
-#   ARTIFACTS_DIR - Path to the artifacts directory
 # Arguments:
 #   $1 - Cluster name
+#   $2 - Path to the artifacts directory
 function kind::export_logs {
-    echo "Exporting cluster logs to ${ARTIFACTS_DIR}/cluster-logs"
-    mkdir -p "${ARTIFACTS_DIR}/cluster-logs"
-    kind export logs "${ARTIFACTS_DIR}/cluster-logs" --name "${1}"
+    echo "Exporting cluster logs to ${2}/cluster-logs"
+    mkdir -p "${2}/cluster-logs"
+    kind export logs "${2}/cluster-logs" --name "${1}"
 
-    echo "Creating archive ${ARTIFACTS_DIR}/cluster-logs.tar.gz with cluster logs"
-    cd "${ARTIFACTS_DIR}" && tar -zcf "${ARTIFACTS_DIR}/cluster-logs.tar.gz" "cluster-logs/"
+    echo "Creating archive ${2}/cluster-logs.tar.gz with cluster logs"
+    cd "${2}" && tar -zcf "${2}/cluster-logs.tar.gz" "cluster-logs/"
 }

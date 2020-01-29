@@ -40,7 +40,7 @@ function finalize {
 
     if [[ ${CLUSTER_PROVISIONED} = "true" ]]; then
         log::info "Exporting cluster logs to ${ARTIFACTS_DIR}" 2>&1 | junit::test_output
-        kind::export_logs "${CLUSTER_NAME}" 2>&1 | junit::test_output || finalization_failed="true"
+        kind::export_logs "${CLUSTER_NAME}" "${ARTIFACTS_DIR}" 2>&1 | junit::test_output || finalization_failed="true"
 
         if [[ ${DELETE_CLUSTER} = "true" ]]; then
             log::info "Deleting cluster" 2>&1 | junit::test_output
@@ -79,7 +79,7 @@ TUNE_INOTIFY="false"
 START_DOCKER="false"
 
 CLUSTER_NAME="kyma"
-KUBERNETES_VERSION="v1.14.6"
+KUBERNETES_VERSION="v1.16.4"
 CLUSTER_CONFIG="${KIND_RESOURCES_DIR}/../cluster.yaml"
 KYMA_SOURCES="${GOPATH}/src/github.com/kyma-project/kyma"
 KYMA_OVERRIDES="${KYMA_SOURCES}/installation/resources/installer-config-local.yaml.tpl"
@@ -109,7 +109,7 @@ function read_flags {
                 echo "     --start-docker               Start the Docker Daemon."
                 echo "     --cluster-name               Name of the kind cluster, default \`kyma\`."
                 echo "     --cluster-config             Path to kind cluster configuration, default \`kind/cluster.yaml\`."
-                echo "     --kubernetes-version         Kubernetes version, default \`v1.14.6\`."
+                echo "     --kubernetes-version         Kubernetes version, default \`v1.16.4\`."
                 echo "     --kyma-sources               Path to the Kyma sources, default \`\${GOPATH}/src/github.com/kyma-project/kyma\`."
                 echo "     --kyma-overrides             Path to the Kyma overrides, default \`\${KYMA_SOURCES}/installation/resources/installer-config-local.yaml.tpl\`."
                 echo "     --kyma-installer             Path to the Kyma Installer yaml, default \`\${KYMA_SOURCES}/installation/resources/installer-local.yaml\`."

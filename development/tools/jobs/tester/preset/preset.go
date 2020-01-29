@@ -4,8 +4,6 @@ package preset
 type Preset string
 
 const (
-	// WebsiteBotZenHubToken means zenhub token
-	WebsiteBotZenHubToken Preset = "preset-website-bot-zenhub-token"
 	// KindVolumesMounts means kubernetes-in-docker preset
 	KindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// GcrPush means GCR push service account
@@ -30,18 +28,8 @@ const (
 	BuildRelease Preset = "preset-build-release"
 	// BotGithubToken means github token
 	BotGithubToken Preset = "preset-bot-github-token"
-	// BotGithubSSH means github ssh
-	BotGithubSSH Preset = "preset-bot-github-ssh"
-	// BotGithubIdentity means github identity
-	BotGithubIdentity Preset = "preset-bot-github-identity"
-	// WebsiteBotGithubToken means github token
-	WebsiteBotGithubToken Preset = "preset-website-bot-github-token"
 	// KymaGuardBotGithubToken represents the Kyma Guard Bot token for GitHub
 	KymaGuardBotGithubToken Preset = "preset-kyma-guard-bot-github-token"
-	// WebsiteBotGithubSSH means github ssh
-	WebsiteBotGithubSSH Preset = "preset-website-bot-github-ssh"
-	// WebsiteBotGithubIdentity means github identity
-	WebsiteBotGithubIdentity Preset = "preset-website-bot-github-identity"
 	// DindEnabled means docker-in-docker preset
 	DindEnabled Preset = "preset-dind-enabled"
 	// SaGKEKymaIntegration means access to service account capable of creating clusters and related resources
@@ -52,4 +40,22 @@ const (
 	KymaBackupRestoreBucket Preset = "preset-kyma-backup-restore-bucket"
 	// KymaBackupCredentials means the credentials for the service account
 	KymaBackupCredentials Preset = "preset-kyma-backup-credentials"
+	// ProwKymaProjectIoSlackSkipReport means the skip report on slack
+	ProwKymaProjectIoSlackSkipReport Preset = "prow.kyma-project.io/slack.skipReport"
+	// GardenerIntegration contains all necessary configuration to deploy on gardener from prow
+	GardenerAzureIntegration Preset = "preset-gardener-azure-kyma-integration"
+	// KymaCLIStable contains all the configuraion to be able to download the stable master kyma CLI binary
+	KymaCLIStable Preset = "preset-kyma-cli-stable"
+	// KymaSlackChannel contains the configuration for slack
+	KymaSlackChannel Preset = "preset-kyma-slack-channel"
+	// SlackBotToken contains the token to use the kyma slack bot
+	SlackBotToken Preset = "preset-sap-slack-bot-token"
+	// StabilityCheckerSlack contains the information for the stability checker slack account
+	StabilityCheckerSlack Preset = "preset-stability-checker-slack-notifications"
+	// NightlyGithubIntegration contains the information for nightly clusters
+	NightlyGithubIntegration Preset = "preset-nightly-github-integration"
+	// KymaKeyring contains the kyma secrets
+	KymaKeyring Preset = "preset-kyma-keyring"
+	// KymaEncriptionKey contains the kyma cryptographic key
+	KymaEncriptionKey Preset = "preset-kyma-encryption-key"
 )

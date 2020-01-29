@@ -140,8 +140,3 @@ for ((i=1; i<=attempts; i++)); do
     echo "Sleep for 15 seconds"
     sleep 15
 done
-
-shout "Uninstalling Kyma"
-date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma uninstall --non-interactive"
-

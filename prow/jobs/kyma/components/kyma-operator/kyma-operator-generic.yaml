@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-kyma-operator$
+    - ^release-(1\.9|1\.8|1\.7)-kyma-operator$
   run_if_changed: "^components/kyma-operator/|^common/makefiles/"
   spec:
     containers:
