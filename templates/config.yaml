@@ -317,10 +317,10 @@ templates:
           path: tests/provisioner-tests
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/kyma-environment-broker/e2e-provisioning/e2e-provisioning-test-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/e2e/provisioning/provisioning-test-generic.yaml
         values:
           <<: *compass_generic_component
-          path: tests/kyma-environment-broker/e2e-provisioning
+          path: tests/e2e/provisioning
           since: "1.10"
           optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
