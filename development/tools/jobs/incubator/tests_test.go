@@ -45,7 +45,7 @@ var tests = []struct {
 		},
 	},
 	{
-		name:  "kyma-environment-broker/e2e-provisioning",
+		name:  "e2e/provisioning",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{

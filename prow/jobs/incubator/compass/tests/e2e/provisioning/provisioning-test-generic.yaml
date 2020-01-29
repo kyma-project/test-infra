@@ -20,7 +20,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-  run_if_changed: "^tests/kyma-environment-broker/e2e-provisioning/|^scripts/"
+  run_if_changed: "^tests/e2e/provisioning/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +29,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/kyma-environment-broker/e2e-provisioning"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/e2e/provisioning"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,12 +37,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-compass-tests-kyma-environment-broker-e2e-provisioning
+    - name: pre-compass-tests-e2e-provisioning
       skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-compass-tests-kyma-environment-broker-e2e-provisioning
+    - name: post-compass-tests-e2e-provisioning
       <<: *job_template
