@@ -176,6 +176,13 @@ var tests = []struct {
 			jobsuite.Since(releases.Release19),
 		},
 	},
+	{path: "contract/knative-channel-kafka", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "end-to-end/backup", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
