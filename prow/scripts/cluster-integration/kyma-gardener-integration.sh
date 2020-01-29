@@ -133,7 +133,7 @@ date
 
 (
 set -x
-yes | kyma install --non-interactive --source latest --timeout 45m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+yes | kyma install --non-interactive --source latest --timeout 60m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 )
 
 shout "Checking the versions"
