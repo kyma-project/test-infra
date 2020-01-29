@@ -79,7 +79,7 @@ function create_service_account() {
 		SA_NAME=${SA_REAL_NAME}
 		SA_DISPLAY_NAME=${SA_REAL_NAME}
 	else
-		SA_NAME=$(echo ${SA_REAL_NAME} | cut -c1-19)-$SHORT_IDENTIFIER
+		SA_NAME=$(echo "${SA_REAL_NAME}" | cut -c1-19)-$SHORT_IDENTIFIER
 		SA_DISPLAY_NAME=$SA_REAL_NAME-$SHORT_IDENTIFIER
 	fi
 	SECRET_FILE=$SECRET_FOLDER/$SA_REAL_NAME
@@ -106,11 +106,11 @@ declare -a SA_VM_KYMA_INTEGRATION=("roles/compute.instanceAdmin" "roles/compute.
 declare -a SA_GCR_PUSH_KYMA_PROJECT=("roles/storage.objectCreator")
 declare -a SA_KYMA_ARTIFACTS=("roles/storage.objectAdmin")
 declare -A SERVICE_ACCOUNTS
-SERVICE_ACCOUNTS[sa-gcs-plank]=$SA_GCS_PLANK
-SERVICE_ACCOUNTS[sa-gke-kyma-integration]=$SA_GKE_KYMA_INTEGRATION
-SERVICE_ACCOUNTS[sa-vm-kyma-integration]=$SA_VM_KYMA_INTEGRATION
-SERVICE_ACCOUNTS[sa-gcr-push-kyma-project]=$SA_GCR_PUSH_KYMA_PROJECT
-SERVICE_ACCOUNTS[sa-kyma-artifacts]=$SA_KYMA_ARTIFACTS
+SERVICE_ACCOUNTS["sa-gcs-plank"]=$SA_GCS_PLANK
+SERVICE_ACCOUNTS["sa-gke-kyma-integration"]=$SA_GKE_KYMA_INTEGRATION
+SERVICE_ACCOUNTS["sa-vm-kyma-integration"]=$SA_VM_KYMA_INTEGRATION
+SERVICE_ACCOUNTS["sa-gcr-push-kyma-project"]=$SA_GCR_PUSH_KYMA_PROJECT
+SERVICE_ACCOUNTS["sa-kyma-artifacts"]=$SA_KYMA_ARTIFACTS
 
 
 # TODO: This script should generate all mandatory secrets
