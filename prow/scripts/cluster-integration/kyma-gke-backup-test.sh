@@ -326,19 +326,44 @@ function restoreKyma() {
     done
     
 
-    shout "Restore Kyma CRDs, Services and Endpoints"
+    shout "Restore Kyma CRDs"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints,clusterbuckets.rafter.kyma-project.io,buckets.rafter.kyma-project.io,clusterassets.rafter.kyma-project.io,assets.rafter.kyma-project.io --wait
+    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io --wait
+
+    sleep 15
+
+    shout "Patch Velero Deployment"
+
+    # --restore-resource-priorities copied from our backup chart
+    kubectl patch deployment -n velero velero -p '
+    {  
+      "spec": {
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "args": [
+                  "server",
+                  "--restore-resource-priorities=namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods,clusterbuckets.rafter.kyma-project.io,buckets.rafter.kyma-project.io,clusterassets.rafter.kyma-project.io,assets.rafter.kyma-project.io"
+                ],
+                "name": "velero"
+              }
+            ]
+          }
+        }
+      }
+    }
+    '
 
     sleep 30
 
-    shout "Restore the rest of Kyma"
+    shout "Restore Kyma"
     date
 
     attempts=3
     for ((i=1; i<=attempts; i++)); do
         
-        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints,clusterbuckets.rafter.kyma-project.io,buckets.rafter.kyma-project.io,clusterassets.rafter.kyma-project.io,assets.rafter.kyma-project.io --restore-volumes --wait
+        velero restore create --from-backup "${BACKUP_NAME}" --restore-volumes --include-cluster-resources --wait
 
         sleep 60
 
