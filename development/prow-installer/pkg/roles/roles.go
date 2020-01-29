@@ -1,6 +1,7 @@
 package roles
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -10,79 +11,96 @@ import (
 
 // projects management object.
 type client struct {
-	crmservice *crmService
+	crmservice CRM
 	policies   map[string]*cloudresourcemanager.Policy
-	//projectsrequirements *[]projectRequirements
 }
 
 type CRM interface {
 	GetPolicy(projectname string, getiampolicyrequest *cloudresourcemanager.GetIamPolicyRequest) (*cloudresourcemanager.Policy, error)
-	SetPolicy(projectname string, seriampolicyrequest *cloudresourcemanager.SetIamPolicyRequest) (*cloudresourcemanager.Policy, error)
+	SetPolicy(projectname string, setiampolicyrequest *cloudresourcemanager.SetIamPolicyRequest) (*cloudresourcemanager.Policy, error)
 }
 
-/*
-// projectRequirements holds data against which project is validated.
-type projectRequirements struct {
-	projectname             string            `yaml:"name"`
-	requiredBindings []requiredBinding `yaml:"requiredbindings"` // bindings which must exist in project policy. These are checked before policy binding is generated.
+//Custom
+type PolicyModifiedError struct {
+	msg string //description of error
 }
 
-// Binding which must exist in project policy.
-type requiredBinding struct {
-	role    string   `yaml:"role"`
-	members []string `yaml:"members"`
-}*/
+// Implementation of Error interface.
+func (e *PolicyModifiedError) Error() string { return e.msg }
 
-func NewClient(crmservice *crmService) (*client, error) {
-	//func NewClient(crmservice *crmService, requirementsfilepath string) (*client, error) {
-	//if requirementsfilepath == ""{
-	//	requirementsfilepath = "./config/mandatory-requirements.yaml"
-	//}
-	//projectsrequirements, err := loadRequirements(requirementsfilepath)
-	//if err != nil {
-	//	return nil, err
-	//}
+// New return new client and error object. Error is not used at present. Added it for future use and to support common error handling.
+func New(crmservice CRM) (*client, error) {
 	return &client{
 		crmservice: crmservice,
 		policies:   make(map[string]*cloudresourcemanager.Policy),
-		//projectsrequirements: projectsrequirements,
 	}, nil
 }
 
-func (client *client) GetPolicy(projectname string) error {
-	iampolicyrequest := &cloudresourcemanager.GetIamPolicyRequest{}
-	policy, err := client.crmservice.GetPolicy(projectname, iampolicyrequest)
-	if err != nil && !googleapi.IsNotModified(err) {
-		return fmt.Errorf("When downloading policy for %s project got error: [%v].", projectname, err)
-	} else if googleapi.IsNotModified(err) {
-		return fmt.Errorf("Policy for project %s was not modified.", projectname)
+func (client *client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) error {
+	if saname == "" || projectname == "" || len(roles) == 0 || func(roles []string) bool {
+		for _, role := range roles {
+			if role == "" {
+				return true
+			}
+		}
+		return false
+	}(roles) {
+		return fmt.Errorf("One of mandatory method arguments saname, projectname ,role can not be empty. Got values. saname: [%s] projectname: [%s] roles: [%v].", saname, projectname, roles)
 	}
-	client.policies[projectname] = policy
+	match, err := regexp.MatchString(`^.+@.+\.iam\.gserviceaccount\.com$`, saname)
+	if err != nil {
+		return fmt.Errorf("When checking if provided saname match safqdn regex got error: [%w].", err)
+	}
+	if match {
+		return fmt.Errorf("saname argument can not be safqdn. Provide only name, without domain part. Got value: [%s].", saname)
+	}
+	if _, present := client.policies[projectname]; !present {
+		policy, err := client.getPolicy(projectname)
+		if err != nil {
+			return fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
+		}
+		client.policies[projectname] = policy
+	}
+	safqdn := client.makeSafqdn(saname, projectname)
+	for _, role := range roles {
+		rolefullname := client.makeRoleFullname(role)
+		err := client.addToRole(safqdn, rolefullname, projectname, condition)
+		if err != nil {
+			client.addRole(safqdn, rolefullname, projectname, condition)
+		}
+	}
+	_, err = client.setPolicy(projectname)
+	if err != nil {
+		if _, ok := err.(*PolicyModifiedError); ok {
+			return err
+		} else {
+			return fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", err)
+		}
+	}
 	return nil
 }
 
+func (client *client) getPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
+	iampolicyrequest := &cloudresourcemanager.GetIamPolicyRequest{}
+	policy, err := client.crmservice.GetPolicy(projectname, iampolicyrequest)
+	if err != nil {
+		return nil, fmt.Errorf("When downloading policy for %s project got error: [%w].", projectname, err)
+	}
+	return policy, nil
+}
+
 // Add account to the role binding members list. If role binding doesn't exist, call project.addBinding first to create it.
-func (client *client) addToRole(accountfqdn string, role string, projectname string, condition *cloudresourcemanager.Expr) error {
+func (client *client) addToRole(accountfqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) error {
 	for _, binding := range client.policies[projectname].Bindings {
-		if binding.Role == role && binding.Condition == condition {
+		if binding.Role == rolefullname && binding.Condition == condition {
 			binding.Members = append(binding.Members, accountfqdn)
 			return nil
 		}
 	}
-	return fmt.Errorf("Binding for role %s not found in %s project policy.", role, projectname)
-}
-
-func (client *client) AddSAtoRole(saname string, role string, projectname string, condition *cloudresourcemanager.Expr) error {
-	safqdn := client.makeSafqdn(saname, projectname)
-	rolefullname := client.makeRoleFullname(role)
-	if client.addToRole(safqdn, rolefullname, projectname, condition) != nil {
-		client.addRole(safqdn, rolefullname, projectname, condition)
-	}
-	return nil
+	return fmt.Errorf("Binding for role %s not found in %s project policy.", rolefullname, projectname)
 }
 
 func (client *client) makeSafqdn(saname string, projectname string) string {
-	//TODO: Add checks if provided saname is safqdn, if yes if the projectname match.
 	return fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", saname, projectname)
 }
 
@@ -102,65 +120,21 @@ func (client *client) addRole(safqdn string, rolefullname string, projectname st
 }
 
 // Calls project.generatePolicyBindings and apply new policy on GKE project.
-func (client *client) SetPolicy(projectname string) error {
+func (client *client) setPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
+	_, err := client.getPolicy(projectname)
+	if err != nil && !googleapi.IsNotModified(errors.Unwrap(err)) {
+		return nil, fmt.Errorf("When setting new policy for %s project got error: [%w].", projectname, err)
+	}
+	if err == nil {
+		return nil, &PolicyModifiedError{msg: fmt.Sprintf("When setting new policy for [%s] project got: Policy was modified.", projectname)}
+		//return nil, fmt.Errorf("When setting new policy for [%s] project got: Policy was modified.", projectname)
+	}
 	iampolicyrequest := &cloudresourcemanager.SetIamPolicyRequest{
 		Policy: client.policies[projectname],
 	}
-	_, err := client.crmservice.SetPolicy(projectname, iampolicyrequest)
-	if err != nil && !googleapi.IsNotModified(err) {
-		return fmt.Errorf("When setting new policy for %s project got error: [%v].", projectname, err)
-	} else if googleapi.IsNotModified(err) {
-		return fmt.Errorf("Policy for project %s was not modified.", projectname)
-	}
-	return nil
-}
-
-/*
-// Wrapper function for policy vaildation steps. Loads project requirements file and execute policy validation functions.
-func loadRequirements(requirementsfilepath string) (*[]projectRequirements, error) {
-	var projectsrequirements *[]projectRequirements
-	requirements, err := ioutil.ReadFile(requirementsfilepath)
+	policy, err := client.crmservice.SetPolicy(projectname, iampolicyrequest)
 	if err != nil {
-		return nil, fmt.Errorf("When reading requirements file %s got error: [%v]", requirementsfilepath, err)
+		return nil, fmt.Errorf("When setting new policy for [%s] project got error: [%w].", projectname, err)
 	}
-	err = yaml.Unmarshal(requirements, projectsrequirements)
-	if err != nil {
-		return nil, fmt.Errorf("When unmarshalling yaml file %s got error: [%v]", requirementsfilepath, err)
-	}
-	return projectsrequirements, nil
+	return policy, nil
 }
-
-// Validating if all bindings exist for mandatory roles with mandatory members.
-// It's to prevent removing mandatory permissions from google SA or removing all project owners.
-func (client *client) validateBindings(projectname string) {
-	var projectbindings map[string]*cloudresourcemanager.Binding
-	for _, binding := range client.policies[projectname].Bindings {
-		if projectbindings[binding.Role] = binding
-	}
-	for _, projectrequirements := range *client.projectsrequirements{
-		if projectrequirements.projectname == projectname {
-
-		}
-	}
-	for _, required := range client.requirements.requiredBindings {
-		if _, present := project.bindings[required.role]; !present {
-			log.Printf("Mssing mandatory role: %s", required.role)
-			project.addBinding(required.role)
-			log.Printf("Added mandatory role: %s", required.role)
-		}
-		for _, requiredMember := range required.members {
-			size := len(project.bindings[required.role].Members)
-			for i, member := range project.bindings[required.role].Members {
-				if requiredMember == member {
-					break
-				} else if (i + 1) == size {
-					log.Printf("Missing required member: %s", requiredMember)
-					project.assignRole(member, required.role)
-					log.Printf("Added missing member: %s to the role: %s", requiredMember, required.role)
-				}
-			}
-
-		}
-	}
-}
-*/

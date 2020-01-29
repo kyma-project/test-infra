@@ -29,13 +29,13 @@ func Test_NewClient(t *testing.T) {
 			mockIAM := &mocks.IAM{}
 			client := NewClient(prefix, mockIAM)
 			if test := assert.Equal(t, prefix, client.prefix, "Prefix field should be equal to passed prefix string as argument. %s", ballotX); test {
-				t.Log("\tPrefix field is equal to prefix string passed as argument", checkMark)
+				t.Log("\tprefix field is equal to prefix string passed as argument", checkMark)
 			}
 			if test := assert.Equal(t, mockIAM, client.iamservice, "Imaservice field should be equal to passed argument of IAM type. %s", ballotX); test {
-				t.Log("\tIamservice field is equal to iamservice IAM type object passed as argument.", checkMark)
+				t.Log("\tiamservice field is equal to iamservice IAM type object passed as argument.", checkMark)
 			}
 			if test := assert.NotNil(t, client.iamservice, "Iamservice field should not have nil value. %s", ballotX); test {
-				t.Log("\tImaservice field is not nil.", checkMark)
+				t.Log("\timaservice field is not nil.", checkMark)
 			}
 		})
 	}
@@ -61,50 +61,50 @@ func TestClient_CreateSA(t *testing.T) {
 			Roles:   nil,
 			Project: project,
 		}
-		t.Run("CreateSA method should create serviceaccount.", func(t *testing.T) {
+		t.Run("CreateSA() should create serviceaccount.", func(t *testing.T) {
 			mockIAM := &mocks.IAM{}
 			client := NewClient(prefix, mockIAM)
 			mockIAM.On("CreateSA", prefixedsa, prefixedproject).Return(&iam.ServiceAccount{Name: fqdnsa}, nil)
 			defer mockIAM.AssertExpectations(t)
 			sa, err := client.CreateSA(options)
 			if test := assert.Nil(t, err, "Client.CreateSA() method returned not nil error. %s", ballotX); test {
-				t.Log("Client.CreateSA() method returned nil error", checkMark)
+				t.Log("CreateSA() returned nil error", checkMark)
 			}
 			if test := assert.NotEmpty(t, sa, "Client.CrateSA() method returned empty serviceaccount object. %s", ballotX); test {
-				t.Log("Client.CrateSA() method returned not empty serviceaccount object.", checkMark)
+				t.Log("CrateSA() returned not empty serviceaccount object.", checkMark)
 			}
 			if test := mockIAM.AssertCalled(t, "CreateSA", prefixedsa, prefixedproject); test {
-				t.Log("Clietn.CreateSA() method was called with expected arguments.", checkMark)
+				t.Log("CreateSA() was called with expected arguments.", checkMark)
 			} else {
-				t.Errorf("Client.CreateSA() method was not called or called with unexpected arguments. %s", ballotX)
+				t.Errorf("CreateSA() was not called or called with unexpected arguments. %s", ballotX)
 			}
 			if test := mockIAM.AssertNumberOfCalls(t, "CreateSA", 1); test {
-				t.Log("Client.CreateSA() method was called expected number of times.", checkMark)
+				t.Log("CreateSA() was called expected number of times.", checkMark)
 			} else {
-				t.Errorf("Client.CreateSA() method was called unexpected number of times. %s", ballotX)
+				t.Errorf("CreateSA() was called unexpected number of times. %s", ballotX)
 			}
 		})
-		t.Run("CreateSA method fail and should return error", func(t *testing.T) {
+		t.Run("CreateSA() fail and should return error", func(t *testing.T) {
 			mockIAM := &mocks.IAM{}
 			client := NewClient(prefix, mockIAM)
 			mockIAM.On("CreateSA", prefixedsa, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", prefixedsa))
 			defer mockIAM.AssertExpectations(t)
 			sa, err := client.CreateSA(options)
 			if test := assert.NotNil(t, err, "Client.CreateSA() method returned nil error. %s", ballotX); test {
-				t.Log("Client.CreateSA() method returned not nil error", checkMark)
+				t.Log("CreateSA() returned not nil error", checkMark)
 			}
 			if test := assert.Empty(t, sa, "Client.CrateSA() method returned non empty serviceaccount object. %s", ballotX); test {
-				t.Log("Client.CrateSA() method returned empty serviceaccount object.", checkMark)
+				t.Log("CrateSA() returned empty serviceaccount object.", checkMark)
 			}
 			if test := mockIAM.AssertCalled(t, "CreateSA", prefixedsa, prefixedproject); test {
-				t.Log("Clietn.CreateSA() method was called with expected arguments.", checkMark)
+				t.Log("CreateSA() was called with expected arguments.", checkMark)
 			} else {
-				t.Errorf("Client.CreateSA() method was not called or called with unexpected arguments. %s", ballotX)
+				t.Errorf("CreateSA() was not called or called with unexpected arguments. %s", ballotX)
 			}
 			if test := mockIAM.AssertNumberOfCalls(t, "CreateSA", 1); test {
-				t.Log("Client.CreateSA() method was called expected number of times.", checkMark)
+				t.Log("CreateSA() was called expected number of times.", checkMark)
 			} else {
-				t.Errorf("Client.CreateSA() method was called unexpected number of times. %s", ballotX)
+				t.Errorf("CreateSA() was called unexpected number of times. %s", ballotX)
 			}
 		})
 	}

@@ -35,13 +35,13 @@ func (_m *CRM) GetPolicy(projectname string, getiampolicyrequest *cloudresourcem
 	return r0, r1
 }
 
-// SetPolicy provides a mock function with given fields: projectname, seriampolicyrequest
-func (_m *CRM) SetPolicy(projectname string, seriampolicyrequest *cloudresourcemanager.SetIamPolicyRequest) (*cloudresourcemanager.Policy, error) {
-	ret := _m.Called(projectname, seriampolicyrequest)
+// SetPolicy provides a mock function with given fields: projectname, setiampolicyrequest
+func (_m *CRM) SetPolicy(projectname string, setiampolicyrequest *cloudresourcemanager.SetIamPolicyRequest) (*cloudresourcemanager.Policy, error) {
+	ret := _m.Called(projectname, setiampolicyrequest)
 
 	var r0 *cloudresourcemanager.Policy
 	if rf, ok := ret.Get(0).(func(string, *cloudresourcemanager.SetIamPolicyRequest) *cloudresourcemanager.Policy); ok {
-		r0 = rf(projectname, seriampolicyrequest)
+		r0 = rf(projectname, setiampolicyrequest)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*cloudresourcemanager.Policy)
@@ -50,7 +50,7 @@ func (_m *CRM) SetPolicy(projectname string, seriampolicyrequest *cloudresourcem
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string, *cloudresourcemanager.SetIamPolicyRequest) error); ok {
-		r1 = rf(projectname, seriampolicyrequest)
+		r1 = rf(projectname, setiampolicyrequest)
 	} else {
 		r1 = ret.Error(1)
 	}
