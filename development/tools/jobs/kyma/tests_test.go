@@ -97,6 +97,13 @@ var tests = []struct {
 			jobsuite.Until(releases.Release18),
 		},
 	},
+	{path: "end-to-end/external-solution-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "end-to-end/kubeless-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
