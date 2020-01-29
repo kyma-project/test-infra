@@ -248,6 +248,11 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/upgrade
           since: "1.7"
+      - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/end-to-end/external-solution-integration
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *compass_generic_component
