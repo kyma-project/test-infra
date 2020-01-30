@@ -252,7 +252,7 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/external-solution-integration
-          optional: true
+          since: "1.10"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *compass_generic_component
@@ -753,6 +753,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/external-solution-integration
+          until: "1.9"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests.yaml
         values:
           <<: *go_kyma_component_1_12
