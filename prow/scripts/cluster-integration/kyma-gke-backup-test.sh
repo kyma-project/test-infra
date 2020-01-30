@@ -326,11 +326,11 @@ function restoreKyma() {
     done
     
 
-    shout "Restore Kyma CRDs"
+    shout "Restore Kyma CRDs, Services and Endpoints"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io --wait
+    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
 
-    sleep 15
+    sleep 30
 
     shout "Patch Velero Deployment"
 
@@ -354,16 +354,16 @@ function restoreKyma() {
       }
     }
     '
+    
+    sleep 15
 
-    sleep 30
-
-    shout "Restore Kyma"
+    shout "Restore the rest of Kyma"
     date
 
     attempts=3
     for ((i=1; i<=attempts; i++)); do
         
-        velero restore create --from-backup "${BACKUP_NAME}" --restore-volumes --include-cluster-resources --wait
+        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
 
         sleep 60
 
