@@ -1,6 +1,10 @@
 ---
 name: Feature request
 about: Suggest an improvement to the project
+title: ''
+labels: area/ci, enhancement
+assignees: ''
+
 ---
 
 <!-- Thank you for your contribution. Before you submit the issue:
@@ -15,6 +19,10 @@ about: Suggest an improvement to the project
 **Reasons**
 
 <!-- Explain why we should add this feature. Provide use cases to illustrate its benefits. -->
+
+**Acceptance Criteria**
+
+<!-- Describe quickly what criteria should be met in order to consider it closed -->
 
 **Attachments**
 

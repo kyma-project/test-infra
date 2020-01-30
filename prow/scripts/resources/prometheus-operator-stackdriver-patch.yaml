@@ -2,6 +2,9 @@ spec:
   resources:
     limits:
       memory: 6Gi
+  additionalScrapeConfigs:
+    key: prometheus-operator-additional-scrape-config.yaml
+    name: prometheus-operator-additional-scrape-config
   containers:
     - name: sidecar
       image: gcr.io/stackdriver-prometheus/stackdriver-prometheus-sidecar:__SIDECAR_IMAGE_TAG__
@@ -14,20 +17,23 @@ spec:
         - --stackdriver.generic.location=__GCP_REGION__
         - --stackdriver.generic.namespace=__CLUSTER_NAME__
         - --include={__name__=~"node_load.+"}
-        - --include={__name__="up",job="apiserver"}
+        - --include={__name__="up",job=~"apiserver|stackdriver-collector"}
         - --include={__name__="apiserver_request_total",job="apiserver"}
-        - --include={__name__="apiserver_request_duration_seconds_bucket",job="apiserver"}
+        - --include={__name__=~"apiserver_request_duration_seconds_.+",job="apiserver"}
         - --include={__name__="workqueue_adds_total",job="apiserver"}
         - --include={__name__="workqueue_depth",job="apiserver"}
-        - --include={__name__="workqueue_queue_duration_seconds_bucket",job="apiserver"}
+        - --include={__name__=~"workqueue_queue_duration_seconds_.+",job="apiserver"}
         - --include={__name__="etcd_helper_cache_entry_total",job="apiserver"}
         - --include={__name__="etcd_helper_cache_hit_total",job="apiserver"}
         - --include={__name__="etcd_helper_cache_miss_total",job="apiserver"}
-        - --include={__name__="etcd_request_cache_get_duration_seconds_bucket",job="apiserver"}
-        - --include={__name__="etcd_request_cache_add_duration_seconds_bucket",job="apiserver"}
+        - --include={__name__=~"etcd_request_cache_get_duration_seconds_.+",job="apiserver"}
+        - --include={__name__=~"etcd_request_cache_add_duration_seconds_.+",job="apiserver"}
         - --include={__name__="process_resident_memory_bytes",job="apiserver"}
         - --include={__name__="process_cpu_seconds_total",job="apiserver"}
         - --include={__name__="go_goroutines",job="apiserver"}
+        - --include={__name__="grpc_io_client_completed_rpcs",job="stackdriver-collector"}
+        - --include={__name__=~"prometheus_remote_storage_queue_capacity|prometheus_remote_storage_queue_length",job="stackdriver-collector"}
+        - --include={__name__="prometheus_sidecar_dropped_series",job="stackdriver-collector"}
       resources:
         limits:
           memory: 2Gi

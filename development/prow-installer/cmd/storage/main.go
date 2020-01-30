@@ -49,10 +49,12 @@ func main() {
 	clientOpts = clientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithLocationID(*locationID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	client, err := storage.New(clientOpts, wrappedAPI)
+  
 	if err != nil {
 		log.Errorf("Could not create GCS Storage Client: %v", err)
 		os.Exit(1)
 	}
+
 
 	err = client.CreateBucket(ctx, *bucketName)
 	if err != nil {

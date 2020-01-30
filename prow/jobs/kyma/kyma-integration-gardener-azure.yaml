@@ -1,0 +1,34 @@
+periodics: 
+- name: kyma-gardener-azure-integration
+  decorate: true
+  decoration_config:
+    timeout: 11700000000000 # 3h:15m
+    grace_period: 600000000000 # 10min
+  cron: "00 11 * * *"
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: master
+  labels:
+    preset-gardener-azure-kyma-integration: "true"
+    preset-kyma-cli-stable: "true"
+    preset-nightly-github-integration: "true"
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gardener-integration.sh"
+      env:
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+      - name: GARDENER_REGION
+        value: "westeurope"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m

@@ -62,17 +62,12 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "asset-metadata-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "asset-store-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest},
-	{path: "asset-upload-service", image: tester.ImageGolangBuildpack1_11},
-	{path: "cms-controller-manager", image: tester.ImageGolangKubebuilder2BuildpackLatest},
 	{path: "backup-plugins", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "cms-services", image: tester.ImageGolangBuildpack1_12},
 	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release17),
@@ -100,7 +95,7 @@ var components = []struct {
 	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release16),
+			jobsuite.AllReleases(),
 			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
@@ -131,6 +126,12 @@ var components = []struct {
 			jobsuite.Since(releases.Release17),
 		},
 	},
+	{path: "istio-installer", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release110),
+		},
+	},
 	{path: "k8s-dashboard-proxy", image: tester.ImageGolangBuildpack1_11},
 	{path: "function-controller", image: tester.ImageGolangKubebuilderBuildpackLatest,
 		additionalOptions: []jobsuite.Option{
@@ -144,6 +145,12 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release17),
+		},
+	},
+	{path: "permission-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release110),
 		},
 	},
 	{path: "service-binding-usage-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

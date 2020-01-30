@@ -10,6 +10,10 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
+# Kubectl 1.14, CLUSTER_VERSION=1.14
+k8s_1-14: &k8s_1-14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
@@ -17,7 +21,7 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
@@ -53,7 +57,7 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -76,7 +80,7 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -99,7 +103,7 @@ gke_xip_job_template: &gke_xip_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -122,7 +126,7 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -145,7 +149,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -168,7 +172,7 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -189,7 +193,7 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -235,6 +239,16 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-integration
+      branches:
+        - release-1.9
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-integration
       branches:
         - release-1.8
@@ -255,45 +269,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-integration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *vm_job_template
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-
-    - name: pre-master-kyma-gke-minio-gcs-gateway
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: pre-master-kyma-gke-minio-az-gateway
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
     - name: pre-rel18-kyma-gke-minio-gcs-gateway
       branches:
         - release-1.8
@@ -402,89 +377,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-minio-gcs-gateway
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-    - name: pre-rel16-kyma-gke-minio-az-gateway
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-    - name: pre-rel16-kyma-gke-minio-gcs-gateway-migration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_migration_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-    - name: pre-rel16-kyma-gke-minio-az-gateway-migration
-      branches:
-        - release-1.6
-      always_run: false
-      <<: *gke_minio_gateway_migration_job_template
-      optional: false
-      labels:
-        preset-build-release: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
-
-    - name: pre-master-kyma-gke-minio-gcs-gateway-migration
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-gcs-gateway: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: pre-master-kyma-gke-minio-az-gateway-migration
-      branches:
-        - ^master$
-      <<: *gke_minio_gateway_migration_job_template
-      run_if_changed: "^(resources\\/assetstore|installation)"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        preset-minio-az-gateway: "true"
-        preset-creds-aks-kyma-integration: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
 
     - name: pre-master-kyma-gke-integration
       branches:
@@ -498,6 +390,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-integration
+      branches:
+        - release-1.9
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-integration
       branches:
         - release-1.8
@@ -524,19 +429,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-integration
-      branches:
-        - release-1.6
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.6
 
     - name: pre-master-kyma-gke-upgrade
       branches:
@@ -550,6 +442,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-upgrade
+      branches:
+        - release-1.9
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-upgrade
       branches:
         - release-1.8
@@ -572,17 +475,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-upgrade
-      branches:
-        - release-1.6
-      <<: *gke_upgrade_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
 
     - name: pre-master-kyma-gke-central-connector
       branches:
@@ -596,6 +488,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-central-connector
+      branches:
+        - release-1.9
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-central-connector
       branches:
         - release-1.8
@@ -618,17 +521,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-central-connector
-      branches:
-        - release-1.6
-      <<: *gke_central_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
 
     - name: pre-master-kyma-gke-backup
       optional: false
@@ -636,13 +528,25 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_backup_job_template
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/backup\\S+|tests/end-to-end/backup-restore-test/deploy/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^((resources/backup\\S+|tests/end-to-end/backup/chart/backup-test/\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         <<: *gke_backup_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel19-kyma-gke-backup
+      optional: false
+      branches:
+        - release-1.9
+      <<: *gke_backup_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_backup_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.9
     - name: pre-rel18-kyma-gke-backup
       optional: false
       branches:
@@ -667,18 +571,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.7
-    - name: pre-rel16-kyma-gke-backup
-      optional: false
-      branches:
-        - release-1.6
-      <<: *gke_backup_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.6
 
 postsubmits:
   kyma-project/kyma:
@@ -773,7 +665,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           command:
             - "bash"
           args:
@@ -828,7 +720,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore'"
+            - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release'"
           resources:
             requests:
               memory: 1Gi
@@ -1011,7 +903,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           securityContext:
             privileged: true
           volumeMounts:
@@ -1080,7 +972,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           securityContext:
             privileged: true
           volumeMounts:
@@ -1150,7 +1042,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           securityContext:
             privileged: true
           volumeMounts:
@@ -1202,7 +1094,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           securityContext:
             privileged: true
           command:
@@ -1221,67 +1113,3 @@ periodics:
             requests:
               memory: 200Mi
               cpu: 80m
-
-  - name: kyma-whitesource-scan
-    decorate: true
-    cron: "0 4 * * *" # At 04:00 am every day
-    labels:
-      preset-kyma-wssagent-config: "true"
-      preset-kyma-keyring: "true"
-      preset-kyma-encryption-key: "true"
-      preset-kms-gc-project-env: "true"
-      preset-sa-gke-kyma-integration: "true"
-      preset-gc-project-env: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-          env:
-            - name : PROJECTNAME
-              value: "kyma"
-            - name: DRYRUN
-              value: "false"
-          resources:
-            requests:
-              memory: 1Gi
-              cpu: 400m
-
-  - name: kyma-components-use-recent-versions
-    decorate: true
-    cron: "0 4 * * 1" # At 04:00 on every Monday
-    labels:
-      preset-sap-slack-bot-token: "true"
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181204-a6e79be
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/development/tools/scripts/synchronizer-entrypoint.sh ${KYMA_PROJECT_DIR}/test-infra/development"
-          env:
-            - name: KYMA_PROJECT_DIR
-              value: "/home/prow/go/src/github.com/kyma-project"
-            #TODO: change to "#c4core-kyma-ci-force" when the component naming convention will be agreed and synchronizer will follow it
-            - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#test-alert-channel"
-            - name: OUT_OF_DATE_DAYS
-              value: "3"
-          resources:
-            requests:
-              memory: 1Gi
-              cpu: 400m

@@ -2,6 +2,13 @@
 
 presets:
   - labels:
+      preset-gke-kyma-developers-group: "true"
+    env:
+      - name: GCLOUD_SECURITY_GROUP
+        value: "kyma_developers"
+      - name: GCLOUD_SECURITY_GROUP_DOMAIN
+        value: "sap.com"
+  - labels:
       preset-gc-compute-envs: "true"
     env:
       - name: CLOUDSDK_COMPUTE_REGION
@@ -84,13 +91,13 @@ presets:
     - name: knative-sa
       mountPath: /etc/credentials/knative-sa
   - labels:
-      preset-gardener-kyma-integration: "true"
+      preset-gardener-azure-kyma-integration: "true"
     env:
     - name: GARDENER_KYMA_PROW_KUBECONFIG
       value: /etc/credentials/gardener-kyma-prow/kubeconfig
     - name: GARDENER_KYMA_PROW_PROJECT_NAME
       value: "kyma-prow"
-    - name: GARDENER_KYMA_PROW_AZURE_SECRET_NAME
+    - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
       value: "kyma-azure"
     volumes:
     - name: gardener-kyma-prow-kubeconfig
@@ -425,6 +432,41 @@ presets:
     env:
     - name: CLUSTER_USE_SSD
       value: "true"
+  # whitesource labels
+  - labels:
+      preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: GITHUB_ORG_DIR
+        value: "/home/prow/go/src/github.com/kyma-incubator"
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
+  - labels:
+      preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+      - name: CLOUDSDK_DNS_ZONE_NAME
+        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+      - name: GITHUB_ORG_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+    volumes:
+      - name: sa-gke-kyma-integration
+        secret:
+          secretName: sa-gke-kyma-integration
+    volumeMounts:
+      - name: sa-gke-kyma-integration
+        mountPath: /etc/credentials/sa-gke-kyma-integration
+        readOnly: true
 
 branch-protection:
   enforce_admins: false
@@ -442,6 +484,16 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.9:
+              required_status_checks:
+                contexts:
+                  - pre-rel19-kyma-integration
+                  - pre-rel19-kyma-gke-integration
+                  - pre-rel19-kyma-gke-upgrade
+                  - pre-rel19-kyma-gke-backup
+                  - pre-rel19-kyma-gke-central-connector
+                  - pre-rel19-kyma-artifacts
+                  - pre-rel19-kyma-installer
             release-1.8:
               required_status_checks:
                 contexts:
@@ -470,20 +522,6 @@ branch-protection:
                   - pre-rel17-kyma-gke-minio-az-gateway
                   - pre-rel17-kyma-gke-minio-gcs-gateway-migration
                   - pre-rel17-kyma-gke-minio-az-gateway-migration
-            release-1.6:
-              required_status_checks:
-                contexts:
-                  - pre-rel16-kyma-integration
-                  - pre-rel16-kyma-gke-integration
-                  - pre-rel16-kyma-gke-upgrade
-                  - pre-rel16-kyma-gke-backup
-                  - pre-rel16-kyma-gke-central-connector
-                  - pre-rel16-kyma-artifacts
-                  - pre-rel16-kyma-installer
-                  - pre-rel16-kyma-gke-minio-gcs-gateway
-                  - pre-rel16-kyma-gke-minio-az-gateway
-                  - pre-rel16-kyma-gke-minio-gcs-gateway-migration
-                  - pre-rel16-kyma-gke-minio-az-gateway-migration
         website:
           required_status_checks:
             contexts:
@@ -563,7 +601,7 @@ plank:
     timeout: 7200000000000 # 2h
     grace_period: 600000000000 # 10min
     utility_images:
-      clonerefs: "eu.gcr.io/kyma-project/test-infra/pr/clonerefs:PR-1198"
+      clonerefs: "eu.gcr.io/kyma-project/test-infra/clonerefs:v20200109-0db9d13b"
       initupload: "gcr.io/k8s-prow/initupload:v20190312-abfe0e0"
       entrypoint: "gcr.io/k8s-prow/entrypoint:v20190312-abfe0e0"
       sidecar: "gcr.io/k8s-prow/sidecar:v20190312-abfe0e0"

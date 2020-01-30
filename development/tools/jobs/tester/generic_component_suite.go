@@ -23,7 +23,7 @@ func NewGenericComponentSuite(config *jobsuite.Config) jobsuite.Suite {
 }
 
 func (s GenericComponentSuite) Run(t *testing.T) {
-	s.testRunAgainstEnyBranch(t)
+	s.testRunAgainstAnyBranch(t)
 
 	jobConfig, err := ReadJobConfig(s.jobConfigPath())
 	require.NoError(t, err)
@@ -32,7 +32,7 @@ func (s GenericComponentSuite) Run(t *testing.T) {
 	t.Run("postsubmit", s.testPostsubmitJob(jobConfig))
 }
 
-func (s GenericComponentSuite) testRunAgainstEnyBranch(t *testing.T) {
+func (s GenericComponentSuite) testRunAgainstAnyBranch(t *testing.T) {
 	require.NotEmpty(t, s.branchesToRunAgainst(), "Jobs are not triggered on any branch. If the component is deprecated remove its job file and this test.")
 }
 
