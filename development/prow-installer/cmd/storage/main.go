@@ -8,6 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
+
+	gcs "cloud.google.com/go/storage"
 )
 
 var (
@@ -31,18 +33,34 @@ func main() {
 	}
 
 	ctx := context.Background()
-	client, err := storage.New(ctx, storage.Option{Prefix: *prefix, ProjectID: *projectID, LocationID: *locationID})
+
+	gcsClient, err := gcs.NewClient(ctx)
+	if err != nil {
+		log.Errorf("Initializing storage client failed: %w", err)
+	}
+
+	wrappedAPI := &storage.APIWrapper{
+		ProjectID:  *projectID,
+		LocationID: *locationID,
+		GCSClient:  gcsClient,
+	}
+
+	clientOpts := storage.Option{}
+	clientOpts = clientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithLocationID(*locationID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+
+	client, err := storage.New(clientOpts, wrappedAPI)
+  
 	if err != nil {
 		log.Errorf("Could not create GCS Storage Client: %v", err)
 		os.Exit(1)
 	}
 
-	err = client.CreateBucket(*bucketName)
+	err = client.CreateBucket(ctx, *bucketName)
 	if err != nil {
 		log.Fatalf("Creating bucket failed: %v", err)
 	}
 
-	err = client.DeleteBucket(*bucketName)
+	err = client.DeleteBucket(ctx, *bucketName)
 	if err != nil {
 		log.Fatalf("Deleting bucket failed: %v", err)
 	}

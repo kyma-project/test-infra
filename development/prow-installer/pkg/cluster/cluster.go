@@ -36,7 +36,9 @@ func New(opts Option, api API) (*Client, error) {
 	if opts.ServiceAccount == "" {
 		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")
 	}
-
+	if api == nil {
+		return nil, fmt.Errorf("api is required to initialize a client")
+	}
 	return &Client{Option: opts, api: api}, nil
 }
 

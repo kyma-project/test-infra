@@ -191,4 +191,21 @@ func TestNew(t *testing.T) {
 		mockAPI.AssertNumberOfCalls(t, "Create", 0)
 		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
 	})
+
+	t.Run("New() should throw errors, because api is not initialized", func(t *testing.T) {
+		mockAPI := &automock.API{}
+		defer mockAPI.AssertExpectations(t)
+		opts := Option{}
+		opts = opts.WithProjectID("string").WithZoneID("string").WithServiceAccount("string")
+
+		c, err := New(opts, nil)
+		if err == nil {
+			t.Errorf("New() expected an error")
+		}
+		if c != nil {
+			t.Errorf("New() %v, want = %v", c, nil)
+		}
+		mockAPI.AssertNumberOfCalls(t, "Create", 0)
+		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+	})
 }
