@@ -60,7 +60,7 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 		return fmt.Errorf("When checking if provided saname match safqdn regex got error: [%w].", err)
 	}
 	if match {
-		return fmt.Errorf("saname argument can not be safqdn. Provide only name, without domain part. Got value: [%s].", saname)
+		return fmt.Errorf("saname argument can not be serviceaccount fqdn. Provide only name, without domain part. Got value: [%s].", saname)
 	}
 	if _, present := client.policies[projectname]; !present {
 		policy, err := client.getPolicy(projectname)
@@ -83,6 +83,7 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 	}
 	_, err = client.setPolicy(projectname)
 	if err != nil {
+		client.policies[projectname] = nil
 		return fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", safqdn, err)
 	}
 	return nil

@@ -116,25 +116,57 @@ func Test_New(t *testing.T) {
 // NOT READY
 // tests: without errors, each string arg empty, add sa to existing role, add sa to non existing role, add sa to role where it's already present, add sa to multiple roles at one function call, add sa to different roles in separate calls.
 func TestClient_AddSAtoRole(t *testing.T) {
-	t.Run("AddSAtoRole should add serviceaccount to role without errors.", func(t *testing.T) {
-
+	t.Run("AddSAtoRole should fail because of missing mandatory arguments", func(t *testing.T) {
+		//test with empty saname, projectname, roles slice and roles members.
+		//should return error
+		//should not call crmservice.GetPolicy
+		//should not call crmservice.SetPolicy
+		//client.policiec should not contain project policy
+		//
 	})
-	testvalues := []struct {
-		saname  string
-		role    string
-		project string
-	}{
-		{"", "test_role", "test_project"},
-		{"test_sa", "", "test_project"},
-		{"test_sa", "test_role", ""},
-	}
-	for _, tv := range testvalues {
-		t.Logf("\n\tTesting with values:\n\tsaname: %s\n\tproject: %s\n\trole: %s", tv.saname, tv.project, tv.role)
-		t.Run("AddSAtoRole should fail because of empty mandatory argument passed.", func(t *testing.T) {
-
-		})
-	}
-	t.Run("AddSAtoRole should fail because of missing")
+	t.Run("AddSAtoRole should fail because safqdn passed as saname argument", func(t *testing.T) {
+		//test with safqdn passed as saname
+		//should return error
+		//should not call crmservice.GetPolicy
+		//should not call crmservice.SetPolicy
+		//client.policies should not contain project policy
+	})
+	t.Run("AddSAtoRole should fail because got error when getting policy from GCP", func(t *testing.T) {
+		//test with correct arguments
+		//should return error
+		//should call crmservice.GetPolicy
+		//should call crmservice.GetPolicy once
+		//should not call crmservice.SetPolicy
+		//client.policies should not contain project policy
+	})
+	t.Run("AddSAtoRole should fail because got PolicyModifiedError when setting policy in GCP", func(t *testing.T) {
+		//test with correct values
+		//should return error
+		//should call crmservice.GetPolicy
+		//should call crmservice.GetPolicy twice
+		//should not call crmservice.SetPolicy
+		//client.policies should not contain project policy
+	})
+	t.Run("AddSAtoRole should fail because got error when setting policy in GCP", func(t *testing.T) {
+		//test with correct values
+		//should return error
+		//should call crmservice.GetPolicy
+		//should call crmservice.GetPolicy twice
+		//should call crmservice.SetPolicy
+		//should call crmservice.SetPolicy once
+		//client.policies should not contain project policy
+	})
+	t.Run("AddSAtoRole should add serviceaccount to role without errors.", func(t *testing.T) {
+		//test with correct values and multiple roles
+		//should return nil error
+		//should call crmservice.GetPolicy
+		//should call crmservice.GetPolicy twice
+		//should call crmservice.SetPolicy
+		//should call crmservice.SetPolicy once
+		//client.policies should contain project policy with correct binding
+		//client.policies should contain project policy with provided member
+		//Returned policy should be equal to the client.policies project policy
+	})
 }
 
 func TestClient_getPolicy(t *testing.T) {
