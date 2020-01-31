@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.9|1\.8|1\.7)-connection-token-handler$
+    - ^release-(1\.10|1\.9|1\.8)-connection-token-handler$
   run_if_changed: "^components/connection-token-handler/|^common/makefiles/"
   spec:
     containers:

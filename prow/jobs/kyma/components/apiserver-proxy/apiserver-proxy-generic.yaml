@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.9|1\.8|1\.7)-apiserver-proxy$
+    - ^release-(1\.10|1\.9|1\.8)-apiserver-proxy$
   run_if_changed: "^components/apiserver-proxy/|^common/makefiles/"
   spec:
     containers:

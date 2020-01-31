@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.10)-permission-controller$
   run_if_changed: "^components/permission-controller/|^common/makefiles/"
   spec:
     containers:
