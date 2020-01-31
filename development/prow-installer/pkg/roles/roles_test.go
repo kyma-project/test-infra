@@ -98,17 +98,17 @@ func Test_New(t *testing.T) {
 	t.Run("New() should create client object without errors.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		crmclient, err := New(mockCRM)
-		if test := assert.IsTypef(t, &client{}, crmclient, "\tReturned client object is not a pointer to client type. %s", ballotX); test {
-			t.Log("\tNew() returned pointer to object of client type.", checkMark)
+		if test := assert.IsTypef(t, &client{}, crmclient, "\tnot expected: New() returned client object not type of *client{}."); test {
+			t.Log("\texpected: New() returned expected client object.")
 		}
-		if test := assert.Nilf(t, err, "\tNew() returned not nil error. %s", ballotX); test {
-			t.Log("\tNew() returned nil error.", checkMark)
+		if test := assert.Nilf(t, err, "\tnot expected: New() returned not nil error."); test {
+			t.Log("\texpected: New() returned nil error.")
 		}
-		if test := assert.Equalf(t, mockCRM, crmclient.crmservice, "\tNew() returned client object with crmservice field other than provided as argument. %s", ballotX); test {
-			t.Log("\tNew() returned client object with crmservice field same as provided as argument", checkMark)
+		if test := assert.Equalf(t, mockCRM, crmclient.crmservice, "\tnot expected: New() returned client object with unexpected crmservice field."); test {
+			t.Log("\texpected: New() returned client object with correct crmservice field.")
 		}
-		if test := assert.Emptyf(t, crmclient.policies, "\tNew() returned client with not empty policies field. %s", ballotX); test {
-			t.Log("\tNew() returned client with empty policies field", checkMark)
+		if test := assert.Emptyf(t, crmclient.policies, "\tnot expected: New() returned client with not empty policies field."); test {
+			t.Log("\texpected: New() returned client with empty policies field")
 		}
 	})
 }
@@ -182,21 +182,21 @@ func TestClient_getPolicy(t *testing.T) {
 		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(testvalues[1].policy, nil)
 		defer mockCRM.AssertExpectations(t)
 		policy, err := client.getPolicy("test-project")
-		require.Nilf(t, err, "\tgetPolicy() returned not nil error. %s", ballotX)
-		t.Log("\tgetPolicy() returned nil error.", checkMark)
-		require.IsTypef(t, &cloudresourcemanager.Policy{}, policy, "\tgetPolicy() returned policy object not type of cloudresourcemanager.Policy. %s", ballotX)
-		t.Log("\tgetPolicy() returned policy object of type cloudresourcemanager.Policy.", checkMark)
-		require.ElementsMatchf(t, testvalues[1].policy.Bindings, policy.Bindings, "\tgetPolicy() returned policy with different Bindings slice than expected. %s", ballotX)
-		t.Log("\tgetPolicy() returned policy with expected Bindings slice.", checkMark)
+		require.Nilf(t, err, "\tgetPolicy() returned not nil error.")
+		t.Log("\tgetPolicy() returned nil error.")
+		require.IsTypef(t, &cloudresourcemanager.Policy{}, policy, "\tgetPolicy() returned policy object not type of cloudresourcemanager.Policy.")
+		t.Log("\tgetPolicy() returned policy object of type cloudresourcemanager.Policy.")
+		require.ElementsMatchf(t, testvalues[1].policy.Bindings, policy.Bindings, "\tgetPolicy() returned policy with different Bindings slice than expected.")
+		t.Log("\tgetPolicy() returned policy with expected Bindings slice.")
 		if test := mockCRM.AssertCalled(t, "GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}); test {
-			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.", checkMark)
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
 		} else {
-			t.Log("\tcrmservice.GetPolicy() was called with unexpected arguments.", ballotX)
+			t.Log("\tcrmservice.GetPolicy() was called with unexpected arguments.")
 		}
 		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
-			t.Log("\tcrmservice.GetPolicy() was called expected number of times.", checkMark)
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
 		} else {
-			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.", ballotX)
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
 		}
 	})
 	t.Run("getPolicy() returned http.StatusNotModified.", func(t *testing.T) {
@@ -228,19 +228,19 @@ func TestClient_getPolicy(t *testing.T) {
 				}
 			}
 		}
-		require.Truef(t, test, "\tgetPolicy() returned error did not contain http.StatusNotModified code. %s", ballotX)
-		t.Log("\tgetPolicy() returned error containing http.StatusNotModified code.", checkMark)
-		require.Nilf(t, policy, "\tgetPolicy() returned not nil policy object. %s", ballotX)
-		t.Log("\tgetPolicy() returned nil policy object.", checkMark)
+		require.Truef(t, test, "\tgetPolicy() returned error did not contain http.StatusNotModified code.")
+		t.Log("\tgetPolicy() returned error containing http.StatusNotModified code.")
+		require.Nilf(t, policy, "\tgetPolicy() returned not nil policy object.")
+		t.Log("\tgetPolicy() returned nil policy object.")
 		if test := mockCRM.AssertCalled(t, "GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}); test {
-			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.", checkMark)
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
 		} else {
-			t.Log("\tcrmservice.GetPolicy() was called with unexpected arguments.", ballotX)
+			t.Log("\tcrmservice.GetPolicy() was called with unexpected arguments.")
 		}
 		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
-			t.Log("\tcrmservice.GetPolicy() was called expected number of times.", checkMark)
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
 		} else {
-			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.", ballotX)
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
 		}
 	})
 
@@ -252,19 +252,19 @@ func TestClient_getPolicy(t *testing.T) {
 		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, testError)
 		defer mockCRM.AssertExpectations(t)
 		policy, err := client.getPolicy("test-project")
-		require.EqualErrorf(t, err, "When downloading policy for test-project project got error: [Get test-project policy error].", "\tgetPolicy() returned error message other than expected. %s", ballotX)
-		t.Log("\tgetPolicy() returned expected error message.", checkMark)
-		require.Nilf(t, policy, "\tgetPolicy() returned not nil policy object. %s", ballotX)
-		t.Log("\tgetPolicy() returned nil policy object.", checkMark)
+		require.EqualErrorf(t, err, "When downloading policy for test-project project got error: [Get test-project policy error].", "\tgetPolicy() returned error message other than expected.")
+		t.Log("\tgetPolicy() returned expected error message.")
+		require.Nilf(t, policy, "\tgetPolicy() returned not nil policy object. %s")
+		t.Log("\tgetPolicy() returned nil policy object.")
 		if test := mockCRM.AssertCalled(t, "GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}); test {
-			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.", checkMark)
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
 		} else {
-			t.Log("\tcrmservice.GetPolicy() was called with unexpected arguments.", ballotX)
+			t.Log("\tcrmservice.GetPolicy() was called with unexpected arguments.")
 		}
 		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
-			t.Log("\tcrmservice.GetPolicy() was called expected number of times.", checkMark)
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
 		} else {
-			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.", ballotX)
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
 		}
 	})
 }

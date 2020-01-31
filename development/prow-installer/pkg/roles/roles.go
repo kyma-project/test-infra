@@ -82,7 +82,7 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 			}
 		}
 	}
-	policy, err = client.setPolicy(projectname)
+	policy, err := client.setPolicy(projectname)
 	if err != nil {
 		client.policies[projectname] = nil
 		return nil, fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", safqdn, err)
