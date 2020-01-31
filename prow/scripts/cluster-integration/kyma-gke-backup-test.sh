@@ -332,31 +332,6 @@ function restoreKyma() {
 
     sleep 30
 
-    shout "Patch Velero Deployment"
-
-    # --restore-resource-priorities copied from our backup chart
-    kubectl patch deployment -n velero velero -p '
-    {  
-      "spec": {
-        "template": {
-          "spec": {
-            "containers": [
-              {
-                "args": [
-                  "server",
-                  "--restore-resource-priorities=namespaces,persistentvolumes,persistentvolumeclaims,secrets,configmaps,serviceaccounts,limitranges,pods,clusterbuckets.rafter.kyma-project.io,buckets.rafter.kyma-project.io,clusterassets.rafter.kyma-project.io,assets.rafter.kyma-project.io"
-                ],
-                "name": "velero"
-              }
-            ]
-          }
-        }
-      }
-    }
-    '
-    
-    sleep 15
-
     shout "Restore the rest of Kyma"
     date
 
