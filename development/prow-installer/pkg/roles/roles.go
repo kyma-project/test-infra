@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/google/go-cmp/cmp"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
 )
@@ -20,13 +21,18 @@ type CRM interface {
 	SetPolicy(projectname string, setiampolicyrequest *cloudresourcemanager.SetIamPolicyRequest) (*cloudresourcemanager.Policy, error)
 }
 
-//Custom
+//Custom Errors
 type PolicyModifiedError struct {
 	msg string //description of error
 }
 
+type BindingNotFoundError struct {
+	msg string //description of error
+}
+
 // Implementation of Error interface.
-func (e *PolicyModifiedError) Error() string { return e.msg }
+func (e *PolicyModifiedError) Error() string  { return e.msg }
+func (e *BindingNotFoundError) Error() string { return e.msg }
 
 // New return new client and error object. Error is not used at present. Added it for future use and to support common error handling.
 func New(crmservice CRM) (*client, error) {
@@ -36,7 +42,9 @@ func New(crmservice CRM) (*client, error) {
 	}, nil
 }
 
+//Check in caller if returned error is PolicyModifiedError. If yes, during this method execution GCP policy was changed by other caller. Writing policy to GKE would override changes.
 func (client *client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) error {
+	//Test if mandatory input values are not empty
 	if saname == "" || projectname == "" || len(roles) == 0 || func(roles []string) bool {
 		for _, role := range roles {
 			if role == "" {
@@ -66,16 +74,16 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 		rolefullname := client.makeRoleFullname(role)
 		err := client.addToRole(safqdn, rolefullname, projectname, condition)
 		if err != nil {
-			client.addRole(safqdn, rolefullname, projectname, condition)
+			if _, ok := err.(*BindingNotFoundError); ok {
+				client.addRole(safqdn, rolefullname, projectname, condition)
+			} else {
+				return fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
+			}
 		}
 	}
 	_, err = client.setPolicy(projectname)
 	if err != nil {
-		if _, ok := err.(*PolicyModifiedError); ok {
-			return err
-		} else {
-			return fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", err)
-		}
+		return fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", safqdn, err)
 	}
 	return nil
 }
@@ -90,14 +98,14 @@ func (client *client) getPolicy(projectname string) (*cloudresourcemanager.Polic
 }
 
 // Add account to the role binding members list. If role binding doesn't exist, call project.addBinding first to create it.
-func (client *client) addToRole(accountfqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) error {
+func (client *client) addToRole(safqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) error {
 	for _, binding := range client.policies[projectname].Bindings {
-		if binding.Role == rolefullname && binding.Condition == condition {
-			binding.Members = append(binding.Members, accountfqdn)
+		if binding.Role == rolefullname && cmp.Equal(binding.Condition, condition) {
+			binding.Members = append(binding.Members, safqdn)
 			return nil
 		}
 	}
-	return fmt.Errorf("Binding for role %s not found in %s project policy.", rolefullname, projectname)
+	return &BindingNotFoundError{msg: fmt.Sprintf("Binding for role %s not found in %s project policy.", rolefullname, projectname)}
 }
 
 func (client *client) makeSafqdn(saname string, projectname string) string {
@@ -123,11 +131,10 @@ func (client *client) addRole(safqdn string, rolefullname string, projectname st
 func (client *client) setPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
 	_, err := client.getPolicy(projectname)
 	if err != nil && !googleapi.IsNotModified(errors.Unwrap(err)) {
-		return nil, fmt.Errorf("When setting new policy for %s project got error: [%w].", projectname, err)
+		return nil, fmt.Errorf("When checking if policy was modified for %s project got error: [%w].", projectname, err)
 	}
 	if err == nil {
-		return nil, &PolicyModifiedError{msg: fmt.Sprintf("When setting new policy for [%s] project got: Policy was modified.", projectname)}
-		//return nil, fmt.Errorf("When setting new policy for [%s] project got: Policy was modified.", projectname)
+		return nil, &PolicyModifiedError{msg: fmt.Sprintf("When checking if policy was modified for [%s] project got: Policy was modified.", projectname)}
 	}
 	iampolicyrequest := &cloudresourcemanager.SetIamPolicyRequest{
 		Policy: client.policies[projectname],

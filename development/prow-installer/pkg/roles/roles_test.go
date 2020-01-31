@@ -3,6 +3,7 @@ package roles
 import (
 	"errors"
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/roles/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -13,17 +14,15 @@ import (
 	"testing"
 )
 
-const checkMark = "\u2713"
-const ballotX = "\u2717"
-
 var testvalues = []struct {
-	saname  string
-	project string
-	role    string
-	policy  cloudresourcemanager.Policy
+	saname    string
+	project   string
+	roles     []string
+	policy    *cloudresourcemanager.Policy
+	condition *cloudresourcemanager.Expr
 }{
-	{"test_sa_01", "test_project_01", "test_role_01", cloudresourcemanager.Policy{}},
-	{"test_sa_02", "test_project_02", "test_role_02", cloudresourcemanager.Policy{
+	{saname: "test_sa_01", project: "test_project_01", roles: []string{"test_role_01"}, policy: &cloudresourcemanager.Policy{}, condition: nil},
+	{saname: "test_sa_02", project: "test_project_02", roles: []string{"test_role_02"}, policy: &cloudresourcemanager.Policy{
 		AuditConfigs: nil,
 		Bindings: []*cloudresourcemanager.Binding{&cloudresourcemanager.Binding{
 			Condition:       nil,
@@ -43,8 +42,15 @@ var testvalues = []struct {
 		ServerResponse:  googleapi.ServerResponse{},
 		ForceSendFields: nil,
 		NullFields:      nil,
+	}, condition: &cloudresourcemanager.Expr{
+		Description:     "",
+		Expression:      "test-expression",
+		Location:        "",
+		Title:           "",
+		ForceSendFields: nil,
+		NullFields:      nil,
 	}},
-	{"test_sa_03", "test_project_03", "organizations/test_role_03", cloudresourcemanager.Policy{
+	{saname: "test_sa_03", project: "test_project_03", roles: []string{"organizations/test_role_03"}, policy: &cloudresourcemanager.Policy{
 		AuditConfigs: nil,
 		Bindings: []*cloudresourcemanager.Binding{&cloudresourcemanager.Binding{
 			Condition:       nil,
@@ -64,8 +70,28 @@ var testvalues = []struct {
 		ServerResponse:  googleapi.ServerResponse{},
 		ForceSendFields: nil,
 		NullFields:      nil,
-	}},
-	{"test_sa_04", "test_project_04", "roles/test_role_04", cloudresourcemanager.Policy{}},
+	}, condition: nil},
+	{saname: "test_sa_04", project: "test_project_04", roles: []string{"roles/test_role_04"}, policy: &cloudresourcemanager.Policy{
+		AuditConfigs: nil,
+		Bindings: []*cloudresourcemanager.Binding{&cloudresourcemanager.Binding{
+			Condition:       nil,
+			Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
+			Role:            "roles/owner",
+			ForceSendFields: nil,
+			NullFields:      nil,
+		}, &cloudresourcemanager.Binding{
+			Condition:       nil,
+			Members:         []string{"serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com", "user:some_user@sap.com"},
+			Role:            "roles/test_role_04",
+			ForceSendFields: nil,
+			NullFields:      nil,
+		}},
+		Etag:            "",
+		Version:         0,
+		ServerResponse:  googleapi.ServerResponse{},
+		ForceSendFields: nil,
+		NullFields:      nil,
+	}, condition: nil},
 }
 
 func Test_New(t *testing.T) {
@@ -103,27 +129,26 @@ func TestClient_AddSAtoRole(t *testing.T) {
 		{"test_sa", "test_role", ""},
 	}
 	for _, tv := range testvalues {
-		t.Logf("Testing with values:\n\tsaname: %s\n\tproject: %s\n\trole: %s", tv.saname, tv.project, tv.role)
+		t.Logf("\n\tTesting with values:\n\tsaname: %s\n\tproject: %s\n\trole: %s", tv.saname, tv.project, tv.role)
 		t.Run("AddSAtoRole should fail because of empty mandatory argument passed.", func(t *testing.T) {
 
 		})
 	}
+	t.Run("AddSAtoRole should fail because of missing")
 }
 
-// NOT READY changed method sygnature.
 func TestClient_getPolicy(t *testing.T) {
 	t.Run("getPolicy() should get policy without errors.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
-		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(&testvalues[1].policy, nil)
+		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(testvalues[1].policy, nil)
 		defer mockCRM.AssertExpectations(t)
-		err := client.getPolicy("test-project")
+		policy, err := client.getPolicy("test-project")
 		require.Nilf(t, err, "\tgetPolicy() returned not nil error. %s", ballotX)
 		t.Log("\tgetPolicy() returned nil error.", checkMark)
-		require.IsTypef(t, &cloudresourcemanager.Policy{}, client.policies["test-project"], "\tgetPolicy() added policy object is not type of cloudresourcemanager.Policy. %s", ballotX)
-		t.Log("\tgetPolicy() added policy of type cloudresourcemanager.Policy.", checkMark)
-		//TODO: Check if change to ElementsMatch test.
-		require.Equalf(t, testvalues[1].policy.Bindings, client.policies["test-project"].Bindings, "\tgetPolicy() added policy with different Bindings slice than expected. %s", ballotX)
+		require.IsTypef(t, &cloudresourcemanager.Policy{}, policy, "\tgetPolicy() returned policy object not type of cloudresourcemanager.Policy. %s", ballotX)
+		t.Log("\tgetPolicy() returned policy object of type cloudresourcemanager.Policy.", checkMark)
+		require.ElementsMatchf(t, testvalues[1].policy.Bindings, policy.Bindings, "\tgetPolicy() returned policy with different Bindings slice than expected. %s", ballotX)
 		t.Log("\tgetPolicy() returned policy with expected Bindings slice.", checkMark)
 		if test := mockCRM.AssertCalled(t, "GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}); test {
 			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.", checkMark)
@@ -146,10 +171,10 @@ func TestClient_getPolicy(t *testing.T) {
 		}
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
-		client.policies["test-project"] = &testvalues[1].policy
+		client.policies["test-project"] = testvalues[1].policy
 		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, notModifiedError)
 		defer mockCRM.AssertExpectations(t)
-		err := client.getPolicy("test-project")
+		policy, err := client.getPolicy("test-project")
 		var test bool
 		exit := false
 		for loop := true; loop; loop = !(exit == true) {
@@ -167,10 +192,8 @@ func TestClient_getPolicy(t *testing.T) {
 		}
 		require.Truef(t, test, "\tgetPolicy() returned error did not contain http.StatusNotModified code. %s", ballotX)
 		t.Log("\tgetPolicy() returned error containing http.StatusNotModified code.", checkMark)
-		require.Lenf(t, client.policies, 1, "\tgetPolicy() changed number of policies hold by client object, expected only one policy.", ballotX)
-		t.Log("\tgetPolicy() did not changed number od policies hold by client object.", checkMark)
-		require.Equalf(t, testvalues[1].policy, *client.policies["test-project"], "\tgetPolicy() modified policies hold by client.", ballotX)
-		t.Log("\tgetPolicy() did not modified policies hold by client.", checkMark)
+		require.Nilf(t, policy, "\tgetPolicy() returned not nil policy object. %s", ballotX)
+		t.Log("\tgetPolicy() returned nil policy object.", checkMark)
 		if test := mockCRM.AssertCalled(t, "GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}); test {
 			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.", checkMark)
 		} else {
@@ -187,16 +210,14 @@ func TestClient_getPolicy(t *testing.T) {
 		testError := errors.New("Get test-project policy error")
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
-		client.policies["test-project"] = &testvalues[1].policy
+		client.policies["test-project"] = testvalues[1].policy
 		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, testError)
 		defer mockCRM.AssertExpectations(t)
-		err := client.getPolicy("test-project")
+		policy, err := client.getPolicy("test-project")
 		require.EqualErrorf(t, err, "When downloading policy for test-project project got error: [Get test-project policy error].", "\tgetPolicy() returned error message other than expected. %s", ballotX)
 		t.Log("\tgetPolicy() returned expected error message.", checkMark)
-		require.Lenf(t, client.policies, 1, "\tgetPolicy() changed number of policies hold by client object, expected only one policy.", ballotX)
-		t.Log("\tgetPolicy() did not changed number od policies hold by client object.", checkMark)
-		require.Equalf(t, testvalues[1].policy, *client.policies["test-project"], "\tgetPolicy() modified policies hold by client.", ballotX)
-		t.Log("\tgetPolicy() did not modified policies hold by client.", checkMark)
+		require.Nilf(t, policy, "\tgetPolicy() returned not nil policy object. %s", ballotX)
+		t.Log("\tgetPolicy() returned nil policy object.", checkMark)
 		if test := mockCRM.AssertCalled(t, "GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}); test {
 			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.", checkMark)
 		} else {
@@ -210,41 +231,380 @@ func TestClient_getPolicy(t *testing.T) {
 	})
 }
 
-/*
 func TestClient_addToRole(t *testing.T) {
+	//test with not existing role
+	//test with existing role with not matching condition
+	t.Run("addToRole should fail because missing role binding.", func(t *testing.T) {
+		type testvalues = []struct {
+			saname    string
+			project   string
+			roles     []string
+			policy    *cloudresourcemanager.Policy
+			condition *cloudresourcemanager.Expr
+		}
+		values := testvalues{
+			{saname: "test_sa_01", project: "test_project_01", roles: []string{"test_role_01"}, policy: &cloudresourcemanager.Policy{
+				AuditConfigs: nil,
+				Bindings: []*cloudresourcemanager.Binding{&cloudresourcemanager.Binding{
+					Condition:       nil,
+					Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
+					Role:            "roles/owner",
+					ForceSendFields: nil,
+					NullFields:      nil,
+				}, &cloudresourcemanager.Binding{
+					Condition:       nil,
+					Members:         []string{"serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com", "user:some_user@sap.com"},
+					Role:            "roles/compute.admin",
+					ForceSendFields: nil,
+					NullFields:      nil,
+				}},
+				Etag:            "",
+				Version:         0,
+				ServerResponse:  googleapi.ServerResponse{},
+				ForceSendFields: nil,
+				NullFields:      nil,
+			}, condition: &cloudresourcemanager.Expr{
+				Description:     "",
+				Expression:      "test-expression",
+				Location:        "",
+				Title:           "",
+				ForceSendFields: nil,
+				NullFields:      nil,
+			}},
+			{saname: "test_sa_04", project: "test_project_04", roles: []string{"roles/test_role_04"}, policy: &cloudresourcemanager.Policy{
+				AuditConfigs: nil,
+				Bindings: []*cloudresourcemanager.Binding{&cloudresourcemanager.Binding{
+					Condition:       nil,
+					Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
+					Role:            "roles/owner",
+					ForceSendFields: nil,
+					NullFields:      nil,
+				}, &cloudresourcemanager.Binding{
+					Condition: &cloudresourcemanager.Expr{
+						Description:     "",
+						Expression:      "test-expression",
+						Location:        "",
+						Title:           "",
+						ForceSendFields: nil,
+						NullFields:      nil,
+					},
+					Members:         []string{"serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com", "user:some_user@sap.com"},
+					Role:            "roles/test_role_04",
+					ForceSendFields: nil,
+					NullFields:      nil,
+				}},
+				Etag:            "",
+				Version:         0,
+				ServerResponse:  googleapi.ServerResponse{},
+				ForceSendFields: nil,
+				NullFields:      nil,
+			}, condition: nil},
+		}
+		for _, tv := range values {
+			t.Logf("\n\tTesting with values:\n\tsaname: [%s]\n\tproject: [%s]\n\troles: %v\n\tpolicy: [%+v]\n\tcondition: [%+v]", tv.saname, tv.project, tv.roles, tv.policy, tv.condition)
+			mockCRM := &mocks.CRM{}
+			client, _ := New(mockCRM)
+			client.policies[tv.project] = tv.policy
+			rolefullname := client.makeRoleFullname(tv.roles[0])
+			safqdn := client.makeSafqdn(tv.saname, tv.project)
+			err := client.addToRole(safqdn, rolefullname, tv.project, tv.condition)
+			bindingpresent := false
+			if test := assert.IsTypef(t, &BindingNotFoundError{}, err, "\tnot expected: addToRole() did not returned BindingNotFoundError"); test {
+				t.Log("\texpected: addToRole() returned BindingNotFoundError")
+			}
+			for _, binding := range client.policies[tv.project].Bindings {
+				if binding.Role == rolefullname && binding.Condition == tv.condition {
+					bindingpresent = true
+				}
+			}
+			if test := assert.Falsef(t, bindingpresent, "\tnot expected: Role binding found in policy."); test {
+				t.Log("\texpected: Binding not present in policy.")
+			}
+		}
+	})
+	//test with existing role
 	t.Run("addToRole should add sa to role without errors.", func(t *testing.T) {
+		type testvalues = []struct {
+			saname    string
+			project   string
+			roles     []string
+			policy    *cloudresourcemanager.Policy
+			condition *cloudresourcemanager.Expr
+		}
+		values := testvalues{
+			{
+				saname:  "test_sa_01",
+				project: "test_project_01",
+				roles:   []string{"organizations/test_role_01"},
+				policy: &cloudresourcemanager.Policy{
+					AuditConfigs: nil,
+					Bindings: []*cloudresourcemanager.Binding{
+						&cloudresourcemanager.Binding{
+							Condition:       nil,
+							Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
+							Role:            "roles/owner",
+							ForceSendFields: nil,
+							NullFields:      nil,
+						},
+						&cloudresourcemanager.Binding{
+							Condition: &cloudresourcemanager.Expr{
+								Description:     "",
+								Expression:      "test-expression",
+								Location:        "",
+								Title:           "",
+								ForceSendFields: nil,
+								NullFields:      nil,
+							},
+							Members:         []string{"serviceAccount:service-727270599349@gs-project-accounts.iam.gserviceaccount.com", "user:some_user@sap.com"},
+							Role:            "organizations/test_role_01",
+							ForceSendFields: nil,
+							NullFields:      nil,
+						},
+					},
+					Etag:            "",
+					Version:         0,
+					ServerResponse:  googleapi.ServerResponse{},
+					ForceSendFields: nil,
+					NullFields:      nil,
+				},
+				condition: &cloudresourcemanager.Expr{
+					Description:     "",
+					Expression:      "test-expression",
+					Location:        "",
+					Title:           "",
+					ForceSendFields: nil,
+					NullFields:      nil,
+				},
+			},
+		}
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
-		err := client
+		client.policies[values[0].project] = values[0].policy
+		rolefullname := client.makeRoleFullname(values[0].roles[0])
+		safqdn := client.makeSafqdn(values[0].saname, values[0].project)
+		err := client.addToRole(safqdn, rolefullname, values[0].project, values[0].condition)
+		bindingpresent := false
+		require.Nilf(t, err, "\tnot expected: addToRole() returned not nil error")
+		t.Log("\texpected: addToRole() returned nil error")
+		for _, binding := range client.policies[values[0].project].Bindings {
+			if binding.Role == rolefullname && cmp.Equal(binding.Condition, values[0].condition) {
+				bindingpresent = true
+				require.Containsf(t, binding.Members, safqdn, "\tnot expected: Correct binding do not contain expected member.")
+				t.Log("\texpected: Correct binding contain expected member.")
+			}
+		}
+		if test := assert.Truef(t, bindingpresent, "\tnot expected: Correct role binding not found in policy."); test {
+			t.Log("\texpected: Correct role binding present in policy.")
+		}
 	})
 }
-*/
 
 func TestClient_makeSafqdn(t *testing.T) {
 	t.Run("makeSafqdn() should return GCP policy valid FQDN serviceaccount name.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
 		safqdn := client.makeSafqdn(testvalues[0].saname, testvalues[0].project)
-		require.Equalf(t, fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", testvalues[0].saname, testvalues[0].project), safqdn, "makeSafqdn() returned unexpected string value. %s", ballotX)
-		t.Log("makeSafqdn() returned expected string value.", checkMark)
+		require.Equalf(t, fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", testvalues[0].saname, testvalues[0].project), safqdn, "\tmakeSafqdn() returned unexpected string value.")
+		t.Log("\tmakeSafqdn() returned expected string value.")
 	})
 }
 
+//Check which entries from testvalues to use.
 func TestClient_makeRoleFullname(t *testing.T) {
 	for _, tv := range testvalues {
-		t.Logf("Testing with values:\n\trole: %s", tv.role)
+		t.Logf("Testing with values:\n\trole: %v", tv.roles)
 		var role string
-		if prefixed, _ := regexp.MatchString("^(roles|organizations)/.*", tv.role); prefixed {
-			role = tv.role
+		if prefixed, _ := regexp.MatchString("^(roles|organizations)/.*", tv.roles[0]); prefixed {
+			role = tv.roles[0]
 		} else {
-			role = fmt.Sprintf("roles/%s", tv.role)
+			role = fmt.Sprintf("roles/%s", tv.roles[0])
 		}
 		t.Run("makeRoleFullname() shuold return GCP policy valid name", func(t *testing.T) {
 			mockCRM := &mocks.CRM{}
 			client, _ := New(mockCRM)
-			rolefullname := client.makeRoleFullname(tv.role)
-			require.Equalf(t, role, rolefullname, "makeRoleFullname() returned unexpected value for GCP policy role name. %s", ballotX)
-			t.Log("makeRoleFulllname() returned expected GCP policy role name.", checkMark)
+			rolefullname := client.makeRoleFullname(tv.roles[0])
+			assert.Equalf(t, role, rolefullname, "\tmakeRoleFullname() returned unexpected value for GCP policy role name.")
+			t.Log("\tmakeRoleFulllname() returned expected GCP policy role name.")
 		})
 	}
+}
+
+func TestClient_addRole(t *testing.T) {
+	for _, tv := range testvalues[:1] {
+		t.Run("addRole() added expected role to the policy.", func(t *testing.T) {
+			mockCRM := mocks.CRM{}
+			client, _ := New(&mockCRM)
+			client.policies[tv.project] = tv.policy
+			safqdn := client.makeSafqdn(tv.saname, tv.project)
+			rolefullname := client.makeRoleFullname(tv.roles[0])
+			client.addRole(safqdn, rolefullname, tv.project, tv.condition)
+			rolepresent := false
+			for _, binding := range client.policies[tv.project].Bindings {
+				assert.IsTypef(t, &cloudresourcemanager.Binding{}, binding, "\tPolicy contain binding which is not type of *cloudresourcemanager.Binding [%+v].", binding)
+				t.Log("'tAll policy bindings are of expected type.")
+				if binding.Role == rolefullname {
+					rolepresent = true
+					require.Lenf(t, binding.Members, 1, "\tAdded binding do not contain expected number of members.")
+					t.Log("\tAdded binding contain expected number of members.")
+					require.Containsf(t, binding.Members, safqdn, "\tAdded binding do not contain expected member.")
+					t.Log("\tAdded binding contain expected member.")
+					require.Equalf(t, binding.Condition, tv.condition, "\tAdded binding do not contain expected condition.")
+					t.Log("\tAdded binding contain expected condition.")
+				}
+			}
+			require.Truef(t, rolepresent, "\tBinding for added role is not present in policy.")
+			t.Log("\tBinding for added role is present in policy.")
+		})
+	}
+}
+
+func TestClient_setPolicy(t *testing.T) {
+	notModifiedError := &googleapi.Error{
+		Code:    http.StatusNotModified,
+		Message: "",
+		Body:    "",
+		Header:  nil,
+		Errors:  nil,
+	}
+	projectname := "test-project"
+	t.Run("setPolicy() set policy on GCP without errors.", func(t *testing.T) {
+		mockCRM := &mocks.CRM{}
+		client, _ := New(mockCRM)
+		client.policies[projectname] = testvalues[1].policy
+		mockCRM.On("GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, notModifiedError)
+		mockCRM.On("SetPolicy", projectname, &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: testvalues[1].policy,
+		}).Return(testvalues[1].policy, nil)
+		defer mockCRM.AssertExpectations(t)
+		policy, err := client.setPolicy(projectname)
+		assert.IsTypef(t, &cloudresourcemanager.Policy{}, policy, "\tsetPolicy() returned policy is not expected type.")
+		t.Log("\tsetPolicy() returned policy of expected type.")
+		assert.Equalf(t, testvalues[1].policy, policy, "\tsetPolicy() returned policy is not same as provided.")
+		t.Log("\tsetPolicy() returned equal policy as provided.")
+		assert.Nilf(t, err, "\tsetPolicy() returned not nil error")
+		t.Log("\tsetPolicy() returned nil error")
+		if test := mockCRM.AssertCalled(t, "GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}); test {
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was not called.")
+		}
+		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
+		}
+		if test := mockCRM.AssertCalled(t, "SetPolicy", projectname, &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: testvalues[1].policy,
+		}); test {
+			t.Log("\tcrmservice.SetPolicy() was called with expected arguments.")
+		} else {
+			t.Log("\tcrmservice.SetPolicy() was not called.")
+		}
+		if test := mockCRM.AssertNumberOfCalls(t, "SetPolicy", 1); test {
+			t.Log("\tcrmservice.SetPolicy() was called expected number of times.")
+		} else {
+			t.Log("\tcrmservice.SetPolicy() was called unexpected number of times.")
+		}
+	})
+	t.Run("setPolicy() returned PolicyModifiedError error.", func(t *testing.T) {
+		mockCRM := &mocks.CRM{}
+		client, _ := New(mockCRM)
+		client.policies[projectname] = testvalues[1].policy
+		mockCRM.On("GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}).Return(testvalues[1].policy, nil)
+		defer mockCRM.AssertExpectations(t)
+		policy, err := client.setPolicy(projectname)
+		if test := assert.Nilf(t, policy, "\tnot expected: setPolicy() returned not nil policy."); test {
+			t.Log("\texpected: setPolicy() returned nil policy.")
+		}
+		if test := assert.Errorf(t, err, "\tnot expected: setPolicy() did not returned PolicyModifiedError"); test {
+			t.Log("\texpected: setPolicy() returned PolicyModifiedError")
+		}
+		if test := mockCRM.AssertCalled(t, "GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}); test {
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was not called.")
+		}
+		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
+		}
+		if test := mockCRM.AssertNotCalled(t, "SetPolicy", projectname, &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: testvalues[1].policy,
+		}); test {
+			t.Log("\texpected: crmservice.SetPolicy() was not called.")
+		} else {
+			t.Log("\tnot expected: crmservice.SetPolicy() was called.")
+		}
+	})
+	t.Run("setPolicy() returned non PolicyModifiedError error when checking if policy was modified.", func(t *testing.T) {
+		mockCRM := &mocks.CRM{}
+		client, _ := New(mockCRM)
+		client.policies[projectname] = testvalues[1].policy
+		mockCRM.On("GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, errors.New("test-error"))
+		defer mockCRM.AssertExpectations(t)
+		policy, err := client.setPolicy(projectname)
+		if test := assert.Nilf(t, policy, "\tnot expected: setPolicy() returned not nil policy."); test {
+			t.Log("\texpected: setPolicy() returned nil policy")
+		}
+		if test := assert.NotNilf(t, err, "\tnot expected: setPolicy() returned nil error."); test {
+			t.Log("\tsetPolicy() returned not nil error")
+		}
+		if test := mockCRM.AssertCalled(t, "GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}); test {
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was not called.")
+		}
+		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
+		}
+		if test := mockCRM.AssertNotCalled(t, "SetPolicy", projectname, &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: testvalues[1].policy,
+		}); test {
+			t.Log("\texpected: crmservice.SetPolicy() was not called.")
+		} else {
+			t.Log("\tnot expected: crmservice.SetPolicy() was called.")
+		}
+	})
+	t.Run("setPolicy() returned error when setting new policy.", func(t *testing.T) {
+		mockCRM := &mocks.CRM{}
+		client, _ := New(mockCRM)
+		client.policies[projectname] = testvalues[1].policy
+		mockCRM.On("GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, notModifiedError)
+		mockCRM.On("SetPolicy", projectname, &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: testvalues[1].policy,
+		}).Return(nil, errors.New("test-error"))
+		defer mockCRM.AssertExpectations(t)
+		policy, err := client.setPolicy(projectname)
+		if test := assert.Nilf(t, policy, "\tnot expected: setPolicy() returned not nil policy."); test {
+			t.Log("\texpected: setPolicy() returned nil policy")
+		}
+		if test := assert.Errorf(t, err, "\tnot expected: setPolicy() did not returned error."); test {
+			t.Log("\tsetPolicy() returned error")
+		}
+		if test := mockCRM.AssertCalled(t, "GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}); test {
+			t.Log("\tcrmservice.GetPolicy() was called with expected arguments.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was not called.")
+		}
+		if test := mockCRM.AssertNumberOfCalls(t, "GetPolicy", 1); test {
+			t.Log("\tcrmservice.GetPolicy() was called expected number of times.")
+		} else {
+			t.Log("\tcrmservice.GetPolicy() was called unexpected number of times.")
+		}
+		if test := mockCRM.AssertCalled(t, "SetPolicy", projectname, &cloudresourcemanager.SetIamPolicyRequest{
+			Policy: testvalues[1].policy,
+		}); test {
+			t.Log("\texpected: crmservice.SetPolicy() was called with expected arguments.")
+		} else {
+			t.Log("\tnot expected: crmservice.SetPolicy() was not called with expected arguments.")
+		}
+		if test := mockCRM.AssertNumberOfCalls(t, "SetPolicy", 1); test {
+			t.Log("\tcrmservice.SetPolicy() was called expected number of times.")
+		} else {
+			t.Log("\tcrmservice.SetPolicy() was called unexpected number of times.")
+		}
+	})
 }
