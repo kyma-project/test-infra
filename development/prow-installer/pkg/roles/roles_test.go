@@ -94,6 +94,14 @@ var testvalues = []struct {
 	}, condition: nil},
 }
 
+var notModifiedError = &googleapi.Error{
+	Code:    http.StatusNotModified,
+	Message: "",
+	Body:    "",
+	Header:  nil,
+	Errors:  nil,
+}
+
 func Test_New(t *testing.T) {
 	t.Run("New() should create client object without errors.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
@@ -200,13 +208,7 @@ func TestClient_getPolicy(t *testing.T) {
 		}
 	})
 	t.Run("getPolicy() returned http.StatusNotModified.", func(t *testing.T) {
-		notModifiedError := &googleapi.Error{
-			Code:    http.StatusNotModified,
-			Message: "",
-			Body:    "",
-			Header:  nil,
-			Errors:  nil,
-		}
+
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
 		client.policies["test-project"] = testvalues[1].policy
