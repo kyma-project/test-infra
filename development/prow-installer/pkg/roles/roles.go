@@ -43,7 +43,7 @@ func New(crmservice CRM) (*client, error) {
 }
 
 //Check in caller if returned error is PolicyModifiedError. If yes, during this method execution GCP policy was changed by other caller. Writing policy to GKE would override changes.
-func (client *client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) error {
+func (client *client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) (*cloudresourcemanager.Policy, error) {
 	//Test if mandatory input values are not empty
 	if saname == "" || projectname == "" || len(roles) == 0 || func(roles []string) bool {
 		for _, role := range roles {
@@ -53,19 +53,19 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 		}
 		return false
 	}(roles) {
-		return fmt.Errorf("One of mandatory method arguments saname, projectname ,role can not be empty. Got values. saname: [%s] projectname: [%s] roles: [%v].", saname, projectname, roles)
+		return nil, fmt.Errorf("One of mandatory method arguments saname, projectname ,role can not be empty. Got values. saname: [%s] projectname: [%s] roles: [%v].", saname, projectname, roles)
 	}
 	match, err := regexp.MatchString(`^.+@.+\.iam\.gserviceaccount\.com$`, saname)
 	if err != nil {
-		return fmt.Errorf("When checking if provided saname match safqdn regex got error: [%w].", err)
+		return nil, fmt.Errorf("When checking if provided saname match safqdn regex got error: [%w].", err)
 	}
 	if match {
-		return fmt.Errorf("saname argument can not be serviceaccount fqdn. Provide only name, without domain part. Got value: [%s].", saname)
+		return nil, fmt.Errorf("saname argument can not be serviceaccount fqdn. Provide only name, without domain part. Got value: [%s].", saname)
 	}
 	if _, present := client.policies[projectname]; !present {
 		policy, err := client.getPolicy(projectname)
 		if err != nil {
-			return fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
+			return nil, fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
 		}
 		client.policies[projectname] = policy
 	}
@@ -77,16 +77,17 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 			if _, ok := err.(*BindingNotFoundError); ok {
 				client.addRole(safqdn, rolefullname, projectname, condition)
 			} else {
-				return fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
+				client.policies[projectname] = nil
+				return nil, fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
 			}
 		}
 	}
-	_, err = client.setPolicy(projectname)
+	policy, err = client.setPolicy(projectname)
 	if err != nil {
 		client.policies[projectname] = nil
-		return fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", safqdn, err)
+		return nil, fmt.Errorf("When adding roles for serviceaccount [%s] got error: [%w]", safqdn, err)
 	}
-	return nil
+	return policy, nil
 }
 
 func (client *client) getPolicy(projectname string) (*cloudresourcemanager.Policy, error) {

@@ -119,6 +119,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 	t.Run("AddSAtoRole should fail because of missing mandatory arguments", func(t *testing.T) {
 		//test with empty saname, projectname, roles slice and roles members.
 		//should return error
+		//should return nil policy
 		//should not call crmservice.GetPolicy
 		//should not call crmservice.SetPolicy
 		//client.policiec should not contain project policy
@@ -127,6 +128,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 	t.Run("AddSAtoRole should fail because safqdn passed as saname argument", func(t *testing.T) {
 		//test with safqdn passed as saname
 		//should return error
+		//should return nil policy
 		//should not call crmservice.GetPolicy
 		//should not call crmservice.SetPolicy
 		//client.policies should not contain project policy
@@ -134,6 +136,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 	t.Run("AddSAtoRole should fail because got error when getting policy from GCP", func(t *testing.T) {
 		//test with correct arguments
 		//should return error
+		//should return nil policy
 		//should call crmservice.GetPolicy
 		//should call crmservice.GetPolicy once
 		//should not call crmservice.SetPolicy
@@ -142,6 +145,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 	t.Run("AddSAtoRole should fail because got PolicyModifiedError when setting policy in GCP", func(t *testing.T) {
 		//test with correct values
 		//should return error
+		//should return nil policy
 		//should call crmservice.GetPolicy
 		//should call crmservice.GetPolicy twice
 		//should not call crmservice.SetPolicy
@@ -150,6 +154,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 	t.Run("AddSAtoRole should fail because got error when setting policy in GCP", func(t *testing.T) {
 		//test with correct values
 		//should return error
+		//should return nil policy
 		//should call crmservice.GetPolicy
 		//should call crmservice.GetPolicy twice
 		//should call crmservice.SetPolicy
@@ -159,6 +164,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 	t.Run("AddSAtoRole should add serviceaccount to role without errors.", func(t *testing.T) {
 		//test with correct values and multiple roles
 		//should return nil error
+		//should return *cloudresourcemanager.Policy
 		//should call crmservice.GetPolicy
 		//should call crmservice.GetPolicy twice
 		//should call crmservice.SetPolicy
