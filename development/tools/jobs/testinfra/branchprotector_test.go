@@ -64,7 +64,7 @@ func TestBranchProtection(t *testing.T) {
 func TestBranchProtectionRelease(t *testing.T) {
 	actual := readConfig(t)
 
-	currentRelease := releases.Release17
+	currentRelease := releases.Release110
 	relBranch := currentRelease.Branch()
 
 	for _, currentRelease := range releases.GetAllKymaReleases() {

@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.9)-knative-build$
+    - ^release-(1\.10|1\.9)-knative-build$
   run_if_changed: "^tests/knative-build/|^common/makefiles/"
   spec:
     containers:
