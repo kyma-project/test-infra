@@ -306,7 +306,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 14)
+	assert.Len(t, periodics, 15)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -327,7 +327,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, orphanedAZStorageAccountsCleaner.Name)
 	assert.True(t, orphanedAZStorageAccountsCleaner.Decorate)
 	assert.Equal(t, "00 00 * * *", orphanedAZStorageAccountsCleaner.Cron)
-	tester.AssertThatHasPresets(t, orphanedAZStorageAccountsCleaner.JobBase, "preset-minio-az-gateway", "preset-creds-aks-kyma-integration")
+	tester.AssertThatHasPresets(t, orphanedAZStorageAccountsCleaner.JobBase, "preset-creds-aks-kyma-integration")
 	tester.AssertThatHasExtraRefs(t, orphanedAZStorageAccountsCleaner.JobBase.UtilityConfig, []string{"test-infra"})
 	assert.Equal(t, tester.ImageKymaClusterInfraLatest, orphanedAZStorageAccountsCleaner.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, orphanedAZStorageAccountsCleaner.Spec.Containers[0].Command)
