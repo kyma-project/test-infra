@@ -55,6 +55,17 @@ var tests = []struct {
 			jobsuite.Optional(),
 		},
 	},
+	{
+		name:  "connectivity-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release111),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {

@@ -323,6 +323,12 @@ templates:
           path: tests/e2e/provisioning
           since: "1.10"
           optional: true
+      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/connectivity-adapter
+          since: "1.11"
+          optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -471,7 +477,7 @@ templates:
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: tests/rafter       
+          path: tests/rafter
       - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -898,7 +904,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tools/alpine-net
-          until: "1.6"      
+          until: "1.6"
       - to: ../prow/jobs/incubator/knative-kafka/channel.yaml
         values:
           <<: *go_knative_kafka_component_1_12
