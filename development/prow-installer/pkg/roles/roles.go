@@ -53,14 +53,15 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 		}
 		return false
 	}(roles) {
-		return nil, fmt.Errorf("One of mandatory method arguments saname, projectname ,role can not be empty. Got values. saname: [%s] projectname: [%s] roles: [%v].", saname, projectname, roles)
+		return nil, fmt.Errorf("One of mandatory method arguments saname, projectname ,role can not be empty. Got values. saname: %s projectname: %s roles: %v.", saname, projectname, roles)
 	}
 	match, err := regexp.MatchString(`^.+@.+\.iam\.gserviceaccount\.com$`, saname)
 	if err != nil {
-		return nil, fmt.Errorf("When checking if provided saname match safqdn regex got error: [%w].", err)
+		//TODO: How to test this return?
+		return nil, fmt.Errorf("When checking if provided saname match safqdn regex got error: %w.", err)
 	}
 	if match {
-		return nil, fmt.Errorf("saname argument can not be serviceaccount fqdn. Provide only name, without domain part. Got value: [%s].", saname)
+		return nil, fmt.Errorf("saname argument can not be serviceaccount fqdn. Provide only name, without domain part. Got value: %s.", saname)
 	}
 	if _, present := client.policies[projectname]; !present {
 		policy, err := client.getPolicy(projectname)
