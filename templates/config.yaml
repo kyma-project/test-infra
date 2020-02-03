@@ -323,6 +323,12 @@ templates:
           path: tests/e2e/provisioning
           since: "1.10"
           optional: true
+      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/connectivity-adapter
+          since: "1.11"
+          optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
           <<: *kyma_generic_component
