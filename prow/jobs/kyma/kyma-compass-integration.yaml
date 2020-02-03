@@ -92,9 +92,7 @@ presubmits: # runs on PRs
       preset-build-pr: "true"
       <<: *gke_integration_job_labels_template
     extra_refs:
-      - user: rafalpotempa
-        repo: test-infra
-        path_alias: github.com/rafalpotempa/test-infra
+      - <<: *test_infra_ref
         base_ref: provisioner-gardener-azure
 
 postsubmits:
