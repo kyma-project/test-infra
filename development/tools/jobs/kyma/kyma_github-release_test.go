@@ -12,9 +12,6 @@ import (
 func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
 	// WHEN
 	for _, currentRelease := range releases.GetAllKymaReleases() {
-		if currentRelease == releases.Release19 {
-			continue
-		}
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-github-release.yaml")
 			// THEN
