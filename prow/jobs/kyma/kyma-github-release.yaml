@@ -30,28 +30,8 @@ job_labels_template: &job_labels_template
 
 postsubmits: 
   kyma-project/kyma:
-  - name: post-rel110-kyma-github-release
-    branches:
-      - release-1.10
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.10
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.10: "true"
-  - name: post-rel19-kyma-github-release
-    branches:
-      - release-1.9
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.9
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.9: "true"
+
+# START: (TODO bszwarc, will be removed)
   - name: post-rel18-kyma-github-release
     branches:
       - release-1.8
@@ -63,6 +43,19 @@ postsubmits:
       <<: *job_labels_template
       preset-build-release: "true"
       preset-target-commit-1.8: "true"
+  - name: post-rel110-kyma-github-release
+    branches:
+      - release-1.10
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.10
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.10: "true"
+
+#TODO END
 
 presets:
   - labels:
