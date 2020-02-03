@@ -28,9 +28,7 @@ job_labels_template: &job_labels_template
 
 postsubmits: 
   kyma-project/kyma:
-
-# START: (TODO bszwarc, will be removed)
-{{- range (matchingReleases .Global.releases "1.6" "1.8") }}
+{{- range .Global.releases }}
   - name: post-rel{{ . | replace "." "" }}-kyma-github-release
     branches:
       - release-{{ . }}
@@ -43,22 +41,6 @@ postsubmits:
       preset-build-release: "true"
       preset-target-commit-{{ . }}: "true"
 {{- end }}
-
-{{- range (matchingReleases .Global.releases "1.10" nil) }}
-  - name: post-rel{{ . | replace "." "" }}-kyma-github-release
-    branches:
-      - release-{{ . }}
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-{{ . }}
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-{{ . }}: "true"
-{{- end }}
-
-#TODO END
 
 presets:
 {{- range .Global.releases }}
