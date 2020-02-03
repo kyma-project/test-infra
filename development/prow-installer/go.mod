@@ -9,7 +9,6 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.2.2
 	github.com/vektra/mockery v0.0.0-20181123154057-e78b021dcbb5 // indirect
-	golang.org/x/tools v0.0.0-20191115202509-3a792d9c32b2
 	google.golang.org/api v0.14.0
 	google.golang.org/genproto v0.0.0-20191115221424-83cc0476cb11
 	gopkg.in/yaml.v2 v2.2.7

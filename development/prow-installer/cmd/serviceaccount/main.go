@@ -1,37 +1,52 @@
 package main
 
 import (
-	"context"
 	"flag"
+	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	"log"
-	"os"
 )
 
 var (
-	name            = flag.String("name", "", "Service account name. [Required]")
-	projectname     = flag.String("project", "", "Project name for which create service account. [Required]")
-	credentialsfile = flag.String("credentialsfile", "", "Google Application Credentials file path. [Optional]")
+	//name            = flag.String("name", "", ".. Service account name. [Required]")
+	project         = flag.String("project", "", "GCP project name. [Required]")
 	prefix          = flag.String("prefix", "", "Prefix for naming resources. [Optional]")
+	credentialsfile = flag.String("credentialsfile", "", "Google Application Credentials file path. [Required]")
 )
 
+type arrayFlags []string
+
+func (i *arrayFlags) String() string {
+	return fmt.Sprintf("%v", *i)
+}
+
+func (i *arrayFlags) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
+
+var myFlags arrayFlags
+
 func main() {
+	flag.Var(&myFlags, "name", ".. Service account name. [Required]")
 	flag.Parse()
-	if *credentialsfile == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" {
-		log.Fatalf("Requires the environment variable GOOGLE_APPLICATION_CREDENTIALS to be set to a GCP service account file.")
+	if *credentialsfile == "" {
+		log.Fatalf("Argument credentialsfile is missing or empty.")
 	}
-	if *name == "" {
-		log.Fatalf("Missing required argument : -name")
+
+	iamservice, err := serviceaccount.NewService(*credentialsfile)
+	iamclient := serviceaccount.NewClient(*prefix, &iamservice)
+	if err != nil {
+		log.Fatalf("When createing serviceaccount got error: %w", err)
 	}
-	if *projectname == "" {
-		log.Fatalf("Missing required argument : -project")
+	for _, value := range myFlags {
+		fmt.Printf("value: %s \nproject: %s", value, *project)
+		options := serviceaccount.SAOptions{
+			Name:    value,
+			Roles:   nil,
+			Project: *project,
+		}
+		iamclient.CreateSA(options)
 	}
-	ctx := context.Background()
-	saOptions := serviceaccount.SAOptions{
-		Name:    *name,
-		Roles:   nil,
-		Project: *projectname,
-	}
-	iam := serviceaccount.NewIAMClient(*credentialsfile, *prefix, ctx)
-	iam.CreateSAAccount(saOptions)
+
 }
