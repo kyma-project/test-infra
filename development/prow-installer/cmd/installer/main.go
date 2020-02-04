@@ -3,13 +3,10 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/accessmanager"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/secrets"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
 )
 
 var (
@@ -28,34 +25,37 @@ func main() {
 		log.Fatalf("Missing required argument : -credentials-file")
 	}
 
-	var InstallerConfig installer.InstallerConfig
-	InstallerConfig.ReadConfig(*config)
+	var Config installer.Config
+	if err := Config.ReadConfig(*config); err != nil {
+		log.Fatalf("Error reading config file %v", err)
+	}
+	//Config.Labels["created-on"] = time.Now()
 	ctx := context.Background()
 
 	storageConfig := &storage.Option{
-		ProjectID:      InstallerConfig.Project,
-		LocationID:     InstallerConfig.Location,
-		Prefix:         InstallerConfig.Prefix,
+		ProjectID:      Config.Project,
+		LocationID:     Config.Location,
+		Prefix:         Config.Prefix,
 		ServiceAccount: *credentialsfile,
 	}
 	clusterConfig := &cluster.Option{
-		ProjectID:      InstallerConfig.Project,
-		ZoneID:         InstallerConfig.Zone,
+		ProjectID:      Config.Project,
+		ZoneID:         Config.Zone,
 		ServiceAccount: *credentialsfile,
 	}
-	secretsConfig := &secrets.Option{
-		ProjectID:      InstallerConfig.Project,
-		LocationID:     InstallerConfig.Location,
-		KmsRing:        InstallerConfig.KeyringName,
-		KmsKey:         InstallerConfig.EncryptionKeyName,
-		ServiceAccount: *credentialsfile,
-	}
+	//secretsConfig := &secrets.Option{
+	//	ProjectID:      Config.Project,
+	//	LocationID:     Config.Location,
+	//	KmsRing:        Config.KeyringName,
+	//	KmsKey:         Config.EncryptionKeyName,
+	//	ServiceAccount: *credentialsfile,
+	//}
 
 	clusterClient, err := cluster.NewClient(ctx, *clusterConfig, *credentialsfile)
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
 	}
-	if err := clusterClient.Create(ctx, InstallerConfig.ClusterName, nil, 3, false); err != nil {
+	if err := clusterClient.Create(ctx, Config.ClusterName, Config.Labels, 3, false); err != nil {
 		log.Fatalf("Failed to create cluster: %v", err)
 	}
 
@@ -63,26 +63,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
-	if err := storageClient.CreateBucket(ctx, InstallerConfig.BucketName); err != nil {
-		log.Fatalf("Failed to create bucket: %s, %s", InstallerConfig.BucketName, err)
+	if err := storageClient.CreateBucket(ctx, Config.BucketName); err != nil {
+		log.Fatalf("Failed to create bucket: %s, %s", Config.BucketName, err)
 	}
 
-	AccessManager := accessmanager.NewAccessManager(*credentialsfile)
-	for _, account := range InstallerConfig.ServiceAccounts {
-		_ = AccessManager.IAM.CreateSAAccount(account.Name, InstallerConfig.Project)
-	}
-	AccessManager.Projects.GetProjectPolicy(InstallerConfig.Project)
-	log.Printf("%+v", AccessManager.Projects.Projects[InstallerConfig.Project].Policy)
-	//AccessManager.Projects.AssignRoles(InstallerConfig.Project, InstallerConfig.ServiceAccounts)
+	//AccessManager := accessmanager.NewAccessManager(*credentialsfile)
+	//for _, account := range Config.ServiceAccounts {
+	//	_ = AccessManager.IAM.CreateSAAccount(account.Name, Config.Project)
+	//}
+	//AccessManager.Projects.GetProjectPolicy(Config.Project)
+	//log.Printf("%+v", AccessManager.Projects.Projects[Config.Project].Policy)
+	////AccessManager.Projects.AssignRoles(Config.Project, Config.ServiceAccounts)
 
-	secretsClient, err := secrets.NewClinet(ctx, *secretsConfig, *credentialsfile)
-	if err != nil {
-		log.Fatalf("Failed to create secrets client: %v", err)
-	}
-
-	if data, err := secretsClient.Encrypt(ctx, []byte("super secret string")); err != nil {
-		log.Errorf("Failed to encrypt: %v", err)
-	} else if err := storageClient.Write(ctx, data, InstallerConfig.BucketName, "mySecret.encrypted"); err != nil {
-		log.Errorf("Failed to write to bucket %s: %v", InstallerConfig.BucketName, err)
-	}
+	//secretsClient, err := secrets.NewClinet(ctx, *secretsConfig, *credentialsfile)
+	//if err != nil {
+	//	log.Fatalf("Failed to create secrets client: %v", err)
+	//}
+	//
+	//if data, err := secretsClient.Encrypt(ctx, []byte("super secret string")); err != nil {
+	//	log.Errorf("Failed to encrypt: %v", err)
+	//} else if err := storageClient.Write(ctx, data, Config.BucketName, "mySecret.encrypted"); err != nil {
+	//	log.Errorf("Failed to write to bucket %s: %v", Config.BucketName, err)
+	//}
 }
