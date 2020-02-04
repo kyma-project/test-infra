@@ -10,10 +10,13 @@ import (
 	"google.golang.org/api/googleapi"
 )
 
+//TODO: Add handling of policy version according to the comments in Policy type, see: https://godoc.org/google.golang.org/api/cloudresourcemanager/v1#Policy
 // projects management object.
 type client struct {
 	crmservice CRM
 	policies   map[string]*cloudresourcemanager.Policy
+	// Holds unmodified policies downloaded from GCP. They are compared with policy just before setting new one.
+	policiesetag map[string]string
 }
 
 type CRM interface {
@@ -37,11 +40,13 @@ func (e *BindingNotFoundError) Error() string { return e.msg }
 // New return new client and error object. Error is not used at present. Added it for future use and to support common error handling.
 func New(crmservice CRM) (*client, error) {
 	return &client{
-		crmservice: crmservice,
-		policies:   make(map[string]*cloudresourcemanager.Policy),
+		crmservice:   crmservice,
+		policies:     make(map[string]*cloudresourcemanager.Policy),
+		policiesetag: make(map[string]string),
 	}, nil
 }
 
+//TODO: Change method signature to accept condition expression string instead *cloudresourcemanager.Expr object. Align cmd main.go code to pass expression string.
 //Check in caller if returned error is PolicyModifiedError. If yes, during this method execution GCP policy was changed by other caller. Writing policy to GKE would override changes.
 func (client *client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) (*cloudresourcemanager.Policy, error) {
 	//Test if mandatory input values are not empty
@@ -69,6 +74,7 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 			return nil, fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
 		}
 		client.policies[projectname] = policy
+		client.policiesetag[projectname] = policy.Etag
 	}
 	safqdn := client.makeSafqdn(saname, projectname)
 	for _, role := range roles {
@@ -132,17 +138,19 @@ func (client *client) addRole(safqdn string, rolefullname string, projectname st
 
 // Calls project.generatePolicyBindings and apply new policy on GKE project.
 func (client *client) setPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
-	_, err := client.getPolicy(projectname)
+	policy, err := client.getPolicy(projectname)
 	if err != nil && !googleapi.IsNotModified(errors.Unwrap(err)) {
 		return nil, fmt.Errorf("When checking if policy was modified for %s project got error: [%w].", projectname, err)
 	}
 	if err == nil {
-		return nil, &PolicyModifiedError{msg: fmt.Sprintf("When checking if policy was modified for [%s] project got: Policy was modified.", projectname)}
+		if policy.Etag != client.policiesetag[projectname] {
+			return nil, &PolicyModifiedError{msg: fmt.Sprintf("When checking if policy was modified for [%s] project got: Policy was modified.", projectname)}
+		}
 	}
 	iampolicyrequest := &cloudresourcemanager.SetIamPolicyRequest{
 		Policy: client.policies[projectname],
 	}
-	policy, err := client.crmservice.SetPolicy(projectname, iampolicyrequest)
+	policy, err = client.crmservice.SetPolicy(projectname, iampolicyrequest)
 	if err != nil {
 		return nil, fmt.Errorf("When setting new policy for [%s] project got error: [%w].", projectname, err)
 	}

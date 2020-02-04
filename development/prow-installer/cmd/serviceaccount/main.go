@@ -37,10 +37,10 @@ func main() {
 	iamservice, err := serviceaccount.NewService(*credentialsfile)
 	iamclient := serviceaccount.NewClient(*prefix, &iamservice)
 	if err != nil {
-		log.Fatalf("When createing serviceaccount got error: %w", err)
+		log.Fatalf("When creating serviceaccount got error: %w", err)
 	}
 	for _, value := range myFlags {
-		fmt.Printf("value: %s \nproject: %s", value, *project)
+		fmt.Printf("Creating service account with values:\nname: %s\nproject: %s\nprefix: %s\n", value, *project, *prefix)
 		options := serviceaccount.SAOptions{
 			Name:    value,
 			Roles:   nil,
