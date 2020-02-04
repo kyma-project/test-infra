@@ -804,6 +804,7 @@ func TestClient_setPolicy(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
 		client.policies[projectname] = testvalues[1].policy
+		client.policiesetag[projectname] = "TestEtag"
 		mockCRM.On("GetPolicy", projectname, &cloudresourcemanager.GetIamPolicyRequest{}).Return(testvalues[1].policy, nil)
 		defer mockCRM.AssertExpectations(t)
 		policy, err := client.setPolicy(projectname)
