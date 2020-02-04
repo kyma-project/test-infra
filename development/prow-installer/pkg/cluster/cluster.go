@@ -39,7 +39,6 @@ func New(opts Option, api API) (*Client, error) {
 	if api == nil {
 		return nil, fmt.Errorf("api is required to initialize a client")
 	}
-
 	return &Client{Option: opts, api: api}, nil
 }
 

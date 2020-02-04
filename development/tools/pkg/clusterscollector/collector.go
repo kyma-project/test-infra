@@ -65,10 +65,10 @@ func (gc *ClustersGarbageCollector) Run(project string, makeChanges bool) (allSu
 		}
 
 		if removeErr != nil {
-			log.Errorf("Error deleting cluster. Name: \"%s\", zone: \"%s\", error: %#v", cluster.Name, cluster.Zone, removeErr)
+			log.Errorf("Error deleting cluster. name: \"%s\", zone: \"%s\", error: %#v", cluster.Name, cluster.Zone, removeErr)
 			allSucceeded = false
 		} else {
-			log.Infof("%sRequested cluster delete. Name: \"%s\", zone \"%s\", createTime: \"%s\"", msgPrefix, cluster.Name, cluster.Zone, cluster.CreateTime)
+			log.Infof("%sRequested cluster delete. name: \"%s\", zone \"%s\", createTime: \"%s\"", msgPrefix, cluster.Name, cluster.Zone, cluster.CreateTime)
 		}
 	}
 
@@ -109,7 +109,7 @@ func TimeBasedClusterRemovalPredicate(whitelistedClusters map[string]struct{}) C
 		var ageInHours uint64
 		var err error
 		if _, ok := whitelistedClusters[cluster.Name]; ok {
-			log.Warnf("Cluster is whitelisted, deletion will be skipped. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
+			log.Warnf("Cluster is whitelisted, deletion will be skipped. name: name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
 			return false, nil
 		}
 
@@ -127,7 +127,7 @@ func TimeBasedClusterRemovalPredicate(whitelistedClusters map[string]struct{}) C
 		}
 
 		if timestamp == 0 { // old cluster, does not have timestamp label, skip
-			log.Warnf("Cluster does not have 'created-at' label, skipping. Name: Name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
+			log.Warnf("Cluster does not have 'created-at' label, skipping. name: name: \"%s\", zone: \"%s\"", cluster.Name, cluster.Zone)
 			return false, nil
 		}
 
@@ -149,7 +149,7 @@ func TimeBasedClusterRemovalPredicate(whitelistedClusters map[string]struct{}) C
 		if hasTTL && isVolatileCluster && isPastAgeMark {
 			//Filter out clusters that are being deleted at this moment
 			if cluster.Status == "STOPPING" {
-				log.Warnf("Cluster is already in STOPPING status, skipping. Name: \"%s\", zone: \"%s\", createTime: \"%s\", label createdAt: \"%s\", ttl: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime, cluster.ResourceLabels[createdAtLabelName], cluster.ResourceLabels[ttlLabelName])
+				log.Warnf("Cluster is already in STOPPING status, skipping. name: \"%s\", zone: \"%s\", createTime: \"%s\", label createdAt: \"%s\", ttl: \"%s\"", cluster.Name, cluster.Zone, cluster.CreateTime, cluster.ResourceLabels[createdAtLabelName], cluster.ResourceLabels[ttlLabelName])
 				return false, nil
 			}
 			return true, nil

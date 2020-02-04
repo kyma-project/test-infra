@@ -38,7 +38,7 @@ type IPAddressRemovalPredicate func(*compute.Address) (bool, error)
 
 // DefaultIPAddressRemovalPredicate returns the default IPAddressRemovalPredicate
 // Matching criteria are:
-// - Name matches one of provided regular expressions.
+// - name matches one of provided regular expressions.
 // - CreationTimestamp indicates that it is created more than ageInHours ago.
 func DefaultIPAddressRemovalPredicate(addressRegexpList []*regexp.Regexp, minAgeInHours int) IPAddressRemovalPredicate {
 

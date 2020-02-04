@@ -119,7 +119,7 @@ type DiskRemovalPredicate func(*compute.Disk) (bool, error)
 
 // NewDiskFilter is a default DiskRemovalPredicate factory
 // Disk is matching the criteria if it's:
-// - Name matches diskNameRegexp
+// - name matches diskNameRegexp
 // - CreationTimestamp indicates that it is created more than ageInHours ago.
 // - Users list is empty
 func NewDiskFilter(diskNameRegexp *regexp.Regexp, ageInHours int) DiskRemovalPredicate {
@@ -142,7 +142,7 @@ func NewDiskFilter(diskNameRegexp *regexp.Regexp, ageInHours int) DiskRemovalPre
 		}
 
 		if nameMatches && oldEnough {
-			message := "Found a disk that could be deleted but's still in use. Name: %s, age: %f[hours], use count: %d"
+			message := "Found a disk that could be deleted but's still in use. name: %s, age: %f[hours], use count: %d"
 			log.Infof(message, disk.Name, diskAgeHours, len(disk.Users))
 		}
 

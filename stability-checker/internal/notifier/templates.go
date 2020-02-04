@@ -9,7 +9,7 @@ const (
 	{{- if .ShowTestStats -}}
  	  {{"\n"}}Test statistics from failed executions:
       {{- range .TestStats -}}
-        {{"\n   "}} {{.Failures}} failures of {{ .Name }}
+        {{"\n   "}} {{.Failures}} failures of {{ .name }}
 	  {{- else }}
 		No test statistics
 	  {{- end }}

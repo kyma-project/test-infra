@@ -191,6 +191,7 @@ func TestNew(t *testing.T) {
 		mockAPI.AssertNumberOfCalls(t, "Create", 0)
 		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
 	})
+
 	t.Run("New() should throw errors, because api is not initialized", func(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)

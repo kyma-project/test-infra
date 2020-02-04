@@ -55,7 +55,6 @@ func main() {
 		os.Exit(1)
 	}
 
-
 	err = client.CreateBucket(ctx, *bucketName)
 	if err != nil {
 		log.Fatalf("Creating bucket failed: %v", err)
