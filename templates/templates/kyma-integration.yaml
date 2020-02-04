@@ -16,7 +16,7 @@ cluster_version: &cluster_version
   - name: CLUSTER_VERSION
     value: 1.16
 
-# change to cluster_version once stable GKE 1.16 will be available
+# upgrade when stable GKE 1.16 will be available
 cluster_version_k15: &cluster_version_k15
   - name: CLUSTER_VERSION
     value: 1.15
