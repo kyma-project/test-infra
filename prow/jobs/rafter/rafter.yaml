@@ -122,7 +122,7 @@ common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
           - minio-gateway-test
         env:
           - <<: *cluster_version
-          
+
 common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
   <<: *common_job_config_template
   spec:

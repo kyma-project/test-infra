@@ -530,7 +530,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           command:
             - "bash"
           args:

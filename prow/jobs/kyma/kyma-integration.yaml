@@ -9,7 +9,7 @@ kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
   path_alias: github.com/kyma-project/kyma
-  
+
 # Kubectl 1.16
 base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
@@ -32,7 +32,7 @@ vm_job_template: &vm_job_template
     containers:
       - <<: *base_image
         env:
-          - <<: *cluster_version 
+          - <<: *cluster_version
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
@@ -628,13 +628,14 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           command:
             - "bash"
           args:
             - "-c"
             - "prow/scripts/cluster-integration/minio/azure-cleaner.sh"
           env:
+            - <<: *cluster_version
             - name: MINIO_GATEWAY_MODE
               value: azure
             - name: AZURE_RS_GROUP
