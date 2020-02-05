@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/common"
+	"google.golang.org/api/container/v1"
 )
 
 const volatileLabelName = "volatile"
