@@ -56,24 +56,23 @@ func TestClient_CreateSA(t *testing.T) {
 		}
 		prefixedsa = fmt.Sprintf("%.30s", prefixedsa)
 		fqdnsa := prefixedsa + "@" + project + ".iam.gserviceaccount.com"
-		options := SAOptions{
-			Name:    saname,
-			Roles:   nil,
-			Project: project,
-		}
 		t.Run("CreateSA() should create serviceaccount.", func(t *testing.T) {
 			mockIAM := &mocks.IAM{}
 			client := NewClient(prefix, mockIAM)
-			mockIAM.On("CreateSA", prefixedsa, prefixedproject).Return(&iam.ServiceAccount{Name: fqdnsa}, nil)
+			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
+				AccountId: prefixedsa,
+			}, prefixedproject).Return(&iam.ServiceAccount{Name: fqdnsa}, nil)
 			defer mockIAM.AssertExpectations(t)
-			sa, err := client.CreateSA(options)
+			sa, err := client.CreateSA(saname, project)
 			if test := assert.Nil(t, err, "Client.CreateSA() method returned not nil error. %s", ballotX); test {
 				t.Log("CreateSA() returned nil error", checkMark)
 			}
 			if test := assert.NotEmpty(t, sa, "Client.CrateSA() method returned empty serviceaccount object. %s", ballotX); test {
 				t.Log("CrateSA() returned not empty serviceaccount object.", checkMark)
 			}
-			if test := mockIAM.AssertCalled(t, "CreateSA", prefixedsa, prefixedproject); test {
+			if test := mockIAM.AssertCalled(t, "CreateSA", &iam.CreateServiceAccountRequest{
+				AccountId: prefixedsa,
+			}, prefixedproject); test {
 				t.Log("CreateSA() was called with expected arguments.", checkMark)
 			} else {
 				t.Errorf("CreateSA() was not called or called with unexpected arguments. %s", ballotX)
@@ -87,16 +86,20 @@ func TestClient_CreateSA(t *testing.T) {
 		t.Run("CreateSA() fail and should return error", func(t *testing.T) {
 			mockIAM := &mocks.IAM{}
 			client := NewClient(prefix, mockIAM)
-			mockIAM.On("CreateSA", prefixedsa, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", prefixedsa))
+			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
+				AccountId: prefixedsa,
+			}, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", prefixedsa))
 			defer mockIAM.AssertExpectations(t)
-			sa, err := client.CreateSA(options)
+			sa, err := client.CreateSA(saname, project)
 			if test := assert.NotNil(t, err, "\tClient.CreateSA() method returned nil error. %s"); test {
 				t.Log("\tCreateSA() returned not nil error")
 			}
 			if test := assert.Empty(t, sa, "\tClient.CrateSA() method returned non empty serviceaccount object."); test {
 				t.Log("\tCrateSA() returned empty serviceaccount object.")
 			}
-			if test := mockIAM.AssertCalled(t, "CreateSA", prefixedsa, prefixedproject); test {
+			if test := mockIAM.AssertCalled(t, "CreateSA", &iam.CreateServiceAccountRequest{
+				AccountId: prefixedsa,
+			}, prefixedproject); test {
 				t.Log("\tCreateSA() was called with expected arguments.")
 			} else {
 				t.Log("\tCreateSA() was not called or called with unexpected arguments.")

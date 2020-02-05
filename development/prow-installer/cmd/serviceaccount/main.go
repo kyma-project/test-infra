@@ -8,7 +8,6 @@ import (
 )
 
 var (
-	//name            = flag.String("name", "", ".. Service account name. [Required]")
 	project         = flag.String("project", "", "GCP project name. [Required]")
 	prefix          = flag.String("prefix", "", "Prefix for naming resources. [Optional]")
 	credentialsfile = flag.String("credentialsfile", "", "Google Application Credentials file path. [Required]")
@@ -35,12 +34,15 @@ func main() {
 	}
 
 	iamservice, err := serviceaccount.NewService(*credentialsfile)
-	iamclient := serviceaccount.NewClient(*prefix, &iamservice)
+	if err != nil {
+		log.Fatalf("When creating serviceaccount got error: %w", err)
+	}
+	iamclient := serviceaccount.NewClient(*prefix, iamservice)
 	if err != nil {
 		log.Fatalf("When creating serviceaccount got error: %w", err)
 	}
 	for _, value := range myFlags {
-		fmt.Printf("Creating service account with values:\nname: %s\nproject: %s\nprefix: %s\n", value, *project, *prefix)
+		log.Printf("Creating service account with values:\nname: %s\nproject: %s\nprefix: %s\n", value, *project, *prefix)
 		options := serviceaccount.SAOptions{
 			Name:    value,
 			Roles:   nil,
