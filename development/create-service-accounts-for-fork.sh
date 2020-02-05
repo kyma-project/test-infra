@@ -100,17 +100,17 @@ function create_service_account() {
 }
 
 # Arrays should be populated by reading required secrets file.
-declare -a SA_GCS_PLANK=("roles/storage.objectAdmin")
-declare -a SA_GKE_KYMA_INTEGRATION=("roles/compute.admin" "roles/container.admin" "roles/container.clusterAdmin" "roles/dns.admin" "roles/iam.serviceAccountUser" "roles/storage.admin")
-declare -a SA_VM_KYMA_INTEGRATION=("roles/compute.instanceAdmin" "roles/compute.osAdminLogin" "roles/iam.serviceAccountUser")
-declare -a SA_GCR_PUSH_KYMA_PROJECT=("roles/storage.objectCreator")
-declare -a SA_KYMA_ARTIFACTS=("roles/storage.objectAdmin")
-declare -A SERVICE_ACCOUNTS
-SERVICE_ACCOUNTS["sa-gcs-plank"]=$SA_GCS_PLANK
-SERVICE_ACCOUNTS["sa-gke-kyma-integration"]=$SA_GKE_KYMA_INTEGRATION
-SERVICE_ACCOUNTS["sa-vm-kyma-integration"]=$SA_VM_KYMA_INTEGRATION
-SERVICE_ACCOUNTS["sa-gcr-push-kyma-project"]=$SA_GCR_PUSH_KYMA_PROJECT
-SERVICE_ACCOUNTS["sa-kyma-artifacts"]=$SA_KYMA_ARTIFACTS
+#declare -a SA_GCS_PLANK=("roles/storage.objectAdmin")
+#declare -a SA_GKE_KYMA_INTEGRATION=("roles/compute.admin" "roles/container.admin" "roles/container.clusterAdmin" "roles/dns.admin" "roles/iam.serviceAccountUser" "roles/storage.admin")
+#declare -a SA_VM_KYMA_INTEGRATION=("roles/compute.instanceAdmin" "roles/compute.osAdminLogin" "roles/iam.serviceAccountUser")
+#declare -a SA_GCR_PUSH_KYMA_PROJECT=("roles/storage.objectCreator")
+#declare -a SA_KYMA_ARTIFACTS=("roles/storage.objectAdmin")
+#declare -A SERVICE_ACCOUNTS
+#SERVICE_ACCOUNTS["sa-gcs-plank"]=$SA_GCS_PLANK
+#SERVICE_ACCOUNTS["sa-gke-kyma-integration"]=$SA_GKE_KYMA_INTEGRATION
+#SERVICE_ACCOUNTS["sa-vm-kyma-integration"]=$SA_VM_KYMA_INTEGRATION
+#SERVICE_ACCOUNTS["sa-gcr-push-kyma-project"]=$SA_GCR_PUSH_KYMA_PROJECT
+#SERVICE_ACCOUNTS["sa-kyma-artifacts"]=$SA_KYMA_ARTIFACTS
 
 
 # TODO: This script should generate all mandatory secrets
