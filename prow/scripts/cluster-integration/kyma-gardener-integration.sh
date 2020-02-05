@@ -160,11 +160,6 @@ kyma version
 
 shout "Running Kyma tests"
 date
-echo "- Creating ClusterAddonsConfiguration which provides the testing addons"
-injectTestingAddons
-if [[ $? -eq 1 ]]; then
-    exit 1
-fi
 
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
