@@ -14,13 +14,12 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-    - ^release-.*-external-solution-integration$
+    - ^release-(1\.10)-external-solution-integration$
   run_if_changed: "^tests/end-to-end/external-solution-integration/|^common/makefiles/"
   spec:
     containers:
@@ -40,7 +39,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-end-to-end-external-solution-integration
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:

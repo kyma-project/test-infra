@@ -13,7 +13,7 @@ job_tolerations_template: &job_tolerations_template
   effect: NoSchedule
 
 test_infra_ref: &test_infra_ref
-  org: kyma-project
+  org: michal-hudy
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
@@ -30,7 +30,7 @@ presubmits:
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: kind-fix
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
@@ -80,7 +80,7 @@ presubmits:
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: kind-fix
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
@@ -130,7 +130,7 @@ presubmits:
     run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+      base_ref: kind-fix
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
@@ -178,7 +178,7 @@ periodics:
   decorate: true
   extra_refs:
   - <<: *test_infra_ref
-    base_ref: master
+    base_ref: kind-fix
   - repo: kyma
     org: kyma-project
     base_ref: master

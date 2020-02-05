@@ -328,7 +328,7 @@ function restoreKyma() {
 
     shout "Restore Kyma CRDs, Services and Endpoints"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints,clusterbuckets.rafter.kyma-project.io,buckets.rafter.kyma-project.io,clusterassets.rafter.kyma-project.io,assets.rafter.kyma-project.io --wait
+    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
 
     sleep 30
 
@@ -338,7 +338,7 @@ function restoreKyma() {
     attempts=3
     for ((i=1; i<=attempts; i++)); do
         
-        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints,clusterbuckets.rafter.kyma-project.io,buckets.rafter.kyma-project.io,clusterassets.rafter.kyma-project.io,assets.rafter.kyma-project.io --restore-volumes --wait
+        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
 
         sleep 60
 

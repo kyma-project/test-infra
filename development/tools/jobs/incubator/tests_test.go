@@ -21,7 +21,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
@@ -41,7 +41,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
@@ -52,6 +52,17 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("test-generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
+	{
+		name:  "connectivity-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release111),
 			jobsuite.Optional(),
 		},
 	},

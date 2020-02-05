@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.10"
+  nextRelease: "1.11"
   releases:
+    - "1.10"
     - "1.9"
     - "1.8"
-    - "1.7"
   whitesource:
     - name: "kyma"
       language: "golang"
@@ -252,7 +252,7 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/external-solution-integration
-          optional: true
+          since: "1.10"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *compass_generic_component
@@ -322,6 +322,12 @@ templates:
           <<: *compass_generic_component
           path: tests/e2e/provisioning
           since: "1.10"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/connectivity-adapter
+          since: "1.11"
           optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
@@ -463,7 +469,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/contract/knative-channel-kafka
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/kyma/tests/end-to-end/backup/backup-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -753,6 +758,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/external-solution-integration
+          until: "1.9"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests.yaml
         values:
           <<: *go_kyma_component_1_12
