@@ -71,7 +71,6 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 		"preset-kyma-artifacts-bucket",
 		"preset-build-pr",
 	)
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "provisioner-gardener-azure")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont = actualJob.Spec.Containers[0]
 	assert.Equal(t, tester.ImageKymaClusterInfraLatest, compassCont.Image)
