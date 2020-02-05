@@ -23,7 +23,7 @@ const minPatternLength = 5
 var (
 	project               = flag.String("project", "", "project id [required]")
 	regions               = flag.String("regions", "", "comma-separted list of GCP regions [required]")
-	dnsZone               = flag.String("dnsZone", "", "name of the DNS Managed Zone [Required]")
+	dnsZone               = flag.String("dnsZone", "", "Name of the DNS Managed Zone [Required]")
 	dryRun                = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
 	ageInHours            = flag.Int("ageInHours", 2, "IP Address age in hours. Addresses older than: now()-ageInHours are considered for removal.")
 	addressNameRegexpList = flag.String("addressRegexpList", defaultAddressRegexpList, "Address name regexp list. Separate items with commas, spaces are trimmed. Matching addresses are considered for removal.")

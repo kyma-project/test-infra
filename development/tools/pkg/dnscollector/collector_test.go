@@ -376,7 +376,7 @@ func TestRun(t *testing.T) {
 		mockComputeAPI := &automock.ComputeAPI{}
 		defer mockComputeAPI.AssertExpectations(t)
 		mockComputeAPI.On("LookupIPAddresses", testProject, testRegions[0]).Return([]*compute.Address{addressMatching1, addressMatching3}, nil)
-		//mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching1.name).Return(nil) <- this call is skipped!
+		//mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching1.Name).Return(nil) <- this call is skipped!
 		mockComputeAPI.On("DeleteIPAddress", testProject, testRegions[0], addressMatching3.Name).Return(nil)
 
 		mockDNSAPI := &automock.DNSAPI{}

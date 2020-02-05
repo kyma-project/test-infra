@@ -64,10 +64,10 @@ func (gc *InstancesGarbageCollector) Run(project string, makeChanges bool) (allS
 		}
 
 		if removeErr != nil {
-			log.Errorf("Error deleting VM instance. name: \"%s\", zone: \"%s\", error: %#v", instance.Name, formatZone(instance.Zone), removeErr)
+			log.Errorf("Error deleting VM instance. Name: \"%s\", zone: \"%s\", error: %#v", instance.Name, formatZone(instance.Zone), removeErr)
 			allSucceeded = false
 		} else {
-			log.Infof("%sRequested VM instance delete. name: \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, instance.Name, formatZone(instance.Zone), instance.CreationTimestamp)
+			log.Infof("%sRequested VM instance delete. Name: \"%s\", zone \"%s\", creationTimestamp: \"%s\"", msgPrefix, instance.Name, formatZone(instance.Zone), instance.CreationTimestamp)
 		}
 	}
 
@@ -129,7 +129,7 @@ func DefaultInstanceRemovalPredicate(instanceNameRegexp *regexp.Regexp, jobLabel
 		if nameMatches && jobLabelMatches && ageMatches {
 			//Filter out instances that are not RUNNING at this moment
 			if instance.Status != "RUNNING" {
-				log.Warnf("VM Instance is not in RUNNING status, skipping. name: \"%s\", zone: \"%s\", creationTimestamp: \"%s\", status: \"%s\"", instance.Name, formatZone(instance.Zone), instance.CreationTimestamp, instance.Status)
+				log.Warnf("VM Instance is not in RUNNING status, skipping. Name: \"%s\", zone: \"%s\", creationTimestamp: \"%s\", status: \"%s\"", instance.Name, formatZone(instance.Zone), instance.CreationTimestamp, instance.Status)
 				return false, nil
 			}
 			return true, nil
