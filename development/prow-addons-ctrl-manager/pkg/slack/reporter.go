@@ -138,7 +138,7 @@ func (r *Reporter) generateBody(pj *prowapi.ProwJob) apiSlack.Attachment {
 		Color: blue,
 		Fields: []apiSlack.AttachmentField{
 			{
-				Title: "name",
+				Title: "Name",
 				Value: italic(pj.Spec.Job),
 				Short: true,
 			},

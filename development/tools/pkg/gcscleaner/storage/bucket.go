@@ -91,7 +91,7 @@ type bucketObject struct {
 	bucket string
 }
 
-// name a bucket object name
+// Name a bucket object name
 func (r bucketObject) Name() string {
 	return r.name
 }
@@ -114,7 +114,7 @@ type objectAttrs struct {
 	bucket string
 }
 
-// name a bucket object name
+// Name a bucket object name
 func (r objectAttrs) Name() string {
 	return r.name
 }
