@@ -94,7 +94,7 @@ presubmits: # runs on PRs
     extra_refs:
       - org: rafalpotempa
         repo: test-infra
-        path_alias: github.com/kyma-project/test-infra
+        path_alias: github.com/rafalpotempa/test-infra
         base_ref: provisioner-gardener-azure
 
 postsubmits:
