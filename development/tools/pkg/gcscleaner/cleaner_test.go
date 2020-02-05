@@ -27,7 +27,7 @@ func TestExtractTimestamp(t *testing.T) {
 	}{
 		{
 			name:       "match: a1b2b3",
-			bucketName: "matching-Bucket-name-1b6dibbg2ogqo",
+			bucketName: "matching-Bucket-Name-1b6dibbg2ogqo",
 			expected: func() *string {
 				result := "1b6dibbg2ogqo"
 				return &result
@@ -49,21 +49,21 @@ func TestExtractTimestamp(t *testing.T) {
 		},
 		{
 			name:       "no match #3",
-			bucketName: "not.matching.the.Bucket.name-1b6dibbg2ogq@",
+			bucketName: "not.matching.the.Bucket.Name-1b6dibbg2ogq@",
 			expected: func() *string {
 				return nil
 			},
 		},
 		{
 			name:       "no match #4",
-			bucketName: "not.matching.the.Bucket.name-_a1s2d34d12",
+			bucketName: "not.matching.the.Bucket.Name-_a1s2d34d12",
 			expected: func() *string {
 				return nil
 			},
 		},
 		{
 			name:       "match: 1111",
-			bucketName: "matching.Bucket.name-1111",
+			bucketName: "matching.Bucket.Name-1111",
 			expected: func() *string {
 				result := "1111"
 				return &result
@@ -173,7 +173,7 @@ func TestCleaner_DeleteOldBuckets_ErrDeleteObject(t *testing.T) {
 
 func getTestObjectIterator(attrs *automock.ObjectAttrs, testObjectName string, bucketName string) *automock.ObjectIterator {
 	attrs.
-		On("name").
+		On("Name").
 		Return(testObjectName).
 		Once().
 		On("Bucket").
@@ -269,7 +269,7 @@ func getBucketTestData(t time.Time) (storage.BucketIterator, string) {
 	formatInt := strconv.FormatInt(t.Add(-3*time.Hour).UnixNano(), 32)
 	bucketName := fmt.Sprintf(`test-bucket-to-be-deleted-%s`, formatInt)
 	b1 := automock.BucketAttrs{}
-	b1.On("name").Return(bucketName)
+	b1.On("Name").Return(bucketName)
 
 	bucketIterator.
 		On("Next").
