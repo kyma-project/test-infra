@@ -5,7 +5,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/accessmanager"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
 )
 
@@ -29,12 +28,5 @@ func main() {
 	var InstallerConfig installer.InstallerConfig
 	InstallerConfig.ReadConfig(*config)
 
-	AccessManager := accessmanager.NewAccessManager(*credentialsfile)
-
-	for _, account := range InstallerConfig.ServiceAccounts {
-		_ = AccessManager.IAM.CreateSAAccount(account.Name, InstallerConfig.Project)
-	}
-	AccessManager.Projects.GetProjectPolicy(InstallerConfig.Project)
-	log.Printf("%+v", AccessManager.Projects.Projects[InstallerConfig.Project].Policy)
-	//AccessManager.Projects.AssignRoles(InstallerConfig.Project, InstallerConfig.ServiceAccounts)
+	//TODO: add installer actions
 }
