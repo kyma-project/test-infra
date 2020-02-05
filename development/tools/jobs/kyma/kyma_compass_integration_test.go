@@ -48,7 +48,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 
 	// when
-	actualJob = tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-integration-dev", "master")
+	actualJob = tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-integration-provisioner-test", "master")
 	require.NotNil(t, actualJob)
 
 	// then
