@@ -276,7 +276,7 @@ templates:
           <<: *compass_generic_component
           path: components/pairing-adapter
           since: "1.11"
-          optional: false
+          optional: true
 
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
