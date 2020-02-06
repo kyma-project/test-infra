@@ -96,6 +96,11 @@ done || exit 1
 
 trap cleanup exit INT
 
+shout "Fix Minikube error"
+docker pull gcr.io/k8s-minikube/storage-provisioner@sha256:088daa9fcbccf04c3f415d77d5a6360d2803922190b675cb7fc88a9d2d91985a
+docker tag gcr.io/k8s-minikube/storage-provisioner@sha256:088daa9fcbccf04c3f415d77d5a6360d2803922190b675cb7fc88a9d2d91985a gcr.io/k8s-minikube/storage-provisioner:v1.8.1
+kubectl -n kube-system delete pod storage-provisioner
+
 shout "Copying Kyma to the instance"
 
 for i in $(seq 1 5); do
