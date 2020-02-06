@@ -9,9 +9,9 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-# Kubectl 1.16, CLUSTER_VERSION=1.15
+# Kubectl 1.16
 base_image: &base_image
-  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
 
 # upgrade when stable GKE 1.16 will be available
 cluster_version: &cluster_version
