@@ -43,12 +43,15 @@ func main() {
 	}
 	for _, value := range myFlags {
 		log.Printf("Creating service account with values:\nname: %s\nproject: %s\nprefix: %s\n", value, *project, *prefix)
-		options := serviceaccount.SAOptions{
-			Name:    value,
-			Roles:   nil,
-			Project: *project,
+		sa, err := iamclient.CreateSA(value, *project)
+		if err != nil {
+			log.Printf("Failed create serviceaccount %s, got error: %w", value, err)
 		}
-		iamclient.CreateSA(options)
+		key, err := iamclient.CreateSAKey(sa.Email)
+		if err != nil {
+			log.Printf("Failed create key for serviceaccount %s, got error: %w", value, err)
+		}
+		log.Printf("Got key for serviceaccount: %s\n%+v", value, key)
 	}
 
 }
