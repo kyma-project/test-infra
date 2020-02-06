@@ -271,6 +271,13 @@ templates:
           path: components/connectivity-adapter
           since: "1.10"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/pairing-adapter
+          since: "1.11"
+          optional: false
+
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
           <<: *compass_generic_component

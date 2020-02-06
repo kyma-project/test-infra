@@ -84,6 +84,27 @@ var components = []struct {
 			jobsuite.Since(releases.Release18),
 		},
 	},
+	{
+		name: "connectivity-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release18),
+		},
+	},
+
+	{
+		name: "pairing-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release18),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {
