@@ -34,3 +34,26 @@ func (_m *IAM) CreateSA(request *iam.CreateServiceAccountRequest, projectname st
 
 	return r0, r1
 }
+
+// CreateSAKey provides a mock function with given fields: sa, request
+func (_m *IAM) CreateSAKey(sa string, request *iam.CreateServiceAccountKeyRequest) (*iam.ServiceAccountKey, error) {
+	ret := _m.Called(sa, request)
+
+	var r0 *iam.ServiceAccountKey
+	if rf, ok := ret.Get(0).(func(string, *iam.CreateServiceAccountKeyRequest) *iam.ServiceAccountKey); ok {
+		r0 = rf(sa, request)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iam.ServiceAccountKey)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string, *iam.CreateServiceAccountKeyRequest) error); ok {
+		r1 = rf(sa, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

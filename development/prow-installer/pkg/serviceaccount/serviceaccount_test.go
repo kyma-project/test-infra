@@ -1,6 +1,7 @@
 package serviceaccount
 
 import (
+	"errors"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount/mocks"
 	"github.com/stretchr/testify/assert"
@@ -111,4 +112,77 @@ func TestClient_CreateSA(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestClient_CreateSAKey(t *testing.T) {
+	type testvalue struct {
+		safqdn   string
+		resource string
+		prefix   string
+		project  string
+		keyname  string
+	}
+	tv := testvalue{
+		safqdn:   "test-sa@test-project.iam.gserviceaccount.com",
+		resource: "projects/-/serviceAccounts/test-sa@test-project.iam.gserviceaccount.com",
+		prefix:   "",
+		project:  "test-project",
+		keyname:  "test-key",
+	}
+	t.Run("CreateSAKey should create key without errors.", func(t *testing.T) {
+		mockIAM := &mocks.IAM{}
+		mockIAM.On("CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}).Return(&iam.ServiceAccountKey{
+			Name: tv.keyname,
+		}, nil)
+		defer mockIAM.AssertExpectations(t)
+		client := NewClient(tv.prefix, mockIAM)
+		key, err := client.CreateSAKey(tv.safqdn)
+		if test := assert.Nilf(t, err, "\tnot expected: CreateSAKey() returned not nil error."); test {
+			t.Log("\texpected: CreateSAKey() returned nil error.")
+		}
+		if test := assert.IsTypef(t, &iam.ServiceAccountKey{}, key, "\tnot expected: CreateSAKey() returned key not type of *iam.ServiceAccountKey"); test {
+			t.Log("\texpected: CreateSAKey() returned key as expected type.")
+		}
+		if test := mockIAM.AssertCalled(t, "CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}); test {
+			t.Log("\texpected: IAMservice.CreateSAKey() was called with expected arguments.")
+		} else {
+			t.Log("\tnot expected: IAMservice.CreateSAKey() was not called with expected arguments.")
+		}
+		if test := mockIAM.AssertNumberOfCalls(t, "CreateSAKey", 1); test {
+			t.Log("\texpected: IAMservice.CreateSAKey() was called expected number of times.")
+		} else {
+			t.Log("\tnot expected: IAMservice.CreateSAKey() was called unexpected number of times.")
+		}
+		if test := assert.Equalf(t, tv.keyname, key.Name, "\tnot expected: CreateSAKey() returned key with unexpected name."); test {
+			t.Log("\texpected: CreateSAKey() returned key with expected name.")
+		}
+	})
+	t.Run("CreateSAKey should fail because got error from iamservice.CreateSAKey.", func(t *testing.T) {
+		mockIAM := &mocks.IAM{}
+		mockIAM.On("CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}).Return(nil, errors.New("CreateSAKey failed GCP test error"))
+		defer mockIAM.AssertExpectations(t)
+		client := NewClient(tv.prefix, mockIAM)
+		key, err := client.CreateSAKey(tv.safqdn)
+		if test := assert.Nilf(t, key, "\tnot expected: CreateSAKey() returned not nil key."); test {
+			t.Log("\texpected: CreateSAKey() returned nil key.")
+		}
+		if test := assert.Errorf(t, err, "\tnot expected: CreateSAKey did not returned error."); test {
+			t.Log("\texpected: CreateSAKey() returned error")
+		}
+		message1 := assert.Containsf(t, err.Error(), "CreateSAKey failed GCP test error", "\tnot expected: CreateSAKey() did not contained expected error message.")
+		message2 := assert.Containsf(t, err.Error(), "When creating key for serviceaccount", "\tnot expected: CreateSAKey() did not contained expected error message.")
+		if message1 && message2 {
+			t.Log("\texpected: CreateSAKey() returned expected error message")
+		}
+		if test := mockIAM.AssertCalled(t, "CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}); test {
+			t.Log("\texpected: IAMservice.CreateSAKey() was called with expected arguments.")
+		} else {
+			t.Log("\tnot expected: IAMservice.CreateSAKey() was not called with expected arguments.")
+		}
+		if test := mockIAM.AssertNumberOfCalls(t, "CreateSAKey", 1); test {
+			t.Log("\texpected: IAMservice.CreateSAKey() was called expected number of times.")
+		} else {
+			t.Log("\tnot expected: IAMservice.CreateSAKey() was called unexpected number of times.")
+		}
+	})
 }

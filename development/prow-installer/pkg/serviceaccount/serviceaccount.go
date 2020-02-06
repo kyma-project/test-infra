@@ -8,6 +8,8 @@ import (
 	"google.golang.org/api/iam/v1"
 )
 
+const createsakeyprefix = "projects/-/serviceAccounts/"
+
 //Client provides data and methods for serviceaccount package.
 type Client struct {
 	iamservice IAM
@@ -16,7 +18,9 @@ type Client struct {
 
 // IAM is a mockable interface for GCP IAM API.
 type IAM interface {
+	//TODO: Swap arguments order to match iam service method arguments order.
 	CreateSA(request *iam.CreateServiceAccountRequest, projectname string) (*iam.ServiceAccount, error)
+	CreateSAKey(sa string, request *iam.CreateServiceAccountKeyRequest) (*iam.ServiceAccountKey, error)
 }
 
 //
@@ -42,7 +46,19 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 		log.Printf("When creating %s serviceaccount in %s project got error: %w.", name, project, err)
 		return nil, err
 	} else {
-		log.Printf("Created service account:\n %s", name)
+		log.Printf("Created serviceaccount: %s", name)
 		return sa, nil
 	}
+}
+
+// safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
+func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
+	resource := fmt.Sprintf("%s%s", createsakeyprefix, safqdn)
+	request := &iam.CreateServiceAccountKeyRequest{}
+	key, err := client.iamservice.CreateSAKey(resource, request)
+	if err != nil {
+		return nil, fmt.Errorf("When creating key for serviceaccount %s, got error: %w", safqdn, err)
+	}
+	log.Printf("Created key for serviceaccount: %s", safqdn)
+	return key, nil
 }

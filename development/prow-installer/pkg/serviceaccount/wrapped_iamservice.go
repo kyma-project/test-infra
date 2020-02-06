@@ -32,3 +32,7 @@ func NewService(credentials string) (*IAMService, error) {
 func (iams *IAMService) CreateSA(request *iam.CreateServiceAccountRequest, projectname string) (*iam.ServiceAccount, error) {
 	return iams.service.Projects.ServiceAccounts.Create(projectname, request).Context(iams.ctx).Do()
 }
+
+func (iams *IAMService) CreateSAKey(sa string, request *iam.CreateServiceAccountKeyRequest) (*iam.ServiceAccountKey, error) {
+	return iams.service.Projects.ServiceAccounts.Keys.Create(sa, request).Context(iams.ctx).Do()
+}
