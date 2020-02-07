@@ -4,8 +4,8 @@ base_image: &base_image
 
 # upgrade when stable GKE 1.16 will be available
 cluster_version: &cluster_version
-  - name: CLUSTER_VERSION
-    value: 1.15
+  name: CLUSTER_VERSION
+  value: "1.15"
 
 job_template: &job_template
   decorate: true

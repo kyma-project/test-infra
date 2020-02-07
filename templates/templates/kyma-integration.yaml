@@ -13,13 +13,13 @@ base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
 
 cluster_version: &cluster_version
-  - name: CLUSTER_VERSION
-    value: 1.16
+  name: CLUSTER_VERSION
+  value: "1.16"
 
 # upgrade when stable GKE 1.16 will be available
 cluster_version_k15: &cluster_version_k15
-  - name: CLUSTER_VERSION
-    value: 1.15
+  name: CLUSTER_VERSION
+  value: "1.15"
 
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
