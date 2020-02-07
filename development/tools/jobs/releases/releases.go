@@ -6,8 +6,8 @@ package releases
 var (
 	Release111 = mustParse("1.11")
 	Release110 = mustParse("1.10")
-	Release19 = mustParse("1.9")
-	Release18 = mustParse("1.8")
+	Release19  = mustParse("1.9")
+	Release18  = mustParse("1.8")
 )
 
 // GetAllKymaReleaseBranches returns all supported kyma release branches
