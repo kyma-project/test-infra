@@ -6,6 +6,7 @@ import (
 )
 
 type Option struct {
+	Prefix         string // global prefix
 	ProjectID      string // GCP project ID
 	ZoneID         string // zone of the cluster
 	ServiceAccount string // filename of the serviceaccount to use
@@ -50,6 +51,9 @@ func (cc *Client) Create(ctx context.Context, name string, labels map[string]str
 	}
 	if name == "" {
 		return fmt.Errorf("name cannot be empty")
+	}
+	if cc.Prefix != "" {
+		name = fmt.Sprintf("%s-%s", cc.Prefix, name)
 	}
 	return cc.api.Create(ctx, name, labels, minPoolSize, autoScaling)
 }
