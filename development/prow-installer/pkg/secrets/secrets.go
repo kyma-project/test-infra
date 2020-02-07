@@ -1,10 +1,8 @@
 package secrets
 
 import (
-	kms "cloud.google.com/go/kms/apiv1"
 	"context"
 	"fmt"
-	"google.golang.org/api/option"
 )
 
 //go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
@@ -28,27 +26,6 @@ type Client struct {
 type API interface {
 	Encrypt(ctx context.Context, plaintext []byte) ([]byte, error)
 	Decrypt(ctx context.Context, ciphertext []byte) ([]byte, error)
-}
-
-func NewClinet(ctx context.Context, opts Option, credentials string) (*Client, error) {
-	kmsClient, err := kms.NewKeyManagementClient(ctx, option.WithCredentialsFile(credentials))
-	if err != nil {
-		return nil, fmt.Errorf("kms client create error %w", err)
-	}
-
-	api := &APIWrapper{
-		ProjectID:  opts.ProjectID,
-		LocationID: opts.LocationID,
-		KmsRing:    opts.KmsRing,
-		KmsKey:     opts.KmsKey,
-		KmsClient:  kmsClient,
-	}
-
-	if client, err := New(opts, api); err != nil {
-		return nil, fmt.Errorf("secrets client create error %w", err)
-	} else {
-		return client, nil
-	}
 }
 
 // New returns a new Client, wrapping kms and gcs for storing/reading encrypted secrets from GCP

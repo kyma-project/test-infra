@@ -1,4 +1,4 @@
-package installer
+package config
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-//Configuration for prow installer.
+//Configuration for prow config.
 type Config struct {
 	ClusterName       string            `yaml:"cluster_name"`
 	Oauth             string            `yaml:"oauth"`
@@ -40,19 +40,14 @@ type GenericSecret struct {
 	Key  string `yaml:"key"`
 }
 
-//Get installer configuration from yaml file.
-func (installerConfig *Config) ReadConfig(configFilePath string) error {
+//Get config configuration from yaml file.
+func ReadConfig(configFilePath string) (*Config, error) {
 	log.Debug("Reading config from %s", configFilePath)
+	var installerConfig Config
 	if configFile, err := ioutil.ReadFile(configFilePath); err != nil {
-		return fmt.Errorf("failed reading config file %w", err)
+		return nil, fmt.Errorf("failed reading config file %w", err)
 	} else if err := yaml.Unmarshal(configFile, &installerConfig); err != nil {
-		return fmt.Errorf("error when unmarshalling yaml file: %w", err)
+		return nil, fmt.Errorf("error when unmarshalling yaml file: %w", err)
 	}
-	for i, account := range installerConfig.ServiceAccounts {
-		//TODO: add validation of Type property of Account type.
-		if installerConfig.Prefix != "" {
-			installerConfig.ServiceAccounts[i].Name = fmt.Sprintf("%s-%s", installerConfig.Prefix, account.Name)
-		}
-	}
-	return nil
+	return &installerConfig, nil
 }

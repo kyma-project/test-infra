@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"google.golang.org/api/option"
 	"io/ioutil"
 
 	gcs "cloud.google.com/go/storage"
@@ -13,6 +14,25 @@ type APIWrapper struct {
 	ProjectID  string
 	LocationID string
 	GCSClient  *gcs.Client
+}
+
+func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
+	gcsClient, err := gcs.NewClient(ctx, option.WithCredentialsFile(credentials))
+	if err != nil {
+		return nil, fmt.Errorf("GCS client creation error %w", err)
+	}
+
+	api := &APIWrapper{
+		ProjectID:  opts.ProjectID,
+		LocationID: opts.LocationID,
+		GCSClient:  gcsClient,
+	}
+
+	if client, err := New(opts, api); err != nil {
+		return nil, fmt.Errorf("bucket client creation error %w", err)
+	} else {
+		return client, nil
+	}
 }
 
 // CreateBucket attempts to create a storage bucket

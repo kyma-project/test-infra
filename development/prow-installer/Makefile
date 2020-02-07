@@ -8,7 +8,7 @@ all: test installer
 test:
 	go test ./pkg/... ./cmd/... -coverprofile cover.out
 
-# Build installer binary
+# Build config binary
 installer: test
 	go build -o bin/installer github.com/kyma-project/test-infra/development/prow-installer/cmd/installer
 

@@ -3,8 +3,6 @@ package cluster
 import (
 	"context"
 	"fmt"
-	"google.golang.org/api/container/v1"
-	"google.golang.org/api/option"
 )
 
 type Option struct {
@@ -27,24 +25,6 @@ type API interface {
 	Delete(ctx context.Context, name string) error
 }
 
-func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
-	containerService, err := container.NewService(ctx, option.WithCredentialsFile(credentials))
-	if err != nil {
-		return nil, fmt.Errorf("container service creation error %w", err)
-	}
-	api := &APIWrapper{
-		ProjectID:      opts.ProjectID,
-		ZoneID:         opts.ZoneID,
-		ClusterService: containerService.Projects.Zones.Clusters,
-	}
-
-	if client, err := New(opts, api); err != nil {
-		return nil, fmt.Errorf("cluster client creation error %w", err)
-	} else {
-		return client, nil
-	}
-}
-
 // New returns a new Client, wrapping gke
 func New(opts Option, api API) (*Client, error) {
 	if opts.ProjectID == "" {
@@ -63,6 +43,7 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
+// TODO this is still fixed. Parameters are needed.
 func (cc *Client) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
 	if minPoolSize < 1 {
 		return fmt.Errorf("could not create cluster, minPoolSize should be > 0")
