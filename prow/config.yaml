@@ -578,10 +578,6 @@ branch-protection:
           branches:
             master:
               protect: true
-        kyma-dns-webhook:
-          branches:
-            master:
-              protect: true
         knative-kafka:
           branches:
             master:
