@@ -6,6 +6,7 @@ import (
 )
 
 type Option struct {
+	Prefix         string // global prefix
 	ProjectID      string // GCP project ID
 	ZoneID         string // zone of the cluster
 	ServiceAccount string // filename of the serviceaccount to use
@@ -43,12 +44,16 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
+// TODO this is still fixed. Parameters are needed.
 func (cc *Client) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
 	if minPoolSize < 1 {
 		return fmt.Errorf("could not create cluster, minPoolSize should be > 0")
 	}
 	if name == "" {
 		return fmt.Errorf("name cannot be empty")
+	}
+	if cc.Prefix != "" {
+		name = fmt.Sprintf("%s-%s", cc.Prefix, name)
 	}
 	return cc.api.Create(ctx, name, labels, minPoolSize, autoScaling)
 }

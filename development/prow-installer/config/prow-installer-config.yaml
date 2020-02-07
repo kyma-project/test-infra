@@ -1,13 +1,15 @@
-cluster_name : test-prow
-oauth : testoauth999
-project : sap-kyma-neighbors-dev
-zone : europe-west3-1
-location : europe-west3
-bucket_name : test-prow-bucket
-keyring_name : test-prow-keyring
-encryption_key_name : test-prow-key
-kubeconfig : ""
-prefix :
+cluster_name: test-prow
+oauth: testoauth999
+project: sap-kyma-neighbors-dev
+zone: europe-west3-c
+location: europe-west3
+bucket_name: test-prow-bucket
+keyring_name: test-prow-keyring
+encryption_key_name: test-prow-key
+kubeconfig: ""
+prefix: ""
+labels:
+  created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
 serviceAccounts:
   - name : sa-gke-kyma-integration # present
     type : serviceAccount

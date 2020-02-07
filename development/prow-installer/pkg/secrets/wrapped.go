@@ -3,6 +3,7 @@ package secrets
 import (
 	"context"
 	"fmt"
+	"google.golang.org/api/option"
 
 	kms "cloud.google.com/go/kms/apiv1"
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
@@ -15,6 +16,27 @@ type APIWrapper struct {
 	KmsRing    string
 	KmsKey     string
 	KmsClient  *kms.KeyManagementClient
+}
+
+func NewClinet(ctx context.Context, opts Option, credentials string) (*Client, error) {
+	kmsClient, err := kms.NewKeyManagementClient(ctx, option.WithCredentialsFile(credentials))
+	if err != nil {
+		return nil, fmt.Errorf("kms client create error %w", err)
+	}
+
+	api := &APIWrapper{
+		ProjectID:  opts.ProjectID,
+		LocationID: opts.LocationID,
+		KmsRing:    opts.KmsRing,
+		KmsKey:     opts.KmsKey,
+		KmsClient:  kmsClient,
+	}
+
+	if client, err := New(opts, api); err != nil {
+		return nil, fmt.Errorf("secrets client create error %w", err)
+	} else {
+		return client, nil
+	}
 }
 
 // Encrypt calls the wrapped GCP api to encrypt a secret

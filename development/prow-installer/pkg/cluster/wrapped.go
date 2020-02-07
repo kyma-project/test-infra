@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"google.golang.org/api/option"
 
 	log "github.com/sirupsen/logrus"
 
@@ -15,6 +16,24 @@ type APIWrapper struct {
 	ProjectID      string
 	ZoneID         string
 	ClusterService *container.ProjectsZonesClustersService
+}
+
+func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
+	containerService, err := container.NewService(ctx, option.WithCredentialsFile(credentials))
+	if err != nil {
+		return nil, fmt.Errorf("container service creation error %w", err)
+	}
+	api := &APIWrapper{
+		ProjectID:      opts.ProjectID,
+		ZoneID:         opts.ZoneID,
+		ClusterService: containerService.Projects.Zones.Clusters,
+	}
+
+	if client, err := New(opts, api); err != nil {
+		return nil, fmt.Errorf("cluster client creation error %w", err)
+	} else {
+		return client, nil
+	}
 }
 
 // Create calls the wrapped GCP api to create a cluster
