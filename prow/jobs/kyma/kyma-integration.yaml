@@ -31,14 +31,14 @@ vm_job_template: &vm_job_template
   spec:
     containers:
       - <<: *base_image
-        env:
-          - <<: *cluster_version
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
           requests:
             memory: 100Mi
             cpu: 50m
+        env:
+          - <<: *cluster_version
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
@@ -170,7 +170,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
         command:
           - "bash"
         env:
-          - <<: cluster_version_k15
+          - <<: *cluster_version_k15
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -635,7 +635,6 @@ periodics:
             - "-c"
             - "prow/scripts/cluster-integration/minio/azure-cleaner.sh"
           env:
-            - <<: *cluster_version
             - name: MINIO_GATEWAY_MODE
               value: azure
             - name: AZURE_RS_GROUP
@@ -663,8 +662,6 @@ periodics:
     spec:
       containers:
         - <<: *base_image
-          env:
-            - <<: *cluster_version
           command:
             - "bash"
           args:
@@ -674,6 +671,8 @@ periodics:
             requests:
               memory: 100Mi
               cpu: 50m
+          env:
+            - <<: *cluster_version
   - name: orphaned-assetstore-gcp-bucket-cleaner
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
