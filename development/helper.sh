@@ -40,7 +40,6 @@ fi
 ####
 export CLUSTER_NAME
 export SECRET_FOLDER
-
 export OAUTH
 export PROJECT
 export ZONE

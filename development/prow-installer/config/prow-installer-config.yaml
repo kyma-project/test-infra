@@ -1,0 +1,93 @@
+cluster_name : test-prow
+oauth : testoauth999
+project : sap-kyma-neighbors-dev
+zone : europe-west3-1
+location : europe-west3
+bucket_name : test-prow-bucket
+keyring_name : test-prow-keyring
+encryption_key_name : test-prow-key
+kubeconfig : ""
+prefix :
+serviceAccounts:
+  - name : sa-gke-kyma-integration # present
+    type : serviceAccount
+    roles :
+      - compute.admin
+      - compute.networkAdmin
+      - container.admin
+      - container.clusterAdmin
+      - dns.admin
+      - iam.serviceAccountUser
+      - storage.admin
+      - cloudkms.cryptoKeyEncrypterDecrypter
+  - name : sa-vm-kyma-integration # present
+    type : serviceAccount
+    roles :
+      - compute.instanceAdmin
+      - compute.osAdminLogin
+      - iam.serviceAccountUser
+  - name : sa-gcs-plank # present
+    type : serviceAccount
+    roles :
+      - storage.objectAdmin
+  - name : sa-gcr-push-kyma-project # present
+    type : serviceAccount
+    roles :
+      - storage.objectCreator
+  - name : sa-kyma-artifacts # present
+    type : serviceAccount
+    roles :
+      -  storage.objectAdmin
+  - name : sa-stability-fluentd-storage-writer
+    type : serviceAccount
+    roles:
+      - storage.objectAdmin
+  - name : sa-kyma-backup-restore
+    type : serviceAccount
+    roles :
+      - storage.admin
+      - storage.objectAdmin
+      - compute.storageAdmin
+  - name : sa-kyma-release-candidate
+    type : serviceAccount
+generics:
+  - prefix: kyma-bot-npm-token
+    key: token
+  - prefix: kyma-bot-github-token
+    key: token
+  - prefix: kyma-bot-github-ssh
+    key: key.pem
+  - prefix: sap-slack-bot-token
+    key: token
+  - prefix: slack-nightly-token
+    key: token
+  - prefix: nightly-github-integration-app-client-id
+    key: client-id
+  - prefix: nightly-github-integration-app-client-secret
+    key: client-secret
+  - prefix: weekly-github-integration-app-client-id
+    key: client-id
+  - prefix: weekly-github-integration-app-client-secret
+    key: client-secret
+  - prefix: kyma-alerts-slack-api-url
+    key: secret
+  - prefix: kyma-snyk-token
+    key: secret
+  - prefix: kyma-azure-credential-id
+    key: subscription-id
+  - prefix: kyma-azure-credential-app-id
+    key: subscription-app-id
+  - prefix: kyma-azure-credential-secret
+    key: subscription-secret
+  - prefix: kyma-azure-credential-tenant
+    key: subscription-tenant
+  - prefix: nightly-aks-github-integration-app-client-id
+    key: client-id
+  - prefix: nightly-aks-github-integration-app-client-secret
+    key: client-secret
+  - prefix: service-catalog-crd-periodic-github-integration-app-client-id
+    key: client-id
+  - prefix: service-catalog-crd-periodic-github-integration-app-client-secret
+    key: client-secret
+
+
