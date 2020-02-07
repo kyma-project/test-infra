@@ -2,7 +2,7 @@ periodics:
 - name: kyma-gardener-azure-integration
   decorate: true
   decoration_config:
-    timeout: 11700000000000 # 3h:15m
+    timeout: 14400000000000 # 4h
     grace_period: 600000000000 # 10min
   cron: "00 11 * * *"
   extra_refs:
