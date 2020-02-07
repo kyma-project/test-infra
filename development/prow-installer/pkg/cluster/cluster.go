@@ -43,6 +43,7 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
+// TODO this is still fixed. Parameters are needed.
 func (cc *Client) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
 	if minPoolSize < 1 {
 		return fmt.Errorf("could not create cluster, minPoolSize should be > 0")
