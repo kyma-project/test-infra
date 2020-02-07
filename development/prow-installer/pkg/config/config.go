@@ -41,24 +41,6 @@ type GenericSecret struct {
 	Key  string `yaml:"key"`
 }
 
-<<<<<<< HEAD:development/prow-installer/pkg/installer/installer.go
-//Get installer configuration from yaml file.
-func (installerconfig *InstallerConfig) ReadConfig(configFilePath string) {
-	configfile, err := ioutil.ReadFile(configFilePath)
-	if err != nil {
-		log.Printf("Error %v when reading file %s", err, configFilePath)
-	}
-	err = yaml.Unmarshal(configfile, &installerconfig)
-	if err != nil {
-		log.Fatalf("Error %v when unmarshalling yaml file.", err)
-	}
-	for i, account := range installerconfig.ServiceAccounts {
-		//TODO: add validation of Type property of Account type.
-		if installerconfig.Prefix != "" {
-			installerconfig.ServiceAccounts[i].Name = fmt.Sprintf("%s-%s", installerconfig.Prefix, account.Name)
-		}
-	}
-=======
 //Get config configuration from yaml file.
 func ReadConfig(configFilePath string) (*Config, error) {
 	log.Debug("Reading config from %s", configFilePath)
@@ -69,5 +51,4 @@ func ReadConfig(configFilePath string) (*Config, error) {
 		return nil, fmt.Errorf("error when unmarshalling yaml file: %w", err)
 	}
 	return &installerConfig, nil
->>>>>>> f82dba36... renamed installer package to config for better naming, moved NewClient funcs to wrapped.go:development/prow-installer/pkg/config/config.go
 }
