@@ -3,6 +3,8 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"google.golang.org/api/container/v1"
+	"google.golang.org/api/option"
 )
 
 type Option struct {
@@ -23,6 +25,24 @@ type Client struct {
 type API interface {
 	Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error
 	Delete(ctx context.Context, name string) error
+}
+
+func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
+	containerService, err := container.NewService(ctx, option.WithCredentialsFile(credentials))
+	if err != nil {
+		return nil, fmt.Errorf("container service creation error %w", err)
+	}
+	api := &APIWrapper{
+		ProjectID:      opts.ProjectID,
+		ZoneID:         opts.ZoneID,
+		ClusterService: containerService.Projects.Zones.Clusters,
+	}
+
+	if client, err := New(opts, api); err != nil {
+		return nil, fmt.Errorf("cluster client creation error %w", err)
+	} else {
+		return client, nil
+	}
 }
 
 // New returns a new Client, wrapping gke

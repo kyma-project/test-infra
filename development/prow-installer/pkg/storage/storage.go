@@ -1,8 +1,10 @@
 package storage
 
 import (
+	gcs "cloud.google.com/go/storage"
 	"context"
 	"fmt"
+	"google.golang.org/api/option"
 )
 
 // Option wrapper for relevant Options for the client
@@ -27,6 +29,25 @@ type API interface {
 	DeleteBucket(ctx context.Context, name string) error
 	Read(ctx context.Context, bucket, storageObject string) ([]byte, error)
 	Write(ctx context.Context, data []byte, bucket, storageObject string) error
+}
+
+func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
+	gcsClient, err := gcs.NewClient(ctx, option.WithCredentialsFile(credentials))
+	if err != nil {
+		return nil, fmt.Errorf("GCS client creation error %w", err)
+	}
+
+	api := &APIWrapper{
+		ProjectID:  opts.ProjectID,
+		LocationID: opts.LocationID,
+		GCSClient:  gcsClient,
+	}
+
+	if client, err := New(opts, api); err != nil {
+		return nil, fmt.Errorf("bucket client creation error %w", err)
+	} else {
+		return client, nil
+	}
 }
 
 // New returns a new Client, wrapping gcs for storage management on GCP

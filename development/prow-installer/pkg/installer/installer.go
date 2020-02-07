@@ -2,26 +2,26 @@ package installer
 
 import (
 	"fmt"
-	"io/ioutil"
-
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 //Configuration for prow installer.
-type InstallerConfig struct {
-	ClusterName       string          `yaml:"cluster_name"`
-	Oauth             string          `yaml:"oauth"`
-	Project           string          `yaml:"project"`
-	Zone              string          `yaml:"zone"`
-	Location          string          `yaml:"location"`
-	BucketName        string          `yaml:"bucket_name"`
-	KeyringName       string          `yaml:"keyring_name"`
-	EncryptionKeyName string          `yaml:"encryption_key_name"`
-	Kubeconfig        string          `yaml:"kubeconfig,omitempty"`
-	Prefix            string          `yaml:"prefix,omitempty"`
-	ServiceAccounts   []Account       `yaml:"serviceAccounts"`
-	GenericSecrets    []GenericSecret `yaml:"generics,flow,omitempty"`
+type Config struct {
+	ClusterName       string            `yaml:"cluster_name"`
+	Oauth             string            `yaml:"oauth"`
+	Project           string            `yaml:"project"`
+	Zone              string            `yaml:"zone"`
+	Location          string            `yaml:"location"`
+	BucketName        string            `yaml:"bucket_name"`
+	KeyringName       string            `yaml:"keyring_name"`
+	EncryptionKeyName string            `yaml:"encryption_key_name"`
+	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`
+	Prefix            string            `yaml:"prefix,omitempty"`
+	ServiceAccounts   []Account         `yaml:"serviceAccounts"`
+	GenericSecrets    []GenericSecret   `yaml:"generics,flow,omitempty"`
+	Labels            map[string]string `yaml:"labels"`
 }
 
 //type Accounts []Account
@@ -41,19 +41,18 @@ type GenericSecret struct {
 }
 
 //Get installer configuration from yaml file.
-func (installerconfig *InstallerConfig) ReadConfig(configFilePath string) {
-	configfile, err := ioutil.ReadFile(configFilePath)
-	if err != nil {
-		log.Printf("Error %v when reading file %s", err, configFilePath)
+func (installerConfig *Config) ReadConfig(configFilePath string) error {
+	log.Debug("Reading config from %s", configFilePath)
+	if configFile, err := ioutil.ReadFile(configFilePath); err != nil {
+		return fmt.Errorf("failed reading config file %w", err)
+	} else if err := yaml.Unmarshal(configFile, &installerConfig); err != nil {
+		return fmt.Errorf("error when unmarshalling yaml file: %w", err)
 	}
-	err = yaml.Unmarshal(configfile, &installerconfig)
-	if err != nil {
-		log.Fatalf("Error %v when unmarshalling yaml file.", err)
-	}
-	for i, account := range installerconfig.ServiceAccounts {
+	for i, account := range installerConfig.ServiceAccounts {
 		//TODO: add validation of Type property of Account type.
-		if installerconfig.Prefix != "" {
-			installerconfig.ServiceAccounts[i].Name = fmt.Sprintf("%s-%s", installerconfig.Prefix, account.Name)
+		if installerConfig.Prefix != "" {
+			installerConfig.ServiceAccounts[i].Name = fmt.Sprintf("%s-%s", installerConfig.Prefix, account.Name)
 		}
 	}
+	return nil
 }
