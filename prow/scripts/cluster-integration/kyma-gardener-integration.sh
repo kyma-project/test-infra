@@ -55,25 +55,12 @@ cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
-        #Delete cluster
         # Export envvars for the script
         export GARDENER_CLUSTER_NAME=${CLUSTER_NAME}
         export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
     fi
-
-    # if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-    #     shout "Delete Gateway DNS Record"
-    #     date
-    #     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-    # fi
-
-    # if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-    #     shout "Delete Apiserver proxy DNS Record"
-    #     date
-    #     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    # fi
 
     rm -rf "${TMP_DIR}"
 
@@ -120,43 +107,21 @@ kyma provision gardener \
         --nodes 4
 )
 
-# shout "Generate self-signed certificate"
-# date
-# DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-# export DOMAIN
-# CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
-# TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-# TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-
 shout "Installing Kyma"
 date
 
+echo "Downlading production profile"
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
+    --output installer-config-production.yaml.tpl
+
 (
 set -x
-yes | kyma install --non-interactive --source latest --timeout 60m #--domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+yes | kyma install --non-interactive --source latest -o installer-config-production.yaml.tpl --timeout 90m
 )
 
 shout "Checking the versions"
 date
 kyma version
-
-# if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
-#     shout "Create DNS Record for Ingressgateway IP"
-#     date
-#     GATEWAY_IP_ADDRESS=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-#     GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" # TODO add a proper domain
-#     CLEANUP_GATEWAY_DNS_RECORD="true"
-#     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-# fi
-
-# if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-#     shout "Create DNS Record for Apiserver proxy IP"
-#     date
-#     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-#     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}" # TODO add proper domain
-#     CLEANUP_APISERVER_DNS_RECORD="true"
-#     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-# fi
 
 shout "Running Kyma tests"
 date
