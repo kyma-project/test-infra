@@ -815,23 +815,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6526ca20664d12617e4cc49eb2c8f2f032de03afb4195ca4614f1dcece159eca"
+  digest = "1:566a9ed7fdffb2a7dfa36b9dfd23cbaf397b562774d91fa9a401be1bd48e0c17"
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
     "googleapis/devtools/containeranalysis/v1",
-    "googleapis/devtools/containeranalysis/v1beta1/attestation",
-    "googleapis/devtools/containeranalysis/v1beta1/build",
-    "googleapis/devtools/containeranalysis/v1beta1/common",
-    "googleapis/devtools/containeranalysis/v1beta1/cvss",
-    "googleapis/devtools/containeranalysis/v1beta1/deployment",
-    "googleapis/devtools/containeranalysis/v1beta1/discovery",
-    "googleapis/devtools/containeranalysis/v1beta1/grafeas",
-    "googleapis/devtools/containeranalysis/v1beta1/image",
-    "googleapis/devtools/containeranalysis/v1beta1/package",
-    "googleapis/devtools/containeranalysis/v1beta1/provenance",
-    "googleapis/devtools/containeranalysis/v1beta1/source",
-    "googleapis/devtools/containeranalysis/v1beta1/vulnerability",
     "googleapis/grafeas/v1",
     "googleapis/iam/v1",
     "googleapis/rpc/code",
@@ -1212,7 +1200,6 @@
     "google.golang.org/api/container/v1",
     "google.golang.org/api/dns/v1",
     "google.golang.org/api/iterator",
-    "google.golang.org/genproto/googleapis/devtools/containeranalysis/v1beta1/grafeas",
     "google.golang.org/genproto/googleapis/grafeas/v1",
     "gopkg.in/yaml.v2",
     "k8s.io/api/core/v1",
