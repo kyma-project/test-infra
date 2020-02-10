@@ -249,6 +249,30 @@ gke_central_job_template: &gke_central_job_template
             memory: 200Mi
             cpu: 80m
 
+gke_central_job_template_k14: &gke_central_job_template_k14
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - <<: *cluster_version_k14
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
 gke_backup_job_template: &gke_backup_job_template
   skip_report: false
   decorate: true
@@ -484,11 +508,25 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range .Global.releases }}
+{{- range (matchingReleases .Global.releases "1.10" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
       branches:
         - release-{{ . }}
       <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+
+{{- range (matchingReleases .Global.releases nil "1.9") }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
+      branches:
+        - release-{{ . }}
+      <<: *gke_central_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
