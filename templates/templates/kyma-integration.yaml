@@ -291,7 +291,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases "1.8" "1.9") }}
+{{- range (matchingReleases .Global.releases nil "1.9") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-integration
       branches:
         - release-{{ . }}
@@ -374,11 +374,27 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range .Global.releases }}
+{{- range (matchingReleases .Global.releases "1.10" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-integration
       branches:
         - release-{{ . }}
       <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-{{ . }}
+{{- end }}
+
+{{- range (matchingReleases .Global.releases nil "1.9") }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-integration
+      branches:
+        - release-{{ . }}
+      <<: *gke_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
