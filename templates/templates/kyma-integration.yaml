@@ -15,7 +15,6 @@ k8s_1-14: &k8s_1-14
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
-  optional: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
