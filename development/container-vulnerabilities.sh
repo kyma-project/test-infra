@@ -13,7 +13,7 @@ readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 if [ -z "${!SAP_SLACK_BOT_TOKEN}" ] ; then
-    echo "ERROR: $var is not set"
+    echo "ERROR: $SAP_SLACK_BOT_TOKEN is not set"
     exit 1
 fi
 
