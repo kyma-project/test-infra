@@ -11,13 +11,9 @@ discoverUnsetVar=false
 
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-for var in SAP_SLACK_BOT_TOKEN; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
+
+if [ -z "${!SAP_SLACK_BOT_TOKEN}" ] ; then
+    echo "ERROR: $var is not set"
     exit 1
 fi
 
