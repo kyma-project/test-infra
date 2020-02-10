@@ -11,7 +11,7 @@ discoverUnsetVar=false
 
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-for var in KYMA_PROJECT_DIR SAP_SLACK_BOT_TOKEN; do
+for var in SAP_SLACK_BOT_TOKEN; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -22,7 +22,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 go run "${DEVELOPMENT_DIR}/tools/cmd/vulnerabilitycollector/main.go" "$@"
 status=$?
