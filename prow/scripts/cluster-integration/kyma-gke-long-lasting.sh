@@ -26,7 +26,6 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export REPO_OWNER="kyma-project"
 export REPO_NAME="kyma"
-readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 export STANDARIZED_NAME
@@ -71,6 +70,10 @@ fi
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
 function createCluster() {
 	shout "Reserve IP Address for Ingressgateway"
@@ -102,25 +105,6 @@ function createCluster() {
 	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
-function waitUntilInstallerApiAvailable() {
-    shout "Waiting for Installer API"
-
-	attempts=5
-    for ((i=1; i<=attempts; i++)); do
-        numberOfLines=$(kubectl api-versions | grep -c "installer.kyma-project.io")
-        if [[ "$numberOfLines" == "1" ]]; then
-            echo "API found"
-            break
-        elif [[ "${i}" == "${attempts}" ]]; then
-            echo "ERROR: API not found, exit"
-            exit 1
-        fi
-
-        echo "Sleep for 3 seconds"
-        sleep 3
-    done
-}
-
 function installKyma() {
 
 	kymaUnsetVar=false
@@ -136,39 +120,23 @@ function installKyma() {
     	exit 1
 	fi
 
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
-
-	shout "Build Kyma-Installer Docker image"
-	date
-	KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
-
-	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-letsencrypt-cert.sh"
 	TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
 	export TLS_CERT
 	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 	export TLS_KEY
 
-	shout "Apply Kyma config"
+	shout "Apply Kyma overrides"
 	date
 
-	sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
-			| kubectl apply -f-
+	kubectl create namespace "kyma-installer"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-			--data "global.domainName=${DOMAIN}" \
 			--data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
 			--data "test.acceptance.ui.logging.enabled=true" \
 			--label "component=core"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-			--data "global.tlsCrt=${TLS_CERT}" \
-			--data "global.tlsKey=${TLS_KEY}"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
 			--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
@@ -183,16 +151,19 @@ function installKyma() {
 			applyServiceCatalogCRDOverride
 	fi
 
-	echo "Apply production profile"
-	kubectl apply -f "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
-
-	waitUntilInstallerApiAvailable
-
 	shout "Trigger installation"
 	date
 
-    sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+	kyma install \
+			--ci \
+			--source latest \
+			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+			--domain "${DOMAIN}" \
+			--tlsCert "${TLS_CERT}" \
+			--tlsKey "${TLS_KEY}" \
+			--timeout 60m
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		shout "Create DNS Record for Apiserver proxy IP"
@@ -274,10 +245,8 @@ shout "Create new cluster"
 date
 createCluster
 
-shout "Install tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
+export INSTALL_DIR=${TMP_DIR}
+install::kyma_cli
 
 shout "Install kyma"
 date
@@ -300,4 +269,3 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
         CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
-
