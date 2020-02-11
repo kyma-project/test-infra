@@ -8,6 +8,10 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
+# Kubectl 1.14
+base_image_k14: &base_image_k14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
 # Kubectl 1.16
 base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
@@ -50,7 +54,7 @@ vm_job_template_k14: &vm_job_template_k14
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k14
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
@@ -58,7 +62,7 @@ vm_job_template_k14: &vm_job_template_k14
             memory: 100Mi
             cpu: 50m
         env:
-          - <<: *cluster_version
+          - <<: *cluster_version_k14
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
@@ -88,7 +92,7 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
@@ -112,7 +116,7 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
@@ -160,7 +164,7 @@ gke_job_template_k14: &gke_job_template_k14
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
@@ -208,7 +212,7 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
@@ -256,7 +260,7 @@ gke_central_job_template_k14: &gke_central_job_template_k14
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
@@ -285,6 +289,28 @@ gke_backup_job_template: &gke_backup_job_template
           - "bash"
         env:
           - <<: *cluster_version_k15
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_backup_job_template_k14: &gke_backup_job_template_k14
+  skip_report: false
+  decorate: true
+  spec:
+    containers:
+      - <<: *base_image_k14
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -352,7 +378,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases "1.6" "1.8") }}
+{{- range (matchingReleases .Global.releases nil "1.8") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-minio-gcs-gateway
       branches:
         - release-{{ . }}
@@ -438,7 +464,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases nil "1.9") }}
+{{- range (matchingReleases .Global.releases "1.8" "1.9") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-integration
       branches:
         - release-{{ . }}
@@ -481,7 +507,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases nil "1.9") }}
+{{- range (matchingReleases .Global.releases "1.8" "1.9") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
       branches:
         - release-{{ . }}
@@ -522,7 +548,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases nil "1.9") }}
+{{- range (matchingReleases .Global.releases "1.8" "1.9") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
       branches:
         - release-{{ . }}
@@ -550,12 +576,27 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range (matchingReleases .Global.releases "1.4" nil) }}
+{{- range (matchingReleases .Global.releases "1.10" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
       optional: false
       branches:
         - release-{{ . }}
       <<: *gke_backup_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_backup_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+
+{{- range (matchingReleases .Global.releases "1.8" "1.9") }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
+      optional: false
+      branches:
+        - release-{{ . }}
+      <<: *gke_backup_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
