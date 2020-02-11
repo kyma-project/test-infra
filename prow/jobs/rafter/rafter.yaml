@@ -77,6 +77,7 @@ common_container_template: &common_container_template
   env:
     - name: GO111MODULE
       value: "on"
+    - <<: *cluster_version
   resources:
     requests:
       memory: 1.5Gi
@@ -120,8 +121,6 @@ common_minio_gateway_test_job_template: &common_minio_gateway_test_job_template
           - make
         args:
           - minio-gateway-test
-        env:
-          - <<: *cluster_version
 
 common_minio_gateway_migration_test_job_template: &common_minio_gateway_migration_test_job_template
   <<: *common_job_config_template
@@ -131,8 +130,6 @@ common_minio_gateway_migration_test_job_template: &common_minio_gateway_migratio
     containers:
       - <<: *common_container_template
         <<: *base_image
-        env:
-          - <<: *cluster_version
         command:
           - make
         args:
