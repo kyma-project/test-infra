@@ -98,7 +98,7 @@ var tests = []struct {
 	},
 	{path: "end-to-end/external-solution-integration", image: tester.ImageGolangBuildpack1_11,
 		additionalOptions: []jobsuite.Option{
-				jobsuite.Until(releases.Release19),
+			jobsuite.Until(releases.Release19),
 		},
 	},
 	{path: "end-to-end/external-solution-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

@@ -28,8 +28,8 @@ var (
 		"releaseMatches":   releaseMatches,
 	}
 	commentSignByFileExt = map[string]sets.String{
-		"//":  sets.NewString(".go"),
-		"#": sets.NewString(".yaml", ".yml"),
+		"//": sets.NewString(".go"),
+		"#":  sets.NewString(".yaml", ".yml"),
 	}
 )
 

@@ -74,7 +74,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 	assert.Len(t, kymaPost, 2)
 
 	for i, tests := range []struct {
-		expName string
+		expName         string
 		expPresets      []preset.Preset
 		expBranches     []string
 		expContainerImg string
@@ -82,20 +82,20 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 		expArgs         string
 	}{
 		{
-			expName:"post-master-helm-broker",
-			expBranches: []string{"^master$"},
-			expPresets: []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.BuildMaster, preset.DockerPushRepoKyma},
+			expName:         "post-master-helm-broker",
+			expBranches:     []string{"^master$"},
+			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.BuildMaster, preset.DockerPushRepoKyma},
 			expContainerImg: tester.ImageGolangKubebuilderBuildpackLatest,
-			expCommand: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
-			expArgs: "/home/prow/go/src/github.com/kyma-project/helm-broker",
+			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
+			expArgs:         "/home/prow/go/src/github.com/kyma-project/helm-broker",
 		},
 		{
-			expName: "post-release-helm-broker",
-			expBranches: []string{"v\\d+\\.\\d+\\.\\d+$"},
-			expPresets: []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.BuildRelease, preset.DockerPushRepoKyma, preset.BotGithubToken, preset.KindVolumesMounts},
+			expName:         "post-release-helm-broker",
+			expBranches:     []string{"v\\d+\\.\\d+\\.\\d+$"},
+			expPresets:      []preset.Preset{preset.DindEnabled, preset.GcrPush, preset.BuildRelease, preset.DockerPushRepoKyma, preset.BotGithubToken, preset.KindVolumesMounts},
 			expContainerImg: tester.ImageGolangKubebuilderBuildpackLatest,
-			expCommand: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
-			expArgs: "/home/prow/go/src/github.com/kyma-project/helm-broker",
+			expCommand:      "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh",
+			expArgs:         "/home/prow/go/src/github.com/kyma-project/helm-broker",
 		},
 	} {
 		t.Run(tests.expName, func(t *testing.T) {

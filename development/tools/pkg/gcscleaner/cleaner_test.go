@@ -1,4 +1,4 @@
-package gcscleaner_test
+package gcscleaner
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage"
 	"github.com/kyma-project/test-infra/development/tools/pkg/gcscleaner/storage/automock"
 	"github.com/onsi/gomega"
@@ -120,8 +119,8 @@ func TestCleaner_ShouldDeleteBucket(t *testing.T) {
 	}
 }
 
-func newTestCleaner(client storage.Client, excludedBucketNames []string) gcscleaner.Cleaner {
-	return gcscleaner.NewCleaner(client, getConf(excludedBucketNames))
+func newTestCleaner(client storage.Client, excludedBucketNames []string) Cleaner {
+	return NewCleaner(client, getConf(excludedBucketNames))
 }
 
 func TestCleaner_DeleteOldBuckets_ErrBucketIteration(t *testing.T) {
@@ -251,8 +250,8 @@ func getStorageClient(bucketIterator storage.BucketIterator) *automock.Client {
 	return &client
 }
 
-func getConf(excludedBucketNames []string) gcscleaner.Config {
-	return gcscleaner.Config{
+func getConf(excludedBucketNames []string) Config {
+	return Config{
 		BucketLifespanDuration:    2 * time.Hour,
 		ProjectName:               "test-project",
 		BucketNameRegexp:          regexp.MustCompile("^.+-([a-z0-9]+$)"),

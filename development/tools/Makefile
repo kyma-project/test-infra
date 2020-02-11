@@ -1,7 +1,7 @@
 .PHONY: resolve validate jobs-tests
 
 resolve:
-	dep ensure -v -vendor-only
+	go mod tidy
 
 validate: resolve
 	./before-commit.sh
