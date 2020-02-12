@@ -1,4 +1,8 @@
-periodics: 
+# Kubectl 1.14, CLUSTER_VERSION=1.14
+k8s_1-14: &k8s_1-14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
+periodics:
 - name: kyma-gardener-azure-integration
   decorate: true
   decoration_config:
@@ -14,16 +18,23 @@ periodics:
     preset-gardener-azure-kyma-integration: "true"
     preset-kyma-cli-stable: "true"
     preset-nightly-github-integration: "true"
+    preset-creds-aks-kyma-integration: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+    - <<: *k8s_1-14
       securityContext:
         privileged: true
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gardener-integration.sh"
       env:
+      - name: RS_GROUP
+        value: "kyma-gardener-azure"
+      - name: REGION
+        value: "northeurope"
+      - name: EVENTHUB_NAMESPACE_NAME
+        value: "kyma-gardener-azure"
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION

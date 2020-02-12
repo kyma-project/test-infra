@@ -12,6 +12,13 @@
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
 # - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
+# - REGION
+# - AZURE_SUBSCRIPTION_ID
+# - AZURE_SUBSCRIPTION_APP_ID
+# - AZURE_SUBSCRIPTION_SECRET
+# - AZURE_SUBSCRIPTION_TENANT
+# - RS_GROUP
+# - EVENTHUB_NAMESPACE_NAME
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
@@ -19,7 +26,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
+for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME RS_GROUP EVENTHUB_NAMESPACE_NAME REGION AZURE_SUBSCRIPTION_ID AZURE_SUBSCRIPTION_APP_ID AZURE_SUBSCRIPTION_SECRET AZURE_SUBSCRIPTION_TENANT; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -29,7 +36,12 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+
+#AZURE_SUBSCRIPTION=?
+
+
 #Exported variables
+export RS_GROUP EVENTHUB_NAMESPACE_NAME REGION AZURE_SUBSCRIPTION_ID AZURE_SUBSCRIPTION_APP_ID AZURE_SUBSCRIPTION_SECRET AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 # shellcheck disable=SC1090
@@ -64,6 +76,12 @@ cleanup() {
 
     rm -rf "${TMP_DIR}"
 
+    # Delete the Azure Event Hubs namespace which was created
+    set +e
+    az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+
+    # Delete the Azure Event Hubs namespace which was created
+    az group delete -n "${RS_GROUP}" -y
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
@@ -107,6 +125,10 @@ kyma provision gardener \
         --nodes 4
 )
 
+shout "Generate Azure Event Hubs overrides"
+date
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+
 shout "Installing Kyma"
 date
 
@@ -114,9 +136,12 @@ echo "Downlading production profile"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
     --output installer-config-production.yaml.tpl
 
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-gardener-azure.yaml.tpl" \
+    --output installer-cr-gardener-azure.yaml.tpl
+
 (
 set -x
-yes | kyma install --non-interactive --source latest -o installer-config-production.yaml.tpl --timeout 90m
+yes | kyma install --non-interactive --source latest -o installer-cr-gardener-azure.yaml.tpl -o installer-config-production.yaml.tpl -o "${EVENTHUB_NAMESPACE_NAME}-secret.yaml" --timeout 90m
 )
 
 shout "Checking the versions"
