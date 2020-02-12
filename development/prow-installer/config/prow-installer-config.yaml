@@ -7,7 +7,7 @@ bucket_name: test-prow-bucket
 keyring_name: test-prow-keyring
 encryption_key_name: test-prow-key
 kubeconfig: ""
-prefix: kamil
+prefix: ""
 labels:
   created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
 
@@ -20,7 +20,7 @@ clusters:
     kubernetesVersion: 1.15
     pools:
       - name: default-pool
-        initialSize: 0
+        initialSize: 2
         config:
           diskType: pd-ssd
           diskSizeGb: 100
