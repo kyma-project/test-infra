@@ -37,20 +37,24 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 }
 
 // Create calls the wrapped GCP api to create a cluster
-func (caw *APIWrapper) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
-	var pool []*container.NodePool
+func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error {
+	var nodePools []*container.NodePool
 
-	pr, err := newNodePool(fmt.Sprintf("%s-pool", name), minPoolSize, autoScaling)
-	if err != nil {
-		return fmt.Errorf("couldn't define node pool for cluster: %w", err)
+	for _, pool := range clusterConfig.Pools {
+		if nodePool, err := NewNodePool(pool); err != nil {
+			return fmt.Errorf("error creating node pool configuration %w", err)
+		} else {
+			nodePools = append(nodePools, nodePool)
+		}
 	}
-	pool = append(pool, pr)
 
-	ccRequest := &container.CreateClusterRequest{Cluster: &container.Cluster{
-		Name:           name,
-		ResourceLabels: labels,
-		NodePools:      pool,
-	}}
+	ccRequest := &container.CreateClusterRequest{
+		Cluster: &container.Cluster{
+			Name:           clusterConfig.Name,
+			ResourceLabels: clusterConfig.Labels,
+			Description:    clusterConfig.Description,
+			NodePools:      nodePools,
+		}}
 
 	createResponse, err := caw.ClusterService.Create(caw.ProjectID, caw.ZoneID, ccRequest).Context(ctx).Do()
 	if err != nil {
@@ -70,14 +74,23 @@ func (caw *APIWrapper) Delete(ctx context.Context, name string) error {
 	return nil
 }
 
-func newNodePool(name string, initialNodeCount int, autoScaling bool) (*container.NodePool, error) {
-	scaling := &container.NodePoolAutoscaling{
-		Enabled: autoScaling,
+func NewNodePool(nodePool Pool) (*container.NodePool, error) {
+	if nodePool.Size == 0 {
+		return nil, fmt.Errorf("node pool can't be zero inimal value is 1")
 	}
 	pool := &container.NodePool{
-		Name:             name,
-		InitialNodeCount: 1,
-		Autoscaling:      scaling,
+		Name:             nodePool.Name,
+		InitialNodeCount: nodePool.Size,
+		Autoscaling: &container.NodePoolAutoscaling{
+			Enabled:      nodePool.Autoscaling.Enabled,
+			MaxNodeCount: nodePool.Autoscaling.MaxNodeCount,
+			MinNodeCount: nodePool.Autoscaling.MinNodeCount,
+		},
+		Config: &container.NodeConfig{
+			DiskSizeGb:  nodePool.NodeConfig.DiskSizeGb,
+			DiskType:    nodePool.NodeConfig.DiskType,
+			MachineType: nodePool.NodeConfig.MachineType,
+		},
 	}
 
 	return pool, nil

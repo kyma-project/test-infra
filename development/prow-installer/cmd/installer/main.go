@@ -43,6 +43,7 @@ func main() {
 		Prefix:         readConfig.Prefix,
 		ServiceAccount: *credentialsFile,
 	}
+
 	clusterConfig := &cluster.Option{
 		Prefix:         readConfig.Prefix,
 		ProjectID:      readConfig.Project,
@@ -54,8 +55,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
 	}
-	if err := clusterClient.Create(ctx, readConfig.ClusterName, readConfig.Labels, 1, false); err != nil {
-		log.Fatalf("Failed to create cluster: %v", err)
+	for _, clusterToCreate := range readConfig.Clusters {
+		if clusterToCreate.Labels == nil {
+			clusterToCreate.Labels = make(map[string]string)
+		}
+		for k, v := range readConfig.Labels {
+			clusterToCreate.Labels[k] = v
+		}
+		if err := clusterClient.Create(ctx, clusterToCreate); err != nil {
+			log.Fatalf("Failed to create cluster: %v", err)
+		}
 	}
 
 	storageClient, err := storage.NewClient(ctx, *storageConfig, *credentialsFile)
@@ -89,8 +98,9 @@ func main() {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
 			_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
-			if err != nil {
+			for err != nil {
 				log.Errorf("Error adding role to a service %v", err)
+				_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
 			}
 		}
 	}
