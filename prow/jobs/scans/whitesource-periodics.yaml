@@ -228,20 +228,20 @@ periodics:
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
-      preset-kyma-wssagent-config: "true"
-      preset-kyma-keyring: "true"
-      preset-kyma-encryption-key: "true"
-      preset-kms-gc-project-env: "true"
-      preset-gc-project-env: "true"
-      preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
     extra_refs:
-      - <<: *test_infra_ref
-      - org: kyma-incubator
-        repo: knative-kafka
-        path_alias: github.com/kyma-incubator/knative-kafka
-        base_ref: master
+        - <<: *test_infra_ref
+        - org: kyma-incubator
+          repo: knative-kafka
+          path_alias: github.com/kyma-incubator/knative-kafka
+          base_ref: master
     spec:
-      containers:
+        containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
           command:
             - "bash"
