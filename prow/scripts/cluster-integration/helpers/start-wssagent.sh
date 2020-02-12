@@ -47,6 +47,10 @@ case "${SCAN_LANGUAGE}" in
     golang)
         sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
         ;;
+
+    golang-mod)
+        sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=modules|g" /wss/wss-unified-agent.config
+        ;;
         
     javascript)
         sed -i.bak "s|go.resolveDependencies=true|# go.resolveDependencies=true|g" /wss/wss-unified-agent.config
