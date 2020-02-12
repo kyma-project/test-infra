@@ -14,3 +14,14 @@ function kubernetes::ensure_kubectl {
 
     kubectl version --client
 }
+
+# kubernetes::is_pod_ready validate if specified POD is up and ready
+#
+# Arguments:
+#   $1 - Path to the Kyma sources
+#   $2 - Pod namespace
+#   $3 - Pod's label name
+#   $4 - Pod's label value
+function kubernetes::is_pod_ready {
+    "${1}/installation/scripts/is-ready.sh" "${2}" "${3}" "${4}"
+}

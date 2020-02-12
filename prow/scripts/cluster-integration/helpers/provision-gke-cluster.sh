@@ -15,7 +15,8 @@
 # - NUM_NODES - the number of nodes to be created
 # - ADDITIONAL_LABELS - labels applied on the cluster
 # - GCLOUD_NETWORK_NAME - network name for the cluster, must be specified together with $GCLOUD_NETWORK_NAME
-# - GCLOUD_SUBNET_NAME - subnet name from $GCLOUD_NETWORK_NAME, must be specified together with $GCLOUD_NETWORK_NAME 
+# - GCLOUD_SUBNET_NAME - subnet name from $GCLOUD_NETWORK_NAME, must be specified together with $GCLOUD_NETWORK_NAME
+# - GCLOUD_SECURITY_GROUP_DOMAIN - G Suite Google Group address on a verified domain
 #
 # REQUIREMENTS:
 # - gcloud
@@ -56,6 +57,7 @@ if [ "${STACKDRIVER_KUBERNETES}" ];then GCLOUD_PARAMS+=("--enable-stackdriver-ku
 if [ "${CLUSTER_USE_SSD}" ];then GCLOUD_PARAMS+=("--disk-type=pd-ssd"); fi
 #Must be added at the end to override --num-nodes parameter value set earlier.
 if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then GCLOUD_PARAMS+=("--region=${CLOUDSDK_COMPUTE_REGION}" "--num-nodes=${NODES_PER_ZONE}"); fi
+if [ "${GCLOUD_SECURITY_GROUP_DOMAIN}" ]; then GCLOUD_PARAMS+=("--security-group=gke-security-groups@${GCLOUD_SECURITY_GROUP_DOMAIN}"); fi
 
 APPENDED_LABELS=""
 if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi

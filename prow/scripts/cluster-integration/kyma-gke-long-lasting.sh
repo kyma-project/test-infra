@@ -36,8 +36,8 @@ export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
-#Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
-#https://cloud.google.com/monitoring/kubernetes-engine/prometheus
+# Enable Stackdriver Kubernetes Engine Monitoring support on k8s cluster. Mandatory requirement for stackdriver-prometheus collector.
+# https://cloud.google.com/monitoring/kubernetes-engine/prometheus
 export STACKDRIVER_KUBERNETES="true"
 export SIDECAR_IMAGE_TAG="${STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG}"
 
@@ -52,7 +52,7 @@ if [ "${CLUSTER_USE_SSD}" ]; then
 	fi
 fi
 
-#Provision GKE regional cluster.
+# Provision GKE regional cluster.
 if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
 	PROVISION_REGIONAL_CLUSTER=$(echo "${PROVISION_REGIONAL_CLUSTER}" | tr '[:upper:]' '[:lower:]')
 	if [ "${PROVISION_REGIONAL_CLUSTER}" == "true" ] || [ "${PROVISION_REGIONAL_CLUSTER}" == "yes" ]; then
@@ -228,16 +228,22 @@ EOF
 }
 
 function installStackdriverPrometheusCollector(){
+  # Patching prometheus resource of prometheus-operator.
+  # Injecting stackdriver-collector sidecar to export metrics in to stackdriver monitoring.
+  # Adding additional scrape config to get stackdriver sidecar metrics.
+  echo "Create additional scrape config secret."
+  kubectl -n kyma-system create secret generic prometheus-operator-additional-scrape-config --from-file="${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-additional-scrape-config.yaml
 	echo "Replace tags with current values in patch yaml file."
-	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/' \
-		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/' \
+	sed -i.bak -e 's/__SIDECAR_IMAGE_TAG__/'"${SIDECAR_IMAGE_TAG}"'/g' \
+		-e 's/__GCP_PROJECT__/'"${GCLOUD_PROJECT_NAME}"'/g' \
 		-e 's/__GCP_REGION__/'"${CLOUDSDK_COMPUTE_REGION}"'/g' \
-		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
+		-e 's/__CLUSTER_NAME__/'"${CLUSTER_NAME}"'/g' "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml
 	echo "Patch monitoring prometheus CRD to deploy stackdriver-prometheus collector as sidecar"
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
 function patchlimitrange(){
+  # Patching limitrange on kyma-system namespace to meet prometheus memory requirements.
 	echo "Patching kyma-default LimitRange"
 	kubectl -n kyma-system patch limitrange kyma-default --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/limitrange-patch.yaml)"
 
@@ -275,7 +281,7 @@ date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-#Prometheus container need minimum 6Gi memory limit.
+# Prometheus container need minimum 6Gi memory limit.
 shout "Increase cluster max container memory limit"
 date
 patchlimitrange

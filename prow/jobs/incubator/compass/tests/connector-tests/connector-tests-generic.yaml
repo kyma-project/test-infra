@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-connector-tests$
+    - ^release-(1\.10|1\.9|1\.8)-connector-tests$
   run_if_changed: "^tests/connector-tests/|^scripts/"
   spec:
     containers:

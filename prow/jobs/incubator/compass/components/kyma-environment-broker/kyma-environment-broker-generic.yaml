@@ -14,12 +14,12 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-incubator: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.10|1\.9)-kyma-environment-broker$
   run_if_changed: "^components/kyma-environment-broker/|^scripts/"
   spec:
     containers:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-components-kyma-environment-broker
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:

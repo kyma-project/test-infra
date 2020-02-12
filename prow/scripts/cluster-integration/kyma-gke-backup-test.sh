@@ -27,11 +27,16 @@ removeCluster() {
     date
 
     #save disk names while the cluster still exists to remove them later
-    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+    DISKS=$(kubectl get pv --all-namespaces -o jsonpath="{.items[*].spec.gcePersistentDisk.pdName}" | xargs -n1 echo)
     export DISKS
 
     #Delete cluster
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+
+    #Delete orphaned disks
+    shout "Delete orphaned PVC disks..."
+    date
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
 }
 
 function cleanup() {
@@ -285,21 +290,22 @@ function restoreKyma() {
     shout "Install Velero CLI"
     date
 
-    wget -q https://github.com/heptio/velero/releases/download/v1.0.0/velero-v1.0.0-linux-amd64.tar.gz && \
-    tar -xvf velero-v1.0.0-linux-amd64.tar.gz && \
-    mv velero-v1.0.0-linux-amd64/velero /usr/local/bin && \
-    rm -rf velero-v1.0.0-linux-amd64 velero-v1.0.0-linux-amd64.tar.gz 
+    wget -q https://github.com/vmware-tanzu/velero/releases/download/v1.2.0/velero-v1.2.0-linux-amd64.tar.gz && \
+    tar -xvf velero-v1.2.0-linux-amd64.tar.gz && \
+    mv velero-v1.2.0-linux-amd64/velero /usr/local/bin && \
+    rm -rf velero-v1.2.0-linux-amd64 velero-v1.2.0-linux-amd64.tar.gz
 
     CLOUD_PROVIDER="gcp"
 
     shout "Install Velero Server"
     date
-    velero install --bucket "$BACKUP_RESTORE_BUCKET" --provider "$CLOUD_PROVIDER" --secret-file "$BACKUP_CREDENTIALS" --restore-only --wait
-
-    sleep 15
-
-    echo "Add backup plugins"
-    velero plugin add eu.gcr.io/kyma-project/backup-plugins:c08e6274
+    velero install \
+        --bucket "$BACKUP_RESTORE_BUCKET" \
+        --provider "$CLOUD_PROVIDER" \
+        --secret-file "$BACKUP_CREDENTIALS" \
+        --plugins velero/velero-plugin-for-gcp:v1.0.0,eu.gcr.io/kyma-project/backup-plugins:c08e6274 \
+        --restore-only \
+        --wait
 
     sleep 15
 
@@ -322,7 +328,7 @@ function restoreKyma() {
 
     shout "Restore Kyma CRDs, Services and Endpoints"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --include-cluster-resources --wait
+    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
 
     sleep 30
 
@@ -332,7 +338,7 @@ function restoreKyma() {
     attempts=3
     for ((i=1; i<=attempts; i++)); do
         
-        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints, --include-cluster-resources --restore-volumes --wait
+        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
 
         sleep 60
 

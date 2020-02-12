@@ -15,33 +15,55 @@ var tests = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{
-		name: "connector-tests",
+		name:  "connector-tests",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
-		name: "end-to-end",
+		name:  "director",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("generic-approach"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release110),
 		},
 	},
 	{
-		name: "provisioner-tests",
+		name:  "provisioner-tests",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
+		},
+	},
+	{
+		name:  "e2e/provisioning",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("test-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
+	{
+		name:  "connectivity-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release111),
+			jobsuite.Optional(),
 		},
 	},
 }

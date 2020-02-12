@@ -9,6 +9,10 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
+# Kubectl 1.14, CLUSTER_VERSION=1.14
+k8s_1-14: &k8s_1-14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
   preset-kyma-encryption-key: "true"
@@ -20,6 +24,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
+  preset-gardener-azure-kyma-integration: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -30,7 +35,7 @@ presubmits: # runs on PRs
     max_concurrency: 10
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           securityContext:
             privileged: true
           command:
@@ -47,7 +52,8 @@ presubmits: # runs on PRs
               cpu: 80m
     branches:
       - ^master$
-    run_if_changed: "^(resources/compass|resources/compass-runtime-agent|installation)/"
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     labels:
       prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
       preset-build-pr: "true"
@@ -55,6 +61,41 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
+  - name: pre-master-kyma-gke-compass-integration-provisioner-test
+    optional: true
+    decorate: true
+    path_alias: github.com/kyma-project/kyma
+    skip_report: false
+    max_concurrency: 10
+    spec:
+      containers:
+        - <<: *k8s_1-14
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+          env:
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    branches:
+      - ^master$
+    run_if_changed: "resources/compass"
+    labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+      preset-build-pr: "true"
+      <<: *gke_integration_job_labels_template
+    extra_refs:
+      - org: rafalpotempa
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: provisioner-gardener-azure
 
 postsubmits:
   kyma-project/kyma:
@@ -69,7 +110,7 @@ postsubmits:
     max_concurrency: 10
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20191120-66b27aac
+        - <<: *k8s_1-14
           securityContext:
             privileged: true
           command:

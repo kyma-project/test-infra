@@ -8,7 +8,9 @@
 # - APIKEY- Key provided by SAP Whitesource Team
 # - PRODUCTNAME - Product inside whitesource
 # - USERKEY - Users specified key(should be a service account)
-# - PROJECTNAME- Kyma component name, scans that directory and posts the results in whitesource
+# - PROJECTNAME - Kyma component name, scans that directory and posts the results in whitesource
+# - GITHUB_ORG_DIR - Project directory to scan
+# - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
 set -o errexit
 
@@ -41,7 +43,21 @@ USERKEY=$(cat "whitesource-userkey")
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-apikey" "whitesource-apikey.encrypted"
 APIKEY=$(cat "whitesource-apikey")
 
-sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
+case "${SCAN_LANGUAGE}" in
+    golang)
+        sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
+        ;;
+        
+    javascript)
+        sed -i.bak "s|go.resolveDependencies=true|# go.resolveDependencies=true|g" /wss/wss-unified-agent.config
+        sed -i.bak "s|go.collectDependenciesAtRuntime=false|# go.collectDependenciesAtRuntime=false|g" /wss/wss-unified-agent.config
+        sed -i.bak "s|go.dependencyManager=godep|# go.dependencyManager=godep|g" /wss/wss-unified-agent.config
+        ;;
+        
+    *)
+        echo "can only be golang or javascript"
+        exit 1
+esac
 
 # backup config for re-use
 /bin/cp /wss/wss-unified-agent.config /wss/wss-unified-agent.config.backup
@@ -50,7 +66,7 @@ echo "***********************************"
 echo "***********Starting Scan***********"
 echo "***********************************"
 
-KYMA_SRC="${KYMA_PROJECT_DIR}/${PROJECTNAME}"
+KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $1 == "" ]]; then
@@ -91,22 +107,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     fi
 }
 
-scanFolder "${KYMA_SRC}" "kyma"
-
-# KYMA_COMMON="${KYMA_SRC}/common"
-# KYMA_INSTALLATION="${KYMA_SRC}/installation"
-# KYMA_COMPONENTS="${KYMA_SRC}/components"
-# scanFolder "${KYMA_COMMON}" "kyma/common"
-# scanFolder "${KYMA_INSTALLATION}" "kyma/installation"
-
-# cd "${KYMA_COMPONENTS}"
-# for comp_dir in */;
-# do
-#     # shellcheck disable=SC2001
-#     VAL=$(echo "${comp_dir}" | sed 's/.$//')
-#     echo "Processing '${VAL}' for scan'"
-#     scanFolder "${KYMA_COMPONENTS}/${VAL}" "${VAL}"
-# done
+scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
 
 echo "***********************************"
 echo "*********Scanning Finished*********"

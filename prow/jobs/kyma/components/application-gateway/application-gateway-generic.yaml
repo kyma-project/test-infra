@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-application-gateway$
+    - ^release-(1\.10|1\.9|1\.8)-application-gateway$
   run_if_changed: "^components/application-gateway/|^common/makefiles/"
   spec:
     containers:

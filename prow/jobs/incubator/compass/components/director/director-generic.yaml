@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-director$
+    - ^release-(1\.10|1\.9|1\.8)-director$
   run_if_changed: "^components/director/|^scripts/"
   spec:
     containers:

@@ -30,6 +30,28 @@ job_labels_template: &job_labels_template
 
 postsubmits: 
   kyma-project/kyma:
+  - name: post-rel110-kyma-github-release
+    branches:
+      - release-1.10
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.10
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.10: "true"
+  - name: post-rel19-kyma-github-release
+    branches:
+      - release-1.9
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.9
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.9: "true"
   - name: post-rel18-kyma-github-release
     branches:
       - release-1.8
@@ -41,42 +63,20 @@ postsubmits:
       <<: *job_labels_template
       preset-build-release: "true"
       preset-target-commit-1.8: "true"
-  - name: post-rel17-kyma-github-release
-    branches:
-      - release-1.7
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.7
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.7: "true"
-  - name: post-rel16-kyma-github-release
-    branches:
-      - release-1.6
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.6
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.6: "true"
 
 presets:
+  - labels:
+      preset-target-commit-1.10: "true"
+    env:
+      - name: RELEASE_TARGET_COMMIT
+        value: release-1.10
+  - labels:
+      preset-target-commit-1.9: "true"
+    env:
+      - name: RELEASE_TARGET_COMMIT
+        value: release-1.9
   - labels:
       preset-target-commit-1.8: "true"
     env:
       - name: RELEASE_TARGET_COMMIT
         value: release-1.8
-  - labels:
-      preset-target-commit-1.7: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.7
-  - labels:
-      preset-target-commit-1.6: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.6

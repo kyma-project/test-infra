@@ -1,6 +1,10 @@
 ---
 name: Bug report
 about: Report a bug in the project
+title: ''
+labels: area/ci, bug
+assignees: ''
+
 ---
 
 <!-- Thank you for your contribution. Before you submit the issue:

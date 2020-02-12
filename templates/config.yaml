@@ -1,13 +1,33 @@
 global:
-  nextRelease: "1.9"
+  nextRelease: "1.11"
   releases:
+    - "1.10"
+    - "1.9"
     - "1.8"
-    - "1.7"
-    - "1.6"
+  whitesource:
+    - name: "kyma"
+      language: "golang"
+      project: "kyma-project"
+    - name: "console"
+      language: "javascript"
+      project: "kyma-project"
+    - name: "cli"
+      language: "golang"
+      project: "kyma-project"
+    - name: "helm-broker"
+      language: "golang"
+      project: "kyma-project"
+    - name: "rafter"
+      language: "golang"
+      project: "kyma-project"
+    - name: "compass"
+      language: "golang"
+      project: "kyma-incubator"
 
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
+go_buildpack_1_13: &go_buildpack_1_13 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
 kubebuilder2_buildpack_v20190823: &kubebuilder2_buildpack_v20190823 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
@@ -29,13 +49,17 @@ go_kyma_component_1_11: &go_kyma_component_1_11
   <<: *kyma_component
   buildpack: *go_buildpack_1_11
 
-go_compass_component_1_11: &go_compass_component_1_11
-  <<: *compass_component
-  buildpack: *go_buildpack_1_11
-
 go_kyma_component_1_12: &go_kyma_component_1_12
   <<: *kyma_component
   buildpack: *go_buildpack_1_12
+
+go_kyma_component_1_13: &go_kyma_component_1_13
+  <<: *kyma_component
+  buildpack: *go_buildpack_1_13
+
+go_compass_component_1_11: &go_compass_component_1_11
+  <<: *compass_component
+  buildpack: *go_buildpack_1_11
 
 kubebuilder_kyma_component: &kubebuilder_kyma_component
   <<: *kyma_component
@@ -164,6 +188,11 @@ templates:
           <<: *kyma_generic_component
           path: components/service-binding-usage-controller
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/uaa-activator
+          since: "1.9"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -219,6 +248,11 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/upgrade
           since: "1.7"
+      - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/end-to-end/external-solution-integration
+          since: "1.10"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *compass_generic_component
@@ -231,6 +265,19 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/connectivity-adapter
+          since: "1.10"
+          optional: false
+      - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/pairing-adapter
+          since: "1.11"
+          optional: true
+
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
           <<: *compass_generic_component
@@ -254,7 +301,6 @@ templates:
           <<: *compass_generic_component
           path: components/kyma-environment-broker
           since: "1.9"
-          optional: true
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           <<: *compass_generic_component
@@ -267,18 +313,29 @@ templates:
           path: tests/connector-tests
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
         values:
           <<: *compass_generic_component
-          path: tests/end-to-end
-          since: "1.7"
-          optional: false
+          path: tests/director
+          since: "1.10"
       - to: ../prow/jobs/incubator/compass/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *compass_generic_component
           path: tests/provisioner-tests
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/tests/e2e/provisioning/provisioning-test-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/e2e/provisioning
+          since: "1.10"
+          optional: true
+      - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: tests/connectivity-adapter
+          since: "1.11"
+          optional: true
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -309,6 +366,11 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
+      - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/istio-installer
+          since: "1.10"
       - to: ../prow/jobs/kyma/components/backup-plugins/backup-plugins-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -409,6 +471,25 @@ templates:
           <<: *kyma_generic_component
           path: tests/knative-serving
           since: "1.9"
+      - to: ../prow/jobs/kyma/tests/contract/knative-channel-kafka/knative-channel-kafka-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/contract/knative-channel-kafka
+          since: "1.10"
+      - to: ../prow/jobs/kyma/tests/end-to-end/backup/backup-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/end-to-end/backup
+          since: "1.10"
+      - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/rafter       
+      - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/permission-controller
+          since: "1.10"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -444,17 +525,16 @@ templates:
             - name: kyma-installer
             - name: kyma-gke-minio-gcs-gateway
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-az-gateway
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-gcs-gateway-migration
               since: "1.6"
+              until: "1.8"
             - name: kyma-gke-minio-az-gateway-migration
               since: "1.6"
-            - name: kyma-gke-minio-gateway
-              until: "1.5"
-            - name: kyma-gke-minio-gateway-migration
-              since: "1.3"
-              until: "1.5"
+              until: "1.8"
   - from: templates/component.yaml
     render:
       - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
@@ -497,38 +577,6 @@ templates:
           <<: *go_kyma_component_v20181119
           path: components/application-registry
           until: "1.6"
-      - to: ../prow/jobs/kyma/components/asset-metadata-service/asset-metadata-service.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: components/asset-metadata-service
-      - to: ../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager.yaml
-        values:
-          <<: *kubebuilder2_kyma_component
-          path: components/cms-controller-manager
-          since: "1.5"
-      - to: ../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager.yaml
-        values:
-          <<: *kubebuilder2_kyma_component
-          path: components/asset-store-controller-manager
-          since: "1.5"
-      - to: ../prow/jobs/kyma/components/asset-store-controller-manager/asset-store-controller-manager-kubebuilder.yaml
-        values:
-          <<: *kubebuilder_kyma_component
-          path: components/asset-store-controller-manager
-          until: "1.4"
-      - to: ../prow/jobs/kyma/components/asset-upload-service/asset-upload-service.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: components/asset-upload-service
-      - to: ../prow/jobs/kyma/components/cms-controller-manager/cms-controller-manager-kubebuilder.yaml
-        values:
-          <<: *kubebuilder_kyma_component
-          path: components/cms-controller-manager
-          until: "1.4"
-      - to: ../prow/jobs/kyma/components/cms-services/cms-services.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: components/cms-services
       - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-deprecated.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -648,10 +696,6 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tests/application-registry-tests
           until: "1.6"
-      - to: ../prow/jobs/kyma/tests/asset-store/asset-store.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/asset-store
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests.yaml
         values:
           <<: *go_kyma_component_1_11
@@ -721,10 +765,7 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/external-solution-integration
-      - to: ../prow/jobs/kyma/tests/end-to-end/backup-restore-test/backup-restore-test.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/end-to-end/backup-restore-test
+          until: "1.9"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -791,20 +832,6 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
-      - to: ../prow/jobs/incubator/compass/components/director/director-old-releases.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: components/director
-          skipSlackReport: true
-          since: "1.3"
-          until: "1.4"
-      - to: ../prow/jobs/incubator/compass/components/director/director.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: components/director
-          noRelease: yes
-          skipSlackReport: true
-          until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-old-releases.yaml
         values:
           <<: *go_compass_component_1_11
@@ -845,20 +872,6 @@ templates:
         values:
           <<: *bootstrap_compass_component
           path: components/schema-migrator
-          noRelease: yes
-          skipSlackReport: true
-          until: "1.6"
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end-old-releases.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: tests/end-to-end
-          skipSlackReport: true
-          since: "1.3"
-          until: "1.4"
-      - to: ../prow/jobs/incubator/compass/tests/end-to-end/end-to-end.yaml
-        values:
-          <<: *go_compass_component_1_11
-          path: tests/end-to-end
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
@@ -903,20 +916,22 @@ templates:
         values:
           <<: *go_knative_kafka_component_1_12
           path: components/channel
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/knative-kafka/dispatcher.yaml
         values:
           <<: *go_knative_kafka_component_1_12
           path: components/dispatcher
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/knative-kafka/controller.yaml
         values:
           <<: *go_knative_kafka_component_1_12
           path: components/controller
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/knative-kafka/knative-kafka-common.yaml
         values:
           <<: *go_knative_kafka_component_1_12
           path: components/common
-          optional: true
-
+          optional: false
+  - from: templates/whitesource-periodics.yaml
+    render:
+      - to: ../prow/jobs/scans/whitesource-periodics.yaml

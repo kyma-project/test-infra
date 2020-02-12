@@ -1,10 +1,14 @@
+# Kubectl 1.14, CLUSTER_VERSION=1.14
+k8s_1-14: &k8s_1-14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
 job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 1
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc
+      - <<: *k8s_1-14
         securityContext:
           privileged: true
         command:
@@ -17,31 +21,17 @@ job_template: &job_template
             memory: 200Mi
             cpu: 80m
         env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /etc/credentials/sa-kyma-release-candidate/service-account.json
-          - name: CLOUDSDK_DNS_ZONE_NAME
-            value: "kymapro-zone"
-          - name: KYMA_PROJECT_DIR
-            value: "/home/prow/go/src/github.com/kyma-project"
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
           - name: CLOUDSDK_COMPUTE_REGION
             value: "europe-west4"
-          - name: CLOUDSDK_CORE_PROJECT
-            value: "sap-hybris-sf-playground"
-        volumeMounts:
-          - name: sa-kyma-release-candidate
-            mountPath: /etc/credentials/sa-kyma-release-candidate
-            readOnly: true
-    volumes:
-      - name: sa-kyma-release-candidate
-        secret:
-          secretName: sa-kyma-release-candidate
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
-
+  preset-sa-gke-kyma-integration: "true"
+  preset-gc-project-env: "true"
+  preset-gke-kyma-developers-group: "true"
 
 postsubmits:
   kyma-project/kyma:

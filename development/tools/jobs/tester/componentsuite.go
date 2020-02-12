@@ -14,7 +14,7 @@ import (
 )
 
 // Designed to check validity of jobs generated from /templates/templates/component.yaml
-type ComponentSuite struct{
+type ComponentSuite struct {
 	*jobsuite.Config
 }
 
@@ -43,7 +43,6 @@ func (s ComponentSuite) Run(t *testing.T) {
 	} else {
 		require.Empty(t, jobConfig.Postsubmits)
 	}
-
 
 	if !s.Deprecated {
 		t.Run("pre-master", s.preMasterTest(jobConfig))

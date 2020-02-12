@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-provisioner-tests$
+    - ^release-(1\.10|1\.9|1\.8)-provisioner-tests$
   run_if_changed: "^tests/provisioner-tests/|^scripts/"
   spec:
     containers:

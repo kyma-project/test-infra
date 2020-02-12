@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.10|1\.9)-nodejs$
   run_if_changed: "^components/kubeless-images/nodejs/|^common/makefiles/"
   spec:
     containers:

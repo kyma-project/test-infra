@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.8|1\.7)-backup-plugins$
+    - ^release-(1\.10|1\.9|1\.8)-backup-plugins$
   run_if_changed: "^components/backup-plugins/|^common/makefiles/"
   spec:
     containers:

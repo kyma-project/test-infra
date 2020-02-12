@@ -15,74 +15,95 @@ var components = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{
-		name: "connector",
+		name:  "connector",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
-		name: "director",
+		name:  "director",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
-		name: "gateway",
+		name:  "gateway",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
-		name: "healthchecker",
+		name:  "healthchecker",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
-		name: "provisioner",
+		name:  "provisioner",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 	{
-		name: "kyma-environment-broker",
+		name:  "kyma-environment-broker",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release19),
-			jobsuite.Optional(),
 		},
 	},
 	{
-		name: "schema-migrator",
+		name:  "schema-migrator",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release17),
+			jobsuite.Since(releases.Release18),
+		},
+	},
+	{
+		name:  "connectivity-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release18),
+		},
+	},
+
+	{
+		name:  "pairing-adapter",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Optional(),
+			jobsuite.Since(releases.Release18),
 		},
 	},
 }

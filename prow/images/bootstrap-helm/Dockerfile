@@ -1,6 +1,6 @@
-FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20191120-ef8b2357
 
-ENV HELM_VERSION="v2.10.0"
+ENV HELM_VERSION="v2.16.1"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
