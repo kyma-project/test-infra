@@ -282,6 +282,9 @@ function installKyma() {
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
 
+	echo "Apply production profile"
+	kubectl apply -f "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
+
 	waitUntilInstallerApiAvailable
 
 	shout "Trigger installation"

@@ -69,7 +69,7 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-echo -e "\n---> Creating cluster with follwing parameters."
+echo -e "\n---> Creating cluster with following parameters."
 echo "${GCLOUD_PARAMS[@]}"
 echo -e "\n---> Creating cluster"
 gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"

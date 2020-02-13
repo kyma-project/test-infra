@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	"io/ioutil"
 
 	log "github.com/sirupsen/logrus"
@@ -23,10 +24,10 @@ type Config struct {
 	ServiceAccounts   []Account         `yaml:"serviceAccounts"`
 	GenericSecrets    []GenericSecret   `yaml:"generics,flow,omitempty"`
 	Labels            map[string]string `yaml:"labels"`
+	Clusters          []cluster.Cluster `yaml:"clusters"`
 }
 
 //type Accounts []Account
-
 //TODO: Should this be moved to accessmanager package and imported here? As methods from accessmanager pacakge expect this type as argument.
 type Account struct {
 	Name  string   `yaml:"name"`
@@ -35,7 +36,6 @@ type Account struct {
 }
 
 //type GenericSecrets []GenericSecret
-
 type GenericSecret struct {
 	Name string `yaml:"prefix"`
 	Key  string `yaml:"key"`
