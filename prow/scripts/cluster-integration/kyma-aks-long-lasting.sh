@@ -153,7 +153,7 @@ function installCluster() {
 	shout "Install Kubernetes on Azure"
 	date
 
-	echo "Find latest cluster version"
+	echo "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
 	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
 	echo "Latest available version is: ${CLUSTER_VERSION}"
 
