@@ -155,7 +155,7 @@ function installCluster() {
 
 	echo "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
 	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	echo "Latest available version is: ${CLUSTER_VERSION}"
+	echo "Latest available version is: ${AKS_CLUSTER_VERSION}"
 
 	az aks create \
 	  --resource-group "${RS_GROUP}" \
