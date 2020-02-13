@@ -136,8 +136,8 @@ echo "Downlading production profile"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
     --output installer-config-production.yaml.tpl
 
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-cr-gardener-azure.yaml.tpl" \
-    --output installer-cr-gardener-azure.yaml.tpl
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
+    --output installer-config-azure-eventhubs.yaml.tpl
 
 (
 set -x
