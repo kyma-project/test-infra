@@ -298,9 +298,10 @@ function restoreKyma() {
 
     CLOUD_PROVIDER="gcp"
 
-    E2E_TESTING_ENV_FILE=${KYMA_SCRIPTS_DIR}/e2e-testing.env
-    if [[ -f $E2E_TESTING_ENV_FILE ]]; then
-    	source $E2E_TESTING_ENV_FILE 
+    E2E_TESTING_ENV_FILE="${KYMA_SCRIPTS_DIR}/e2e-testing.env"
+    if [[ -f "$E2E_TESTING_ENV_FILE" ]]; then
+	# shellcheck disable=SC1090
+    	source "$E2E_TESTING_ENV_FILE"
     fi
 
     VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:c08e6274}"
@@ -311,7 +312,7 @@ function restoreKyma() {
         --bucket "$BACKUP_RESTORE_BUCKET" \
         --provider "$CLOUD_PROVIDER" \
         --secret-file "$BACKUP_CREDENTIALS" \
-        --plugins ${VELERO_PLUGIN_IMAGES} \
+        --plugins "${VELERO_PLUGIN_IMAGES}" \
         --restore-only \
         --wait
 
