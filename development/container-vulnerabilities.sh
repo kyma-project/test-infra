@@ -1,28 +1,19 @@
 #!/usr/bin/env bash
 
 # Expected vars:
-# - KYMA_PROJECT_DIR - directory of kyma-project sources
 # - SAP_SLACK_BOT_TOKEN - Token for Slack bot for which the vulnerabilities reports will be sent
 
 set -e
 set -o pipefail
 
-discoverUnsetVar=false
-
 readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-for var in KYMA_PROJECT_DIR SAP_SLACK_BOT_TOKEN; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
+if [ -z "$SAP_SLACK_BOT_TOKEN" ] ; then
+    echo "ERROR: \$SAP_SLACK_BOT_TOKEN is not set"
     exit 1
 fi
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 go run "${DEVELOPMENT_DIR}/tools/cmd/vulnerabilitycollector/main.go" "$@"
 status=$?
