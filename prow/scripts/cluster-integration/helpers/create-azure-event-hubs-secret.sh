@@ -23,8 +23,6 @@ set -e
 # Uncomment To Debug (Verbose!)
 #set -x
 
-# Current Script Name
-SCRIPT_NAME=$(basename "$0")
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
