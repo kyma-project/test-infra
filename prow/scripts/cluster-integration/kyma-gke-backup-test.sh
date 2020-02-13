@@ -19,6 +19,7 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -297,13 +298,19 @@ function restoreKyma() {
 
     CLOUD_PROVIDER="gcp"
 
+    if [[ -f ${KYMA_SCRIPTS_DIR}/e2e-testing.sh ]]; then
+    	source ${KYMA_SCRIPTS_DIR}/e2e-testing.env
+    fi
+
+    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:c08e6274}"
+
     shout "Install Velero Server"
     date
     velero install \
         --bucket "$BACKUP_RESTORE_BUCKET" \
         --provider "$CLOUD_PROVIDER" \
         --secret-file "$BACKUP_CREDENTIALS" \
-        --plugins velero/velero-plugin-for-gcp:v1.0.0,eu.gcr.io/kyma-project/backup-plugins:c08e6274 \
+        --plugins ${VELERO_PLUGIN_IMAGES} \
         --restore-only \
         --wait
 
