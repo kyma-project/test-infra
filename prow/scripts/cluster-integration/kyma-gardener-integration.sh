@@ -103,7 +103,7 @@ set -x
 kyma provision gardener \
         --target-provider azure --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/19" \
+        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/16" \
         --nodes 4
 )
 
