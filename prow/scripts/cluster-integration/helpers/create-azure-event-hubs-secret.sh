@@ -224,6 +224,9 @@ createK8SSecretFile() {
 # Verify The Environment Contains The Expected Dependencies (az, kubectl, jq, etc.)
 verifyPathDependencies
 
+# Confirm the configuration
+confirmConfiguration
+
 # Authenticating in Azure
 azureAuthenticating
 
