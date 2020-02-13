@@ -152,7 +152,7 @@ shout "Installing Kyma"
 date
 
 shout "Downloading Kyma installer CR"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/iinstaller-cr-gardener-azure.yaml.tpl" \
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-cr-gardener-azure.yaml.tpl" \
     --output installer-cr-gardener-azure.yaml.tpl
 
 shout "Downloading production profile"
