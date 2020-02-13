@@ -13,15 +13,12 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 # empty or unused EventHub Namespaces, we only want to provision the minimum number required.
 #
 # It is expected that prior to running this script the Azure subscription needs to have sufficient permissions
-# to be able to perform the necessary tasks.  Finally the environment should be setup with "az", "kubectl", "jq",
-# and "base64" on their $PATH.
+# to be able to perform the necessary tasks.  Finally the environment should be setup with "az", "kubectl" and "jq"
+# on their $PATH.
 #
 ########################################################################################################################
 
 set -e
-
-# Uncomment To Debug (Verbose!)
-#set -x
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 # shellcheck disable=SC1090
@@ -71,7 +68,9 @@ createGroup() {
 	shout "Create Azure group"
 	date
 
-	az group create --name "${RS_GROUP}" --location "${REGION}"
+	az group create \
+	  --name "${RS_GROUP}" \
+	  --location "${REGION}"
 
 	# Wait until resource group will be visible in azure.
 	counter=0
@@ -116,10 +115,12 @@ cmdCreateventHubNamespaceSecret() {
   IFS="" read -r -d '' kafkaSecret << EOF
 apiVersion: v1
 stringData:
-  brokers: ${K8S_SECRET_BROKER}
-  namespace: ${EVENTHUB_NAMESPACE_NAME}
-  password: ${K8S_SECRET_PASSWORD}
-  username: ${K8S_SECRET_USERNAME}
+  kafka.brokers: ${K8S_SECRET_BROKER}
+  kafka.namespace: ${EVENTHUB_NAMESPACE_NAME}
+  kafka.password: ${K8S_SECRET_PASSWORD}
+  kafka.username: ${K8S_SECRET_USERNAME}
+  kafka.secretName: knative-kafka
+  environment.kafkaProvider: azure
 kind: Secret
 metadata:
   name: ${K8S_SECRET_NAME}
@@ -147,11 +148,6 @@ verifyPathDependencies() {
     exit 1
   fi
 
-  if ! [[ -x "$(command -v base64)" ]]; then
-    shout "Executable 'base64' Not Found On \$PATH - Exiting"
-    exit 1
-  fi
-
 }
 
 
@@ -159,8 +155,13 @@ function azureAuthenticating() {
 	shout "Authenticating to azure"
 	date
 
-	az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-	az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
+	az login \
+	  --service-principal \
+	  -u "${AZURE_SUBSCRIPTION_APP_ID}" \
+	  -p "${AZURE_SUBSCRIPTION_SECRET}" \
+	  --tenant "${AZURE_SUBSCRIPTION_TENANT}"
+	az account set \
+	  --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
 # Enable this while debugging to confirm The User's Desire To Provision
@@ -169,19 +170,14 @@ confirmConfiguration() {
 
   # Log The Configuration Summary
   shout "The following configuration will be used to provision the new EventHub Namespace - review for correctness before continuing!"
-  shout ""
-  shout "                              Azure Subscription    :  ${AZURE_SUBSCRIPTION}"
-  shout "                              Azure Resource Group  :  ${RS_GROUP}"
-  shout ""
-  shout "             New EventHub Namespace Name            :  ${EVENTHUB_NAMESPACE_NAME}"
-  shout "             New EventHub Namespace Location        :  ${EVENTHUB_NAMESPACE_LOCATION}"
-  shout "             New EventHub Namespace Throughput Min  :  ${EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS}"
-  shout "             New EventHub Namespace Throughput Max  :  ${EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS}"
-  shout "                       Kubernetes Secret Name       :  ${EVENTHUB_NAMESPACE_NAME}"
-  shout "                       Kubernetes Secret Namespace  :  ${K8S_SECRET_NAMESPACE}"
-  shout "            Kafka Channel Controller Pod Name       :  ${KAFKA_CHANNEL_CONTROLLER_NAME}"
-  shout "            Kafka Channel Controller Pod Namespace  :  ${KAFKA_CHANNEL_CONTROLLER_NAMESPACE}"
-  shout ""
+  shout "Azure Subscription: ${AZURE_SUBSCRIPTION}"
+  shout "Azure Resource Group: ${RS_GROUP}"
+  shout "New EventHub Namespace name: ${EVENTHUB_NAMESPACE_NAME}"
+  shout "New EventHub Namespace location: ${EVENTHUB_NAMESPACE_LOCATION}"
+  shout "New EventHub Namespace throughput min: ${EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS}"
+  shout "New EventHub Namespace throughput max: ${EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS}"
+  shout "Kubernetes Secret name: ${EVENTHUB_NAMESPACE_NAME}"
+  shout "Kubernetes Secret Namespace: ${K8S_SECRET_NAMESPACE}"
 }
 
 
@@ -191,7 +187,6 @@ createEventHubNamespace() {
   # Execute The Azure EventHubs Namespace Creation Command & Handle The Results
   shout "Creating New EventHubs Namespace... (takes several minutes - be patient :)"
   if [[ $(cmdCreateEventHubNamespace) -eq 0 ]]; then
-    sleep 2
     shout "Successfully Created New EventHub Namespace!"
   else
     shout "Failed To Create New EventHub Namespace - Exiting!"
@@ -203,7 +198,7 @@ createEventHubNamespace() {
 # Load The EventHub Namespace's Authorization Key Information Into Global Variables
 loadAuthorizationKey() {
 
-   # Get The New EventHub Namespace's PrimaryConnectionString
+  # Get The New EventHub Namespace's PrimaryConnectionString
   shout "Loading The New EventHub Namespace's Authorization Key..."
   local primaryConnectionString=""
   primaryConnectionString=$(cmdNamespacePrimaryConnectionString)
@@ -219,18 +214,18 @@ createK8SSecretFile() {
 
   shout "Creating a Kubernetes Secret override For The New EventHub Namespace..."
   eventHubSecret=$(cmdCreateventHubNamespaceSecret)
-  echo "$eventHubSecret" > "${EVENTHUB_NAMESPACE_NAME}-secret.yaml"
+  echo "$eventHubSecret" >> installer-config-azure-eventhubs.yaml.tpl
 }
 
 #
 # Main Script Execution
 #
 
-# Authenticating in Azure
-azureAuthenticating
-
 # Verify The Environment Contains The Expected Dependencies (az, kubectl, jq, etc.)
 verifyPathDependencies
+
+# Authenticating in Azure
+azureAuthenticating
 
 # Create The New Azure Resource Group
 createGroup
@@ -243,6 +238,3 @@ loadAuthorizationKey
 
 # Create K8S Secret For EventHub Namespace
 createK8SSecretFile
-
-# Exit Successfully
-exit 0

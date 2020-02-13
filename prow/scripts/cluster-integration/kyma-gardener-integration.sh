@@ -26,7 +26,22 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME RS_GROUP EVENTHUB_NAMESPACE_NAME REGION AZURE_SUBSCRIPTION_ID AZURE_SUBSCRIPTION_APP_ID AZURE_SUBSCRIPTION_SECRET AZURE_SUBSCRIPTION_TENANT; do
+VARIABLES=(
+  KYMA_PROJECT_DIR
+  GARDENER_REGION
+  GARDENER_KYMA_PROW_KUBECONFIG
+  GARDENER_KYMA_PROW_PROJECT_NAME
+  GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+  RS_GROUP
+  REGION
+  EVENTHUB_NAMESPACE_NAME
+  AZURE_SUBSCRIPTION_ID
+  AZURE_SUBSCRIPTION_APP_ID
+  AZURE_SUBSCRIPTION_SECRET
+  AZURE_SUBSCRIPTION_TENANT
+)
+
+for var in "${VARIABLES[@]}"; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -37,11 +52,14 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 
-#AZURE_SUBSCRIPTION=?
-
-
 #Exported variables
-export RS_GROUP EVENTHUB_NAMESPACE_NAME REGION AZURE_SUBSCRIPTION_ID AZURE_SUBSCRIPTION_APP_ID AZURE_SUBSCRIPTION_SECRET AZURE_SUBSCRIPTION_TENANT
+export RS_GROUP \
+      EVENTHUB_NAMESPACE_NAME \
+      REGION \
+      AZURE_SUBSCRIPTION_ID \
+      AZURE_SUBSCRIPTION_APP_ID \
+      AZURE_SUBSCRIPTION_SECRET \
+      AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 # shellcheck disable=SC1090
@@ -78,9 +96,9 @@ cleanup() {
 
     # Delete the Azure Event Hubs namespace which was created
     set +e
-    az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+    az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP  }"
 
-    # Delete the Azure Event Hubs namespace which was created
+    # Delete the Azure Resource Group
     az group delete -n "${RS_GROUP}" -y
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
@@ -141,7 +159,13 @@ curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/k
 
 (
 set -x
-yes | kyma install --non-interactive --source latest -o installer-cr-gardener-azure.yaml.tpl -o installer-config-production.yaml.tpl -o "${EVENTHUB_NAMESPACE_NAME}-secret.yaml" --timeout 90m
+yes | kyma install \
+      --non-interactive \
+      --source latest \
+      -o installer-cr-gardener-azure.yaml.tpl \
+      -o installer-config-production.yaml.tpl \
+      -o installer-config-azure-eventhubs.yaml.tpl \
+      --timeout 90m
 )
 
 shout "Checking the versions"

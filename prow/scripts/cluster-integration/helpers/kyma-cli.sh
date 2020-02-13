@@ -8,9 +8,7 @@ install::kyma_cli() {
     pushd "${INSTALL_DIR}/bin"
 
     log::info "- Install kyma CLI ${os} locally to a tempdir..."
-#TODO
-#    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-    curl -sSLo kyma "https://www.dropbox.com/s/iias1qtuhwflewi/kyma-8cbb19a?dl=0"
+    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
 
     log::success "OK"
