@@ -15,6 +15,13 @@ fi
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
+    echo "Vendoring 'tools'"
+    pushd "${DEVELOPMENT_DIR}/tools"
+    dep ensure -v -vendor-only
+    popd
+fi
+
 go run "${DEVELOPMENT_DIR}/tools/cmd/vulnerabilitycollector/main.go" "$@"
 status=$?
 
