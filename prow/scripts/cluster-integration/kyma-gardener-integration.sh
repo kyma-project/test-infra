@@ -90,16 +90,17 @@ cleanup() {
         export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
+
+        shout "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
+        # Delete the Azure Event Hubs namespace which was created
+        az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+
+        shout "Deleting Azure Resource Group: \"${RS_GROUP}\""
+        # Delete the Azure Resource Group
+        az group delete -n "${RS_GROUP}" -y
     fi
 
     rm -rf "${TMP_DIR}"
-
-    # Delete the Azure Event Hubs namespace which was created
-    set +e
-    az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP  }"
-
-    # Delete the Azure Resource Group
-    az group delete -n "${RS_GROUP}" -y
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
