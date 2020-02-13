@@ -84,6 +84,7 @@ presubmits: # runs on PRs
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
           env:
+            - <<: *cluster_version
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
           resources:
