@@ -150,10 +150,15 @@ date
 shout "Installing Kyma"
 date
 
-echo "Downlading production profile"
+shout "Downloading Kyma installer CR"
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/iinstaller-cr-gardener-azure.yaml.tpl" \
+    --output installer-cr-gardener-azure.yaml.tpl
+
+shout "Downloading production profile"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
     --output installer-config-production.yaml.tpl
 
+shout "Downloading Azure EventHubs config"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
     --output installer-config-azure-eventhubs.yaml.tpl
 
