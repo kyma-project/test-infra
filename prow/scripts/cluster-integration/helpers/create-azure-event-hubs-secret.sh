@@ -59,6 +59,7 @@ K8S_SECRET_NAMESPACE="kyma-installer"
 K8S_SECRET_USERNAME="\$ConnectionString"
 K8S_SECRET_BROKER=""
 K8S_SECRET_PASSWORD=""
+EVENTHUB_SECRET_OVERRIDE=""
 
 #
 # Utility Functions To Make The Actual Cmd Line Calls
@@ -170,7 +171,6 @@ confirmConfiguration() {
 
   # Log The Configuration Summary
   shout "The following configuration will be used to provision the new EventHub Namespace - review for correctness before continuing!"
-  shout "Azure Subscription: ${AZURE_SUBSCRIPTION}"
   shout "Azure Resource Group: ${RS_GROUP}"
   shout "New EventHub Namespace name: ${EVENTHUB_NAMESPACE_NAME}"
   shout "New EventHub Namespace location: ${EVENTHUB_NAMESPACE_LOCATION}"
@@ -213,8 +213,9 @@ loadAuthorizationKey() {
 createK8SSecretFile() {
 
   shout "Creating a Kubernetes Secret override For The New EventHub Namespace..."
-  eventHubSecret=$(cmdCreateventHubNamespaceSecret)
-  echo "$eventHubSecret" >> installer-config-azure-eventhubs.yaml.tpl
+  # shellcheck disable=SC2034
+  EVENTHUB_SECRET_OVERRIDE=$(cmdCreateventHubNamespaceSecret)
+#  echo "${eventHubSecret}"
 }
 
 #

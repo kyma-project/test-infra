@@ -144,10 +144,6 @@ kyma provision gardener \
         --nodes 4
 )
 
-shout "Generate Azure Event Hubs overrides"
-date
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-
 shout "Installing Kyma"
 date
 
@@ -162,6 +158,13 @@ curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-pro
 shout "Downloading Azure EventHubs config"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
     --output installer-config-azure-eventhubs.yaml.tpl
+
+shout "Generate Azure Event Hubs overrides"
+date
+EVENTHUB_SECRET_OVERRIDE=""
+# shellcheck disable=SC1090
+source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+echo "${EVENTHUB_SECRET_OVERRIDE}" >> installer-config-azure-eventhubs.yaml.tpl
 
 (
 set -x
