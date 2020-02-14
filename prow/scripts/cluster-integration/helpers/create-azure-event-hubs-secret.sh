@@ -18,8 +18,6 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 #
 ########################################################################################################################
 
-set -e
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -54,12 +52,16 @@ EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS=2 # Must be greater than zero and less t
 EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS=4 # Must be greater than minimum value and less than 20!
 EVENTHUB_NAMESPACE_LOCATION=""
 EVENTHUB_NAMESPACE_SHARED_ACCESS_KEY="RootManageSharedAccessKey"
+EVENTHUB_SECRET_OVERRIDE=""
+
 K8S_SECRET_NAME="${EVENTHUB_NAMESPACE_NAME}-overrides"
 K8S_SECRET_NAMESPACE="kyma-installer"
 K8S_SECRET_USERNAME="\$ConnectionString"
 K8S_SECRET_BROKER=""
 K8S_SECRET_PASSWORD=""
-EVENTHUB_SECRET_OVERRIDE=""
+
+KAFKA_BROKER_PORT="9093"
+
 
 #
 # Utility Functions To Make The Actual Cmd Line Calls
