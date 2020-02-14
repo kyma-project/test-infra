@@ -51,7 +51,7 @@ readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
-export CLUSTER_SIZE="Standard_D4_v3"
+export CLUSTER_SIZE="Standard_F8s_v2"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
 export DEFAULT_CLUSTER_VERSION="1.15"
 if [ -z "${CLUSTER_VERSION}" ]; then
