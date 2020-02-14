@@ -84,24 +84,16 @@ func main() {
 		log.Fatalf("Failed to create CRM service %v", err)
 	}
 
-	iamClient := serviceaccount.NewClient(readConfig.Prefix, &iamService)
+	iamClient := serviceaccount.NewClient(readConfig.Prefix, iamService)
 	crmClient, err := roles.New(crmService)
 
 	for _, serviceAccount := range readConfig.ServiceAccounts {
-		opts := serviceaccount.SAOptions{
-			Name:    serviceAccount.Name,
-			Roles:   serviceAccount.Roles,
-			Project: readConfig.Project,
-		}
 		// TODO implement handling error when SA already exists in GCP
-		if _, err := iamClient.CreateSA(opts); err != nil {
+		if _, err := iamClient.CreateSA(fmt.Sprintf(serviceAccount.Name), readConfig.Project); err != nil {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
+			//log.Println(iamClient.CreateSAKey(sa.Email))
 			_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
-			for err != nil {
-				log.Errorf("Error adding role to a service %v", err)
-				_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
-			}
 		}
 	}
 }

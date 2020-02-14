@@ -39,10 +39,9 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 // Create calls the wrapped GCP api to create a cluster
 func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error {
 	var nodePools []*container.NodePool
-
 	for _, pool := range clusterConfig.Pools {
 		if nodePool, err := NewNodePool(pool); err != nil {
-			return fmt.Errorf("error creating node pool configuration %w", err)
+			return fmt.Errorf("error creating node pool configuration: %w", err)
 		} else {
 			nodePools = append(nodePools, nodePool)
 		}
@@ -76,7 +75,7 @@ func (caw *APIWrapper) Delete(ctx context.Context, name string) error {
 
 func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 	if nodePool.Size == 0 {
-		return nil, fmt.Errorf("node pool can't be zero inimal value is 1")
+		return nil, MinimalCountError
 	}
 	pool := &container.NodePool{
 		Name:             nodePool.Name,
