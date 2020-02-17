@@ -46,9 +46,6 @@ export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
-readonly REPO_OWNER="kyma-project"
-readonly REPO_NAME="kyma"
-readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"
@@ -61,6 +58,10 @@ fi
 export CLUSTER_ADDONS="monitoring,http_application_routing"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
 function cleanup() {
 	shout "Cleanup"
@@ -214,63 +215,25 @@ function setupKubeconfig() {
 	kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(az account show | jq -r .user.name)"
 }
 
-function installTiller() {
-	shout "Install tiller"
-	date
-
-	"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
-}
-
-function waitUntilInstallerApiAvailable() {
-	shout "Waiting for Installer API"
-
-	attempts=5
-	for ((i=1; i<=attempts; i++)); do
-		numberOfLines=$(kubectl api-versions | grep -c "installer.kyma-project.io")
-		if [[ "$numberOfLines" == "1" ]]; then
-			echo "API found"
-			break
-		elif [[ "${i}" == "${attempts}" ]]; then
-			echo "ERROR: API not found, exit"
-			exit 1
-		fi
-
-		echo "Sleep for 3 seconds"
-		sleep 3
-	done
-}
-
 function installKyma() {
 	shout "Install kyma"
 	date
 
-	echo "Prepare installation yaml files"
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
-	KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
-
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-	INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-	INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+	kubectl create namespace "kyma-installer"
 
 	echo "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
 	shout "Apply Kyma config"
 
-	sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}"  \
-		| kubectl apply -f-
-
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
 		--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 		--label "component=istio"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-		--data "global.domainName=${DOMAIN}" \
 		--data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-		--data "global.tlsCrt=${TLS_CERT}" \
-		--data "global.tlsKey=${TLS_KEY}"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
 		--data "console.test.acceptance.ui.logging.enabled=true" \
@@ -282,16 +245,17 @@ function installKyma() {
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
 
-	echo "Apply production profile"
-	kubectl apply -f "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
-
-	waitUntilInstallerApiAvailable
-
 	shout "Trigger installation"
 	date
 
-	sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
-	"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 80m
+  kyma install \
+			--ci \
+			--source latest \
+			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+			--domain "${DOMAIN}" \
+			--tlsCert "${TLS_CERT}" \
+			--tlsKey "${TLS_KEY}" \
+			--timeout 60m
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
 		shout "Create DNS Record for Apiserver proxy IP"
@@ -322,7 +286,10 @@ TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 export TLS_KEY
 
 setupKubeconfig
-installTiller
+
+export INSTALL_DIR=${TMP_DIR}
+install::kyma_cli
+
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
@@ -333,4 +300,3 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
 		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
-

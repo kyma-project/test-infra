@@ -100,6 +100,7 @@ cleanup() {
     fi
 
     rm -rf "${TMP_DIR}"
+
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
@@ -167,13 +168,13 @@ cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.
 
 (
 set -x
-yes | kyma install \
-      --non-interactive \
-      --source latest \
-      -o installer-cr-gardener-azure.yaml.tpl \
-      -o installer-config-production.yaml.tpl \
-      -o installer-config-azure-eventhubs.yaml.tpl \
-      --timeout 90m
+kyma install \
+    --ci \
+    --source latest \
+    -o installer-cr-gardener-azure.yaml.tpl \
+    -o installer-config-production.yaml.tpl \
+    -o installer-config-azure-eventhubs.yaml.tpl \
+    --timeout 90m
 )
 
 shout "Checking the versions"
