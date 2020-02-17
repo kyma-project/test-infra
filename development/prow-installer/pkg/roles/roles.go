@@ -35,7 +35,7 @@ func (e *BindingNotFoundError) Error() string { return e.msg }
 // New return new client and error object. Error is not used at present. Added it for future use and to support common error handling.
 func New(crmservice CRM) (*client, error) {
 	return &client{
-		crmservice:   crmservice,
+		crmservice: crmservice,
 	}, nil
 }
 
@@ -67,7 +67,7 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 	//Getting current policy from GCP
 	policy, err := client.getPolicy(projectname)
 	if err != nil {
-		return nil, fmt.Errorf("When adding role for serviceaccount %s got error: [%w].", saname, err)
+		return nil, fmt.Errorf("When adding role for serviceaccount %s got error: %w.", saname, err)
 	}
 
 	//
@@ -96,7 +96,6 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 	}
 	return policy, nil
 }
-
 
 //getPolicy will fetch policy from GCP
 func (client *client) getPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
@@ -148,10 +147,10 @@ func (client *client) setPolicy(policy *cloudresourcemanager.Policy, projectname
 	currentpolicy, err := client.getPolicy(projectname)
 	if err == nil {
 		if currentpolicy.Etag != policy.Etag {
-			return &PolicyModifiedError{msg: fmt.Sprintf("When checking if policy was modified for [%s] project got: Policy was modified.", projectname)}
-		} else {
-			return fmt.Errorf("When sending new policy, failed to get current policy from GCP, got error: %w", err)
+			return &PolicyModifiedError{msg: fmt.Sprintf("When checking if policy was modified for %s project got: Policy was modified.", projectname)}
 		}
+	} else {
+		return fmt.Errorf("When sending new policy, failed download current policy from GCP. Got error: %w", err)
 	}
 	iampolicyrequest := &cloudresourcemanager.SetIamPolicyRequest{
 		Policy: policy,
