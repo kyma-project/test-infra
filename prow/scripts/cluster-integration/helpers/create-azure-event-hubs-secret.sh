@@ -21,7 +21,7 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 #
-# Global Variables
+#Global Variables
 #
 
 VARIABLES=(
