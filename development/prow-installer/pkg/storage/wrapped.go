@@ -23,9 +23,8 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 	}
 
 	api := &APIWrapper{
-		ProjectID:  opts.ProjectID,
-		LocationID: opts.LocationID,
-		GCSClient:  gcsClient,
+		ProjectID: opts.ProjectID,
+		GCSClient: gcsClient,
 	}
 
 	if client, err := New(opts, api); err != nil {

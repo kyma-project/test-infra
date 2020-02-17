@@ -46,10 +46,10 @@ func main() {
 	}
 
 	clientOpts := storage.Option{}
-	clientOpts = clientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithLocationID(*locationID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	clientOpts = clientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	client, err := storage.New(clientOpts, wrappedAPI)
-  
+
 	if err != nil {
 		log.Errorf("Could not create GCS Storage Client: %v", err)
 		os.Exit(1)

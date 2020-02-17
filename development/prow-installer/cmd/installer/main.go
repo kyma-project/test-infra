@@ -39,7 +39,6 @@ func main() {
 
 	storageConfig := &storage.Option{
 		ProjectID:      readConfig.Project,
-		LocationID:     readConfig.Location,
 		Prefix:         readConfig.Prefix,
 		ServiceAccount: *credentialsFile,
 	}
