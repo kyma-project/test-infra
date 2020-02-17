@@ -39,6 +39,7 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 // Create calls the wrapped GCP api to create a cluster
 func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error {
 	var nodePools []*container.NodePool
+
 	for _, pool := range clusterConfig.Pools {
 		if nodePool, err := NewNodePool(pool); err != nil {
 			return fmt.Errorf("error creating node pool configuration: %w", err)

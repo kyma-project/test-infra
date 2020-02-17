@@ -44,7 +44,7 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
 # Cluster Version
 ENV CLUSTER_VERSION=1.16
 
-# Kubectl 1.14
+# Kubectl 1.16
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker

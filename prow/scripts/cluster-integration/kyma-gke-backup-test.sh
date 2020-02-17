@@ -90,13 +90,13 @@ export REPO_NAME
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
-if [[ "$BUILD_TYPE" == "pr" ]]; then
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gke-backup-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
     KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-backup-test/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
-elif [[ "$BUILD_TYPE" == "release" ]]; then
+elif [[ "${BUILD_TYPE}" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gke-backup-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
@@ -142,7 +142,7 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-if [[ "$BUILD_TYPE" != "release" ]]; then
+if [[ "${BUILD_TYPE}" != "release" ]]; then
     shout "Build Kyma-Installer Docker image"
     date
     CLEANUP_DOCKER_IMAGE="true"
@@ -165,7 +165,7 @@ IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_
 
 
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-if [ "$NETWORK_EXISTS" -gt 0 ]; then
+if [ "${NETWORK_EXISTS}" -gt 0 ]; then
     shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
     date
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
@@ -177,7 +177,7 @@ function provisionCluster() {
     shout "Provision cluster: \"${CLUSTER_NAME}\""
     date
 
-    if [ -z "$MACHINE_TYPE" ]; then
+    if [ -z "${MACHINE_TYPE}" ]; then
         export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
     fi
     if [ -z "${CLUSTER_VERSION}" ]; then
@@ -225,7 +225,7 @@ function installKyma() {
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
 
-    if [[ "$BUILD_TYPE" == "release" ]]; then
+    if [[ "${BUILD_TYPE}" == "release" ]]; then
         echo "Use released artifacts"
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
         kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
@@ -297,13 +297,21 @@ function restoreKyma() {
 
     CLOUD_PROVIDER="gcp"
 
+    E2E_TESTING_ENV_FILE="${KYMA_SCRIPTS_DIR}/e2e-testing.env"
+    if [[ -f "${E2E_TESTING_ENV_FILE}" ]]; then
+	# shellcheck disable=SC1090
+    	source "${E2E_TESTING_ENV_FILE}"
+    fi
+
+    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:c08e6274}"
+
     shout "Install Velero Server"
     date
     velero install \
-        --bucket "$BACKUP_RESTORE_BUCKET" \
-        --provider "$CLOUD_PROVIDER" \
-        --secret-file "$BACKUP_CREDENTIALS" \
-        --plugins velero/velero-plugin-for-gcp:v1.0.0,eu.gcr.io/kyma-project/backup-plugins:c08e6274 \
+        --bucket "${BACKUP_RESTORE_BUCKET}" \
+        --provider "${CLOUD_PROVIDER}" \
+        --secret-file "${BACKUP_CREDENTIALS}" \
+        --plugins "${VELERO_PLUGIN_IMAGES}" \
         --restore-only \
         --wait
 
@@ -314,7 +322,7 @@ function restoreKyma() {
     attempts=3
     for ((i=1; i<=attempts; i++)); do
         result=$(velero get backup "${BACKUP_NAME}")
-        if [[ "$result" == *"NAME"* ]]; then
+        if [[ "${result}" == *"NAME"* ]]; then
             echo "Backup ${BACKUP_NAME} exists"
             break
         elif [[ "${i}" == "${attempts}" ]]; then
@@ -345,7 +353,7 @@ function restoreKyma() {
         echo "Check if VirtualServices are restored"
         
         result=$(kubectl get virtualservices -n kyma-system)
-        if [[ "$result" == *"NAME"* ]]; then
+        if [[ "${result}" == *"NAME"* ]]; then
             echo "VirtualServices are restored"
             break
         elif [[ "${i}" == "${attempts}" ]]; then
