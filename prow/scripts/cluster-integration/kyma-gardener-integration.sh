@@ -100,7 +100,6 @@ cleanup() {
     fi
 
     rm -rf "${TMP_DIR}"
-
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
