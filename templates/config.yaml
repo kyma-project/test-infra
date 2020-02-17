@@ -459,17 +459,17 @@ templates:
           <<: *kyma_generic_component
           path: tests/event-bus
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/function-controller
+          since: "1.9"
       - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/function-controller
           since: "1.10"
           optional: true
-      - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/function-controller
-          since: "1.9"
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
         values:
           <<: *kyma_generic_component
