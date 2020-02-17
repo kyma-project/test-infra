@@ -12,17 +12,17 @@
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
 # - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
-# - REGION
-# - AZURE_SUBSCRIPTION_ID
-# - AZURE_SUBSCRIPTION_APP_ID
-# - AZURE_SUBSCRIPTION_SECRET
-# - AZURE_SUBSCRIPTION_TENANT
-# - RS_GROUP
-# - EVENTHUB_NAMESPACE_NAME
+# - REGION: Azure region
+# - AZURE_SUBSCRIPTION_ID: Azure Subscription ID used to create Azure services
+# - AZURE_SUBSCRIPTION_APP_ID: Azure Subscription application ID
+# - AZURE_SUBSCRIPTION_SECRET: Azure Subscription secret
+# - AZURE_SUBSCRIPTION_TENANT: Azure tenant
+# - RS_GROUP: Resource Group name
+# - EVENTHUB_NAMESPACE_NAME: Azure EventHubs Namespace name
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
-set -o errexit
+set -e
 
 discoverUnsetVar=false
 
@@ -51,7 +51,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-
 #Exported variables
 export RS_GROUP \
       EVENTHUB_NAMESPACE_NAME \
@@ -62,6 +61,9 @@ export RS_GROUP \
       AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
+export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -161,10 +163,9 @@ curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/k
 
 shout "Generate Azure Event Hubs overrides"
 date
-EVENTHUB_SECRET_OVERRIDE=""
 # shellcheck disable=SC1090
-source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-echo "${EVENTHUB_SECRET_OVERRIDE}" >> installer-config-azure-eventhubs.yaml.tpl
+EVENTHUB_SECRET_OVERRIDE_FILE "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
 (
 set -x
