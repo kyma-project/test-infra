@@ -71,8 +71,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
-	if err := storageClient.CreateBucket(ctx, readConfig.BucketName); err != nil {
-		log.Fatalf("Failed to create bucket: %s, %s", readConfig.BucketName, err)
+	for _, bucket := range readConfig.Buckets {
+		if err := storageClient.CreateBucket(ctx, bucket); err != nil {
+			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
+		}
 	}
 
 	iamService, err := serviceaccount.NewService(*credentialsFile)
