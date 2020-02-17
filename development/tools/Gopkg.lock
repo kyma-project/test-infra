@@ -4,8 +4,10 @@
 [[projects]]
   name = "cloud.google.com/go"
   packages = [
+    ".",
     "compute/metadata",
-    "containeranalysis/apiv1beta1",
+    "containeranalysis/apiv1",
+    "grafeas/apiv1",
     "iam",
     "internal",
     "internal/optional",
@@ -13,8 +15,14 @@
     "internal/version",
     "storage"
   ]
-  revision = "c9474f2f8deb81759839474b6bd1726bbfe1c1c4"
-  version = "v0.36.0"
+  revision = "6daa679260d92196ffca2362d652c924fdcb7a22"
+  version = "v0.52.0"
+
+[[projects]]
+  name = "github.com/BurntSushi/toml"
+  packages = ["."]
+  revision = "3012a1dbe2e4bd1391d42b32f0577cb7bbc7f005"
+  version = "v0.3.1"
 
 [[projects]]
   name = "github.com/Masterminds/goutils"
@@ -83,7 +91,12 @@
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
+    "protoc-gen-go",
     "protoc-gen-go/descriptor",
+    "protoc-gen-go/generator",
+    "protoc-gen-go/generator/internal/remap",
+    "protoc-gen-go/grpc",
+    "protoc-gen-go/plugin",
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
@@ -207,6 +220,16 @@
   packages = ["."]
   revision = "27518f6661eba504be5a7a9a9f6d9460d892ade3"
   version = "v1.1.7"
+
+[[projects]]
+  name = "github.com/jstemmer/go-junit-report"
+  packages = [
+    ".",
+    "formatter",
+    "parser"
+  ]
+  revision = "cc1f095d5cc5eca2844f5c5ea7bb37f6b9bf6cac"
+  version = "v0.9.1"
 
 [[projects]]
   name = "github.com/jtolds/gls"
@@ -443,6 +466,15 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/exp"
+  packages = [
+    "apidiff",
+    "cmd/apidiff"
+  ]
+  revision = "f17229e696bd4e065144fd6ae1313e41515abbdc"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/lint"
   packages = [
     ".",
@@ -535,11 +567,16 @@
   name = "golang.org/x/tools"
   packages = [
     "cmd/goimports",
+    "go/analysis",
+    "go/analysis/passes/inspect",
     "go/ast/astutil",
+    "go/ast/inspector",
+    "go/buildutil",
     "go/gcexportdata",
     "go/internal/gcimporter",
     "go/internal/packagesdriver",
     "go/packages",
+    "go/types/objectpath",
     "go/types/typeutil",
     "internal/fastwalk",
     "internal/gopathwalk",
@@ -596,18 +633,8 @@
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
-    "googleapis/devtools/containeranalysis/v1beta1",
-    "googleapis/devtools/containeranalysis/v1beta1/attestation",
-    "googleapis/devtools/containeranalysis/v1beta1/build",
-    "googleapis/devtools/containeranalysis/v1beta1/common",
-    "googleapis/devtools/containeranalysis/v1beta1/deployment",
-    "googleapis/devtools/containeranalysis/v1beta1/discovery",
-    "googleapis/devtools/containeranalysis/v1beta1/grafeas",
-    "googleapis/devtools/containeranalysis/v1beta1/image",
-    "googleapis/devtools/containeranalysis/v1beta1/package",
-    "googleapis/devtools/containeranalysis/v1beta1/provenance",
-    "googleapis/devtools/containeranalysis/v1beta1/source",
-    "googleapis/devtools/containeranalysis/v1beta1/vulnerability",
+    "googleapis/devtools/containeranalysis/v1",
+    "googleapis/grafeas/v1",
     "googleapis/iam/v1",
     "googleapis/rpc/code",
     "googleapis/rpc/status",
@@ -684,6 +711,38 @@
   packages = ["."]
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
+
+[[projects]]
+  name = "honnef.co/go/tools"
+  packages = [
+    "arg",
+    "cmd/staticcheck",
+    "config",
+    "deprecated",
+    "facts",
+    "functions",
+    "go/types/typeutil",
+    "internal/cache",
+    "internal/passes/buildssa",
+    "internal/renameio",
+    "internal/sharedcheck",
+    "lint",
+    "lint/lintdsl",
+    "lint/lintutil",
+    "lint/lintutil/format",
+    "loader",
+    "printf",
+    "simple",
+    "ssa",
+    "ssautil",
+    "staticcheck",
+    "staticcheck/vrp",
+    "stylecheck",
+    "unused",
+    "version"
+  ]
+  revision = "afd67930eec2a9ed3e9b19f684d17a062285f16a"
+  version = "2019.2.3"
 
 [[projects]]
   branch = "release-1.11"
@@ -899,6 +958,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "79094fbf12ff46a62e57249e8ef8c8b689fc54f50819effe0bc5e9011073f665"
+  inputs-digest = "94d524894c76b9ae2fdead1291e87086502a1e4ddcfec3868f4e5f62cd146605"
   solver-name = "gps-cdcl"
   solver-version = 1

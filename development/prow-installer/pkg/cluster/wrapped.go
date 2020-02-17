@@ -42,7 +42,7 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 
 	for _, pool := range clusterConfig.Pools {
 		if nodePool, err := NewNodePool(pool); err != nil {
-			return fmt.Errorf("error creating node pool configuration %w", err)
+			return fmt.Errorf("error creating node pool configuration: %w", err)
 		} else {
 			nodePools = append(nodePools, nodePool)
 		}
@@ -76,7 +76,7 @@ func (caw *APIWrapper) Delete(ctx context.Context, name string) error {
 
 func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 	if nodePool.Size == 0 {
-		return nil, fmt.Errorf("node pool can't be zero inimal value is 1")
+		return nil, fmt.Errorf("size must be at least 1")
 	}
 	pool := &container.NodePool{
 		Name:             nodePool.Name,
