@@ -46,9 +46,6 @@ export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
-readonly REPO_OWNER="kyma-project"
-readonly REPO_NAME="kyma"
-readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"
@@ -221,10 +218,6 @@ function setupKubeconfig() {
 function installKyma() {
 	shout "Install kyma"
 	date
-
-	echo "Prepare installation yaml files"
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
-	KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
