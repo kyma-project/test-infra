@@ -2,11 +2,8 @@ package cluster
 
 import (
 	"context"
-	"errors"
 	"fmt"
 )
-
-var MinimalCountError = errors.New("size must be at least 1")
 
 type Option struct {
 	Prefix         string // global prefix

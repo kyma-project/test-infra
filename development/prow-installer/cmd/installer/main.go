@@ -89,7 +89,7 @@ func main() {
 
 	for _, serviceAccount := range readConfig.ServiceAccounts {
 		// TODO implement handling error when SA already exists in GCP
-		if _, err := iamClient.CreateSA(fmt.Sprintf(serviceAccount.Name), readConfig.Project); err != nil {
+		if _, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project); err != nil {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
 			//log.Println(iamClient.CreateSAKey(sa.Email))

@@ -75,7 +75,7 @@ func (caw *APIWrapper) Delete(ctx context.Context, name string) error {
 
 func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 	if nodePool.Size == 0 {
-		return nil, MinimalCountError
+		return nil, fmt.Errorf("size must be at least 1")
 	}
 	pool := &container.NodePool{
 		Name:             nodePool.Name,
