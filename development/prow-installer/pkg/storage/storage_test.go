@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage/automock"
@@ -32,7 +33,6 @@ func TestClient_Read(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		data, err := mockClient.Read(ctx, testGCSBucket, testGCSStorageObject)
@@ -52,7 +52,6 @@ func TestClient_Read(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		data, err := mockClient.Read(ctx, "", testGCSStorageObject)
@@ -73,7 +72,6 @@ func TestClient_Read(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		data, err := mockClient.Read(ctx, testGCSBucket, "")
@@ -99,7 +97,6 @@ func TestClient_Write(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.Write(ctx, []byte(testBucketContent), testGCSBucket, testGCSStorageObject)
@@ -118,7 +115,6 @@ func TestClient_Write(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.Write(ctx, []byte(testBucketContent), "", testGCSStorageObject)
@@ -138,7 +134,6 @@ func TestClient_Write(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.Write(ctx, []byte(testBucketContent), testGCSBucket, "")
@@ -158,7 +153,6 @@ func TestClient_Write(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.Write(ctx, []byte(""), testGCSBucket, testGCSStorageObject)
@@ -180,11 +174,9 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if mockClient == nil {
 			t.Errorf("New() expected client to not be nil")
-			t.Fail()
 		}
 		if err != nil {
 			t.Errorf("New() error should be nil %v", err)
-			t.Fail()
 		}
 		mockAPI.AssertNumberOfCalls(t, "Read", 0)
 		mockAPI.AssertNumberOfCalls(t, "Write", 0)
@@ -201,7 +193,6 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
-			t.Fail()
 		}
 		if err == nil {
 			t.Errorf("New() error is nil, expected an error")
@@ -222,11 +213,9 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
-			t.Fail()
 		}
 		if err == nil {
 			t.Errorf("New() error is nil, expected an error")
-			t.Fail()
 		}
 		mockAPI.AssertNumberOfCalls(t, "Read", 0)
 		mockAPI.AssertNumberOfCalls(t, "Write", 0)
@@ -243,11 +232,9 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if mockClient == nil {
 			t.Errorf("New() expected client to not be nil")
-			t.Fail()
 		}
 		if err != nil {
 			t.Errorf("New() error is nil, expected an error")
-			t.Fail()
 		}
 		mockAPI.AssertNumberOfCalls(t, "Read", 0)
 		mockAPI.AssertNumberOfCalls(t, "Write", 0)
@@ -264,11 +251,9 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
-			t.Fail()
 		}
 		if err == nil {
 			t.Errorf("New() error is nil, expected an error")
-			t.Fail()
 		}
 		mockAPI.AssertNumberOfCalls(t, "Read", 0)
 		mockAPI.AssertNumberOfCalls(t, "Write", 0)
@@ -284,11 +269,9 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
-			t.Fail()
 		}
 		if err == nil {
 			t.Errorf("New() error is nil, expected an error")
-			t.Fail()
 		}
 		mockAPI.AssertNumberOfCalls(t, "Read", 0)
 		mockAPI.AssertNumberOfCalls(t, "Write", 0)
@@ -305,11 +288,9 @@ func TestNew(t *testing.T) {
 		mockClient, err := New(opts, nil)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
-			t.Fail()
 		}
 		if err == nil {
 			t.Errorf("New() error is nil, expected an error")
-			t.Fail()
 		}
 		mockAPI.AssertNumberOfCalls(t, "Read", 0)
 		mockAPI.AssertNumberOfCalls(t, "Write", 0)
@@ -326,8 +307,7 @@ func TestClient_CreateBucket(t *testing.T) {
 		ctx := context.Background()
 		opts := Option{}
 		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithLocationID(testGCSLocation).WithServiceAccount("not-empty-gcp-will-validate")
-
-		mockAPI.On("CreateBucket", ctx, testGCSBucket).Return(nil)
+		mockAPI.On("CreateBucket", ctx, fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket)).Return(nil) // we need to check if the prefixed name is created
 
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
@@ -351,7 +331,6 @@ func TestClient_CreateBucket(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.CreateBucket(ctx, "")
@@ -376,7 +355,6 @@ func TestClient_DeleteBucket(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.DeleteBucket(ctx, testGCSBucket)
@@ -395,7 +373,6 @@ func TestClient_DeleteBucket(t *testing.T) {
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
-			t.Fail()
 		}
 
 		err = mockClient.DeleteBucket(ctx, "")

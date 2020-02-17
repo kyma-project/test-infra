@@ -16,7 +16,7 @@ type Config struct {
 	Project           string            `yaml:"project"`
 	Zone              string            `yaml:"zone"`
 	Location          string            `yaml:"location"`
-	BucketName        string            `yaml:"bucket_name"`
+	Buckets           []string          `yaml:"buckets"`
 	KeyringName       string            `yaml:"keyring_name"`
 	EncryptionKeyName string            `yaml:"encryption_key_name"`
 	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`

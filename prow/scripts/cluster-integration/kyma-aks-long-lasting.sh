@@ -51,11 +51,11 @@ readonly REPO_NAME="kyma"
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
-export CLUSTER_SIZE="Standard_D4_v3"
+export CLUSTER_SIZE="Standard_F8s_v2"
 # set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
-export DEFAULT_CLUSTER_VERSION="1.14"
-if [ -z "${CLUSTER_K8S_VERSION}" ]; then
-    export CLUSTER_K8S_VERSION="${DEFAULT_CLUSTER_VERSION}"
+export DEFAULT_CLUSTER_VERSION="1.15"
+if [ -z "${CLUSTER_VERSION}" ]; then
+    export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
@@ -153,16 +153,16 @@ function installCluster() {
 	shout "Install Kubernetes on Azure"
 	date
 
-	echo "Find latest cluster version"
-	CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_K8S_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	echo "Latest available version is: ${CLUSTER_VERSION}"
+	echo "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
+	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
+	echo "Latest available version is: ${AKS_CLUSTER_VERSION}"
 
 	az aks create \
 	  --resource-group "${RS_GROUP}" \
 	  --name "${CLUSTER_NAME}" \
 	  --node-count 3 \
 	  --node-vm-size "${CLUSTER_SIZE}" \
-	  --kubernetes-version "${CLUSTER_VERSION}" \
+	  --kubernetes-version "${AKS_CLUSTER_VERSION}" \
 	  --enable-addons "${CLUSTER_ADDONS}" \
 	  --service-principal "${AZURE_SUBSCRIPTION_APP_ID}" \
 	  --client-secret "${AZURE_SUBSCRIPTION_SECRET}" \
@@ -281,6 +281,9 @@ function installKyma() {
 		--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
+
+	echo "Apply production profile"
+	kubectl apply -f "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
 	waitUntilInstallerApiAvailable
 

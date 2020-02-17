@@ -155,33 +155,36 @@ function installKyma() {
 	shout "Apply Kyma config"
 	date
 
-    sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
-        | kubectl apply -f-
+	sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
+			| kubectl apply -f-
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-        --data "global.domainName=${DOMAIN}" \
-        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+			--data "global.domainName=${DOMAIN}" \
+			--data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-        --data "test.acceptance.ui.logging.enabled=true" \
-        --label "component=core"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+			--data "test.acceptance.ui.logging.enabled=true" \
+			--label "component=core"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-        --data "global.tlsCrt=${TLS_CERT}" \
-        --data "global.tlsKey=${TLS_KEY}"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+			--data "global.tlsCrt=${TLS_CERT}" \
+			--data "global.tlsKey=${TLS_KEY}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
-        --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
-        --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
-        --label "component=monitoring"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
+			--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
+			--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+			--label "component=monitoring"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --label "component=istio"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+			--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+			--label "component=istio"
 
 	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
-         applyServiceCatalogCRDOverride
-    fi
+			applyServiceCatalogCRDOverride
+	fi
+
+	echo "Apply production profile"
+	kubectl apply -f "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
 	waitUntilInstallerApiAvailable
 
