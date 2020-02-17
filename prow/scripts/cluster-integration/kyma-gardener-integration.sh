@@ -141,7 +141,7 @@ kyma test run \
                 --max-retries 1 \
                 --timeout 90m \
                 --watch \
-                --ci
+                --non-interactive
 )
 
 echo "Test Summary"
