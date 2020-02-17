@@ -62,13 +62,15 @@ function removeCluster() {
 	#Turn off exit-on-error so that next step is executed even if previous one fails.
 	set +e
 
-	shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-	# Check if removing regionl cluster.
-  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
-    #Pass gke region name instead zone name.
-	  readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
-	else
-	  readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+	if [ -z "${SKIP_IMAGE_REMOVAL}" ] || [ "${SKIP_IMAGE_REMOVAL}" == "false" ]; then
+		shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
+		# Check if removing regionl cluster.
+		if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
+			#Pass gke region name instead zone name.
+			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${CLOUDSDK_COMPUTE_REGION}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+		else
+			readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+		fi
 	fi
 
 	shout "Delete cluster $CLUSTER_NAME"
@@ -81,14 +83,16 @@ function removeCluster() {
 	shout "Cluster removal is finished: ${MSG}"
 	date
 
-	shout "Delete temporary Kyma-Installer Docker image with timestamp: ${OLD_TIMESTAMP}"
-	date
+	if [ -z "${SKIP_IMAGE_REMOVAL}" ] || [ "${SKIP_IMAGE_REMOVAL}" == "false" ]; then
+		shout "Delete temporary Kyma-Installer Docker image with timestamp: ${OLD_TIMESTAMP}"
+		date
 
-	echo "KYMA_INSTALLER_IMAGE=${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}"
+		echo "KYMA_INSTALLER_IMAGE=${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}"
 
-	KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
-	TMP_STATUS=$?
-	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+		TMP_STATUS=$?
+		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+	fi
 
 	set -e
 }
