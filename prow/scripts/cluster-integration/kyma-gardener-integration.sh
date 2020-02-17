@@ -164,7 +164,7 @@ curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/k
 shout "Generate Azure Event Hubs overrides"
 date
 # shellcheck disable=SC1090
-EVENTHUB_SECRET_OVERRIDE_FILE "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
 (
