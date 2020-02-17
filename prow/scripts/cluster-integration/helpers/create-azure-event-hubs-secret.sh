@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
 set -o errexit
-set -o pipefail  # Fail a pipe if any sub-command fails.
+set -o pipefail  #Fail a pipe if any sub-command fails.
 ########################################################################################################################
 #
-# Provision A New Azure EventHub Namespace In The Current Azure Subscription
+#Provision A New Azure EventHub Namespace in the current Azure Subscription
 #
-# Each Azure EventHubs Namespace can contain a maximum of 10 EventHubs (Knative Channels / Kakfa Topics) which equates
-# to unique combinations of a Event Source / Event Type / Event Version. Because there is an associated cost with
-# empty or unused EventHub Namespaces, we only want to provision the minimum number required.
+#Each Azure EventHubs Namespace can contain a maximum of 10 EventHubs (Knative Channels / Kakfa Topics) which equates
+#to unique combinations of a Event Source / Event Type / Event Version. Because there is an associated cost with
+#empty or unused EventHub Namespaces, we only want to provision the minimum number required.
 #
-# It is expected that prior to running this script the Azure subscription needs to have sufficient permissions
-# to be able to perform the necessary tasks.  Finally the environment should be setup with "az" and "jq"
-# on their $PATH.
+#It is expected that prior to running this script the Azure subscription needs to have sufficient permissions
+#to be able to perform the necessary tasks. Finally the environment should be setup with "az" and "jq"
+#on their $PATH.
 #
 ########################################################################################################################
 
@@ -47,8 +47,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
-EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS=2 # Must be greater than zero and less than maximum value!
-EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS=4 # Must be greater than minimum value and less than 20!
+EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS=2 #Must be greater than zero and less than maximum value!
+EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS=4 #Must be greater than minimum value and less than 20!
 EVENTHUB_NAMESPACE_LOCATION=""
 EVENTHUB_NAMESPACE_SHARED_ACCESS_KEY="RootManageSharedAccessKey"
 
@@ -61,7 +61,7 @@ K8S_SECRET_PASSWORD=""
 KAFKA_BROKER_PORT="9093"
 
 #
-# Utility Functions To Make The Actual Cmd Line Calls
+#Utility Functions To Make The Actual Cmd Line Calls
 #
 
 createGroup() {
@@ -72,7 +72,7 @@ createGroup() {
     --name "${RS_GROUP}" \
     --location "${REGION}"
 
-  # Wait until resource group will be visible in azure.
+  #Wait until resource group will be visible in azure.
   counter=0
   until [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; do
     sleep 15
@@ -84,7 +84,7 @@ createGroup() {
   done
 }
 
-# Create The Azure EventHubs Namespace Based On Global Configuration
+#Create the Azure EventHubs Namespace based on global configuration
 cmdCreateEventHubNamespace() {
   az eventhubs namespace create \
     --name "${EVENTHUB_NAMESPACE_NAME}" \
@@ -98,7 +98,7 @@ cmdCreateEventHubNamespace() {
     --output none
 }
 
-# Get The Azure EventHub Namespace Authorization Keys' PrimaryConnectionString
+#Get the Azure EventHub Namespace authorization keys' PrimaryConnectionString
 cmdNamespacePrimaryConnectionString() {
   az eventhubs namespace authorization-rule keys list \
     -o json \
@@ -108,7 +108,7 @@ cmdNamespacePrimaryConnectionString() {
     jq -r ".primaryConnectionString"
 }
 
-# Verify The Expected Dependencies Are Present On $PATH
+#Verify the Expected Dependencies are present on $PATH
 verifyPathDependencies() {
 
   if ! [[ -x "$(command -v az)" ]]; then
@@ -137,11 +137,11 @@ function azureAuthenticating() {
     --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
-# Enable this while debugging to confirm The User's Desire To Provision
-# A New EventHub Namespace For Their Current Azure/K8S Context
+#Enable this while debugging to confirm the user's desire to provision
+#A new EventHub Namespace for their current Azure context
 confirmConfiguration() {
 
-  # Log The Configuration Summary
+  #Log the configuration summary
   shout "The following configuration will be used to provision the new EventHub Namespace - review for correctness before continuing!"
   echo "Azure Resource Group: ${RS_GROUP}"
   echo "New EventHub Namespace name: ${EVENTHUB_NAMESPACE_NAME}"
@@ -152,10 +152,10 @@ confirmConfiguration() {
   echo "Kubernetes Secret Namespace: ${K8S_SECRET_NAMESPACE}"
 }
 
-# Create the EventHub Namespace based on user's current Azure
+#Create the EventHub Namespace based on user's current Azure Subscription
 createEventHubNamespace() {
 
-  # Execute The Azure EventHubs Namespace Creation Command & Handle The Results
+  #Execute the Azure EventHubs Namespace creation command & handle the results
   shout "Creating New EventHubs Namespace... (takes several minutes - be patient :)"
   if [[ $(cmdCreateEventHubNamespace) -eq 0 ]]; then
     shout "Successfully Created New EventHub Namespace!"
@@ -165,20 +165,20 @@ createEventHubNamespace() {
   fi
 }
 
-# Load the EventHub Namespace's authorization key information into global variables
+#Load the EventHub Namespace's authorization key information into global variables
 loadAuthorizationKey() {
 
-  # Get The New EventHub Namespace's PrimaryConnectionString
+  #Get the new EventHub Namespace's PrimaryConnectionString
   shout "Loading the new EventHub Namespace's authorization key..."
   local primaryConnectionString=""
   primaryConnectionString=$(cmdNamespacePrimaryConnectionString)
 
-  # Populate The Kubernetes Secret Broker / Password Values
+  #Populate the Kubernetes Secret Broker / Password Values
   K8S_SECRET_BROKER=$(echo "${primaryConnectionString}" | sed -e "s/^Endpoint=.*sb:\/\/\(.*\)\/;.*$/\1:${KAFKA_BROKER_PORT}/")
   K8S_SECRET_PASSWORD=${primaryConnectionString}
 }
 
-# Print The EventHub Namespace Secret (Contains The EventHub Namespace Auth Keys)
+#Creates The EventHub Namespace Secret override file
 createK8SSecretFile() {
 
   shout "Creating a Kubernetes Secret override file for the New EventHub Namespace..."
@@ -208,26 +208,26 @@ EOF
 }
 
 #
-# Main Script Execution
+#Main Script Execution
 #
 
-# Verify The Environment Contains The Expected Dependencies (az, kubectl, jq, etc.)
+#Verify The Environment Contains the expected dependencies
 verifyPathDependencies
 
-# Confirm the configuration
+#Confirm the configuration
 confirmConfiguration
 
-# Authenticating in Azure
+#Authenticating in Azure
 azureAuthenticating
 
-# Create The New Azure Resource Group
+#Create the New Azure Resource Group
 createGroup
 
-# Create The New Azure EventHubs Namespace
+#Create the New Azure EventHubs Namespace
 createEventHubNamespace
 
-# Lookup The New Azure EventHub Namespace's Authorization Key
+#Lookup the New Azure EventHub Namespace's authorization key
 loadAuthorizationKey
 
-# Create K8S Secret override file for EventHubs Namespace
+#Create K8S Secret override file for EventHubs Namespace
 createK8SSecretFile
