@@ -47,7 +47,6 @@ func main() {
 	clusterConfig := &cluster.Option{
 		Prefix:         readConfig.Prefix,
 		ProjectID:      readConfig.Project,
-		ZoneID:         readConfig.Zone,
 		ServiceAccount: *credentialsFile,
 	}
 

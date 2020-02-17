@@ -25,7 +25,6 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 	}
 	api := &APIWrapper{
 		ProjectID:      opts.ProjectID,
-		ZoneID:         opts.ZoneID,
 		ClusterService: containerService.Projects.Zones.Clusters,
 	}
 
@@ -56,7 +55,7 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 			NodePools:      nodePools,
 		}}
 
-	createResponse, err := caw.ClusterService.Create(caw.ProjectID, caw.ZoneID, ccRequest).Context(ctx).Do()
+	createResponse, err := caw.ClusterService.Create(caw.ProjectID, clusterConfig.Location, ccRequest).Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("couldn't create cluster: %w", err)
 	}
@@ -65,7 +64,7 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 }
 
 // Delete calls the wrapped GCP api to delete a cluster
-func (caw *APIWrapper) Delete(ctx context.Context, name string) error {
+func (caw *APIWrapper) Delete(ctx context.Context, name string, zoneId string) error {
 	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, caw.ZoneID, name).Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("couldn't delete cluster: %w", err)

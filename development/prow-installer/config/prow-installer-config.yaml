@@ -1,8 +1,6 @@
-cluster_name: test-prow
 oauth: testoauth999
 project: sap-kyma-neighbors-dev
-zone: europe-west3-c
-location: europe-west3
+region: europe-west3
 buckets:
   - test-prow-bucket
   - test-prow-bucket-2
@@ -12,7 +10,6 @@ kubeconfig: ""
 prefix: ""
 labels:
   created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
-
 clusters:
   - name: test-prow
     location: europe-west3-c
@@ -33,7 +30,6 @@ clusters:
           enabled: true
           minNodeCount: 1
           maxNodeCount: 8
-
 serviceAccounts:
   - name: sa-gke-kyma-integration # present
     type: serviceAccount
