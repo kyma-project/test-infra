@@ -12,15 +12,18 @@ global:
       language: "javascript"
       project: "kyma-project"
     - name: "cli"
-      language: "golang"
+      language: "golang-mod"
       project: "kyma-project"
     - name: "helm-broker"
       language: "golang"
       project: "kyma-project"
     - name: "rafter"
-      language: "golang"
+      language: "golang-mod"
       project: "kyma-project"
     - name: "compass"
+      language: "golang-mod"
+      project: "kyma-incubator"
+    - name: "knative-kafka"
       language: "golang"
       project: "kyma-incubator"
 
@@ -461,11 +464,12 @@ templates:
           <<: *kyma_generic_component
           path: components/function-controller
           since: "1.9"
-      - to: ../prow/jobs/kyma/tests/knative-build/knative-build-tests-generic.yaml
+      - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: tests/knative-build
-          since: "1.9"
+          path: tests/function-controller
+          since: "1.10"
+          optional: true
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -724,11 +728,6 @@ templates:
         values:
           <<: *go_kyma_component_1_11
           path: tests/event-bus
-          until: "1.8"
-      - to: ../prow/jobs/kyma/tests/knative-build/knative-build.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/knative-build
           until: "1.8"
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
         values:

@@ -34,9 +34,6 @@ func New(opts Option, api API) (*Client, error) {
 	if opts.ProjectID == "" {
 		return nil, fmt.Errorf("ProjectID is required to initialize a client")
 	}
-	if opts.LocationID == "" {
-		return nil, fmt.Errorf("LocationID is required to initialize a client")
-	}
 	if opts.ServiceAccount == "" {
 		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")
 	}
@@ -47,6 +44,7 @@ func New(opts Option, api API) (*Client, error) {
 	return &Client{Option: opts, api: api}, nil
 }
 
+// TODO bucket region selection instead of fixed one (US)
 // CreateBucket attempts to create a storage bucket
 func (sc *Client) CreateBucket(ctx context.Context, name string) error {
 	if name == "" {
@@ -100,12 +98,6 @@ func (o Option) WithPrefix(pre string) Option {
 // WithProjectID modifies option to have a project id
 func (o Option) WithProjectID(pid string) Option {
 	o.ProjectID = pid
-	return o
-}
-
-// WithLocationID modifies option to have a zone id
-func (o Option) WithLocationID(l string) Option {
-	o.LocationID = l
 	return o
 }
 

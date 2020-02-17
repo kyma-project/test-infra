@@ -36,9 +36,12 @@ func main() {
 	}
 	crmservice, err := roles.NewService(*credentialsfile)
 	if err != nil {
-		log.Fatalf("When assinging role for serviceaccount got error: %w", err)
+		log.Fatalf("When assinging role for serviceaccount got error: %s", err.Error())
 	}
 	crmclient, err := roles.New(crmservice)
+	if err != nil {
+		log.Fatalf("Failed creating cloudresourcemanager client.")
+	}
 	var condition *cloudresourcemanager.Expr
 	if *expression == "" {
 		condition = nil
@@ -47,7 +50,7 @@ func main() {
 	}
 	_, err = crmclient.AddSAtoRole(*saname, roleFlags, *project, condition)
 	if err != nil {
-		log.Fatalf("When assigning role for serviceaccount got error: %w", err)
+		log.Fatalf("When assigning role for serviceaccount got error: %s", err.Error())
 	} else {
 		log.Printf("Roles added to serviceaccount: %s\nroles: %v", *saname, roleFlags)
 	}

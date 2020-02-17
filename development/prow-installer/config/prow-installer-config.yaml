@@ -1,19 +1,39 @@
-cluster_name: test-prow
 oauth: testoauth999
 project: sap-kyma-neighbors-dev
-zone: europe-west3-c
-location: europe-west3
-bucket_name: test-prow-bucket
+region: europe-west3
+buckets:
+  - test-prow-bucket
+  - test-prow-bucket-2
 keyring_name: test-prow-keyring
 encryption_key_name: test-prow-key
 kubeconfig: ""
 prefix: ""
 labels:
   created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
+clusters:
+  - name: test-prow
+    location: europe-west3-c
+    description: "Test prow cluster"
+    #    labels:
+    #      cluster-specific: label
+    kubernetesVersion: 1.15
+    pools:
+      - name: default-pool
+        initialSize: 2
+        config:
+          diskType: pd-ssd
+          diskSizeGb: 100
+          machineType: n1-standard-1
+      - name: workload
+        initialSize: 1
+        autoscaling:
+          enabled: true
+          minNodeCount: 1
+          maxNodeCount: 8
 serviceAccounts:
-  - name : sa-gke-kyma-integration # present
-    type : serviceAccount
-    roles :
+  - name: sa-gke-kyma-integration # present
+    type: serviceAccount
+    roles:
       - compute.admin
       - compute.networkAdmin
       - container.admin

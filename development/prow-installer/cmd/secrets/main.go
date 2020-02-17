@@ -71,13 +71,12 @@ func main() {
 	}
 
 	wrappedGCSAPI := &storage.APIWrapper{
-		ProjectID:  *projectID,
-		LocationID: *locationID,
-		GCSClient:  gcsClient,
+		ProjectID: *projectID,
+		GCSClient: gcsClient,
 	}
 
 	gcsClientOpts := storage.Option{}
-	gcsClientOpts = gcsClientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithLocationID(*locationID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	gcsClientOpts = gcsClientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	storageClient, err := storage.New(gcsClientOpts, wrappedGCSAPI)
 	if err != nil {

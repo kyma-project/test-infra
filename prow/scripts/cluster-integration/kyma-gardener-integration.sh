@@ -12,13 +12,6 @@
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
 # - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
-# - REGION: Azure region
-# - AZURE_SUBSCRIPTION_ID: Azure Subscription ID used to create Azure services
-# - AZURE_SUBSCRIPTION_APP_ID: Azure Subscription application ID
-# - AZURE_SUBSCRIPTION_SECRET: Azure Subscription secret
-# - AZURE_SUBSCRIPTION_TENANT: Azure tenant
-# - RS_GROUP: Resource Group name
-# - EVENTHUB_NAMESPACE_NAME: Azure EventHubs Namespace name
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
@@ -49,6 +42,10 @@ for var in "${VARIABLES[@]}"; do
 done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
+fi
+readonly DEFAULT_CLUSTER_VERSION="1.16.3"
+if [ -z "${CLUSTER_VERSION}" ]; then
+      export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 
 #Exported variables
@@ -103,6 +100,7 @@ cleanup() {
     fi
 
     rm -rf "${TMP_DIR}"
+
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
@@ -143,39 +141,20 @@ kyma provision gardener \
         --target-provider azure --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/16" \
-        --nodes 4
+        --nodes 4 \
+        --kube-version=${CLUSTER_VERSION}
 )
 
 shout "Installing Kyma"
 date
 
-shout "Downloading Kyma installer CR"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-cr-gardener-azure.yaml.tpl" \
-    --output installer-cr-gardener-azure.yaml.tpl
-
-shout "Downloading production profile"
+echo "Downlading production profile"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
     --output installer-config-production.yaml.tpl
 
-shout "Downloading Azure EventHubs config"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/sayanh/kyma/integration-azure-event-hubs/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
-    --output installer-config-azure-eventhubs.yaml.tpl
-
-shout "Generate Azure Event Hubs overrides"
-date
-# shellcheck disable=SC1090
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
-
 (
 set -x
-yes | kyma install \
-      --non-interactive \
-      --source latest \
-      -o installer-cr-gardener-azure.yaml.tpl \
-      -o installer-config-production.yaml.tpl \
-      -o installer-config-azure-eventhubs.yaml.tpl \
-      --timeout 90m
+yes | kyma install --non-interactive --source latest -o installer-config-production.yaml.tpl --timeout 90m
 )
 
 shout "Checking the versions"

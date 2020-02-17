@@ -39,14 +39,13 @@ func main() {
 
 	storageConfig := &storage.Option{
 		ProjectID:      readConfig.Project,
-		LocationID:     readConfig.Location,
 		Prefix:         readConfig.Prefix,
 		ServiceAccount: *credentialsFile,
 	}
+
 	clusterConfig := &cluster.Option{
 		Prefix:         readConfig.Prefix,
 		ProjectID:      readConfig.Project,
-		ZoneID:         readConfig.Zone,
 		ServiceAccount: *credentialsFile,
 	}
 
@@ -54,16 +53,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
 	}
-	if err := clusterClient.Create(ctx, readConfig.ClusterName, readConfig.Labels, 1, false); err != nil {
-		log.Fatalf("Failed to create cluster: %v", err)
+	for _, clusterToCreate := range readConfig.Clusters {
+		if clusterToCreate.Labels == nil {
+			clusterToCreate.Labels = make(map[string]string)
+		}
+		for k, v := range readConfig.Labels {
+			clusterToCreate.Labels[k] = v
+		}
+		if err := clusterClient.Create(ctx, clusterToCreate); err != nil {
+			log.Fatalf("Failed to create cluster: %v", err)
+		}
 	}
 
 	storageClient, err := storage.NewClient(ctx, *storageConfig, *credentialsFile)
 	if err != nil {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
-	if err := storageClient.CreateBucket(ctx, readConfig.BucketName); err != nil {
-		log.Fatalf("Failed to create bucket: %s, %s", readConfig.BucketName, err)
+	for _, bucket := range readConfig.Buckets {
+		if err := storageClient.CreateBucket(ctx, bucket); err != nil {
+			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
+		}
 	}
 
 	iamService, err := serviceaccount.NewService(*credentialsFile)
@@ -75,23 +84,16 @@ func main() {
 		log.Fatalf("Failed to create CRM service %v", err)
 	}
 
-	iamClient := serviceaccount.NewClient(readConfig.Prefix, &iamService)
+	iamClient := serviceaccount.NewClient(readConfig.Prefix, iamService)
 	crmClient, err := roles.New(crmService)
 
 	for _, serviceAccount := range readConfig.ServiceAccounts {
-		opts := serviceaccount.SAOptions{
-			Name:    serviceAccount.Name,
-			Roles:   serviceAccount.Roles,
-			Project: readConfig.Project,
-		}
 		// TODO implement handling error when SA already exists in GCP
-		if _, err := iamClient.CreateSA(opts); err != nil {
+		if _, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project); err != nil {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
+			//log.Println(iamClient.CreateSAKey(sa.Email))
 			_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
-			if err != nil {
-				log.Errorf("Error adding role to a service %v", err)
-			}
 		}
 	}
 }

@@ -41,7 +41,8 @@ readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
 declare -a GCLOUD_PARAMS
 
 TTL_HOURS_PARAM="3"
-CLUSTER_VERSION_PARAM="--cluster-version=1.14"
+# upgrade when stable GKE 1.16 will be available
+CLUSTER_VERSION_PARAM="--cluster-version=1.15"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM="--network=default"
@@ -69,7 +70,7 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
-echo -e "\n---> Creating cluster with follwing parameters."
+echo -e "\n---> Creating cluster with following parameters."
 echo "${GCLOUD_PARAMS[@]}"
 echo -e "\n---> Creating cluster"
 gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"
