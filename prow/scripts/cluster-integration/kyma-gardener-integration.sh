@@ -27,18 +27,18 @@ set -e
 discoverUnsetVar=false
 
 VARIABLES=(
-  KYMA_PROJECT_DIR
-  GARDENER_REGION
-  GARDENER_KYMA_PROW_KUBECONFIG
-  GARDENER_KYMA_PROW_PROJECT_NAME
-  GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-  RS_GROUP
-  REGION
-  EVENTHUB_NAMESPACE_NAME
-  AZURE_SUBSCRIPTION_ID
-  AZURE_SUBSCRIPTION_APP_ID
-  AZURE_SUBSCRIPTION_SECRET
-  AZURE_SUBSCRIPTION_TENANT
+    KYMA_PROJECT_DIR
+    GARDENER_REGION
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    RS_GROUP
+    REGION
+    EVENTHUB_NAMESPACE_NAME
+    AZURE_SUBSCRIPTION_ID
+    AZURE_SUBSCRIPTION_APP_ID
+    AZURE_SUBSCRIPTION_SECRET
+    AZURE_SUBSCRIPTION_TENANT
 )
 
 for var in "${VARIABLES[@]}"; do
@@ -53,12 +53,12 @@ fi
 
 #Exported variables
 export RS_GROUP \
-      EVENTHUB_NAMESPACE_NAME \
-      REGION \
-      AZURE_SUBSCRIPTION_ID \
-      AZURE_SUBSCRIPTION_APP_ID \
-      AZURE_SUBSCRIPTION_SECRET \
-      AZURE_SUBSCRIPTION_TENANT
+    EVENTHUB_NAMESPACE_NAME \
+    REGION \
+    AZURE_SUBSCRIPTION_ID \
+    AZURE_SUBSCRIPTION_APP_ID \
+    AZURE_SUBSCRIPTION_SECRET \
+    AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
@@ -190,12 +190,12 @@ readonly CONCURRENCY=5
 (
 set -x
 kyma test run \
-                --name "${SUITE_NAME}" \
-                --concurrency "${CONCURRENCY}" \
-                --max-retries 1 \
-                --timeout 90m \
-                --watch \
-                --non-interactive
+    --name "${SUITE_NAME}" \
+    --concurrency "${CONCURRENCY}" \
+    --max-retries 1 \
+    --timeout 90m \
+    --watch \
+    --non-interactive
 )
 
 echo "Test Summary"
