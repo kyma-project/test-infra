@@ -39,7 +39,6 @@ func main() {
 
 	storageConfig := &storage.Option{
 		ProjectID:      readConfig.Project,
-		LocationID:     readConfig.Location,
 		Prefix:         readConfig.Prefix,
 		ServiceAccount: *credentialsFile,
 	}
@@ -47,7 +46,6 @@ func main() {
 	clusterConfig := &cluster.Option{
 		Prefix:         readConfig.Prefix,
 		ProjectID:      readConfig.Project,
-		ZoneID:         readConfig.Zone,
 		ServiceAccount: *credentialsFile,
 	}
 

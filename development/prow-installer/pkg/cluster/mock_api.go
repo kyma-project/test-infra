@@ -30,6 +30,6 @@ func (api *MockAPI) Create(ctx context.Context, clusterConfig Cluster) error {
 	return nil
 }
 
-func (api *MockAPI) Delete(ctx context.Context, name string) error {
+func (api *MockAPI) Delete(ctx context.Context, name string, zoneId string) error {
 	return nil
 }

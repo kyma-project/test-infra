@@ -15,7 +15,7 @@ type Config struct {
 	Oauth             string            `yaml:"oauth"`
 	Project           string            `yaml:"project"`
 	Zone              string            `yaml:"zone"`
-	Location          string            `yaml:"location"`
+	Region            string            `yaml:"region"`
 	Buckets           []string          `yaml:"buckets"`
 	KeyringName       string            `yaml:"keyring_name"`
 	EncryptionKeyName string            `yaml:"encryption_key_name"`
@@ -43,7 +43,7 @@ type GenericSecret struct {
 
 //Get config configuration from yaml file.
 func ReadConfig(configFilePath string) (*Config, error) {
-	log.Debug("Reading config from %s", configFilePath)
+	log.Debugf("Reading config from %s", configFilePath)
 	var installerConfig Config
 	if configFile, err := ioutil.ReadFile(configFilePath); err != nil {
 		return nil, fmt.Errorf("failed reading config file %w", err)

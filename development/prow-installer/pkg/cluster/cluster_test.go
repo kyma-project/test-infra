@@ -10,7 +10,6 @@ var (
 	opts = Option{
 		Prefix:         "test-prefix",
 		ProjectID:      "a-project",
-		ZoneID:         "gcp-zone1-a",
 		ServiceAccount: "not-empty-gcp-will-validate",
 	}
 )
@@ -117,6 +116,7 @@ func TestClient_Create(t *testing.T) {
 func TestClient_Delete(t *testing.T) {
 	t.Run("Delete() Should not throw errors", func(t *testing.T) {
 		testClusterName := "test-cluster-name"
+		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
 		api := &MockAPI{}
 
@@ -124,11 +124,12 @@ func TestClient_Delete(t *testing.T) {
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
-		err = client.Delete(ctx, testClusterName)
+		err = client.Delete(ctx, testClusterName, testZoneId)
 		assert.NoErrorf(t, err, "no errors on Delete")
 	})
 	t.Run("Delete() Should throw errors because name is not satisfied", func(t *testing.T) {
 		testClusterName := ""
+		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
 		api := &MockAPI{}
 
@@ -136,9 +137,21 @@ func TestClient_Delete(t *testing.T) {
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
-		err = client.Delete(ctx, testClusterName)
-		assert.Errorf(t, err, "name is not satisfied")
+		err = client.Delete(ctx, testClusterName, testZoneId)
 		assert.EqualErrorf(t, err, "name cannot be empty", "name is not satisfied in Delete()")
+	})
+	t.Run("Delete() Should throw errors because zoneId is not satisfied", func(t *testing.T) {
+		testClusterName := "test-cluster-name"
+		testZoneId := ""
+		ctx := context.Background()
+		api := &MockAPI{}
+
+		client, err := New(opts, api)
+		if err != nil {
+			t.Errorf("error ocured during client creation")
+		}
+		err = client.Delete(ctx, testClusterName, testZoneId)
+		assert.EqualErrorf(t, err, "zoneId cannot be empty", "name is not satisfied in Delete()")
 	})
 }
 
@@ -153,29 +166,16 @@ func TestNew(t *testing.T) {
 		testOpts := &Option{
 			Prefix:         "test-prefix",
 			ProjectID:      "",
-			ZoneID:         "gcp-test-zone",
 			ServiceAccount: "gke-test-serviceaccount",
 		}
 		_, err := New(*testOpts, api)
 		assert.EqualErrorf(t, err, "ProjectID is required to initialize a client", "ProjectID is not satisfied in New()")
-	})
-	t.Run("New() should throw errors, because ZoneID is not satisfied", func(t *testing.T) {
-		api := &MockAPI{}
-		testOpts := &Option{
-			Prefix:         "test-prefix",
-			ProjectID:      "gcp-test-project",
-			ZoneID:         "",
-			ServiceAccount: "gke-test-serviceaccount",
-		}
-		_, err := New(*testOpts, api)
-		assert.EqualErrorf(t, err, "ZoneID is required to initialize a client", "ZoneID is not satisfied in New()")
 	})
 	t.Run("New() should throw errors, because ServiceAccount is not satisfied", func(t *testing.T) {
 		api := &MockAPI{}
 		testOpts := &Option{
 			Prefix:         "test-prefix",
 			ProjectID:      "gcp-test-project",
-			ZoneID:         "gcp-test-zone",
 			ServiceAccount: "",
 		}
 		_, err := New(*testOpts, api)
@@ -186,7 +186,6 @@ func TestNew(t *testing.T) {
 		testOpts := &Option{
 			Prefix:         "test-prefix",
 			ProjectID:      "gcp-test-project",
-			ZoneID:         "gcp-test-zone",
 			ServiceAccount: "gke-test-serviceaccount",
 		}
 		_, err := New(*testOpts, nil)
