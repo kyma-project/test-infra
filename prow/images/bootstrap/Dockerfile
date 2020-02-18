@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:stretch
+FROM debian:buster-20200130
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
