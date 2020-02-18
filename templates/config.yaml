@@ -338,7 +338,7 @@ templates:
           <<: *compass_generic_component
           path: tests/connectivity-adapter
           since: "1.11"
-          optional: true
+          optional: false
       - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
         values:
           <<: *kyma_generic_component
