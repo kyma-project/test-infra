@@ -2,8 +2,9 @@ oauth: testoauth999
 project: sap-kyma-neighbors-dev
 region: europe-west3
 buckets:
-  - test-prow-bucket
-  - test-prow-bucket-2
+  - name: test-prow-bucket-eu
+    location: eu # Optional, might be either multi-region (eu, us) or region (ex. europe-west3)
+  - name: test-prow-bucket-us
 keyring_name: test-prow-keyring
 encryption_key_name: test-prow-key
 kubeconfig: ""

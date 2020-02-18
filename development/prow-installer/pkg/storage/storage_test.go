@@ -15,6 +15,7 @@ var (
 	testGCSBucket        = "gcs-test-bucket"
 	testGCSStorageObject = "gcs-test-storage-object"
 	testBucketContent    = "gcs-test-bucket-content"
+	testBucketLocation   = "test-location"
 )
 
 func TestClient_Read(t *testing.T) {
@@ -286,7 +287,7 @@ func TestClient_CreateBucket(t *testing.T) {
 		ctx := context.Background()
 		opts := Option{}
 		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
-		mockAPI.On("CreateBucket", ctx, fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket)).Return(nil) // we need to check if the prefixed name is created
+		mockAPI.On("CreateBucket", ctx, fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket), testBucketLocation).Return(nil) // we need to check if the prefixed name is created
 
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {
@@ -294,7 +295,7 @@ func TestClient_CreateBucket(t *testing.T) {
 			t.Fail()
 		}
 
-		err = mockClient.CreateBucket(ctx, testGCSBucket)
+		err = mockClient.CreateBucket(ctx, testGCSBucket, testBucketLocation)
 		if err != nil {
 			t.Errorf("Client.CreateBucket() error = %v", err)
 		}
@@ -312,7 +313,7 @@ func TestClient_CreateBucket(t *testing.T) {
 			t.Errorf("failed before running a test")
 		}
 
-		err = mockClient.CreateBucket(ctx, "")
+		err = mockClient.CreateBucket(ctx, "", testBucketLocation)
 		if err == nil {
 			t.Errorf("Client.CreateBucket() should throw an error")
 		}

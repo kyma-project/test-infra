@@ -70,7 +70,7 @@ func main() {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
 	for _, bucket := range readConfig.Buckets {
-		if err := storageClient.CreateBucket(ctx, bucket); err != nil {
+		if err := storageClient.CreateBucket(ctx, bucket.Name, bucket.Location); err != nil {
 			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
 		}
 	}

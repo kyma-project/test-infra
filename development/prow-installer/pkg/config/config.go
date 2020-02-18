@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	"io/ioutil"
 
 	log "github.com/sirupsen/logrus"
@@ -16,7 +17,7 @@ type Config struct {
 	Project           string            `yaml:"project"`
 	Zone              string            `yaml:"zone"`
 	Region            string            `yaml:"region"`
-	Buckets           []string          `yaml:"buckets"`
+	Buckets           []storage.Bucket  `yaml:"buckets"`
 	KeyringName       string            `yaml:"keyring_name"`
 	EncryptionKeyName string            `yaml:"encryption_key_name"`
 	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`
