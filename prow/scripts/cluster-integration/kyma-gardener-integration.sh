@@ -15,11 +15,26 @@
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
-set -o errexit
+set -e
 
 discoverUnsetVar=false
 
-for var in KYMA_PROJECT_DIR GARDENER_REGION GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
+VARIABLES=(
+    KYMA_PROJECT_DIR
+    GARDENER_REGION
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    RS_GROUP
+    REGION
+    EVENTHUB_NAMESPACE_NAME
+    AZURE_SUBSCRIPTION_ID
+    AZURE_SUBSCRIPTION_APP_ID
+    AZURE_SUBSCRIPTION_SECRET
+    AZURE_SUBSCRIPTION_TENANT
+)
+
+for var in "${VARIABLES[@]}"; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -34,8 +49,18 @@ if [ -z "${CLUSTER_VERSION}" ]; then
 fi
 
 #Exported variables
+export RS_GROUP \
+    EVENTHUB_NAMESPACE_NAME \
+    REGION \
+    AZURE_SUBSCRIPTION_ID \
+    AZURE_SUBSCRIPTION_APP_ID \
+    AZURE_SUBSCRIPTION_SECRET \
+    AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
+export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -64,6 +89,14 @@ cleanup() {
         export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
+
+        shout "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
+        # Delete the Azure Event Hubs namespace which was created
+        az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+
+        shout "Deleting Azure Resource Group: \"${RS_GROUP}\""
+        # Delete the Azure Resource Group
+        az group delete -n "${RS_GROUP}" -y
     fi
 
     rm -rf "${TMP_DIR}"
@@ -115,13 +148,33 @@ kyma provision gardener \
 shout "Installing Kyma"
 date
 
+shout "Downloading Kyma installer CR"
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-gardener-azure.yaml.tpl" \
+    --output installer-cr-gardener-azure.yaml.tpl
+
 echo "Downlading production profile"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
     --output installer-config-production.yaml.tpl
 
+shout "Downloading Azure EventHubs config"
+curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
+    --output installer-config-azure-eventhubs.yaml.tpl
+
+shout "Generate Azure Event Hubs overrides"
+date
+# shellcheck disable=SC1090
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
+
 (
 set -x
-kyma install --ci --source latest -o installer-config-production.yaml.tpl --timeout 90m
+kyma install \
+    --ci \
+    --source latest \
+    -o installer-cr-gardener-azure.yaml.tpl \
+    -o installer-config-production.yaml.tpl \
+    -o installer-config-azure-eventhubs.yaml.tpl \
+    --timeout 90m
 )
 
 shout "Checking the versions"
@@ -136,12 +189,12 @@ readonly CONCURRENCY=5
 (
 set -x
 kyma test run \
-                --name "${SUITE_NAME}" \
-                --concurrency "${CONCURRENCY}" \
-                --max-retries 1 \
-                --timeout 90m \
-                --watch \
-                --non-interactive
+    --name "${SUITE_NAME}" \
+    --concurrency "${CONCURRENCY}" \
+    --max-retries 1 \
+    --timeout 90m \
+    --watch \
+    --non-interactive
 )
 
 echo "Test Summary"
