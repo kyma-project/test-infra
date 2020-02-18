@@ -125,6 +125,8 @@ export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 ### For generate-cluster-backup-config.sh
 export BACKUP_CREDENTIALS="${KYMA_BACKUP_CREDENTIALS}"
 export BACKUP_RESTORE_BUCKET="${KYMA_BACKUP_RESTORE_BUCKET}"
+export CLOUD_PROVIDER="gcp"
+export PROVIDER_PLUGIN_IMAGE="velero/velero-plugin-for-gcp:v1.0.0"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
@@ -295,15 +297,13 @@ function restoreKyma() {
     mv velero-v1.2.0-linux-amd64/velero /usr/local/bin && \
     rm -rf velero-v1.2.0-linux-amd64 velero-v1.2.0-linux-amd64.tar.gz
 
-    CLOUD_PROVIDER="gcp"
-
     E2E_TESTING_ENV_FILE="${KYMA_SCRIPTS_DIR}/e2e-testing.env"
     if [[ -f "${E2E_TESTING_ENV_FILE}" ]]; then
 	# shellcheck disable=SC1090
     	source "${E2E_TESTING_ENV_FILE}"
     fi
 
-    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:1ac01ae1}"
+    VELERO_PLUGIN_IMAGES="${PROVIDER_PLUGIN_IMAGE},${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:1ac01ae1}"
 
     shout "Install Velero Server"
     date

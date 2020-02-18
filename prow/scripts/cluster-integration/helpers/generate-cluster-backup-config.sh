@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
 
-for var in KYMA_RESOURCES_DIR TEST_INFRA_SOURCES_DIR BACKUP_RESTORE_BUCKET BACKUP_CREDENTIALS KYMA_SCRIPTS_DIR; do
+for var in KYMA_RESOURCES_DIR TEST_INFRA_SOURCES_DIR CLOUD_PROVIDER BACKUP_RESTORE_BUCKET BACKUP_CREDENTIALS PROVIDER_PLUGIN_IMAGE KYMA_SCRIPTS_DIR; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -20,22 +20,38 @@ source "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/library.sh
 
 shout "Create a Secret for Velero"
 
-VELERO_SECRET_TPL_PATH="${KYMA_RESOURCES_DIR}/velero-secret.yaml.tpl"
+VELERO_SECRET_TPL_PATH="${KYMA_RESOURCES_DIR}/backup-secret.yaml.tpl"
 VELERO_SECRET_OUTPUT_PATH=$(mktemp)
 cp "${VELERO_SECRET_TPL_PATH}" "${VELERO_SECRET_OUTPUT_PATH}"
 
-CLOUD_PROVIDER="gcp"
-
+BASE64_PROVIDER_PLUGIN_IMAGE=$(echo -n "${PROVIDER_PLUGIN_IMAGE}" | base64 -w0)
 BASE64_CLOUD_PROVIDER=$(echo -n "${CLOUD_PROVIDER}" | base64 -w0)
 BASE64_BUCKET=$(echo -n "${BACKUP_RESTORE_BUCKET}" | base64 -w0)
 BASE64_CLOUD_CREDENTIALS_FILE_CONTENT_BASE64=$(base64 -w0 "${BACKUP_CREDENTIALS}")
 
 
+bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__PROVIDER_PLUGIN_IMAGE__" --value "${BASE64_PROVIDER_PLUGIN_IMAGE}"
+
 bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__CLOUD_PROVIDER__" --value "${BASE64_CLOUD_PROVIDER}"
 
-bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__BSL_BUCKET__" --value "${BASE64_BUCKET}"
+bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__BUCKET__" --value "${BASE64_BUCKET}"
 
 bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__CLOUD_CREDENTIALS_FILE_CONTENT_BASE64__" --value "${BASE64_CLOUD_CREDENTIALS_FILE_CONTENT_BASE64}"
+
+if [[ -n "${API_TIMEOUT}" ]]; then
+    BASE64_API_TIMEOUT=$(echo -n "${API_TIMEOUT}" | base64 -w0)
+    bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__APITIMEOUT__" --value "${BASE64_API_TIMEOUT}"
+fi
+
+if [[ -n "${AZURE_BACKUP_RESOURCE_GROUP}" ]]; then
+    BASE64_RESOURCE_GROUP=$(echo -n "${AZURE_BACKUP_RESOURCE_GROUP}" | base64 -w0)
+    bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__RESOURCEGROUP__" --value "${BASE64_RESOURCE_GROUP}"
+fi
+
+if [[ -n "${AZURE_STORAGE_ACCOUNT_ID}" ]]; then
+    BASE64_STORAGE_ACCOUNT=$(echo -n "${AZURE_STORAGE_ACCOUNT_ID}" | base64 -w0)
+    bash "${KYMA_SCRIPTS_DIR}"/replace-placeholder.sh --path "${VELERO_SECRET_OUTPUT_PATH}" --placeholder "__STORAGEACCOUNT__" --value "${BASE64_STORAGE_ACCOUNT}"
+fi
 
 echo -e "\nApplying secret for Velero"
 

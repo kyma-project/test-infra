@@ -18,8 +18,6 @@ periodics:
     preset-gardener-azure-kyma-integration: "true"
     preset-kyma-cli-stable: "true"
     preset-creds-aks-kyma-integration: "true"
-    preset-kyma-keyring: "true"
-    preset-kyma-encryption-key: "true"
   spec:
     containers:
     - <<: *base_image
@@ -38,6 +36,46 @@ periodics:
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
         value: "westeurope"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
+
+- name: kyma-gardener-backup-nightly
+  cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
+  decorate: true
+  decoration_config:
+    timeout: 14400000000000 # 4h
+    grace_period: 600000000000 # 10min
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+    - org: kyma-project
+      repo: kyma
+      base_ref: master
+      path_alias: github.com/kyma-project/kyma
+  labels:
+    preset-kyma-cli-stable: "true"
+    preset-gardener-azure-kyma-integration: "true"
+    preset-sa-gke-kyma-integration: "true"
+    preset-creds-aks-kyma-integration: "true"
+    preset-gc-compute-envs: "true"
+    preset-gc-project-env: "true"
+    preset-dind-enabled: "true"
+  spec:
+    containers:
+    - <<: *base_image
+      securityContext:
+        privileged: true
+      command:
+        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gardener-backup-test.sh"
+      env:
+        - name: CLOUDSDK_COMPUTE_ZONE
+          value: "europe-west4-a"
+        - name: REGION
+          value: "westeurope"
       resources:
         requests:
           memory: 1Gi

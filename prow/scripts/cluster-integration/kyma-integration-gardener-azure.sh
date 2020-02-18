@@ -155,6 +155,7 @@ export INSTALL_DIR=${TMP_DIR}
 install::kyma_cli
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""
+date
 
 if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="Standard_D4_v3"
@@ -171,9 +172,6 @@ kyma provision gardener \
         --kube-version=${GARDENER_CLUSTER_VERSION} \
         -z="1"
 )
-
-shout "Installing Kyma"
-date
 
 shout "Downloading Kyma installer CR"
 curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
@@ -193,6 +191,9 @@ date
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
+shout "Installing Kyma"
+date
+
 (
 set -x
 kyma install \
@@ -203,10 +204,6 @@ kyma install \
     -o installer-config-azure-eventhubs.yaml.tpl \
     --timeout 90m
 )
-
-shout "Checking the versions"
-date
-kyma version
 
 shout "Running Kyma tests"
 date
