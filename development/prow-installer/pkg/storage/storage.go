@@ -21,9 +21,15 @@ type Client struct {
 	api API
 }
 
+// Struct that defines each bucket to create
+type Bucket struct {
+	Name     string `yaml:"name"`
+	Location string `yaml:"location,omitempty"`
+}
+
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
-	CreateBucket(ctx context.Context, name string) error
+	CreateBucket(ctx context.Context, name string, location string) error
 	DeleteBucket(ctx context.Context, name string) error
 	Read(ctx context.Context, bucket, storageObject string) ([]byte, error)
 	Write(ctx context.Context, data []byte, bucket, storageObject string) error
@@ -46,14 +52,14 @@ func New(opts Option, api API) (*Client, error) {
 
 // TODO bucket region selection instead of fixed one (US)
 // CreateBucket attempts to create a storage bucket
-func (sc *Client) CreateBucket(ctx context.Context, name string) error {
+func (sc *Client) CreateBucket(ctx context.Context, name string, location string) error {
 	if name == "" {
 		return fmt.Errorf("name cannot be empty")
 	}
 	if sc.Prefix != "" {
 		name = fmt.Sprintf("%s-%s", sc.Prefix, name)
 	}
-	return sc.api.CreateBucket(ctx, name)
+	return sc.api.CreateBucket(ctx, name, location)
 }
 
 // DeleteBucket attempts to delete a storage bucket
