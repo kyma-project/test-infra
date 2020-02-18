@@ -13,7 +13,6 @@ import (
 //Configuration for prow config.
 type Config struct {
 	ClusterName       string            `yaml:"cluster_name"`
-	Oauth             string            `yaml:"oauth"`
 	Project           string            `yaml:"project"`
 	Zone              string            `yaml:"zone"`
 	Region            string            `yaml:"region"`
