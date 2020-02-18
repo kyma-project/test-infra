@@ -11,7 +11,6 @@
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
-# - CLUSTER_VERSION (optional): AKS Kubernetes version TODO
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
@@ -43,10 +42,7 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
-readonly DEFAULT_CLUSTER_VERSION="1.16.3"
-if [ -z "${CLUSTER_VERSION}" ]; then
-      export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-fi
+readonly GARDENER_CLUSTER_VERSION="1.16.3"
 
 #Exported variables
 export RS_GROUP \
@@ -142,7 +138,7 @@ kyma provision gardener \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/16" \
         --nodes 4 \
-        --kube-version=${CLUSTER_VERSION}
+        --kube-version=${GARDENER_CLUSTER_VERSION}
 )
 
 shout "Installing Kyma"
