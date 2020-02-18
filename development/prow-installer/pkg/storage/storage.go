@@ -50,7 +50,6 @@ func New(opts Option, api API) (*Client, error) {
 	return &Client{Option: opts, api: api}, nil
 }
 
-// TODO bucket region selection instead of fixed one (US)
 // CreateBucket attempts to create a storage bucket
 func (sc *Client) CreateBucket(ctx context.Context, name string, location string) error {
 	if name == "" {
