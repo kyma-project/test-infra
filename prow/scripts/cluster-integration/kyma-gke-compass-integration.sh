@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
-for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
   if [ -z "${!var}" ] ; then
     echo "ERROR: $var is not set"
     discoverUnsetVar=true
@@ -14,6 +14,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
+export KYMA_TEST_TIMEOUT=2h
+
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -22,6 +24,10 @@ export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+
+export GARDENER_PROJECT_NAME="${GARDENER_KYMA_PROW_PROJECT_NAME}"
+export GARDENER_APPLICATION_CREDENTIALS="${GARDENER_KYMA_PROW_KUBECONFIG}"
+export GARDENER_AZURE_SECRET_NAME="${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}"
 
 readonly REPO_OWNER="kyma-project"
 readonly REPO_NAME="kyma"
@@ -233,13 +239,6 @@ function installKyma() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
-
-  # Create Config map for Provisioner Tests
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "provisioner-tests-overrides" \
-    --data "provisioner.tests.enabled=\"true\"" \
-    --data "provisioner.tests.gcp.credentials=\"$(base64 -w 0 < "${GOOGLE_APPLICATION_CREDENTIALS}")\"" \
-    --data "provisioner.tests.gcp.projectName=$GCLOUD_PROJECT_NAME" \
-    --label "component=compass"
 
   waitUntilInstallerApiAvailable
 
