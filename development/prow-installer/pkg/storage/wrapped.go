@@ -11,9 +11,8 @@ import (
 
 // APIWrapper wraps the GCP api
 type APIWrapper struct {
-	ProjectID  string
-	LocationID string
-	GCSClient  *gcs.Client
+	ProjectID string
+	GCSClient *gcs.Client
 }
 
 func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
@@ -23,9 +22,8 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 	}
 
 	api := &APIWrapper{
-		ProjectID:  opts.ProjectID,
-		LocationID: opts.LocationID,
-		GCSClient:  gcsClient,
+		ProjectID: opts.ProjectID,
+		GCSClient: gcsClient,
 	}
 
 	if client, err := New(opts, api); err != nil {
@@ -36,9 +34,10 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 }
 
 // CreateBucket attempts to create a storage bucket
-func (caw *APIWrapper) CreateBucket(ctx context.Context, name string) error {
+func (caw *APIWrapper) CreateBucket(ctx context.Context, name string, location string) error {
 	attrs := &gcs.BucketAttrs{
-		Name: name,
+		Location: location,
+		Name:     name,
 	}
 
 	err := caw.GCSClient.Bucket(name).Create(ctx, caw.ProjectID, attrs)
