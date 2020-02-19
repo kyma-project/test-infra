@@ -64,28 +64,29 @@ serviceAccounts:
       - iam.serviceAccountUser
       - storage.admin
       - cloudkms.cryptoKeyEncrypterDecrypter
-  - name : sa-vm-kyma-integration # present
-    type : serviceAccount
-    roles :
+  - name: sa-vm-kyma-integration # present
+    type: serviceAccount
+    roles:
       - compute.instanceAdmin
       - compute.osAdminLogin
       - iam.serviceAccountUser
-  - name : sa-gcs-plank # present
-    type : serviceAccount
-    roles :
+  - name: sa-gcs-plank # present
+    type: serviceAccount
+    roles:
       - storage.objectAdmin
-  - name : sa-gcr-push-kyma-project # present
-    type : serviceAccount
-    roles :
+  - name: sa-gcr-push-kyma-project # present
+    type: serviceAccount
+    roles:
       - storage.objectCreator
-  - name : sa-kyma-artifacts # present
-    type : serviceAccount
-    roles :
-      -  storage.objectAdmin
+  - name: sa-kyma-artifacts # present
+    type: serviceAccount
+    roles:
+      - storage.objectAdmin
   - name: sa-stability-fluentd-storage-writer
     type: serviceAccount
     roles:
       - storage.objectAdmin
+generics:
   - prefix: kyma-bot-github-token
     key: token
   - prefix: sap-slack-bot-token
