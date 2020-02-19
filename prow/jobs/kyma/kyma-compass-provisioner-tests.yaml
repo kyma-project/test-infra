@@ -29,6 +29,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-gke-compass-provisioner-tests
+    optional: true
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
@@ -53,7 +54,7 @@ presubmits: # runs on PRs
     branches:
       - ^master$
     # following regexp won't start build if only Markdown files were changed
-    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    run_if_changed: "resources/compass/charts/provisioner"
     labels:
       prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
       preset-build-pr: "true"
