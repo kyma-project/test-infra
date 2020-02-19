@@ -24,7 +24,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
-  preset-gardener-azure-kyma-integration: "false"
+  preset-gardener-azure-kyma-integration: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
@@ -42,7 +42,7 @@ presubmits: # runs on PRs
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
@@ -82,7 +82,7 @@ postsubmits:
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
