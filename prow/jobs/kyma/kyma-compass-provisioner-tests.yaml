@@ -28,7 +28,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-gke-compass-integration
+  - name: pre-master-kyma-gke-compass-provisioner-tests
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
@@ -64,7 +64,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/kyma:
-  - name: post-master-kyma-gke-compass-integration
+  - name: post-master-kyma-gke-compass-provisioner-tests
     annotations:
       testgrid-dashboards: kyma-cleaners
       # testgrid-alert-email: email-here@sap.com
