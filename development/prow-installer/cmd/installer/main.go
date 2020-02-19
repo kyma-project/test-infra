@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	if *configPath == "" {
-		log.Fatalf("Missing required argument : -configPath")
+		log.Fatalf("Missing required argument : -config")
 	}
 
 	if *credentialsFile == "" {
