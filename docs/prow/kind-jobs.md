@@ -66,7 +66,7 @@ docker run \
     --tune-inotify \
     --start-docker \
     --kubernetes-version \
-    v1.14.6 \
+    v1.16.3 \
     --kyma-sources \
     /home/prow/go/src/github.com/kyma-project/kyma \
     --kyma-installation-timeout \

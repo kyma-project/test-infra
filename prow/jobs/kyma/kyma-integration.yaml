@@ -10,9 +10,26 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-# Kubectl 1.14, CLUSTER_VERSION=1.14
-k8s_1-14: &k8s_1-14
+# Kubectl 1.14
+base_image_k14: &base_image_k14
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+
+# Kubectl 1.16
+base_image: &base_image
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+
+cluster_version: &cluster_version
+  name: CLUSTER_VERSION
+  value: "1.16"
+
+# upgrade when stable GKE 1.16 will be available
+cluster_version_k15: &cluster_version_k15
+  name: CLUSTER_VERSION
+  value: "1.15"
+
+cluster_version_k14: &cluster_version_k14
+  name: CLUSTER_VERSION
+  value: "1.14"
 
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -21,13 +38,33 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
           requests:
             memory: 100Mi
             cpu: 50m
+        env:
+          - <<: *cluster_version
+
+vm_job_template_k14: &vm_job_template_k14
+  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
+  decorate: true
+  optional: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k14
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 50m
+        env:
+          - <<: *cluster_version_k14
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
@@ -57,12 +94,13 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -80,40 +118,18 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
   max_concurrency: 10
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image_k14
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-gke_xip_job_template: &gke_xip_job_template
-  skip_report: false
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *k8s_1-14
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-b"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-xip.sh"
         resources:
           requests:
             memory: 200Mi
@@ -126,12 +142,37 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
+          - <<: *cluster_version_k15
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_job_template_k14: &gke_job_template_k14
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k14
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
         args:
@@ -149,12 +190,37 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
+          - <<: *cluster_version_k15
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k14
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -172,12 +238,37 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
+          - <<: *cluster_version_k15
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_central_job_template_k14: &gke_central_job_template_k14
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k14
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -193,12 +284,35 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - <<: *k8s_1-14
+      - <<: *base_image
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
+          - <<: *cluster_version_k15
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_backup_job_template_k14: &gke_backup_job_template_k14
+  skip_report: false
+  decorate: true
+  spec:
+    containers:
+      - <<: *base_image_k14
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -243,7 +357,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.10
       always_run: false
-      <<: *vm_job_template
+      <<: *vm_job_template_k14
       labels:
         <<: *vm_job_labels_template
       extra_refs:
@@ -253,7 +367,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.9
       always_run: false
-      <<: *vm_job_template
+      <<: *vm_job_template_k14
       labels:
         <<: *vm_job_labels_template
       extra_refs:
@@ -263,7 +377,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.8
       always_run: false
-      <<: *vm_job_template
+      <<: *vm_job_template_k14
       labels:
         <<: *vm_job_labels_template
       extra_refs:
@@ -339,7 +453,7 @@ presubmits: # runs on PRs
     - name: pre-rel110-kyma-gke-integration
       branches:
         - release-1.10
-      <<: *gke_job_template
+      <<: *gke_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -352,7 +466,7 @@ presubmits: # runs on PRs
     - name: pre-rel19-kyma-gke-integration
       branches:
         - release-1.9
-      <<: *gke_job_template
+      <<: *gke_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -365,7 +479,7 @@ presubmits: # runs on PRs
     - name: pre-rel18-kyma-gke-integration
       branches:
         - release-1.8
-      <<: *gke_job_template
+      <<: *gke_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -391,7 +505,7 @@ presubmits: # runs on PRs
     - name: pre-rel110-kyma-gke-upgrade
       branches:
         - release-1.10
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -402,7 +516,7 @@ presubmits: # runs on PRs
     - name: pre-rel19-kyma-gke-upgrade
       branches:
         - release-1.9
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -413,7 +527,7 @@ presubmits: # runs on PRs
     - name: pre-rel18-kyma-gke-upgrade
       branches:
         - release-1.8
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -437,7 +551,7 @@ presubmits: # runs on PRs
     - name: pre-rel110-kyma-gke-central-connector
       branches:
         - release-1.10
-      <<: *gke_central_job_template
+      <<: *gke_central_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -448,7 +562,7 @@ presubmits: # runs on PRs
     - name: pre-rel19-kyma-gke-central-connector
       branches:
         - release-1.9
-      <<: *gke_central_job_template
+      <<: *gke_central_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -459,7 +573,7 @@ presubmits: # runs on PRs
     - name: pre-rel18-kyma-gke-central-connector
       branches:
         - release-1.8
-      <<: *gke_central_job_template
+      <<: *gke_central_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -485,7 +599,7 @@ presubmits: # runs on PRs
       optional: false
       branches:
         - release-1.10
-      <<: *gke_backup_job_template
+      <<: *gke_backup_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -497,7 +611,7 @@ presubmits: # runs on PRs
       optional: false
       branches:
         - release-1.9
-      <<: *gke_backup_job_template
+      <<: *gke_backup_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -509,7 +623,7 @@ presubmits: # runs on PRs
       optional: false
       branches:
         - release-1.8
-      <<: *gke_backup_job_template
+      <<: *gke_backup_job_template_k14
       always_run: false
       labels:
         preset-build-release: "true"
@@ -604,6 +718,38 @@ periodics:
       testgrid-num-failures-to-alert: '1'
     labels:
       preset-creds-aks-kyma-integration: "true"
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    spec:
+      containers:
+        - <<: *base_image
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "prow/scripts/cluster-integration/minio/azure-cleaner.sh"
+          env:
+            - name: MINIO_GATEWAY_MODE
+              value: azure
+            - name: AZURE_RS_GROUP
+              value: rafter-minio-gateway
+            - name: AZURE_REGION
+              value: westeurope
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 50m
+  # TODO (@michal-hudy): Remove when release 1.8 not supported
+  - name: orphaned-az-storage-accounts-cleaner-old
+    cron: "00 00 * * *" # "At 00:00 each day"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    labels:
+      preset-creds-aks-kyma-integration: "true"
       preset-minio-az-gateway: "true"
     decorate: true
     extra_refs:
@@ -611,7 +757,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           command:
             - "bash"
           args:
@@ -621,6 +767,8 @@ periodics:
             requests:
               memory: 100Mi
               cpu: 50m
+          env:
+            - <<: *cluster_version
   - name: orphaned-assetstore-gcp-bucket-cleaner
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
@@ -849,7 +997,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           securityContext:
             privileged: true
           volumeMounts:
@@ -859,6 +1007,7 @@ periodics:
           command:
             - "bash"
           env:
+            - <<: *cluster_version_k15
             - name: MACHINE_TYPE
               value: "custom-8-15360"
             - name: PROVISION_REGIONAL_CLUSTER
@@ -918,7 +1067,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           securityContext:
             privileged: true
           volumeMounts:
@@ -928,6 +1077,7 @@ periodics:
           command:
             - "bash"
           env:
+            - <<: *cluster_version_k15
             - name: MACHINE_TYPE
               value: "custom-12-15360"
             - name: PROVISION_REGIONAL_CLUSTER
@@ -988,7 +1138,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           securityContext:
             privileged: true
           volumeMounts:
@@ -996,6 +1146,7 @@ periodics:
               mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
               readOnly: true
           env:
+            - <<: *cluster_version_k15
             - name: RS_GROUP
               value: "kyma-nightly-aks"
             - name: REGION
@@ -1040,12 +1191,13 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           securityContext:
             privileged: true
           command:
             - "bash"
           env:
+            - <<: *cluster_version_k15
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-a"
             - name: REPO_OWNER

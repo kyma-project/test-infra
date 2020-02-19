@@ -167,7 +167,7 @@ export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
 shout "Installing Kyma"
 date
-yes | kyma install --non-interactive --source latest --domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
+kyma install --ci --source latest --domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
 
 
 shout "Checking the versions"
