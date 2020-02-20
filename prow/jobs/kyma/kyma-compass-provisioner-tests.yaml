@@ -53,7 +53,6 @@ presubmits: # runs on PRs
               cpu: 80m
     branches:
       - ^master$
-    # following regexp won't start build if only Markdown files were changed
     run_if_changed: "resources/compass/charts/provisioner"
     labels:
       prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
