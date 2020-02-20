@@ -9,9 +9,14 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-# Kubectl 1.14, CLUSTER_VERSION=1.14
-k8s_1-14: &k8s_1-14
+# Kubectl 1.16
+base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+
+# upgrade when stable GKE 1.16 will be available
+cluster_version: &cluster_version
+  name: CLUSTER_VERSION
+  value: "1.15"
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
@@ -36,7 +41,7 @@ presubmits: # runs on PRs
     max_concurrency: 10
     spec:
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           securityContext:
             privileged: true
           command:
@@ -45,6 +50,7 @@ presubmits: # runs on PRs
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
           env:
+            - <<: *cluster_version
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
             - name: RUN_PROVISIONER_TESTS
@@ -77,7 +83,7 @@ postsubmits:
     max_concurrency: 10
     spec:
       containers:
-        - <<: *k8s_1-14
+        - <<: *base_image
           securityContext:
             privileged: true
           command:
@@ -86,6 +92,7 @@ postsubmits:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
           env:
+            - <<: *cluster_version       
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
             - name: RUN_PROVISIONER_TESTS
