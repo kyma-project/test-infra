@@ -53,7 +53,7 @@ func TestKymaGKECompassProvisionerTestsPresubmit(t *testing.T) {
 
 func TestKymaGKECompassProvisionerTestsPostsubmit(t *testing.T) {
 	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-provisioner-tests.yaml")
 	require.NoError(t, err)
 
 	// when
