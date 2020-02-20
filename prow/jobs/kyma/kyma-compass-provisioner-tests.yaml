@@ -47,6 +47,8 @@ presubmits: # runs on PRs
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: RUN_PROVISIONER_TESTS
+              value: "true"
           resources:
             requests:
               memory: 200Mi
@@ -82,10 +84,12 @@ postsubmits:
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
           env:
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
+            - name: RUN_PROVISIONER_TESTS
+              value: "true"
           resources:
             requests:
               memory: 200Mi
