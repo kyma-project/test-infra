@@ -87,13 +87,17 @@ func main() {
 	iamClient := serviceaccount.NewClient(readConfig.Prefix, iamService)
 	crmClient, err := roles.New(crmService)
 
-	for _, serviceAccount := range readConfig.ServiceAccounts {
+	for i, serviceAccount := range readConfig.ServiceAccounts {
 		// TODO implement handling error when SA already exists in GCP
-		if _, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project); err != nil {
+		if sa, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project); err != nil {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
+			key, err := iamClient.CreateSAKey(sa.Email)
+			if err != nil {log.Errorf("failed create serviceaccount %s key, got: %w", sa.Name, err)}
 			//log.Println(iamClient.CreateSAKey(sa.Email))
+			readConfig.ServiceAccounts[i].Key = key
 			_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
+			if err != nil {log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)}
 		}
 	}
 }

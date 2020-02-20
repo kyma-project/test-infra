@@ -21,7 +21,7 @@ type Config struct {
 	EncryptionKeyName string            `yaml:"encryption_key_name"`
 	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`
 	Prefix            string            `yaml:"prefix,omitempty"`
-	ServiceAccounts   []Account         `yaml:"serviceAccounts"`
+	ServiceAccounts   []ServiceAccount         `yaml:"serviceAccounts"`
 	GenericSecrets    []GenericSecret   `yaml:"generics,flow,omitempty"`
 	Labels            map[string]string `yaml:"labels"`
 	Clusters          []cluster.Cluster `yaml:"clusters"`
@@ -29,10 +29,10 @@ type Config struct {
 
 //type Accounts []Account
 //TODO: Should this be moved to accessmanager package and imported here? As methods from accessmanager pacakge expect this type as argument.
-type Account struct {
+type ServiceAccount struct {
 	Name  string   `yaml:"name"`
-	Type  string   `yaml:"type"`
 	Roles []string `yaml:"roles,omitempty"`
+	Key string `yaml:key,omitempty`
 }
 
 //type GenericSecrets []GenericSecret
