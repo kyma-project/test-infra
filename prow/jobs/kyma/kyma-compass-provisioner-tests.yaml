@@ -48,7 +48,7 @@ presubmits: # runs on PRs
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
           env:
             - <<: *cluster_version
             - name: CLOUDSDK_COMPUTE_ZONE
@@ -90,7 +90,7 @@ postsubmits:
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
           env:
             - <<: *cluster_version       
             - name: CLOUDSDK_COMPUTE_ZONE

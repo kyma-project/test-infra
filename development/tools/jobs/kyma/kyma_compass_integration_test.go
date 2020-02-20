@@ -34,6 +34,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 		"preset-docker-push-repository-gke-integration",
 		"preset-dind-enabled",
 		"preset-kyma-artifacts-bucket",
+		"preset-gardener-azure-kyma-integration",
 		"preset-build-pr",
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
@@ -72,6 +73,7 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 		"preset-docker-push-repository-gke-integration",
 		"preset-dind-enabled",
 		"preset-kyma-artifacts-bucket",
+		"preset-gardener-azure-kyma-integration",
 		"preset-build-master",
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
