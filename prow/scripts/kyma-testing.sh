@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
 readonly TMP_DIR=$(mktemp -d)
 readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite.xml"
@@ -108,7 +109,7 @@ function main() {
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
-                --timeout "1h" \
+                --timeout "${KYMA_TEST_TIMEOUT}" \
                 --watch \
                 --non-interactive
 
