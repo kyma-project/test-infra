@@ -67,9 +67,8 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 }
 
 // safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
-func (client *Client) CreateSAKey(sa *iam.ServiceAccount) (string, error) {
+func (client *Client) CreateSAKey(safqdn string) (string, error) {
 	var gkey []byte
-	safqdn := sa.Email
 	resource := fmt.Sprintf("%s%s", createsakeyprefix, safqdn)
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := client.iamservice.CreateSAKey(resource, request)

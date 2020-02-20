@@ -48,7 +48,7 @@ func main() {
 		if err != nil {
 			log.Printf("Failed create serviceaccount %s, got error: %w", value, err)
 		}
-		key, err := iamclient.CreateSAKey(sa)
+		key, err := iamclient.CreateSAKey(sa.Email)
 		if err != nil {
 			log.Printf("Failed create key for serviceaccount %s, got error: %w", value, err)
 		}
