@@ -11,7 +11,7 @@ kyma_ref: &kyma_ref
 
 # Kubectl 1.14, CLUSTER_VERSION=1.14
 k8s_1-14: &k8s_1-14
-  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
