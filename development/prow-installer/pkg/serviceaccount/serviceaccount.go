@@ -1,6 +1,7 @@
 package serviceaccount
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
@@ -15,6 +16,20 @@ type Client struct {
 	iamservice IAM
 	prefix     string
 }
+
+type GoogleApplicationCredentials struct {
+	AccountType string `json:"type"`
+	Project string `json:"project_id"`
+	PrivateKeyId string `json:"private_key_id"`
+	PrivateKey string `json:"private_key"`
+	ClientEmail string `json:"client_email"`
+	ClientID string `json:"client_id"`
+	AuthURI string `json:"auth_uri"`
+	TokenURI string `json:"token_uri"`
+	AuthProvider string `json:"auth_provider_x509_cert_url"`
+	ClientCert string `json:"client_x509_cert_url"`
+}
+
 
 // IAM is a mockable interface for GCP IAM API.
 type IAM interface {
@@ -52,13 +67,19 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 }
 
 // safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
-func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
+func (client *Client) CreateSAKey(sa *iam.ServiceAccount) (string, error) {
+	var gkey []byte
+	safqdn := sa.Email
 	resource := fmt.Sprintf("%s%s", createsakeyprefix, safqdn)
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := client.iamservice.CreateSAKey(resource, request)
 	if err != nil {
-		return nil, fmt.Errorf("When creating key for serviceaccount %s, got error: %w", safqdn, err)
+		return "", fmt.Errorf("When creating key for serviceaccount %s, got error: %w", safqdn, err)
+	}
+	gkey, err = base64.StdEncoding.DecodeString(key.PrivateKeyData)
+	if err != nil {
+		return "", fmt.Errorf("when generating application credentials json file got error: %w", err)
 	}
 	log.Printf("Created key for serviceaccount: %s", safqdn)
-	return key, nil
+	return string(gkey), nil
 }
