@@ -90,7 +90,7 @@ postsubmits:
             - "bash"
           args:
             - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-provisioner-tests.sh"
           env:
             - <<: *cluster_version       
             - name: CLOUDSDK_COMPUTE_ZONE
