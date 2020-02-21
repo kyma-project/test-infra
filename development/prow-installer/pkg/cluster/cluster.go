@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"google.golang.org/api/container/v1"
 )
 
 type Option struct {
@@ -101,4 +102,8 @@ func (o Option) WithProjectID(pid string) Option {
 func (o Option) WithServiceAccount(sa string) Option {
 	o.ServiceAccount = sa
 	return o
+}
+
+func (cc *Client) Get(ctx context.Context, clusterID string) (*container.Cluster, error){
+	return cc.Get(ctx, clusterID)
 }

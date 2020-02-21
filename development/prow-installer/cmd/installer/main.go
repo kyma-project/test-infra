@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/roles"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"time"
 )
 
@@ -100,4 +102,10 @@ func main() {
 			if err != nil {log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)}
 		}
 	}
+	var k8sclient *k8s.Client
+	k8sclient, err = k8s.NewClient(ctx, fmt.Sprintf("%s-%s",readConfig.Prefix, readConfig.ClusterName),clusterClient)
+	if err != nil {log.Fatalf("failed get k8s client")}
+	secrets, err := k8sclient.K8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List()
+	if err != nil {log.Fatalf("failed list secrets")}
+	println(secrets)
 }
