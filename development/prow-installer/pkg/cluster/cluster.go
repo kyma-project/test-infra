@@ -51,8 +51,8 @@ type Autoscaling struct {
 
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
-	Create(ctx context.Context, clusterConfig Cluster) error
-	Delete(ctx context.Context, name string, zoneId string) error
+	Create(ctx context.Context, clusterConfig Cluster) (string, error)
+	Delete(ctx context.Context, name, zoneId string) error
 }
 
 // New returns a new Client, wrapping gke
@@ -70,9 +70,9 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
-func (cc *Client) Create(ctx context.Context, clusterConfig Cluster) error {
+func (cc *Client) Create(ctx context.Context, clusterConfig Cluster) (string, error) {
 	if clusterConfig.Name == "" {
-		return fmt.Errorf("name cannot be empty")
+		return "", fmt.Errorf("name cannot be empty")
 	}
 	if cc.Prefix != "" {
 		clusterConfig.Name = fmt.Sprintf("%s-%s", cc.Prefix, clusterConfig.Name)

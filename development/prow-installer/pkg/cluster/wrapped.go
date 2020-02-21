@@ -3,9 +3,11 @@ package cluster
 import (
 	"context"
 	"fmt"
-	"google.golang.org/api/option"
-
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/api/option"
+	"os"
+	"os/exec"
+	"time"
 
 	container "google.golang.org/api/container/v1"
 	// "google.golang.org/api/option"
@@ -14,7 +16,6 @@ import (
 // APIWrapper wraps the GCP api
 type APIWrapper struct {
 	ProjectID      string
-	ZoneID         string
 	ClusterService *container.ProjectsZonesClustersService
 }
 
@@ -36,12 +37,12 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 }
 
 // Create calls the wrapped GCP api to create a cluster
-func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error {
+func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) (string, error) {
 	var nodePools []*container.NodePool
 
 	for _, pool := range clusterConfig.Pools {
 		if nodePool, err := NewNodePool(pool); err != nil {
-			return fmt.Errorf("error creating node pool configuration: %w", err)
+			return "", fmt.Errorf("error creating node pool configuration: %w", err)
 		} else {
 			nodePools = append(nodePools, nodePool)
 		}
@@ -55,17 +56,36 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 			NodePools:      nodePools,
 		}}
 
-	createResponse, err := caw.ClusterService.Create(caw.ProjectID, clusterConfig.Location, ccRequest).Context(ctx).Do()
+	_, err := caw.ClusterService.Create(caw.ProjectID, clusterConfig.Location, ccRequest).Context(ctx).Do()
 	if err != nil {
-		return fmt.Errorf("couldn't create cluster: %w", err)
+		return "", fmt.Errorf("couldn't create cluster: %w", err)
+	} else {
+		log.Infof("successfully created cluster %s", clusterConfig.Name)
 	}
-	log.Printf("%#v\n", createResponse)
-	return nil
+
+	// get kubeconfig
+	kubeconfig := "./.kube/" + clusterConfig.Name + "_config"
+
+	for {
+		cmd := exec.Command("gcloud", "container", "clusters", "get-credentials", fmt.Sprintf(clusterConfig.Name),
+			"--project", caw.ProjectID,
+			"--zone", clusterConfig.Location)
+		cmd.Env = append(os.Environ(), fmt.Sprintf("KUBECONFIG=%s", kubeconfig))
+
+		// TODO handle gcloud errors specifically
+		if err := cmd.Run(); err != nil {
+			log.Errorf("error getting kubeconfig %v. Retrying in 5 seconds...", err)
+			time.Sleep(time.Second * 5)
+			continue
+		}
+		break
+	}
+	return kubeconfig, nil
 }
 
 // Delete calls the wrapped GCP api to delete a cluster
 func (caw *APIWrapper) Delete(ctx context.Context, name string, zoneId string) error {
-	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, caw.ZoneID, name).Context(ctx).Do()
+	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, zoneId, name).Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("couldn't delete cluster: %w", err)
 	}

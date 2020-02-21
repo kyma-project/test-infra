@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/kubehelper"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/roles"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"time"
 )
 
@@ -31,8 +33,13 @@ func main() {
 
 	readConfig, err := config.ReadConfig(*configPath)
 	if err != nil {
-		log.Fatalf("Error reading configPath file %v", err)
+		log.Fatalf("Error reading config file %v", err)
 	}
+	// define mandatory environment variables
+	_ = os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", *credentialsFile)
+
+	kubeHelpers := make(map[string]*kubehelper.KubeHelper) // map of k8s cluster helpers to communicate with them
+
 	readConfig.Labels["created-at"] = fmt.Sprintf("%v", time.Now().Unix()) // time of cluster creation
 
 	ctx := context.Background()
@@ -60,11 +67,22 @@ func main() {
 		for k, v := range readConfig.Labels {
 			clusterToCreate.Labels[k] = v
 		}
-		if err := clusterClient.Create(ctx, clusterToCreate); err != nil {
+		if kubeConfig, err := clusterClient.Create(ctx, clusterToCreate); err != nil {
 			log.Fatalf("Failed to create cluster: %v", err)
+		} else {
+			// TODO parametrize types of cluster for defining them later
+			kubeHelpers["default-cluster"] = &kubehelper.KubeHelper{Kubeconfig: kubeConfig}
 		}
 	}
-
+	// TODO selection of a cluster based on a parameter
+	for {
+		if err := kubeHelpers["default-cluster"].Apply().File("https://k8s.io/examples/controllers/nginx-deployment.yaml").Do(); err != nil {
+			log.Errorf("Can't apply file. %v Retrying in 5 seconds...", err) //probing a cluster until it responds
+			time.Sleep(time.Second * 5)
+			continue
+		}
+		break
+	}
 	storageClient, err := storage.NewClient(ctx, *storageConfig, *credentialsFile)
 	if err != nil {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)

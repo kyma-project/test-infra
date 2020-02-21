@@ -40,7 +40,6 @@ func main() {
 
 	wrappedAPI := &cluster.APIWrapper{
 		ProjectID:      *projectID,
-		ZoneID:         *zoneID,
 		ClusterService: clusterService,
 	}
 
