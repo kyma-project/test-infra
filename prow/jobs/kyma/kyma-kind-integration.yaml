@@ -27,7 +27,8 @@ presubmits:
     decorate: true
     path_alias: github.com/kyma-project/kyma
     max_concurrency: 10
-    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    # run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    always_run: false
     extra_refs:
     - <<: *test_infra_ref
       base_ref: kind-fix
@@ -77,7 +78,8 @@ presubmits:
     decorate: true
     path_alias: github.com/kyma-project/kyma
     max_concurrency: 10
-    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    # run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    always_run: false
     extra_refs:
     - <<: *test_infra_ref
       base_ref: kind-fix
@@ -127,7 +129,8 @@ presubmits:
     decorate: true
     path_alias: github.com/kyma-project/kyma
     max_concurrency: 10
-    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    # run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    always_run: false
     extra_refs:
     - <<: *test_infra_ref
       base_ref: kind-fix
