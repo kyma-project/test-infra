@@ -613,3 +613,10 @@ sinker:
 push_gateway:
   endpoint: pushgateway
   interval: 10s
+
+tide:
+  sync_period: 2m
+  queries:
+  - orgs:
+    - kyma-project
+    - kyma-incubator
