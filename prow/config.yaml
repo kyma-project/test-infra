@@ -641,8 +641,17 @@ push_gateway:
   interval: 10s
 
 tide:
-  sync_period: 2m
+  sync_period: 5m
   queries:
-  - orgs:
-    - kyma-project
-    - kyma-incubator
+  - repos:
+    - kyma-incubator/terraform-provider-kind
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/blocked-paths
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+    - needs-rebase
