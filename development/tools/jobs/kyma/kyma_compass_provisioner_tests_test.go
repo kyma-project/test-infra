@@ -8,18 +8,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
+func TestKymaGKECompassProvisionerTestsPresubmit(t *testing.T) {
 	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-provisioner-tests.yaml")
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-integration", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-provisioner-tests", "master")
 	require.NotNil(t, actualJob)
 
 	// then
+	assert.True(t, actualJob.Optional)
 	assert.True(t, actualJob.Decorate)
-	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
+	assert.Equal(t, "resources/compass/charts/provisioner", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	assert.False(t, actualJob.SkipReport)
@@ -46,16 +47,17 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "-c", compassCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh", compassCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, compassCont, "RUN_PROVISIONER_TESTS", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
 
-func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
+func TestKymaGKECompassProvisionerTestsPostsubmit(t *testing.T) {
 	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-integration.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-compass-provisioner-tests.yaml")
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-integration", "master")
+	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-provisioner-tests", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -85,5 +87,6 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 	assert.Equal(t, "-c", compassCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh", compassCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, compassCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, compassCont, "RUN_PROVISIONER_TESTS", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
