@@ -263,6 +263,15 @@ shout "Install stackdriver-prometheus collector"
 date
 installStackdriverPrometheusCollector
 
+shout "Collect list of images"
+date
+if [ -z "$ARTIFACTS" ] ; then
+    ARTIFACTS:=/tmp/artifacts
+fi
+
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.csv"
+
 shout "Install stability-checker"
 date
 (
@@ -270,3 +279,5 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
         CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
+
+shout "Success"
