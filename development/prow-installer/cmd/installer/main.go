@@ -102,10 +102,13 @@ func main() {
 			if err != nil {log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)}
 		}
 	}
+	gkeClient, err := k8s.NewGKEClient(ctx, readConfig.Project, readConfig.Zone)
+	if err != nil{log.Fatalf("failed get gke client, got: %v", err)}
 	var k8sclient *k8s.Client
-	k8sclient, err = k8s.NewClient(ctx, fmt.Sprintf("%s-%s",readConfig.Prefix, readConfig.ClusterName),clusterClient)
-	if err != nil {log.Fatalf("failed get k8s client")}
-	secrets, err := k8sclient.K8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List()
-	if err != nil {log.Fatalf("failed list secrets")}
+	clusterID := fmt.Sprintf("%s-%s",readConfig.Prefix, readConfig.ClusterName)
+	k8sclient, err = k8s.NewClient(ctx, clusterID,gkeClient)
+	if err != nil {log.Fatalf("failed get k8s client, got: %v", err)}
+	secrets, err := k8sclient.K8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
+	if err != nil {log.Fatalf("failed list secrets, got: %v", err)}
 	println(secrets)
 }

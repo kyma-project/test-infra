@@ -3,7 +3,6 @@ package cluster
 import (
 	"context"
 	"fmt"
-	"google.golang.org/api/container/v1"
 )
 
 type Option struct {
@@ -54,6 +53,7 @@ type Autoscaling struct {
 type API interface {
 	Create(ctx context.Context, clusterConfig Cluster) error
 	Delete(ctx context.Context, name string, zoneId string) error
+	//Get(ctx context.Context, clusterID string) (*container.Cluster, error)
 }
 
 // New returns a new Client, wrapping gke
@@ -104,6 +104,3 @@ func (o Option) WithServiceAccount(sa string) Option {
 	return o
 }
 
-func (cc *Client) Get(ctx context.Context, clusterID string) (*container.Cluster, error){
-	return cc.Get(ctx, clusterID)
-}
