@@ -318,7 +318,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
-      - name: pre-test-infra-buildpack-java-node
+    - name: pre-test-infra-buildpack-java-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
