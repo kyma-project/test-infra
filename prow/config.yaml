@@ -298,6 +298,19 @@ presets:
           name: kyma-snyk-token
           key: secret
   - labels:
+      preset-sa-prow-gcp-vulnerability-chk: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-prow-gcp-vulnerability-chk/service-account.json
+    volumes:
+      - name: sa-prow-gcp-vulnerability-chk
+        secret:
+          secretName: sa-prow-gcp-vulnerability-chk
+    volumeMounts:
+      - name: sa-prow-gcp-vulnerability-chk
+        mountPath: /etc/credentials/sa-prow-gcp-vulnerability-chk
+        readOnly: true
+  - labels:
       preset-sap-slack-bot-token: "true"
     env:
     - name: SAP_SLACK_BOT_TOKEN

@@ -2,210 +2,193 @@ package cluster
 
 import (
 	"context"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
-
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster/automock"
 )
 
 var (
-	testClusterName = "a-cluster"
-	testClusterProj = "a-project"
-	testClusterZone = "gcp-zone1-a"
+	opts = Option{
+		Prefix:         "test-prefix",
+		ProjectID:      "a-project",
+		ServiceAccount: "not-empty-gcp-will-validate",
+	}
 )
 
 func TestClient_Create(t *testing.T) {
 	t.Run("Create() Should not throw errors", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-
 		ctx := context.Background()
-		labelSet1 := make(map[string]string)
-		labelSet1["test"] = "yes"
-		opts := Option{}
-
-		mockAPI.On("Create", ctx, testClusterName, labelSet1, 1, true).Return(nil)
-
-		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
+		api := MockAPI{}
+		testClusterConfig := Cluster{
+			Name:        "test-cluster-name",
+			Location:    "gcp-zone1-a",
+			Description: "Test description",
+			Labels:      map[string]string{"test": "yes"},
+			Pools: []Pool{
+				{
+					Name: "test-pool",
+					Size: 2,
+					NodeConfig: NodeConfig{
+						MachineType: "n1-standard-1",
+						DiskType:    "pd-standard",
+						DiskSizeGb:  100,
+					},
+					Autoscaling: Autoscaling{
+						Enabled:      true,
+						MinNodeCount: 1,
+						MaxNodeCount: 5,
+					},
+				},
+			},
+		}
+		client, err := New(opts, &api)
 		if err != nil {
-			t.Errorf("failed before running a test")
-			t.Fail()
+			t.Errorf("error ocured during client creation")
 		}
-
-		if err := mockClient.Create(ctx, testClusterName, labelSet1, 1, true); err != nil {
-			t.Errorf("Client.Create() error = %v", err)
-		}
+		err = client.Create(ctx, testClusterConfig)
+		assert.NoErrorf(t, err, "Create returned no errors for valid config")
 	})
-	t.Run("Create() Should throw errors because poolsize is not satisfied", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-
+	t.Run("Create() Should throw errors because initialSize is not satisfied", func(t *testing.T) {
 		ctx := context.Background()
-		labelSet1 := make(map[string]string)
-		labelSet1["test"] = "yes"
-		opts := Option{}
-
-		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
+		api := MockAPI{}
+		testClusterConfig := Cluster{
+			Name:        "test-cluster-name",
+			Location:    "gcp-zone1-a",
+			Description: "Test description",
+			Labels:      map[string]string{"test": "yes"},
+			Pools: []Pool{
+				{
+					Name: "test-pool",
+					Size: 0,
+					NodeConfig: NodeConfig{
+						MachineType: "n1-standard-1",
+						DiskType:    "pd-standard",
+						DiskSizeGb:  100,
+					},
+					Autoscaling: Autoscaling{
+						Enabled:      true,
+						MinNodeCount: 1,
+						MaxNodeCount: 5,
+					},
+				},
+			},
+		}
+		client, err := New(opts, &api)
 		if err != nil {
-			t.Errorf("failed before running a test")
-			t.Fail()
+			t.Errorf("error ocured during client creation")
 		}
-
-		if err := mockClient.Create(ctx, testClusterName, labelSet1, -1, true); err == nil {
-			t.Errorf("Expecting an error but was nil %w", err)
-		}
-
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
+		err = client.Create(ctx, testClusterConfig)
+		assert.EqualErrorf(t, err, "error creating node pool configuration size must be at least 1", "size is not satisfied")
 	})
 	t.Run("Create() Should throw errors because name is not satisfied", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-
 		ctx := context.Background()
-		labelSet1 := make(map[string]string)
-		labelSet1["test"] = "yes"
-		opts := Option{}
-
-		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
+		api := MockAPI{}
+		testClusterConfig := Cluster{
+			Name:        "",
+			Location:    "gcp-zone1-a",
+			Description: "Test description",
+			Labels:      map[string]string{"test": "yes"},
+			Pools: []Pool{
+				{
+					Name: "test-pool",
+					Size: 0,
+					NodeConfig: NodeConfig{
+						MachineType: "n1-standard-1",
+						DiskType:    "pd-standard",
+						DiskSizeGb:  100,
+					},
+					Autoscaling: Autoscaling{
+						Enabled:      true,
+						MinNodeCount: 1,
+						MaxNodeCount: 5,
+					},
+				},
+			},
+		}
+		client, err := New(opts, &api)
 		if err != nil {
-			t.Errorf("failed before running a test")
-			t.Fail()
+			t.Errorf("error ocured during client creation")
 		}
-
-		if err := mockClient.Create(ctx, "", labelSet1, 1, true); err == nil {
-			t.Errorf("Client.Create() expecting an error but was nil %w", err)
-		}
-
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
+		err = client.Create(ctx, testClusterConfig)
+		assert.EqualErrorf(t, err, "name cannot be empty", "name is not satisfied in Create()")
 	})
 }
 
 func TestClient_Delete(t *testing.T) {
 	t.Run("Delete() Should not throw errors", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-
+		testClusterName := "test-cluster-name"
+		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
-		labelSet1 := make(map[string]string)
-		labelSet1["test"] = "yes"
-		opts := Option{}
+		api := &MockAPI{}
 
-		mockAPI.On("Delete", ctx, testClusterName).Return(nil)
-
-		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
+		client, err := New(opts, api)
 		if err != nil {
-			t.Errorf("failed before running a test")
-			t.Fail()
+			t.Errorf("error ocured during client creation")
 		}
-
-		if err := mockClient.Delete(ctx, testClusterName); err != nil {
-			t.Errorf("Client.Delete() error = %v", err)
-		}
+		err = client.Delete(ctx, testClusterName, testZoneId)
+		assert.NoErrorf(t, err, "no errors on Delete")
 	})
-	t.Run("Create() Should throw errors because name is not satisfied", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-
+	t.Run("Delete() Should throw errors because name is not satisfied", func(t *testing.T) {
+		testClusterName := ""
+		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
-		labelSet1 := make(map[string]string)
-		labelSet1["test"] = "yes"
-		opts := Option{}
+		api := &MockAPI{}
 
-		mockClient, err := New(opts.WithProjectID(testClusterProj).WithZoneID(testClusterZone).WithServiceAccount("not-empty-gcp-will-validate"), mockAPI)
+		client, err := New(opts, api)
 		if err != nil {
-			t.Errorf("failed before running a test")
-			t.Fail()
+			t.Errorf("error ocured during client creation")
 		}
+		err = client.Delete(ctx, testClusterName, testZoneId)
+		assert.EqualErrorf(t, err, "name cannot be empty", "name is not satisfied in Delete()")
+	})
+	t.Run("Delete() Should throw errors because zoneId is not satisfied", func(t *testing.T) {
+		testClusterName := "test-cluster-name"
+		testZoneId := ""
+		ctx := context.Background()
+		api := &MockAPI{}
 
-		if err := mockClient.Delete(ctx, ""); err == nil {
-			t.Errorf("Client.Delete() expecting an error but was nil %w", err)
+		client, err := New(opts, api)
+		if err != nil {
+			t.Errorf("error ocured during client creation")
 		}
-
-		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+		err = client.Delete(ctx, testClusterName, testZoneId)
+		assert.EqualErrorf(t, err, "zoneId cannot be empty", "name is not satisfied in Delete()")
 	})
 }
 
 func TestNew(t *testing.T) {
 	t.Run("New() should not throw errors", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-		opts := Option{}
-		opts = opts.WithProjectID("string").WithZoneID("string").WithServiceAccount("string")
-
-		c, err := New(opts, mockAPI)
-		if err != nil {
-			t.Errorf("New() error = %v, should've not thrown an error", err)
-		}
-		want := &Client{Option: opts, api: mockAPI}
-		if !reflect.DeepEqual(c, want) {
-			t.Errorf("New() %v, want = %v", c, want)
-		}
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
-		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+		api := &MockAPI{}
+		_, err := New(opts, api)
+		assert.NoErrorf(t, err, "no errors during client creation")
 	})
 	t.Run("New() should throw errors, because ProjectID is not satisfied", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-		opts := Option{}
-		opts = opts.WithZoneID("string").WithServiceAccount("string")
-
-		c, err := New(opts, mockAPI)
-		if err == nil {
-			t.Errorf("New() expected an error")
+		api := &MockAPI{}
+		testOpts := &Option{
+			Prefix:         "test-prefix",
+			ProjectID:      "",
+			ServiceAccount: "gke-test-serviceaccount",
 		}
-		if c != nil {
-			t.Errorf("New() %v, want = %v", c, nil)
-		}
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
-		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
-	})
-	t.Run("New() should throw errors, because ZoneID is not satisfied", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-		opts := Option{}
-		opts = opts.WithProjectID("string").WithServiceAccount("string")
-
-		c, err := New(opts, mockAPI)
-		if err == nil {
-			t.Errorf("New() expected an error")
-		}
-		if c != nil {
-			t.Errorf("New() %v, want = %v", c, nil)
-		}
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
-		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+		_, err := New(*testOpts, api)
+		assert.EqualErrorf(t, err, "ProjectID is required to initialize a client", "ProjectID is not satisfied in New()")
 	})
 	t.Run("New() should throw errors, because ServiceAccount is not satisfied", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-		opts := Option{}
-		opts = opts.WithProjectID("string").WithZoneID("string")
-
-		c, err := New(opts, mockAPI)
-		if err == nil {
-			t.Errorf("New() expected an error")
+		api := &MockAPI{}
+		testOpts := &Option{
+			Prefix:         "test-prefix",
+			ProjectID:      "gcp-test-project",
+			ServiceAccount: "",
 		}
-		if c != nil {
-			t.Errorf("New() %v, want = %v", c, nil)
-		}
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
-		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+		_, err := New(*testOpts, api)
+		assert.EqualErrorf(t, err, "ServiceAccount is required to initialize a client", "ServiceAccount is not satisfied in New()")
 	})
 
 	t.Run("New() should throw errors, because api is not initialized", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-		opts := Option{}
-		opts = opts.WithProjectID("string").WithZoneID("string").WithServiceAccount("string")
-
-		c, err := New(opts, nil)
-		if err == nil {
-			t.Errorf("New() expected an error")
+		testOpts := &Option{
+			Prefix:         "test-prefix",
+			ProjectID:      "gcp-test-project",
+			ServiceAccount: "gke-test-serviceaccount",
 		}
-		if c != nil {
-			t.Errorf("New() %v, want = %v", c, nil)
-		}
-		mockAPI.AssertNumberOfCalls(t, "Create", 0)
-		mockAPI.AssertNumberOfCalls(t, "Delete", 0)
+		_, err := New(*testOpts, nil)
+		assert.EqualErrorf(t, err, "api is required to initialize a client", "api is not satisfied in New()")
 	})
 }

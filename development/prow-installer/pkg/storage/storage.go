@@ -21,9 +21,15 @@ type Client struct {
 	api API
 }
 
+// Struct that defines each bucket to create
+type Bucket struct {
+	Name     string `yaml:"name"`
+	Location string `yaml:"location,omitempty"`
+}
+
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
-	CreateBucket(ctx context.Context, name string) error
+	CreateBucket(ctx context.Context, name string, location string) error
 	DeleteBucket(ctx context.Context, name string) error
 	Read(ctx context.Context, bucket, storageObject string) ([]byte, error)
 	Write(ctx context.Context, data []byte, bucket, storageObject string) error
@@ -33,9 +39,6 @@ type API interface {
 func New(opts Option, api API) (*Client, error) {
 	if opts.ProjectID == "" {
 		return nil, fmt.Errorf("ProjectID is required to initialize a client")
-	}
-	if opts.LocationID == "" {
-		return nil, fmt.Errorf("LocationID is required to initialize a client")
 	}
 	if opts.ServiceAccount == "" {
 		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")
@@ -48,14 +51,14 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // CreateBucket attempts to create a storage bucket
-func (sc *Client) CreateBucket(ctx context.Context, name string) error {
+func (sc *Client) CreateBucket(ctx context.Context, name string, location string) error {
 	if name == "" {
 		return fmt.Errorf("name cannot be empty")
 	}
 	if sc.Prefix != "" {
 		name = fmt.Sprintf("%s-%s", sc.Prefix, name)
 	}
-	return sc.api.CreateBucket(ctx, name)
+	return sc.api.CreateBucket(ctx, name, location)
 }
 
 // DeleteBucket attempts to delete a storage bucket
@@ -100,12 +103,6 @@ func (o Option) WithPrefix(pre string) Option {
 // WithProjectID modifies option to have a project id
 func (o Option) WithProjectID(pid string) Option {
 	o.ProjectID = pid
-	return o
-}
-
-// WithLocationID modifies option to have a zone id
-func (o Option) WithLocationID(l string) Option {
-	o.LocationID = l
 	return o
 }
 

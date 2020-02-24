@@ -167,12 +167,6 @@ var tests = []struct {
 			jobsuite.Since(releases.Release18),
 		},
 	},
-	{path: "knative-build", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Since(releases.Release19),
-		},
-	},
 	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -189,11 +183,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release110),
-		},
-	},
-	{path: "knative-build", image: tester.ImageGolangBuildpack1_11,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Until(releases.Release18),
 		},
 	},
 	{path: "knative-serving", image: tester.ImageGolangBuildpack1_11,

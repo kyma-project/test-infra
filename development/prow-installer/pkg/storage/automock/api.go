@@ -13,13 +13,13 @@ type API struct {
 	mock.Mock
 }
 
-// CreateBucket provides a mock function with given fields: ctx, name
-func (_m *API) CreateBucket(ctx context.Context, name string) error {
-	ret := _m.Called(ctx, name)
+// CreateBucket provides a mock function with given fields: ctx, name, location
+func (_m *API) CreateBucket(ctx context.Context, name string, location string) error {
+	ret := _m.Called(ctx, name, location)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
-		r0 = rf(ctx, name)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, name, location)
 	} else {
 		r0 = ret.Error(0)
 	}

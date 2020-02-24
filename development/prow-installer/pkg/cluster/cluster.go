@@ -8,7 +8,6 @@ import (
 type Option struct {
 	Prefix         string // global prefix
 	ProjectID      string // GCP project ID
-	ZoneID         string // zone of the cluster
 	ServiceAccount string // filename of the serviceaccount to use
 }
 
@@ -20,19 +19,46 @@ type Client struct {
 	api API
 }
 
+type Cluster struct {
+	Name                  string            `yaml:"name"`
+	Location              string            `yaml:"location"`
+	Description           string            `yaml:"description,omitempty"`
+	Labels                map[string]string `yaml:"labels,omitempty"`
+	Pools                 []Pool            `yaml:"pools"`
+	InitialClusterVersion string            `yaml:"kubernetesVersion,omitempty"`
+}
+
+// node pool settings
+type Pool struct {
+	Name        string      `yaml:"name"`
+	Size        int64       `yaml:"initialSize,omitempty"`
+	Autoscaling Autoscaling `yaml:"autoscaling,omitempty"`
+	NodeConfig  NodeConfig  `yaml:"config,omitempty"`
+}
+
+type NodeConfig struct {
+	MachineType string `yaml:"machineType,omitempty"`
+	DiskType    string `yaml:"diskType,omitempty"`
+	DiskSizeGb  int64  `yaml:"diskSizeGb,omitempty"`
+}
+
+// Autoscaling features for cluster
+type Autoscaling struct {
+	Enabled      bool  `yaml:"enabled"`
+	MinNodeCount int64 `yaml:"minNodeCount"`
+	MaxNodeCount int64 `yaml:"maxNodeCount"`
+}
+
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
-	Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error
-	Delete(ctx context.Context, name string) error
+	Create(ctx context.Context, clusterConfig Cluster) error
+	Delete(ctx context.Context, name string, zoneId string) error
 }
 
 // New returns a new Client, wrapping gke
 func New(opts Option, api API) (*Client, error) {
 	if opts.ProjectID == "" {
 		return nil, fmt.Errorf("ProjectID is required to initialize a client")
-	}
-	if opts.ZoneID == "" {
-		return nil, fmt.Errorf("ZoneID is required to initialize a client")
 	}
 	if opts.ServiceAccount == "" {
 		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")
@@ -44,37 +70,30 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // Create attempts to create a GKE cluster
-// TODO this is still fixed. Parameters are needed.
-func (cc *Client) Create(ctx context.Context, name string, labels map[string]string, minPoolSize int, autoScaling bool) error {
-	if minPoolSize < 1 {
-		return fmt.Errorf("could not create cluster, minPoolSize should be > 0")
-	}
-	if name == "" {
+func (cc *Client) Create(ctx context.Context, clusterConfig Cluster) error {
+	if clusterConfig.Name == "" {
 		return fmt.Errorf("name cannot be empty")
 	}
 	if cc.Prefix != "" {
-		name = fmt.Sprintf("%s-%s", cc.Prefix, name)
+		clusterConfig.Name = fmt.Sprintf("%s-%s", cc.Prefix, clusterConfig.Name)
 	}
-	return cc.api.Create(ctx, name, labels, minPoolSize, autoScaling)
+	return cc.api.Create(ctx, clusterConfig)
 }
 
 // Delete attempts to delete a GKE cluster
-func (cc *Client) Delete(ctx context.Context, name string) error {
+func (cc *Client) Delete(ctx context.Context, name string, zoneId string) error {
 	if name == "" {
 		return fmt.Errorf("name cannot be empty")
 	}
-	return cc.api.Delete(ctx, name)
+	if zoneId == "" {
+		return fmt.Errorf("zoneId cannot be empty")
+	}
+	return cc.api.Delete(ctx, name, zoneId)
 }
 
 // WithProjectID modifies option to have a project id
 func (o Option) WithProjectID(pid string) Option {
 	o.ProjectID = pid
-	return o
-}
-
-// WithZoneID modifies option to have a zone id
-func (o Option) WithZoneID(z string) Option {
-	o.ZoneID = z
 	return o
 }
 

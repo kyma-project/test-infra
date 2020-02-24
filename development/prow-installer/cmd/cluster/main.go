@@ -45,7 +45,7 @@ func main() {
 	}
 
 	clientOpts := cluster.Option{}
-	clientOpts = clientOpts.WithProjectID(*projectID).WithZoneID(*zoneID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	clientOpts = clientOpts.WithProjectID(*projectID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	gkeClient, err := cluster.New(clientOpts, wrappedAPI)
 	if err != nil {
@@ -60,7 +60,7 @@ func main() {
 	// if err != nil {
 	// 	log.Fatalf("Couldn't create cluster %w", err)
 	// }
-	err = gkeClient.Delete(ctx, "")
+	err = gkeClient.Delete(ctx, "", "europe-west-3-c")
 	if err != nil {
 		log.Fatalf("Couldn't delete cluster %w", err)
 	}
