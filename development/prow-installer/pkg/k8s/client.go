@@ -19,7 +19,6 @@ import (
 )
 
 
-// Use GCP client implementation from prow-installer/cluster package
 type API interface {
 	Get(ctx context.Context, clusterID string) (*container.Cluster, error)
 }
@@ -27,6 +26,8 @@ type API interface {
 type Client struct {
 	K8sclient *kubernetes.Clientset
 }
+
+// Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented here.
 
 func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
 	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
@@ -62,7 +63,7 @@ func getDetails(ctx context.Context, clusterID string, gcpclient API) (*containe
 			return nil, fmt.Errorf("failed to get cluster details, cluster state is: %s", cluster.Status)
 		}
 	}
-	return nil, fmt.Errorf("failed to get cluster details, after 5 minutes cluster state is: %s", cluster.Status)
+	return nil, fmt.Errorf("failed to get cluster details, after 5 minutes cluster is not ready, state is: %s", cluster.Status)
 }
 
 func NewClient(ctx context.Context, clusterID string, gcpclient API) (*Client, error) {

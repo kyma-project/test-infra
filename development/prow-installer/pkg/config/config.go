@@ -12,9 +12,7 @@ import (
 
 //Configuration for prow config.
 type Config struct {
-	ClusterName       string            `yaml:"cluster_name"`
 	Project           string            `yaml:"project"`
-	Zone              string            `yaml:"zone"`
 	Region            string            `yaml:"region"`
 	Buckets           []storage.Bucket  `yaml:"buckets"`
 	KeyringName       string            `yaml:"keyring_name"`
@@ -24,18 +22,15 @@ type Config struct {
 	ServiceAccounts   []ServiceAccount         `yaml:"serviceAccounts"`
 	GenericSecrets    []GenericSecret   `yaml:"generics,flow,omitempty"`
 	Labels            map[string]string `yaml:"labels"`
-	Clusters          []cluster.Cluster `yaml:"clusters"`
+	Clusters          map[string]cluster.Cluster `yaml:"clusters"`
 }
 
-//type Accounts []Account
-//TODO: Should this be moved to accessmanager package and imported here? As methods from accessmanager pacakge expect this type as argument.
 type ServiceAccount struct {
 	Name  string   `yaml:"name"`
 	Roles []string `yaml:"roles,omitempty"`
 	Key string `yaml:key,omitempty`
 }
 
-//type GenericSecrets []GenericSecret
 type GenericSecret struct {
 	Name string `yaml:"prefix"`
 	Key  string `yaml:"key"`
