@@ -107,7 +107,7 @@ func main() {
 			if err != nil {log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)}
 		}
 	}
-	gkeClient, err := k8s.NewGKEClient(ctx, readConfig.Project)
+	gkeClient, err := cluster.NewGKEClient(ctx, readConfig.Project)
 	if err != nil{log.Fatalf("failed get gke client, got: %v", err)}
 	var k8sclient *kubernetes.Clientset
 	for k, v := range readConfig.Clusters {
@@ -120,7 +120,7 @@ func main() {
 		populator := k8s.NewPopulator(k8sclient)
 		v.Populator = populator
 		readConfig.Clusters[k] = v
-		err := populator.PopulateSecrets(metav1.NamespaceDefault, readConfig)
-		if err != nil {log.Fatalf("failed populate secrets")}
+		err := populator.PopulateSecrets(metav1.NamespaceDefault, readConfig.GenericSecrets, readConfig.ServiceAccounts)
+		if err != nil {log.Fatalf("failed populate secrets, got %v", err)}
 	}
 }

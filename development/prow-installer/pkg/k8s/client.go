@@ -6,15 +6,15 @@ import (
 	"encoding/base64"
 	"fmt"
 	"google.golang.org/api/container/v1"
-	"google.golang.org/api/option"
+	//"google.golang.org/api/option"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"log"
-	"os"
+	//"os"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
+	//"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
@@ -29,20 +29,20 @@ type API interface {
 
 // Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented here.
 
-func NewGKEClient (ctx context.Context, projectID string) (*cluster.APIWrapper, error) {
-//func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
-	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
-	if err != nil {
-		log.Fatalf("failed creating gke client, got: %v", err)
-	}
-
-	api := &cluster.APIWrapper{
-		ProjectID:      projectID,
-		ClusterService: containerService.Projects.Zones.Clusters,
-	}
-
-	return api, nil
-}
+//func NewGKEClient (ctx context.Context, projectID string) (*cluster.APIWrapper, error) {
+////func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
+//	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+//	if err != nil {
+//		log.Fatalf("failed creating gke client, got: %v", err)
+//	}
+//
+//	api := &cluster.APIWrapper{
+//		ProjectID:      projectID,
+//		ClusterService: containerService.Projects.Zones.Clusters,
+//	}
+//
+//	return api, nil
+//}
 
 // getDetails
 // as clusterID pass client.Prefix + clusterConfig.Name

@@ -3,9 +3,8 @@ package k8s
 import (
 	"bytes"
 	"encoding/base64"
-	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -36,33 +35,32 @@ type SecretModel struct {
 	KeyData string
 }
 
-
-//func (p *Populator) PopulateSaSecret(sakey *iam.ServiceAccountKey) error {
-//	decodedkey, err := base64.StdEncoding.DecodeString(sakey)
-//}
+type GenericSecret struct {
+	Name string `yaml:"prefix"`
+	Key  string `yaml:"key"`
+}
 
 
 func (p *Populator) newSecretsClient(namespace string) {
 	p.secretsClient = p.k8sClient.CoreV1().Secrets(namespace)
 }
-func (p *Populator) PopulateSecrets(namespace string, config *config.Config) error {
+func (p *Populator) PopulateSecrets(namespace string, generics []GenericSecret, sasecrets []serviceaccount.ServiceAccount) error {
 	var secrets []SecretModel
 	p.newSecretsClient(namespace)
-	secrets = p.saSecretsFromConfig(secrets, config)
-	secrets = p.genericSecretsFromConfig(secrets, config)
+	secrets = p.saSecretsFromConfig(secrets, sasecrets)
+	secrets = p.genericSecretsFromConfig(secrets, generics)
 	for _, secret := range secrets {
-		curr, err := p.secretsClient.Get(secret.Name, metav1.GetOptions{})
-		if err != nil {return fmt.Errorf("failed get secret %s from cluster", secret.Name)}
 		decoded, err := base64.StdEncoding.DecodeString(secret.KeyData)
+		if err != nil {return fmt.Errorf("failed get secret %s from config, got: %v", secret.Name, err)}
+		curr, err := p.secretsClient.Get(secret.Name, metav1.GetOptions{})
 		switch {
 		case err == nil:
 			if bytes.Equal(curr.Data[secret.Key], decoded) {
-				s.logSecretAction(curr, "Unchanged")
 				continue
 			}
-			curr.Data[sec.Key] = decoded
+			curr.Data[secret.Key] = decoded
 			if _, err = p.secretsClient.Update(curr); err != nil {
-				return errors.Wrap(err, "while updating secret")
+				return fmt.Errorf("while updating secret, got error: %w", err )
 			}
 
 		case k8serrors.IsNotFound(err):
@@ -75,11 +73,11 @@ func (p *Populator) PopulateSecrets(namespace string, config *config.Config) err
 				},
 			})
 			if err != nil {
-				return errors.Wrapf(err, "while creating secret [%s]", sec.Name)
+				return fmt.Errorf("while creating secret %s, got error: %w", secret.Name, err)
 			}
 			log.Printf("loaded secret %s", curr.Name)
 		default:
-			return errors.Wrapf(err, "while getting secret [%s]", sec.Name)
+			return fmt.Errorf( "while getting secret %s, got error: %w", secret.Name, err)
 		}
 	}
 	return nil
@@ -87,8 +85,8 @@ func (p *Populator) PopulateSecrets(namespace string, config *config.Config) err
 
 
 
-func (p *Populator) saSecretsFromConfig(secrets []SecretModel, config *config.Config) []SecretModel {
-	for _, sa := range config.ServiceAccounts {
+func (p *Populator) saSecretsFromConfig(secrets []SecretModel, saSecrets []serviceaccount.ServiceAccount) []SecretModel {
+	for _, sa := range saSecrets{
 		secrets = append(secrets, SecretModel{
 			Name: sa.Name,
 			Key:  "service-account.json",
@@ -99,8 +97,8 @@ func (p *Populator) saSecretsFromConfig(secrets []SecretModel, config *config.Co
 }
 
 
-func (p *Populator) genericSecretsFromConfig(secrets []SecretModel, config *config.Config) []SecretModel {
-	for _, gen := range config.GenericSecrets {
+func (p *Populator) genericSecretsFromConfig(secrets []SecretModel, generics []GenericSecret) []SecretModel {
+	for _, gen := range generics{
 		secrets = append(secrets, SecretModel{
 			Name: gen.Name,
 			Key:  gen.Key,

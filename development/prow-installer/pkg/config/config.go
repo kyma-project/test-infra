@@ -3,8 +3,9 @@ package config
 import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
-	"google.golang.org/api/iam/v1"
 	"io/ioutil"
 
 	log "github.com/sirupsen/logrus"
@@ -20,22 +21,15 @@ type Config struct {
 	EncryptionKeyName string            `yaml:"encryption_key_name"`
 	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`
 	Prefix            string            `yaml:"prefix,omitempty"`
-	ServiceAccounts   []ServiceAccount         `yaml:"serviceAccounts"`
-	GenericSecrets    []GenericSecret   `yaml:"generics,flow,omitempty"`
+	ServiceAccounts   []serviceaccount.ServiceAccount         `yaml:"serviceAccounts"`
+	GenericSecrets    []k8s.GenericSecret   `yaml:"generics,flow,omitempty"`
 	Labels            map[string]string `yaml:"labels"`
 	Clusters          map[string]cluster.Cluster `yaml:"clusters"`
 }
 
-type ServiceAccount struct {
-	Name  string   `yaml:"name"`
-	Roles []string `yaml:"roles,omitempty"`
-	Key *iam.ServiceAccountKey `yaml:key,omitempty`
-}
 
-type GenericSecret struct {
-	Name string `yaml:"prefix"`
-	Key  string `yaml:"key"`
-}
+
+
 
 //Get config configuration from yaml file.
 func ReadConfig(configFilePath string) (*Config, error) {

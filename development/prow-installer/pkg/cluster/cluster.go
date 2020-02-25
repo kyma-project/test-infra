@@ -29,8 +29,8 @@ type Cluster struct {
 	Labels                map[string]string `yaml:"labels,omitempty"`
 	Pools                 []Pool            `yaml:"pools"`
 	InitialClusterVersion string            `yaml:"kubernetesVersion,omitempty"`
-	K8sClient             *kubernetes.Clientset `yaml:"omitempty"`
-	Populator             *k8s.Populator `yaml:"omitempty"`
+	K8sClient             *kubernetes.Clientset
+	Populator             *k8s.Populator
 }
 
 // node pool settings
