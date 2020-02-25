@@ -303,7 +303,7 @@ function restoreKyma() {
     	source "${E2E_TESTING_ENV_FILE}"
     fi
 
-    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:c08e6274}"
+    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:1ac01ae1}"
 
     shout "Install Velero Server"
     date

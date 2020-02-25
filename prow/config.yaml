@@ -298,17 +298,17 @@ presets:
           name: kyma-snyk-token
           key: secret
   - labels:
-      preset-sa-gke-kyma-integration-gcp-vulnerability-scanner: "true"
+      preset-sa-prow-gcp-vulnerability-chk: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-gke-kyma-integration/service-account.json
+        value: /etc/credentials/sa-prow-gcp-vulnerability-chk/service-account.json
     volumes:
-      - name: sa-gke-kyma-integration
+      - name: sa-prow-gcp-vulnerability-chk
         secret:
-          secretName: sa-gke-kyma-integration
+          secretName: sa-prow-gcp-vulnerability-chk
     volumeMounts:
-      - name: sa-gke-kyma-integration
-        mountPath: /etc/credentials/sa-gke-kyma-integration
+      - name: sa-prow-gcp-vulnerability-chk
+        mountPath: /etc/credentials/sa-prow-gcp-vulnerability-chk
         readOnly: true
   - labels:
       preset-sap-slack-bot-token: "true"

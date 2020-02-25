@@ -22,7 +22,7 @@ func main() {
 	flag.Parse()
 
 	if *configPath == "" {
-		log.Fatalf("Missing required argument : -configPath")
+		log.Fatalf("Missing required argument : -config")
 	}
 
 	if *credentialsFile == "" {
@@ -39,7 +39,6 @@ func main() {
 
 	storageConfig := &storage.Option{
 		ProjectID:      readConfig.Project,
-		LocationID:     readConfig.Location,
 		Prefix:         readConfig.Prefix,
 		ServiceAccount: *credentialsFile,
 	}
@@ -47,7 +46,6 @@ func main() {
 	clusterConfig := &cluster.Option{
 		Prefix:         readConfig.Prefix,
 		ProjectID:      readConfig.Project,
-		ZoneID:         readConfig.Zone,
 		ServiceAccount: *credentialsFile,
 	}
 
@@ -72,7 +70,7 @@ func main() {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
 	for _, bucket := range readConfig.Buckets {
-		if err := storageClient.CreateBucket(ctx, bucket); err != nil {
+		if err := storageClient.CreateBucket(ctx, bucket.Name, bucket.Location); err != nil {
 			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
 		}
 	}

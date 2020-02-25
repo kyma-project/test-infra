@@ -15,8 +15,8 @@ import (
 var (
 	projectID  = flag.String("proj", "", "ProjectID of the GCP project [Required]")
 	bucketName = flag.String("bucket", "", "Name of the storage bucket that contains the key [Required]")
-	locationID = flag.String("loc", "global", "Location of the keyring used for encryption/decryption [Optional]")
 	prefix     = flag.String("prefix", "", "Prefix for naming resources [Optional]")
+	location   = flag.String("location", "", "Location of a bucket. Default US [Optional]")
 )
 
 func main() {
@@ -40,22 +40,21 @@ func main() {
 	}
 
 	wrappedAPI := &storage.APIWrapper{
-		ProjectID:  *projectID,
-		LocationID: *locationID,
-		GCSClient:  gcsClient,
+		ProjectID: *projectID,
+		GCSClient: gcsClient,
 	}
 
 	clientOpts := storage.Option{}
-	clientOpts = clientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithLocationID(*locationID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+	clientOpts = clientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 	client, err := storage.New(clientOpts, wrappedAPI)
-  
+
 	if err != nil {
 		log.Errorf("Could not create GCS Storage Client: %v", err)
 		os.Exit(1)
 	}
 
-	err = client.CreateBucket(ctx, *bucketName)
+	err = client.CreateBucket(ctx, *bucketName, *location)
 	if err != nil {
 		log.Fatalf("Creating bucket failed: %v", err)
 	}
