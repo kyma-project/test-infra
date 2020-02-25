@@ -154,11 +154,13 @@ function installKyma() {
 	shout "Trigger installation"
 	date
 
-	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
+	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+    ls -la "${KYMA_SOURCES_DIR}"
 	kyma install \
 			--ci \
-			--source latest \
+			--source local \
+			--src-path "${KYMA_SOURCES_DIR}" \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
 			--domain "${DOMAIN}" \
 			--tlsCert "${TLS_CERT}" \
