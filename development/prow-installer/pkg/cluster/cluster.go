@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"k8s.io/client-go/kubernetes"
 )
 
 type Option struct {
@@ -12,6 +13,7 @@ type Option struct {
 }
 
 //go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
+
 
 // Client wrapper for KMS and GCS secret storage
 type Client struct {
@@ -26,6 +28,7 @@ type Cluster struct {
 	Labels                map[string]string `yaml:"labels,omitempty"`
 	Pools                 []Pool            `yaml:"pools"`
 	InitialClusterVersion string            `yaml:"kubernetesVersion,omitempty"`
+	K8sClient             *kubernetes.Clientset `yaml:"omitempty"`
 }
 
 // node pool settings

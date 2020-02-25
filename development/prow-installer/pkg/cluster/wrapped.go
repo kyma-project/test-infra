@@ -95,8 +95,8 @@ func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 	return pool, nil
 }
 
-func (caw *APIWrapper) Get(ctx context.Context, clusterID string) (*container.Cluster, error) {
-	cluster, err := caw.ClusterService.Get(caw.ProjectID, caw.ZoneID, clusterID).Context(ctx).Do()
+func (caw *APIWrapper) Get(ctx context.Context, clusterID string, zoneID string) (*container.Cluster, error) {
+	cluster, err := caw.ClusterService.Get(caw.ProjectID, zoneID, clusterID).Context(ctx).Do()
 	if err != nil {return nil, fmt.Errorf("failed to get %s cluster details, got : %w", clusterID, err)}
 	return cluster, nil
 }

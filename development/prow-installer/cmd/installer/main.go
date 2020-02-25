@@ -12,6 +12,7 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 	"time"
 )
 
@@ -54,6 +55,7 @@ func main() {
 		ServiceAccount: *credentialsFile,
 	}
 
+	//TODO: we need to refactor cluster package or installer package to not pass credentialsfiles data twice in a call to NewCLient method.
 	clusterClient, err := cluster.NewClient(ctx, *clusterConfig, *credentialsFile)
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
@@ -105,13 +107,22 @@ func main() {
 			if err != nil {log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)}
 		}
 	}
-	gkeClient, err := k8s.NewGKEClient(ctx, readConfig.Project, readConfig.Zone)
+	gkeClient, err := k8s.NewGKEClient(ctx, readConfig.Project)
 	if err != nil{log.Fatalf("failed get gke client, got: %v", err)}
-	var k8sclient *k8s.Client
-	clusterID := fmt.Sprintf("%s-%s",readConfig.Prefix, readConfig.ClusterName)
-	k8sclient, err = k8s.NewClient(ctx, clusterID,gkeClient)
-	if err != nil {log.Fatalf("failed get k8s client, got: %v", err)}
-	secrets, err := k8sclient.K8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
-	if err != nil {log.Fatalf("failed list secrets, got: %v", err)}
-	println(secrets)
+	var k8sclient *kubernetes.Clientset
+	for k, v := range readConfig.Clusters {
+		clusterID := fmt.Sprintf("%s-%s", readConfig.Prefix, v.Name)
+		k8sclient, err = k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
+		if err != nil {
+			log.Fatalf("failed get k8s client, got: %v", err)
+		}
+		v.K8sClient = k8sclient
+		readConfig.Clusters[k] = v
+		secrets, err := k8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
+		if err != nil {
+			log.Fatalf("failed list secrets, got: %v", err)
+		}
+		log.Printf("Get secrets list from cluster %s.", v.Name)
+		println(&secrets.Items)
+	}
 }
