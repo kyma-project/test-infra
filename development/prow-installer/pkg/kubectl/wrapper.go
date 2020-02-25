@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"os/exec"
+	"path/filepath"
 )
 
 type KubectlWrapper struct {
@@ -75,13 +76,15 @@ type KubeApplyCommand struct {
 
 func (kac *KubeApplyCommand) File(path string) *KubeApplyCommand {
 	kac.Type = "-f"
-	kac.Path = path
+	//change slashed path (dir/filename) to OS-dependent path.
+	kac.Path = filepath.FromSlash(path)
 	return kac
 }
 
 func (kac *KubeApplyCommand) Directory(path string) *KubeApplyCommand {
 	kac.Type = "-k"
-	kac.Path = path
+	//change slashed path (dir/directory/) to OS-dependent path.
+	kac.Path = filepath.FromSlash(path)
 	return kac
 }
 
