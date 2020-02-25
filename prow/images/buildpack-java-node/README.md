@@ -1,13 +1,13 @@
-# Buildpack Node.js Docker Image
+# Node.js Docker Image Buildpack
 
 ## Overview
 
-This folder contains the Buildpack for Java & Node.js image that is based on the Bootstrap image. This image is used for whitesource scans.
+This folder contains the Buildpack for Java and Node.js image that is based on the Bootstrap image. This image is used for whitesource scans.
 
 The image consists of:
 
-- buildpack-java
-- additional instructions from buildpack-node
+- `buildpack-java`
+- Additional instructions reused from the `buildpack-node` image
 
 ## Installation
 
