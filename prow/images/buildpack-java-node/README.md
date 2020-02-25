@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the Buildpack for Java and Node.js image that is based on the Bootstrap image. This image is used for whitesource scans.
+This folder contains the Buildpack for Java and Node.js image that is based on the Bootstrap image. This image is used for whitesource scans. 
 
 The image consists of:
 
