@@ -1,4 +1,4 @@
-# Basic node buildpack
+# Basic node.js buildpack
 
 FROM eu.gcr.io/kyma-project/test-infra/buildpack-java:v20190729-5052901
 
