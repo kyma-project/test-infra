@@ -3,6 +3,8 @@ package k8s
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
+	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -43,10 +45,14 @@ type SecretModel struct {
 func (p *Populator) newSecretsClient(namespace string) {
 	p.secretsClient = p.k8sClient.CoreV1().Secrets(namespace)
 }
-func (p *Populator) PopulateSecrets(secrets []SecretModel, namespace string) error {
+func (p *Populator) PopulateSecrets(namespace string, config *config.Config) error {
+	var secrets []SecretModel
 	p.newSecretsClient(namespace)
+	secrets = p.saSecretsFromConfig(secrets, config)
+	secrets = p.genericSecretsFromConfig(secrets, config)
 	for _, secret := range secrets {
 		curr, err := p.secretsClient.Get(secret.Name, metav1.GetOptions{})
+		if err != nil {return fmt.Errorf("failed get secret %s from cluster", secret.Name)}
 		decoded, err := base64.StdEncoding.DecodeString(secret.KeyData)
 		switch {
 		case err == nil:
@@ -54,56 +60,53 @@ func (p *Populator) PopulateSecrets(secrets []SecretModel, namespace string) err
 				s.logSecretAction(curr, "Unchanged")
 				continue
 			}
-
 			curr.Data[sec.Key] = decoded
-			if _, err = s.secretsClient.Update(curr); err != nil {
+			if _, err = p.secretsClient.Update(curr); err != nil {
 				return errors.Wrap(err, "while updating secret")
 			}
-			s.logSecretAction(curr, "Updated")
 
 		case k8serrors.IsNotFound(err):
-			curr, err := s.secretsClient.Create(&corev1.Secret{
+			curr, err := p.secretsClient.Create(&corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: sec.Name,
+					Name: secret.Name,
 				},
 				Data: map[string][]byte{
-					sec.Key: decoded,
+					secret.Key: decoded,
 				},
 			})
 			if err != nil {
 				return errors.Wrapf(err, "while creating secret [%s]", sec.Name)
 			}
-			s.logSecretAction(curr, "Created")
+			log.Printf("loaded secret %s", curr.Name)
 		default:
 			return errors.Wrapf(err, "while getting secret [%s]", sec.Name)
 		}
 	}
+	return nil
 }
 
 
 
-func (p *Populator) saSecretsFromConfig(config *config.Config) []SecretModel {
-	secretModel := make([]SecretModel, 0)
+func (p *Populator) saSecretsFromConfig(secrets []SecretModel, config *config.Config) []SecretModel {
 	for _, sa := range config.ServiceAccounts {
-		secretModel = append(secretModel, SecretModel{
+		secrets = append(secrets, SecretModel{
 			Name: sa.Name,
 			Key:  "service-account.json",
-			KeyData: sa.Key,
+			KeyData: sa.Key.PrivateKeyData,
 		})
 	}
-	return secretModel
+	return secrets
 }
 
 
-func (p *Populator) genericSecretsFromConfig(config *config.Config) []SecretModel {
-	var secretModel []SecretModel
+func (p *Populator) genericSecretsFromConfig(secrets []SecretModel, config *config.Config) []SecretModel {
 	for _, gen := range config.GenericSecrets {
-		secretModel = append(secretModel, SecretModel{
+		secrets = append(secrets, SecretModel{
 			Name: gen.Name,
 			Key:  gen.Key,
 		})
 	}
-	return secretModel
+	return secrets
 }
 
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
+	"google.golang.org/api/iam/v1"
 	"io/ioutil"
 
 	log "github.com/sirupsen/logrus"
@@ -28,7 +29,7 @@ type Config struct {
 type ServiceAccount struct {
 	Name  string   `yaml:"name"`
 	Roles []string `yaml:"roles,omitempty"`
-	Key string `yaml:key,omitempty`
+	Key *iam.ServiceAccountKey `yaml:key,omitempty`
 }
 
 type GenericSecret struct {

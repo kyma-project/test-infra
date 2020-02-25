@@ -117,12 +117,10 @@ func main() {
 			log.Fatalf("failed get k8s client, got: %v", err)
 		}
 		v.K8sClient = k8sclient
+		populator := k8s.NewPopulator(k8sclient)
+		v.Populator = populator
 		readConfig.Clusters[k] = v
-		secrets, err := k8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
-		if err != nil {
-			log.Fatalf("failed list secrets, got: %v", err)
-		}
-		log.Printf("Get secrets list from cluster %s.", v.Name)
-		println(&secrets.Items)
+		err := populator.PopulateSecrets(metav1.NamespaceDefault, readConfig)
+		if err != nil {log.Fatalf("failed populate secrets")}
 	}
 }

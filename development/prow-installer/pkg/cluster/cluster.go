@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -29,6 +30,7 @@ type Cluster struct {
 	Pools                 []Pool            `yaml:"pools"`
 	InitialClusterVersion string            `yaml:"kubernetesVersion,omitempty"`
 	K8sClient             *kubernetes.Clientset `yaml:"omitempty"`
+	Populator             *k8s.Populator `yaml:"omitempty"`
 }
 
 // node pool settings
