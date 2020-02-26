@@ -195,9 +195,9 @@ data:
       id: github
       name: GitHub
       config:
-        clientID:
-        clientSecret: a
-        redirectURI: a
+        clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
+        clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+        redirectURI: ${DEX_CALLBACK_URL}
         orgs:
         - name: kyma-project
 EOF
