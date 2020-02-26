@@ -190,16 +190,16 @@ metadata:
     component: dex
     kyma-project.io/installation: ""
 data:
-  connectors:
-  - type: github
-  	id: github
-	name: GitHub
-	config:
-	  clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
-	  clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
-	  redirectURI: ${DEX_CALLBACK_URL}
-	  orgs:
-	  - name: kyma-project
+    connectors:
+    - type: github
+      id: github
+      name: GitHub
+      config:
+        clientID:
+        clientSecret: a
+        redirectURI: a
+        orgs:
+        - name: kyma-project
 EOF
 }
 
