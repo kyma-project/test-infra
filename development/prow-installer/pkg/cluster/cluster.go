@@ -15,7 +15,6 @@ type Option struct {
 
 //go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
 
-
 // Client wrapper for KMS and GCS secret storage
 type Client struct {
 	Option
@@ -108,4 +107,3 @@ func (o Option) WithServiceAccount(sa string) Option {
 	o.ServiceAccount = sa
 	return o
 }
-

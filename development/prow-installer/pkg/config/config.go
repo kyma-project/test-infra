@@ -14,22 +14,18 @@ import (
 
 //Configuration for prow config.
 type Config struct {
-	Project           string            `yaml:"project"`
-	Region            string            `yaml:"region"`
-	Buckets           []storage.Bucket  `yaml:"buckets"`
-	KeyringName       string            `yaml:"keyring_name"`
-	EncryptionKeyName string            `yaml:"encryption_key_name"`
-	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`
-	Prefix            string            `yaml:"prefix,omitempty"`
-	ServiceAccounts   []serviceaccount.ServiceAccount         `yaml:"serviceAccounts"`
-	GenericSecrets    []k8s.GenericSecret   `yaml:"generics,flow,omitempty"`
-	Labels            map[string]string `yaml:"labels"`
-	Clusters          map[string]cluster.Cluster `yaml:"clusters"`
+	Project           string                          `yaml:"project"`
+	Region            string                          `yaml:"region"`
+	Buckets           []storage.Bucket                `yaml:"buckets"`
+	KeyringName       string                          `yaml:"keyring_name"`
+	EncryptionKeyName string                          `yaml:"encryption_key_name"`
+	Kubeconfig        string                          `yaml:"kubeconfig,omitempty"`
+	Prefix            string                          `yaml:"prefix,omitempty"`
+	ServiceAccounts   []serviceaccount.ServiceAccount `yaml:"serviceAccounts"`
+	GenericSecrets    []k8s.GenericSecret             `yaml:"generics,flow,omitempty"`
+	Labels            map[string]string               `yaml:"labels"`
+	Clusters          map[string]cluster.Cluster      `yaml:"clusters"`
 }
-
-
-
-
 
 //Get config configuration from yaml file.
 func ReadConfig(configFilePath string) (*Config, error) {

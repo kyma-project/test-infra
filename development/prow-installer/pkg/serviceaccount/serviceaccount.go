@@ -17,11 +17,10 @@ type Client struct {
 }
 
 type ServiceAccount struct {
-	Name  string   `yaml:"name"`
-	Roles []string `yaml:"roles,omitempty"`
-	Key *iam.ServiceAccountKey `yaml:"key,omitempty"`
+	Name  string                 `yaml:"name"`
+	Roles []string               `yaml:"roles,omitempty"`
+	Key   *iam.ServiceAccountKey `yaml:"key,omitempty"`
 }
-
 
 // IAM is a mockable interface for GCP IAM API.
 type IAM interface {

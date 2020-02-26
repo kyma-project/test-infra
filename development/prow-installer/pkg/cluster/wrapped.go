@@ -38,7 +38,7 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 
 // Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented in k8s package.
 
-func NewGKEClient (ctx context.Context, projectID string) (*APIWrapper, error) {
+func NewGKEClient(ctx context.Context, projectID string) (*APIWrapper, error) {
 	//func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
 	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
 	if err != nil {
@@ -115,6 +115,8 @@ func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 
 func (caw *APIWrapper) Get(ctx context.Context, clusterID string, zoneID string) (*container.Cluster, error) {
 	cluster, err := caw.ClusterService.Get(caw.ProjectID, zoneID, clusterID).Context(ctx).Do()
-	if err != nil {return nil, fmt.Errorf("failed to get %s cluster details, got : %w", clusterID, err)}
+	if err != nil {
+		return nil, fmt.Errorf("failed to get %s cluster details, got : %w", clusterID, err)
+	}
 	return cluster, nil
 }

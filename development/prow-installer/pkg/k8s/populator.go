@@ -23,15 +23,15 @@ func NewPopulator(k8sclient *kubernetes.Clientset) *Populator {
 
 type Populator struct {
 	//ctx context.Context
-	secrets []SecretModel
-	k8sClient *kubernetes.Clientset
+	secrets       []SecretModel
+	k8sClient     *kubernetes.Clientset
 	secretsClient typedv1.SecretInterface
 }
 
 // SecretModel defines secret to be stored in k8s
 type SecretModel struct {
-	Name string
-	Key  string
+	Name    string
+	Key     string
 	KeyData string
 }
 
@@ -39,7 +39,6 @@ type GenericSecret struct {
 	Name string `yaml:"prefix"`
 	Key  string `yaml:"key"`
 }
-
 
 func (p *Populator) newSecretsClient(namespace string) {
 	p.secretsClient = p.k8sClient.CoreV1().Secrets(namespace)
@@ -51,7 +50,9 @@ func (p *Populator) PopulateSecrets(namespace string, generics []GenericSecret, 
 	secrets = p.genericSecretsFromConfig(secrets, generics)
 	for _, secret := range secrets {
 		decoded, err := base64.StdEncoding.DecodeString(secret.KeyData)
-		if err != nil {return fmt.Errorf("failed get secret %s from config, got: %v", secret.Name, err)}
+		if err != nil {
+			return fmt.Errorf("failed get secret %s from config, got: %v", secret.Name, err)
+		}
 		curr, err := p.secretsClient.Get(secret.Name, metav1.GetOptions{})
 		switch {
 		case err == nil:
@@ -60,7 +61,7 @@ func (p *Populator) PopulateSecrets(namespace string, generics []GenericSecret, 
 			}
 			curr.Data[secret.Key] = decoded
 			if _, err = p.secretsClient.Update(curr); err != nil {
-				return fmt.Errorf("while updating secret, got error: %w", err )
+				return fmt.Errorf("while updating secret, got error: %w", err)
 			}
 
 		case k8serrors.IsNotFound(err):
@@ -77,28 +78,25 @@ func (p *Populator) PopulateSecrets(namespace string, generics []GenericSecret, 
 			}
 			log.Printf("loaded secret %s", curr.Name)
 		default:
-			return fmt.Errorf( "while getting secret %s, got error: %w", secret.Name, err)
+			return fmt.Errorf("while getting secret %s, got error: %w", secret.Name, err)
 		}
 	}
 	return nil
 }
 
-
-
 func (p *Populator) saSecretsFromConfig(secrets []SecretModel, saSecrets []serviceaccount.ServiceAccount) []SecretModel {
-	for _, sa := range saSecrets{
+	for _, sa := range saSecrets {
 		secrets = append(secrets, SecretModel{
-			Name: sa.Name,
-			Key:  "service-account.json",
+			Name:    sa.Name,
+			Key:     "service-account.json",
 			KeyData: sa.Key.PrivateKeyData,
 		})
 	}
 	return secrets
 }
 
-
 func (p *Populator) genericSecretsFromConfig(secrets []SecretModel, generics []GenericSecret) []SecretModel {
-	for _, gen := range generics{
+	for _, gen := range generics {
 		secrets = append(secrets, SecretModel{
 			Name: gen.Name,
 			Key:  gen.Key,
@@ -106,7 +104,6 @@ func (p *Populator) genericSecretsFromConfig(secrets []SecretModel, generics []G
 	}
 	return secrets
 }
-
 
 func fatalOnError(err error) {
 	if err != nil {

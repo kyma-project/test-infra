@@ -37,7 +37,9 @@ func main() {
 	ctx := context.Background()
 
 	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
-	if err != nil {log.Fatalf("failed creating gke client, got: %v", err)}
+	if err != nil {
+		log.Fatalf("failed creating gke client, got: %v", err)
+	}
 
 	api := &cluster.APIWrapper{
 		ProjectID:      *projectID,

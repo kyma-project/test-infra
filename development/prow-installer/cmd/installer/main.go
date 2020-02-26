@@ -100,15 +100,21 @@ func main() {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
 			key, err := iamClient.CreateSAKey(sa.Email)
-			if err != nil {log.Errorf("failed create serviceaccount %s key, got: %w", sa.Name, err)}
+			if err != nil {
+				log.Errorf("failed create serviceaccount %s key, got: %w", sa.Name, err)
+			}
 			//log.Println(iamClient.CreateSAKey(sa.Email))
 			readConfig.ServiceAccounts[i].Key = key
 			_, err = crmClient.AddSAtoRole(serviceAccount.Name, serviceAccount.Roles, readConfig.Project, nil)
-			if err != nil {log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)}
+			if err != nil {
+				log.Errorf("Failed assign sa %s to roles, got: %w", serviceAccount.Name, err)
+			}
 		}
 	}
 	gkeClient, err := cluster.NewGKEClient(ctx, readConfig.Project)
-	if err != nil{log.Fatalf("failed get gke client, got: %v", err)}
+	if err != nil {
+		log.Fatalf("failed get gke client, got: %v", err)
+	}
 	var k8sclient *kubernetes.Clientset
 	for k, v := range readConfig.Clusters {
 		clusterID := fmt.Sprintf("%s-%s", readConfig.Prefix, v.Name)
@@ -121,6 +127,8 @@ func main() {
 		v.Populator = populator
 		readConfig.Clusters[k] = v
 		err := populator.PopulateSecrets(metav1.NamespaceDefault, readConfig.GenericSecrets, readConfig.ServiceAccounts)
-		if err != nil {log.Fatalf("failed populate secrets, got %v", err)}
+		if err != nil {
+			log.Fatalf("failed populate secrets, got %v", err)
+		}
 	}
 }
