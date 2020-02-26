@@ -8,15 +8,15 @@ import (
 	"path/filepath"
 )
 
-type KubectlWrapper struct {
+type Wrapper struct {
 	Kubeconfig string
 }
 
-func (c *KubectlWrapper) Apply() *KubeApplyCommand {
+func (c *Wrapper) Apply() *KubeApplyCommand {
 	return &KubeApplyCommand{Config: c.Kubeconfig}
 }
 
-func (c *KubectlWrapper) Get() *KubeResourceCommand {
+func (c *Wrapper) Get() *KubeResourceCommand {
 	return &KubeResourceCommand{Command: "get", Config: c.Kubeconfig}
 }
 
