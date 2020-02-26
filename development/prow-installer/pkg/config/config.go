@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	"io/ioutil"
 
@@ -12,32 +14,17 @@ import (
 
 //Configuration for prow config.
 type Config struct {
-	ClusterName       string            `yaml:"cluster_name"`
-	Project           string            `yaml:"project"`
-	Zone              string            `yaml:"zone"`
-	Region            string            `yaml:"region"`
-	Buckets           []storage.Bucket  `yaml:"buckets"`
-	KeyringName       string            `yaml:"keyring_name"`
-	EncryptionKeyName string            `yaml:"encryption_key_name"`
-	Kubeconfig        string            `yaml:"kubeconfig,omitempty"`
-	Prefix            string            `yaml:"prefix,omitempty"`
-	ServiceAccounts   []Account         `yaml:"serviceAccounts"`
-	GenericSecrets    []GenericSecret   `yaml:"generics,flow,omitempty"`
-	Labels            map[string]string `yaml:"labels"`
-	Clusters          []cluster.Cluster `yaml:"clusters"`
-}
-
-//type Accounts []Account
-type Account struct {
-	Name  string   `yaml:"name"`
-	Type  string   `yaml:"type"`
-	Roles []string `yaml:"roles,omitempty"`
-}
-
-//type GenericSecrets []GenericSecret
-type GenericSecret struct {
-	Name string `yaml:"prefix"`
-	Key  string `yaml:"key"`
+	Project           string                          `yaml:"project"`
+	Region            string                          `yaml:"region"`
+	Buckets           []storage.Bucket                `yaml:"buckets"`
+	KeyringName       string                          `yaml:"keyring_name"`
+	EncryptionKeyName string                          `yaml:"encryption_key_name"`
+	Kubeconfig        string                          `yaml:"kubeconfig,omitempty"`
+	Prefix            string                          `yaml:"prefix,omitempty"`
+	ServiceAccounts   []serviceaccount.ServiceAccount `yaml:"serviceAccounts"`
+	GenericSecrets    []k8s.GenericSecret             `yaml:"generics,flow,omitempty"`
+	Labels            map[string]string               `yaml:"labels"`
+	Clusters          map[string]cluster.Cluster      `yaml:"clusters"`
 }
 
 //Get config configuration from yaml file.
