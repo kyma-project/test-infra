@@ -14,5 +14,5 @@ The image consists of:
 To build the Docker image, run this command:
 
 ```bash
-docker build buildpack-java-node.
+docker build buildpack-java-node
 ```
