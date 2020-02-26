@@ -182,21 +182,21 @@ buildpack_java_job_template: &buildpack_java_job_template
             cpu: 0.8
 
 buildpack_java_node_job_template: &buildpack_java_node_job_template
-run_if_changed: "^prow/images/buildpack-java-node/"
-<<: *common_job_template
-spec:
-  containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-      securityContext:
-        privileged: true
-      command:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-      args:
-        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
+  run_if_changed: "^prow/images/buildpack-java-node/"
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
 
 cleaner_job_template: &cleaner_job_template
   run_if_changed: "^prow/images/cleaner/"
