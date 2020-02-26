@@ -109,14 +109,28 @@ func (kac *KubeApplyCommand) Do() error {
 // the function returns path to the config file.
 // it's needed to have GOOGLE_CREDENTIALS_APPLICATION env variable set
 func GenerateKubeconfig(endpoint, cadata, name string) (string, error) {
+	if endpoint == "" {
+		return "", fmt.Errorf("endpoint cannot be empty")
+	}
+	if cadata == "" {
+		return "", fmt.Errorf("cadata cannot be empty")
+	}
+	if name == "" {
+		return "", fmt.Errorf("name cannot be empty")
+	}
+
 	path := filepath.FromSlash(".kube/" + name + "_config")
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		if err := os.MkdirAll(".kube", 0700); err != nil {
+			return "", fmt.Errorf("unexpected error during folder creation %w", err)
+		}
+	}
 	f, err := os.Create(path)
 	if err != nil {
 		return "", fmt.Errorf("error creating kubeconfig file %w", err)
 	}
 	defer f.Close()
-	kubeconfigTemplate := fmt.Sprintf(`
-apiVersion: v1
+	kubeconfigTemplate := fmt.Sprintf(`apiVersion: v1
 kind: Config
 clusters:
 - cluster:
@@ -128,8 +142,12 @@ users:
   user:
     auth-provider:
       name: gcp
-current-context: gke-cluster
-`, cadata, endpoint)
+contexts:
+- context:
+    cluster: gke-cluster
+    user: gke-user
+  name: gke-cluster
+current-context: gke-cluster`, cadata, endpoint)
 	if _, err = f.WriteString(kubeconfigTemplate); err != nil {
 		return "", fmt.Errorf("error writing to kubeconfig file %w", err)
 	}
