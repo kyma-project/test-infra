@@ -28,7 +28,6 @@ type Config struct {
 }
 
 //type Accounts []Account
-//TODO: Should this be moved to accessmanager package and imported here? As methods from accessmanager pacakge expect this type as argument.
 type Account struct {
 	Name  string   `yaml:"name"`
 	Type  string   `yaml:"type"`

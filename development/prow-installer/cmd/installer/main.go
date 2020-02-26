@@ -54,6 +54,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
 	}
+
+	storageClient, err := storage.NewClient(ctx, *storageConfig, *credentialsFile)
+	if err != nil {
+		log.Fatalf("An error occurred during storage client configuration: %v", err)
+	}
+
+	iamService, err := serviceaccount.NewService(*credentialsFile)
+	if err != nil {
+		log.Fatalf("Failed to create IAM service %v", err)
+	}
+	iamClient := serviceaccount.NewClient(readConfig.Prefix, iamService)
+
+	crmService, err := roles.NewService(*credentialsFile)
+	if err != nil {
+		log.Fatalf("Failed to create CRM service %v", err)
+	}
+	crmClient, err := roles.New(crmService)
+
+	if remove {
+	}
 	for _, clusterToCreate := range readConfig.Clusters {
 		if clusterToCreate.Labels == nil {
 			clusterToCreate.Labels = make(map[string]string)
@@ -66,27 +86,11 @@ func main() {
 		}
 	}
 
-	storageClient, err := storage.NewClient(ctx, *storageConfig, *credentialsFile)
-	if err != nil {
-		log.Fatalf("An error occurred during storage client configuration: %v", err)
-	}
 	for _, bucket := range readConfig.Buckets {
 		if err := storageClient.CreateBucket(ctx, bucket.Name, bucket.Location); err != nil {
 			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
 		}
 	}
-
-	iamService, err := serviceaccount.NewService(*credentialsFile)
-	if err != nil {
-		log.Fatalf("Failed to create IAM service %v", err)
-	}
-	crmService, err := roles.NewService(*credentialsFile)
-	if err != nil {
-		log.Fatalf("Failed to create CRM service %v", err)
-	}
-
-	iamClient := serviceaccount.NewClient(readConfig.Prefix, iamService)
-	crmClient, err := roles.New(crmService)
 
 	for _, serviceAccount := range readConfig.ServiceAccounts {
 		// TODO implement handling error when SA already exists in GCP
