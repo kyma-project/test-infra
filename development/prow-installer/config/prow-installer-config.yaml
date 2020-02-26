@@ -7,7 +7,8 @@ prefix: ""
 labels:
   created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
 clusters:
-  - name: kyma-prow
+  prow:
+    name: kyma-prow
     location: europe-west3-c
     description: "Kyma Prow Cluster"
     #    labels:
@@ -19,7 +20,8 @@ clusters:
         config:
           diskType: pd-ssd
           machineType: n1-standard-4
-#  - name: workload-kyma-prow
+#  workload:
+#    name: workload-kyma-prow
 #    location: europe-west3-c
 #    description: "Kyma Prow Workload cluster"
 #    #    labels:
@@ -54,7 +56,6 @@ buckets:
     location: eu
 serviceAccounts:
   - name: sa-gke-kyma-integration # present
-    type: serviceAccount
     roles:
       - compute.admin
       - compute.networkAdmin
@@ -64,28 +65,29 @@ serviceAccounts:
       - iam.serviceAccountUser
       - storage.admin
       - cloudkms.cryptoKeyEncrypterDecrypter
-  - name: sa-vm-kyma-integration # present
-    type: serviceAccount
-    roles:
+  - name : sa-vm-kyma-integration # present
+    roles :
       - compute.instanceAdmin
       - compute.osAdminLogin
       - iam.serviceAccountUser
-  - name: sa-gcs-plank # present
-    type: serviceAccount
-    roles:
+  - name : sa-gcs-plank # present
+    roles :
       - storage.objectAdmin
-  - name: sa-gcr-push-kyma-project # present
-    type: serviceAccount
-    roles:
+  - name : sa-gcr-push-kyma-project # present
+    roles :
       - storage.objectCreator
-  - name: sa-kyma-artifacts # present
-    type: serviceAccount
+  - name : sa-kyma-artifacts # present
+    roles :
+      -  storage.objectAdmin
+  - name : sa-stability-fluentd-storage-writer
     roles:
       - storage.objectAdmin
-  - name: sa-stability-fluentd-storage-writer
-    type: serviceAccount
-    roles:
+  - name : sa-kyma-backup-restore
+    roles :
+      - storage.admin
       - storage.objectAdmin
+      - compute.storageAdmin
+  - name : sa-kyma-release-candidate
 generics:
   - prefix: kyma-bot-github-token
     key: token
