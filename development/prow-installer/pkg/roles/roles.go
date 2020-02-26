@@ -99,6 +99,65 @@ func (client *Client) AddSAtoRole(saname string, roles []string, projectname str
 	return policy, nil
 }
 
+//TODO: Change method signature to accept condition expression string instead *cloudresourcemanager.Expr object. Align cmd main.go code to pass expression string.
+//AddSAtoRole will fetch policy from GCP, assign serviceaccount to roles and send policy back to GCP.
+//If role binding doesn't exist it will be added to the policy.
+//Check in caller if returned error is PolicyModifiedError. If yes, GCP policy was changed by other caller in the meantime.
+func (client *Client) RemoveSaRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) (*cloudresourcemanager.Policy, error) {
+	//Test if mandatory input values are not empty
+	if saname == "" || projectname == "" || len(roles) == 0 || func(roles []string) bool {
+		for _, role := range roles {
+			if role == "" {
+				return true
+			}
+		}
+		return false
+	}(roles) {
+		return nil, fmt.Errorf("One of mandatory method arguments saname, projectname ,role can not be empty. Got values. saname: %s projectname: %s roles: %v.", saname, projectname, roles)
+	}
+	match, err := regexp.MatchString(`^.+@.+\.iam\.gserviceaccount\.com$`, saname)
+	if err != nil {
+		//TODO: How to test this return?
+		return nil, fmt.Errorf("When checking if provided saname match safqdn regex got error: %w.", err)
+	}
+	if match {
+		return nil, fmt.Errorf("saname argument can not be serviceaccount fqdn. Provide only name, without domain part. Got value: %s.", saname)
+	}
+
+	//Getting current policy from GCP
+	policy, err := client.getPolicy(projectname)
+	if err != nil {
+		return nil, fmt.Errorf("When removing role for serviceaccount %s got error: %w.", saname, err)
+	}
+
+	//
+	safqdn := client.MakeSafqdn(saname, projectname)
+
+	//Go over roles to assign
+	for _, role := range roles {
+		//Make valid rolename string
+		rolefullname := client.makeRoleFullname(role)
+		//Add service account to role binding
+		err = client.removeFromRole(policy, safqdn, rolefullname, projectname, condition)
+		if err != nil {
+			if _, ok := err.(*BindingNotFoundError); ok {
+				//If role binding was not found create it and add serviceacount to it.
+				continue
+			} else {
+				return nil, fmt.Errorf("When removing role for serviceaccount %s got error: %w.", saname, err)
+			}
+		}
+	}
+
+	//Send policy back to GCP
+	err = client.setPolicy(policy, projectname)
+	if err != nil {
+		return nil, fmt.Errorf("When removing roles for serviceaccount %s got error: %w", safqdn, err)
+	}
+	log.Printf("Removed %s from roles: %v", safqdn, roles)
+	return policy, nil
+}
+
 //getPolicy will fetch policy from GCP
 func (client *Client) getPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
 	iampolicyrequest := &cloudresourcemanager.GetIamPolicyRequest{}
@@ -114,6 +173,24 @@ func (client *Client) addToRole(policy *cloudresourcemanager.Policy, safqdn stri
 	for index, binding := range policy.Bindings {
 		if binding.Role == rolefullname && cmp.Equal(binding.Condition, condition) {
 			policy.Bindings[index].Members = append(policy.Bindings[index].Members, safqdn)
+			return nil
+		}
+	}
+	return &BindingNotFoundError{msg: fmt.Sprintf("Binding for role %s not found in %s project policy.", rolefullname, projectname)}
+}
+
+func (client *Client) removeFromRole(policy *cloudresourcemanager.Policy, safqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) error {
+	for index, binding := range policy.Bindings {
+		if binding.Role == rolefullname && cmp.Equal(binding.Condition, condition) {
+			for i, v := range binding.Members {
+				if v == safqdn {
+					a := binding.Members
+					a[i] = a[len(a)-1]
+					a[len(a)-1] = ""
+					a = a[:len(a)-1]
+					policy.Bindings[index].Members = a
+				}
+			}
 			return nil
 		}
 	}

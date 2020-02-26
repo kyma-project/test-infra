@@ -71,10 +71,14 @@ func (c *Cleaner) CleanAll(ctx context.Context) error {
 			name = fmt.Sprintf("%s-%s", c.config.Prefix, v.Name)
 		}
 		name = fmt.Sprintf("%.30s", name)
+		_, err := c.crmClient.RemoveSaRole(name, v.Roles, c.config.Project, nil)
+		if err != nil {
+			log.Fatalf("Failed remove %s from roles, got: %v", name, err)
+		}
 		safqdn := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", name, c.config.Project)
 		saname := fmt.Sprintf("projects/-/serviceAccounts/%s", safqdn)
 		//saname := fmt.Sprintf("projects/%s/serviceAccounts/%s", c.config.Project, safqdn)
-		_, err := c.iamClient.Delete(saname)
+		_, err = c.iamClient.Delete(saname)
 		if err != nil {
 			err = logError(err, "serviceaccount", saname)
 			errorslist = append(errorslist, err.Error())
