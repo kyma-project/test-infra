@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/api/option"
+	"os"
 
 	log "github.com/sirupsen/logrus"
 
@@ -33,6 +34,23 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 	} else {
 		return client, nil
 	}
+}
+
+// Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented in k8s package.
+
+func NewGKEClient(ctx context.Context, projectID string) (*APIWrapper, error) {
+	//func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
+	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+	if err != nil {
+		log.Fatalf("failed creating gke client, got: %v", err)
+	}
+
+	api := &APIWrapper{
+		ProjectID:      projectID,
+		ClusterService: containerService.Projects.Zones.Clusters,
+	}
+
+	return api, nil
 }
 
 // Create calls the wrapped GCP api to create a cluster
@@ -93,4 +111,12 @@ func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 	}
 
 	return pool, nil
+}
+
+func (caw *APIWrapper) Get(ctx context.Context, clusterID string, zoneID string) (*container.Cluster, error) {
+	cluster, err := caw.ClusterService.Get(caw.ProjectID, zoneID, clusterID).Context(ctx).Do()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get %s cluster details, got : %w", clusterID, err)
+	}
+	return cluster, nil
 }

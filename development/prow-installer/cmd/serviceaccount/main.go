@@ -1,6 +1,7 @@
 package main
 
 import (
+	//"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
@@ -51,7 +52,8 @@ func main() {
 		if err != nil {
 			log.Printf("Failed create key for serviceaccount %s, got error: %w", value, err)
 		}
-		log.Printf("Got key for serviceaccount: %s\n%+v", value, key)
+		fmt.Println(key)
+		log.Printf("Got key for serviceaccount: %s", value)
 	}
 
 }

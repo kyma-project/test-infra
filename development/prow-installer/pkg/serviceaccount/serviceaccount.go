@@ -16,6 +16,12 @@ type Client struct {
 	prefix     string
 }
 
+type ServiceAccount struct {
+	Name  string                 `yaml:"name"`
+	Roles []string               `yaml:"roles,omitempty"`
+	Key   *iam.ServiceAccountKey `yaml:"key,omitempty"`
+}
+
 // IAM is a mockable interface for GCP IAM API.
 type IAM interface {
 	//TODO: Swap arguments order to match iam service method arguments order.
@@ -53,12 +59,17 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 
 // safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
 func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
+	//var gkey []byte
 	resource := fmt.Sprintf("%s%s", createsakeyprefix, safqdn)
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := client.iamservice.CreateSAKey(resource, request)
 	if err != nil {
 		return nil, fmt.Errorf("When creating key for serviceaccount %s, got error: %w", safqdn, err)
 	}
+	//gkey, err = base64.StdEncoding.DecodeString(key.PrivateKeyData)
+	//if err != nil {
+	//	return "", fmt.Errorf("when generating application credentials json file got error: %w", err)
+	//}
 	log.Printf("Created key for serviceaccount: %s", safqdn)
 	return key, nil
 }
