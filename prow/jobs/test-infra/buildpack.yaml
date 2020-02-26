@@ -181,6 +181,23 @@ buildpack_java_job_template: &buildpack_java_job_template
             memory: 1.5Gi
             cpu: 0.8
 
+buildpack_java_node_job_template: &buildpack_java_node_job_template
+  run_if_changed: "^prow/images/buildpack-java-node/"
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
 cleaner_job_template: &cleaner_job_template
   run_if_changed: "^prow/images/cleaner/"
   <<: *common_job_template
@@ -322,7 +339,7 @@ presubmits: # runs on PRs
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
-      <<: *buildpack_java_job_template
+      <<: *buildpack_java_node_job_template
     - name: pre-test-infra-cleaner
       labels:
         preset-build-pr: "true"
@@ -402,6 +419,11 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
+    - name: post-test-infra-buildpack-java-node
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *buildpack_java_node_job_template
     - name: post-test-infra-cleaner
       labels:
         preset-build-release: "true"
