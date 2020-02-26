@@ -47,11 +47,11 @@ func main() {
 		ClusterService: containerService.Projects.Zones.Clusters,
 	}
 
-	k8sclient, err := k8s.NewClient(ctx, *clusterID, api)
+	k8sclient, err := k8s.NewClient(ctx, *clusterID, *zoneID, api)
 	if err != nil {
 		log.Fatalf("failed create k8s client, got: %v", err)
 	}
-	secretlist, err := k8sclient.K8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
+	secretlist, err := k8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("failed list secrets, got: %v", err)
 	}
