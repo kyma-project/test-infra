@@ -71,7 +71,7 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 	}
 
 	//
-	safqdn := client.makeSafqdn(saname, projectname)
+	safqdn := client.MakeSafqdn(saname, projectname)
 
 	//Go over roles to assign
 	for _, role := range roles {
@@ -119,7 +119,7 @@ func (client *client) addToRole(policy *cloudresourcemanager.Policy, safqdn stri
 }
 
 //makeSafqdn will create serviceaccount fully qualified valid name, accepted by GCP API.
-func (client *client) makeSafqdn(saname string, projectname string) string {
+func (client *client) MakeSafqdn(saname string, projectname string) string {
 	return fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", saname, projectname)
 }
 

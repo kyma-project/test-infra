@@ -21,6 +21,7 @@ type IAM interface {
 	//TODO: Swap arguments order to match iam service method arguments order.
 	CreateSA(request *iam.CreateServiceAccountRequest, projectname string) (*iam.ServiceAccount, error)
 	CreateSAKey(sa string, request *iam.CreateServiceAccountKeyRequest) (*iam.ServiceAccountKey, error)
+	DeleteSA(sa string) (*iam.Empty, error)
 }
 
 //
@@ -61,4 +62,8 @@ func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error)
 	}
 	log.Printf("Created key for serviceaccount: %s", safqdn)
 	return key, nil
+}
+
+func (client *Client) DeleteSA(safqdn string) (*iam.Empty, error) {
+	return client.DeleteSA(safqdn)
 }
