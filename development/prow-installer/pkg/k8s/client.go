@@ -23,26 +23,6 @@ type API interface {
 	Get(ctx context.Context, clusterID string, zoneID string) (*container.Cluster, error)
 }
 
-//type Client struct {
-//	K8sclient *kubernetes.Clientset
-//}
-
-// Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented here.
-
-//func NewGKEClient (ctx context.Context, projectID string) (*cluster.APIWrapper, error) {
-////func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
-//	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
-//	if err != nil {
-//		log.Fatalf("failed creating gke client, got: %v", err)
-//	}
-//
-//	api := &cluster.APIWrapper{
-//		ProjectID:      projectID,
-//		ClusterService: containerService.Projects.Zones.Clusters,
-//	}
-//
-//	return api, nil
-//}
 
 // getDetails
 // as clusterID pass client.Prefix + clusterConfig.Name
