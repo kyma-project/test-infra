@@ -419,6 +419,11 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
+    - name: post-test-infra-buildpack-java-node
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *buildpack_java_node_job_template
     - name: post-test-infra-cleaner
       labels:
         preset-build-release: "true"
