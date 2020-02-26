@@ -2,6 +2,7 @@ package roles
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 
 	"github.com/google/go-cmp/cmp"
@@ -10,7 +11,7 @@ import (
 
 //TODO: Add handling of policy version according to the comments in Policy type, see: https://godoc.org/google.golang.org/api/cloudresourcemanager/v1#Policy
 // projects management object.
-type client struct {
+type Client struct {
 	crmservice CRM
 }
 
@@ -32,9 +33,9 @@ type BindingNotFoundError struct {
 func (e *PolicyModifiedError) Error() string  { return e.msg }
 func (e *BindingNotFoundError) Error() string { return e.msg }
 
-// New return new client and error object. Error is not used at present. Added it for future use and to support common error handling.
-func New(crmservice CRM) (*client, error) {
-	return &client{
+// New return new Client and error object. Error is not used at present. Added it for future use and to support common error handling.
+func New(crmservice CRM) (*Client, error) {
+	return &Client{
 		crmservice: crmservice,
 	}, nil
 }
@@ -43,7 +44,7 @@ func New(crmservice CRM) (*client, error) {
 //AddSAtoRole will fetch policy from GCP, assign serviceaccount to roles and send policy back to GCP.
 //If role binding doesn't exist it will be added to the policy.
 //Check in caller if returned error is PolicyModifiedError. If yes, GCP policy was changed by other caller in the meantime.
-func (client *client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) (*cloudresourcemanager.Policy, error) {
+func (client *Client) AddSAtoRole(saname string, roles []string, projectname string, condition *cloudresourcemanager.Expr) (*cloudresourcemanager.Policy, error) {
 	//Test if mandatory input values are not empty
 	if saname == "" || projectname == "" || len(roles) == 0 || func(roles []string) bool {
 		for _, role := range roles {
@@ -94,11 +95,12 @@ func (client *client) AddSAtoRole(saname string, roles []string, projectname str
 	if err != nil {
 		return nil, fmt.Errorf("When adding roles for serviceaccount %s got error: %w", safqdn, err)
 	}
+	log.Printf("Assigned %s to roles: %v", safqdn, roles)
 	return policy, nil
 }
 
 //getPolicy will fetch policy from GCP
-func (client *client) getPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
+func (client *Client) getPolicy(projectname string) (*cloudresourcemanager.Policy, error) {
 	iampolicyrequest := &cloudresourcemanager.GetIamPolicyRequest{}
 	policy, err := client.crmservice.GetPolicy(projectname, iampolicyrequest)
 	if err != nil {
@@ -108,7 +110,7 @@ func (client *client) getPolicy(projectname string) (*cloudresourcemanager.Polic
 }
 
 //addToRole will search role binding and add serviceaccount to the role binding members list.
-func (client *client) addToRole(policy *cloudresourcemanager.Policy, safqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) error {
+func (client *Client) addToRole(policy *cloudresourcemanager.Policy, safqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) error {
 	for index, binding := range policy.Bindings {
 		if binding.Role == rolefullname && cmp.Equal(binding.Condition, condition) {
 			policy.Bindings[index].Members = append(policy.Bindings[index].Members, safqdn)
@@ -118,13 +120,14 @@ func (client *client) addToRole(policy *cloudresourcemanager.Policy, safqdn stri
 	return &BindingNotFoundError{msg: fmt.Sprintf("Binding for role %s not found in %s project policy.", rolefullname, projectname)}
 }
 
+//TODO: This should be renamed to make sa resource string. It should not be exported. Revert it to client private method.
 //makeSafqdn will create serviceaccount fully qualified valid name, accepted by GCP API.
-func (client *client) MakeSafqdn(saname string, projectname string) string {
+func (client *Client) MakeSafqdn(saname string, projectname string) string {
 	return fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", saname, projectname)
 }
 
 //makeRoleFullname will create role name valid string, accepted by GCP API.
-func (client *client) makeRoleFullname(role string) string {
+func (client *Client) makeRoleFullname(role string) string {
 	if prefixed, _ := regexp.MatchString("^(roles|organizations)/.*", role); !prefixed {
 		return fmt.Sprintf("roles/%s", role)
 	}
@@ -132,7 +135,7 @@ func (client *client) makeRoleFullname(role string) string {
 }
 
 //addRole will create new binding for role and add serviceaccount to members list.
-func (client *client) addRole(policy *cloudresourcemanager.Policy, safqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) {
+func (client *Client) addRole(policy *cloudresourcemanager.Policy, safqdn string, rolefullname string, projectname string, condition *cloudresourcemanager.Expr) {
 	policy.Bindings = append(policy.Bindings, &cloudresourcemanager.Binding{
 		Role:      rolefullname,
 		Members:   []string{safqdn},
@@ -143,7 +146,7 @@ func (client *client) addRole(policy *cloudresourcemanager.Policy, safqdn string
 //setPolicy will send policy back to GCP.
 //It will check if policy was not modified and differ from the one which was downloaded and modified.
 //Policy modification is detected by comparing policy resource etag.
-func (client *client) setPolicy(policy *cloudresourcemanager.Policy, projectname string) error {
+func (client *Client) setPolicy(policy *cloudresourcemanager.Policy, projectname string) error {
 	currentpolicy, err := client.getPolicy(projectname)
 	if err == nil {
 		if currentpolicy.Etag != policy.Etag {

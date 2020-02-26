@@ -8,7 +8,7 @@ import (
 	"google.golang.org/api/iam/v1"
 )
 
-const createsakeyprefix = "projects/-/serviceAccounts/"
+const saResourcePrefix = "projects/-/serviceAccounts/"
 
 //Client provides data and methods for serviceaccount package.
 type Client struct {
@@ -61,20 +61,17 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 // safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
 func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
 	//var gkey []byte
-	resource := fmt.Sprintf("%s%s", createsakeyprefix, safqdn)
+	//TODO: creating resource string should be package global function treated as helper function. It can be used in installer package in Cleaner.CleanALL method.
+	resource := fmt.Sprintf("%s%s", saResourcePrefix, safqdn)
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := client.iamservice.CreateSAKey(resource, request)
 	if err != nil {
 		return nil, fmt.Errorf("When creating key for serviceaccount %s, got error: %w", safqdn, err)
 	}
-	//gkey, err = base64.StdEncoding.DecodeString(key.PrivateKeyData)
-	//if err != nil {
-	//	return "", fmt.Errorf("when generating application credentials json file got error: %w", err)
-	//}
 	log.Printf("Created key for serviceaccount: %s", safqdn)
 	return key, nil
 }
 
-func (client *Client) DeleteSA(safqdn string) (*iam.Empty, error) {
-	return client.DeleteSA(safqdn)
+func (client *Client) Delete(name string) (*iam.Empty, error) {
+	return client.iamservice.DeleteSA(name)
 }

@@ -35,6 +35,7 @@ func getDetails(ctx context.Context, clusterID string, zoneID string, gcpclient 
 		case "RUNNING":
 			return gkecluster, nil
 		case "PROVISIONING":
+			log.Printf("Cluster %s is still in PROVISIONING state.", clusterID)
 			time.Sleep(60 * time.Second)
 		default:
 			return nil, fmt.Errorf("failed to get cluster details, cluster state is: %s", gkecluster.Status)
