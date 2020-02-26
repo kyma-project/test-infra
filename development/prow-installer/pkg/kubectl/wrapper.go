@@ -62,7 +62,7 @@ func (kc *KubeResourceCommand) Do() error {
 
 	log.Debugf("executing command: %s", cmd.String())
 	if out, err := cmd.CombinedOutput(); err != nil {
-		return fmt.Errorf("error executing command: %w %v", err, out)
+		return fmt.Errorf("error executing command: %w %s", err, out)
 	}
 	return nil
 }
@@ -103,4 +103,35 @@ func (kac *KubeApplyCommand) Do() error {
 		return fmt.Errorf("error executing command: %w %s", err, out)
 	}
 	return nil
+}
+
+// generate kubeconfig based on credentials provided in arguments
+// the function returns path to the config file.
+// it's needed to have GOOGLE_CREDENTIALS_APPLICATION env variable set
+func GenerateKubeconfig(endpoint, cadata, name string) (string, error) {
+	path := filepath.FromSlash(".kube/" + name + "_config")
+	f, err := os.Create(path)
+	if err != nil {
+		return "", fmt.Errorf("error creating kubeconfig file %w", err)
+	}
+	defer f.Close()
+	kubeconfigTemplate := fmt.Sprintf(`
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    certificate-authority-data: %s
+    server: https://%s
+  name: gke-cluster
+users:
+- name: gke-user
+  user:
+    auth-provider:
+      name: gcp
+current-context: gke-cluster
+`, cadata, endpoint)
+	if _, err = f.WriteString(kubeconfigTemplate); err != nil {
+		return "", fmt.Errorf("error writing to kubeconfig file %w", err)
+	}
+	return path, nil
 }
