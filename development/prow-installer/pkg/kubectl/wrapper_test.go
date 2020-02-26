@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-var ()
-
 func TestGenerateKubeconfig(t *testing.T) {
 	t.Run("GenerateKubeconfig returns config file path", func(t *testing.T) {
 		fakeEndpoint := "1.2.3.4"
