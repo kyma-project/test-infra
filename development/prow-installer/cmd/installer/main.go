@@ -16,6 +16,7 @@ import (
 var (
 	configPath      = flag.String("config", "", "Config file path [Required]")
 	credentialsFile = flag.String("credentials-file", "", "Google Application Credentials file path [Required]")
+	remove          = flag.Bool("remove", false, "When set, installer will remove resources defined in config. Default false. [Optional]")
 )
 
 func main() {
