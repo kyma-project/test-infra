@@ -57,3 +57,26 @@ func (_m *IAM) CreateSAKey(sa string, request *iam.CreateServiceAccountKeyReques
 
 	return r0, r1
 }
+
+// DeleteSA provides a mock function with given fields: sa
+func (_m *IAM) DeleteSA(sa string) (*iam.Empty, error) {
+	ret := _m.Called(sa)
+
+	var r0 *iam.Empty
+	if rf, ok := ret.Get(0).(func(string) *iam.Empty); ok {
+		r0 = rf(sa)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iam.Empty)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(sa)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
