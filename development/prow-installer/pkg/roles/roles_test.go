@@ -834,7 +834,7 @@ func TestClient_addToRole(t *testing.T) {
 		client, _ := New(mockCRM)
 		policy := tv.policy
 		rolefullname := client.makeRoleFullname(tv.roles[0])
-		safqdn := client.makeSafqdn(tv.saname, tv.project)
+		safqdn := client.MakeSafqdn(tv.saname, tv.project)
 		err := client.addToRole(policy, safqdn, rolefullname, tv.project, tv.condition)
 		bindingpresent := false
 		if test := assert.IsTypef(t, &BindingNotFoundError{}, err, "\tnot expected: addToRole() did not returned BindingNotFoundError"); test {
@@ -856,7 +856,7 @@ func TestClient_addToRole(t *testing.T) {
 		client, _ := New(mockCRM)
 		policy := tv.policy
 		rolefullname := client.makeRoleFullname(tv.roles[0])
-		safqdn := client.makeSafqdn(tv.saname, tv.project)
+		safqdn := client.MakeSafqdn(tv.saname, tv.project)
 		err := client.addToRole(policy, safqdn, rolefullname, tv.project, tv.condition)
 		bindingpresent := false
 		if test := assert.Nilf(t, err, "\tnot expected: addToRole() returned not nil error"); test {
@@ -889,7 +889,7 @@ func TestClient_makeSafqdn(t *testing.T) {
 	t.Run("makeSafqdn() should return GCP policy valid FQDN serviceaccount name.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
-		safqdn := client.makeSafqdn(testvalues[0].saname, testvalues[0].project)
+		safqdn := client.MakeSafqdn(testvalues[0].saname, testvalues[0].project)
 		require.Equalf(t, testvalues[0].safqdn, safqdn, "\tnot expected: makeSafqdn() returned unexpected string value.")
 		t.Log("\texpected: makeSafqdn() returned expected string value.")
 	})
@@ -964,7 +964,7 @@ func TestClient_addRole(t *testing.T) {
 			mockCRM := mocks.CRM{}
 			client, _ := New(&mockCRM)
 			policy := tv.policy
-			safqdn := client.makeSafqdn(tv.saname, tv.project)
+			safqdn := client.MakeSafqdn(tv.saname, tv.project)
 			rolefullname := client.makeRoleFullname(tv.roles[0])
 
 			client.addRole(policy, safqdn, rolefullname, tv.project, tv.condition)
