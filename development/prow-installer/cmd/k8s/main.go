@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
-	"google.golang.org/api/container/v1"
-	"google.golang.org/api/option"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"os"
@@ -36,21 +34,18 @@ func main() {
 	}
 	ctx := context.Background()
 
-	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+	gkeClient, err := cluster.NewGKEClient(ctx, *projectID)
 	if err != nil {
-		log.Fatalf("failed creating gke client, got: %v", err)
+		log.Fatalf("failed get gke client, got: %v", err)
 	}
 
-	api := &cluster.APIWrapper{
-		ProjectID:      *projectID,
-		ZoneID:         *zoneID,
-		ClusterService: containerService.Projects.Zones.Clusters,
+	k8sclient, err := k8s.NewClient(ctx, *clusterID, *zoneID, gkeClient)
+
+	if err != nil {
+		log.Fatalf("failed get k8s client, got: %v", err)
 	}
 
-	k8sclient, err := k8s.NewClient(ctx, *clusterID, *zoneID, api)
-	if err != nil {
-		log.Fatalf("failed create k8s client, got: %v", err)
-	}
+	//TODO: Implement logic which will load provided secret in to provided cluster.
 	secretlist, err := k8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("failed list secrets, got: %v", err)
