@@ -71,7 +71,11 @@ func GenerateKubeconfig(endpoint, cadata, name string) (string, error) {
 		return "", fmt.Errorf("name cannot be empty")
 	}
 
-	cwd, _ := os.Getwd() // it might be TempDir() as well
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("could not get current working directory %w", err)
+	}
+
 	path := filepath.FromSlash(cwd + "/.kube/")
 	file := name + "_config"
 
