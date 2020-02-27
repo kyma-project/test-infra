@@ -77,17 +77,17 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 	if err != nil {
 		return fmt.Errorf("couldn't create cluster: %w", err)
 	}
-	log.Printf("%#v\n", createResponse)
+	log.Printf("Operation: %s for cluster: %s is in status: %s", createResponse.OperationType, clusterConfig.Name, createResponse.Status)
 	return nil
 }
 
 // Delete calls the wrapped GCP api to delete a cluster
-func (caw *APIWrapper) Delete(ctx context.Context, name string, zoneId string) error {
-	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, caw.ZoneID, name).Context(ctx).Do()
+func (caw *APIWrapper) Delete(ctx context.Context, name string, zoneID string) error {
+	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, zoneID, name).Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("couldn't delete cluster: %w", err)
 	}
-	log.Printf("%#v\n", deleteResponse)
+	log.Printf("Operation: %s for cluster: %s is in status: %s", deleteResponse.OperationType, name, deleteResponse.Status)
 	return nil
 }
 

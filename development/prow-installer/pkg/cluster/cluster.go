@@ -56,8 +56,7 @@ type Autoscaling struct {
 // API provides a mockable interface for the GCP api. Find the implementation of the GCP wrapped API in wrapped.go
 type API interface {
 	Create(ctx context.Context, clusterConfig Cluster) error
-	Delete(ctx context.Context, name string, zoneId string) error
-	//Get(ctx context.Context, clusterID string) (*container.Cluster, error)
+	Delete(ctx context.Context, name string, zoneID string) error
 }
 
 // New returns a new Client, wrapping gke
