@@ -190,7 +190,7 @@ metadata:
     component: dex
     kyma-project.io/installation: ""
 data:
-	config.yaml: |
+  config.yaml: |
     connectors:
     - type: github
       id: github
@@ -203,6 +203,12 @@ data:
         - name: kyma-project
 EOF
 }
+    staticClients:
+    - id: kyma-client
+      name: 'Kyma Client'
+      redirectURIs:
+      - 'http://127.0.0.1:5555/callback'
+      secret: ZXhhbXBsZS1hcHAtc2VjcmV0
 
 function applyServiceCatalogCRDOverride(){
     shout "Apply override for ServiceCatalog to enable CRD implementation"
