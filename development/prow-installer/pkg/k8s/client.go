@@ -5,15 +5,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"google.golang.org/api/container/v1"
-	//"google.golang.org/api/option"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"log"
-	//"os"
 	"time"
 
-	//"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 )
 
@@ -33,8 +30,10 @@ func getDetails(ctx context.Context, clusterID string, zoneID string, gcpclient 
 		}
 		switch gkecluster.Status {
 		case "RUNNING":
+			log.Printf("Cluster %s provisioned.", clusterID)
 			return gkecluster, nil
 		case "PROVISIONING":
+			log.Printf("Cluster %s is still in PROVISIONING state.", clusterID)
 			time.Sleep(60 * time.Second)
 		default:
 			return nil, fmt.Errorf("failed to get cluster details, cluster state is: %s", gkecluster.Status)

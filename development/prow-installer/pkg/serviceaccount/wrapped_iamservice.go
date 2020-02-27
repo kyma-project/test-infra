@@ -36,3 +36,7 @@ func (iams *IAMService) CreateSA(request *iam.CreateServiceAccountRequest, proje
 func (iams *IAMService) CreateSAKey(sa string, request *iam.CreateServiceAccountKeyRequest) (*iam.ServiceAccountKey, error) {
 	return iams.service.Projects.ServiceAccounts.Keys.Create(sa, request).Context(iams.ctx).Do()
 }
+
+func (iams *IAMService) DeleteSA(sa string) (*iam.Empty, error) {
+	return iams.service.Projects.ServiceAccounts.Delete(sa).Context(iams.ctx).Do()
+}
