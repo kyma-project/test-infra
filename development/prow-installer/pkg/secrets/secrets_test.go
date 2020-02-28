@@ -26,7 +26,7 @@ func TestClient_Encrypt(t *testing.T) {
 
 		ctx := context.Background()
 		opts := Option{}
-		opts= opts.WithProjectID(testKmsProj).WithLocationID(testKmsLocation).WithKmsRing(testKmsRing).WithKmsKey(testKmsKey).WithServiceAccount("not-empty-gcp-will-validate")
+		opts = opts.WithProjectID(testKmsProj).WithLocationID(testKmsLocation).WithKmsRing(testKmsRing).WithKmsKey(testKmsKey).WithServiceAccount("not-empty-gcp-will-validate")
 
 		mockAPI.On("Encrypt", ctx, []byte(testSecretVal)).Return([]byte(testEncryptedVal), nil)
 
