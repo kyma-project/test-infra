@@ -178,6 +178,7 @@ function installKyma() {
 
 function applyDexGithubConnectorOverride() {
 	shout "Apply Dex Githubauth connector overrides"
+	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
