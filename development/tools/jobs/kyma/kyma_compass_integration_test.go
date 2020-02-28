@@ -18,6 +18,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	require.NotNil(t, actualJob)
 
 	// then
+	assert.True(t, actualJob.Optional)
 	assert.True(t, actualJob.Decorate)
 	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
