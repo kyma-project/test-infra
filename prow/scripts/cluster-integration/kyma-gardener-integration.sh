@@ -138,7 +138,8 @@ kyma provision gardener \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/16" \
         --nodes 4 \
-        --kube-version=${GARDENER_CLUSTER_VERSION}
+        --kube-version=${GARDENER_CLUSTER_VERSION} \
+        -z="1"
 )
 
 shout "Installing Kyma"
