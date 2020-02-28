@@ -198,15 +198,6 @@ function createPublicIPandDNS() {
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
-function addGithubDexConnector() {
-	shout "Add Github Dex Connector"
-	date
-	pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-	dep ensure -v -vendor-only
-	popd
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-	go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-}
 function setupKubeconfig() {
 	shout "Setup kubeconfig and create ClusterRoleBinding"
 	date
@@ -245,6 +236,8 @@ function installKyma() {
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
 
+	applyDexGithubConnectorOverride
+
 	shout "Trigger installation"
 	date
 
@@ -266,6 +259,34 @@ function installKyma() {
 	fi
 }
 
+function applyDexGithubConnectorOverride() {
+	shout "Apply Dex Githubauth connector overrides"
+	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
+	
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex-config-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: dex
+    kyma-project.io/installation: ""
+data:
+ connectors: |
+  - type: github
+    id: github
+    name: GitHub
+    config:
+      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
+      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+      redirectURI: ${DEX_CALLBACK_URL}
+      orgs:
+      - name: kyma-project
+EOF
+}
+
 init
 azureAuthenticating
 
@@ -273,7 +294,6 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --pr
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 cleanup
-addGithubDexConnector
 
 createGroup
 installCluster
