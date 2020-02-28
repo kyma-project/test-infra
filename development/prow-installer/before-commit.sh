@@ -11,12 +11,12 @@ INVERTED='\033[7m'
 NC='\033[0m' # No Color
 
 echo -e "${INVERTED}"
-echo "USER: " + $USER
-echo "PATH: " + $PATH
-echo "GOPATH:" + $GOPATH
+echo "USER: " + "$USER"
+echo "PATH: " + "$PATH"
+echo "GOPATH:" + "$GOPATH"
 echo -e "${NC}"
 
-cd ${DIR}
+cd "${DIR}" || exit 1
 
 ##
 # Tidy dependencies
