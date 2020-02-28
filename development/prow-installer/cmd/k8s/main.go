@@ -39,7 +39,7 @@ func main() {
 		log.Fatalf("failed get gke client, got: %v", err)
 	}
 
-	k8sclient, err := k8s.NewClient(ctx, *clusterID, *zoneID, gkeClient)
+	k8sclient, _, err := k8s.NewClient(ctx, *clusterID, *zoneID, gkeClient)
 
 	if err != nil {
 		log.Fatalf("failed get k8s client, got: %v", err)
