@@ -198,15 +198,6 @@ function createPublicIPandDNS() {
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
-function addGithubDexConnector() {
-	shout "Add Github Dex Connector"
-	date
-	pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-	dep ensure -v -vendor-only
-	popd
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-	go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-}
 function setupKubeconfig() {
 	shout "Setup kubeconfig and create ClusterRoleBinding"
 	date
@@ -246,7 +237,7 @@ function installKyma() {
 		--label "component=monitoring"
 
 	applyDexGithubConnectorOverride
-	
+
 	shout "Trigger installation"
 	date
 
@@ -302,7 +293,6 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --pr
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 cleanup
-addGithubDexConnector
 
 createGroup
 installCluster
