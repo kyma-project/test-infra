@@ -74,22 +74,22 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-installer-files
-        decorate: true
-        max_concurrency: 10
-        branches:
-          - ^master$
-        labels:
-          preset-build-pr: "true"
-        run_if_changed: "^development/prow-installer/cmd|^development/prow-installer/pkg"
-        path_alias: github.com/kyma-project/test-infra
-        spec:
-          containers:
-            - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
-              securityContext:
-                privileged: true
-              command:
-                - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
-              resources:
-                requests:
-                  memory: 1.5Gi
-                  cpu: 0.8
+      decorate: true
+      max_concurrency: 10
+      branches:
+        - ^master$
+      labels:
+        preset-build-pr: "true"
+      run_if_changed: "^development/prow-installer/cmd/|^development/prow-installer/pkg/"
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
