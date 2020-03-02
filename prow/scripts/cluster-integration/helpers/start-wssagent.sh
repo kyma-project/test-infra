@@ -74,7 +74,7 @@ KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 if [ "${PROJECTNAME}" == "console" ]; then
     cd $KYMA_SRC
-    npm install
+    make resolve
 fi    
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
