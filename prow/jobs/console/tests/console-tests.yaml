@@ -73,9 +73,8 @@ presubmits: # runs on PRs
                 requests:
                   memory: 1.5Gi
                   cpu: 0.8
-          preset-build-pr: "true"
-    
-
+        preset-build-pr: "true"
+        
 postsubmits:
   kyma-project/console:
     - name: post-master-console-tests
