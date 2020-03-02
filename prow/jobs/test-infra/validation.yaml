@@ -85,8 +85,6 @@ presubmits:
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
-            securityContext:
-              privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
             resources:
