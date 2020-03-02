@@ -27,7 +27,7 @@ cd "${DIR}" || exit 1
 echo "? go mod tidy"
 go mod tidy
 ensureResult=$?
-if [ "${ensureResult}" != 0 ]; then
+if [ ${ensureResult} != 0 ]; then
 	echo -e "${RED}✗ go mod tidy${NC}\n$ensureResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod tidy${NC}"
