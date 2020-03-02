@@ -72,6 +72,11 @@ echo "***********************************"
 
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
+if [ "${PROJECTNAME}" == "console" ]; then
+    cd $KYMA_SRC
+    make resolve
+fi    
+
 function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $1 == "" ]]; then
         echo "path cannot be empty"
