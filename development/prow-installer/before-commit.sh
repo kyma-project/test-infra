@@ -14,6 +14,7 @@ echo -e "${INVERTED}"
 echo "USER: " + "$USER"
 echo "PATH: " + "$PATH"
 echo "GOPATH:" + "$GOPATH"
+echo "CURRENT DIRECTORY: $DIR"
 echo -e "${NC}"
 
 cd "${DIR}" || exit 1
