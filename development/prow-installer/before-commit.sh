@@ -4,6 +4,8 @@ readonly CI_FLAG=ci
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# ensure $GOPATH/bin is present in PATH
+export PATH=$GOPATH/bin:$PATH
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -22,9 +24,10 @@ cd "${DIR}" || exit 1
 ##
 # Tidy dependencies
 ##
+echo "? go mod tidy"
 go mod tidy
 ensureResult=$?
-if [ ${ensureResult} != 0 ]; then
+if [ "${ensureResult}" != 0 ]; then
 	echo -e "${RED}✗ go mod tidy${NC}\n$ensureResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod tidy${NC}"
