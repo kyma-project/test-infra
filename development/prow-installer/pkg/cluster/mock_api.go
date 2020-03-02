@@ -13,7 +13,7 @@ func (api *MockAPI) Create(ctx context.Context, clusterConfig Cluster) error {
 	var nodePools []*container.NodePool
 
 	for _, pool := range clusterConfig.Pools {
-		if nodePool, err := NewNodePool(pool); err != nil {
+		if nodePool, err := newNodePool(pool); err != nil {
 			return fmt.Errorf("error creating node pool configuration %w", err)
 		} else {
 			nodePools = append(nodePools, nodePool)
