@@ -73,7 +73,7 @@ echo "***********************************"
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 if [ "${PROJECTNAME}" == "console" ]; then
-    cd $KYMA_SRC
+    cd "$KYMA_SRC"
     make resolve
 fi    
 
