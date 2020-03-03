@@ -48,7 +48,7 @@ func TestConsoleWhitesourceJobPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.False(t, actualPresubmit.Optional)
+	assert.True(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	assert.Equal(t, "package.json|package-lock.json", actualPresubmit.RunIfChanged)
