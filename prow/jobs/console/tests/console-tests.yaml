@@ -23,27 +23,8 @@ job_template: &job_template
             memory: 1.5Gi
             cpu: 0.8
 
-job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-kyma: "true"
-
-presubmits: # runs on PRs
-  kyma-project/console:
-    - name: pre-master-console-tests
-      branches:
-        - ^master$
-      <<: *job_template
-      labels:
-        <<: *job_labels_template
-        preset-build-pr: "true"
-
-    - name: pre-master-console-whitesource-scan
-      branches:
-        - ^master$
-      <<: *job_template
-      labels:
-        preset-kyma-wssagent-config: "true"
+whitesource_job_template: &whitesource_job_template
+  preset-kyma-wssagent-config: "true"
         preset-kyma-keyring: "true"
         preset-kyma-encryption-key: "true"
         preset-kms-gc-project-env: "true"
@@ -73,6 +54,28 @@ presubmits: # runs on PRs
                 requests:
                   memory: 1.5Gi
                   cpu: 0.8
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-kyma: "true"
+
+presubmits: # runs on PRs
+  kyma-project/console:
+    - name: pre-master-console-tests
+      branches:
+        - ^master$
+      <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
+
+    - name: pre-master-console-whitesource-scan
+      branches:
+        - ^master$
+      <<: *whitesource_job_template
+      labels:
+        <<: *job_labels_template
         preset-build-pr: "true"
         
 postsubmits:
