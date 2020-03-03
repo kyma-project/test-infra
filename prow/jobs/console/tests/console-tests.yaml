@@ -68,13 +68,15 @@ presubmits: # runs on PRs
         - ^master$
       <<: *whitesource_job_template
       labels:
-        <<: *job_labels_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
         preset-build-pr: "true"
         preset-kyma-wssagent-config: "true"
         preset-kyma-keyring: "true"
         preset-kyma-encryption-key: "true"
         preset-kms-gc-project-env: "true"
         preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
         
 postsubmits:
   kyma-project/console:
