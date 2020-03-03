@@ -54,7 +54,6 @@ func TestConsoleWhitesourceJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "package.json|package-lock.json", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "package.json")
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"}, actualPresubmit.Spec.Containers[0].Command)
 }
 
 func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
