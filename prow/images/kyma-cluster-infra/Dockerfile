@@ -26,3 +26,10 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(ls
         --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
+
+# Kubernetes cluster version
+ENV CLUSTER_VERSION=1.16
+
+# Adjust kubectl version to cluster version
+# 'eu.gcr.io/kyma-project/test-infra/bootstrap CLOUD_SDK_VERSION
+RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
