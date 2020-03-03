@@ -51,7 +51,6 @@ func TestConsoleWhitesourceJobPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "package.json|package-lock.json", actualPresubmit.RunIfChanged)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "package.json")
 }
