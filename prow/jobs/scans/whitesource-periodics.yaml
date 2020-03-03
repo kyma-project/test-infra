@@ -290,7 +290,7 @@ periodics:
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
-              value: golang-mod
+              value: golang
           resources:
             requests:
               memory: 1Gi
@@ -326,7 +326,7 @@ periodics:
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
-              value: golang-mod
+              value: golang
           resources:
             requests:
               memory: 1Gi
