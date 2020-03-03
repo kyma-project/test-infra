@@ -4,6 +4,8 @@ readonly CI_FLAG=ci
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# ensure $GOPATH/bin is present in PATH
+export PATH=$GOPATH/bin:$PATH
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -14,6 +16,7 @@ echo -e "${INVERTED}"
 echo "USER: " + "$USER"
 echo "PATH: " + "$PATH"
 echo "GOPATH:" + "$GOPATH"
+echo "CURRENT DIRECTORY: $DIR"
 echo -e "${NC}"
 
 cd "${DIR}" || exit 1
@@ -21,6 +24,7 @@ cd "${DIR}" || exit 1
 ##
 # Tidy dependencies
 ##
+echo "? go mod tidy"
 go mod tidy
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
@@ -82,6 +86,7 @@ fi
 #  GO LINT
 ##
 echo "? golint"
+go get -u golang.org/x/lint/golint
 golintResult=$(echo "${goFilesToCheck}" | xargs -L1 golint)
 if [ "${#golintResult}" != 0 ]; then
     echo -e "${RED}✗ golint${NC}\\n${golintResult}"
