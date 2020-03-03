@@ -259,3 +259,75 @@ periodics:
             requests:
               memory: 1Gi
               cpu: 400m
+
+  - name: api-gateway-whitesource-scan
+    decorate: true
+    cron: "0 4 * * *" # At 04:00 am every day
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: kyma-incubator
+          repo: api-gateway
+          path_alias: github.com/kyma-incubator/api-gateway
+          base_ref: master
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: api-gateway
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: golang-mod
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+
+  - name: dex-whitesource-scan
+    decorate: true
+    cron: "0 4 * * *" # At 04:00 am every day
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: kyma-incubator
+          repo: dex
+          path_alias: github.com/kyma-incubator/dex
+          base_ref: master
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: dex
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: golang-mod
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
