@@ -26,7 +26,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
@@ -62,7 +62,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
@@ -98,7 +98,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
@@ -134,7 +134,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
@@ -170,7 +170,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
@@ -206,7 +206,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
@@ -242,7 +242,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
           command:
             - "bash"
           args:
