@@ -110,10 +110,12 @@ func main() {
 	}
 
 	for _, bucket := range readConfig.Buckets {
-		if bucketname, err := storageClient.CreateBucket(ctx, bucket.Name, bucket.Location); err != nil {
-			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
-		} else if bucket.Name == readConfig.GCSlogBucket {
+		bucketname := installer.AddPrefix(readConfig, bucket.Name)
+		if bucket.Name == readConfig.GCSlogBucket {
 			_ = prowConfig.WithGCSprowBucket(bucketname)
+		}
+		if err := storageClient.CreateBucket(ctx, bucketname, bucket.Location); err != nil {
+			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
 		}
 	}
 

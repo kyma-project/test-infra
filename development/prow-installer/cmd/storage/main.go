@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -17,6 +18,7 @@ var (
 	bucketName = flag.String("bucket", "", "Name of the storage bucket that contains the key [Required]")
 	prefix     = flag.String("prefix", "", "Prefix for naming resources [Optional]")
 	location   = flag.String("location", "", "Location of a bucket. Default US [Optional]")
+	bucketname string
 )
 
 func main() {
@@ -54,12 +56,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, err = client.CreateBucket(ctx, *bucketName, *location)
+	if *prefix != "" {
+		bucketname = fmt.Sprintf("%s-%s", *prefix, *bucketName)
+	} else {
+		bucketname = *bucketName
+	}
+
+	err = client.CreateBucket(ctx, bucketname, *location)
 	if err != nil {
 		log.Fatalf("Creating bucket failed: %v", err)
 	}
 
-	err = client.DeleteBucket(ctx, *bucketName)
+	err = client.DeleteBucket(ctx, bucketname)
 	if err != nil {
 		log.Fatalf("Deleting bucket failed: %v", err)
 	}
