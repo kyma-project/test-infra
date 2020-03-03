@@ -235,7 +235,12 @@ function installKyma() {
 		--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
+		
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "github-auth-overrides" \
+		--data "bindings.kymaAdmin.groups=${GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS}" \
+		--label "component=core"		
 
+		bindings.kymaAdmin.groups
 	applyDexGithubConnectorOverride
 
 	shout "Trigger installation"

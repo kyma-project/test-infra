@@ -146,6 +146,10 @@ function installKyma() {
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
 			--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--label "component=istio"
+			
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "github-auth-overrides" \
+		--data "bindings.kymaAdmin.groups=${GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS}" \
+		--label "component=core"	
 
 	applyDexGithubConnectorOverride
 			
