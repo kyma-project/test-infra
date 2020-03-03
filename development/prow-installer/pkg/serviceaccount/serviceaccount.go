@@ -13,7 +13,6 @@ const saResourcePrefix = "projects/-/serviceAccounts/"
 //Client provides data and methods for serviceaccount package.
 type Client struct {
 	iamservice IAM
-	prefix     string
 }
 
 type ServiceAccount struct {
@@ -31,18 +30,14 @@ type IAM interface {
 }
 
 //
-func NewClient(prefix string, iamservice IAM) *Client {
+func NewClient(iamservice IAM) *Client {
 	return &Client{
 		iamservice: iamservice,
-		prefix:     prefix,
 	}
 }
 
 // Creates GKE Service Account. SA name is trimed to 30 characters per GCP limits.
 func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount, error) {
-	if client.prefix != "" {
-		name = fmt.Sprintf("%s-%s", client.prefix, name)
-	}
 	name = fmt.Sprintf("%.30s", name)
 	project = fmt.Sprintf("projects/%s", project)
 	request := &iam.CreateServiceAccountRequest{
@@ -60,8 +55,6 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 
 // safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
 func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
-	//var gkey []byte
-	//TODO: creating resource string should be package global function treated as helper function. It can be used in installer package in Cleaner.CleanALL method.
 	resource := fmt.Sprintf("%s%s", saResourcePrefix, safqdn)
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := client.iamservice.CreateSAKey(resource, request)

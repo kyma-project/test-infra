@@ -294,11 +294,14 @@ func TestClient_CreateBucket(t *testing.T) {
 			t.Errorf("failed before running a test")
 			t.Fail()
 		}
-
-		err = mockClient.CreateBucket(ctx, testGCSBucket, testBucketLocation)
+		bucketname, err := mockClient.CreateBucket(ctx, testGCSBucket, testBucketLocation)
 		if err != nil {
 			t.Errorf("Client.CreateBucket() error = %v", err)
 		}
+		if bucketname != fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket) {
+			t.Errorf("Client.CreateBucket() returned worng bucket name")
+		}
+
 	})
 	t.Run("CreateBucket() Should throw an error when no name is given", func(t *testing.T) {
 		mockAPI := &automock.API{}
@@ -313,9 +316,12 @@ func TestClient_CreateBucket(t *testing.T) {
 			t.Errorf("failed before running a test")
 		}
 
-		err = mockClient.CreateBucket(ctx, "", testBucketLocation)
+		bucketname, err := mockClient.CreateBucket(ctx, "", testBucketLocation)
 		if err == nil {
 			t.Errorf("Client.CreateBucket() should throw an error")
+		}
+		if bucketname != fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket) {
+			t.Errorf("Client.CreateBucket() returned worng bucket name")
 		}
 		mockAPI.AssertNumberOfCalls(t, "CreateBucket", 0)
 	})

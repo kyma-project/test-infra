@@ -11,63 +11,39 @@ import (
 )
 
 func Test_NewClient(t *testing.T) {
-	type testvalue struct {
-		prefix string
-	}
-	testvalues := []testvalue{
-		{"test_prefix"},
-		{""},
-		{"very_long_test_prefix"},
-	}
-	for _, tv := range testvalues {
-		t.Logf("\nTesting with values:\n\tprefix: %s", tv.prefix)
-		prefix := tv.prefix
-		t.Run("NewClient() should be able to create Client object without errors.", func(t *testing.T) {
-			mockIAM := &mocks.IAM{}
-			client := NewClient(prefix, mockIAM)
-			if test := assert.Equal(t, prefix, client.prefix, "\tnot expected: client.prefix should be equal to passed prefix as argument."); test {
-				t.Log("\texpected: client.prefix is equal to prefix passed as argument")
-			}
-			if test := assert.Equal(t, mockIAM, client.iamservice, "\tnot expected: client.imaservice should be equal to passed IAM argument."); test {
-				t.Log("\texpected: client.iamservice is equal to iamservice IAM passed as argument.")
-			}
-			if test := assert.NotNil(t, client.iamservice, "\tnot expected: client.iamservice should not have nil value."); test {
-				t.Log("\texpected: client.imaservice field is not nil.")
-			}
-		})
-	}
+	t.Run("NewClient() should be able to create Client object without errors.", func(t *testing.T) {
+		mockIAM := &mocks.IAM{}
+		client := NewClient(mockIAM)
+		if test := assert.Equal(t, mockIAM, client.iamservice, "\tnot expected: client.imaservice should be equal to passed IAM argument."); test {
+			t.Log("\texpected: client.iamservice is equal to iamservice IAM passed as argument.")
+		}
+		if test := assert.NotNil(t, client.iamservice, "\tnot expected: client.iamservice should not have nil value."); test {
+			t.Log("\texpected: client.imaservice field is not nil.")
+		}
+	})
 }
 
 func TestClient_CreateSA(t *testing.T) {
 	type testvalue struct {
-		prefix  string
 		saname  string
 		project string
 	}
 	testvalues := []testvalue{
-		{"test_prefix", "test_sa", "test_project"},
-		{"", "test_sa", "test_project"},
-		{"very_long_test_prefix", "very_long_sa_name", "test_project"},
+		{"test_sa", "test_project"},
+		{"test_sa", "test_project"},
+		{"very_long_sa_name", "test_project"},
 	}
 	for _, tv := range testvalues {
-		t.Logf("\nTesting with values:\n\tprefix: %s\n\tsaname: %s\n\tproject: %s", tv.prefix, tv.saname, tv.project)
-		var prefixedsa string
+		t.Logf("\nTesting with values:\n\tsaname: %s\n\tproject: %s", tv.saname, tv.project)
 		project := tv.project
 		saname := tv.saname
-		prefix := tv.prefix
 		prefixedproject := fmt.Sprintf("projects/%s", project)
-		if prefix != "" {
-			prefixedsa = fmt.Sprintf("%s-%s", prefix, saname)
-		} else {
-			prefixedsa = saname
-		}
-		prefixedsa = fmt.Sprintf("%.30s", prefixedsa)
-		fqdnsa := prefixedsa + "@" + project + ".iam.gserviceaccount.com"
+		fqdnsa := saname + "@" + project + ".iam.gserviceaccount.com"
 		t.Run("CreateSA() should create serviceaccount.", func(t *testing.T) {
 			mockIAM := &mocks.IAM{}
-			client := NewClient(prefix, mockIAM)
+			client := NewClient(mockIAM)
 			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
-				AccountId: prefixedsa,
+				AccountId: saname,
 			}, prefixedproject).Return(&iam.ServiceAccount{Name: fqdnsa}, nil)
 			defer mockIAM.AssertExpectations(t)
 			sa, err := client.CreateSA(saname, project)
@@ -78,7 +54,7 @@ func TestClient_CreateSA(t *testing.T) {
 				t.Log("\texpected: CrateSA() returned not empty serviceaccount object.")
 			}
 			if test := mockIAM.AssertCalled(t, "CreateSA", &iam.CreateServiceAccountRequest{
-				AccountId: prefixedsa,
+				AccountId: saname,
 			}, prefixedproject); test {
 				t.Log("\texpected: CreateSA() was called with expected arguments.")
 			} else {
@@ -92,9 +68,9 @@ func TestClient_CreateSA(t *testing.T) {
 		})
 		t.Run("CreateSA() fail and should return error", func(t *testing.T) {
 			mockIAM := &mocks.IAM{}
-			client := NewClient(prefix, mockIAM)
+			client := NewClient(mockIAM)
 			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
-				AccountId: prefixedsa,
+				AccountId: saname,
 			}, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", prefixedsa))
 			defer mockIAM.AssertExpectations(t)
 			sa, err := client.CreateSA(saname, project)
@@ -105,7 +81,7 @@ func TestClient_CreateSA(t *testing.T) {
 				t.Log("\texpected: CrateSA() returned empty serviceaccount object.")
 			}
 			if test := mockIAM.AssertCalled(t, "CreateSA", &iam.CreateServiceAccountRequest{
-				AccountId: prefixedsa,
+				AccountId: saname,
 			}, prefixedproject); test {
 				t.Log("\texpected: CreateSA() was called with expected arguments.")
 			} else {
@@ -124,7 +100,6 @@ func TestClient_CreateSAKey(t *testing.T) {
 	type testvalue struct {
 		safqdn            string
 		resource          string
-		prefix            string
 		project           string
 		keyname           string
 		key               *iam.ServiceAccountKey
@@ -133,7 +108,6 @@ func TestClient_CreateSAKey(t *testing.T) {
 	tv := testvalue{
 		safqdn:   "test-sa@test-project.iam.gserviceaccount.com",
 		resource: "projects/-/serviceAccounts/test-sa@test-project.iam.gserviceaccount.com",
-		prefix:   "",
 		project:  "test-project",
 		keyname:  "test-key",
 		key: &iam.ServiceAccountKey{
@@ -165,7 +139,7 @@ func TestClient_CreateSAKey(t *testing.T) {
 		mockIAM := &mocks.IAM{}
 		mockIAM.On("CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}).Return(tv.serviceaccountkey, nil)
 		defer mockIAM.AssertExpectations(t)
-		client := NewClient(tv.prefix, mockIAM)
+		client := NewClient(mockIAM)
 		key, err := client.CreateSAKey(tv.safqdn)
 		if test := assert.Nilf(t, err, "\tnot expected: CreateSAKey() returned not nil error."); test {
 			t.Log("\texpected: CreateSAKey() returned nil error.")
@@ -188,7 +162,7 @@ func TestClient_CreateSAKey(t *testing.T) {
 		mockIAM := &mocks.IAM{}
 		mockIAM.On("CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}).Return(nil, errors.New("CreateSAKey failed GCP test error"))
 		defer mockIAM.AssertExpectations(t)
-		client := NewClient(tv.prefix, mockIAM)
+		client := NewClient(mockIAM)
 		key, err := client.CreateSAKey(tv.safqdn)
 		if test := assert.Empty(t, key, "\tnot expected: CreateSAKey() returned not empty key."); test {
 			t.Log("\texpected: CreateSAKey() returned empty key.")

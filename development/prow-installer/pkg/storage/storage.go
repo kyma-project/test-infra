@@ -51,14 +51,18 @@ func New(opts Option, api API) (*Client, error) {
 }
 
 // CreateBucket attempts to create a storage bucket
-func (sc *Client) CreateBucket(ctx context.Context, name string, location string) error {
+func (sc *Client) CreateBucket(ctx context.Context, name string, location string) (string, error) {
 	if name == "" {
-		return fmt.Errorf("name cannot be empty")
+		return "", fmt.Errorf("name cannot be empty")
 	}
 	if sc.Prefix != "" {
 		name = fmt.Sprintf("%s-%s", sc.Prefix, name)
 	}
-	return sc.api.CreateBucket(ctx, name, location)
+	err := sc.api.CreateBucket(ctx, name, location)
+	if err != nil {
+		return "", err
+	}
+	return name, nil
 }
 
 // DeleteBucket attempts to delete a storage bucket

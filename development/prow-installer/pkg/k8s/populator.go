@@ -9,11 +9,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 	typedv1 "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
-func NewPopulator(k8sclient *kubernetes.Clientset) *Populator {
+func NewPopulator(k8sclient *K8sClient) *Populator {
 	return &Populator{
 		//ctx: ctx,
 		k8sClient: k8sclient,
@@ -24,7 +23,7 @@ func NewPopulator(k8sclient *kubernetes.Clientset) *Populator {
 type Populator struct {
 	//ctx context.Context
 	secrets       []SecretModel
-	k8sClient     *kubernetes.Clientset
+	k8sClient     *K8sClient
 	secretsClient typedv1.SecretInterface
 }
 
@@ -41,7 +40,7 @@ type GenericSecret struct {
 }
 
 func (p *Populator) newSecretsClient(namespace string) {
-	p.secretsClient = p.k8sClient.CoreV1().Secrets(namespace)
+	p.secretsClient = p.k8sClient.Clientset.CoreV1().Secrets(namespace)
 }
 func (p *Populator) PopulateSecrets(namespace string, generics []GenericSecret, sasecrets []serviceaccount.ServiceAccount) error {
 	var secrets []SecretModel

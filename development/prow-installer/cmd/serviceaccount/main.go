@@ -40,7 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("When creating serviceaccount got error: %w", err)
 	}
-	iamclient := serviceaccount.NewClient(*prefix, iamservice)
+	iamclient := serviceaccount.NewClient(iamservice)
 
 	if *remove {
 		for _, value := range myFlags {
@@ -54,6 +54,9 @@ func main() {
 
 	for _, value := range myFlags {
 		log.Printf("Creating service account with values:\nname: %s\nproject: %s\nprefix: %s\n", value, *project, *prefix)
+		if *prefix != "" {
+			value = fmt.Sprintf("%s-%s", *prefix, value)
+		}
 		sa, err := iamclient.CreateSA(value, *project)
 		if err != nil {
 			log.Printf("Failed create serviceaccount %s, got error: %w", value, err)

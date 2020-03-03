@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"google.golang.org/api/container/v1"
 	"k8s.io/client-go/kubernetes"
+	extensions "k8s.io/client-go/kubernetes/typed/extensions/v1beta1"
 	"k8s.io/client-go/rest"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"log"
@@ -16,6 +17,11 @@ import (
 
 type API interface {
 	Get(ctx context.Context, clusterID string, zoneID string) (*container.Cluster, error)
+}
+
+type K8sClient struct {
+	Clientset        *kubernetes.Clientset
+	Extensionsclient *extensions.ExtensionsV1beta1Client
 }
 
 // getDetails
@@ -42,7 +48,7 @@ func getDetails(ctx context.Context, clusterID string, zoneID string, gcpclient 
 	return nil, fmt.Errorf("failed to get cluster details, after 5 minutes cluster is not ready, state is: %s", gkecluster.Status)
 }
 
-func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient API) (*kubernetes.Clientset, error) {
+func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient API) (*K8sClient, error) {
 	details, err := getDetails(ctx, clusterID, zoneID, gcpclient)
 	if err != nil {
 		return nil, fmt.Errorf("failed creating k8s client. got: %w", err)
@@ -59,8 +65,13 @@ func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient A
 		},
 	}
 	clientset, err := kubernetes.NewForConfig(config)
+	extensionsClient, err := extensions.NewForConfig(config)
+	k8sClient := &K8sClient{
+		Clientset:        clientset,
+		Extensionsclient: extensionsClient,
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed creating k8s client, got: %w", err)
 	}
-	return clientset, nil
+	return k8sClient, nil
 }

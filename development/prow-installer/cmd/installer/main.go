@@ -13,7 +13,6 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 	"os"
 	"time"
 )
@@ -22,8 +21,6 @@ var (
 	configPath      = flag.String("config", "", "Config file path [Required]")
 	credentialsFile = flag.String("credentials-file", "", "Google Application Credentials file path [Required]")
 	remove          = flag.Bool("remove", false, "When set, installer will remove resources defined in config. Default false. [Optional]")
-	saname          string
-	k8sclient       *kubernetes.Clientset
 )
 
 func main() {
@@ -75,7 +72,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create IAM service %v", err)
 	}
-	iamClient := serviceaccount.NewClient(readConfig.Prefix, iamService)
+	iamClient := serviceaccount.NewClient(iamService)
 
 	crmService, err := roles.NewService(*credentialsFile)
 	if err != nil {
@@ -87,6 +84,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed get gke client, got: %v", err)
 	}
+
+	prowConfig := installer.NewProwConfig()
 
 	if *remove {
 		cleaner := installer.Cleaner{}
@@ -111,13 +110,21 @@ func main() {
 	}
 
 	for _, bucket := range readConfig.Buckets {
-		if err := storageClient.CreateBucket(ctx, bucket.Name, bucket.Location); err != nil {
+		if bucketname, err := storageClient.CreateBucket(ctx, bucket.Name, bucket.Location); err != nil {
 			log.Fatalf("Failed to create bucket: %s, %s", bucket, err)
+		} else if bucket.Name == readConfig.GCSlogBucket {
+			_ = prowConfig.WithGCSprowBucket(bucketname)
 		}
 	}
 
 	for i, serviceAccount := range readConfig.ServiceAccounts {
 		// TODO implement handling error when SA already exists in GCP
+		saname := installer.AddPrefix(readConfig, serviceAccount.Name)
+		saname = fmt.Sprintf("%.30s", saname)
+		if serviceAccount.Name == readConfig.GCSserviceAccount {
+			prowConfig.WithGCScredentials(saname)
+		}
+		readConfig.ServiceAccounts[i].Name = saname
 		sa, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project)
 		if err != nil {
 			log.Errorf("Error creating Service Account %v", err)
@@ -128,10 +135,6 @@ func main() {
 			}
 			readConfig.ServiceAccounts[i].Key = key
 			//TODO: Creating prefixed resource names should be done in helper function. Possibly in config package during loading config in to struct, all names which require prefix, should be changed in to prefixed version. ServiceAccounts should be trimmed to 30 characters as well.
-			if readConfig.Prefix != "" {
-				saname = fmt.Sprintf("%s-%s", readConfig.Prefix, serviceAccount.Name)
-			}
-			saname = fmt.Sprintf("%.30s", saname)
 			_, err = crmClient.AddSAtoRole(saname, serviceAccount.Roles, readConfig.Project, nil)
 			if err != nil {
 				log.Errorf("Failed assign sa %s to roles, got: %w", saname, err)

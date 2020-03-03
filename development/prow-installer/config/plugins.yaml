@@ -1,0 +1,28 @@
+plugins:
+  kyma-project:
+    - cat
+    - trigger
+  kyma-incubator:
+    - cat
+    - trigger
+  kyma-project/test-infra:
+    - config-updater
+
+config_updater:
+  #config_file: prow/config.yaml
+  #plugin_file: prow/plugins.yaml
+  maps:
+    prow/jobs/**/*.yaml:
+      name: job-config
+    prow/config.yaml:
+      name: config
+    prow/plugins.yaml:
+      name: plugins
+
+triggers:
+- repos:
+  - kyma-project
+  - kyma-incubator
+  #trusted_org: kyma-project
+  only_org_members: true
+  ignore_ok_to_test: true

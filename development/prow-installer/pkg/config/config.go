@@ -25,6 +25,8 @@ type Config struct {
 	GenericSecrets    []k8s.GenericSecret             `yaml:"generics,flow,omitempty"`
 	Labels            map[string]string               `yaml:"labels"`
 	Clusters          map[string]cluster.Cluster      `yaml:"clusters"`
+	GCSserviceAccount string                          `yaml:"gcs_serviceaccount"`
+	GCSlogBucket      string                          `yaml:"gcs_log_bucket"`
 }
 
 //Get config configuration from yaml file.

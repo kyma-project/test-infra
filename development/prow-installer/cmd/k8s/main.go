@@ -43,7 +43,7 @@ func main() {
 		log.Fatalf("failed get k8s client, got: %v", err)
 	}
 	//TODO: Implement logic which will load provided secret in to provided cluster.
-	secretlist, err := k8sclient.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
+	secretlist, err := k8sclient.Clientset.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
 	if err != nil {
 		log.Fatalf("failed list secrets, got: %v", err)
 	}
