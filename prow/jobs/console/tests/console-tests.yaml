@@ -23,6 +23,32 @@ job_template: &job_template
             memory: 1.5Gi
             cpu: 0.8
 
+whitesource_job_template: &whitesource_job_template
+  skip_report: false
+  run_if_changed: "package.json|package-lock.json"
+  decorate: true
+  path_alias: github.com/kyma-project/console
+  max_concurrency: 10
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
@@ -37,7 +63,19 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
-
+    - name: pre-master-console-whitesource-scan
+      branches:
+        - ^master$
+      <<: *whitesource_job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        
 postsubmits:
   kyma-project/console:
     - name: post-master-console-tests
