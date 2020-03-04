@@ -13,7 +13,6 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 	"os"
 	"time"
 )
@@ -117,6 +116,7 @@ func main() {
 
 	for _, bucket := range readConfig.Buckets {
 		bucketname := installer.AddPrefix(readConfig, bucket.Name)
+		bucketname = installer.TrimName(bucketname)
 		if bucket.Name == readConfig.GCSlogBucket {
 			_ = prowConfig.WithGCSprowBucket(bucketname)
 		}
@@ -127,13 +127,12 @@ func main() {
 
 	for i, serviceAccount := range readConfig.ServiceAccounts {
 		// TODO implement handling error when SA already exists in GCP
-		saname := installer.AddPrefix(readConfig, serviceAccount.Name)
-		saname = fmt.Sprintf("%.30s", saname)
+		saname := installer.FormatName(readConfig, serviceAccount.Name)
 		if serviceAccount.Name == readConfig.GCSserviceAccount {
 			_ = prowConfig.WithGCScredentials(saname)
 		}
 		readConfig.ServiceAccounts[i].Name = saname
-		sa, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project)
+		sa, err := iamClient.CreateSA(saname, readConfig.Project)
 		if err != nil {
 			log.Errorf("Error creating Service Account %v", err)
 		} else {
@@ -143,18 +142,19 @@ func main() {
 			}
 			readConfig.ServiceAccounts[i].Key = key
 			//TODO: Creating prefixed resource names should be done in helper function. Possibly in config package during loading config in to struct, all names which require prefix, should be changed in to prefixed version. ServiceAccounts should be trimmed to 30 characters as well.
-			_, err = crmClient.AddSAtoRole(saname, serviceAccount.Roles, readConfig.Project, nil)
-			if err != nil {
-				log.Errorf("Failed assign sa %s to roles, got: %v", saname, err)
+			if len(serviceAccount.Roles) > 0 {
+				_, err = crmClient.AddSAtoRole(saname, serviceAccount.Roles, readConfig.Project, nil)
+				if err != nil {
+					log.Errorf("Failed assign sa %s to roles, got: %v", saname, err)
+				}
 			}
 		}
 	}
 
 	for k, v := range readConfig.Clusters {
-		clusterID := fmt.Sprintf("%s-%s", readConfig.Prefix, v.Name)
-		k8sclient, kubectlWrapper, err := k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
 		clusterID := installer.AddPrefix(readConfig, v.Name)
-		k8sclient, err = k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
+		clusterID = installer.TrimName(clusterID)
+		k8sclient, kubectlWrapper, err := k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
 		if err != nil {
 			log.Fatalf("failed get k8s client, got: %v", err)
 		}

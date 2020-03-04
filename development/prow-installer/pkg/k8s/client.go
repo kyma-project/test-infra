@@ -51,8 +51,7 @@ func getDetails(ctx context.Context, clusterID string, zoneID string, gcpclient 
 	return nil, fmt.Errorf("failed to get cluster details, after 5 minutes cluster is not ready, state is: %s", gkecluster.Status)
 }
 
-func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient API) (*kubernetes.Clientset, *kubectl.Wrapper, error) {
-func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient API) (*K8sClient, error) {
+func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient API) (*K8sClient, *kubectl.Wrapper, error) {
 	details, err := getDetails(ctx, clusterID, zoneID, gcpclient)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed creating k8s client. got: %w", err)
@@ -84,8 +83,7 @@ func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient A
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed creating k8s client, got: %w", err)
 	}
-	return clientset, kubectlWrapper, nil
-	return k8sClient, nil
+	return k8sClient, kubectlWrapper, nil
 }
 
 // generateKubeconfig generates kubeconfig based on credentials provided in arguments

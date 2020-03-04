@@ -9,7 +9,7 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	"log"
 
-	installerconfig "github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
 )
 
 type Cleaner struct {
@@ -17,7 +17,7 @@ type Cleaner struct {
 	clustersClient *cluster.Client
 	iamClient      *serviceaccount.Client
 	crmClient      *roles.Client
-	config         installerconfig.Config
+	config         *config.Config
 }
 
 func (c *Cleaner) WithClients(storage *storage.Client, cluster *cluster.Client, iam *serviceaccount.Client, crm *roles.Client) *Cleaner {
@@ -41,11 +41,8 @@ func (c *Cleaner) CleanAll(ctx context.Context) error {
 	errorslist := make([]string, 0)
 	var clusterName string
 	for _, v := range c.config.Clusters {
-		if c.config.Prefix != "" {
-			clusterName = fmt.Sprintf("%s-%s", c.config.Prefix, v.Name)
-		} else {
-			clusterName = v.Name
-		}
+		clusterName = AddPrefix(c.config, v.Name)
+		clusterName = TrimName(clusterName)
 		err := c.clustersClient.Delete(ctx, clusterName, v.Location)
 		if err != nil {
 			err = logError(err, "cluster", clusterName)
@@ -54,9 +51,8 @@ func (c *Cleaner) CleanAll(ctx context.Context) error {
 	}
 	for _, v := range c.config.Buckets {
 		var bucketName string
-		if c.config.Prefix != "" {
-			bucketName = fmt.Sprintf("%s-%s", c.config.Prefix, v.Name)
-		}
+		bucketName = AddPrefix(c.config, v.Name)
+		bucketName = TrimName(bucketName)
 		err := c.storageClient.DeleteBucket(ctx, bucketName)
 		if err != nil {
 			err = logError(err, "bucket", bucketName)
@@ -67,17 +63,13 @@ func (c *Cleaner) CleanAll(ctx context.Context) error {
 		//TODO: Adding prefix, creating fqdn and adding resource dependent name string should be done within called methods not in calling package. Move such code to called methods for all packages.
 		//
 		var name string
-		if c.config.Prefix != "" {
-			name = fmt.Sprintf("%s-%s", c.config.Prefix, v.Name)
-		}
-		name = fmt.Sprintf("%.30s", name)
+		name = FormatName(c.config, v.Name)
 		_, err := c.crmClient.RemoveSaRole(name, v.Roles, c.config.Project, nil)
 		if err != nil {
 			log.Fatalf("Failed remove %s from roles, got: %v", name, err)
 		}
 		safqdn := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", name, c.config.Project)
 		saname := fmt.Sprintf("projects/-/serviceAccounts/%s", safqdn)
-		//saname := fmt.Sprintf("projects/%s/serviceAccounts/%s", c.config.Project, safqdn)
 		_, err = c.iamClient.Delete(saname)
 		if err != nil {
 			err = logError(err, "serviceaccount", saname)
