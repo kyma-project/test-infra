@@ -32,8 +32,6 @@ periodics:
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
         value: "europe-west4-b"
-      - name: MACHINE_TYPE
-        value: "custom-8-15360"
       resources:
         requests:
           memory: 1Gi
