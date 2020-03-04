@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"google.golang.org/api/container/v1"
 	"k8s.io/client-go/kubernetes"
-	extensions "k8s.io/client-go/kubernetes/typed/extensions/v1beta1"
+	networking "k8s.io/client-go/kubernetes/typed/networking/v1beta1"
 	"k8s.io/client-go/rest"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"log"
@@ -21,7 +21,7 @@ type API interface {
 
 type K8sClient struct {
 	Clientset        *kubernetes.Clientset
-	Extensionsclient *extensions.ExtensionsV1beta1Client
+	NetworkingClient *networking.NetworkingV1beta1Client
 }
 
 // getDetails
@@ -65,10 +65,10 @@ func NewClient(ctx context.Context, clusterID string, zoneID string, gcpclient A
 		},
 	}
 	clientset, err := kubernetes.NewForConfig(config)
-	extensionsClient, err := extensions.NewForConfig(config)
+	networkingClient, err := networking.NewForConfig(config)
 	k8sClient := &K8sClient{
 		Clientset:        clientset,
-		Extensionsclient: extensionsClient,
+		NetworkingClient: networkingClient,
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed creating k8s client, got: %w", err)

@@ -124,7 +124,7 @@ func main() {
 		saname := installer.AddPrefix(readConfig, serviceAccount.Name)
 		saname = fmt.Sprintf("%.30s", saname)
 		if serviceAccount.Name == readConfig.GCSserviceAccount {
-			prowConfig.WithGCScredentials(saname)
+			_ = prowConfig.WithGCScredentials(saname)
 		}
 		readConfig.ServiceAccounts[i].Name = saname
 		sa, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project)
@@ -145,7 +145,7 @@ func main() {
 	}
 
 	for k, v := range readConfig.Clusters {
-		clusterID := fmt.Sprintf("%s-%s", readConfig.Prefix, v.Name)
+		clusterID := installer.AddPrefix(readConfig, v.Name)
 		k8sclient, err = k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
 		if err != nil {
 			log.Fatalf("failed get k8s client, got: %v", err)
@@ -159,4 +159,10 @@ func main() {
 			log.Fatalf("failed populate secrets, got %v", err)
 		}
 	}
+	ingress, err := readConfig.Clusters["prow"].K8sClient.NetworkingClient.Ingresses(metav1.NamespaceDefault).Get("tls-ing", metav1.GetOptions{})
+	if err != nil {
+		log.Fatalf("Failed getting ingress IP.")
+	}
+	clusterIP := ingress.Status.LoadBalancer.Ingress[0].IP
+	_ = prowConfig.WithClusterIP(clusterIP)
 }
