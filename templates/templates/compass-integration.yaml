@@ -70,6 +70,8 @@ postsubmits:
     labels:
       preset-build-master: "true"
       <<: *vm_job_labels_template
+    annotations:
+      testgrid-dashboards: kyma-incubator
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
