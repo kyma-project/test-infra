@@ -235,12 +235,7 @@ function installKyma() {
 		--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
-		
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "github-auth-overrides" \
-		--data "bindings.kymaAdmin.groups=${GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS}" \
-		--label "component=core"		
 
-		bindings.kymaAdmin.groups
 	applyDexGithubConnectorOverride
 
 	shout "Trigger installation"
@@ -292,6 +287,16 @@ data:
 EOF
 }
 
+function applyDexGithibKymaAdminGroup() {
+	kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+	kubectl replace -f kyma-admin-binding.yaml
+}
+
 init
 azureAuthenticating
 
@@ -317,6 +322,9 @@ install::kyma_cli
 
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+shout "Override kyma-admin-binding ClusterRoleBinding"
+applyDexGithibKymaAdminGroup
 
 shout "Install stability-checker"
 date

@@ -146,10 +146,6 @@ function installKyma() {
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
 			--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--label "component=istio"
-			
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "github-auth-overrides" \
-		--data "bindings.kymaAdmin.groups=${GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS}" \
-		--label "component=core"	
 
 	applyDexGithubConnectorOverride
 			
@@ -206,6 +202,17 @@ data:
       orgs:
       - name: kyma-project
 EOF
+
+}
+
+function applyDexGithibKymaAdminGroup() {
+	kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+    kubectl replace -f kyma-admin-binding.yaml
 }
 function applyServiceCatalogCRDOverride(){
     shout "Apply override for ServiceCatalog to enable CRD implementation"
@@ -274,6 +281,9 @@ shout "Install kyma"
 date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+shout "Override kyma-admin-binding ClusterRoleBinding"
+applyDexGithibKymaAdminGroup
 
 # Prometheus container need minimum 6Gi memory limit.
 shout "Increase cluster max container memory limit"
