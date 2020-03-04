@@ -202,7 +202,6 @@ data:
       orgs:
       - name: kyma-project
 EOF
-
 }
 
 function applyDexGithibKymaAdminGroup() {
