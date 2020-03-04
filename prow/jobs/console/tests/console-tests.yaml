@@ -29,7 +29,7 @@ whitesource_job_template: &whitesource_job_template
   decorate: true
   optional: true
   path_alias: github.com/kyma-project/console
-  max_concurrency: 10
+  max_concurrency: 2
   extra_refs:
     - org: kyma-project
       repo: test-infra
