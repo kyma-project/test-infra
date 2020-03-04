@@ -8,7 +8,7 @@ periodics:
   decoration_config:
     timeout: 14400000000000 # 4h
     grace_period: 600000000000 # 10min
-  cron: "00 11 * * *"
+  cron: "00 08 * * *"
   extra_refs:
     - org: kyma-project
       repo: test-infra
@@ -27,18 +27,14 @@ periodics:
       securityContext:
         privileged: true
       command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp.sh"
       env:
-      - name: RS_GROUP
-        value: "kyma-gardener-azure"
-      - name: REGION
-        value: "northeurope"
-      - name: EVENTHUB_NAMESPACE_NAME
-        value: "kyma-gardener-azure"
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "westeurope"
+        value: "europe-west4-b"
+      - name: MACHINE_TYPE
+        value: "custom-8-15360"
       resources:
         requests:
           memory: 1Gi
