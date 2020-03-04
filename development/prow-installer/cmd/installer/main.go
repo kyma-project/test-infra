@@ -13,6 +13,7 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 	"os"
 	"time"
 )
@@ -45,6 +46,11 @@ func main() {
 
 	ctx := context.Background()
 
+	// this variable must be set
+	if err := os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", *credentialsFile); err != nil {
+		log.Fatalf("Could not set GOOGLE_APPLICATION_CREDENTIALS env variable.")
+	}
+
 	storageConfig := &storage.Option{
 		ProjectID:      readConfig.Project,
 		Prefix:         readConfig.Prefix,
@@ -57,7 +63,7 @@ func main() {
 		ServiceAccount: *credentialsFile,
 	}
 
-	//TODO: we need to refactor cluster package or installer package to not pass credentialsfiles data twice in a call to NewCLient method.
+	//TODO: refactor GKE operating packages to use os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") in order to get credentials.
 	clusterClient, err := cluster.NewClient(ctx, *clusterConfig, *credentialsFile)
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
@@ -139,23 +145,25 @@ func main() {
 			//TODO: Creating prefixed resource names should be done in helper function. Possibly in config package during loading config in to struct, all names which require prefix, should be changed in to prefixed version. ServiceAccounts should be trimmed to 30 characters as well.
 			_, err = crmClient.AddSAtoRole(saname, serviceAccount.Roles, readConfig.Project, nil)
 			if err != nil {
-				log.Errorf("Failed assign sa %s to roles, got: %w", saname, err)
+				log.Errorf("Failed assign sa %s to roles, got: %v", saname, err)
 			}
 		}
 	}
 
 	for k, v := range readConfig.Clusters {
+		clusterID := fmt.Sprintf("%s-%s", readConfig.Prefix, v.Name)
+		k8sclient, kubectlWrapper, err := k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
 		clusterID := installer.AddPrefix(readConfig, v.Name)
 		k8sclient, err = k8s.NewClient(ctx, clusterID, v.Location, gkeClient)
 		if err != nil {
 			log.Fatalf("failed get k8s client, got: %v", err)
 		}
 		v.K8sClient = k8sclient
+		v.KubectlWrapper = kubectlWrapper
 		populator := k8s.NewPopulator(k8sclient)
 		v.Populator = populator
 		readConfig.Clusters[k] = v
-		err := populator.PopulateSecrets(metav1.NamespaceDefault, readConfig.GenericSecrets, readConfig.ServiceAccounts)
-		if err != nil {
+		if err := populator.PopulateSecrets(metav1.NamespaceDefault, readConfig.GenericSecrets, readConfig.ServiceAccounts); err != nil {
 			log.Fatalf("failed populate secrets, got %v", err)
 		}
 	}

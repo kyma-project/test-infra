@@ -38,10 +38,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed get gke client, got: %v", err)
 	}
-	k8sclient, err := k8s.NewClient(ctx, *clusterID, *zoneID, gkeClient)
+
+	k8sclient, _, err := k8s.NewClient(ctx, *clusterID, *zoneID, gkeClient)
+
 	if err != nil {
 		log.Fatalf("failed get k8s client, got: %v", err)
 	}
+
 	//TODO: Implement logic which will load provided secret in to provided cluster.
 	secretlist, err := k8sclient.Clientset.CoreV1().Secrets(metav1.NamespaceDefault).List(metav1.ListOptions{})
 	if err != nil {

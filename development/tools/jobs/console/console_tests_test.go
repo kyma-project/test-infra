@@ -34,6 +34,27 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/tests"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
+func TestConsoleWhitesourceJobPresubmit(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/tests/console-tests.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	expName := "pre-master-console-whitesource-scan"
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/console"], expName, "master")
+	require.NotNil(t, actualPresubmit)
+	assert.Equal(t, expName, actualPresubmit.Name)
+	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
+	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
+	assert.False(t, actualPresubmit.SkipReport)
+	assert.True(t, actualPresubmit.Decorate)
+	assert.True(t, actualPresubmit.Optional)
+	assert.Equal(t, "github.com/kyma-project/console", actualPresubmit.PathAlias)
+	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
+	assert.Equal(t, "package.json|package-lock.json", actualPresubmit.RunIfChanged)
+	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "package.json")
+}
+
 func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/console/tests/console-tests.yaml")

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/kubectl"
+	"k8s.io/client-go/kubernetes"
 )
 
 type Option struct {
@@ -27,6 +29,8 @@ type Cluster struct {
 	Labels                map[string]string `yaml:"labels,omitempty"`
 	Pools                 []Pool            `yaml:"pools"`
 	InitialClusterVersion string            `yaml:"kubernetesVersion,omitempty"`
+	K8sClient             *kubernetes.Clientset
+	KubectlWrapper        *kubectl.Wrapper
 	K8sClient             *k8s.K8sClient
 	Populator             *k8s.Populator
 }

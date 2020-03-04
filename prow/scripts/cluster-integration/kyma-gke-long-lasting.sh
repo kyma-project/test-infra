@@ -147,6 +147,8 @@ function installKyma() {
 			--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--label "component=istio"
 
+	applyDexGithubConnectorOverride
+			
 	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
 			applyServiceCatalogCRDOverride
 	fi
@@ -174,14 +176,33 @@ function installKyma() {
 	fi
 }
 
-function addGithubDexConnector() {
-    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-    dep ensure -v -vendor-only
-    popd
-    export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-}
+function applyDexGithubConnectorOverride() {
+	shout "Apply Dex Githubauth connector overrides"
+	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex-config-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: dex
+    kyma-project.io/installation: ""
+data:
+ connectors: |
+  - type: github
+    id: github
+    name: GitHub
+    config:
+      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
+      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+      redirectURI: ${DEX_CALLBACK_URL}
+      orgs:
+      - name: kyma-project
+EOF
+}
 function applyServiceCatalogCRDOverride(){
     shout "Apply override for ServiceCatalog to enable CRD implementation"
 
@@ -232,10 +253,6 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 export DNS_DOMAIN
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
-
-shout "Add Github Dex Connector"
-date
-addGithubDexConnector
 
 shout "Cleanup"
 date
