@@ -7,6 +7,7 @@
 #
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - GARDENER_REGION - Gardener compute region
+# - GARDENER_ZONES - Gardener compute zones inside the region
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the GCP secret configured in the gardener project to access the cloud provider
@@ -29,6 +30,7 @@ discoverUnsetVar=false
 VARIABLES=(
     KYMA_PROJECT_DIR
     GARDENER_REGION
+    GARDENER_ZONES
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
@@ -120,7 +122,7 @@ set -x
 kyma provision gardener \
         --target-provider gcp --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --nodes 4 --kube-version=${GARDENER_CLUSTER_VERSION} \
+        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" --nodes 4 --kube-version=${GARDENER_CLUSTER_VERSION} \
 )
 
 shout "Installing Kyma"
