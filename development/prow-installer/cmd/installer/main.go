@@ -94,7 +94,7 @@ func main() {
 
 	if *remove {
 		cleaner := installer.Cleaner{}
-		cleaner.WithClients(storageClient, clusterClient, iamClient, crmClient).WithConfig(*readConfig)
+		cleaner.WithClients(storageClient, clusterClient, iamClient, crmClient).WithConfig(readConfig)
 		err := cleaner.CleanAll(ctx)
 		if err != nil {
 			log.Fatalf("cleaning all resources failed, got: %v", err)
@@ -141,7 +141,6 @@ func main() {
 				log.Errorf("failed create serviceaccount %s key, got: %w", sa.Name, err)
 			}
 			readConfig.ServiceAccounts[i].Key = key
-			//TODO: Creating prefixed resource names should be done in helper function. Possibly in config package during loading config in to struct, all names which require prefix, should be changed in to prefixed version. ServiceAccounts should be trimmed to 30 characters as well.
 			if len(serviceAccount.Roles) > 0 {
 				_, err = crmClient.AddSAtoRole(saname, serviceAccount.Roles, readConfig.Project, nil)
 				if err != nil {
@@ -167,10 +166,12 @@ func main() {
 			log.Fatalf("failed populate secrets, got %v", err)
 		}
 	}
-	ingress, err := readConfig.Clusters["prow"].K8sClient.NetworkingClient.Ingresses(metav1.NamespaceDefault).Get("tls-ing", metav1.GetOptions{})
-	if err != nil {
-		log.Fatalf("Failed getting ingress IP.")
-	}
-	clusterIP := ingress.Status.LoadBalancer.Ingress[0].IP
-	_ = prowConfig.WithClusterIP(clusterIP)
+	// TODO: Below lines should be uncommented when igress IP will be available for prow installer.
+	//ingress, err := readConfig.Clusters["prow"].K8sClient.NetworkingClient.Ingresses(metav1.NamespaceDefault).Get("tls-ing", metav1.GetOptions{})
+	//if err != nil {
+	//	log.Fatalf("Failed getting ingress IP.")
+	//}
+	fmt.Printf("%+v", prowConfig)
+	//clusterIP := ingress.Status.LoadBalancer.Ingress[0].IP
+	//_ = prowConfig.WithClusterIP(clusterIP)
 }

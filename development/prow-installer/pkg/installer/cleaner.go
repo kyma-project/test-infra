@@ -32,7 +32,7 @@ func (c *Cleaner) WithClients(storage *storage.Client, cluster *cluster.Client, 
 	return c
 }
 
-func (c *Cleaner) WithConfig(config installerconfig.Config) *Cleaner {
+func (c *Cleaner) WithConfig(config *config.Config) *Cleaner {
 	c.config = config
 	return c
 }
@@ -64,13 +64,16 @@ func (c *Cleaner) CleanAll(ctx context.Context) error {
 		//
 		var name string
 		name = FormatName(c.config, v.Name)
-		_, err := c.crmClient.RemoveSaRole(name, v.Roles, c.config.Project, nil)
-		if err != nil {
-			log.Fatalf("Failed remove %s from roles, got: %v", name, err)
+		if len(v.Roles) > 0 {
+			_, err := c.crmClient.RemoveSaRole(name, v.Roles, c.config.Project, nil)
+			if err != nil {
+				err = logError(err, "serviceaccount", name)
+				errorslist = append(errorslist, err.Error())
+			}
 		}
 		safqdn := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", name, c.config.Project)
 		saname := fmt.Sprintf("projects/-/serviceAccounts/%s", safqdn)
-		_, err = c.iamClient.Delete(saname)
+		_, err := c.iamClient.Delete(saname)
 		if err != nil {
 			err = logError(err, "serviceaccount", saname)
 			errorslist = append(errorslist, err.Error())
