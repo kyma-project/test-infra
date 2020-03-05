@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/storage/automock"
@@ -287,7 +286,7 @@ func TestClient_CreateBucket(t *testing.T) {
 		ctx := context.Background()
 		opts := Option{}
 		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
-		mockAPI.On("CreateBucket", ctx, fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket), testBucketLocation).Return(nil) // we need to check if the prefixed name is created
+		mockAPI.On("CreateBucket", ctx, testGCSBucket, testBucketLocation).Return(nil) // we need to check if the prefixed name is created
 
 		mockClient, err := New(opts, mockAPI)
 		if err != nil {

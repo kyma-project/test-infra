@@ -71,7 +71,7 @@ func TestClient_CreateSA(t *testing.T) {
 			client := NewClient(mockIAM)
 			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
 				AccountId: saname,
-			}, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", prefixedsa))
+			}, prefixedproject).Return(&iam.ServiceAccount{}, fmt.Errorf("Creating %s service account failed with error code from GCP.", saname))
 			defer mockIAM.AssertExpectations(t)
 			sa, err := client.CreateSA(saname, project)
 			if test := assert.NotNil(t, err, "\tnot expected: Client.CreateSA() method returned nil error."); test {
