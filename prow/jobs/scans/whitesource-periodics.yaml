@@ -21,8 +21,8 @@ periodics:
     extra_refs:
         - <<: *test_infra_ref
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-dep
+          path_alias: github.com/kyma-project/kyma-dep
           base_ref: master
     spec:
         containers:
@@ -34,7 +34,7 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: kyma(dep)
+              value: kyma-dep
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -43,7 +43,7 @@ periodics:
             requests:
               memory: 1Gi
               cpu: 400m
-              
+
   - name: kyma-mod-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -57,8 +57,8 @@ periodics:
     extra_refs:
         - <<: *test_infra_ref
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-mod
+          path_alias: github.com/kyma-project/kyma-mod
           base_ref: master
     spec:
         containers:
@@ -70,7 +70,7 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: kyma(mod)
+              value: kyma-mod
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE

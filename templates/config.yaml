@@ -5,8 +5,11 @@ global:
     - "1.9"
     - "1.8"
   whitesource:
-    - name: "kyma"
+    - name: "kyma-dep"
       language: "golang"
+      project: "kyma-project"
+    - name: "kyma-mod"
+      language: "golang-mod"
       project: "kyma-project"
     - name: "console"
       language: "javascript"
