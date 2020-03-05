@@ -15,7 +15,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"os"
-	"time"
 )
 
 var (
@@ -42,8 +41,6 @@ func main() {
 		log.Fatalf("Error reading configPath file %v", err)
 	}
 
-	//TODO: this should be moved to cluster package in to Create method.
-	readConfig.Labels["created-at"] = fmt.Sprintf("%v", time.Now().Unix()) // time of cluster creation
 	//TODO: Set label[created-by] to value of client_email from google application credentials file.
 
 	ctx := context.Background()

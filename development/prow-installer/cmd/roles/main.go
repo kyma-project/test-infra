@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/roles"
 	"google.golang.org/api/cloudresourcemanager/v1"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var (

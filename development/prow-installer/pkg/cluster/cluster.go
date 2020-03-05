@@ -6,6 +6,7 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/kubectl"
 	"k8s.io/client-go/kubernetes"
+	"time"
 )
 
 type Option struct {
@@ -83,6 +84,7 @@ func (cc *Client) Create(ctx context.Context, clusterConfig Cluster) error {
 	if cc.Prefix != "" {
 		clusterConfig.Name = fmt.Sprintf("%s-%s", cc.Prefix, clusterConfig.Name)
 	}
+	clusterConfig.Labels["created-at"] = fmt.Sprintf("%v", time.Now().Unix()) // time of cluster creation
 	return cc.api.Create(ctx, clusterConfig)
 }
 
