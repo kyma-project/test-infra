@@ -17,7 +17,6 @@ periodics:
   labels:
     preset-gardener-azure-kyma-integration: "true"
     preset-kyma-cli-stable: "true"
-    preset-nightly-github-integration: "true"
     preset-creds-aks-kyma-integration: "true"
     preset-kyma-keyring: "true"
     preset-kyma-encryption-key: "true"
