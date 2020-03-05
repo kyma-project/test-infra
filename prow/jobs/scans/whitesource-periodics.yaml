@@ -8,7 +8,7 @@ test_infra_ref: &test_infra_ref
 
 periodics:
 
-  - name: kyma(dep)-whitesource-scan
+  - name: kyma-dep-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -44,7 +44,7 @@ periodics:
               memory: 1Gi
               cpu: 400m
               
-  - name: kyma(mod)-whitesource-scan
+  - name: kyma-mod-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
