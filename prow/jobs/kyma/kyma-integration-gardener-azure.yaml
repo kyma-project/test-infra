@@ -3,7 +3,7 @@ base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
 
 periodics:
-- name: kyma-gardener-azure-integration
+- name: kyma-integration-gardener-azure
   decorate: true
   decoration_config:
     timeout: 14400000000000 # 4h

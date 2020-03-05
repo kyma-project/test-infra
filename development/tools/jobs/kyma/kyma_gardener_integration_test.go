@@ -18,7 +18,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	periodics := jobConfig.Periodics
 	assert.Len(t, periodics, 1)
 
-	jobName := "kyma-gardener-azure-integration"
+	jobName := "kyma-integration-gardener-azure"
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
@@ -42,7 +42,7 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	periodics := jobConfig.Periodics
 	assert.Len(t, periodics, 1)
 
-	jobName := "kyma-gardener-gcp-integration"
+	jobName := "kyma-integration-gardener-gcp"
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
