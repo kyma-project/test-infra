@@ -41,8 +41,14 @@ func main() {
 		log.Fatalf("Error reading configPath file %v", err)
 	}
 
-	//TODO: Set label[created-by] to value of client_email from google application credentials file.
-
+	// dynamically setting created-by label based on GCP credentials file
+	if createdBy, err := config.ParseCredentials(*credentialsFile); err != nil {
+		log.Fatalf("Error getting GCP creator account: %v", err)
+	} else if readConfig.Labels == nil {
+		readConfig.Labels = map[string]string{"created-by": createdBy}
+	} else {
+		readConfig.Labels["created-by"] = createdBy
+	}
 	ctx := context.Background()
 
 	// this variable must be set
@@ -100,7 +106,7 @@ func main() {
 
 	for _, clusterToCreate := range readConfig.Clusters {
 		if clusterToCreate.Labels == nil {
-			clusterToCreate.Labels = make(map[string]string)
+			clusterToCreate.Labels = map[string]string{}
 		}
 		for k, v := range readConfig.Labels {
 			clusterToCreate.Labels[k] = v

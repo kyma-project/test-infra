@@ -4,8 +4,8 @@ keyring_name: test-prow-keyring
 encryption_key_name: test-prow-key
 kubeconfig: ""
 prefix: ""
-labels:
-  created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
+#labels:
+#  general: labels
 clusters:
   prow:
     name: kyma-prow
