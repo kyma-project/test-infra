@@ -31,7 +31,7 @@ periodics:
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
       - name: GARDENER_REGION
-        value: "europe-west4-b"
+        value: "europe-west3-a"
       resources:
         requests:
           memory: 1Gi

@@ -121,7 +121,6 @@ kyma provision gardener \
         --target-provider gcp --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
         --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --nodes 4 --kube-version=${GARDENER_CLUSTER_VERSION} \
-        --extra gcp_control_plane_zone="${GARDENER_REGION}" # TODO remove this temporary fix when bug is fixed: https://github.com/kyma-project/cli/issues/391
 )
 
 shout "Installing Kyma"
