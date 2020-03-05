@@ -290,7 +290,7 @@ periodics:
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
-              value: golang
+              value: golang-mod
           resources:
             requests:
               memory: 1Gi
@@ -311,7 +311,7 @@ periodics:
         - org: kyma-incubator
           repo: dex
           path_alias: github.com/kyma-incubator/dex
-          base_ref: master
+          base_ref: kyma-master
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
@@ -326,7 +326,7 @@ periodics:
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
-              value: golang
+              value: golang-mod
           resources:
             requests:
               memory: 1Gi

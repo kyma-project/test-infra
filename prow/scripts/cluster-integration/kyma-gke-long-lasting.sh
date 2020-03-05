@@ -222,6 +222,16 @@ data:
 EOF
 }
 
+function applyDexGithibKymaAdminGroup() {
+    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+    kubectl replace -f kyma-admin-binding.yaml
+}
+
 function installStackdriverPrometheusCollector(){
   # Patching prometheus resource of prometheus-operator.
   # Injecting stackdriver-collector sidecar to export metrics in to stackdriver monitoring.
@@ -270,6 +280,9 @@ shout "Install kyma"
 date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+shout "Override kyma-admin-binding ClusterRoleBinding"
+applyDexGithibKymaAdminGroup
 
 # Prometheus container need minimum 6Gi memory limit.
 shout "Increase cluster max container memory limit"

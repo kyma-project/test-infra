@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/kubectl"
 	"k8s.io/client-go/kubernetes"
 )
 
@@ -29,6 +30,7 @@ type Cluster struct {
 	Pools                 []Pool            `yaml:"pools"`
 	InitialClusterVersion string            `yaml:"kubernetesVersion,omitempty"`
 	K8sClient             *kubernetes.Clientset
+	KubectlWrapper        *kubectl.Wrapper
 	Populator             *k8s.Populator
 }
 
