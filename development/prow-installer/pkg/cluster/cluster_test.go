@@ -7,11 +7,8 @@ import (
 )
 
 var (
-	opts = Option{
-		Prefix:         "test-prefix",
-		ProjectID:      "a-project",
-		ServiceAccount: "not-empty-gcp-will-validate",
-	}
+	prefix    = "test-prefix"
+	projectID = "a-project"
 )
 
 func TestClient_Create(t *testing.T) {
@@ -40,7 +37,7 @@ func TestClient_Create(t *testing.T) {
 				},
 			},
 		}
-		client, err := New(opts, &api)
+		client, err := New(projectID, prefix, &api)
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
@@ -72,7 +69,7 @@ func TestClient_Create(t *testing.T) {
 				},
 			},
 		}
-		client, err := New(opts, &api)
+		client, err := New(projectID, prefix, &api)
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
@@ -104,7 +101,7 @@ func TestClient_Create(t *testing.T) {
 				},
 			},
 		}
-		client, err := New(opts, &api)
+		client, err := New(projectID, prefix, &api)
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
@@ -118,9 +115,9 @@ func TestClient_Delete(t *testing.T) {
 		testClusterName := "test-cluster-name"
 		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
-		api := &MockAPI{}
+		api := MockAPI{}
 
-		client, err := New(opts, api)
+		client, err := New(projectID, prefix, &api)
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
@@ -131,9 +128,9 @@ func TestClient_Delete(t *testing.T) {
 		testClusterName := ""
 		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
-		api := &MockAPI{}
+		api := MockAPI{}
 
-		client, err := New(opts, api)
+		client, err := New(projectID, prefix, &api)
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
@@ -144,9 +141,9 @@ func TestClient_Delete(t *testing.T) {
 		testClusterName := "test-cluster-name"
 		testZoneId := ""
 		ctx := context.Background()
-		api := &MockAPI{}
+		api := MockAPI{}
 
-		client, err := New(opts, api)
+		client, err := New(projectID, prefix, &api)
 		if err != nil {
 			t.Errorf("error ocured during client creation")
 		}
@@ -157,38 +154,19 @@ func TestClient_Delete(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	t.Run("New() should not throw errors", func(t *testing.T) {
-		api := &MockAPI{}
-		_, err := New(opts, api)
+		api := MockAPI{}
+		_, err := New(projectID, prefix, &api)
 		assert.NoErrorf(t, err, "no errors during client creation")
 	})
-	t.Run("New() should throw errors, because ProjectID is not satisfied", func(t *testing.T) {
-		api := &MockAPI{}
-		testOpts := &Option{
-			Prefix:         "test-prefix",
-			ProjectID:      "",
-			ServiceAccount: "gke-test-serviceaccount",
-		}
-		_, err := New(*testOpts, api)
-		assert.EqualErrorf(t, err, "ProjectID is required to initialize a client", "ProjectID is not satisfied in New()")
-	})
-	t.Run("New() should throw errors, because ServiceAccount is not satisfied", func(t *testing.T) {
-		api := &MockAPI{}
-		testOpts := &Option{
-			Prefix:         "test-prefix",
-			ProjectID:      "gcp-test-project",
-			ServiceAccount: "",
-		}
-		_, err := New(*testOpts, api)
-		assert.EqualErrorf(t, err, "ServiceAccount is required to initialize a client", "ServiceAccount is not satisfied in New()")
+	t.Run("New() should throw errors, because projectID is not satisfied", func(t *testing.T) {
+		api := MockAPI{}
+		fakeProjectId := ""
+		_, err := New(fakeProjectId, prefix, &api)
+		assert.EqualErrorf(t, err, "projectID is required to initialize a client", "projectID is not satisfied in New()")
 	})
 
 	t.Run("New() should throw errors, because api is not initialized", func(t *testing.T) {
-		testOpts := &Option{
-			Prefix:         "test-prefix",
-			ProjectID:      "gcp-test-project",
-			ServiceAccount: "gke-test-serviceaccount",
-		}
-		_, err := New(*testOpts, nil)
+		_, err := New(projectID, prefix, nil)
 		assert.EqualErrorf(t, err, "api is required to initialize a client", "api is not satisfied in New()")
 	})
 }

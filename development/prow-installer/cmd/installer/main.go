@@ -53,25 +53,23 @@ func main() {
 		log.Fatalf("Could not set GOOGLE_APPLICATION_CREDENTIALS env variable.")
 	}
 
-	storageConfig := &storage.Option{
-		ProjectID:      readConfig.Project,
-		Prefix:         readConfig.Prefix,
-		ServiceAccount: *credentialsFile,
+	// cluster service define
+	clusterService, err := cluster.NewService(ctx, readConfig.Project)
+	if err != nil {
+		log.Fatalf("An error occurred during cluster service configuration: %v", err)
 	}
 
-	clusterConfig := &cluster.Option{
-		Prefix:         readConfig.Prefix,
-		ProjectID:      readConfig.Project,
-		ServiceAccount: *credentialsFile,
-	}
-
-	//TODO: refactor GKE operating packages to use os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") in order to get credentials.
-	clusterClient, err := cluster.NewClient(ctx, *clusterConfig, *credentialsFile)
+	clusterClient, err := cluster.New(readConfig.Project, readConfig.Prefix, clusterService)
 	if err != nil {
 		log.Fatalf("An error occurred during cluster client configuration: %v", err)
 	}
 
-	storageClient, err := storage.NewClient(ctx, *storageConfig, *credentialsFile)
+	//storage service create
+	storageService, err := storage.NewService(ctx, readConfig.Project)
+	if err != nil {
+		log.Fatalf("An error occurred during storage client configuration: %v", err)
+	}
+	storageClient, err := storage.New(readConfig.Project, readConfig.Prefix, storageService)
 	if err != nil {
 		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
@@ -88,7 +86,7 @@ func main() {
 	}
 	crmClient, err := roles.New(crmService)
 
-	gkeClient, err := cluster.NewGKEClient(ctx, readConfig.Project)
+	gkeClient, err := cluster.NewService(ctx, readConfig.Project)
 	if err != nil {
 		log.Fatalf("failed get gke client, got: %v", err)
 	}

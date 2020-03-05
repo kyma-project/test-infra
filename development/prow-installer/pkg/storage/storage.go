@@ -7,10 +7,8 @@ import (
 
 // Option wrapper for relevant Options for the client
 type Option struct {
-	Prefix         string // storage prefix
-	ProjectID      string // GCP project ID
-	LocationID     string // location of the key rings
-	ServiceAccount string // filename of the serviceaccount to use
+	Prefix    string // storage prefix
+	ProjectID string // GCP project ID
 }
 
 //go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
@@ -36,17 +34,14 @@ type API interface {
 }
 
 // New returns a new Client, wrapping gcs for storage management on GCP
-func New(opts Option, api API) (*Client, error) {
-	if opts.ProjectID == "" {
-		return nil, fmt.Errorf("ProjectID is required to initialize a client")
-	}
-	if opts.ServiceAccount == "" {
-		return nil, fmt.Errorf("ServiceAccount is required to initialize a client")
+func New(projectID, prefix string, api API) (*Client, error) {
+	if projectID == "" {
+		return nil, fmt.Errorf("projectID is required to initialize a client")
 	}
 	if api == nil {
 		return nil, fmt.Errorf("api is required to initialize a client")
 	}
-
+	opts := Option{ProjectID: projectID, Prefix: prefix}
 	return &Client{Option: opts, api: api}, nil
 }
 
@@ -103,11 +98,5 @@ func (o Option) WithPrefix(pre string) Option {
 // WithProjectID modifies option to have a project id
 func (o Option) WithProjectID(pid string) Option {
 	o.ProjectID = pid
-	return o
-}
-
-// WithServiceAccount modifies option to have a service account
-func (o Option) WithServiceAccount(sa string) Option {
-	o.ServiceAccount = sa
 	return o
 }

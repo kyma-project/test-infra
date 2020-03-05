@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/api/container/v1"
 )
 
@@ -27,9 +28,11 @@ func (api *MockAPI) Create(ctx context.Context, clusterConfig Cluster) error {
 			Description:    clusterConfig.Description,
 			NodePools:      nodePools,
 		}}
+	log.Printf("Method Create() called with arguments: %v, %v", ctx, clusterConfig)
 	return nil
 }
 
 func (api *MockAPI) Delete(ctx context.Context, name string, zoneId string) error {
+	log.Printf("Method Delete() called with arguments: %v, %v, %v", ctx, name, zoneId)
 	return nil
 }

@@ -7,7 +7,6 @@ import (
 	"os"
 
 	kms "cloud.google.com/go/kms/apiv1"
-	gcs "cloud.google.com/go/storage"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/secrets"
@@ -65,22 +64,14 @@ func main() {
 		log.Fatalf("Could not create KMS Management Client: %v", err)
 	}
 
-	gcsClient, err := gcs.NewClient(ctx)
+	//storage service create
+	storageService, err := storage.NewService(ctx, *projectID)
 	if err != nil {
-		log.Fatalf("Initializing storage client failed: %w", err)
+		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
-
-	wrappedGCSAPI := &storage.APIWrapper{
-		ProjectID: *projectID,
-		GCSClient: gcsClient,
-	}
-
-	gcsClientOpts := storage.Option{}
-	gcsClientOpts = gcsClientOpts.WithPrefix(*prefix).WithProjectID(*projectID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
-
-	storageClient, err := storage.New(gcsClientOpts, wrappedGCSAPI)
+	storageClient, err := storage.New(*projectID, *prefix, storageService)
 	if err != nil {
-		log.Fatalf("Could not create GCS Storage Client: %v", err)
+		log.Fatalf("An error occurred during storage client configuration: %v", err)
 	}
 
 	data, err := secretClient.Encrypt(ctx, []byte("this is secret"))

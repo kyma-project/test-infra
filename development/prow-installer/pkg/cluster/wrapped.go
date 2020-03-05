@@ -15,34 +15,15 @@ import (
 // APIWrapper wraps the GCP api
 type APIWrapper struct {
 	ProjectID      string
-	ZoneID         string
 	ClusterService *container.ProjectsZonesClustersService
 }
 
-func NewClient(ctx context.Context, opts Option, credentials string) (*Client, error) {
-	containerService, err := container.NewService(ctx, option.WithCredentialsFile(credentials))
-	if err != nil {
-		return nil, fmt.Errorf("container service creation error %w", err)
-	}
-	api := &APIWrapper{
-		ProjectID:      opts.ProjectID,
-		ClusterService: containerService.Projects.Zones.Clusters,
-	}
-
-	if client, err := New(opts, api); err != nil {
-		return nil, fmt.Errorf("cluster client creation error %w", err)
-	} else {
-		return client, nil
-	}
-}
-
 // Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented in k8s package.
-
-func NewGKEClient(ctx context.Context, projectID string) (*APIWrapper, error) {
-	//func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
+func NewService(ctx context.Context, projectID string) (*APIWrapper, error) {
+	//func NewService (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
 	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
 	if err != nil {
-		log.Fatalf("failed creating gke client, got: %v", err)
+		return nil, err
 	}
 
 	api := &APIWrapper{

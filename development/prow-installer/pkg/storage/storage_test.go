@@ -24,12 +24,10 @@ func TestClient_Read(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
 		mockAPI.On("Read", ctx, testGCSBucket, testGCSStorageObject).Return([]byte(testBucketContent), nil)
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -45,10 +43,8 @@ func TestClient_Read(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -66,9 +62,9 @@ func TestClient_Read(t *testing.T) {
 
 		ctx := context.Background()
 		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
+		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj)
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -88,12 +84,10 @@ func TestClient_Write(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
 		mockAPI.On("Write", ctx, []byte(testBucketContent), testGCSBucket, testGCSStorageObject).Return(nil)
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -108,10 +102,8 @@ func TestClient_Write(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -127,10 +119,8 @@ func TestClient_Write(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -146,10 +136,8 @@ func TestClient_Write(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -167,10 +155,7 @@ func TestNew(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
 
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
-
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if mockClient == nil {
 			t.Errorf("New() expected client to not be nil")
 		}
@@ -186,10 +171,7 @@ func TestNew(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
 
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithServiceAccount("not-empty-gcp-will-validate")
-
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New("", testGCSPrefix, mockAPI)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
 		}
@@ -206,10 +188,7 @@ func TestNew(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
 
-		opts := Option{}
-		opts = opts.WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
-
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, "", mockAPI)
 		if mockClient == nil {
 			t.Errorf("New() expected client to not be nil")
 		}
@@ -221,51 +200,12 @@ func TestNew(t *testing.T) {
 		mockAPI.AssertNumberOfCalls(t, "CreateBucket", 0)
 		mockAPI.AssertNumberOfCalls(t, "DeleteBucket", 0)
 	})
-	t.Run("New() Should throw error when service account is not present", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
 
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj)
-
-		mockClient, err := New(opts, mockAPI)
-		if mockClient != nil {
-			t.Errorf("New() expected client to be nil")
-		}
-		if err == nil {
-			t.Errorf("New() error is nil, expected an error")
-		}
-		mockAPI.AssertNumberOfCalls(t, "Read", 0)
-		mockAPI.AssertNumberOfCalls(t, "Write", 0)
-		mockAPI.AssertNumberOfCalls(t, "CreateBucket", 0)
-		mockAPI.AssertNumberOfCalls(t, "DeleteBucket", 0)
-	})
-	t.Run("New() Should throw error when no option is not present", func(t *testing.T) {
-		mockAPI := &automock.API{}
-		defer mockAPI.AssertExpectations(t)
-
-		opts := Option{}
-
-		mockClient, err := New(opts, mockAPI)
-		if mockClient != nil {
-			t.Errorf("New() expected client to be nil")
-		}
-		if err == nil {
-			t.Errorf("New() error is nil, expected an error")
-		}
-		mockAPI.AssertNumberOfCalls(t, "Read", 0)
-		mockAPI.AssertNumberOfCalls(t, "Write", 0)
-		mockAPI.AssertNumberOfCalls(t, "CreateBucket", 0)
-		mockAPI.AssertNumberOfCalls(t, "DeleteBucket", 0)
-	})
 	t.Run("New() Should throw error when api is not initialized", func(t *testing.T) {
 		mockAPI := &automock.API{}
 		defer mockAPI.AssertExpectations(t)
 
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
-
-		mockClient, err := New(opts, nil)
+		mockClient, err := New(testGCSProj, testGCSPrefix, nil)
 		if mockClient != nil {
 			t.Errorf("New() expected client to be nil")
 		}
@@ -285,11 +225,10 @@ func TestClient_CreateBucket(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
+
 		mockAPI.On("CreateBucket", ctx, fmt.Sprintf("%s-%s", testGCSPrefix, testGCSBucket), testBucketLocation).Return(nil) // we need to check if the prefixed name is created
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 			t.Fail()
@@ -305,10 +244,8 @@ func TestClient_CreateBucket(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -327,12 +264,10 @@ func TestClient_DeleteBucket(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
 		mockAPI.On("DeleteBucket", ctx, testGCSBucket).Return(nil)
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}
@@ -347,10 +282,8 @@ func TestClient_DeleteBucket(t *testing.T) {
 		defer mockAPI.AssertExpectations(t)
 
 		ctx := context.Background()
-		opts := Option{}
-		opts = opts.WithPrefix(testGCSPrefix).WithProjectID(testGCSProj).WithServiceAccount("not-empty-gcp-will-validate")
 
-		mockClient, err := New(opts, mockAPI)
+		mockClient, err := New(testGCSProj, testGCSPrefix, mockAPI)
 		if err != nil {
 			t.Errorf("failed before running a test")
 		}

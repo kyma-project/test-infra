@@ -8,14 +8,12 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 
 	log "github.com/sirupsen/logrus"
-
-	container "google.golang.org/api/container/v1"
-	"google.golang.org/api/option"
 )
 
 var (
 	projectID = flag.String("proj", "", "ProjectID of the GCP project [Required]")
 	zoneID    = flag.String("zone", "global", "GCP zone for the cluster to be created [Required]")
+	prefix    = flag.String("prefix", "", "Prefix of a cluster [Optional]")
 )
 
 func main() {
@@ -32,36 +30,17 @@ func main() {
 	}
 	ctx := context.Background()
 
-	containerService, err := container.NewService(ctx, option.WithServiceAccountFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+	// cluster service define
+	clusterService, err := cluster.NewService(ctx, *projectID)
 	if err != nil {
-		log.Fatalf("Couldn't create service handle for GCP: %w", err)
-	}
-	clusterService := containerService.Projects.Zones.Clusters
-
-	wrappedAPI := &cluster.APIWrapper{
-		ProjectID:      *projectID,
-		ZoneID:         *zoneID,
-		ClusterService: clusterService,
+		log.Fatalf("An error occurred during cluster service configuration: %v", err)
 	}
 
-	clientOpts := cluster.Option{}
-	clientOpts = clientOpts.WithProjectID(*projectID).WithServiceAccount(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
-
-	gkeClient, err := cluster.New(clientOpts, wrappedAPI)
+	_, err = cluster.New(*projectID, *prefix, clusterService)
 	if err != nil {
-		log.Errorf("Could not create GKE Client: %v", err)
-		os.Exit(1)
+		log.Fatalf("An error occurred during cluster client configuration: %v", err)
 	}
 
 	labels := make(map[string]string)
 	labels["created-for"] = "testing"
-
-	// err = gkeClient.Create(ctx, "daniel-test-cluster", labels, 1, true)
-	// if err != nil {
-	// 	log.Fatalf("Couldn't create cluster %w", err)
-	// }
-	err = gkeClient.Delete(ctx, "", "europe-west-3-c")
-	if err != nil {
-		log.Fatalf("Couldn't delete cluster %w", err)
-	}
 }

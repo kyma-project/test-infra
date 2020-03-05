@@ -34,7 +34,7 @@ func main() {
 	}
 	ctx := context.Background()
 
-	gkeClient, err := cluster.NewGKEClient(ctx, *projectID)
+	gkeClient, err := cluster.NewService(ctx, *projectID)
 	if err != nil {
 		log.Fatalf("failed get gke client, got: %v", err)
 	}
