@@ -8,7 +8,7 @@ test_infra_ref: &test_infra_ref
 
 periodics:
 
-  - name: kyma-dep-whitesource-scan
+  - name: kyma-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -21,8 +21,8 @@ periodics:
     extra_refs:
         - <<: *test_infra_ref
         - org: kyma-project
-          repo: kyma-dep
-          path_alias: github.com/kyma-project/kyma-dep
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
           base_ref: master
     spec:
         containers:
@@ -34,7 +34,7 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: kyma-dep
+              value: kyma
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
