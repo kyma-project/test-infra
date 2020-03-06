@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 
 periodics:
 {{ range .Global.whitesource }}
-  - name: {{ .name }}-whitesource-scan
+  - name: {{ default .name .custom_jobname }}-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:

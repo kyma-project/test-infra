@@ -57,8 +57,8 @@ periodics:
     extra_refs:
         - <<: *test_infra_ref
         - org: kyma-project
-          repo: kyma-mod
-          path_alias: github.com/kyma-project/kyma-mod
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
           base_ref: master
     spec:
         containers:
@@ -70,7 +70,7 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: kyma-mod
+              value: kyma
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
