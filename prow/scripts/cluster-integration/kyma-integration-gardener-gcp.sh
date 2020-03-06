@@ -15,13 +15,10 @@
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Admin
-# - Kubernetes Engine Admin
-# - Kubernetes Engine Cluster Admin
-# - DNS Administrator
 # - Service Account User
-# - Storage Admin
-# - Compute Network Admin
-
+# - Service Account Admin
+# - Service Account Token Creator
+# - Make sure the service account is enabled for the Google Identity and Access Management API.
 
 set -e
 
