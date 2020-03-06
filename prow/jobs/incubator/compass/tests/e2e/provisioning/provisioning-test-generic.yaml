@@ -14,7 +14,6 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-incubator: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -40,7 +39,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-tests-e2e-provisioning
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:

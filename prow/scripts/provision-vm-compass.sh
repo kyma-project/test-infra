@@ -124,3 +124,13 @@ gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_I
 shout "Triggering the installation"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh"
+
+shout "Copying test artifacts from VM"
+
+for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}"  "compass-integration-test-${RANDOM_ID}":/var/log/prow_artifacts "${ARTIFACTS}"  && break;
+    # TODO change exit code to 1 later
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 0
+done;
+

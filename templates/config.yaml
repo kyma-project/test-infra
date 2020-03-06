@@ -339,7 +339,6 @@ templates:
           <<: *compass_generic_component
           path: tests/e2e/provisioning
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
         values:
           <<: *compass_generic_component
