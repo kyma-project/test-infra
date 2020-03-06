@@ -44,6 +44,42 @@ periodics:
               memory: 1Gi
               cpu: 400m
 
+  - name: kyma-mod-whitesource-scan
+    decorate: true
+    cron: "0 4 * * *" # At 04:00 am every day
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: kyma-project
+          repo: kyma-mod
+          path_alias: github.com/kyma-project/kyma-mod
+          base_ref: master
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: kyma-mod
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: golang-mod
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+
   - name: console-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
