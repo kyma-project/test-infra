@@ -35,6 +35,17 @@ var components = []struct {
 		},
 	},
 	{
+		name:  "fake-external-test-component",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release110),
+			jobsuite.Optional(),
+		},
+	},
+	{
 		name:  "gateway",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
