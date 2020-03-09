@@ -5,12 +5,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-cli_ref: &cli_ref
-  org: kyma-project
-  repo: cli
-  path_alias: github.com/kyma-project/cli
-  base_ref: master
-
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
@@ -47,23 +41,7 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-    - <<: *cli_ref
-  - name: pre-master-compass-integration-stable-cli
-    branches:
-    - ^master$
-    <<: *vm_job_template
-    run_if_changed: "^(chart|installation)/"
-    optional: true
-    skip_report: true
-    labels:
-      preset-build-pr: "true"
-      <<: *vm_job_labels_template
-    extra_refs:
-    - org: aszecowka
-      repo: test-infra
-      path_alias: github.com/kyma-project/test-infra
-      base_ref: use-stable-cli
-
+  
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration
@@ -78,4 +56,3 @@ postsubmits:
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-    - <<: *cli_ref
