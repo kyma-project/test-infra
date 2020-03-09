@@ -1,8 +1,8 @@
 job_template: &job_template
-  always_run: true
+  run_if_changed: "^prometheus-node-exporter/"
   skip_report: false
   decorate: true
-  path_alias: github.com/kyma-incubator/fluentbit
+  path_alias: github.com/kyma-incubator/third-party-images
   max_concurrency: 10
   extra_refs:
   - org: kyma-project
@@ -19,7 +19,7 @@ job_template: &job_template
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
       args:
-      - "/home/prow/go/src/github.com/kyma-incubator/fluentbit"
+      - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/prometheus-node-exporter"
       resources:
         requests:
           memory: 1.5Gi
@@ -31,16 +31,16 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository-incubator: "true"
 
 presubmits: # runs on PRs
-  kyma-incubator/fluentbit:
-  - name: pre-master-fluentbit
+  kyma-incubator/third-party-images:
+  - name: pre-master-tpi-node-exporter
     <<: *job_template
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
 
 postsubmits:
-  kyma-incubator/fluentbit:
-  - name: post-master-fluentbit
+  kyma-incubator/third-party-images:
+  - name: post-master-tpi-node-exporter
     <<: *job_template
     labels:
       <<: *job_labels_template
