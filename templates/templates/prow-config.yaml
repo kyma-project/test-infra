@@ -590,7 +590,7 @@ plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{"{{"}}if eq .Spec.Type "presubmit"{{"}}"}}pr-logs/pull{{"{{"}}else if eq .Spec.Type "batch"{{"}}"}}pr-logs/pull{{"{{"}}else{{"}}"}}logs{{"{{"}}end{{"}}"}}{{"{{"}}if .Spec.Refs{{"}}"}}{{"{{"}}if ne .Spec.Refs.Org ""{{"}}"}}/{{"{{"}}.Spec.Refs.Org{{"}}"}}_{{"{{"}}.Spec.Refs.Repo{{"}}"}}{{"{{"}}end{{"}}"}}{{"{{"}}end{{"}}"}}{{"{{"}}if eq .Spec.Type "presubmit"{{"}}"}}/{{"{{"}}with index .Spec.Refs.Pulls 0{{"}}"}}{{"{{"}}.Number{{"}}"}}{{"{{"}}end{{"}}"}}{{"{{"}}else if eq .Spec.Type "batch"{{"}}"}}/batch{{"{{"}}end{{"}}"}}/{{"{{"}}.Spec.Job{{"}}"}}/{{"{{"}}.Status.BuildID{{"}}"}}/'
   job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
-  max_concurrency: 70 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
+  max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_config:
     timeout: 7200000000000 # 2h
