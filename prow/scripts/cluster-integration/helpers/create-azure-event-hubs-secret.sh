@@ -193,7 +193,7 @@ metadata:
   labels:
     knativekafka.kyma-project.io/kafka-secret: "true"
     installer: overrides
-    component: knative-eventing-channel-kafka
+    component: knative-eventing-kafka
     kyma-project.io/installation: ""
 stringData:
   kafka.brokers: ${K8S_SECRET_BROKER}
