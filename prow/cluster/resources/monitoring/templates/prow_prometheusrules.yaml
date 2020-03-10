@@ -161,7 +161,7 @@ spec:
                     description: Ingress-nginx service doesn't have any endpoints assigned.
               # In progress prowjobs count
               - alert: ProwjobsCountLimit
-                expr: prowjobs{state=~"pending|triggered"} > 69
+                expr: sum(prowjobs{state=~"pending|triggered"}) > 69
                 for: 30s
                 labels:
                   app: prow
