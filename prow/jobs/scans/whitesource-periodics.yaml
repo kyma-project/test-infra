@@ -36,7 +36,7 @@ periodics:
             - name : PROJECTNAME
               value: kyma
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -112,7 +112,7 @@ periodics:
             - name : PROJECTNAME
               value: console
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -150,7 +150,7 @@ periodics:
             - name : PROJECTNAME
               value: cli
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -188,7 +188,7 @@ periodics:
             - name : PROJECTNAME
               value: helm-broker
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -226,7 +226,7 @@ periodics:
             - name : PROJECTNAME
               value: rafter
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -264,7 +264,7 @@ periodics:
             - name : PROJECTNAME
               value: compass
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -302,7 +302,7 @@ periodics:
             - name : PROJECTNAME
               value: knative-kafka
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -340,7 +340,7 @@ periodics:
             - name : PROJECTNAME
               value: api-gateway
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -378,7 +378,7 @@ periodics:
             - name : PROJECTNAME
               value: dex
             - name: CUSTOM_PROJECTNAME
-              value: <no value>
+              value: 
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE

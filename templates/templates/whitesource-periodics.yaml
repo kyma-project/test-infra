@@ -34,7 +34,7 @@ periodics:
             - name : PROJECTNAME
               value: {{ .name }}
             - name: CUSTOM_PROJECTNAME
-              value: {{ .custom_projectname }}
+              value: {{ default "" .custom_projectname }}
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
