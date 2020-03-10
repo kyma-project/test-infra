@@ -35,7 +35,7 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "fake-external-test-component",
+		name:  "mock-external-test-component",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
