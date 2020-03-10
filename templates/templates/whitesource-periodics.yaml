@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 
 periodics:
 {{ range .Global.whitesource }}
-  - name: {{ default .name .custom_jobname }}-whitesource-scan
+  - name: {{ default .name .custom_projectname }}-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -32,7 +32,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: {{ .name }}
+              value: {{ .default }}
+            - name: CUSTOM_PROJECTNAME
+              value: {{ .custom_projectname }}
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE

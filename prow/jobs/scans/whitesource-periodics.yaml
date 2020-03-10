@@ -34,7 +34,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: kyma
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -70,7 +72,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: kyma
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: kyma-mod
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -106,7 +110,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: console
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -142,7 +148,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: cli
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -178,7 +186,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: helm-broker
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -214,7 +224,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: rafter
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -250,7 +262,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: compass
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -286,7 +300,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: knative-kafka
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -322,7 +338,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: api-gateway
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
@@ -358,7 +376,9 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: dex
+              value: <no value>
+            - name: CUSTOM_PROJECTNAME
+              value: <no value>
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE

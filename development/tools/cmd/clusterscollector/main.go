@@ -20,7 +20,7 @@ import (
 var (
 	project             = flag.String("project", "", "Project ID [Required]")
 	dryRun              = flag.Bool("dryRun", true, "Dry Run enabled, nothing is deleted")
-	ageInHours          = flag.Int("ageInHours", 3, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
+	ageInHours          = flag.Int("ageInHours", 2, "Cluster age in hours. Clusters older than: now()-ageInHours are subject to removal.")
 	whitelistedClusters = flag.String("whitelisted-clusters", "", "Comma separated list of the whitelisted clusters that cannot be removed by cluster collector")
 )
 

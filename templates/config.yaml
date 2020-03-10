@@ -11,7 +11,7 @@ global:
     - name: "kyma"
       language: "golang-mod"
       project: "kyma-project"
-      custom_jobname: "kyma-mod"
+      custom_projectname: "kyma-mod"
     - name: "console"
       language: "javascript"
       project: "kyma-project"
