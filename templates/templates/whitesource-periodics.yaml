@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 
 periodics:
 {{ range .Global.whitesource }}
-  - name: {{ default .name .custom_jobname }}-whitesource-scan
+  - name: {{ default .name .custom_projectname }}-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -33,6 +33,8 @@ periodics:
           env:
             - name : PROJECTNAME
               value: {{ .name }}
+            - name: CUSTOM_PROJECTNAME
+              value: {{ default "" .custom_projectname }}
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE
