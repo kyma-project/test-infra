@@ -13,9 +13,9 @@ if [[ -z "${JOBS_PATH}" ]]; then
 fi
 
 readonly UPLOADER="${DEVELOPMENT_DIR}/tools/cmd/configuploader/main.go"
-if [[ ! -d "${DEVELOPMENT_DIR}/tools/vendor/github.com" ]]; then
-    (cd "${DEVELOPMENT_DIR}/tools" && dep ensure -v -vendor-only)
-fi
+#if [[ ! -d "${DEVELOPMENT_DIR}/tools/vendor/github.com" ]]; then
+#    (cd "${DEVELOPMENT_DIR}/tools" && dep ensure -v -vendor-only)
+#fi
 
 readonly CONFIG="${HOME}/.kube/config"
 
