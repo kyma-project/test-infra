@@ -66,15 +66,14 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
+    #!!! Must be at the beginning of this function !!!
+    EXIT_STATUS=$?
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
     if [[ -n "${SUITE_NAME}" ]]; then
         testSummary
     fi 
-
-    #!!! Must be at the beginning of this function !!!
-    EXIT_STATUS=$?
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         shout "AN ERROR OCCURED! Take a look at preceding log entries."
