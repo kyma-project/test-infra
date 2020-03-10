@@ -32,7 +32,7 @@ periodics:
             - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
           env:
             - name : PROJECTNAME
-              value: {{ .default }}
+              value: {{ .project }}
             - name: CUSTOM_PROJECTNAME
               value: {{ .custom_projectname }}
             - name: DRYRUN
