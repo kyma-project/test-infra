@@ -613,3 +613,4 @@ sinker:
 push_gateway:
   endpoint: pushgateway
   interval: 10s
+  serve_metrics: true
