@@ -95,7 +95,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $CUSTOM_PROJECTNAME == "" ]]; then
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" /wss/wss-unified-agent.config
     else
-        sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJNAME}|g" /wss/wss-unified-agent.config
+        sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" /wss/wss-unified-agent.config
     fi
 
     echo "Product name - $PRODUCTNAME"
