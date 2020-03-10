@@ -24,7 +24,7 @@ func TestDockerRegistryJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.True(t, actualPresubmit.Optional)
+	assert.False(t, actualPresubmit.Optional)
 	assert.Equal(t, "^distribution-library-image/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-incubator/third-party-images", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
