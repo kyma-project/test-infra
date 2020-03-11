@@ -33,6 +33,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/third-party-images:
   - name: pre-master-tpi-docker-registry
+    optional: false
     <<: *job_template
     labels:
       <<: *job_labels_template
