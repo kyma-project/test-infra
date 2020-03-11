@@ -279,6 +279,12 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/mock-external-test-component/mock-external-test-component-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/mock-external-test-component
+          since: "1.11"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         values:
           <<: *compass_generic_component
