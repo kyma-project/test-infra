@@ -20,7 +20,6 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.10)-mock-external-test-component$
   run_if_changed: "^components/mock-external-test-component/|^scripts/"
   spec:
     containers:
