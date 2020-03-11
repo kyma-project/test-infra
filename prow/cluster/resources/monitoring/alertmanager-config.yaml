@@ -22,8 +22,13 @@ prometheus-operator:
         routes:
         - match:
             app: prow
+          receiver: prow-slack
+          continue: true
+        - match:
+            app: prow
             severity: critical
-            receiver: prow-slack
+          receiver: slack
+          continue: true
       templates:
         - '*.tmpl'
     templateFiles:

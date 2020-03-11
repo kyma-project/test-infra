@@ -161,7 +161,7 @@ spec:
                     description: Ingress-nginx service doesn't have any endpoints assigned.
               # In progress prowjobs count
               - alert: ProwjobsCountLimit
-                expr: sum(prowjobs{state=~"pending|triggered"}) > 69
+                expr: sum(prowjobs{state=~"pending|triggered"}) > 99
                 for: 30s
                 labels:
                   app: prow
@@ -169,3 +169,12 @@ spec:
                 annotations:
                   summary: Prowjobs count limit exceeded.
                   description: Number of running concurrent prowjobs reached maximum limit. Check plank config max_concurrency option.
+              - alert: ProwjobsCountLimit
+                expr: sum(prowjobs{state=~"pending|triggered"}) > 89
+                for: 30s
+                labels:
+                  app: prow
+                  severity: warning
+                annotations:
+                  description: Number of running concurrent prowjobs reached warning treshold.
+                  summary: Prowjobs count is high.
