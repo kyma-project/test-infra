@@ -25,7 +25,7 @@ func TestMinioMCJobsPresubmit(t *testing.T) {
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "^minio/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^minio-mc/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-incubator/third-party-images", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, tester.ImageBootstrap20181204, actualPresubmit.Spec.Containers[0].Image)
