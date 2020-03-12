@@ -10,37 +10,37 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const dockerRegistryJobPath = "./../../../../../../prow/jobs/incubator/third-party-images/docker-registry/registry.yaml"
+const minioJobPath = "./../../../../../../prow/jobs/incubator/third-party-images/minio/minio.yaml"
 
-func TestDockerRegistryJobsPresubmit(t *testing.T) {
+func TestMinioJobsPresubmit(t *testing.T) {
 	// when
-	jobConfig, err := tester.ReadJobConfig(dockerRegistryJobPath)
+	jobConfig, err := tester.ReadJobConfig(minioJobPath)
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/third-party-images"], "pre-master-tpi-docker-registry", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/third-party-images"], "pre-master-tpi-minio", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "^distribution-library-image/", actualPresubmit.RunIfChanged)
+	assert.Equal(t, "^minio/", actualPresubmit.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-incubator/third-party-images", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, tester.ImageBootstrap20181204, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/third-party-images/distribution-library-image"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
-func TestDockerRegistryJobPostsubmit(t *testing.T) {
+func TestMinioJobPostsubmit(t *testing.T) {
 	// when
-	jobConfig, err := tester.ReadJobConfig(dockerRegistryJobPath)
+	jobConfig, err := tester.ReadJobConfig(minioJobPath)
 
 	// then
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/third-party-images"], "post-master-tpi-docker-registry", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/third-party-images"], "post-master-tpi-minio", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)
@@ -49,5 +49,5 @@ func TestDockerRegistryJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
 	assert.Equal(t, tester.ImageBootstrap20181204, actualPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/third-party-images/distribution-library-image"}, actualPostsubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"}, actualPostsubmit.Spec.Containers[0].Args)
 }
