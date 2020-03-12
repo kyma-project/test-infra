@@ -3,7 +3,7 @@ FROM alpine:3.10
 LABEL source=git@github.com:kyma-project/test-infra.git
 
 ENV HELM_VERSION="v2.16.1"
-ENV KUBECTL_VERSION="v1.16.3"
+ENV KUBECTL_VERSION="v1.17.3"
 
 RUN apk update &&\
 	apk add openssl coreutils curl bash &&\
