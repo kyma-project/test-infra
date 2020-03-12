@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const minioMCJobPath = "./../../../../../../prow/jobs/incubator/third-party-images/minio/minio-mc.yaml"
+const minioMCJobPath = "./../../../../../../prow/jobs/incubator/third-party-images/minio-mc/minio-mc.yaml"
 
 func TestMinioMCJobsPresubmit(t *testing.T) {
 	// when
