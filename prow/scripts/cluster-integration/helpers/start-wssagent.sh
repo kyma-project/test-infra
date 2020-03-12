@@ -45,14 +45,17 @@ APIKEY=$(cat "whitesource-apikey")
 
 case "${SCAN_LANGUAGE}" in
     golang)
+        echo "SCAN: golang (dep)"
         sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
         ;;
 
     golang-mod)
+        echo "SCAN: golang-mod"
         sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=modules|g" /wss/wss-unified-agent.config
         ;;
         
     javascript)
+        echo "SCAN: JAVASTRIPT, disable scanning for go dependencies"
         sed -i.bak "s|go.resolveDependencies=true|# go.resolveDependencies=true|g" /wss/wss-unified-agent.config
         sed -i.bak "s|go.collectDependenciesAtRuntime=false|# go.collectDependenciesAtRuntime=false|g" /wss/wss-unified-agent.config
         sed -i.bak "s|go.dependencyManager=godep|# go.dependencyManager=godep|g" /wss/wss-unified-agent.config
@@ -71,11 +74,7 @@ echo "***********Starting Scan***********"
 echo "***********************************"
 
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
-
-if [ "${PROJECTNAME}" == "console" ]; then
-    cd "$KYMA_SRC"
-    make resolve
-fi    
+   
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $1 == "" ]]; then
