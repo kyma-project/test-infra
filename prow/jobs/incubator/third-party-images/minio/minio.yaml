@@ -1,5 +1,5 @@
 job_template: &job_template
-  run_if_changed: "^docker-registry/"
+  run_if_changed: "^minio/"
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-incubator/third-party-images
@@ -19,7 +19,7 @@ job_template: &job_template
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
       args:
-      - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/docker-registry"
+      - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/minio"
       resources:
         requests:
           memory: 1.5Gi
@@ -32,7 +32,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/third-party-images:
-  - name: pre-master-tpi-docker-registry
+  - name: pre-master-tpi-minio
     optional: false
     <<: *job_template
     labels:
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/third-party-images:
-  - name: post-master-tpi-docker-registry
+  - name: post-master-tpi-minio
     <<: *job_template
     labels:
       <<: *job_labels_template
