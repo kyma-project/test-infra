@@ -96,7 +96,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
 			},
 
-			expRunIfChangedRegex: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedRegex: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/values.yaml",
 				"installation/file.yaml",
