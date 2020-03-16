@@ -91,8 +91,9 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     cd "${FOLDER}" # change to passed parameter
     PROJNAME=$2
 
-    # adjust global setting ignoreSourceFiles=true
-    sed -i.bak "s|#ignoreSourceFiles=true|ignoreSourceFiles=false|g;" /wss/wss-unified-agent.config
+    # adjust global setting ignoreSourceFiles=false
+    sed -i.bak "s|#ignoreSourceFiles=true|ignoreSourceFiles=true|g;" /wss/wss-unified-agent.config
+    sed -i.bak "s|#resolveAllDependencies=false|resolveAllDependencies=false|g;" /wss/wss-unified-agent.config
 
     if [[ $CUSTOM_PROJECTNAME == "" ]]; then 
     # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
