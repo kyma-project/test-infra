@@ -66,8 +66,11 @@ case "${SCAN_LANGUAGE}" in
         exit 1
 esac
 
-# backup config for re-use
-/bin/cp /wss/wss-unified-agent.config /wss/wss-unified-agent.config.backup
+# resolve deps for console repository
+if [ "${PROJECTNAME}" == "console" ]; then
+    cd "$KYMA_SRC"
+    make resolve
+fi    
 
 echo "***********************************"
 echo "***********Starting Scan***********"
@@ -89,9 +92,11 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     cd "${FOLDER}" # change to passed parameter
     PROJNAME=$2
 
-    /bin/cp /wss/wss-unified-agent.config.backup /wss/wss-unified-agent.config
+    # adjust global setting ignoreSourceFiles=true
+    sed -i.bak "s|#ignoreSourceFiles=true|ignoreSourceFiles=false|g;" /wss/wss-unified-agent.config
 
-    if [[ $CUSTOM_PROJECTNAME == "" ]]; then
+    if [[ $CUSTOM_PROJECTNAME == "" ]]; then 
+    # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" /wss/wss-unified-agent.config
     else
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" /wss/wss-unified-agent.config
