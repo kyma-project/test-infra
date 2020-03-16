@@ -45,14 +45,17 @@ APIKEY=$(cat "whitesource-apikey")
 
 case "${SCAN_LANGUAGE}" in
     golang)
+        echo "SCAN: golang (dep)"
         sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=dep|g" /wss/wss-unified-agent.config
         ;;
 
     golang-mod)
+        echo "SCAN: golang-mod"
         sed -i.bak "s|go.dependencyManager=godep|go.dependencyManager=modules|g" /wss/wss-unified-agent.config
         ;;
         
     javascript)
+        echo "SCAN: JAVASTRIPT, disable scanning for go dependencies"
         sed -i.bak "s|go.resolveDependencies=true|# go.resolveDependencies=true|g" /wss/wss-unified-agent.config
         sed -i.bak "s|go.collectDependenciesAtRuntime=false|# go.collectDependenciesAtRuntime=false|g" /wss/wss-unified-agent.config
         sed -i.bak "s|go.dependencyManager=godep|# go.dependencyManager=godep|g" /wss/wss-unified-agent.config
@@ -63,15 +66,13 @@ case "${SCAN_LANGUAGE}" in
         exit 1
 esac
 
-# backup config for re-use
-/bin/cp /wss/wss-unified-agent.config /wss/wss-unified-agent.config.backup
-
 echo "***********************************"
 echo "***********Starting Scan***********"
 echo "***********************************"
 
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
+# resolve deps for console repository
 if [ "${PROJECTNAME}" == "console" ]; then
     cd "$KYMA_SRC"
     make resolve
@@ -90,9 +91,12 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     cd "${FOLDER}" # change to passed parameter
     PROJNAME=$2
 
-    /bin/cp /wss/wss-unified-agent.config.backup /wss/wss-unified-agent.config
+    # adjust global setting ignoreSourceFiles=false
+    sed -i.bak "s|#ignoreSourceFiles=true|ignoreSourceFiles=true|g;" /wss/wss-unified-agent.config
+    sed -i.bak "s|#resolveAllDependencies=false|resolveAllDependencies=false|g;" /wss/wss-unified-agent.config
 
-    if [[ $CUSTOM_PROJECTNAME == "" ]]; then
+    if [[ $CUSTOM_PROJECTNAME == "" ]]; then 
+    # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" /wss/wss-unified-agent.config
     else
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" /wss/wss-unified-agent.config
