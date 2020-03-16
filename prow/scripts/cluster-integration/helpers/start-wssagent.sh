@@ -66,18 +66,17 @@ case "${SCAN_LANGUAGE}" in
         exit 1
 esac
 
-# resolve deps for console repository
-if [ "${PROJECTNAME}" == "console" ]; then
-    cd "$KYMA_SRC"
-    make resolve
-fi    
-
 echo "***********************************"
 echo "***********Starting Scan***********"
 echo "***********************************"
 
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
-   
+
+# resolve deps for console repository
+if [ "${PROJECTNAME}" == "console" ]; then
+    cd "$KYMA_SRC"
+    make resolve
+fi    
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $1 == "" ]]; then
