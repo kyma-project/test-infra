@@ -21,6 +21,10 @@ function read_arguments() {
               local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
               shift # remove --dirs-to-pulling=
             ;;
+            --verbose)
+              VERBOSE=true
+              shift # remove this --verbose
+            ;;
             *)
               # unknown option
             ;;
