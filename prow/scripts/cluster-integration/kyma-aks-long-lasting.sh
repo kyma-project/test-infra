@@ -297,6 +297,23 @@ EOF
     kubectl replace -f kyma-admin-binding.yaml
 }
 
+# update configmap metadata-agent-config
+function updatememorysettings() {
+
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+data:
+  NannyConfiguration: |-
+    apiVersion: nannyconfig/v1alpha1
+    kind: NannyConfiguration
+    baseMemory: 100Mi
+kind: ConfigMap
+EOF
+
+	kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+
+}
+
 init
 azureAuthenticating
 
@@ -325,6 +342,9 @@ installKyma
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
 applyDexGithibKymaAdminGroup
+
+shout "Update memory settings"
+updatememorysettings
 
 shout "Install stability-checker"
 date
