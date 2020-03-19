@@ -27,7 +27,11 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
+			if currentRelease == releases.Release111 {
+				assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
+			}else{
+				assert.Equal(t, tester.ImageKymaClusterInfraK14, testContainer.Image)
+			}
 			assert.Len(t, testContainer.Command, 1)
 			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -51,7 +55,11 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
+			if currentRelease == releases.Release111 {
+				assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
+			}else{
+				assert.Equal(t, tester.ImageKymaClusterInfraK14, testContainer.Image)
+			}
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
@@ -74,7 +82,11 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
+			if currentRelease == releases.Release111 {
+				assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
+			}else{
+				assert.Equal(t, tester.ImageKymaClusterInfraK14, testContainer.Image)
+			}
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
