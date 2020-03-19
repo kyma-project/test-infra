@@ -151,7 +151,7 @@ Verify if the Prow installation was successful.
 
 ## Configure the webhook
 
-After Prow installs successfully, you must [configure the webhook](https://support.hockeyapp.net/kb/third-party-bug-trackers-services-and-webhooks/how-to-set-up-a-webhook-in-github) to enable the GitHub repository to send events to Prow.
+After Prow installs successfully, you must [configure the webhook](https://github.com/kyma-project/community/blob/master/guidelines/repository-guidelines/01-new-repository-settings.md#add-webhooks) to enable the GitHub repository to send events to Prow.
 
 ## Configure Prow
 
