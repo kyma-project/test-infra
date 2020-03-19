@@ -110,13 +110,13 @@ func Until(rel *releases.SupportedRelease) Option {
 
 func AllReleases() Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesUntil(releases.Release18)
+		suite.Releases = releases.GetKymaReleasesUntil(releases.Release19)
 	}
 }
 
 func Since(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release18)
+		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release19)
 	}
 }
 

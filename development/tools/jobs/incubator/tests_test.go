@@ -21,7 +21,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -41,7 +41,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
