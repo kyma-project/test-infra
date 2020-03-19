@@ -300,7 +300,7 @@ EOF
 # update configmap metadata-agent-config
 function updatememorysettings() {
 
-cat <<EOF | kubectl apply -f -
+cat <<EOF | kubectl replace -f -
 apiVersion: v1
 data:
   NannyConfiguration: |-
@@ -308,6 +308,12 @@ data:
     kind: NannyConfiguration
     baseMemory: 100Mi
 kind: ConfigMap
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: metadata-agent-config
+  namespace: kube-system
 EOF
 
 	kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
