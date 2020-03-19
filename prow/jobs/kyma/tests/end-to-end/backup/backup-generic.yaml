@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.10)-backup$
+    - ^release-(1\.11|1\.10)-backup$
   run_if_changed: "^tests/end-to-end/backup/|^common/makefiles/"
   spec:
     containers:
