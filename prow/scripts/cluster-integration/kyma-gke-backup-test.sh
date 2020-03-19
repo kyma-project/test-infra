@@ -290,10 +290,10 @@ function restoreKyma() {
     shout "Install Velero CLI"
     date
 
-    wget -q https://github.com/vmware-tanzu/velero/releases/download/v1.2.0/velero-v1.2.0-linux-amd64.tar.gz && \
-    tar -xvf velero-v1.2.0-linux-amd64.tar.gz && \
-    mv velero-v1.2.0-linux-amd64/velero /usr/local/bin && \
-    rm -rf velero-v1.2.0-linux-amd64 velero-v1.2.0-linux-amd64.tar.gz
+    wget -q https://github.com/vmware-tanzu/velero/releases/download/v1.3.1/velero-v1.3.1-linux-amd64.tar.gz && \
+    tar -xvf velero-v1.3.1-linux-amd64.tar.gz && \
+    mv velero-v1.3.1-linux-amd64/velero /usr/local/bin && \
+    rm -rf velero-v1.3.1-linux-amd64 velero-v1.3.1-linux-amd64.tar.gz
 
     CLOUD_PROVIDER="gcp"
 
@@ -303,7 +303,7 @@ function restoreKyma() {
     	source "${E2E_TESTING_ENV_FILE}"
     fi
 
-    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:1ac01ae1}"
+    VELERO_PLUGIN_IMAGES="velero/velero-plugin-for-gcp:v1.0.0,${ADDITIONAL_VELERO_PLUGIN_IMAGES:-eu.gcr.io/kyma-project/backup-plugins:PR-7699}"
 
     shout "Install Velero Server"
     date
@@ -314,8 +314,6 @@ function restoreKyma() {
         --plugins "${VELERO_PLUGIN_IMAGES}" \
         --restore-only \
         --wait
-
-    sleep 15
 
     shout "Check if the backup ${BACKUP_NAME} exists"
     date
@@ -332,38 +330,18 @@ function restoreKyma() {
         echo "Sleep for 15 seconds"
         sleep 15
     done
-    
 
-    shout "Restore Kyma CRDs, Services and Endpoints"
+    shout "Restore Kyma Services and Endpoints"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
+    velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --restore-volumes --wait
 
-    sleep 30
+    sleep 600
 
     shout "Restore the rest of Kyma"
     date
+    velero restore create --from-backup "${BACKUP_NAME}" --include-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --wait
 
-    attempts=3
-    for ((i=1; i<=attempts; i++)); do
-        
-        velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
-
-        sleep 60
-
-        echo "Check if VirtualServices are restored"
-        
-        result=$(kubectl get virtualservices -n kyma-system)
-        if [[ "${result}" == *"NAME"* ]]; then
-            echo "VirtualServices are restored"
-            break
-        elif [[ "${i}" == "${attempts}" ]]; then
-            echo "ERROR: restoring VirtualServices failed"
-            exit 1
-        fi
-
-        echo "Sleep for 30 seconds"
-        sleep 30
-    done
+    sleep 60
 
     set -e
 }

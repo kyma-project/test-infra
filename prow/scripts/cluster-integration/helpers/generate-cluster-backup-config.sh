@@ -20,11 +20,12 @@ source "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/library.sh
 
 shout "Create a Secret for Velero"
 
-VELERO_SECRET_TPL_PATH="${KYMA_RESOURCES_DIR}/velero-secret.yaml.tpl"
+CLOUD_PROVIDER="gcp"
+
+VELERO_SECRET_TPL_PATH="${KYMA_RESOURCES_DIR}/backup-secret-${CLOUD_PROVIDER}.yaml.tpl"
 VELERO_SECRET_OUTPUT_PATH=$(mktemp)
 cp "${VELERO_SECRET_TPL_PATH}" "${VELERO_SECRET_OUTPUT_PATH}"
 
-CLOUD_PROVIDER="gcp"
 
 BASE64_CLOUD_PROVIDER=$(echo -n "${CLOUD_PROVIDER}" | base64 -w0)
 BASE64_BUCKET=$(echo -n "${BACKUP_RESTORE_BUCKET}" | base64 -w0)
