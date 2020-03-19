@@ -232,6 +232,29 @@ EOF
     kubectl replace -f kyma-admin-binding.yaml
 }
 
+# update configmap metadata-agent-config
+function updatememorysettings() {
+
+cat <<EOF | kubectl replace -f -
+apiVersion: v1
+data:
+  NannyConfiguration: |-
+    apiVersion: nannyconfig/v1alpha1
+    kind: NannyConfiguration
+    baseMemory: 100Mi
+kind: ConfigMap
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: metadata-agent-config
+  namespace: kube-system
+EOF
+
+	kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+
+}
+
 function installStackdriverPrometheusCollector(){
   # Patching prometheus resource of prometheus-operator.
   # Injecting stackdriver-collector sidecar to export metrics in to stackdriver monitoring.
@@ -292,6 +315,9 @@ patchlimitrange
 shout "Install stackdriver-prometheus collector"
 date
 installStackdriverPrometheusCollector
+
+shout "Update stackdriver-metadata-agent memory settings"
+updatememorysettings
 
 shout "Collect list of images"
 date

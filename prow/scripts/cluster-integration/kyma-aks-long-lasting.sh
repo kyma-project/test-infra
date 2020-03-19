@@ -349,7 +349,7 @@ installKyma
 shout "Override kyma-admin-binding ClusterRoleBinding"
 applyDexGithibKymaAdminGroup
 
-shout "Update memory settings"
+shout "Update stackdriver-metadata-agent memory settings"
 updatememorysettings
 
 shout "Install stability-checker"
