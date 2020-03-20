@@ -49,6 +49,7 @@ const (
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaClusterInfraLatest represents boostrap image published on 20.11.2019
 	ImageKymaClusterInfraK14    = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51"
+	ImageKymaClusterInfraK16    = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4"
 	ImageKymaClusterInfraLatest = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
 	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"

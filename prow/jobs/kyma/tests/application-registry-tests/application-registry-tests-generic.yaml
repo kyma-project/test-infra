@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.10|1\.9|1\.8)-application-registry-tests$
+    - ^release-(1\.11|1\.10|1\.9)-application-registry-tests$
   run_if_changed: "^tests/application-registry-tests/|^common/makefiles/"
   spec:
     containers:
