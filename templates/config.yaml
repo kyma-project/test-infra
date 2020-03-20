@@ -217,11 +217,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/service-catalog
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/application-connector-tests
-          since: "1.7"
       - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
         values:
           <<: *kyma_generic_component
