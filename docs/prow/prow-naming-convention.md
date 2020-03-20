@@ -1,6 +1,6 @@
-# Naming conventions of the Prow test instance
+# Naming conventions
 
-This document focuses mainly on test Prow test instance and its resources hosted in Google Cloud Platform.
+This document describes naming convention for the Prow test instance and its resources hosted in Google Cloud Platform.
 
 The page describes naming convention standards for resources used by Prow and ProwJob resources like:
 - Service accounts
