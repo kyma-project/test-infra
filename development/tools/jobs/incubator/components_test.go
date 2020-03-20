@@ -21,7 +21,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -31,7 +31,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -52,7 +52,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -62,7 +62,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -72,7 +72,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -92,7 +92,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -102,7 +102,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 
@@ -114,7 +114,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Optional(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 }

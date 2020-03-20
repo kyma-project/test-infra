@@ -513,6 +513,16 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.11:
+              required_status_checks:
+                contexts:
+                  - pre-rel111-kyma-integration
+                  - pre-rel111-kyma-gke-integration
+                  - pre-rel111-kyma-gke-upgrade
+                  - pre-rel111-kyma-gke-backup
+                  - pre-rel111-kyma-gke-central-connector
+                  - pre-rel111-kyma-artifacts
+                  - pre-rel111-kyma-installer
             release-1.10:
               required_status_checks:
                 contexts:
@@ -533,20 +543,6 @@ branch-protection:
                   - pre-rel19-kyma-gke-central-connector
                   - pre-rel19-kyma-artifacts
                   - pre-rel19-kyma-installer
-            release-1.8:
-              required_status_checks:
-                contexts:
-                  - pre-rel18-kyma-integration
-                  - pre-rel18-kyma-gke-integration
-                  - pre-rel18-kyma-gke-upgrade
-                  - pre-rel18-kyma-gke-backup
-                  - pre-rel18-kyma-gke-central-connector
-                  - pre-rel18-kyma-artifacts
-                  - pre-rel18-kyma-installer
-                  - pre-rel18-kyma-gke-minio-gcs-gateway
-                  - pre-rel18-kyma-gke-minio-az-gateway
-                  - pre-rel18-kyma-gke-minio-gcs-gateway-migration
-                  - pre-rel18-kyma-gke-minio-az-gateway-migration
         website:
           required_status_checks:
             contexts:

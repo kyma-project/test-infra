@@ -32,6 +32,18 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
 
+    - name: pre-rel111-kyma-installer
+      branches:
+        - release-1.11
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.11
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
     - name: pre-rel110-kyma-installer
       branches:
         - release-1.10
@@ -52,18 +64,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.9
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-
-    - name: pre-rel18-kyma-installer
-      branches:
-        - release-1.8
-      <<: *job_template
-      always_run: false
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.8
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
