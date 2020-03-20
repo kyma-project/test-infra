@@ -57,7 +57,7 @@ In order to limit the scope of data accessible with any single key version each 
 
 ## Storage buckets
 
-This part of documentation concerns buckets created on `dev` or `workloads` project only. Guidelines related to the production Prow instance are [here](.production-cluster-configuration.md).
+This part of documentation concerns buckets created on `dev` or `workloads` project only. Guidelines related to the production Prow instance are [here](./production-cluster-configuration.md).
 
 Short-living and test buckets, created in `sap-kyma-prow-neighbors-dev` and `sap-kyma-prow-neighbors-workloads` are prefixed with `commit-sha`, just like SAs.
 Examples: `c177396-kyma-dev-logs`, `c177396-kyma-dev-secrets`
