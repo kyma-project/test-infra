@@ -176,33 +176,6 @@ function installKyma() {
 	fi
 }
 
-function applyDexGithubConnectorOverride() {
-	shout "Apply Dex Githubauth connector overrides"
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dex-config-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    component: dex
-    kyma-project.io/installation: ""
-data:
- connectors: |
-  - type: github
-    id: github
-    name: GitHub
-    config:
-      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
-      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
-      redirectURI: ${DEX_CALLBACK_URL}
-      orgs:
-      - name: kyma-project
-EOF
-}
 function applyServiceCatalogCRDOverride(){
     shout "Apply override for ServiceCatalog to enable CRD implementation"
 
@@ -220,16 +193,6 @@ data:
   service-catalog-apiserver.enabled: "false"
   service-catalog-crds.enabled: "true"
 EOF
-}
-
-function applyDexGithibKymaAdminGroup() {
-    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: kyma-project:cluster-access
-EOF
-
-    kubectl replace -f kyma-admin-binding.yaml
 }
 
 function installStackdriverPrometheusCollector(){
@@ -292,6 +255,9 @@ patchlimitrange
 shout "Install stackdriver-prometheus collector"
 date
 installStackdriverPrometheusCollector
+
+shout "Update stackdriver-metadata-agent memory settings"
+updatememorysettings
 
 shout "Collect list of images"
 date
