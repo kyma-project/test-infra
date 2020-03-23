@@ -50,20 +50,19 @@ APIKEY=$(cat "whitesource-apikey")
 case "${SCAN_LANGUAGE}" in
     golang)
         echo "SCAN: golang (dep)"
-        sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
         CONFIG_PATH=$GO_CONFIG_PATH
+        sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
         ;;
 
     golang-mod)
         echo "SCAN: golang-mod"
-        sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
         CONFIG_PATH=$GO_CONFIG_PATH
+        sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
         ;;
         
     javascript)
         echo "SCAN: javascript"
         CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
-
         ;;
         
     *)
