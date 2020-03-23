@@ -380,12 +380,12 @@ presets:
       - name: GITHUB_INTEGRATION_APP_CLIENT_ID
         valueFrom:
           secretKeyRef:
-            name: nightly-github-integration-app-client-id
+            name: nightly-github-integration-app-client-id-2
             key: client-id
       - name: GITHUB_INTEGRATION_APP_CLIENT_SECRET
         valueFrom:
           secretKeyRef:
-            name: nightly-github-integration-app-client-secret
+            name: nightly-github-integration-app-client-secret-2
             key: client-secret
   - labels:
       preset-weekly-github-integration: "true"
