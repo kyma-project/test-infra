@@ -113,6 +113,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.AllReleases(),
+			jobsuite.Until(releases.Release111),
 		},
 	},
 	{path: "integration/apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

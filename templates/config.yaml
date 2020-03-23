@@ -360,6 +360,7 @@ templates:
           <<: *kyma_generic_component
           path: components/api-controller
           since: "1.7"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -400,6 +401,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/api-controller
           since: "1.7"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
         values:
           <<: *kyma_generic_component
