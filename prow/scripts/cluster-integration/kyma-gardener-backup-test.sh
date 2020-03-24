@@ -86,33 +86,33 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    shout "Remove DNS Record for Ingressgateway"
-    GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-    GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+    # shout "Remove DNS Record for Ingressgateway"
+    # GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
+    # GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
-    GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${RESOURCE_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
-    TMP_STATUS=$?
-    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-        echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
-        # only try to delete the dns record if the ip address has been found
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    else
-        echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
-    fi
-    TMP_STATUS=$?
-    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    # GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${RESOURCE_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+    # TMP_STATUS=$?
+    # if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    # if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
+    #     echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+    #     # only try to delete the dns record if the ip address has been found
+    #     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+    #     TMP_STATUS=$?
+    #     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    # else
+    #     echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
+    # fi
+    # TMP_STATUS=$?
+    # if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-    shout "Remove DNS Record for Apiserver Proxy IP"
-    APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-    APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-    if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-        TMP_STATUS=$?
-        if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-    fi
+    # shout "Remove DNS Record for Apiserver Proxy IP"
+    # APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
+    # APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+    # if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
+    #     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+    #     TMP_STATUS=$?
+    #     if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+    # fi
 
     rm -rf "${TMP_DIR}"
 
@@ -224,9 +224,9 @@ EOF
   # Generate backup config
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-cluster-backup-config.sh"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-  --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-  --label "component=istio"
+#   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+#   --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+#   --label "component=istio"
 
   shout "Installing Kyma"
   date
@@ -234,18 +234,19 @@ EOF
   kyma install \
     --ci \
     --source "latest" \
-    --domain "${DOMAIN}" \
-    --tlsCert "${TLS_CERT}" \
-    --tlsKey "${TLS_KEY}" \
     --timeout 90m
 
-  if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    shout "Create DNS Record for Apiserver proxy IP"
-    date
-    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-  fi
+    # --domain "${DOMAIN}" \
+    # --tlsCert "${TLS_CERT}" \
+    # --tlsKey "${TLS_KEY}" \
+
+#   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+#     shout "Create DNS Record for Apiserver proxy IP"
+#     date
+#     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#     APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
+#     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+#   fi
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 }
@@ -376,7 +377,7 @@ export INSTALL_DIR=${TMP_DIR}
 install::kyma_cli
 
 provisionCluster
-createPublicIPandDNS #Try with gardener automatic assigned domains
+# createPublicIPandDNS #Try with gardener automatic assigned domains
 installKyma
 
 shout "Run tests before backup"
