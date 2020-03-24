@@ -43,6 +43,8 @@ readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 ### Cluster name must be less than 20 characters!
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 
+export DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.canary.k8s-hana.ondemand.com"
+
 export RESOURCE_GROUP="shoot--${GARDENER_KYMA_PROW_PROJECT_NAME}--${CLUSTER_NAME}"
 export AZURE_BACKUP_RESOURCE_GROUP="Velero_Backups"
 
