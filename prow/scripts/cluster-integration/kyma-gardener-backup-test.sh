@@ -382,17 +382,17 @@ provisionCluster
 # createPublicIPandDNS #Try with gardener automatic assigned domains
 installKyma
 
-shout "Run tests before backup"
-date
-cd "${KYMA_SCRIPTS_DIR}"
-set +e
-ACTION="testBeforeBackup" ./e2e-testing.sh
-TEST_STATUS=$?
-if [ ${TEST_STATUS} -ne 0 ]
-then
-    shout "Tests before backup failed"
-    exit 1
-fi
+# shout "Run tests before backup"
+# date
+# cd "${KYMA_SCRIPTS_DIR}"
+# set +e
+# ACTION="testBeforeBackup" ./e2e-testing.sh
+# TEST_STATUS=$?
+# if [ ${TEST_STATUS} -ne 0 ]
+# then
+#     shout "Tests before backup failed"
+#     exit 1
+# fi
 
 takeBackup
 removeCluster
@@ -402,17 +402,17 @@ removeCluster
 provisionCluster
 restoreKyma
 
-shout "Run tests after restore"
-date
-cd "${KYMA_SCRIPTS_DIR}"
-set +e
-ACTION="testAfterRestore" ./e2e-testing.sh
-TEST_STATUS=$?
-if [ ${TEST_STATUS} -ne 0 ]
-then
-    shout "Tests after restore failed"
-    exit 1
-fi
+# shout "Run tests after restore"
+# date
+# cd "${KYMA_SCRIPTS_DIR}"
+# set +e
+# ACTION="testAfterRestore" ./e2e-testing.sh
+# TEST_STATUS=$?
+# if [ ${TEST_STATUS} -ne 0 ]
+# then
+#     shout "Tests after restore failed"
+#     exit 1
+# fi
 
 shout "Success"
 
