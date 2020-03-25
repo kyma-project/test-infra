@@ -13,7 +13,6 @@
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
 set -o errexit
-set -x
 
 if [ -f "../../prow/scripts/library.sh" ]; then
     export TEST_INFRA_SOURCES_DIR="../.."
@@ -30,8 +29,8 @@ fi
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 # whitesource config
-GO_CONFIG_PATH="${TEST_INFRA_SOURCES_DIR}/prow/images/whitesource-scanner/go-wss-unified-agent.config"
-JAVASCRIPT_CONFIG_PATH="${TEST_INFRA_SOURCES_DIR}/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
+GO_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+JAVASCRIPT_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
 # authenticate gcloud client
 init
@@ -99,7 +98,6 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
     if [[ $CUSTOM_PROJECTNAME == "" ]]; then 
     # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
-        echo `pwd`
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" $CONFIG_PATH
     else
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" $CONFIG_PATH
