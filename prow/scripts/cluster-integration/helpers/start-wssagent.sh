@@ -13,6 +13,7 @@
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
 set -o errexit
+set -x
 
 if [ -f "../../prow/scripts/library.sh" ]; then
     export TEST_INFRA_SOURCES_DIR="../.."
@@ -83,6 +84,7 @@ KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 #fi    
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
+    set -x
     if [[ $1 == "" ]]; then
         echo "path cannot be empty"
         exit 1
@@ -97,6 +99,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
 
     if [[ $CUSTOM_PROJECTNAME == "" ]]; then 
     # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
+        echo `pwd`
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" $CONFIG_PATH
     else
         sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" $CONFIG_PATH
