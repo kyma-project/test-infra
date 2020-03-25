@@ -29,8 +29,8 @@ fi
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 # whitesource config
-GO_CONFIG_PATH="${TEST_INFRA_SOURCES_DIR}/prow/images/whitesource-scanner/go-wss-unified-agent.config"
-JAVASCRIPT_CONFIG_PATH="${TEST_INFRA_SOURCES_DIR}/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
+GO_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/go-wss-unified-agent.config"
+JAVASCRIPT_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
 # authenticate gcloud client
 init
