@@ -83,7 +83,6 @@ KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 #fi    
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
-    set -x
     if [[ $1 == "" ]]; then
         echo "path cannot be empty"
         exit 1

@@ -26,7 +26,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -64,7 +64,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -102,7 +102,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -140,7 +140,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -178,7 +178,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -216,7 +216,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -254,7 +254,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -292,7 +292,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -330,7 +330,7 @@ periodics:
           base_ref: master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -368,7 +368,7 @@ periodics:
           base_ref: kyma-master
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200226-be972f57
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
