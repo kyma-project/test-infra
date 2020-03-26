@@ -333,15 +333,34 @@ function restoreKyma() {
 
     shout "Restore Kyma CRDs, Services and Endpoints"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
+    velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --restore-volumes --wait
 
-    sleep 600
+    sleep 30
 
     shout "Restore the rest of Kyma"
     date
-    velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
 
-     sleep 180
+    attempts=3
+    for ((i=1; i<=attempts; i++)); do  
+        shout "Restore the rest of Kyma"
+        date	    
+        velero restore create --from-backup "${BACKUP_NAME}" --include-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --wait
+        sleep 60
+
+        echo "Check if Service bindings are restored"
+        
+        result=$(kubectl get servicebindings.servicecatalog.k8s.io --all-namespaces)
+        if [[ "${result}" == *"NAME"* ]]; then
+            echo "Service bindings are restored"
+            break
+        elif [[ "${i}" == "${attempts}" ]]; then
+            echo "ERROR: restoring VirtualServices failed"
+            exit 1
+        fi
+
+        echo "Sleep for 30 seconds"
+        sleep 30
+    done
 
     set -e
 }
