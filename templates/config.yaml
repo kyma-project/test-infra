@@ -355,11 +355,6 @@ templates:
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
-      - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/api-controller
-          since: "1.7"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -394,11 +389,6 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/backup-plugins
-          since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/integration/api-controller
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
         values:
@@ -557,11 +547,6 @@ templates:
               until: "1.8"
   - from: templates/component.yaml
     render:
-      - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: components/api-controller
-          until: "1.6"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -755,11 +740,6 @@ templates:
           <<: *go_kyma_component_1_11
           path: tests/kubeless
           until: "1.8"
-      - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: tests/integration/api-controller
-          until: "1.6"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
           <<: *go_kyma_component_1_12
