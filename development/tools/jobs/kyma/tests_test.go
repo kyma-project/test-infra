@@ -109,12 +109,6 @@ var tests = []struct {
 			jobsuite.Since(releases.Release19),
 		},
 	},
-	{path: "integration/api-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Until(releases.Release111),
-		},
-	},
 	{path: "integration/apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
