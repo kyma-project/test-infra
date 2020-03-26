@@ -9,7 +9,7 @@ whitesource_job_template: &whitesource_job_template
   run_if_changed: "go.mod|go.sum"
   decorate: true
   optional: true
-  path_alias: github.com/kyma-incubator/compass/components/provisioner
+  path_alias: github.com/kyma-incubator/compass
   max_concurrency: 1
   labels:
     preset-build-pr: "true"
@@ -18,7 +18,7 @@ whitesource_job_template: &whitesource_job_template
     preset-kyma-encryption-key: "true"
     preset-kms-gc-project-env: "true"
     preset-gc-project-env: "true"
-    preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -31,7 +31,9 @@ whitesource_job_template: &whitesource_job_template
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
         env:
-          - name : PROJECTNAME
+          - name: PROJECTNAME
+            value: components/provisioner
+          - name: CUSTOM_PROJECTNAME
             value: provisioner
           - name: DRYRUN
             value: "false"
