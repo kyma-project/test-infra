@@ -10,10 +10,8 @@ whitesource_job_template: &whitesource_job_template
   decorate: true
   optional: true
   path_alias: github.com/kyma-incubator/compass/components/provisioner
-  max_concurrency: 2
+  max_concurrency: 1
   labels:
-    preset-dind-enabled: "true"
-    preset-docker-push-repository-kyma: "true"
     preset-build-pr: "true"
     preset-kyma-wssagent-config: "true"
     preset-kyma-keyring: "true"
@@ -40,11 +38,11 @@ whitesource_job_template: &whitesource_job_template
           - name: DRYRUN
             value: "false"
           - name: SCAN_LANGUAGE
-            value: golang
+            value: golang-mod
         resources:
           requests:
-            memory: 1.5Gi
-            cpu: 0.8
+            memory: 1Gi
+            cpu: 400m
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
