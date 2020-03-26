@@ -317,7 +317,7 @@ function restoreKyma() {
 
     shout "Check if the backup ${BACKUP_NAME} exists"
     date
-    attempts=3
+    attempts=5
     for ((i=1; i<=attempts; i++)); do
         result=$(velero get backup "${BACKUP_NAME}")
         if [[ "${result}" == *"NAME"* ]]; then
@@ -335,13 +335,13 @@ function restoreKyma() {
     date
     velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
 
-    sleep 60
+    sleep 200
 
     shout "Restore the rest of Kyma"
     date
     velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
 
-     sleep 180
+     sleep 200
 
     set -e
 }
