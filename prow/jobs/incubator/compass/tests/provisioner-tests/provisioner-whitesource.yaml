@@ -27,7 +27,6 @@ whitesource_job_template: &whitesource_job_template
     - <<: *test_infra_ref
       base_ref: master
     - <<: *kyma_incubator_ref
-      base_ref: master
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
