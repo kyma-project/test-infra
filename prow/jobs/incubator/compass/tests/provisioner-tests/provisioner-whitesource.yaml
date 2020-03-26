@@ -25,8 +25,6 @@ whitesource_job_template: &whitesource_job_template
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
-        securityContext:
-          privileged: true
         command:
           - "bash"
         args:
