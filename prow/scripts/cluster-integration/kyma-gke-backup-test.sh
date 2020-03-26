@@ -337,30 +337,31 @@ function restoreKyma() {
 
     sleep 30
 
-    shout "Restore the rest of Kyma"
+    shout "Wait for endpoints"
     date
 
-    attempts=3
+    attempts=5
     for ((i=1; i<=attempts; i++)); do  
-        shout "Restore the rest of Kyma"
-        date	    
-        velero restore create --from-backup "${BACKUP_NAME}" --include-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --wait
-        sleep 60
-
-        echo "Check if Service bindings are restored"
         
-        result=$(kubectl get servicebindings.servicecatalog.k8s.io --all-namespaces)
-        if [[ "${result}" == *"NAME"* ]]; then
-            echo "Service bindings are restored"
+        echo "Check if endpoints are ready"
+        
+        result=$(kubectl get endpoints service-catalog-catalog-webhook -n kyma-system)
+        if [[ "${result}" == *":8443"* ]]; then
+            echo "Endpoints are ready"
             break
         elif [[ "${i}" == "${attempts}" ]]; then
-            echo "ERROR: restoring VirtualServices failed"
+            echo "ERROR: restoring endpoints failed"
             exit 1
         fi
 
         echo "Sleep for 30 seconds"
-        sleep 30
+        sleep 180
     done
+
+    shout "Restore the rest of Kyma"
+    date	    
+    velero restore create --from-backup "${BACKUP_NAME}" --include-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --wait
+    sleep 60
 
     set -e
 }
