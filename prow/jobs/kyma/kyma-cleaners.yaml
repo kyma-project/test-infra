@@ -1,0 +1,68 @@
+#cleaner_image: &cleaner_image
+#  image:
+test_infra_ref: &test_infra_ref
+  org: Ressetkk
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+presets:
+  - labels:
+      preset-kyma-cleaners-bucket: "true"
+    env:
+      - name: KYMA_CLEANERS_BUCKET
+        value: "gs://upgrade-prow-cleaner-binaries" # subject of change for production
+
+periodics:
+  - name: orphaned-dns-cleaner-prebuilt-bucket
+    cron: "00 00 * * *" # "At 00:00 each day"
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    decorate: true
+    labels:
+      preset-sa-gke-kyma-integration: "true"
+      preset-gc-project-env: "true"
+      preset-gc-compute-envs: "true"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: sidecar-job-poc
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "$KYMA_PROJECT_DIR/test-infra/development/dns-cleanup-prebuilt.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 50m
+
+postsubmits:
+  - name: post-master-kyma-cleaners-update-binaries
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    labels:
+      preset-sa-gke-kyma-integration: "true"
+      preset-kyma-cleaners-bucket: "true"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: sidecar-job-poc
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "$KYMA_PROJECT_DIR/test-infra/prow/scripts/build-cleaners.sh"
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 200m
+
+
