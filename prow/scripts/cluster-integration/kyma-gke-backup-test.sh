@@ -335,13 +335,13 @@ function restoreKyma() {
     date
     velero restore create --from-backup "${BACKUP_NAME}" --include-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --wait
 
-    sleep 200
+    sleep 600
 
     shout "Restore the rest of Kyma"
     date
     velero restore create --from-backup "${BACKUP_NAME}" --exclude-resources customresourcedefinitions.apiextensions.k8s.io,services,endpoints --restore-volumes --wait
 
-     sleep 200
+     sleep 180
 
     set -e
 }
