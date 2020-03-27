@@ -8,8 +8,8 @@ if [ -z "${KYMA_CLEANERS_BUCKET}" ]; then
 fi
 
 # shellcheck disable=SC2046
-readonly TOOLS_DIR="${PWD%/*/*}/development/tools"
-cd $TOOLS_DIR
+readonly TOOLS_DIR="${PWD}/development/tools"
+cd "$TOOLS_DIR"
 
 mkdir -p bin
 
