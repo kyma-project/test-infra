@@ -51,6 +51,7 @@ echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration job
 echo "--------------------------------------------------------------------------------"
 
 echo "Copying ${TOOL} from ${KYMA_CLEANERS_BUCKET}..."
+gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
 gsutil cp "$KYMA_CLEANERS_BUCKET/$TOOL" "./"
 
 echo "running ${PWD}/${TOOL}..."

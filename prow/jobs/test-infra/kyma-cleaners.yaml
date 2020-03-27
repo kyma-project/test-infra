@@ -24,6 +24,7 @@ periodics:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
       preset-gc-compute-envs: "true"
+      preset-kyma-cleaners-bucket: "true"
     extra_refs:
       - <<: *test_infra_ref
         base_ref: sidecar-job-poc
