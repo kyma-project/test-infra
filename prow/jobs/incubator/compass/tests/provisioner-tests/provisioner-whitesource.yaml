@@ -3,11 +3,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-kyma_incubator_ref: &kyma_incubator_ref
-  org: kyma-incubator
-  repo: compass
-  path_alias: github.com/kyma-incubator/compass
-    
 whitesource_job_template: &whitesource_job_template
   skip_report: false
   run_if_changed: "go.mod|go.sum"
@@ -15,39 +10,32 @@ whitesource_job_template: &whitesource_job_template
   optional: true
   path_alias: github.com/kyma-incubator/compass
   max_concurrency: 1
-  labels:
-    preset-build-pr: "true"
-    preset-kyma-wssagent-config: "true"
-    preset-kyma-keyring: "true"
-    preset-kyma-encryption-key: "true"
-    preset-kms-gc-project-env: "true"
-    preset-gc-project-env: "true"
-    preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
   extra_refs:
-    - <<: *test_infra_ref
+    - org: kyma-project
+      repo: test-infra
       base_ref: master
-    - <<: *kyma_incubator_ref
+      path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
+        securityContext:
+          privileged: true
         command:
           - "bash"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
         env:
-          - name: PROJECTNAME
-            value: components/provisioner
-          - name: CUSTOM_PROJECTNAME
-            value: provisioner
+          - name : PROJECTNAME
+            value: compass
           - name: DRYRUN
             value: "false"
           - name: SCAN_LANGUAGE
             value: golang-mod
         resources:
           requests:
-            memory: 1Gi
-            cpu: 400m
+            memory: 1.5Gi
+            cpu: 0.8
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
@@ -55,3 +43,13 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *whitesource_job_template
+      labels:
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-build-pr: "true"
+        preset-kyma-wssagent-config: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
