@@ -17,7 +17,7 @@
 {{- $runIfChanged := prepend $additionalRunIfChanged (print "^" .Values.path "/") | join "|" }}
 {{- $componentName := .Values.path | splitList "/" | last }}
 {{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
-{{- $hasReleaseBounds := (not .Values.since) and (not .Values.until) }}
+{{- $hasReleaseBounds := and (not .Values.since) (not .Values.until) }}
 {{- $releases := matchingReleases .Global.releases .Values.since .Values.until }}
 {{- $releasesPattern := $releases | join "|" | replace "." "\\." }}
 {{- $releaseBranchReleasesPattern := $hasReleaseBounds | ternary ".*" (print "("  $releasesPattern ")") }}

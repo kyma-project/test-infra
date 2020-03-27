@@ -415,6 +415,12 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/monitoring
           since: "1.7"
+      - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tools/event-subscriber
+          since: "1.12"
+          optional: true
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -459,12 +465,13 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/event-bus
-          since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/event-bus
-          since: "1.9"
+          until: "1.11"
+          
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
           <<: *kyma_generic_component
