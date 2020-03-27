@@ -45,10 +45,10 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     gcloud components install alpha beta kubectl docker-credential-gcr && \
     gcloud info | tee /workspace/gcloud-info.txt
 
-# Cluster Version
+# Cluster Version 
 ENV CLUSTER_VERSION=1.14
 
-# Kubectl 1.16
+# Use kubectl that matches the CLUSTER_VERSION
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
@@ -72,8 +72,6 @@ RUN mkdir /docker-graph
 #################################################################
 ###################### GOLANG ###################################
 #################################################################
-
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20200124-900eb728
 
 # Versions
 
