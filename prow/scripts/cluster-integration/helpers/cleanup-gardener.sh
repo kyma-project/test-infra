@@ -40,6 +40,10 @@ export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
+echo "--------------------------------------------------------------------------------"
+echo "Removing Gardener clusters allocated by failed/terminated integration jobs...  "
+echo "--------------------------------------------------------------------------------"
+
 # get all cluster names in project
 CLUSTERS=$(kubectl --kubeconfig ${GARDENER_KYMA_PROW_KUBECONFIG} -n garden-${GARDENER_KYMA_PROW_PROJECT_NAME} get shoots -o go-template='{{range $i, $c :=.items}}{{if $i}},{{end}}{{$c.metadata.name}}{{end}}')
 CLUSTERS=(${CLUSTERS//,/ }) # convert comma separated clusters string to array
@@ -57,7 +61,7 @@ do
     
     # clusters older than 4h get deleted
     if [[ ${HOURS_OLD} -ge 4 ]]; then
-        shout "Deprovision cluster: \"${CLUSTER}\""
+        shout "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
         date
         # Export envvars for the script
         export GARDENER_CLUSTER_NAME=${CLUSTER}
