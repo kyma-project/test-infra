@@ -46,19 +46,21 @@ echo "Removing Gardener clusters allocated by failed/terminated integration jobs
 echo "--------------------------------------------------------------------------------"
 
 # get all cluster names in project
-CLUSTERS=$(kubectl --kubeconfig ${GARDENER_KYMA_PROW_KUBECONFIG} -n garden-${GARDENER_KYMA_PROW_PROJECT_NAME} get shoots -o go-template='{{range $i, $c :=.items}}{{if $i}},{{end}}{{$c.metadata.name}}{{end}}')
+# shellcheck disable=SC2016
+CLUSTERS=$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots -o go-template='{{range $i, $c :=.items}}{{if $i}},{{end}}{{$c.metadata.name}}{{end}}')
 CLUSTERS=(${CLUSTERS//,/ }) # convert comma separated clusters string to array
 
 # cleanup all clusters
-for CLUSTER in ${CLUSTERS[@]}
+for CLUSTER in "${CLUSTERS[@]}"
 do
     # check cluster age
-    CREATION_TIME=$(kubectl --kubeconfig ${GARDENER_KYMA_PROW_KUBECONFIG} -n garden-${GARDENER_KYMA_PROW_PROJECT_NAME} get shoots $CLUSTER -o go-template='{{.metadata.creationTimestamp}}')
+    # shellcheck disable=SC2016
+    CREATION_TIME="$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots "$CLUSTER" -o go-template='{{.metadata.creationTimestamp}}')"
 
     # convert to timestamp for age calculation
-    CREATION_TS=$(date -d ${CREATION_TIME} +%s) # On macOS use: CREATION_TS=$(date -jf '%Y-%m-%dT%H:%M:%SZ' ${CREATION_TIME} +%s)
-    NOW_TS=$(date +%s)
-    HOURS_OLD=$(( (${NOW_TS} - ${CREATION_TS}) / ${SECONDS_PER_HOUR} ))
+    CREATION_TS="$(date -d "${CREATION_TIME}" +%s)" # On macOS use: CREATION_TS=$(date -jf "%Y-%m-%dT%H:%M:%SZ" ${CREATION_TIME} +%s)
+    NOW_TS="$(date +%s)"
+    HOURS_OLD=$(( (NOW_TS - CREATION_TS) / SECONDS_PER_HOUR ))
     
     # clusters older than 4h get deleted
     if [[ ${HOURS_OLD} -ge 4 ]]; then
