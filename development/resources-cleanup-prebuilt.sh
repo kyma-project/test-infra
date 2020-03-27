@@ -55,7 +55,9 @@ gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS
 gsutil cp "$KYMA_CLEANERS_BUCKET/$TOOL" "./"
 
 echo "running ${PWD}/${TOOL}..."
-$("./$TOOL") "$@"
+chmod +x "./$TOOL"
+# shellcheck disable=SC2091
+$("./$TOOL" "$@")
 status=$?
 
 if [ ${status} -ne 0 ]
