@@ -29,4 +29,6 @@ do
 done
 
 echo "copying new binaries on a bucket..."
+gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+
 gsutil cp "$TOOLS_DIR/bin/*" "$KYMA_CLEANERS_BUCKET/"
