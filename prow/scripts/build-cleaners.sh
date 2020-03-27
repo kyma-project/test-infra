@@ -18,6 +18,7 @@ do
     go build -o "${TOOLS_DIR}"/bin/"${name}" -ldflags="-s -w" main.go
     # shellcheck disable=SC2086
     upx -q "${TOOLS_DIR}"/bin/${name}
+    chmod a+x "${TOOLS_DIR}"/bin/${name}
 done
 
 echo "copying new binaries on a bucket..."
