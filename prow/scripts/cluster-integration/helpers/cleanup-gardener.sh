@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-#Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
+#Description: Gardener cleanup job. Deletes all orphaned clusters allocated by integration jobs that coud not be successfully deleted.
+# Deletes all clusters that are more than 4 hours old.
 #
 #
 #Expected vars:
