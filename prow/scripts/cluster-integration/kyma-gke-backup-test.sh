@@ -327,8 +327,8 @@ function restoreKyma() {
             echo "ERROR: backup ${BACKUP_NAME} not found"
             exit 1
         fi
-        echo "Sleep for 15 seconds"
-        sleep 15
+        echo "Sleep for 30 seconds"
+        sleep 30
     done
 
     shout "Restore Kyma CRDs, Services and Endpoints"
@@ -361,7 +361,9 @@ function restoreKyma() {
     shout "Restore the rest of Kyma"
     date	    
     velero restore create --from-backup "${BACKUP_NAME}" --include-resources clusterservicebrokers.servicecatalog.k8s.io,clusterserviceclasses.servicecatalog.k8s.io,clusterserviceplans.servicecatalog.k8s.io,servicebindings.servicecatalog.k8s.io,servicebrokers.servicecatalog.k8s.io,serviceclasses.servicecatalog.k8s.io,serviceinstances.servicecatalog.k8s.io,serviceplans.servicecatalog.k8s.io --wait
-    sleep 60
+    
+    # wait for tiller to get ready
+    sleep 120
 
     set -e
 }
