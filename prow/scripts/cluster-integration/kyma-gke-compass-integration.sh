@@ -213,7 +213,8 @@ function installKyma() {
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "feature-flags-overrides" \
-    --data "global.enableAPIPackages=true"
+    --data "global.enableAPIPackages=true" \
+    --data "global.disableLegacyConnectivity=true"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
     --data "application-operator.tests.enabled=false" \
