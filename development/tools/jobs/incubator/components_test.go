@@ -107,10 +107,9 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release19),
+			jobsuite.Since(releases.Release110),
 		},
 	},
-
 	{
 		name:  "pairing-adapter",
 		image: tester.ImageBootstrap20181204,
@@ -119,7 +118,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Optional(),
-			jobsuite.Since(releases.Release19),
+			jobsuite.Since(releases.Release111),
 		},
 	},
 }
