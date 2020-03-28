@@ -104,19 +104,19 @@ func JobFileSuffix(suffix string) Option {
 func Until(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetKymaReleasesUntil(rel)
-		suite.Deprecated = true
+		suite.Deprecated = !rel.IsNotOlderThan(releases.GetNextKymaRelease())
 	}
 }
 
 func AllReleases() Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesUntil(releases.Release19)
+		suite.Releases = releases.GetAllKymaReleases()
 	}
 }
 
 func Since(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release19)
+		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.GetNextKymaRelease())
 	}
 }
 

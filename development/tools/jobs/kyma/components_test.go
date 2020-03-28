@@ -1,11 +1,16 @@
 package kyma
 
 import (
+	"path"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
+)
+
+const (
+	jobBasePath = "./../../../../prow/jobs/"
 )
 
 var components = []struct {
@@ -170,6 +175,8 @@ var components = []struct {
 }
 
 func TestComponentJobs(t *testing.T) {
+	testedConfigurations := make(map[string]struct{})
+	repos := map[string]struct{}{}
 	for _, component := range components {
 		t.Run(component.path, func(t *testing.T) {
 			opts := []jobsuite.Option{
@@ -177,13 +184,22 @@ func TestComponentJobs(t *testing.T) {
 				jobsuite.KymaRepo(),
 				jobsuite.AllReleases(),
 			}
+
 			opts = append(opts, component.additionalOptions...)
+
 			cfg := jobsuite.NewConfig(opts...)
 			suite := component.suite
 			if suite == nil {
 				suite = tester.NewComponentSuite
 			}
-			suite(cfg).Run(t)
+			ts := suite(cfg)
+
+			if pathProvider, ok := ts.(jobsuite.JobConfigPathProvider); ok {
+				testedConfigurations[path.Clean(pathProvider.JobConfigPath())] = struct{}{}
+			}
+			repos[cfg.Repository] = struct{}{}
+			ts.Run(t)
 		})
 	}
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components"))
 }

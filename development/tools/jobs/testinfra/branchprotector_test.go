@@ -2,7 +2,6 @@ package testinfra
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -12,6 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 )
 
 func TestBranchProtection(t *testing.T) {

@@ -8,6 +8,10 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
 
+const (
+	jobBasePath = "./../../../../prow/jobs/incubator"
+)
+
 var components = []struct {
 	name              string
 	image             string
@@ -120,6 +124,8 @@ var components = []struct {
 }
 
 func TestComponentJobs(t *testing.T) {
+	testedConfigurations := make(map[string]struct{})
+	repos := map[string]struct{}{}
 	for _, component := range components {
 		t.Run(component.name, func(t *testing.T) {
 			opts := []jobsuite.Option{
@@ -133,7 +139,13 @@ func TestComponentJobs(t *testing.T) {
 			if suite == nil {
 				suite = tester.NewComponentSuite
 			}
-			suite(cfg).Run(t)
+			ts := suite(cfg)
+			if pathProvider, ok := ts.(jobsuite.JobConfigPathProvider); ok {
+				testedConfigurations[path.Clean(pathProvider.JobConfigPath())] = struct{}{}
+			}
+			repos[cfg.Repository] = struct{}{}
+			ts.Run(t)
 		})
 	}
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components"))
 }
