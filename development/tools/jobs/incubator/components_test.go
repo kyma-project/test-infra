@@ -1,9 +1,10 @@
 package incubator
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"path"
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )

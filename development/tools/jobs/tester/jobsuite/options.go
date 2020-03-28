@@ -2,9 +2,9 @@ package jobsuite
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 type Option func(suite *Config)

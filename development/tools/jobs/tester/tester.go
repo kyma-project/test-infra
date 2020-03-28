@@ -1,22 +1,20 @@
 package tester
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-	"github.com/stretchr/testify/require"
-
-	"k8s.io/test-infra/prow/kube"
-
-	"fmt"
-
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+	"k8s.io/test-infra/prow/kube"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 const (
