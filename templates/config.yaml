@@ -125,6 +125,8 @@ compass_generic_component: &compass_generic_component
 
 knative_kafka_component: &knative_kafka_component
   repository: github.com/kyma-incubator/knative-kafka
+  pushRepository: incubator
+  bootstrapTag: v20181204-a6e79be
   presets:
     build: build
     pushRepository: incubator
@@ -498,6 +500,31 @@ templates:
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
+      - to: ../prow/jobs/incubator/knative-kafka/channel.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/channel
+          ReleaseBranchPattern: ^release-.*$
+          optional: false
+      - to: ../prow/jobs/incubator/knative-kafka/dispatcher.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/dispatcher
+          ReleaseBranchPattern: ^release-.*$
+          optional: false
+          until: "1.20"
+      - to: ../prow/jobs/incubator/knative-kafka/controller.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/controller
+          ReleaseBranchPattern: ^release-.*$
+          optional: false
+      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka-common.yaml
+        values:
+          <<: *go_knative_kafka_component_1_12
+          path: components/common
+          ReleaseBranchPattern: ^release-.*$
+          optional: false
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -890,26 +917,6 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tools/alpine-net
           until: "1.6"      
-      - to: ../prow/jobs/incubator/knative-kafka/channel.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/channel
-          optional: false
-      - to: ../prow/jobs/incubator/knative-kafka/dispatcher.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/dispatcher
-          optional: false
-      - to: ../prow/jobs/incubator/knative-kafka/controller.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/controller
-          optional: false
-      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka-common.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/common
-          optional: false
   - from: templates/whitesource-periodics.yaml
     render:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
