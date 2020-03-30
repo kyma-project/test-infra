@@ -607,11 +607,11 @@ branch-protection:
           branches:
             master:
               protect: true
+            release-0.12:
+              protect: true
         third-party-images:
           branches:
             master:
-              protect: true
-            release-0.12:
               protect: true
 
 plank:
