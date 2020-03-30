@@ -1,0 +1,115 @@
+project: sap-kyma-neighbors-dev
+region: europe-west3
+keyring_name: test-prow-keyring
+encryption_key_name: test-prow-key
+kubeconfig: ""
+prefix: ""
+labels:
+  created-by: user-name # TODO can we somehow dynamically label this based on credentials file we give to a script?
+clusters:
+  prow:
+    name: kyma-prow
+    location: europe-west3-c
+    description: "Kyma Prow Cluster"
+    #    labels:
+    #      cluster-specific: label
+    kubernetesVersion: 1.15
+    pools:
+      - name: default-pool
+        initialSize: 2
+        config:
+          diskType: pd-ssd
+          machineType: n1-standard-4
+#  workload:
+#    name: workload-kyma-prow
+#    location: europe-west3-c
+#    description: "Kyma Prow Workload cluster"
+#    #    labels:
+#    #      cluster-specific: label
+#    kubernetesVersion: 1.15
+#    pools:
+#      - name: default-ssd-pool
+#        initialSize: 2
+#        config:
+#          diskType: pd-ssd
+#          diskSizeGb: 100
+#          machineType: n1-standard-4
+#        autoscaling:
+#          enabled: true
+#          minNodeCount: 0
+#          maxNodeCount: 5
+#      - name: high-load-12cpu
+#        config:
+#          diskType: pd-ssd
+#          machineType: custom-12-24576
+#        initialSize: 1
+#        autoscaling:
+#          enabled: true
+#          minNodeCount: 0
+#          maxNodeCount: 5
+buckets:
+  - name: kyma-prow-secrets
+    location: eu # Optional, might be either multi-region (eu, us) or region (ex. europe-west3)
+  - name: kyma-prow-logs
+    location: eu
+  - name: kyma-prow-artifacts
+    location: eu
+serviceAccounts:
+  - name: sa-gke-kyma-integration # present
+    roles:
+      - compute.admin
+      - compute.networkAdmin
+      - container.admin
+      - container.clusterAdmin
+      - dns.admin
+      - iam.serviceAccountUser
+      - storage.admin
+      - cloudkms.cryptoKeyEncrypterDecrypter
+  - name : sa-vm-kyma-integration # present
+    roles :
+      - compute.instanceAdmin
+      - compute.osAdminLogin
+      - iam.serviceAccountUser
+  - name : sa-gcs-plank # present
+    roles :
+      - storage.objectAdmin
+  - name : sa-gcr-push-kyma-project # present
+    roles :
+      - storage.objectCreator
+  - name : sa-kyma-artifacts # present
+    roles :
+      -  storage.objectAdmin
+  - name : sa-stability-fluentd-storage-writer
+    roles:
+      - storage.objectAdmin
+  - name : sa-kyma-backup-restore
+    roles :
+      - storage.admin
+      - storage.objectAdmin
+      - compute.storageAdmin
+  - name : sa-kyma-release-candidate
+generics:
+  - prefix: kyma-bot-github-token
+    key: token
+  - prefix: sap-slack-bot-token
+    key: token
+  - prefix: slack-nightly-token
+    key: token
+  - prefix: hmac-token
+    key: token
+  - prefix: oauth-token
+    key: token
+  - prefix: nightly-github-integration-app-client-id
+    key: client-id
+  - prefix: nightly-github-integration-app-client-secret
+    key: client-secret
+  - prefix: kyma-alerts-slack-api-url
+    key: secret
+  - prefix: kyma-azure-credential-id
+    key: subscription-id
+  - prefix: kyma-azure-credential-app-id
+    key: subscription-app-id
+  - prefix: kyma-azure-credential-secret
+    key: subscription-secret
+  - prefix: kyma-azure-credential-tenant
+    key: subscription-tenant

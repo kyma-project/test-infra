@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
 
 periodics:
 {{ range .Global.whitesource }}
-  - name: {{ .name }}-whitesource-scan
+  - name: {{ default .name .custom_projectname }}-whitesource-scan
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -21,10 +21,10 @@ periodics:
         - org: {{ .project }}
           repo: {{ .name }}
           path_alias: github.com/{{ .project }}/{{ .name }}
-          base_ref: master
+          base_ref: {{ default "master" .base_ref }}
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20190909-3282dd6
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
           command:
             - "bash"
           args:
@@ -33,6 +33,8 @@ periodics:
           env:
             - name : PROJECTNAME
               value: {{ .name }}
+            - name: CUSTOM_PROJECTNAME
+              value: {{ default "" .custom_projectname }}
             - name: DRYRUN
               value: "false"
             - name: SCAN_LANGUAGE

@@ -12,6 +12,7 @@ readonly LICENSES_DIR_NAME="licenses"
 readonly LICENSES_DIR="./${LICENSES_DIR_NAME}"
 
 DIRS_TO_PULLING=()
+VERBOSE=false
 function read_arguments() {
     for arg in "${ARGS[@]}"
     do
@@ -19,6 +20,10 @@ function read_arguments() {
             --dirs-to-pulling=*)
               local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
               shift # remove --dirs-to-pulling=
+            ;;
+            --verbose)
+              VERBOSE=true
+              shift # remove this --verbose
             ;;
             *)
               # unknown option
@@ -132,7 +137,10 @@ function pullNodeLicensesByDir() {
             fi
 
             local outputDir="${LICENSES_DIR}/${key}"
-            echo "Copying '${licenseFile}' to '${outputDir}'"
+            if [ "$VERBOSE" = true ] ; then
+                echo "Copying '${licenseFile}' to '${outputDir}'"
+            fi
+           
             mkdir -p "${outputDir}"
             cp "${licenseFile}" "${outputDir}/"
         done

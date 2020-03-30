@@ -2,7 +2,6 @@ package testinfra
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -12,6 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 )
 
 func TestBranchProtection(t *testing.T) {
@@ -83,12 +84,6 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-installer", relBranch))
-			if releases.Release18.IsNotOlderThen(currentRelease) {
-				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway", relBranch))
-				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-gcs-gateway-migration", relBranch))
-				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway", relBranch))
-				assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-minio-az-gateway-migration", relBranch))
-			}
 		})
 	}
 

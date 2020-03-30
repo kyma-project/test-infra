@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.10|1\.9|1\.8)-compass-runtime-agent$
+    - ^release-(1\.11|1\.10|1\.9)-compass-runtime-agent$
   run_if_changed: "^tests/compass-runtime-agent/|^common/makefiles/"
   spec:
     containers:

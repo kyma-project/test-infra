@@ -2,6 +2,7 @@ package releases
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
 )
 
@@ -13,7 +14,7 @@ func GetKymaReleasesUntil(lastRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
 	for _, rel := range GetAllKymaReleases() {
-		if rel.IsNotYoungerThen(lastRelease) {
+		if rel.IsNotNewerThan(lastRelease) {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -26,7 +27,7 @@ func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
 	for _, rel := range GetAllKymaReleases() {
-		if rel.IsNotOlderThen(firstRelease) {
+		if rel.IsNotOlderThan(firstRelease) {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -39,7 +40,7 @@ func GetKymaReleasesBetween(firstRelease *SupportedRelease, lastRelease *Support
 	var supportedReleases []*SupportedRelease
 
 	for _, rel := range GetAllKymaReleases() {
-		if rel.IsNotOlderThen(firstRelease) && rel.IsNotYoungerThen(lastRelease) {
+		if rel.IsNotOlderThan(firstRelease) && rel.IsNotNewerThan(lastRelease) {
 			supportedReleases = append(supportedReleases, rel)
 		}
 	}
@@ -53,11 +54,11 @@ func (r *SupportedRelease) Compare(other *SupportedRelease) int {
 	return (*semver.Version)(r).Compare((*semver.Version)(other))
 }
 
-func (r *SupportedRelease) IsNotOlderThen(other *SupportedRelease) bool {
+func (r *SupportedRelease) IsNotOlderThan(other *SupportedRelease) bool {
 	return r.Compare(other) >= 0
 }
 
-func (r *SupportedRelease) IsNotYoungerThen(other *SupportedRelease) bool {
+func (r *SupportedRelease) IsNotNewerThan(other *SupportedRelease) bool {
 	return r.Compare(other) <= 0
 }
 
@@ -79,4 +80,16 @@ func (r *SupportedRelease) String() string {
 func mustParse(v string) *SupportedRelease {
 	parsed := SupportedRelease(*semver.MustParse(v))
 	return &parsed
+}
+
+type ByVersion []*SupportedRelease
+
+func (s ByVersion) Len() int {
+	return len(s)
+}
+func (s ByVersion) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s ByVersion) Less(i, j int) bool {
+	return s[i].IsNotNewerThan(s[j])
 }

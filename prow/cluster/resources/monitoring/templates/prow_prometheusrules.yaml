@@ -6,7 +6,7 @@ metadata:
       app: prometheus-operator
       chart: monitoring
       role: alert-rules
-      #Thie lable is requried as it's define which prometheus server should include this rules.
+      #Thie label is requried as it define which prometheus server should include this rules.
       prometheus: monitoring-prometheus-oper-prometheus
       release: monitoring
     name: monitoring-prometheus-oper-prow-custom-rules
@@ -159,3 +159,22 @@ spec:
                 annotations:
                     summary: No endpoints assigned.
                     description: Ingress-nginx service doesn't have any endpoints assigned.
+              # In progress prowjobs count
+              - alert: ProwjobsCountLimit
+                expr: sum(prowjobs{state=~"pending|triggered"}) > 99
+                for: 30s
+                labels:
+                  app: prow
+                  severity: critical
+                annotations:
+                  summary: Prowjobs count limit exceeded.
+                  description: Number of running concurrent prowjobs reached maximum limit. Check plank config max_concurrency option.
+              - alert: ProwjobsCountLimit
+                expr: sum(prowjobs{state=~"pending|triggered"}) > 89
+                for: 30s
+                labels:
+                  app: prow
+                  severity: warning
+                annotations:
+                  description: Number of running concurrent prowjobs reached warning treshold.
+                  summary: Prowjobs count is high.

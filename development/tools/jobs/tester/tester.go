@@ -1,22 +1,20 @@
 package tester
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-	"github.com/stretchr/testify/require"
-
-	"k8s.io/test-infra/prow/kube"
-
-	"fmt"
-
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+	"k8s.io/test-infra/prow/kube"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 const (
@@ -48,7 +46,9 @@ const (
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaClusterInfraLatest represents boostrap image published on 20.11.2019
-	ImageKymaClusterInfraLatest = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51"
+	ImageKymaClusterInfraK14    = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51"
+	ImageKymaClusterInfraK16    = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4"
+	ImageKymaClusterInfraLatest = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4"
 	// ImageKymaClusterInfra20190528 represents boostrap image published on 28.05.2019
 	ImageKymaClusterInfra20190528 = "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20190528-8897828"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image

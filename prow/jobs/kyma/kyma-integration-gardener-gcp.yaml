@@ -1,0 +1,39 @@
+# Kubectl 1.16
+base_image: &base_image
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+
+periodics:
+- name: kyma-integration-gardener-gcp
+  decorate: true
+  decoration_config:
+    timeout: 14400000000000 # 4h
+    grace_period: 600000000000 # 10min
+  cron: "00 08 * * *"
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: master
+  labels:
+    preset-gardener-gcp-kyma-integration: "true"
+    preset-kyma-cli-stable: "true"
+    preset-kyma-keyring: "true"
+    preset-kyma-encryption-key: "true"
+  spec:
+    containers:
+    - <<: *base_image
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp.sh"
+      env:
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+      - name: GARDENER_REGION
+        value: "europe-west4"
+      - name: GARDENER_ZONES
+        value: "europe-west4-b"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
