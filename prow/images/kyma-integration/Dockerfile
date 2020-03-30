@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:stretch
+FROM debian:10
 
 #################################################################
 ###################### Basic Bootstrap ##########################
@@ -58,10 +58,10 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
     "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
     $(lsb_release -cs) stable"
 
-ENV DOCKER_VERSION=18.06.1*
+ENV DOCKER_VERSION=5:19.03.8~3-0~debian-buster
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends docker-ce=${DOCKER_VERSION} && \
+    echo Y | apt-get install docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
     sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker
 
 # Move Docker's storage location
@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2
 
 ENV HELM_VERSION="v2.10.0"
-ENV AZURE_CLI_VERSION="2.0.62-1~stretch"
+ENV AZURE_CLI_VERSION="2.2.0-1~buster"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
@@ -117,10 +117,10 @@ RUN helm init --client-only
 # Install az
 # If you receive error related to recv-keys please make sure you have latest signing key
 # https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#signingKey
-RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(lsb_release -cs)" main" | \
+
+RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
+    tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(lsb_release -cs)" main" | \
     tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
-        --keyserver packages.microsoft.com \
-        --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF && \
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
