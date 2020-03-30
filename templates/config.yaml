@@ -431,11 +431,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/api-gateway
           since: "1.7"
-      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/kubeless-images/nodejs
-          since: "1.9"
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -446,16 +441,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/event-service
           since: '1.7'
-      - to: ../prow/jobs/kyma/tests/kubeless/kubeless-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/kubeless
-          since: "1.9"
-      - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/end-to-end/kubeless-integration
-          since: "1.9"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -663,11 +648,6 @@ templates:
           <<: *kubebuilder_kyma_component
           path: components/function-controller
           until: "1.8"
-      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: components/kubeless-images/nodejs
-          until: "1.8"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -742,11 +722,6 @@ templates:
           <<: *go_kyma_component_1_11
           path: tests/knative-serving
           until: "1.8"
-      - to: ../prow/jobs/kyma/tests/kubeless/kubeless.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/kubeless
-          until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -758,11 +733,6 @@ templates:
           path: tests/end-to-end/upgrade
           until: "1.6"
           watch: "^tests/end-to-end/upgrade/[^chart]"
-      - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/end-to-end/kubeless-integration
-          until: "1.8"
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration.yaml
         values:
           <<: *go_kyma_component_1_11

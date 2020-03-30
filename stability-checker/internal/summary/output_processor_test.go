@@ -13,7 +13,7 @@ func TestProcessorHappyPath(t *testing.T) {
 		{Name: "test-core-core-acceptance", Successes: 1},
 		{Name: "test-core-event-bus-tester", Failures: 1},
 		{Name: "test-core-environments", Failures: 1},
-		{Name: "test-core-kubeless", Failures: 1},
+		{Name: "test-core-serverless", Failures: 1},
 		{Name: "test-core-logging", Failures: 1},
 	}
 
@@ -73,8 +73,8 @@ RUNNING: test-core-logging
 ERROR: pods \"test-core-logging\" already exists
 RUNNING: test-core-event-bus-tester
 ERROR: pods \"test-core-event-bus-tester\" already exists
-RUNNING: test-core-kubeless
-ERROR: pods \"test-core-kubeless\" already exists
+RUNNING: test-core-serverless
+ERROR: pods \"test-core-serverless\" already exists
 RUNNING: test-core-environments
 ERROR: pods \"test-core-environments\" already exists
 RUNNING: test-core-core-acceptance
@@ -95,9 +95,9 @@ Logs are not displayed after success
 \u001b[31m'test-core-event-bus-tester' failed due to too long Pending status\u001b[0m
 \u001b[0m\u001b[1mEnd of testing 'test-core-event-bus-tester'
 \u001b[0m
-\u001b[0m\u001b[1mTesting 'test-core-kubeless'\u001b[0m
-\u001b[31m'test-core-kubeless' failed due to too long Running status\u001b[0m
-\u001b[0m\u001b[1mEnd of testing 'test-core-kubeless'
+\u001b[0m\u001b[1mTesting 'test-core-serverless'\u001b[0m
+\u001b[31m'test-core-serverless' failed due to too long Running status\u001b[0m
+\u001b[0m\u001b[1mEnd of testing 'test-core-serverless'
 \u001b[0m
 \u001b[0m\u001b[1mTesting 'test-core-logging'\u001b[0m
 \u001b[31m'test-core-logging' has Failed status\u001b[0m
