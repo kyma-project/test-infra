@@ -167,7 +167,8 @@ function installCluster() {
 	  --enable-addons "${CLUSTER_ADDONS}" \
 	  --service-principal "${AZURE_SUBSCRIPTION_APP_ID}" \
 	  --client-secret "${AZURE_SUBSCRIPTION_SECRET}" \
-	  --generate-ssh-keys
+	  --generate-ssh-keys \
+	  --zones 1 2 3
 }
 
 function azureAuthenticating() {
