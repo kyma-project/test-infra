@@ -1,8 +1,8 @@
-# Kyma-integration images
+# Kyma integration images
 
 ## Overview
 
-This folder contains the image with tools necessary for provisioning kyma-integrtion clusters.
+This folder contains the image with tools that are necessary to provision Kyma integration clusters.
 
 The image consists of:
 - Go
@@ -12,19 +12,19 @@ The image consists of:
 - Az
 - Docker
 
-# Maintaning the image
+## Maintaining the image
 
-Google Cloud SDK comes with one default `kubectl` version and couple additional ones.
-See details [here](https://cloud.google.com/sdk/docs/release-notes#27600_2020-01-14).
+Google Cloud SDK comes with one default `kubectl` version and a couple of additional ones.
+See the details [here](https://cloud.google.com/sdk/docs/release-notes#27600_2020-01-14). To set the version of `kubectl` other than the default, run:
 
 `CLUSTER_VERSION` variable is used to match `kubectl` version used in the image with the cluster version that is build by ProwJob pipeline.
 
 ```
-ENV CLUSTER_VERSION=1.14
+ENV CLUSTER_VERSION={VERSION}
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 ```
 
-**CAUTION** Each image is tagged with corresponding `kubectl` version. While updating the image please do not forget to adjust the tag. 
+>**CAUTION:** Each image is tagged with the corresponding `kubectl` version. When updating the image, do not forget to adjust the tag. 
 ```
 docker tag $(IMG_NAME) $(IMG):k8s-1.14
 ```
