@@ -19,6 +19,7 @@
 {{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
 {{- $hasReleaseBounds := and (not .Values.since) (not .Values.until) }}
 {{- $releases := matchingReleases .Global.releases .Values.since .Values.until }}
+{{- $isValidForNextRelease := releaseMatches .Global.nextRelease .Values.since .Values.until }}
 {{- $releasesPattern := $releases | join "|" | replace "." "\\." }}
 {{- $releaseBranchReleasesPattern := $hasReleaseBounds | ternary ".*" (print "("  $releasesPattern ")") }}
 {{- $defaultReleaseBranchPattern := (print "^release-" $releaseBranchReleasesPattern "-" $componentName "$") }}
@@ -49,7 +50,9 @@ job_template: &job_template
       base_ref: master
 {{- end }}
   branches:
+{{- if $isValidForNextRelease }}
     - ^master$
+{{- end }}
 {{- if ne $releaseBranchPattern "" }}
     - {{ $releaseBranchPattern }}
 {{- end }}
