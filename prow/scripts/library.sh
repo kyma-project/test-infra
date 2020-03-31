@@ -12,9 +12,6 @@ export LICENSE_PULLER_PATH
 function start_docker() {
     echo "Docker in Docker enabled, initializing..."
     printf '=%.0s' {1..80}; echo
-    #Use iptables instead of nftables
-    update-alternatives --set iptables /usr/sbin/iptables-nft
-    update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
     # If we have opted in to docker in docker, start the docker daemon,
     service docker start
     # the service can be started but the docker socket not ready, wait for ready
