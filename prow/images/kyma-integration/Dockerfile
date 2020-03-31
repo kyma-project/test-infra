@@ -70,8 +70,8 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
 RUN mkdir /docker-graph
 
 #Use iptables instead of nftables
-RUN update-alternatives --set iptables /usr/sbin/iptables-nft && \
-    update-alternatives --set ip6tables /usr/sbin/ip6tables-nft
+RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
 
 #################################################################
 ###################### GOLANG ###################################
