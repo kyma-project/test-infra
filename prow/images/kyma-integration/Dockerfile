@@ -79,12 +79,12 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.13.4 \
-    DEP_RELEASE_TAG v0.5.4
+ENV GO_VERSION=1.13.4 \
+    DEP_RELEASE_TAG=v0.5.4
 
 # Install Go
-ENV GOPATH /workspace/go \
-    PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+ENV GOPATH=/workspace/go \
+    PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar xzf go${GO_VERSION}.linux-amd64.tar.gz && \
