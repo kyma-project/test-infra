@@ -76,6 +76,13 @@ var tests = []struct {
 			jobsuite.Since(releases.Release110),
 		},
 	},
+	{path: "end-to-end/kubeless-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release19),
+			jobsuite.Until(releases.Release111),
+		},
+	},
 	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -87,6 +94,13 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release19),
+		},
+	},
+	{path: "kubeless", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Since(releases.Release19),
+			jobsuite.Until(releases.Release111),
 		},
 	},
 	{path: "integration/apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
