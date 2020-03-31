@@ -19,4 +19,9 @@ func GetAllKymaReleases() []*SupportedRelease {
 	}
 }
 
+// GetNextKymaRelease returns the version of kyma currently under development
+func GetNextKymaRelease() *SupportedRelease {
+	return Release112
+}
+
 

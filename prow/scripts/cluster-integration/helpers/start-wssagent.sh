@@ -13,18 +13,7 @@
 # - SCAN_LANGUAGE - Scan language is used to set the correct values in the whitesource config for golang / javascript
 
 set -o errexit
-
-if [ -f "../../prow/scripts/library.sh" ]; then
-    export TEST_INFRA_SOURCES_DIR="../.."
-
-elif [ -f "../test-infra/prow/scripts/library.sh" ]; then
-    export TEST_INFRA_SOURCES_DIR="../test-infra"
-
-else
-	echo "File 'library.sh' can't be found."
-    exit 1;
-fi
-
+export TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra/"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 

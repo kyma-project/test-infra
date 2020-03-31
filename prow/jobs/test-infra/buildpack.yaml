@@ -62,6 +62,23 @@ kyma_cluster_infra: &kyma_cluster_infra
           memory: 1.5Gi
           cpu: 0.8
 
+kyma_integration: &kyma_integration
+  run_if_changed: "^prow/images/kyma-integration/"
+  <<: *common_job_template
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
+
 buildpack_golang_job_template: &buildpack_golang_job_template
   run_if_changed: "^prow/images/buildpack-golang/"
   <<: *common_job_template
@@ -300,6 +317,11 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
+    - name: pre-test-infra-kyma-integration
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      <<: *kyma_integration
     - name: pre-test-infra-buildpack-golang
       labels:
         preset-build-pr: "true"
@@ -384,6 +406,11 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
+    - name: post-test-infra-kyma-integration
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *kyma_integration
     - name: post-test-infra-buildpack-golang
       labels:
         preset-build-release: "true"

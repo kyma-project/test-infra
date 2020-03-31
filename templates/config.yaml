@@ -415,21 +415,28 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/monitoring
           since: "1.7"
+      - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tools/event-subscriber
+          since: "1.12"
+          optional: true
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tools/alpine-net
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-test-generic.yaml
+      - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/api-gateway
           since: "1.7"
-      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs-generic.yaml
+      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/kubeless-images/nodejs
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -445,11 +452,13 @@ templates:
           <<: *kyma_generic_component
           path: tests/kubeless
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/kubeless-integration
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -460,11 +469,13 @@ templates:
           <<: *kyma_generic_component
           path: components/event-bus
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/event-bus
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -907,6 +918,11 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tools/alpine-net
           until: "1.6"      
+  - from: templates/whitesource-periodics.yaml
+    render:
+      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+  - from: templates/knative-kafka-component.yaml
+    render:
       - to: ../prow/jobs/incubator/knative-kafka/channel.yaml
         values:
           <<: *go_knative_kafka_component_1_12
@@ -927,6 +943,4 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: components/common
           optional: false
-  - from: templates/whitesource-periodics.yaml
-    render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+

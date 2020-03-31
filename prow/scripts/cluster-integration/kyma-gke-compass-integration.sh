@@ -224,7 +224,6 @@ function installKyma() {
     --data "test.acceptance.service-catalog.enabled=false" \
     --data "test.acceptance.external_solution.enabled=false" \
     --data "console.test.acceptance.enabled=false" \
-    --data "test.external_solution.event_bus.enabled=false" \
     --data "test.external_solution.event_mesh.enabled=false"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
