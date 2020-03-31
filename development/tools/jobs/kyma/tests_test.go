@@ -80,6 +80,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release19),
+			jobsuite.Until(releases.Release111),
 		},
 	},
 	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -99,6 +100,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Since(releases.Release19),
+			jobsuite.Until(releases.Release111),
 		},
 	},
 	{path: "integration/apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
