@@ -9,5 +9,5 @@ build-image:
 	docker build -t $(IMG_NAME) .
 	docker tag $(IMG_NAME) $(IMG):$(TAG)
 push-image:
-	docker tag $(IMG_NAME) $(IMG):k8s-1.14
+	docker tag $(IMG_NAME) $(IMG):k8s-1.15
 	docker push $(IMG):$(TAG)
