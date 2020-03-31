@@ -109,7 +109,7 @@ RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-
     chmod +x /usr/local/bin/helm && \
     helm init --client-only
 
-# Install az
+# Install Azure CLI
 # If you receive error related to recv-keys please make sure you have latest signing key
 # https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#signingKey
 # Install packages required by az
