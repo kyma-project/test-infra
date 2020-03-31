@@ -15,7 +15,7 @@ func TestSummaryIsRendered(t *testing.T) {
 		ShowTestStats: true,
 		TestStats: []summary.SpecificTestStats{
 			{
-				Name:      "test-serverless",
+				Name:      "test-kubeless",
 				Failures:  978,
 				Successes: 0,
 			},
