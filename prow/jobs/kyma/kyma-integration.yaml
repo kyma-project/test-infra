@@ -22,10 +22,6 @@ base_image_k15: &base_image_k15
 base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-a30b3576
 
-minikube_version: &minikube_version
-  name: CLUSTER_VERSION
-  value: "1.16"
-
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
@@ -33,15 +29,13 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k16
+      - <<: *base_image_16
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
           requests:
             memory: 100Mi
             cpu: 50m
-        env:
-          - <<: *minikube_version
 
 vm_job_template_k14: &vm_job_template_k14
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -686,7 +680,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           command:
             - "bash"
           args:
