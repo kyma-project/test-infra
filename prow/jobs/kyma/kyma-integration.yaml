@@ -529,7 +529,7 @@ presubmits: # runs on PRs
           base_ref: release-1.9
 
     - name: pre-master-kyma-gke-backup
-      optional: false
+      optional: true
       branches:
         - ^master$
       <<: *gke_backup_job_template
