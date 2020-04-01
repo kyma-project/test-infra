@@ -675,7 +675,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image_15
+        - <<: *base_image_k15
           command:
             - "bash"
           args:
@@ -708,7 +708,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image_15
+        - <<: *base_image_k15
           command:
             - "bash"
           args:
