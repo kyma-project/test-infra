@@ -376,11 +376,14 @@ createTestResources() {
 }
 
 upgradeKyma() {
-    shout "Delete the kyma-installation CR"
+    shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
     kubectl delete Installation -n default kyma-installation
+
+    # Remove the current installer to prevent it performing any action.
+    kubectl delete deployment -n kyma-installer kyma-installer
 
     shout "Install Tiller from version ${TARGET_VERSION}"
     date
