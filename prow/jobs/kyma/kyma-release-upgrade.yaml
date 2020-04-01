@@ -11,6 +11,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
+  run_if_changed: ^common/|^components/|^installation/|^resources/|^tests/|^tools/
   spec:
     containers:
       - <<: *base_image
