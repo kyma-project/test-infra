@@ -13,6 +13,7 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 1
+  run_if_changed: ^common/|^components/|^installation/|^resources/|^tests/|^tools/
   spec:
     containers:
       - <<: *base_image
