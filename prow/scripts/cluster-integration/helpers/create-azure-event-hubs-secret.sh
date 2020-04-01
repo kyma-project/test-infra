@@ -174,7 +174,7 @@ loadAuthorizationKey() {
   primaryConnectionString=$(cmdNamespacePrimaryConnectionString)
 
   #Populate the Kubernetes Secret Broker / Password Values
-  K8S_SECRET_BROKER=$(echo "${primaryConnectionString}" | sed -e "s/^Endpoint=.*sb:\/\/\(.*\)\/;.*$/\1:${KAFKA_BROKER_PORT}/")
+  K8S_SECRET_BROKER=$(echo "${primaryConnectionString}" | sed -e "s/^Endpoint=.*sb:\/\/\(.*\)\/;.*$/\1/")
   K8S_SECRET_PASSWORD=${primaryConnectionString}
 }
 
@@ -196,7 +196,8 @@ metadata:
     component: knative-eventing-channel-kafka
     kyma-project.io/installation: ""
 stringData:
-  kafka.brokers: ${K8S_SECRET_BROKER}
+  kafka.brokers.hostname: ${K8S_SECRET_BROKER}
+  kafka.brokers.port: ${KAFKA_BROKER_PORT}
   kafka.namespace: ${EVENTHUB_NAMESPACE_NAME}
   kafka.password: ${K8S_SECRET_PASSWORD}
   kafka.username: ${K8S_SECRET_USERNAME}
