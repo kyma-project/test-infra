@@ -27,7 +27,7 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_16
+      - <<: *base_image_k16
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
