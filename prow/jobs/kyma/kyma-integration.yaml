@@ -16,7 +16,7 @@ base_image_k14: &base_image_k14
 
 # Kubectl 1.16
 base_image: &base_image
-  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-531ac16b
 
 cluster_version: &cluster_version
   name: CLUSTER_VERSION
