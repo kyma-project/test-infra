@@ -3,7 +3,7 @@
 set -eu
 
 readonly TOOLS_DIR="${PWD}/development/tools"
-cd "$TOOLS_DIR"
+cd "${TOOLS_DIR}"
 
 mkdir -p ./bin
 dep ensure -v -vendor-only
