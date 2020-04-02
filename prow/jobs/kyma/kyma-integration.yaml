@@ -10,26 +10,17 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-# Kubectl 1.14
+# Kubectl 1.14 and CLUSTER_VERSION=1.14
 base_image_k14: &base_image_k14
-  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200124-8f253e51
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-1e1c9f67
 
-# Kubectl 1.16
-base_image: &base_image
-  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+# Kubectl 1.15 and CLUSTER_VERSION=1.15
+base_image_k15: &base_image_k15
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-531ac16b
 
-cluster_version: &cluster_version
-  name: CLUSTER_VERSION
-  value: "1.16"
-
-# upgrade when stable GKE 1.16 will be available
-cluster_version_k15: &cluster_version_k15
-  name: CLUSTER_VERSION
-  value: "1.15"
-
-cluster_version_k14: &cluster_version_k14
-  name: CLUSTER_VERSION
-  value: "1.14"
+# Kubectl 1.16 and CLUSTER_VERSION=1.16
+base_image_k16: &base_image_k16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-a30b3576
 
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -38,15 +29,13 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k16
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
         resources:
           requests:
             memory: 100Mi
             cpu: 50m
-        env:
-          - <<: *cluster_version
 
 vm_job_template_k14: &vm_job_template_k14
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -63,8 +52,6 @@ vm_job_template_k14: &vm_job_template_k14
           requests:
             memory: 100Mi
             cpu: 50m
-        env:
-          - <<: *cluster_version_k14
 
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
@@ -100,7 +87,6 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -124,7 +110,6 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -142,13 +127,12 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k15
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k15
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
         args:
@@ -172,7 +156,6 @@ gke_job_template_k14: &gke_job_template_k14
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
         args:
@@ -190,13 +173,12 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k15
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k15
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -220,7 +202,6 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -238,13 +219,12 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k15
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k15
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -268,7 +248,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -284,13 +263,12 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - <<: *base_image
+      - <<: *base_image_k15
         securityContext:
           privileged: true
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k15
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -312,7 +290,6 @@ gke_backup_job_template_k14: &gke_backup_job_template_k14
         command:
           - "bash"
         env:
-          - <<: *cluster_version_k14
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
         args:
@@ -670,7 +647,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           command:
             - "bash"
           args:
@@ -703,7 +680,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           command:
             - "bash"
           args:
@@ -713,8 +690,6 @@ periodics:
             requests:
               memory: 100Mi
               cpu: 50m
-          env:
-            - <<: *cluster_version
   - name: orphaned-assetstore-gcp-bucket-cleaner
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
@@ -943,7 +918,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           securityContext:
             privileged: true
           volumeMounts:
@@ -953,7 +928,6 @@ periodics:
           command:
             - "bash"
           env:
-            - <<: *cluster_version_k15
             - name: MACHINE_TYPE
               value: "custom-8-15360"
             - name: PROVISION_REGIONAL_CLUSTER
@@ -1013,7 +987,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           securityContext:
             privileged: true
           volumeMounts:
@@ -1023,7 +997,6 @@ periodics:
           command:
             - "bash"
           env:
-            - <<: *cluster_version_k15
             - name: MACHINE_TYPE
               value: "custom-12-15360"
             - name: PROVISION_REGIONAL_CLUSTER
@@ -1084,7 +1057,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           securityContext:
             privileged: true
           volumeMounts:
@@ -1092,7 +1065,6 @@ periodics:
               mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
               readOnly: true
           env:
-            - <<: *cluster_version_k15
             - name: RS_GROUP
               value: "kyma-nightly-aks"
             - name: REGION
@@ -1137,13 +1109,12 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image
+        - <<: *base_image_k15
           securityContext:
             privileged: true
           command:
             - "bash"
           env:
-            - <<: *cluster_version_k15
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-a"
             - name: REPO_OWNER
