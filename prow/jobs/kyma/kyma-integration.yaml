@@ -20,7 +20,7 @@ base_image: &base_image
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200402-fe859dc5
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200402-a2da420c
 
 cluster_version: &cluster_version
   name: CLUSTER_VERSION
