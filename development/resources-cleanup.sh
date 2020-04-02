@@ -46,7 +46,7 @@ echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration job
 echo "--------------------------------------------------------------------------------"
 
 echo "running /tools/${TOOL}..."
-"/tools/${TOOL}" "$@"
+/tools/"${TOOL}" "$@"
 status=$?
 
 if [ ${status} -ne 0 ]
