@@ -45,15 +45,8 @@ echo "--------------------------------------------------------------------------
 echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration jobs...  "
 echo "--------------------------------------------------------------------------------"
 
-if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
-    echo "Vendoring 'tools'"
-    pushd "${DEVELOPMENT_DIR}/tools"
-    dep ensure -v -vendor-only
-    popd
-fi
-
-echo "running ${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go"
-go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go" "$@"
+echo "running /tools/${TOOL}..."
+"/tools/${TOOL}" "$@"
 status=$?
 
 if [ ${status} -ne 0 ]
