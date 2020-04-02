@@ -23,7 +23,6 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release112),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
