@@ -1,12 +1,13 @@
 package rafter_test
 
 import (
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	v1 "k8s.io/api/core/v1"
-	"testing"
 )
 
 const (
@@ -75,25 +76,25 @@ func TestRafterJobsPresubmits(t *testing.T) {
 		},
 		"pre-rafter-minio-gcs-gateway": {
 			presets:      preMinIOGCPGatewayPresets,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"pre-rafter-minio-az-gateway": {
 			presets:      preMinIOAzureGatewayPresets,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"pre-rafter-minio-gcs-gateway-migration": {
 			presets:      preMinIOGCPGatewayPresets,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"pre-rafter-minio-az-gateway-migration": {
 			presets:      preMinIOAzureGatewayPresets,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
@@ -174,56 +175,56 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 		"post-rafter-minio-gcs-gateway": {
 			presets:      postMinIOGCPGatewayPresets,
 			branches:     postBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"release-rafter-minio-gcs-gateway": {
 			presets:      releaseMinIOGCPGatewayPresets,
 			branches:     releaseBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"post-rafter-minio-az-gateway": {
 			presets:      postMinIOAzureGatewayPresets,
 			branches:     postBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"release-rafter-minio-az-gateway": {
 			presets:      releaseMinIOAzureGatewayPresets,
 			branches:     releaseBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayTestArg,
 		},
 		"post-rafter-minio-gcs-gateway-migration": {
 			presets:      postMinIOGCPGatewayPresets,
 			branches:     postBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"release-rafter-minio-gcs-gateway-migration": {
 			presets:      releaseMinIOGCPGatewayPresets,
 			branches:     releaseBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"post-rafter-minio-az-gateway-migration": {
 			presets:      postMinIOAzureGatewayPresets,
 			branches:     postBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
 		"release-rafter-minio-az-gateway-migration": {
 			presets:      releaseMinIOAzureGatewayPresets,
 			branches:     releaseBranches,
-			containerImg: tester.ImageKymaClusterInfraLatest,
+			containerImg: tester.ImageKymaIntegrationK15,
 			command:      makeCommand,
 			args:         minIOGatewayMigrationTestArg,
 		},
