@@ -137,11 +137,12 @@ go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
 templates:
   - from: templates/generic-component.yaml
     render:
-      - to: ../prow/jobs/kyma/components/api-gateway-migrator/api-gateway-migrator/yaml
+      - to: ../prow/jobs/kyma/components/api-gateway-migrator/api-gateway-migrator.yaml
         values:
           <<: *kyma_generic_component
           path: components/api-gateway-migrator
           since: "1.12"
+          until: "1.13"
           optional: true
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
         values:
