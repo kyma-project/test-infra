@@ -1,4 +1,4 @@
-FROM golang:alpine AS builder
+FROM golang:1.14.1-alpine3.11 AS builder
 
 WORKDIR /go/src/github.com/kyma-project/test-infra
 COPY . development/tools
