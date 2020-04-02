@@ -27,7 +27,11 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+			if currentRelease == releases.Release111 {
+				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+			} else {
+				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
+			}
 			assert.Len(t, testContainer.Command, 1)
 			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -235,7 +239,7 @@ func TestKymaBackupTestJobPresubmit(t *testing.T) {
 	assert.Equal(t, []string{"bash"}, actualJob.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"}, actualJob.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Len(t, actualJob.Spec.Containers[0].Env, 2)
+	assert.Len(t, actualJob.Spec.Containers[0].Env, 1)
 	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
 }
 
