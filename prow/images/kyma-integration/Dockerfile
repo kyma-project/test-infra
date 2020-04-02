@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV CLOUD_SDK_VERSION=276.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-    CLUSTER_VERSION=1.14
+    CLUSTER_VERSION=1.16
 
 RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
     tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
@@ -79,12 +79,12 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION=1.13.4 \
-    DEP_RELEASE_TAG=v0.5.4
+ENV GO_VERSION 1.13.4
+ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
-ENV GOPATH=/workspace/go \
-    PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+ENV GOPATH /workspace/go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar xzf go${GO_VERSION}.linux-amd64.tar.gz && \
@@ -103,7 +103,7 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 #Install helm
 
-ENV HELM_VERSION="v2.10.0"
+ENV HELM_VERSION="v2.16.1"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm && \

@@ -29,7 +29,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease == releases.Release111 {
 				assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
-			}else{
+			} else {
 				assert.Equal(t, tester.ImageKymaClusterInfraK14, testContainer.Image)
 			}
 			assert.Len(t, testContainer.Command, 1)
@@ -57,7 +57,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease == releases.Release111 {
 				assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
-			}else{
+			} else {
 				assert.Equal(t, tester.ImageKymaClusterInfraK14, testContainer.Image)
 			}
 			assert.Len(t, testContainer.Command, 1)
@@ -84,7 +84,7 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease == releases.Release111 {
 				assert.Equal(t, tester.ImageKymaClusterInfraK16, testContainer.Image)
-			}else{
+			} else {
 				assert.Equal(t, tester.ImageKymaClusterInfraK14, testContainer.Image)
 			}
 			assert.Len(t, testContainer.Command, 1)
@@ -230,7 +230,7 @@ func TestKymaBackupTestJobPresubmit(t *testing.T) {
 
 	// then
 	assert.True(t, actualJob.Decorate)
-	assert.False(t, actualJob.Optional)
+	assert.True(t, actualJob.Optional)
 	assert.Equal(t, "^((resources/backup\\S+|tests/end-to-end/backup/chart/backup-test/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.KymaBackupRestoreBucket, preset.KymaBackupCredentials, preset.GCProjectEnv, preset.BuildPr,
 		preset.SaGKEKymaIntegration, "preset-weekly-github-integration")
