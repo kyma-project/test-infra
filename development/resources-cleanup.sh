@@ -46,7 +46,6 @@ echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration job
 echo "--------------------------------------------------------------------------------"
 
 echo "running /prow-tools/${TOOL}..."
-ls -la /prow-tools
 /prow-tools/"${TOOL}" "$@"
 status=$?
 
