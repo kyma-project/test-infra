@@ -26,9 +26,9 @@ if [ -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
    exit 1
 fi
 
-readonly TOOL_DIR="$1"
-if [ -z "${TOOL_DIR}" ]; then
-    echo "TOOL_DIR variable is missing!"
+readonly TOOL="$1"
+if [ -z "${TOOL}" ]; then
+    echo "TOOL variable is missing!"
 		exit 1
 fi
 
