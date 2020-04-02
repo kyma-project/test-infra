@@ -300,7 +300,7 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
           memory: 1.5Gi
           cpu: 0.8
 
-kyma_cleaners_job_template: &prow_tools_job_template
+prow_tools_job_template: &prow_tools_job_template
   run_if_changed: "^development/tools/"
   <<: *common_job_template
   spec:
