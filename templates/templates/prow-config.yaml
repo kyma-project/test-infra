@@ -121,6 +121,22 @@ presets:
     - name: gardener-kyma-prow-kubeconfig
       mountPath: /etc/credentials/gardener-kyma-prow
   - labels:
+      preset-gardener-aws-kyma-integration: "true"
+    env:
+    - name: GARDENER_KYMA_PROW_KUBECONFIG
+      value: /etc/credentials/gardener-kyma-prow/kubeconfig
+    - name: GARDENER_KYMA_PROW_PROJECT_NAME
+      value: "kyma-prow"
+    - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+      value: "prow-dev-aws"
+    volumes:
+    - name: gardener-kyma-prow-kubeconfig
+      secret:
+        secretName: gardener-kyma-prow-kubeconfig
+    volumeMounts:
+    - name: gardener-kyma-prow-kubeconfig
+      mountPath: /etc/credentials/gardener-kyma-prow
+  - labels:
       preset-creds-aks-kyma-integration: "true"
     env:
     - name: AZURE_SUBSCRIPTION_ID
