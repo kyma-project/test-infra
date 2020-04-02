@@ -16,6 +16,10 @@ base_image_k14: &base_image_k14
 base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
 
+# prow-tools image
+prow_tools_image: &prow_tools_image
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200402-fe859dc5
+
 cluster_version: &cluster_version
   name: CLUSTER_VERSION
   value: "1.16"
@@ -783,7 +787,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -808,7 +812,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -833,7 +837,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -858,7 +862,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -883,7 +887,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -909,7 +913,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
