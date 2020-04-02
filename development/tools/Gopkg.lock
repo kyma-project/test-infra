@@ -6,8 +6,6 @@
   packages = [
     ".",
     "compute/metadata",
-    "containeranalysis/apiv1",
-    "grafeas/apiv1",
     "iam",
     "internal",
     "internal/optional",
@@ -100,7 +98,6 @@
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
-    "ptypes/empty",
     "ptypes/timestamp"
   ]
   revision = "6c65a5562fc06764971b7c5d05c76c75e84bdbf7"
@@ -169,12 +166,6 @@
   packages = ["."]
   revision = "4355a998706e83fe1d71c31b07af94e34f68d74a"
   version = "v1.2.0"
-
-[[projects]]
-  name = "github.com/gorilla/websocket"
-  packages = ["."]
-  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
-  version = "v1.4.0"
 
 [[projects]]
   branch = "master"
@@ -269,15 +260,6 @@
   packages = ["."]
   revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
   version = "1.0.1"
-
-[[projects]]
-  name = "github.com/nlopes/slack"
-  packages = [
-    ".",
-    "slackutilsx"
-  ]
-  revision = "a7deeca7935c178aa865249bab511daf816288ba"
-  version = "v0.5.0"
 
 [[projects]]
   name = "github.com/onsi/gomega"
@@ -438,7 +420,6 @@
     "internal/tagencoding",
     "metric/metricdata",
     "metric/metricproducer",
-    "plugin/ocgrpc",
     "plugin/ochttp",
     "plugin/ochttp/propagation/b3",
     "resource",
@@ -602,8 +583,6 @@
     "iterator",
     "option",
     "storage/v1",
-    "transport",
-    "transport/grpc",
     "transport/http",
     "transport/http/internal/propagation"
   ]
@@ -620,9 +599,7 @@
     "internal/log",
     "internal/modules",
     "internal/remote_api",
-    "internal/socket",
     "internal/urlfetch",
-    "socket",
     "urlfetch"
   ]
   revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
@@ -633,13 +610,10 @@
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
-    "googleapis/devtools/containeranalysis/v1",
-    "googleapis/grafeas/v1",
     "googleapis/iam/v1",
     "googleapis/rpc/code",
     "googleapis/rpc/status",
-    "googleapis/type/expr",
-    "protobuf/field_mask"
+    "googleapis/type/expr"
   ]
   revision = "24fa4b261c55da65468f2abfdae2b024eef27dfb"
 
@@ -649,23 +623,12 @@
     ".",
     "balancer",
     "balancer/base",
-    "balancer/grpclb",
-    "balancer/grpclb/grpc_lb_v1",
     "balancer/roundrobin",
     "binarylog/grpc_binarylog_v1",
     "codes",
     "connectivity",
     "credentials",
-    "credentials/alts",
-    "credentials/alts/internal",
-    "credentials/alts/internal/authinfo",
-    "credentials/alts/internal/conn",
-    "credentials/alts/internal/handshaker",
-    "credentials/alts/internal/handshaker/service",
-    "credentials/alts/internal/proto/grpc_gcp",
-    "credentials/google",
     "credentials/internal",
-    "credentials/oauth",
     "encoding",
     "encoding/proto",
     "grpclog",
@@ -958,6 +921,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "94d524894c76b9ae2fdead1291e87086502a1e4ddcfec3868f4e5f62cd146605"
+  inputs-digest = "c88c4d71cec66b46243c2de44916988b2ba226f22c7057f03a2e829f956ca66e"
   solver-name = "gps-cdcl"
   solver-version = 1
