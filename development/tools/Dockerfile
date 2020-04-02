@@ -9,5 +9,5 @@ RUN apk --update --no-cache add bash upx dep git && \
 FROM alpine:latest
 
 RUN apk --update --no-cache add ca-certificates bash
-COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /tools
-WORKDIR /tools
+COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /prow-tools
+WORKDIR /prow-tools
