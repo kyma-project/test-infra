@@ -129,3 +129,9 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
     tee /etc/apt/sources.list.d/azure-cli.list && \
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
+
+#################################################################
+########################## Prow Tools ###########################
+#################################################################
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200403-ebf5f81e /prow-tools /prow-tools
