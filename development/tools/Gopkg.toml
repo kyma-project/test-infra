@@ -74,7 +74,3 @@ revision = "bca49d5b51a50dc5bb17bbf6204c711c6dbded06"
 [[constraint]]
   name = "cloud.google.com/go"
   version = "0.52.0"
-
-[[constraint]]
-  branch = "master"
-  name = "google.golang.org/genproto"
