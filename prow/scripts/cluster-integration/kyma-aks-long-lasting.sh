@@ -187,7 +187,7 @@ function createPublicIPandDNS() {
 	date
 
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static
+	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
 
 	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
@@ -260,6 +260,14 @@ function installKyma() {
 	fi
 }
 
+function test_console_url() {
+  CONSOLE_URL="https://console.${DOMAIN}"
+  console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
+  if [ "${console_response}" != "200" ]; then
+    echo "ERROR: Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
+    exit 1
+  fi
+}
 init
 azureAuthenticating
 
@@ -296,3 +304,5 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
 		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
+
+test_console_url
