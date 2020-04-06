@@ -187,7 +187,7 @@ function createPublicIPandDNS() {
 	date
 
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard --zone 1 2 3
+	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
 
 	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
