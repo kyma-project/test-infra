@@ -301,7 +301,7 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
           cpu: 0.8
 
 prow_tools_job_template: &prow_tools_job_template
-  run_if_changed: "^development/tools/(?!jobs)" # all files inside except jobs directory
+  run_if_changed: "^development/tools/(pkg/|cmd/|Dockerfile)"
   <<: *common_job_template
   spec:
     containers:
