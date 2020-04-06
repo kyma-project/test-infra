@@ -5,7 +5,7 @@ FROM debian:10
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-
+ARG K8S_VERSION=1.16
 WORKDIR /workspace
 RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \
@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ENV CLOUD_SDK_VERSION=276.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-    CLUSTER_VERSION=1.16
+    CLUSTER_VERSION=$K8S_VERSION
 
 RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
     tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
