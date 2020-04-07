@@ -89,7 +89,7 @@ function cleanup() {
 		TMP_STATUS=$?
 		check_status "${TMP_STATUS}" "Failed to get nodes resource group."
 
-		log::info "---\nRemove DNS Record for Ingressgateway\n---"
+		log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
 		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
@@ -101,12 +101,17 @@ function cleanup() {
 			# only try to delete the dns record if the ip address has been found
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
-			check_status ${TMP_STATUS} "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
+			if [[ ${TMP_STATUS} -ne 0 ]]; then
+			  log::error "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
+			  EXIT_STATUS=${TMP_STATUS}
+			else
+			  log:success "Deleted dns record : ${GATEWAY_DNS_FULL_NAME}"
+			fi
 		else
 			log::warn "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		log::info "---\nRemove DNS Record for Apiserver Proxy IP\n---"
+		log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
 		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
 		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 		TMP_STATUS=$?
@@ -116,7 +121,7 @@ function cleanup() {
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then
 			  log::error "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
-			  EXIT_STATUS=${status}
+			  EXIT_STATUS=${TMP_STATUS}
 			else
 			  log::success "Deleted dns record : ${APISERVER_DNS_FULL_NAME}"
 			fi
@@ -124,14 +129,14 @@ function cleanup() {
 		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		log::info "---\nRemove Cluster, IP Address for Ingressgateway\n---"
+		log::info "\n---\nRemove Cluster, IP Address for Ingressgateway\n---"
 		az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then
 		  log::error "Failed delete cluster : ${CLUSTER_NAME}"
-		  EXIT_STATUS=${status}
+		  EXIT_STATUS=${TMP_STATUS}
 		else
-		  log::success "Cluster, IP address for Ingressgateway deleted"
+		  log::success "Cluster and IP address for Ingressgateway deleted"
 		fi
 
 		log::info "Remove group"
@@ -139,7 +144,7 @@ function cleanup() {
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then
 		  log::error "Failed to delete ResourceGrouop : ${RS_GROUP}"
-		  EXIT_STATUS=${status}
+		  EXIT_STATUS=${TMP_STATUS}
 		else
 		  log::success "ResourceGroup deleted : ${RS_GROUP}"
 		fi
@@ -149,7 +154,7 @@ function cleanup() {
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	log::info "---\nCleanup function is finished ${MSG}\n---"
+	log::info "\n---\nCleanup function is finished ${MSG}\n---"
 
 	# Turn on exit-on-error
 	set -e
@@ -170,7 +175,7 @@ function createGroup() {
 		sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			log::info "---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
+			log::info "\n---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
 			exit 1
 		fi
 	done
