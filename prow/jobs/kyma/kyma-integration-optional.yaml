@@ -58,22 +58,6 @@ vm_job_labels_template: &vm_job_labels_template
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
 
-presets:
-  - labels:
-      preset-minio-gcs-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: gcs
-  - labels:
-      preset-minio-az-gateway: "true"
-    env:
-      - name: MINIO_GATEWAY_MODE
-        value: azure
-      - name: AZURE_RS_GROUP
-        value: kyma-minio-gateway
-      - name: AZURE_REGION
-        value: westeurope
-
 gke_job_template: &gke_job_template
   optional: true
   skip_report: false
