@@ -68,23 +68,8 @@ function check_status() {
   error_desc="${2}"
   if [[ ${status} -ne 0 ]]; then
     EXIT_STATUS=${status}
-    write_error "${error_desc}"
+    log::error "${error_desc}"
   fi
-}
-
-function write_error() {
-  message="${1}"
-    echo "\e[31m${message}\e[39m"
-}
-
-function write_warning() {
-  message="${1}"
-    echo "\e[33m${message}\e[39m"
-}
-
-function write_info() {
-  message="${1}"
-    echo "\e[36m${message}\e[39m"
 }
 
 function cleanup() {
@@ -104,7 +89,7 @@ function cleanup() {
 		TMP_STATUS=$?
 		check_status "${TMP_STATUS}" "Failed to get nodes resource group."
 
-		echo -e "---\nRemove DNS Record for Ingressgateway\n---"
+		log::info "---\nRemove DNS Record for Ingressgateway\n---"
 		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
@@ -112,16 +97,16 @@ function cleanup() {
 		TMP_STATUS=$?
 		check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-			write_info "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+			log::success "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 			# only try to delete the dns record if the ip address has been found
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
 			check_status ${TMP_STATUS} "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
 		else
-			write_warning "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
+			log::warn "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		echo -e "---\nRemove DNS Record for Apiserver Proxy IP\n---"
+		log::info "---\nRemove DNS Record for Apiserver Proxy IP\n---"
 		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
 		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 		TMP_STATUS=$?
@@ -129,35 +114,42 @@ function cleanup() {
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
-			check_status ${TMP_STATUS} "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
+			if [[ ${TMP_STATUS} -ne 0 ]]; then
+			  log::error "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
+			  EXIT_STATUS=${status}
+			else
+			  log::success "Deleted dns record : ${APISERVER_DNS_FULL_NAME}"
+			fi
 		else
-		  write_warning "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
+		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		echo -e "---\nRemove Cluster, IP Address for Ingressgateway\n---"
+		log::info "---\nRemove Cluster, IP Address for Ingressgateway\n---"
 		az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then
-		  write_error "Failed delete cluster : ${CLUSTER_NAME}"
+		  log::error "Failed delete cluster : ${CLUSTER_NAME}"
+		  EXIT_STATUS=${status}
 		else
-		  write_info "Cluster, IP address for Ingressgateway deleted"
+		  log::success "Cluster, IP address for Ingressgateway deleted"
 		fi
 
-		echo "Remove group"
+		log::info "Remove group"
 		az group delete -n "${RS_GROUP}" -y
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then
-		  write_error "Failed to delete ResourceGrouop : ${RS_GROUP}"
+		  log::error "Failed to delete ResourceGrouop : ${RS_GROUP}"
+		  EXIT_STATUS=${status}
 		else
-		  write_info "ResourceGroup deleted : ${RS_GROUP}"
+		  log::success "ResourceGroup deleted : ${RS_GROUP}"
 		fi
 	else
-		write_info "Azure group does not exist, skip cleanup process"
+		log::info "Azure group does not exist, skip cleanup process"
 	fi
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	echo -e "---\nCleanup function is finished ${MSG}\n---"
+	log::info "---\nCleanup function is finished ${MSG}\n---"
 
 	# Turn on exit-on-error
 	set -e
@@ -178,7 +170,7 @@ function createGroup() {
 		sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			echo -e "---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
+			log::info "---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
 			exit 1
 		fi
 	done
@@ -188,9 +180,9 @@ function installCluster() {
 	shout "Install Kubernetes on Azure"
 	date
 
-	echo "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
+	log::info "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
 	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	echo "Latest available version is: ${AKS_CLUSTER_VERSION}"
+	log::info "Latest available version is: ${AKS_CLUSTER_VERSION}"
 
 	az aks create \
 	  --resource-group "${RS_GROUP}" \
@@ -224,7 +216,7 @@ function createPublicIPandDNS() {
 	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
 
 	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
-	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	shout "Create DNS Record for Ingressgateway IP"
 	date
@@ -249,7 +241,7 @@ function installKyma() {
 
 	kubectl create namespace "kyma-installer"
 
-	echo "Apply Azure crb for healthz"
+	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
 	shout "Apply Kyma config"
@@ -298,7 +290,7 @@ function test_console_url() {
   CONSOLE_URL="https://console.${DOMAIN}"
   console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
   if [ "${console_response}" != "200" ]; then
-    echo "ERROR: Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
+    log::error "Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
     exit 1
   fi
 }
