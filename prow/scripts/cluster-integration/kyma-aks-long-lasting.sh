@@ -63,6 +63,30 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
+function check_status() {
+  status="${1}"
+  error_desc="${2}"
+  if [[ ${status} -ne 0 ]]; then
+    EXIT_STATUS=${status}
+    write_error "${error_desc}"
+  fi
+}
+
+function write_error() {
+  message="${1}"
+    echo "\e[31m${message}\e[39m"
+}
+
+function write_warning() {
+  message="${1}"
+    echo "\e[33m${message}\e[39m"
+}
+
+function write_info() {
+  message="${1}"
+    echo "\e[36m${message}\e[39m"
+}
+
 function cleanup() {
 	shout "Cleanup"
 	date
@@ -78,47 +102,57 @@ function cleanup() {
 	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
 		CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		check_status "${TMP_STATUS}" "Failed to get nodes resource group."
 
 		echo -e "---\nRemove DNS Record for Ingressgateway\n---"
 		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
-		GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-			echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+			write_info "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 			# only try to delete the dns record if the ip address has been found
-			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+			check_status ${TMP_STATUS} "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
 		else
-			echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
+			write_warning "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
 		fi
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 		echo -e "---\nRemove DNS Record for Apiserver Proxy IP\n---"
 		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
 		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+		TMP_STATUS=$?
+		check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+			check_status ${TMP_STATUS} "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
+		else
+		  write_warning "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
 		fi
 
 		echo -e "---\nRemove Cluster, IP Address for Ingressgateway\n---"
 		az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		if [[ ${TMP_STATUS} -ne 0 ]]; then
+		  write_error "Failed delete cluster : ${CLUSTER_NAME}"
+		else
+		  write_info "Cluster, IP address for Ingressgateway deleted"
+		fi
 
 		echo "Remove group"
 		az group delete -n "${RS_GROUP}" -y
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		if [[ ${TMP_STATUS} -ne 0 ]]; then
+		  write_error "Failed to delete ResourceGrouop : ${RS_GROUP}"
+		else
+		  write_info "ResourceGroup deleted : ${RS_GROUP}"
+		fi
 	else
-		echo "Azure group does not exist, skip cleanup process"
+		write_info "Azure group does not exist, skip cleanup process"
 	fi
 
 	MSG=""
