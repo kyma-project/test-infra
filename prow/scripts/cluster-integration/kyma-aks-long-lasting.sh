@@ -232,9 +232,9 @@ function installKyma() {
 		--data "console.test.acceptance.enabled=false" \
 		--label "component=core"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-        --data "application-registry.deployment.args.detailedErrorResponse=true" \
-        --label "component=application-connector"
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+		--data "application-registry.deployment.args.detailedErrorResponse=true" \
+		--label "component=application-connector"
 
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
 		--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
