@@ -205,6 +205,10 @@ function installKyma() {
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
 
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+        --data "application-registry.deployment.args.detailedErrorResponse=true" \
+        --label "component=application-connector"
+
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 

@@ -230,6 +230,10 @@ function installKyma() {
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
 
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+    --data "application-registry.deployment.args.detailedErrorResponse=true" \
+    --label "component=application-connector"
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
