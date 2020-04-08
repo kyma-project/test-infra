@@ -46,16 +46,15 @@ const (
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaIntegrationLatest represents boostrap image published on 20.11.2019
-	ImageKymaIntegrationK14    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.14"
-	ImageKymaIntegrationK15    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.15"
-	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.16"
+	ImageKymaIntegrationK14    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-1e1c9f67"
+	ImageKymaIntegrationK15    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-531ac16b"
+	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-a30b3576"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 	ImageBootstrapHelm20191227 = "eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191004-f931536"
-	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20200403-ebf5f81e"
+
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir
