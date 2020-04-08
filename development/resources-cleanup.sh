@@ -26,9 +26,9 @@ if [ -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
    exit 1
 fi
 
-readonly TOOL="$1"
-if [ -z "${TOOL}" ]; then
-    echo "TOOL variable is missing!"
+readonly TOOL_NAME="$1"
+if [ -z "${TOOL_NAME}" ]; then
+    echo "TOOL_NAME variable is missing!"
 		exit 1
 fi
 
@@ -45,8 +45,8 @@ echo "--------------------------------------------------------------------------
 echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration jobs...  "
 echo "--------------------------------------------------------------------------------"
 
-echo "running /prow-tools/${TOOL}..."
-/prow-tools/"${TOOL}" "$@"
+echo "running /prow-tools/${TOOL_NAME}..."
+/prow-tools/"${TOOL_NAME}" "$@"
 status=$?
 
 if [ ${status} -ne 0 ]
