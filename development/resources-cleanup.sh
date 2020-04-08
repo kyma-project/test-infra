@@ -26,9 +26,9 @@ if [ -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
    exit 1
 fi
 
-readonly TOOL_DIR="$1"
-if [ -z "${TOOL_DIR}" ]; then
-    echo "TOOL_DIR variable is missing!"
+readonly TOOL_NAME="$1"
+if [ -z "${TOOL_NAME}" ]; then
+    echo "TOOL_NAME variable is missing!"
 		exit 1
 fi
 
@@ -45,15 +45,8 @@ echo "--------------------------------------------------------------------------
 echo "Removing GCP ${OBJECT_NAME} allocated by failed/terminated integration jobs...  "
 echo "--------------------------------------------------------------------------------"
 
-if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
-    echo "Vendoring 'tools'"
-    pushd "${DEVELOPMENT_DIR}/tools"
-    dep ensure -v -vendor-only
-    popd
-fi
-
-echo "running ${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go"
-go run "${DEVELOPMENT_DIR}/tools/cmd/${TOOL_DIR}/main.go" "$@"
+echo "running /prow-tools/${TOOL_NAME}..."
+/prow-tools/"${TOOL_NAME}" "$@"
 status=$?
 
 if [ ${status} -ne 0 ]

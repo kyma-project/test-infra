@@ -1,6 +1,5 @@
-# Kubectl 1.16
 base_image: &base_image
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-531ac16b
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.15
 
 periodics:
 - name: kyma-integration-gardener-gcp
