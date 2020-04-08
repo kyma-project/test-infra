@@ -197,7 +197,7 @@ metadata:
     kyma-project.io/installation: ""
 stringData:
   kafka.brokers.hostname: ${K8S_SECRET_BROKER_HOSTNAME}
-  kafka.brokers.port: ${K8S_SECRET_BROKER_PORT}
+  kafka.brokers.port: "${K8S_SECRET_BROKER_PORT}"
   kafka.namespace: ${EVENTHUB_NAMESPACE_NAME}
   kafka.password: ${K8S_SECRET_PASSWORD}
   kafka.username: ${K8S_SECRET_USERNAME}
