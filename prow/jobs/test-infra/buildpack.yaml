@@ -301,7 +301,7 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
           cpu: 0.8
 
 prow_tools_job_template: &prow_tools_job_template
-  run_if_changed: "^development/tools/(.*\.go|.*\.toml|.*\.sh|go\.mod|Dockerfile|Makefile)$"
+  run_if_changed: "^development/tools/(.*.go|.*.toml|.*.sh|go.mod|Dockerfile|Makefile)$
   <<: *common_job_template
   spec:
     containers:
