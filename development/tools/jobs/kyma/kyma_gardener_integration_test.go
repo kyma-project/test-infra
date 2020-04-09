@@ -57,3 +57,28 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
+
+func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
+	// WHEN
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener-aws.yaml")
+	// THEN
+	require.NoError(t, err)
+
+	periodics := jobConfig.Periodics
+	assert.Len(t, periodics, 1)
+
+	jobName := "kyma-integration-gardener-aws"
+	job := tester.FindPeriodicJobByName(periodics, jobName)
+	require.NotNil(t, job)
+	assert.Equal(t, jobName, job.Name)
+	assert.True(t, job.Decorate)
+	assert.Equal(t, "00 14 * * *", job.Cron)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAWSIntegration, preset.KymaCLIStable, preset.KymaKeyring, preset.KymaEncriptionKey)
+	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4", job.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-aws.sh"}, job.Spec.Containers[0].Command)
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "eu-west3")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "eu-west3a")
+	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
+}
