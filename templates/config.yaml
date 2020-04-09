@@ -471,6 +471,12 @@ templates:
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/nats-init
+          since: "1.12"
+          optional: true
       - to: ../prow/jobs/kyma/components/event-bus/event-bus-generic.yaml
         values:
           <<: *kyma_generic_component

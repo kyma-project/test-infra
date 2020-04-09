@@ -150,6 +150,13 @@ var components = []struct {
 			jobsuite.Since(releases.Release19),
 		},
 	},
+	{path: "nats-init", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release112),
+			jobsuite.Optional(),
+		},
+	},
 	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
