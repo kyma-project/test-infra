@@ -196,13 +196,13 @@ metadata:
     component: knative-eventing-channel-kafka
     kyma-project.io/installation: ""
 stringData:
-  kafka.brokers.hostname: ${K8S_SECRET_BROKER_HOSTNAME}
+  kafka.brokers.hostname: "${K8S_SECRET_BROKER_HOSTNAME}"
   kafka.brokers.port: "${K8S_SECRET_BROKER_PORT}"
-  kafka.namespace: ${EVENTHUB_NAMESPACE_NAME}
-  kafka.password: ${K8S_SECRET_PASSWORD}
-  kafka.username: ${K8S_SECRET_USERNAME}
-  kafka.secretName: knative-kafka
-  environment.kafkaProvider: azure
+  kafka.namespace: "${EVENTHUB_NAMESPACE_NAME}"
+  kafka.password: "${K8S_SECRET_PASSWORD}"
+  kafka.username: "${K8S_SECRET_USERNAME}"
+  kafka.secretName: "knative-kafka"
+  environment.kafkaProvider: "azure"
 EOF
 )
   echo "${kafkaSecret}" > "${EVENTHUB_SECRET_OVERRIDE_FILE}"
