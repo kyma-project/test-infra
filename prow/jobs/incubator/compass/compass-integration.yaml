@@ -41,7 +41,18 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  
+    - name: pre-rel111-compass-integration
+      branches:
+      - release-1.11
+      <<: *vm_job_template
+      always_run: false
+      labels:
+      preset-build-release: "true"
+      <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+      base_ref: release-1.11
+
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration

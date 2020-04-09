@@ -39,7 +39,21 @@ presubmits: # runs on PRs
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  
+
+{{- range (matchingReleases .Global.releases "1.11" nil) }}
+    - name: pre-rel{{ . | replace "." "" }}-compass-integration
+      branches:
+      - release-{{ . }}
+      <<: *vm_job_template
+      always_run: false
+      labels:
+      preset-build-release: "true"
+      <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+      base_ref: release-{{ . }}
+    {{- end }}
+
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration
