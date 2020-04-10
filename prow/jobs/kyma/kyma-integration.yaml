@@ -12,15 +12,19 @@ kyma_ref: &kyma_ref
 
 # Kubectl 1.14 and CLUSTER_VERSION=1.14
 base_image_k14: &base_image_k14
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-1e1c9f67
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.14
 
 # Kubectl 1.15 and CLUSTER_VERSION=1.15
 base_image_k15: &base_image_k15
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-531ac16b
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.15
+
+# prow-tools image
+prow_tools_image: &prow_tools_image
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200403-ebf5f81e
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200401-a30b3576
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.16
 
 vm_job_template: &vm_job_template
   skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
@@ -730,7 +734,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -755,7 +759,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -780,7 +784,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -805,7 +809,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -830,7 +834,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
@@ -856,7 +860,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+        - <<: *prow_tools_image
           command:
             - "bash"
           args:
