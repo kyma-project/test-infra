@@ -352,7 +352,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "00 00 * * *", assetstoreGcpBucketCleaner.Cron)
 	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRefs(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra"})
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/buildpack-golang:0.0.1", assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageProwToolsLatest, assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, assetstoreGcpBucketCleaner.JobBase)
