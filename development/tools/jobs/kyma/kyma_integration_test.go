@@ -428,7 +428,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, githubStatsPeriodic.Name)
 	assert.True(t, githubStatsPeriodic.Decorate)
 	assert.Equal(t, "0 6 * * *", githubStatsPeriodic.Cron)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, githubStatsPeriodic.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageProwToolsLatest, githubStatsPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, githubStatsPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "development/github-stats.sh"}, githubStatsPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, githubStatsPeriodic.JobBase)
