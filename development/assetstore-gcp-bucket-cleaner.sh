@@ -12,14 +12,7 @@ BUCKET_OBJECT_WORKERS_NUMBER=10
 # [panic|fatal|error|warn|warning|info|debug|trace]
 LOG_LEVEL=info
 
-if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
-    echo "Vendoring 'tools'"
-    pushd "${DEVELOPMENT_DIR}/tools"
-    dep ensure -v -vendor-only
-    popd
-fi
-
-go run "${DEVELOPMENT_DIR}"/tools/cmd/gcscleaner/main.go \
+"${DEVELOPMENT_DIR}/resources-cleanup.sh" "gcscleaner" "assetstore GCP buckets" \
       -bucketNameRegexp  "${BUCKET_REGEXP_NAME}"\
       -excludedBuckets "${EXCLUDED_BUCKETS}"\
       -workerNumber "${BUCKET_OBJECT_WORKERS_NUMBER}"\
