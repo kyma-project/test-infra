@@ -717,8 +717,8 @@ periodics:
             - "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
   - name: orphaned-disks-cleaner
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
@@ -742,8 +742,8 @@ periodics:
             - "development/disks-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release'"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
   - name: orphaned-clusters-cleaner
     cron: "0 * * * *" # "At 0 minute every hour"
     annotations:
@@ -767,8 +767,8 @@ periodics:
             - "development/clusters-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -whitelisted-clusters=kyma-prow,workload-kyma-prow,nightly,weekly"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
   - name: orphaned-vms-cleaner
     cron: "0 * * * *" # "At minute 0 past every hour"
     annotations:
@@ -792,8 +792,8 @@ periodics:
             - "development/vms-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
   - name: orphaned-loadbalancer-cleaner
     cron: "15 * * * *" # "At 15 past every hour"
     annotations:
@@ -817,8 +817,8 @@ periodics:
             - "development/loadbalancer-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
   - name: firewall-cleaner
     cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
     annotations:
@@ -842,8 +842,8 @@ periodics:
             - "development/firewall-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
   - name: orphaned-dns-cleaner
     cron: "30 * * * *" # "At minute 30 past every hour"
     annotations:
@@ -868,8 +868,8 @@ periodics:
             - "development/dns-cleanup.sh -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
 
   - name: github-stats
     cron: "0 6 * * *" # "At 6:00 every day"
@@ -890,8 +890,8 @@ periodics:
             - "development/github-stats.sh"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 400m
+              memory: 100Mi
+              cpu: 50m
 
 
   - name: kyma-gke-nightly
