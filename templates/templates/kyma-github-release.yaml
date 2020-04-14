@@ -20,7 +20,7 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${RELEASE_TARGET_COMMIT} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"
       resources:
         requests:
-          memory: 1Gi
+          memory: 200Mi
           cpu: 0.2
 
 job_labels_template: &job_labels_template
