@@ -116,7 +116,7 @@ where:
 
 ## Configure Prow
 
-When you use the [`install-prow.sh`](../../prow/install-prow.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files, and adding job definitions to the `jobs` directory.
+When you use the [`install-prow.sh`](../../prow/scripts/install-prow.sh) script to install Prow on your cluster, the list of plugins and configuration is empty. You can configure Prow by specifying the `config.yaml` and `plugins.yaml` files, and adding job definitions to the `jobs` directory.
 
 ### The config.yaml file
 
