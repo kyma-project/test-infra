@@ -1,15 +1,15 @@
 ---
-apiVersion: v1
 kind: ServiceAccount
+apiVersion: v1
 metadata:
   namespace: default
-  name: "tide"
+  name: "horologium"
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   namespace: default
-  name: "tide"
+  name: "horologium"
 rules:
   - apiGroups:
       - "prow.k8s.io"
@@ -23,11 +23,11 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   namespace: default
-  name: "tide"
+  name: "horologium"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: "tide"
+  name: "horologium"
 subjects:
   - kind: ServiceAccount
-    name: "tide"
+    name: "horologium"

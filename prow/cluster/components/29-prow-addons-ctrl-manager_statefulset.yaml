@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: prow-addons-ctrl-manager
+    control-plane: controller-manager
+    controller-tools.k8s.io: "1.0"
+  name: prow-addons-controller-manager
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: prow-addons-ctrl-manager
+      control-plane: controller-manager
+      controller-tools.k8s.io: "1.0"
+  serviceName: prow-addons-controller-manager-service
+  template:
+    metadata:
+      labels:
+        app: prow-addons-ctrl-manager
+        control-plane: controller-manager
+        controller-tools.k8s.io: "1.0"
+    spec:
+      containers:
+        - command:
+            - /manager
+          env:
+            - name: NOTIFIER_GITHUB_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: oauth
+                  name: oauth-token
+            - name: NOTIFIER_SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: token
+                  name: sap-slack-bot-token
+            - name: NOTIFIER_SLACK_REPORTER_CHANNEL
+              value: '#c4core-kyma-ci-force'
+            - name: NOTIFIER_SLACK_REPORTER_ACT_ON_PROW_JOB_TYPE
+              value: periodic,postsubmit
+            - name: NOTIFIER_SLACK_REPORTER_ACT_ON_PROW_JOB_STATE
+              value: failure,error
+          image: eu.gcr.io/kyma-project/test-infra/develop/prow-addons-ctrl-manager:6803bbf3
+          imagePullPolicy: Always
+          name: manager
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 20Mi
+      serviceAccountName: prow-addons-controller-manager
+      terminationGracePeriodSeconds: 10
+  volumeClaimTemplates: []

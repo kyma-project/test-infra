@@ -1,21 +1,6 @@
 # Source: kubernetes/test-infra/prow/cluster/ghproxy.yaml
-
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  namespace: default
-  labels:
-    app: ghproxy
-  name: ghproxy
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Gi
-  storageClassName: gce-ssd-retain
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
@@ -23,7 +8,10 @@ metadata:
   labels:
     app: ghproxy
 spec:
-  replicas: 1 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghproxy
   template:
     metadata:
       labels:
@@ -31,11 +19,12 @@ spec:
     spec:
       containers:
       - name: ghproxy
-        image: gcr.io/k8s-prow/ghproxy:v20190411-24aefcb76
+        image: gcr.io/k8s-prow/ghproxy:v20200319-1aea24112
         args:
         - --cache-dir=/cache
         - --cache-sizeGB=99
         - --push-gateway=pushgateway
+        - --serve-metrics=true
         ports:
         - containerPort: 8888
         volumeMounts:
@@ -45,18 +34,4 @@ spec:
       - name: cache
         persistentVolumeClaim:
           claimName: ghproxy
----
-apiVersion: v1
-kind: Service
-metadata:
-  namespace: default
-  labels:
-    app: ghproxy
-  name: ghproxy
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 8888
-  selector:
-    app: ghproxy
+
