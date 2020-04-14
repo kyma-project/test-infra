@@ -91,7 +91,7 @@ where:
 6. Run the following script to start the installation process:
 
   ```bash
-    ./install-prow.sh
+    ./scripts/install-prow.sh
   ```
 
    The installation script performs the following steps to install Prow:
