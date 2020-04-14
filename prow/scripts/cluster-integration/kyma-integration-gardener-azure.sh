@@ -42,7 +42,7 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
-readonly GARDENER_CLUSTER_VERSION="1.16.3"
+readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
 export RS_GROUP \
