@@ -8,7 +8,7 @@ To update a Prow cluster follow these steps:
 
 1. Follow [this](./prow-installation-on-forks.md) document for details to set up a Prow cluster.
 2. Go to the [`kubernetes/test-infra`](https://github.com/kubernetes/test-infra/) project and select a commit with the desired update for the Prow cluster. For example, use [`2c8e0dbb96b4c1a86d42275dfbed5474a6d05def`](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
-3. Open [`starter.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml) from upstream repo in Kubernetes project and copy new tags for these containers:
+3. Open [`starter.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml) from the upstream repository in the Kubernetes project and copy new tags for these containers:
     * gcr.io/k8s-prow/hook
     * gcr.io/k8s-prow/plank
     * gcr.io/k8s-prow/sinker
