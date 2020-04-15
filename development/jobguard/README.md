@@ -19,8 +19,8 @@ COMMIT_SHA={commit_sha} PROW_CONFIG_FILE={prow_config_file} PROW_JOBS_DIRECTORY=
 
 Use the following environment variables to configure the application:
 
-| Name                      | Required  | Default                   | Description |
-|---------------------------|-----------|---------------------------|-------------|
+| Name                      | Required  | Default  value                 | Description |
+|---------------------------|:-----------:|---------------------------|-------------|
 | **INITIAL_SLEEP_TIME**    | NO        | `1m`                      | The initial sleep time for the application |
 | **RETRY_INTERVAL**        | NO        | `15s`                     | The interval between re-fetching statuses |
 | **TIMEOUT**               | NO        | `15m`                     | The timeout of waiting for successful jobs |
