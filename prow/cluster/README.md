@@ -11,8 +11,8 @@ This folder contains files related to the configuration of the Prow production c
 The structure of the folder looks as follows:
 
 ```
-  ├── components                        # Definitions of prow components and cluster configuration.
-  ├── resources                         # Helm charts usde by prow cluster.
+  ├── components                        # Definitions of Prow components and cluster configuration.
+  ├── resources                         # Helm charts used by the Prow cluster.
   └── required-secrets.yaml             # A default list of required Secrets that must be stored in a storage bucket
 ```
 
