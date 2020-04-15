@@ -21,14 +21,14 @@ Use the following environment variables to configure the application:
 
 | Name                      | Required  | Default  value                 | Description |
 |---------------------------|:-----------:|---------------------------|-------------|
-| **INITIAL_SLEEP_TIME**    | NO        | `1m`                      | The initial sleep time for the application |
-| **RETRY_INTERVAL**        | NO        | `15s`                     | The interval between re-fetching statuses |
-| **TIMEOUT**               | NO        | `15m`                     | The timeout of waiting for successful jobs |
-| **API_ORIGIN**            | NO        | `https://api.github.com`  | The origin of the GitHub API |
-| **REPO_OWNER**            | NO        | `kyma-project`            | The username or organization name of the repository owner |
-| **REPO_NAME**             | NO        | `kyma`                    | The name of the repository |
-| **COMMIT_SHA**            | YES       |                           | The commit SHA |
-| **GITHUB_TOKEN**          | NO        |                           | The authorization token for GitHub API |
-| **JOB_NAME_PATTERN**      | NO        | `components`              | The regexp to filter dependant statuses |
-| **PROW_CONFIG_FILE**      | YES       |                           | The path to the Prow `config.yaml` file  |
-| **PROW_JOBS_DIRECTORY**   | YES       |                           | The path to the directory with Prow jobs |
+| **INITIAL_SLEEP_TIME**    | NO        | `1m`                      | Initial sleep time for the application |
+| **RETRY_INTERVAL**        | NO        | `15s`                     | Interval between re-fetching statuses |
+| **TIMEOUT**               | NO        | `15m`                     | Timeout of waiting for successful jobs |
+| **API_ORIGIN**            | NO        | `https://api.github.com`  | Origin of the GitHub API |
+| **REPO_OWNER**            | NO        | `kyma-project`            | Username or organization name of the repository owner |
+| **REPO_NAME**             | NO        | `kyma`                    | Name of the repository |
+| **COMMIT_SHA**            | YES       |                           | Commit SHA |
+| **GITHUB_TOKEN**          | NO        |                           | Authorization token for GitHub API |
+| **JOB_NAME_PATTERN**      | NO        | `components`              | Regexp to filter dependant statuses |
+| **PROW_CONFIG_FILE**      | YES       |                           | Path to the Prow `config.yaml` file  |
+| **PROW_JOBS_DIRECTORY**   | YES       |                           | Path to the directory with Prow jobs |
