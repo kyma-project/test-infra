@@ -1,4 +1,4 @@
-module github.com/kyma-project/test-infra/job-guard
+module github.com/kyma-project/test-infra/development/jobguard
 
 go 1.13
 

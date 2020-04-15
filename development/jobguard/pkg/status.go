@@ -1,4 +1,4 @@
-package pkg
+package jobguard
 
 import (
 	"encoding/json"

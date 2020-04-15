@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/jobguard"
+	jobguard "github.com/kyma-project/test-infra/development/jobguard/pkg"
 	"github.com/pkg/errors"
 	"github.com/vrischmann/envconfig"
 	prowCfg "k8s.io/test-infra/prow/config"
