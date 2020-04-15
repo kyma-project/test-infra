@@ -3,8 +3,7 @@
 ## Overview
 
 Job Guard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
-
-The main purpose of the Job Guard is to delay running integration jobs that depend on components jobs. This tool is run as a guard for integration tests.
+The main purpose of Job Guard is to delay running integration jobs that depend on component jobs. This tool acts as a guard for integration tests.
 
 ## Usage
 
