@@ -3,14 +3,13 @@
 ## Overview
 
 Job Guard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
-
-The main purpose of the Job Guard is to delay running integration jobs that depend on components jobs. This tool is run as a guard for integration tests.
+The main purpose of Job Guard is to delay running integration jobs that depend on component jobs. This tool acts as a guard for integration tests.
 
 ## Usage
 
 ### Run the application
 
-To run the application, run this command:
+To run the application, use this command:
 
 ```bash
 COMMIT_SHA={commit_sha} PROW_CONFIG_FILE={prow_config_file} PROW_JOBS_DIRECTORY={prow_jobs_directory} go run cmd/main.go
@@ -20,8 +19,8 @@ COMMIT_SHA={commit_sha} PROW_CONFIG_FILE={prow_config_file} PROW_JOBS_DIRECTORY=
 
 Use the following environment variables to configure the application:
 
-| Name                      | Required  | Default                   | Description |
-|---------------------------|-----------|---------------------------|-------------|
+| Name                      | Required  | Default  value                 | Description |
+|---------------------------|:-----------:|---------------------------|-------------|
 | **INITIAL_SLEEP_TIME**    | NO        | `1m`                      | The initial sleep time for the application |
 | **RETRY_INTERVAL**        | NO        | `15s`                     | The interval between re-fetching statuses |
 | **TIMEOUT**               | NO        | `15m`                     | The timeout of waiting for successful jobs |
