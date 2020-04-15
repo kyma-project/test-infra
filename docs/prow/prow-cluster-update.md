@@ -24,7 +24,7 @@ To update a Prow cluster follow these steps:
 7. Open [`Dockerfile`](../../prow/images/clonerefs/Dockerfile) in the current project and update base image tag with new the tag for container from upstream repo.
     * gcr.io/k8s-prow/clonerefs
 8. When the new image is ready, copy its tag and paste it to [`config.yaml`](../../prow/config.yaml) for gcr.io/k8s-prow/clonerefs container.
-9. Use your preferred diff tool to check and copy the stability update in a Prow component and additional configurations on existing components.
+9. Use your preferred diff tool to check and copy the stability update in the Prow component and additional configurations for the existing components.
 10. Run this command to update Prow deployments:
     ```bash
     kubectl apply -f prow/cluster/components
