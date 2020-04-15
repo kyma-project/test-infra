@@ -9,7 +9,7 @@ The main purpose of Job Guard is to delay running integration jobs that depend o
 
 ### Run the application
 
-To run the application, run this command:
+To run the application, use this command:
 
 ```bash
 COMMIT_SHA={commit_sha} PROW_CONFIG_FILE={prow_config_file} PROW_JOBS_DIRECTORY={prow_jobs_directory} go run cmd/main.go
