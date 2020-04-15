@@ -16,6 +16,7 @@ presubmits:
     - name: pre-test-infra-validate-configs
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
+      optional: true
       skip_report: false
       spec:
         containers:
