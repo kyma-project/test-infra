@@ -40,7 +40,7 @@ fi
 while IFS= read -r -d '' directory
 do
     cmdName=$(basename "${directory}")
-    if [ -a "${cmdName}/nobuild.lock" ]; then
+    if [ -a "${directory}/nobuild.lock" ]; then
       continue
     fi
     ${buildEnv} go build -o "${cmdName}" "${directory}"
