@@ -559,7 +559,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.11" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      optional: false
+      optional: true
       branches:
         - release-{{ . }}
       <<: *gke_backup_job_template
@@ -574,7 +574,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.8" "1.10") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      optional: false
+      optional: true
       branches:
         - release-{{ . }}
       <<: *gke_backup_job_template_k14
