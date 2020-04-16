@@ -22,7 +22,7 @@ func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
 			assert.True(t, actualPostsubmit.Decorate)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, "preset-sa-kyma-artifacts", "preset-bot-github-token")
-			assert.Equal(t, tester.ImageProwToolsLatest, actualPostsubmit.Spec.Containers[0].Image)
+			assert.Equal(t, tester.ImageKymaIntegrationK15, actualPostsubmit.Spec.Containers[0].Image)
 			assert.Equal(t, []string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${RELEASE_TARGET_COMMIT} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"}, actualPostsubmit.Spec.Containers[0].Args)
 		})
 	}
