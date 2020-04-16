@@ -523,7 +523,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-rel111-kyma-gke-backup
-      optional: false
+      optional: true
       branches:
         - release-1.11
       <<: *gke_backup_job_template
