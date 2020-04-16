@@ -17,8 +17,6 @@ periodics:
   labels:
     preset-gardener-gcp-kyma-integration: "true"
     preset-kyma-cli-stable: "true"
-    preset-kyma-keyring: "true"
-    preset-kyma-encryption-key: "true"
   spec:
     containers:
     - <<: *base_image
