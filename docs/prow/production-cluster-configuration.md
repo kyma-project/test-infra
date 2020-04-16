@@ -3,7 +3,7 @@
 ## Overview
 
 This instruction provides the steps required to deploy a production cluster for Prow.
->**NOTE**: This Prow installation is compatible with the [`4faaf685958cd79ea5b5a376fadabd8a9d1b4123`](https://github.com/kubernetes/test-infra/commit/4faaf685958cd79ea5b5a376fadabd8a9d1b4123) revision in the `kubernetes/test-infra` repository.
+>**NOTE**: This Prow installation is compatible with the [`fbc86f22b087a29d1dcf1f695bf367bbbe73e262`]( https://github.com/kubernetes/test-infra/tree/fbc86f22b087a29d1dcf1f695bf367bbbe73e262) revision in the `kubernetes/test-infra` repository. Except branchprotector images which comes from [`e4763975e0ab2d6a78bca446e9dfde1800d47af8`](https://github.com/kubernetes/test-infra/commit/e4763975e0ab2d6a78bca446e9dfde1800d47af8)
 
 ## Prerequisites
 
