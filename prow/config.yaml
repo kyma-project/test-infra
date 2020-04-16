@@ -616,22 +616,24 @@ branch-protection:
 
 plank:
   job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
-  job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
+  job_url_prefix_config:
+    '*': https://status.build.kyma-project.io/view/gcs/
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
-  default_decoration_config:
-    timeout: 7200000000000 # 2h
-    grace_period: 600000000000 # 10min
-    utility_images:
-      clonerefs: "eu.gcr.io/kyma-project/test-infra/clonerefs:v20200109-0db9d13b"
-      initupload: "gcr.io/k8s-prow/initupload:v20190312-abfe0e0"
-      entrypoint: "gcr.io/k8s-prow/entrypoint:v20190312-abfe0e0"
-      sidecar: "gcr.io/k8s-prow/sidecar:v20190312-abfe0e0"
-    gcs_configuration:
-      bucket: kyma-prow-logs
-      path_strategy: "explicit"
-    gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
+  default_decoration_configs:
+    '*':
+      timeout: 2h
+      grace_period: 10m
+      utility_images:
+        clonerefs: "eu.gcr.io/kyma-project/test-infra/clonerefs:v20200414-6b49853d"
+        initupload: "gcr.io/k8s-prow/initupload:v20200319-1aea24112"
+        entrypoint: "gcr.io/k8s-prow/entrypoint:v20200319-1aea24112"
+        sidecar: "gcr.io/k8s-prow/sidecar:v20200319-1aea24112"
+      gcs_configuration:
+        bucket: kyma-prow-logs
+        path_strategy: "explicit"
+      gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
 
 deck:
   spyglass:
@@ -639,17 +641,23 @@ deck:
     gcs_browser_prefix: https://gcsweb.build.kyma-project.io/gcs/
     testgrid_config: gs://k8s-testgrid/config
     testgrid_root: https://testgrid.k8s.io/
-    viewers:
-      "started.json|finished.json":
-      - "metadata"
-      "build-log.txt":
-      - "buildlog"
-      "artifacts/junit.*\\.xml":
-      - "junit"
+    lenses:
+      - lens:
+          name: metadata
+        required_files:
+          - started.json|finished.json
+      - lens:
+          name: buildlog
+        required_files:
+          - build-log.txt
+      - lens:
+          name: junit
+        required_files:
+          - artifacts/junit.*\.xml
   branding:
     header_color: "#0b74de" # Kyma color
-    logo: "extensions/logo.svg"
-    favicon: "extensions/favicon.png"
+    logo: "/static/extensions/logo.svg"
+    favicon: "/static/extensions/favicon.png"
 
 sinker:
   max_pod_age: 5h

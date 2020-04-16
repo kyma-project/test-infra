@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/tools/pkg/jobguard"
+	jobguard "github.com/kyma-project/test-infra/development/jobguard/pkg"
 	"github.com/pkg/errors"
 	"github.com/vrischmann/envconfig"
 	prowCfg "k8s.io/test-infra/prow/config"
@@ -58,7 +58,7 @@ func getExpSuccessJobs(prowConfigFile, jobsDirectory, repoName, pattern string) 
 
 	var jobs []jobguard.Status
 	// copied from prow/plugins/trigger/pull-request.go buildAll() method
-	for _, job := range c.Presubmits[repoName] {
+	for _, job := range c.JobConfig.PresubmitsStatic[repoName] {
 		if job.SkipReport { // if skipped then it will not be reported on GitHub
 			continue
 		}

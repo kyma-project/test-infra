@@ -1,5 +1,5 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
@@ -7,6 +7,9 @@ metadata:
   labels:
     app: sinker
 spec:
+  selector:
+    matchLabels:
+      app: sinker
   replicas: 1
   template:
     metadata:
@@ -16,9 +19,10 @@ spec:
       serviceAccountName: "sinker"
       containers:
         - name: sinker
-          image: gcr.io/k8s-prow/sinker:v20190312-abfe0e0
+          image: gcr.io/k8s-prow/sinker:v20200319-1aea24112
           args:
             - --job-config-path=/etc/job-config
+            - --config-path=/etc/config/config.yaml
             - --build-cluster=/etc/cluster/cluster.yaml
             - --dry-run=false
           volumeMounts:
@@ -28,6 +32,9 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
+              readOnly: true
       volumes:
         - name: config
           configMap:
@@ -35,3 +42,7 @@ spec:
         - name: job-config
           configMap:
             name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster

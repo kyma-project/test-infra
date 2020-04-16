@@ -1,43 +1,41 @@
 ---
-kind: ServiceAccount
 apiVersion: v1
+kind: ServiceAccount
 metadata:
   namespace: default
-  name: "plank"
+  name: "hook"
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   namespace: default
-  name: "plank"
+  name: "hook"
 rules:
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-    verbs:
-      - create
-      - delete
-      - list
   - apiGroups:
       - "prow.k8s.io"
     resources:
       - prowjobs
     verbs:
-      - get
       - create
-      - list
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
       - update
+      - get
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   namespace: default
-  name: "plank"
+  name: "hook"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: "plank"
+  name: "hook"
 subjects:
   - kind: ServiceAccount
-    name: "plank"
+    name: "hook"
