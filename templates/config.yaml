@@ -553,7 +553,6 @@ templates:
             - name: kyma-integration
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
-            - name: kyma-gke-backup
             - name: kyma-gke-central-connector
             - name: kyma-artifacts
             - name: kyma-installer

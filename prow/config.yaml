@@ -522,7 +522,6 @@ branch-protection:
                   - pre-rel111-kyma-integration
                   - pre-rel111-kyma-gke-integration
                   - pre-rel111-kyma-gke-upgrade
-                  - pre-rel111-kyma-gke-backup
                   - pre-rel111-kyma-gke-central-connector
                   - pre-rel111-kyma-artifacts
                   - pre-rel111-kyma-installer
@@ -532,7 +531,6 @@ branch-protection:
                   - pre-rel110-kyma-integration
                   - pre-rel110-kyma-gke-integration
                   - pre-rel110-kyma-gke-upgrade
-                  - pre-rel110-kyma-gke-backup
                   - pre-rel110-kyma-gke-central-connector
                   - pre-rel110-kyma-artifacts
                   - pre-rel110-kyma-installer
@@ -542,7 +540,6 @@ branch-protection:
                   - pre-rel19-kyma-integration
                   - pre-rel19-kyma-gke-integration
                   - pre-rel19-kyma-gke-upgrade
-                  - pre-rel19-kyma-gke-backup
                   - pre-rel19-kyma-gke-central-connector
                   - pre-rel19-kyma-artifacts
                   - pre-rel19-kyma-installer
