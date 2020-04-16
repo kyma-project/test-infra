@@ -46,6 +46,8 @@ const (
 	GardenerAzureIntegration Preset = "preset-gardener-azure-kyma-integration"
 	// GardenerGCPIntegration contains all necessary configuration to deploy on gardener GCP from prow
 	GardenerGCPIntegration Preset = "preset-gardener-gcp-kyma-integration"
+	// GardenerGCPIntegration contains all necessary configuration to deploy on gardener GCP from prow
+	GardenerAWSIntegration Preset = "preset-gardener-aws-kyma-integration"
 	// KymaCLIStable contains all the configuraion to be able to download the stable master kyma CLI binary
 	KymaCLIStable Preset = "preset-kyma-cli-stable"
 	// KymaSlackChannel contains the configuration for slack

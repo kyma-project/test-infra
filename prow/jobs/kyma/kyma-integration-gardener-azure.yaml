@@ -17,8 +17,6 @@ periodics:
     preset-gardener-azure-kyma-integration: "true"
     preset-kyma-cli-stable: "true"
     preset-creds-aks-kyma-integration: "true"
-    preset-kyma-keyring: "true"
-    preset-kyma-encryption-key: "true"
   spec:
     containers:
     - <<: *base_image
