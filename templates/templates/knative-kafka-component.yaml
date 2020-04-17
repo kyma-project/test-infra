@@ -44,7 +44,7 @@ container_template: &container_template
 presubmits: # runs on PRs
   {{ template "repoNoHost" .Values.repository }}:
 {{- if not .Values.until }}
-    - name: pre-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+    - name: pre-master-{{ $repositoryName }}
       branches:
         - ^master$
         - ^release-.*$  
@@ -59,8 +59,7 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: {{ .Values.buildpack }}
             args:
-              - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
-      run_if_changed: "{{ $watch }}"
+              - "/home/prow/go/src/{{ .Values.repository }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -72,7 +71,7 @@ presubmits: # runs on PRs
 {{- end }}
 {{- if $releasable -}}
 {{- range (matchingReleases $releases nil "1.5") }}
-    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}
       branches:
         - release-{{ . }}
       <<: *job_template
@@ -88,19 +87,18 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: {{ $.Values.buildpack }}
             args:
-              - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
+              - "/home/prow/go/src/{{ $.Values.repository }}"
       labels:
         <<: *job_labels_template
         preset-{{ $.Values.presets.build }}-release: "true"
 {{- end -}}
 {{- end -}}
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
-    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}
       branches:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
       path_alias: {{ $.Values.repository }}
-      run_if_changed: "{{ $watch }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -111,7 +109,7 @@ presubmits: # runs on PRs
           - <<: *container_template
             image: {{ $.Values.buildpack }}
             args:
-              - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
+              - "/home/prow/go/src/{{ $.Values.repository }}"
       labels:
         <<: *job_labels_template
         preset-build-pr: "true"
@@ -120,7 +118,7 @@ presubmits: # runs on PRs
 {{ if not .Values.until -}}
 postsubmits:
   {{ template "repoNoHost" .Values.repository }}:
-    - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+    - name: post-master-{{ $repositoryName }}
       branches:
         - ^master$
         - ^release-.*$
@@ -131,8 +129,7 @@ postsubmits:
           - <<: *container_template
             image: {{ .Values.buildpack }}
             args:
-              - "/home/prow/go/src/{{ .Values.repository }}/{{ .Values.path }}"
-      run_if_changed: "{{ $watch }}"
+              - "/home/prow/go/src/{{ .Values.repository }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -148,12 +145,11 @@ postsubmits:
         prow.kyma-project.io/slack.skipReport: "true"
         {{- end }}
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
-    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}
       branches:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
       path_alias: {{ $.Values.repository }}
-      run_if_changed: "{{ $watch }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -164,7 +160,7 @@ postsubmits:
           - <<: *container_template
             image: {{ $.Values.buildpack }}
             args:
-              - "/home/prow/go/src/{{ $.Values.repository }}/{{ $.Values.path }}"
+              - "/home/prow/go/src/{{ $.Values.repository }}"
       labels:
         <<: *job_labels_template
         preset-{{ $.Values.presets.build }}-master: "true"
