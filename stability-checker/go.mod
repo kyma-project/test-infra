@@ -23,7 +23,7 @@ require (
 	github.com/vektra/mockery v0.0.0-20181123154057-e78b021dcbb5
 	github.com/vrischmann/envconfig v0.0.0-20180225194741-98b0b9a570bd
 	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2 // indirect
-	golang.org/x/tools v0.0.0-20191031220737-6d8f1af9ccc0 // indirect
+	golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290 // indirect
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
 	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
