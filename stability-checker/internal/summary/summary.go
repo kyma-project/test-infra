@@ -8,25 +8,28 @@ import (
 	"github.com/pkg/errors"
 )
 
-// dependencies
-//go:generate mockery -name=logProcessor -output=automock -outpkg=automock -case=underscore
-type logProcessor interface {
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=LogProcessor -output=automock -outpkg=automock -case=underscore
+
+// LogProcessor interface to process logs
+type LogProcessor interface {
 	Process([]byte) (map[string]SpecificTestStats, error)
 }
 
-//go:generate mockery -name=logFetcher -output=automock -outpkg=automock -case=underscore
-type logFetcher interface {
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=LogFetcher -output=automock -outpkg=automock -case=underscore
+
+// LogFetcher interface to receive logs from pod
+type LogFetcher interface {
 	GetLogsFromPod() (io.ReadCloser, error)
 }
 
 // Service is responsible for producing summary for test executions.
 type Service struct {
-	logFetcher logFetcher
-	processor  logProcessor
+	logFetcher LogFetcher
+	processor  LogProcessor
 }
 
 // NewService returns Service
-func NewService(logFetcher logFetcher, processor logProcessor) *Service {
+func NewService(logFetcher LogFetcher, processor LogProcessor) *Service {
 	return &Service{
 		logFetcher: logFetcher,
 		processor:  processor,
