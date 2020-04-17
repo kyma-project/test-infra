@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM golang:1.11.4-alpine3.8 as builder
+FROM golang:1.13.10-alpine3.11 as builder
 
 # Copy in the go src
 WORKDIR /go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager
@@ -11,7 +11,7 @@ COPY vendor/ vendor/
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/cmd/manager
 
 # Copy the controller-manager into a thin image
-FROM alpine:3.8
+FROM alpine:3.11
 WORKDIR /
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
