@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
 
 // ComputeAPI abstracts access to Compute API in GCP
 type ComputeAPI interface {

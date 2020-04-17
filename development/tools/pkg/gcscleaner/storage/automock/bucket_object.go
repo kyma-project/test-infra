@@ -23,7 +23,7 @@ func (_m *BucketObject) Bucket() string {
 	return r0
 }
 
-// name provides a mock function with given fields:
+// Name provides a mock function with given fields:
 func (_m *BucketObject) Name() string {
 	ret := _m.Called()
 

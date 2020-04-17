@@ -6,7 +6,7 @@ import (
 	"cloud.google.com/go/storage"
 )
 
-//go:generate mockery -name=ObjectAttrs -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ObjectAttrs -output=automock -outpkg=automock -case=underscore
 
 // ObjectAttrs a GCS bucket object metadata
 type ObjectAttrs interface {
@@ -14,7 +14,7 @@ type ObjectAttrs interface {
 	Bucket() string
 }
 
-//go:generate mockery -name=Query -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=Query -output=automock -outpkg=automock -case=underscore
 
 // Query a bucket object filter query
 type Query interface {
@@ -23,21 +23,21 @@ type Query interface {
 	Versions() bool
 }
 
-//go:generate mockery -name=ObjectIterator -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ObjectIterator -output=automock -outpkg=automock -case=underscore
 
 // ObjectIterator iterate over bucket object metadata
 type ObjectIterator interface {
 	Next() (ObjectAttrs, error)
 }
 
-//go:generate mockery -name=ObjectHandle -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ObjectHandle -output=automock -outpkg=automock -case=underscore
 
 // ObjectHandle allows to operate on GCS bucket object
 type ObjectHandle interface {
 	Delete(ctx context.Context) error
 }
 
-//go:generate mockery -name=Client -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=Client -output=automock -outpkg=automock -case=underscore
 
 // Client provides interaction with GCS
 type Client interface {

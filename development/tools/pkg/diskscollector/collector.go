@@ -10,14 +10,14 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-//go:generate mockery -name=ZoneAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ZoneAPI -output=automock -outpkg=automock -case=underscore
 
 // ZoneAPI allows to acces Zones Compute API in GCP
 type ZoneAPI interface {
 	ListZones(project string) ([]string, error)
 }
 
-//go:generate mockery -name=DiskAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=DiskAPI -output=automock -outpkg=automock -case=underscore
 
 // DiskAPI allows to access Disks Compute API in GCP
 type DiskAPI interface {

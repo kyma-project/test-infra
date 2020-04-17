@@ -83,7 +83,7 @@ type SecretsPopulator struct {
 	logger        logrus.FieldLogger
 }
 
-//go:generate mockery -name=Decryptor -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=Decryptor -output=automock -outpkg=automock -case=underscore
 
 // Decryptor decrypts data
 type Decryptor interface {
@@ -101,7 +101,7 @@ func (w *decryptorWrapper) Decrypt(decryptKey string, bytes []byte) (*cloudkms.D
 	return decryptCall.Do()
 }
 
-//go:generate mockery -name=StorageReader -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=StorageReader -output=automock -outpkg=automock -case=underscore
 
 // StorageReader provide interface for reading from object storage
 type StorageReader interface {

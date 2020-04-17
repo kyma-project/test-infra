@@ -6,7 +6,7 @@ import (
 	"cloud.google.com/go/storage"
 )
 
-//go:generate mockery -name=BucketHandle -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=BucketHandle -output=automock -outpkg=automock -case=underscore
 
 // BucketHandle allows to operate on
 type BucketHandle interface {
@@ -33,7 +33,7 @@ func (r bucketHandle) Delete(ctx context.Context) (err error) {
 	return r.bucketHandle.Delete(ctx)
 }
 
-//go:generate mockery -name=BucketAttrs -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=BucketAttrs -output=automock -outpkg=automock -case=underscore
 
 // BucketAttrs a GCS bucket metadata
 type BucketAttrs interface {
@@ -48,7 +48,7 @@ func (r bucketAttrs) Name() string {
 	return r.bucketAttrs.Name
 }
 
-//go:generate mockery -name=BucketIterator -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=BucketIterator -output=automock -outpkg=automock -case=underscore
 
 // BucketIterator iterator over bucket metadata
 type BucketIterator interface {
@@ -78,7 +78,7 @@ func NewBucketIterator(iterator *storage.BucketIterator) BucketIterator {
 	}
 }
 
-//go:generate mockery -name=BucketObject -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=BucketObject -output=automock -outpkg=automock -case=underscore
 
 // BucketObject identifies GCS object to be deleted
 type BucketObject interface {

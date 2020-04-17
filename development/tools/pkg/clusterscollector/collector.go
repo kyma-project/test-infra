@@ -15,7 +15,7 @@ const volatileLabelName = "volatile"
 const createdAtLabelName = "created-at"
 const ttlLabelName = "ttl"
 
-//go:generate mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ClusterAPI -output=automock -outpkg=automock -case=underscore
 
 // ClusterAPI abstracts access to Cluster Container API in GCP
 type ClusterAPI interface {

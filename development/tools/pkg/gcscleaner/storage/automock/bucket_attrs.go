@@ -9,7 +9,7 @@ type BucketAttrs struct {
 	mock.Mock
 }
 
-// name provides a mock function with given fields:
+// Name provides a mock function with given fields:
 func (_m *BucketAttrs) Name() string {
 	ret := _m.Called()
 

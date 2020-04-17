@@ -4,6 +4,8 @@ readonly CI_FLAG=ci
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# ensure $GOPATH/bin is present in PATH
+export PATH=$GOPATH/bin:$PATH
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -11,16 +13,29 @@ INVERTED='\033[7m'
 NC='\033[0m' # No Color
 
 echo -e "${INVERTED}"
-echo "USER: " + $USER
-echo "PATH: " + $PATH
-echo "GOPATH:" + $GOPATH
+echo "USER: " + "$USER"
+echo "PATH: " + "$PATH"
+echo "GOPATH:" + "$GOPATH"
+echo "CURRENT DIRECTORY: $DIR"
 echo -e "${NC}"
 
-cd ${DIR}
+cd "${DIR}" || exit 1
+
+##
+# GO GENERATE
+##
+go generate ./...
+generateResult=$?
+if [ ${generateResult} != 0 ]; then
+	echo -e "${RED}✗ go generate ./...${NC}\n$generateResult${NC}"
+	exit 1
+else echo -e "${GREEN}√ go generate ./...${NC}"
+fi
 
 ##
 # Tidy dependencies
 ##
+echo "? go mod tidy"
 go mod tidy
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
@@ -37,25 +52,14 @@ if [[ "$1" == "$CI_FLAG" ]]; then
   fi
 fi
 
-while IFS= read -r -d '' directory
-do
-    cmdName=$(basename "${directory}")
-    if [ -a "${directory}/nobuild.lock" ]; then
-      continue
-    fi
-    ${buildEnv} go build -o "${cmdName}" "${directory}"
-    buildResult=$?
-    rm "${cmdName}"
-    check_result "go build ${directory}" "${buildResult}"
-done <   <(find "./cmd" -mindepth 1 -type d -print0)
-
 ##
 # Validate dependencies
 ##
 echo "? go mod verify"
-depResult=$(go mod verify)
-if [ $? != 0 ]; then
-	echo -e "${RED}✗ go mod verify\n$depResult${NC}"
+go mod verify
+verifyResult=$?
+if [ ${ensureResult} != 0 ]; then
+	echo -e "${RED}✗ go mod verify\n$verifyResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod verify${NC}"
 fi
@@ -76,13 +80,13 @@ else
 	echo -e "${GREEN}√ go test${NC}"
 fi
 
-goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|_*export_test.go")
+goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/|_*/testdata/|_*export_test.go|mock_api.go")
 
 #
 # GO FMT
 #
 goFmtResult=$(echo "${goFilesToCheck}" | xargs -L1 go fmt)
-if [ $(echo ${#goFmtResult}) != 0 ]
+if [ "${#vetResult}" != 0 ]
 	then
     	echo -e "${RED}✗ go fmt${NC}\n$goFmtResult${NC}"
     	exit 1;
@@ -90,13 +94,25 @@ if [ $(echo ${#goFmtResult}) != 0 ]
 fi
 
 ##
+#  GO LINT
+##
+echo "? golint"
+go get -u golang.org/x/lint/golint
+golintResult=$(echo "${goFilesToCheck}" | xargs -L1 golint)
+if [ "${#golintResult}" != 0 ]; then
+    echo -e "${RED}✗ golint${NC}\\n${golintResult}"
+else
+    echo -e "${GREEN}√ golint${NC}"
+fi
+
+##
 # GO VET
 ##
-packagesToVet=("./cmd/..." "./jobs/..." "./pkg/...")
+packagesToVet=("./cmd/..." "./pkg/...")
 
 for vPackage in "${packagesToVet[@]}"; do
-	vetResult=$(go vet ${vPackage})
-	if [ $(echo ${#vetResult}) != 0 ]; then
+	vetResult=$(go vet "${vPackage}")
+	if [ "${#vetResult}" != 0 ]; then
 		echo -e "${RED}✗ go vet ${vPackage} ${NC}\n$vetResult${NC}"
 		exit 1
 	else echo -e "${GREEN}√ go vet ${vPackage} ${NC}"

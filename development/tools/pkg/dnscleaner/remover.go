@@ -9,7 +9,7 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-//go:generate mockery -name=DNSAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=DNSAPI -output=automock -outpkg=automock -case=underscore
 
 // DNSAPI abstracts access to DNS API in GCP
 type DNSAPI interface {

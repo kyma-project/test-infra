@@ -14,7 +14,7 @@ import (
 
 const jobLabelName = "job-name"
 
-//go:generate mockery -name=InstancesAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=InstancesAPI -output=automock -outpkg=automock -case=underscore
 
 // InstancesAPI abstracts access to Instances Compute API in GCP
 type InstancesAPI interface {

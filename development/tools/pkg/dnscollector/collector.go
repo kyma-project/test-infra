@@ -10,7 +10,7 @@ import (
 	dns "google.golang.org/api/dns/v1"
 )
 
-//go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
 
 //ComputeAPI abstracts over google Compute API
 type ComputeAPI interface {
@@ -18,7 +18,7 @@ type ComputeAPI interface {
 	DeleteIPAddress(project string, region string, address string) error
 }
 
-//go:generate mockery -name=DNSAPI -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=DNSAPI -output=automock -outpkg=automock -case=underscore
 
 //DNSAPI abstracts over google DNS API
 type DNSAPI interface {
