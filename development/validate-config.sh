@@ -21,7 +21,10 @@ fi
 echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
 cd "${DEVELOPMENT_DIR}/checker"
 
-go run "${DEVELOPMENT_DIR}/checker/checkconfig/main.go" --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
+echo "Fetching dependencies..."
+go mod vendor
+
+go run "${DEVELOPMENT_DIR}/checker/vendor/k8s.io/test-infra/prow/cmd/checkconfig/main.go" --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]
