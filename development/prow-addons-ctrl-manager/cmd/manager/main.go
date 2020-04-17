@@ -7,6 +7,7 @@ import (
 	"github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/pkg/apis"
 	"github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager/pkg/controller"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	_ "k8s.io/code-generator/cmd/deepcopy-gen"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	logf "sigs.k8s.io/controller-runtime/pkg/runtime/log"

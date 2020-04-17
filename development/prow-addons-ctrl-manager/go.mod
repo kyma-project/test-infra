@@ -20,6 +20,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	k8s.io/apimachinery v0.17.3
 	k8s.io/client-go v9.0.0+incompatible
+	k8s.io/code-generator v0.17.3
 	k8s.io/test-infra v0.0.0-20200417080107-13d4a722f14a
 	sigs.k8s.io/controller-runtime v0.5.2
 )

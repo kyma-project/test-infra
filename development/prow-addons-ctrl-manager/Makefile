@@ -57,7 +57,7 @@ docker-push:
 ### Custom targets
 # Resolve dependencies
 resolve:
-	@echo 'prow-addons-ctrl-manager was migrated to go mod'
+	go mod vendor
 
 validate: fmt vet
 
