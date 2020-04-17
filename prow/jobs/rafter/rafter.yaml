@@ -89,7 +89,7 @@ common_build_job_template: &common_build_job_template
       - <<: *job_tolerations_template
     containers:
       - <<: *common_container_template
-        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
@@ -102,7 +102,7 @@ common_integration_test_job_template: &common_integration_test_job_template
       - <<: *job_tolerations_template
     containers:
       - <<: *common_container_template
-        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+        image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
         command:
           - make
         args:

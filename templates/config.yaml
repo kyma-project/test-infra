@@ -43,7 +43,7 @@ go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpac
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
 go_buildpack_1_13: &go_buildpack_1_13 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
-kubebuilder2_buildpack_v20190823: &kubebuilder2_buildpack_v20190823 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+kubebuilder2_buildpack_v20200124: &kubebuilder2_buildpack_v20200124 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 bootstrap_buildpack_v20181204: &bootstrap_buildpack_v20181204 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
 
@@ -88,7 +88,7 @@ go_modules_env: &go_modules_env
 
 kubebuilder2_kyma_component: &kubebuilder2_kyma_component
   <<: *kyma_component
-  buildpack: *kubebuilder2_buildpack_v20190823
+  buildpack: *kubebuilder2_buildpack_v20200124
   resources:
     memory: 2.5Gi
     cpu: 2
