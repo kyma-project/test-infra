@@ -935,24 +935,9 @@ templates:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
   - from: templates/knative-kafka-component.yaml
     render:
-      - to: ../prow/jobs/incubator/knative-kafka/channel.yaml
+      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
         values:
           <<: *go_knative_kafka_component_1_12
-          path: components/channel
-          optional: false
-      - to: ../prow/jobs/incubator/knative-kafka/dispatcher.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/dispatcher
-          optional: false
-      - to: ../prow/jobs/incubator/knative-kafka/controller.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/controller
-          optional: false
-      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka-common.yaml
-        values:
-          <<: *go_knative_kafka_component_1_12
-          path: components/common
+          path: .
           optional: false
 
