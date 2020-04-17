@@ -22,7 +22,6 @@ require (
 	github.com/stretchr/testify v1.2.2
 	github.com/vektra/mockery v0.0.0-20181123154057-e78b021dcbb5
 	github.com/vrischmann/envconfig v0.0.0-20180225194741-98b0b9a570bd
-	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2 // indirect
 	golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290 // indirect
 	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
