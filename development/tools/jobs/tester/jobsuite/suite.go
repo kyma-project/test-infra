@@ -32,7 +32,7 @@ func CheckFilesAreTested(repos map[string]struct{}, testedConfigurations map[str
 						return nil
 					}
 
-					if ! strings.Contains(path.Base(fp), "generic") {
+					if !strings.Contains(path.Base(fp), "generic") {
 						return nil
 					}
 
