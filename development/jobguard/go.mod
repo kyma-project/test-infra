@@ -10,11 +10,7 @@ replace (
 
 require (
 	github.com/Azure/go-autorest v13.0.0+incompatible
-	github.com/kyma-project/test-infra v0.0.0-20200331110003-6fa7a9f1e555
 	github.com/pkg/errors v0.9.1
 	github.com/vrischmann/envconfig v1.2.0
-	k8s.io/api v0.17.3
-	k8s.io/apimachinery v0.17.3
-	k8s.io/client-go v9.0.0+incompatible
 	k8s.io/test-infra v0.0.0-20200331085241-bf7dc9346358
 )
