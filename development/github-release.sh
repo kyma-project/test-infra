@@ -22,14 +22,7 @@ echo "--------------------------------------------------------------------------
 echo "Creating the Github release for Kyma...  "
 echo "--------------------------------------------------------------------------------"
 
-if [ ! -d "${DEVELOPMENT_DIR}/tools/vendor" ]; then
-    echo "Vendoring 'tools'"
-    pushd "${DEVELOPMENT_DIR}/tools"
-    dep ensure -v -vendor-only
-    popd
-fi
-
-go run "${DEVELOPMENT_DIR}/tools/cmd/githubrelease/main.go" "$@"
+/prow-tools/githubrelease "$@"
 status=$?
 
 if [ ${status} -ne 0 ]

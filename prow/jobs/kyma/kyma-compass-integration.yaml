@@ -9,9 +9,8 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-# Kubectl 1.16
 base_image: &base_image
-  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.15
 
 # upgrade when stable GKE 1.16 will be available
 cluster_version: &cluster_version
@@ -67,6 +66,41 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
+  - name: pre-rel-1-11-kyma-gke-compass-integration
+    decorate: true
+    optional: true
+    path_alias: github.com/kyma-project/kyma
+    skip_report: false
+    max_concurrency: 10
+    spec:
+      containers:
+        - <<: *base_image
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+          env:
+            - <<: *cluster_version
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    branches:
+      - ^release-1.11$
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    labels:
+      prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+      preset-build-pr: "true"
+      <<: *gke_integration_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.11
 
 postsubmits:
   kyma-project/kyma:

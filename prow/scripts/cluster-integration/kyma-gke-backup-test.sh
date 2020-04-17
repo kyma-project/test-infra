@@ -225,6 +225,10 @@ function installKyma() {
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
 
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+        --data "application-registry.deployment.args.detailedErrorResponse=true" \
+        --label "component=application-connector"
+
     if [[ "${BUILD_TYPE}" == "release" ]]; then
         echo "Use released artifacts"
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml

@@ -1,0 +1,26 @@
+# Source: kubernetes/test-infra/prow/cluster/pushgateway_deployment.yaml
+# Removed pushgateway-proxy as we don't use it
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: pushgateway
+  labels:
+    app: pushgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pushgateway
+  template:
+    metadata:
+      labels:
+        app: pushgateway
+    spec:
+      containers:
+        - name: pushgateway
+          image: prom/pushgateway:v0.4.0
+          ports:
+            - name: http
+              containerPort: 9091

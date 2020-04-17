@@ -70,7 +70,7 @@ func main() {
 	}
 
 	for _, templateConfig := range config.Templates {
-		err := renderTemplate(path.Dir(*configFilePath), templateConfig, config)
+		err = renderTemplate(path.Dir(*configFilePath), templateConfig, config)
 		if err != nil {
 			log.Fatalf("Cannot render template %s: %s", templateConfig.From, err)
 		}
@@ -84,7 +84,7 @@ func renderTemplate(basePath string, templateConfig TemplateConfig, config *Conf
 	}
 
 	for _, render := range templateConfig.Render {
-		err := renderFileFromTemplate(basePath, templateInstance, render, config)
+		err = renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
 			return err
 		}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/api/option"
+	"os"
 
 	log "github.com/sirupsen/logrus"
 
@@ -35,6 +36,23 @@ func NewClient(ctx context.Context, opts Option, credentials string) (*Client, e
 	}
 }
 
+// Refactor prow-installer cluster package client implementation to get rid of this method. prow-installer package should be able to provide client for API interface implemented in k8s package.
+
+func NewGKEClient(ctx context.Context, projectID string) (*APIWrapper, error) {
+	//func NewGKEClient (ctx context.Context, projectID string, zoneID string) (*cluster.APIWrapper, error) {
+	containerService, err := container.NewService(ctx, option.WithCredentialsFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
+	if err != nil {
+		log.Fatalf("failed creating gke client, got: %v", err)
+	}
+
+	api := &APIWrapper{
+		ProjectID:      projectID,
+		ClusterService: containerService.Projects.Zones.Clusters,
+	}
+
+	return api, nil
+}
+
 // Create calls the wrapped GCP api to create a cluster
 func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error {
 	var nodePools []*container.NodePool
@@ -59,17 +77,17 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 	if err != nil {
 		return fmt.Errorf("couldn't create cluster: %w", err)
 	}
-	log.Printf("%#v\n", createResponse)
+	log.Printf("Operation: %s for cluster: %s is in status: %s", createResponse.OperationType, clusterConfig.Name, createResponse.Status)
 	return nil
 }
 
 // Delete calls the wrapped GCP api to delete a cluster
-func (caw *APIWrapper) Delete(ctx context.Context, name string, zoneId string) error {
-	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, caw.ZoneID, name).Context(ctx).Do()
+func (caw *APIWrapper) Delete(ctx context.Context, name string, zoneID string) error {
+	deleteResponse, err := caw.ClusterService.Delete(caw.ProjectID, zoneID, name).Context(ctx).Do()
 	if err != nil {
 		return fmt.Errorf("couldn't delete cluster: %w", err)
 	}
-	log.Printf("%#v\n", deleteResponse)
+	log.Printf("Operation: %s for cluster: %s is in status: %s", deleteResponse.OperationType, name, deleteResponse.Status)
 	return nil
 }
 
@@ -93,4 +111,12 @@ func NewNodePool(nodePool Pool) (*container.NodePool, error) {
 	}
 
 	return pool, nil
+}
+
+func (caw *APIWrapper) Get(ctx context.Context, clusterID string, zoneID string) (*container.Cluster, error) {
+	cluster, err := caw.ClusterService.Get(caw.ProjectID, zoneID, clusterID).Context(ctx).Do()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get %s cluster details, got : %w", clusterID, err)
+	}
+	return cluster, nil
 }

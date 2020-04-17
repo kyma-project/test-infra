@@ -2,15 +2,18 @@ package tester
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"k8s.io/test-infra/prow/config"
 	"log"
 	"path"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 // Designed to check validity of jobs generated from /templates/templates/generic-component.yaml
@@ -25,7 +28,7 @@ func NewGenericComponentSuite(config *jobsuite.Config) jobsuite.Suite {
 func (s GenericComponentSuite) Run(t *testing.T) {
 	s.testRunAgainstAnyBranch(t)
 
-	jobConfig, err := ReadJobConfig(s.jobConfigPath())
+	jobConfig, err := ReadJobConfig(s.JobConfigPath())
 	require.NoError(t, err)
 
 	t.Run("presubmit", s.testPresubmitJob(jobConfig))
@@ -49,6 +52,9 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 
 		for _, branch := range s.branchesToRunAgainst() {
 			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
+		}
+		for _, branch := range s.branchesNotToRunAgainst() {
+			assert.False(t, job.RunsAgainstBranch(branch), "Must NOT run against branch %s", branch)
 		}
 
 		s.assertContainer(t, job.JobBase)
@@ -94,7 +100,7 @@ func (s GenericComponentSuite) repositoryName() string {
 	return path.Base(s.Repository)
 }
 
-func (s GenericComponentSuite) jobConfigPath() string {
+func (s GenericComponentSuite) JobConfigPath() string {
 	// Components outside kyma-project need this switch, because generic job will create for example:
 	// Repository = github.com/kyma-incubator/compass,
 	// will generate path: `kyma-incubator` which is not valid in current state
@@ -147,16 +153,50 @@ func (s GenericComponentSuite) isTestInfra() bool {
 	return s.Repository == "github.com/kyma-project/test-infra"
 }
 
+func (s GenericComponentSuite) notSupportedComponentReleaseBranches() []string {
+	unsupportedBranches := []string{}
+
+	allReleases := releases.GetAllKymaReleases()
+FIND:
+	for _, rel := range allReleases {
+		for _, supportedRelease := range s.Releases {
+			if rel.Compare(supportedRelease) == 0 {
+				continue FIND
+			}
+		}
+		unsupportedBranches = append(unsupportedBranches, fmt.Sprintf("%v-%v-%v", "release", rel.String(), s.componentName()))
+	}
+	return unsupportedBranches
+}
+
+func (s GenericComponentSuite) componentReleaseBranches() []string {
+	releaseBranches := []string{}
+
+	for _, rel := range s.Releases {
+		releaseBranches = append(releaseBranches, fmt.Sprintf("%v-%v-%v", "release", rel.String(), s.componentName()))
+	}
+	return releaseBranches
+}
+
+func (s GenericComponentSuite) branchesNotToRunAgainst() []string {
+	result := make([]string, 0, 1)
+	if s.Deprecated {
+		result = append(result, "master")
+	}
+
+	unsupportedReleaseBranches := s.notSupportedComponentReleaseBranches()
+	result = append(result, unsupportedReleaseBranches...)
+	return result
+}
+
 func (s GenericComponentSuite) branchesToRunAgainst() []string {
 	result := make([]string, 0, 1)
 	if !s.Deprecated {
 		result = append(result, "master")
 	}
 
-	for _, rel := range s.PatchReleases {
-		result = append(result, rel.Branch())
-	}
-
+	releaseBranches := s.componentReleaseBranches()
+	result = append(result, releaseBranches...)
 	return result
 }
 

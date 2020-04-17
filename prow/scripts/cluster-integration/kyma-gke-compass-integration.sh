@@ -212,6 +212,10 @@ function installKyma() {
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "feature-flags-overrides" \
+    --data "global.enableAPIPackages=true" \
+    --data "global.disableLegacyConnectivity=true"
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
     --data "application-operator.tests.enabled=false" \
     --data "tests.application_connector_tests.enabled=false" \
@@ -219,11 +223,16 @@ function installKyma() {
     --data "console-backend-service.tests.enabled=false" \
     --data "test.acceptance.service-catalog.enabled=false" \
     --data "test.acceptance.external_solution.enabled=false" \
-    --data "console.test.acceptance.enabled=false"
+    --data "console.test.acceptance.enabled=false" \
+    --data "test.external_solution.event_mesh.enabled=false"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
     --data "test.acceptance.ui.logging.enabled=true" \
     --label "component=core"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+    --data "application-registry.deployment.args.detailedErrorResponse=true" \
+    --label "component=application-connector"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=${TLS_CERT}" \

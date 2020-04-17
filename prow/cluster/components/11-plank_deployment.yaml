@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: plank
+  labels:
+    app: plank
+spec:
+  selector:
+    matchLabels:
+      app: plank
+  replicas: 1 # Do not scale up.
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: plank
+    spec:
+      serviceAccountName: "plank"
+      containers:
+        - name: plank
+          image: gcr.io/k8s-prow/plank:v20200319-1aea24112
+          args:
+            - --dry-run=false
+            - --config-path=/etc/config/config.yaml
+            - --job-config-path=/etc/job-config
+            - --build-cluster=/etc/cluster/cluster.yaml
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
+            - --github-token-path=/etc/github/oauth
+          volumeMounts:
+            - name: oauth
+              mountPath: /etc/github
+              readOnly: true
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
+            - name: cluster
+              mountPath: /etc/cluster
+              readOnly: true
+      volumes:
+        - name: oauth
+          secret:
+            secretName: oauth-token
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster

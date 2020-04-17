@@ -1,13 +1,17 @@
 global:
-  nextRelease: "1.11"
+  nextRelease: "1.12"
   releases:
+    - "1.11"
     - "1.10"
     - "1.9"
-    - "1.8"
   whitesource:
     - name: "kyma"
       language: "golang"
       project: "kyma-project"
+    - name: "kyma"
+      language: "golang-mod"
+      project: "kyma-project"
+      custom_projectname: "kyma-mod"
     - name: "console"
       language: "javascript"
       project: "kyma-project"
@@ -26,13 +30,20 @@ global:
     - name: "knative-kafka"
       language: "golang"
       project: "kyma-incubator"
+    - name: "api-gateway"
+      language: "golang-mod"
+      project: "kyma-incubator"
+    - name: "dex"
+      language: "golang-mod"
+      project: "kyma-incubator"
+      base_ref: "kyma-master"
 
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
 go_buildpack_1_13: &go_buildpack_1_13 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
-kubebuilder2_buildpack_v20190823: &kubebuilder2_buildpack_v20190823 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20190823-24e14d1
+kubebuilder2_buildpack_v20200124: &kubebuilder2_buildpack_v20200124 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 bootstrap_buildpack_v20181204: &bootstrap_buildpack_v20181204 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
 
@@ -77,7 +88,7 @@ go_modules_env: &go_modules_env
 
 kubebuilder2_kyma_component: &kubebuilder2_kyma_component
   <<: *kyma_component
-  buildpack: *kubebuilder2_buildpack_v20190823
+  buildpack: *kubebuilder2_buildpack_v20200124
   resources:
     memory: 2.5Gi
     cpu: 2
@@ -126,6 +137,13 @@ go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
 templates:
   - from: templates/generic-component.yaml
     render:
+      - to: ../prow/jobs/kyma/components/api-gateway-migrator/api-gateway-migrator-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/api-gateway-migrator
+          since: "1.12"
+          until: "1.13"
+          optional: true
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -268,6 +286,12 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/mock-external-test-component/mock-external-test-component-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/mock-external-test-component
+          since: "1.11"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         values:
           <<: *compass_generic_component
@@ -332,18 +356,12 @@ templates:
           <<: *compass_generic_component
           path: tests/e2e/provisioning
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
         values:
           <<: *compass_generic_component
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
-      - to: ../prow/jobs/kyma/components/api-controller/api-controller-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/api-controller
-          since: "1.7"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -379,11 +397,6 @@ templates:
           <<: *kyma_generic_component
           path: components/backup-plugins
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/integration/api-controller
-          since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -409,21 +422,28 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/monitoring
           since: "1.7"
+      - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tools/event-subscriber
+          since: "1.12"
+          optional: true
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tools/alpine-net
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-test-generic.yaml
+      - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/api-gateway
           since: "1.7"
-      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs-generic.yaml
+      - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/kubeless-images/nodejs
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -439,26 +459,36 @@ templates:
           <<: *kyma_generic_component
           path: tests/kubeless
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/end-to-end/kubeless-integration
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/nats-init
+          since: "1.12"
+          optional: true
       - to: ../prow/jobs/kyma/components/event-bus/event-bus-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/event-bus
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/event-bus
           since: "1.9"
+          until: "1.11"
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -523,7 +553,6 @@ templates:
             - name: kyma-integration
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
-            - name: kyma-gke-backup
             - name: kyma-gke-central-connector
             - name: kyma-artifacts
             - name: kyma-installer
@@ -541,11 +570,6 @@ templates:
               until: "1.8"
   - from: templates/component.yaml
     render:
-      - to: ../prow/jobs/kyma/components/api-controller/api-controller.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: components/api-controller
-          until: "1.6"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -739,11 +763,6 @@ templates:
           <<: *go_kyma_component_1_11
           path: tests/kubeless
           until: "1.8"
-      - to: ../prow/jobs/kyma/tests/integration/api-controller/api-controller-tests.yaml
-        values:
-          <<: *go_kyma_component_1_12
-          path: tests/integration/api-controller
-          until: "1.6"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
           <<: *go_kyma_component_1_12
@@ -911,6 +930,11 @@ templates:
           <<: *go_kyma_component_v20181119
           path: tools/alpine-net
           until: "1.6"      
+  - from: templates/whitesource-periodics.yaml
+    render:
+      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+  - from: templates/knative-kafka-component.yaml
+    render:
       - to: ../prow/jobs/incubator/knative-kafka/channel.yaml
         values:
           <<: *go_knative_kafka_component_1_12
@@ -931,6 +955,4 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: components/common
           optional: false
-  - from: templates/whitesource-periodics.yaml
-    render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+

@@ -1,11 +1,16 @@
 package incubator
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"path"
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
+)
+
+const (
+	jobBasePath = "./../../../../prow/jobs/incubator"
 )
 
 var components = []struct {
@@ -21,7 +26,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -31,7 +36,18 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
+		},
+	},
+	{
+		name:  "mock-external-test-component",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release111),
+			jobsuite.Optional(),
 		},
 	},
 	{
@@ -41,7 +57,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -51,7 +67,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -61,7 +77,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -81,7 +97,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release19),
 		},
 	},
 	{
@@ -91,10 +107,9 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release110),
 		},
 	},
-
 	{
 		name:  "pairing-adapter",
 		image: tester.ImageBootstrap20181204,
@@ -103,12 +118,14 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Optional(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.Since(releases.Release111),
 		},
 	},
 }
 
 func TestComponentJobs(t *testing.T) {
+	testedConfigurations := make(map[string]struct{})
+	repos := map[string]struct{}{}
 	for _, component := range components {
 		t.Run(component.name, func(t *testing.T) {
 			opts := []jobsuite.Option{
@@ -122,7 +139,13 @@ func TestComponentJobs(t *testing.T) {
 			if suite == nil {
 				suite = tester.NewComponentSuite
 			}
-			suite(cfg).Run(t)
+			ts := suite(cfg)
+			if pathProvider, ok := ts.(jobsuite.JobConfigPathProvider); ok {
+				testedConfigurations[path.Clean(pathProvider.JobConfigPath())] = struct{}{}
+			}
+			repos[cfg.Repository] = struct{}{}
+			ts.Run(t)
 		})
 	}
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components"))
 }

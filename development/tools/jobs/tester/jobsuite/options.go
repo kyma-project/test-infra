@@ -2,9 +2,9 @@ package jobsuite
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 type Option func(suite *Config)
@@ -104,19 +104,19 @@ func JobFileSuffix(suffix string) Option {
 func Until(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetKymaReleasesUntil(rel)
-		suite.Deprecated = true
+		suite.Deprecated = !rel.IsNotOlderThan(releases.GetNextKymaRelease())
 	}
 }
 
 func AllReleases() Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesUntil(releases.Release18)
+		suite.Releases = releases.GetAllKymaReleases()
 	}
 }
 
 func Since(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
-		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.Release18)
+		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.GetNextKymaRelease())
 	}
 }
 

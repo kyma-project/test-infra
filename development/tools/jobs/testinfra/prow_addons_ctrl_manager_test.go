@@ -26,7 +26,7 @@ func TestProwAddonsCtrlManagerJobsPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^development/prow-addons-ctrl-manager/", actualPresubmit.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6", actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -46,7 +46,7 @@ func TestProwAddonsCtrlManagerJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPostsubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildMaster)
 	assert.Equal(t, "^development/prow-addons-ctrl-manager/", actualPostsubmit.RunIfChanged)
-	assert.Equal(t, tester.ImageGolangKubebuilderBuildpackLatest, actualPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6", actualPostsubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPostsubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-addons-ctrl-manager"}, actualPostsubmit.Spec.Containers[0].Args)
 }

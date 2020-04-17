@@ -9,9 +9,10 @@ job_template: &job_template
   skip_report: false
   decorate: true
   max_concurrency: 1
+  run_if_changed: ^common/|^components/|^installation/|^resources/|^tests/|^tools/
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+    - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.15
       securityContext:
         privileged: true
       command:
@@ -21,7 +22,7 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${RELEASE_TARGET_COMMIT} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"
       resources:
         requests:
-          memory: 1Gi
+          memory: 200Mi
           cpu: 0.2
 
 job_labels_template: &job_labels_template
@@ -30,6 +31,17 @@ job_labels_template: &job_labels_template
 
 postsubmits: 
   kyma-project/kyma:
+  - name: post-rel111-kyma-github-release
+    branches:
+      - release-1.11
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.11
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.11: "true"
   - name: post-rel110-kyma-github-release
     branches:
       - release-1.10
@@ -52,19 +64,13 @@ postsubmits:
       <<: *job_labels_template
       preset-build-release: "true"
       preset-target-commit-1.9: "true"
-  - name: post-rel18-kyma-github-release
-    branches:
-      - release-1.8
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.8
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.8: "true"
 
 presets:
+  - labels:
+      preset-target-commit-1.11: "true"
+    env:
+      - name: RELEASE_TARGET_COMMIT
+        value: release-1.11
   - labels:
       preset-target-commit-1.10: "true"
     env:
@@ -75,8 +81,3 @@ presets:
     env:
       - name: RELEASE_TARGET_COMMIT
         value: release-1.9
-  - labels:
-      preset-target-commit-1.8: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.8

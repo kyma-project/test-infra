@@ -1,3 +1,5 @@
+buildpack_golang_image: &buildpack_golang_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
+
 presubmits:
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
@@ -16,10 +18,11 @@ presubmits:
     - name: pre-test-infra-validate-configs
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
+      optional: true
       skip_report: false
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
+          - image: *buildpack_golang_image
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-config.sh"
             args:
@@ -69,6 +72,24 @@ presubmits:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: pre-master-test-infra-validate-prow-installer-files
+      decorate: true
+      max_concurrency: 10
+      branches:
+        - ^master$
+      labels:
+        preset-build-pr: "true"
+      run_if_changed: "^development/prow-installer/cmd/|^development/prow-installer/pkg/"
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
             resources:
               requests:
                 memory: 1.5Gi

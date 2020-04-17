@@ -1,0 +1,31 @@
+base_image: &base_image
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200406-36a2a4f6-k8s1.15
+
+periodics:
+- name: kyma-gardener-cleanup
+  cron: "0 * * * *" # "At 0 minute every hour"
+  decorate: true
+  decoration_config:
+    timeout: 1800000000000 # 30min
+    grace_period: 600000000000 # 10min
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      path_alias: github.com/kyma-project/test-infra
+      base_ref: master
+  labels:
+    preset-gardener-gcp-kyma-integration: "true"
+  spec:
+    containers:
+    - <<: *base_image
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
+      env:
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m

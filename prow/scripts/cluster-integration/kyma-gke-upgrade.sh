@@ -265,6 +265,10 @@ function installKyma() {
         --data "test.acceptance.ui.logging.enabled=true" \
         --label "component=core"
 
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+        --data "application-registry.deployment.args.detailedErrorResponse=true" \
+        --label "component=application-connector"
+
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
         --data "global.tlsCrt=${TLS_CERT}" \
         --data "global.tlsKey=${TLS_KEY}"
@@ -372,11 +376,14 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    shout "Delete the kyma-installation CR"
+    shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
     kubectl delete Installation -n default kyma-installation
+
+    # Remove the current installer to prevent it performing any action.
+    kubectl delete deployment -n kyma-installer kyma-installer
 
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"

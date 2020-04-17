@@ -1,6 +1,7 @@
 package incubator
 
 import (
+	"path"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
@@ -21,7 +22,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -41,7 +42,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release18),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -52,7 +53,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("test-generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release110),
-			jobsuite.Optional(),
 		},
 	},
 	{
@@ -68,6 +68,8 @@ var tests = []struct {
 }
 
 func TestTestJobs(t *testing.T) {
+	testedConfigurations := make(map[string]struct{})
+	repos := map[string]struct{}{}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			opts := []jobsuite.Option{
@@ -81,7 +83,13 @@ func TestTestJobs(t *testing.T) {
 			if suite == nil {
 				suite = tester.NewComponentSuite
 			}
-			suite(cfg).Run(t)
+			ts := suite(cfg)
+			if pathProvider, ok := ts.(jobsuite.JobConfigPathProvider); ok {
+				testedConfigurations[path.Clean(pathProvider.JobConfigPath())] = struct{}{}
+			}
+			repos[cfg.Repository] = struct{}{}
+			ts.Run(t)
 		})
 	}
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "tests"))
 }

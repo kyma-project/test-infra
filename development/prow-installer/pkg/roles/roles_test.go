@@ -96,17 +96,17 @@ var testvalues = []struct {
 }
 
 func Test_New(t *testing.T) {
-	t.Run("New() should create client object without errors.", func(t *testing.T) {
+	t.Run("New() should create Client object without errors.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		crmclient, err := New(mockCRM)
-		if test := assert.IsTypef(t, &client{}, crmclient, "\tnot expected: New() returned client object not type of *client{}."); test {
-			t.Log("\texpected: New() returned expected client object.")
+		if test := assert.IsTypef(t, &Client{}, crmclient, "\tnot expected: New() returned Client object not type of *Client{}."); test {
+			t.Log("\texpected: New() returned expected Client object.")
 		}
 		if test := assert.Nilf(t, err, "\tnot expected: New() returned not nil error."); test {
 			t.Log("\texpected: New() returned nil error.")
 		}
-		if test := assert.Equalf(t, mockCRM, crmclient.crmservice, "\tnot expected: New() returned client object with unexpected crmservice field."); test {
-			t.Log("\texpected: New() returned client object with correct crmservice field.")
+		if test := assert.Equalf(t, mockCRM, crmclient.crmservice, "\tnot expected: New() returned Client object with unexpected crmservice field."); test {
+			t.Log("\texpected: New() returned Client object with correct crmservice field.")
 		}
 	})
 }
@@ -408,7 +408,6 @@ func TestClient_AddSAtoRole(t *testing.T) {
 		}
 	})
 
-
 	t.Run("AddSAtoRole should add role without errors.", func(t *testing.T) {
 		tv := testvalue{
 			saname:  "test_sa_01",
@@ -439,8 +438,8 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			condition: nil,
 		}
 		returnpolicy := &cloudresourcemanager.Policy{
-			AuditConfigs:    nil,
-			Bindings:        []*cloudresourcemanager.Binding{
+			AuditConfigs: nil,
+			Bindings: []*cloudresourcemanager.Binding{
 				&cloudresourcemanager.Binding{
 					Condition:       nil,
 					Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
@@ -459,7 +458,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 					Role:            "roles/test_role_01",
 					ForceSendFields: nil,
 					NullFields:      nil,
-			}},
+				}},
 			Etag:            "test-Etag",
 			Version:         0,
 			ServerResponse:  googleapi.ServerResponse{},
@@ -469,7 +468,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(tv.policy, nil)
-		mockCRM.On("SetPolicy", tv.project, &cloudresourcemanager.SetIamPolicyRequest{Policy: returnpolicy}).Return(returnpolicy,nil)
+		mockCRM.On("SetPolicy", tv.project, &cloudresourcemanager.SetIamPolicyRequest{Policy: returnpolicy}).Return(returnpolicy, nil)
 		defer mockCRM.AssertExpectations(t)
 
 		policy, err := client.AddSAtoRole(tv.saname, tv.roles, tv.project, tv.condition)
@@ -515,15 +514,14 @@ func TestClient_AddSAtoRole(t *testing.T) {
 		}
 	})
 
-
 	t.Run("AddSAtoRole should add serviceaccount to role without errors.", func(t *testing.T) {
 		tv := testvalue{
 			saname:  "test_sa_01",
 			project: "test_project_01",
 			roles:   []string{"test_role_01"},
 			policy: &cloudresourcemanager.Policy{
-				AuditConfigs:    nil,
-				Bindings:        []*cloudresourcemanager.Binding{
+				AuditConfigs: nil,
+				Bindings: []*cloudresourcemanager.Binding{
 					&cloudresourcemanager.Binding{
 						Condition:       nil,
 						Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
@@ -552,8 +550,8 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			condition: nil,
 		}
 		returnpolicy := &cloudresourcemanager.Policy{
-			AuditConfigs:    nil,
-			Bindings:        []*cloudresourcemanager.Binding{
+			AuditConfigs: nil,
+			Bindings: []*cloudresourcemanager.Binding{
 				&cloudresourcemanager.Binding{
 					Condition:       nil,
 					Members:         []string{"group:prow_admins@sap.com", "serviceAccount:some_sa@test_project.iam.gserviceaccount.com"},
@@ -582,7 +580,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(tv.policy, nil)
-		mockCRM.On("SetPolicy", tv.project, &cloudresourcemanager.SetIamPolicyRequest{Policy: returnpolicy}).Return(returnpolicy,nil)
+		mockCRM.On("SetPolicy", tv.project, &cloudresourcemanager.SetIamPolicyRequest{Policy: returnpolicy}).Return(returnpolicy, nil)
 		defer mockCRM.AssertExpectations(t)
 
 		policy, err := client.AddSAtoRole(tv.saname, tv.roles, tv.project, tv.condition)
@@ -834,7 +832,7 @@ func TestClient_addToRole(t *testing.T) {
 		client, _ := New(mockCRM)
 		policy := tv.policy
 		rolefullname := client.makeRoleFullname(tv.roles[0])
-		safqdn := client.makeSafqdn(tv.saname, tv.project)
+		safqdn := client.MakeSafqdn(tv.saname, tv.project)
 		err := client.addToRole(policy, safqdn, rolefullname, tv.project, tv.condition)
 		bindingpresent := false
 		if test := assert.IsTypef(t, &BindingNotFoundError{}, err, "\tnot expected: addToRole() did not returned BindingNotFoundError"); test {
@@ -856,7 +854,7 @@ func TestClient_addToRole(t *testing.T) {
 		client, _ := New(mockCRM)
 		policy := tv.policy
 		rolefullname := client.makeRoleFullname(tv.roles[0])
-		safqdn := client.makeSafqdn(tv.saname, tv.project)
+		safqdn := client.MakeSafqdn(tv.saname, tv.project)
 		err := client.addToRole(policy, safqdn, rolefullname, tv.project, tv.condition)
 		bindingpresent := false
 		if test := assert.Nilf(t, err, "\tnot expected: addToRole() returned not nil error"); test {
@@ -889,7 +887,7 @@ func TestClient_makeSafqdn(t *testing.T) {
 	t.Run("makeSafqdn() should return GCP policy valid FQDN serviceaccount name.", func(t *testing.T) {
 		mockCRM := &mocks.CRM{}
 		client, _ := New(mockCRM)
-		safqdn := client.makeSafqdn(testvalues[0].saname, testvalues[0].project)
+		safqdn := client.MakeSafqdn(testvalues[0].saname, testvalues[0].project)
 		require.Equalf(t, testvalues[0].safqdn, safqdn, "\tnot expected: makeSafqdn() returned unexpected string value.")
 		t.Log("\texpected: makeSafqdn() returned expected string value.")
 	})
@@ -964,7 +962,7 @@ func TestClient_addRole(t *testing.T) {
 			mockCRM := mocks.CRM{}
 			client, _ := New(&mockCRM)
 			policy := tv.policy
-			safqdn := client.makeSafqdn(tv.saname, tv.project)
+			safqdn := client.MakeSafqdn(tv.saname, tv.project)
 			rolefullname := client.makeRoleFullname(tv.roles[0])
 
 			client.addRole(policy, safqdn, rolefullname, tv.project, tv.condition)

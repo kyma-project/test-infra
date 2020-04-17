@@ -19,12 +19,12 @@ if [[ -z "${PLUGINS_PATH}" ]] || [[ -z "${CONFIG_PATH}" ]] || [[ -z "${JOBS_CONF
 fi
 
 echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
+cd "${DEVELOPMENT_DIR}/checker"
 
 vendoredChecker="${DEVELOPMENT_DIR}/checker/vendor/k8s.io/test-infra/prow/cmd/checkconfig/main.go"
 if [ ! -f "${vendoredChecker}" ]; then
     echo "Vendoring 'k8s.io/test-infra/prow/cmd/checkconfig'"
-    cd "${DEVELOPMENT_DIR}/checker"
-    dep ensure -v -vendor-only
+    go mod vendor
 fi
 
 go run "${vendoredChecker}" --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"

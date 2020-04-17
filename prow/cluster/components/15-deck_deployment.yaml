@@ -1,0 +1,104 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: deck
+  labels:
+    app: deck
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: deck
+  template:
+    metadata:
+      labels:
+        app: deck
+    spec:
+      serviceAccountName: "deck"
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: deck
+          image: gcr.io/k8s-prow/deck:v20200319-1aea24112
+          args:
+            - --dry-run=false
+            - --hook-url=http://hook:8888/plugin-help
+            - --config-path=/etc/config/config.yaml
+            - --job-config-path=/etc/job-config
+            - --plugin-config=/etc/plugins/plugins.yaml
+            - --spyglass=true
+            - --github-endpoint=http://ghproxy
+            - --github-endpoint=https://api.github.com
+            - --github-token-path=/etc/github/oauth
+            - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
+            - --build-cluster=/etc/cluster/cluster.yaml
+            - --redirect-http-to=status.build.kyma-project.io
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config
+              readOnly: true
+            - name: job-config
+              mountPath: /etc/job-config
+              readOnly: true
+            - name: oauth
+              mountPath: /etc/github
+              readOnly: true
+            - name: plugins
+              mountPath: /etc/plugins
+              readOnly: true
+            - name: branding
+              mountPath: /static/extensions
+              readOnly: true
+            - mountPath: /etc/gcs-credentials
+              name: gcs-credentials
+              readOnly: true
+            - mountPath: /etc/cluster
+              name: cluster
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 600
+      volumes:
+        - name: config
+          configMap:
+            name: config
+        - name: job-config
+          configMap:
+            name: job-config
+        - name: oauth
+          secret:
+            secretName: oauth-token
+        - name: plugins
+          configMap:
+            name: plugins
+        - name: branding
+          configMap:
+            defaultMode: 420
+            name: branding
+        - name: gcs-credentials
+          secret:
+            defaultMode: 420
+            secretName: sa-gcs-plank
+        - name: cluster
+          secret:
+            defaultMode: 420
+            secretName: workload-cluster

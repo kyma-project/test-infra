@@ -55,10 +55,10 @@ EVENTHUB_NAMESPACE_SHARED_ACCESS_KEY="RootManageSharedAccessKey"
 K8S_SECRET_NAME="${EVENTHUB_NAMESPACE_NAME}-overrides"
 K8S_SECRET_NAMESPACE="kyma-installer"
 K8S_SECRET_USERNAME="\$ConnectionString"
-K8S_SECRET_BROKER=""
 K8S_SECRET_PASSWORD=""
 
-KAFKA_BROKER_PORT="9093"
+K8S_SECRET_BROKER_HOSTNAME=""
+K8S_SECRET_BROKER_PORT="9093"
 
 #
 #Utility Functions To Make The Actual Cmd Line Calls
@@ -174,7 +174,7 @@ loadAuthorizationKey() {
   primaryConnectionString=$(cmdNamespacePrimaryConnectionString)
 
   #Populate the Kubernetes Secret Broker / Password Values
-  K8S_SECRET_BROKER=$(echo "${primaryConnectionString}" | sed -e "s/^Endpoint=.*sb:\/\/\(.*\)\/;.*$/\1:${KAFKA_BROKER_PORT}/")
+  K8S_SECRET_BROKER_HOSTNAME=$(echo "${primaryConnectionString}" | sed -e "s/^Endpoint=.*sb:\/\/\(.*\)\/;.*$/\1/")
   K8S_SECRET_PASSWORD=${primaryConnectionString}
 }
 
@@ -193,15 +193,16 @@ metadata:
   labels:
     knativekafka.kyma-project.io/kafka-secret: "true"
     installer: overrides
-    component: knative-eventing-channel-kafka
+    component: knative-eventing-kafka
     kyma-project.io/installation: ""
 stringData:
-  kafka.brokers: ${K8S_SECRET_BROKER}
-  kafka.namespace: ${EVENTHUB_NAMESPACE_NAME}
-  kafka.password: ${K8S_SECRET_PASSWORD}
-  kafka.username: ${K8S_SECRET_USERNAME}
-  kafka.secretName: knative-kafka
-  environment.kafkaProvider: azure
+  kafka.brokers.hostname: "${K8S_SECRET_BROKER_HOSTNAME}"
+  kafka.brokers.port: "${K8S_SECRET_BROKER_PORT}"
+  kafka.namespace: "${EVENTHUB_NAMESPACE_NAME}"
+  kafka.password: "${K8S_SECRET_PASSWORD}"
+  kafka.username: "${K8S_SECRET_USERNAME}"
+  kafka.secretName: "knative-kafka"
+  environment.kafkaProvider: "azure"
 EOF
 )
   echo "${kafkaSecret}" > "${EVENTHUB_SECRET_OVERRIDE_FILE}"

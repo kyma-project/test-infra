@@ -37,6 +37,17 @@ if [[ "$1" == "$CI_FLAG" ]]; then
   fi
 fi
 
+while IFS= read -r -d '' directory
+do
+    cmdName=$(basename "${directory}")
+    if [ -a "${directory}/nobuild.lock" ]; then
+      continue
+    fi
+    ${buildEnv} go build -o "${cmdName}" "${directory}"
+    buildResult=$?
+    rm "${cmdName}"
+    check_result "go build ${directory}" "${buildResult}"
+done <   <(find "./cmd" -mindepth 1 -type d -print0)
 
 ##
 # Validate dependencies

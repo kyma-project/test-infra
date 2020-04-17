@@ -8,7 +8,7 @@ import (
 	"google.golang.org/api/iam/v1"
 )
 
-const createsakeyprefix = "projects/-/serviceAccounts/"
+const saResourcePrefix = "projects/-/serviceAccounts/"
 
 //Client provides data and methods for serviceaccount package.
 type Client struct {
@@ -16,11 +16,18 @@ type Client struct {
 	prefix     string
 }
 
+type ServiceAccount struct {
+	Name  string                 `yaml:"name"`
+	Roles []string               `yaml:"roles,omitempty"`
+	Key   *iam.ServiceAccountKey `yaml:"key,omitempty"`
+}
+
 // IAM is a mockable interface for GCP IAM API.
 type IAM interface {
 	//TODO: Swap arguments order to match iam service method arguments order.
 	CreateSA(request *iam.CreateServiceAccountRequest, projectname string) (*iam.ServiceAccount, error)
 	CreateSAKey(sa string, request *iam.CreateServiceAccountKeyRequest) (*iam.ServiceAccountKey, error)
+	DeleteSA(sa string) (*iam.Empty, error)
 }
 
 //
@@ -53,7 +60,9 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 
 // safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
 func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
-	resource := fmt.Sprintf("%s%s", createsakeyprefix, safqdn)
+	//var gkey []byte
+	//TODO: creating resource string should be package global function treated as helper function. It can be used in installer package in Cleaner.CleanALL method.
+	resource := fmt.Sprintf("%s%s", saResourcePrefix, safqdn)
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := client.iamservice.CreateSAKey(resource, request)
 	if err != nil {
@@ -61,4 +70,8 @@ func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error)
 	}
 	log.Printf("Created key for serviceaccount: %s", safqdn)
 	return key, nil
+}
+
+func (client *Client) Delete(name string) (*iam.Empty, error) {
+	return client.iamservice.DeleteSA(name)
 }

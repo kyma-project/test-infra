@@ -30,6 +30,7 @@ presubmits: # runs on PRs
     - name: pre-master-knative-kafka-components-common
       branches:
         - ^master$
+        - ^release-.*$  
       <<: *job_template
       path_alias: github.com/kyma-incubator/knative-kafka
       spec:
@@ -51,6 +52,7 @@ postsubmits:
     - name: post-master-knative-kafka-components-common
       branches:
         - ^master$
+        - ^release-.*$
       <<: *job_template
       path_alias: github.com/kyma-incubator/knative-kafka
       spec:

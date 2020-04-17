@@ -4,10 +4,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config"
-
-	"os"
 )
 
 type options struct {
@@ -66,8 +66,8 @@ func main() {
 		logrus.Fatalf("Cannot load config from directory %q: %s", o.jobConfigDir, err)
 	}
 
-	addPreSubmitJobsName(jobs, c.Presubmits)
-	addPostSubmitJobsName(jobs, c.Postsubmits)
+	addPreSubmitJobsName(jobs, c.JobConfig.PresubmitsStatic)
+	addPostSubmitJobsName(jobs, c.JobConfig.PostsubmitsStatic)
 
 	rep := report{foundDuplicates: false}
 	for name, val := range jobs {

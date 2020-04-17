@@ -138,6 +138,10 @@ function installKyma() {
 			--data "test.acceptance.ui.logging.enabled=true" \
 			--label "component=core"
 
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+			--data "application-registry.deployment.args.detailedErrorResponse=true" \
+			--label "component=application-connector"
+
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
 			--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
 			--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
@@ -147,6 +151,8 @@ function installKyma() {
 			--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
 			--label "component=istio"
 
+	applyDexGithubConnectorOverride
+			
 	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
 			applyServiceCatalogCRDOverride
 	fi
@@ -172,14 +178,6 @@ function installKyma() {
 		APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 		IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 	fi
-}
-
-function addGithubDexConnector() {
-    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-    dep ensure -v -vendor-only
-    popd
-    export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
 }
 
 function applyServiceCatalogCRDOverride(){
@@ -233,10 +231,6 @@ export DNS_DOMAIN
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
 
-shout "Add Github Dex Connector"
-date
-addGithubDexConnector
-
 shout "Cleanup"
 date
 export SKIP_IMAGE_REMOVAL=true
@@ -254,6 +248,9 @@ date
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
+shout "Override kyma-admin-binding ClusterRoleBinding"
+applyDexGithibKymaAdminGroup
+
 # Prometheus container need minimum 6Gi memory limit.
 shout "Increase cluster max container memory limit"
 date
@@ -262,6 +259,9 @@ patchlimitrange
 shout "Install stackdriver-prometheus collector"
 date
 installStackdriverPrometheusCollector
+
+shout "Update stackdriver-metadata-agent memory settings"
+updatememorysettings
 
 shout "Collect list of images"
 date

@@ -63,6 +63,15 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
+function check_status() {
+  status="${1}"
+  error_desc="${2}"
+  if [[ ${status} -ne 0 ]]; then
+    EXIT_STATUS=${status}
+    log::error "${error_desc}"
+  fi
+}
+
 function cleanup() {
 	shout "Cleanup"
 	date
@@ -78,52 +87,74 @@ function cleanup() {
 	if [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; then
 		CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		check_status "${TMP_STATUS}" "Failed to get nodes resource group."
 
-		echo -e "---\nRemove DNS Record for Ingressgateway\n---"
+		log::info "\n---\nRemove DNS Record for Ingressgateway\n---"
 		GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 
-		GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		check_status ${TMP_STATUS} "Could not fetch IP for : ${GATEWAY_DNS_FULL_NAME}"
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
-			echo "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
+			log::success "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 			# only try to delete the dns record if the ip address has been found
-			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME=}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+			if [[ ${TMP_STATUS} -ne 0 ]]; then
+			  log::error "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
+			  EXIT_STATUS=${TMP_STATUS}
+			else
+			  log:success "Deleted dns record : ${GATEWAY_DNS_FULL_NAME}"
+			fi
 		else
-			echo "Could not fetch Azure Gateway IP: GATEWAY_IP_ADDRESS variable is empty. Something went wrong. Failing"
+			log::warn "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
 		fi
-		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-		echo -e "---\nRemove DNS Record for Apiserver Proxy IP\n---"
+		log::info "\n---\nRemove DNS Record for Apiserver Proxy IP\n---"
 		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
 		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+		TMP_STATUS=$?
+		check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+			if [[ ${TMP_STATUS} -ne 0 ]]; then
+			  log::error "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
+			  EXIT_STATUS=${TMP_STATUS}
+			else
+			  log::success "Deleted dns record : ${APISERVER_DNS_FULL_NAME}"
+			fi
+		else
+		  log::warn "Could not delete DNS record ${APISERVER_DNS_FULL_NAME}. Record does not exist."
 		fi
 
-		echo -e "---\nRemove Cluster, IP Address for Ingressgateway\n---"
+		log::info "\n---\nRemove Cluster, IP Address for Ingressgateway\n---"
 		az aks delete -g "${RS_GROUP}" -n "${CLUSTER_NAME}" -y
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		if [[ ${TMP_STATUS} -ne 0 ]]; then
+		  log::error "Failed delete cluster : ${CLUSTER_NAME}"
+		  EXIT_STATUS=${TMP_STATUS}
+		else
+		  log::success "Cluster and IP address for Ingressgateway deleted"
+		fi
 
-		echo "Remove group"
+		log::info "Remove group"
 		az group delete -n "${RS_GROUP}" -y
 		TMP_STATUS=$?
-		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+		if [[ ${TMP_STATUS} -ne 0 ]]; then
+		  log::error "Failed to delete ResourceGrouop : ${RS_GROUP}"
+		  EXIT_STATUS=${TMP_STATUS}
+		else
+		  log::success "ResourceGroup deleted : ${RS_GROUP}"
+		fi
 	else
-		echo "Azure group does not exist, skip cleanup process"
+		log::info "Azure group does not exist, skip cleanup process"
 	fi
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	echo -e "---\nCleanup function is finished ${MSG}\n---"
+	log::info "\n---\nCleanup function is finished ${MSG}\n---"
 
 	# Turn on exit-on-error
 	set -e
@@ -144,7 +175,7 @@ function createGroup() {
 		sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			echo -e "---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
+			log::info "\n---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
 			exit 1
 		fi
 	done
@@ -154,9 +185,9 @@ function installCluster() {
 	shout "Install Kubernetes on Azure"
 	date
 
-	echo "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
+	log::info "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
 	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	echo "Latest available version is: ${AKS_CLUSTER_VERSION}"
+	log::info "Latest available version is: ${AKS_CLUSTER_VERSION}"
 
 	az aks create \
 	  --resource-group "${RS_GROUP}" \
@@ -167,7 +198,8 @@ function installCluster() {
 	  --enable-addons "${CLUSTER_ADDONS}" \
 	  --service-principal "${AZURE_SUBSCRIPTION_APP_ID}" \
 	  --client-secret "${AZURE_SUBSCRIPTION_SECRET}" \
-	  --generate-ssh-keys
+	  --generate-ssh-keys \
+	  --zones 1 2 3
 }
 
 function azureAuthenticating() {
@@ -186,10 +218,10 @@ function createPublicIPandDNS() {
 	date
 
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static
+	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
 
 	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
-	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	shout "Create DNS Record for Ingressgateway IP"
 	date
@@ -198,15 +230,6 @@ function createPublicIPandDNS() {
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
-function addGithubDexConnector() {
-	shout "Add Github Dex Connector"
-	date
-	pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-	dep ensure -v -vendor-only
-	popd
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-	go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
-}
 function setupKubeconfig() {
 	shout "Setup kubeconfig and create ClusterRoleBinding"
 	date
@@ -223,7 +246,7 @@ function installKyma() {
 
 	kubectl create namespace "kyma-installer"
 
-	echo "Apply Azure crb for healthz"
+	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
 	shout "Apply Kyma config"
@@ -240,10 +263,16 @@ function installKyma() {
 		--data "console.test.acceptance.enabled=false" \
 		--label "component=core"
 
+	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+		--data "application-registry.deployment.args.detailedErrorResponse=true" \
+		--label "component=application-connector"
+
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
 		--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
 		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
 		--label "component=monitoring"
+
+	applyDexGithubConnectorOverride
 
 	shout "Trigger installation"
 	date
@@ -266,6 +295,14 @@ function installKyma() {
 	fi
 }
 
+function test_console_url() {
+  CONSOLE_URL="https://console.${DOMAIN}"
+  console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
+  if [ "${console_response}" != "200" ]; then
+    log::error "Kyma console URL did not returned 200 HTTP response code. Check ingressgateway service."
+    exit 1
+  fi
+}
 init
 azureAuthenticating
 
@@ -273,7 +310,6 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --pr
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 cleanup
-addGithubDexConnector
 
 createGroup
 installCluster
@@ -293,6 +329,9 @@ install::kyma_cli
 installKyma
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
+shout "Override kyma-admin-binding ClusterRoleBinding"
+applyDexGithibKymaAdminGroup
+
 shout "Install stability-checker"
 date
 (
@@ -300,3 +339,5 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
 		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
+
+test_console_url
