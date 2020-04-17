@@ -108,7 +108,7 @@ fi
 ##
 # GO VET
 ##
-packagesToVet=("./cmd/..." "./internal/..." "./platform/...")
+packagesToVet=("./cmd/..." "./internal/...")
 
 for vPackage in "${packagesToVet[@]}"; do
 	vetResult=$(go vet "${vPackage}")
