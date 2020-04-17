@@ -2,8 +2,11 @@ package cluster
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster/automock"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -17,7 +20,7 @@ var (
 func TestClient_Create(t *testing.T) {
 	t.Run("Create() Should not throw errors", func(t *testing.T) {
 		ctx := context.Background()
-		api := MockAPI{}
+		api := automock.API{}
 		testClusterConfig := Cluster{
 			Name:        "test-cluster-name",
 			Location:    "gcp-zone1-a",
@@ -49,7 +52,7 @@ func TestClient_Create(t *testing.T) {
 	})
 	t.Run("Create() Should throw errors because initialSize is not satisfied", func(t *testing.T) {
 		ctx := context.Background()
-		api := MockAPI{}
+		api := automock.API{}
 		testClusterConfig := Cluster{
 			Name:        "test-cluster-name",
 			Location:    "gcp-zone1-a",
@@ -81,7 +84,7 @@ func TestClient_Create(t *testing.T) {
 	})
 	t.Run("Create() Should throw errors because name is not satisfied", func(t *testing.T) {
 		ctx := context.Background()
-		api := MockAPI{}
+		api := automock.API{}
 		testClusterConfig := Cluster{
 			Name:        "",
 			Location:    "gcp-zone1-a",
@@ -118,7 +121,7 @@ func TestClient_Delete(t *testing.T) {
 		testClusterName := "test-cluster-name"
 		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
-		api := &MockAPI{}
+		api := &automock.API{}
 
 		client, err := New(opts, api)
 		if err != nil {
@@ -131,7 +134,7 @@ func TestClient_Delete(t *testing.T) {
 		testClusterName := ""
 		testZoneId := "gcp-zone1-a"
 		ctx := context.Background()
-		api := &MockAPI{}
+		api := &automock.API{}
 
 		client, err := New(opts, api)
 		if err != nil {
@@ -144,7 +147,7 @@ func TestClient_Delete(t *testing.T) {
 		testClusterName := "test-cluster-name"
 		testZoneId := ""
 		ctx := context.Background()
-		api := &MockAPI{}
+		api := &automock.API{}
 
 		client, err := New(opts, api)
 		if err != nil {
@@ -157,12 +160,12 @@ func TestClient_Delete(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	t.Run("New() should not throw errors", func(t *testing.T) {
-		api := &MockAPI{}
+		api := &automock.API{}
 		_, err := New(opts, api)
 		assert.NoErrorf(t, err, "no errors during client creation")
 	})
 	t.Run("New() should throw errors, because ProjectID is not satisfied", func(t *testing.T) {
-		api := &MockAPI{}
+		api := &automock.API{}
 		testOpts := &Option{
 			Prefix:         "test-prefix",
 			ProjectID:      "",
@@ -172,7 +175,7 @@ func TestNew(t *testing.T) {
 		assert.EqualErrorf(t, err, "ProjectID is required to initialize a client", "ProjectID is not satisfied in New()")
 	})
 	t.Run("New() should throw errors, because ServiceAccount is not satisfied", func(t *testing.T) {
-		api := &MockAPI{}
+		api := &automock.API{}
 		testOpts := &Option{
 			Prefix:         "test-prefix",
 			ProjectID:      "gcp-test-project",

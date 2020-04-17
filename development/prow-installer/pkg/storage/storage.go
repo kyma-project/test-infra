@@ -13,7 +13,7 @@ type Option struct {
 	ServiceAccount string // filename of the serviceaccount to use
 }
 
-//go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=API -output=automock -outpkg=automock -case=underscore
 
 // Client wrapper for GCS storage API
 type Client struct {

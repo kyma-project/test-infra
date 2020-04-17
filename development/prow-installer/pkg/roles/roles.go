@@ -15,6 +15,8 @@ type Client struct {
 	crmservice CRM
 }
 
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=CRM -output=automock -outpkg=automock -case=underscore
+
 type CRM interface {
 	GetPolicy(projectname string, getiampolicyrequest *cloudresourcemanager.GetIamPolicyRequest) (*cloudresourcemanager.Policy, error)
 	SetPolicy(projectname string, setiampolicyrequest *cloudresourcemanager.SetIamPolicyRequest) (*cloudresourcemanager.Policy, error)

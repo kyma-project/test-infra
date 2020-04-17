@@ -3,11 +3,12 @@ package serviceaccount
 import (
 	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount/mocks"
+	"testing"
+
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount/automock"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/iam/v1"
-	"testing"
 )
 
 func Test_NewClient(t *testing.T) {
@@ -23,7 +24,7 @@ func Test_NewClient(t *testing.T) {
 		t.Logf("\nTesting with values:\n\tprefix: %s", tv.prefix)
 		prefix := tv.prefix
 		t.Run("NewClient() should be able to create Client object without errors.", func(t *testing.T) {
-			mockIAM := &mocks.IAM{}
+			mockIAM := &automock.IAM{}
 			client := NewClient(prefix, mockIAM)
 			if test := assert.Equal(t, prefix, client.prefix, "\tnot expected: client.prefix should be equal to passed prefix as argument."); test {
 				t.Log("\texpected: client.prefix is equal to prefix passed as argument")
@@ -64,7 +65,7 @@ func TestClient_CreateSA(t *testing.T) {
 		prefixedsa = fmt.Sprintf("%.30s", prefixedsa)
 		fqdnsa := prefixedsa + "@" + project + ".iam.gserviceaccount.com"
 		t.Run("CreateSA() should create serviceaccount.", func(t *testing.T) {
-			mockIAM := &mocks.IAM{}
+			mockIAM := &automock.IAM{}
 			client := NewClient(prefix, mockIAM)
 			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
 				AccountId: prefixedsa,
@@ -91,7 +92,7 @@ func TestClient_CreateSA(t *testing.T) {
 			}
 		})
 		t.Run("CreateSA() fail and should return error", func(t *testing.T) {
-			mockIAM := &mocks.IAM{}
+			mockIAM := &automock.IAM{}
 			client := NewClient(prefix, mockIAM)
 			mockIAM.On("CreateSA", &iam.CreateServiceAccountRequest{
 				AccountId: prefixedsa,
@@ -162,7 +163,7 @@ func TestClient_CreateSAKey(t *testing.T) {
 			NullFields:      make([]string, 0)},
 	}
 	t.Run("CreateSAKey should create key without errors.", func(t *testing.T) {
-		mockIAM := &mocks.IAM{}
+		mockIAM := &automock.IAM{}
 		mockIAM.On("CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}).Return(tv.serviceaccountkey, nil)
 		defer mockIAM.AssertExpectations(t)
 		client := NewClient(tv.prefix, mockIAM)
@@ -185,7 +186,7 @@ func TestClient_CreateSAKey(t *testing.T) {
 		}
 	})
 	t.Run("CreateSAKey should fail because got error from iamservice.CreateSAKey.", func(t *testing.T) {
-		mockIAM := &mocks.IAM{}
+		mockIAM := &automock.IAM{}
 		mockIAM.On("CreateSAKey", tv.resource, &iam.CreateServiceAccountKeyRequest{}).Return(nil, errors.New("CreateSAKey failed GCP test error"))
 		defer mockIAM.AssertExpectations(t)
 		client := NewClient(tv.prefix, mockIAM)

@@ -3,14 +3,15 @@ package roles
 import (
 	"errors"
 	"fmt"
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/roles/mocks"
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/roles/automock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
-	"testing"
 )
 
 //TODO: Move test values definition under each test function.
@@ -97,7 +98,7 @@ var testvalues = []struct {
 
 func Test_New(t *testing.T) {
 	t.Run("New() should create Client object without errors.", func(t *testing.T) {
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		crmclient, err := New(mockCRM)
 		if test := assert.IsTypef(t, &Client{}, crmclient, "\tnot expected: New() returned Client object not type of *Client{}."); test {
 			t.Log("\texpected: New() returned expected Client object.")
@@ -131,7 +132,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			{saname: "test_sa_01", project: "test_project_01", roles: []string{""}, policy: nil, condition: nil},
 		}
 		for _, tv := range testvalues {
-			mockCRM := &mocks.CRM{}
+			mockCRM := &automock.CRM{}
 			client, _ := New(mockCRM)
 
 			policy, err := client.AddSAtoRole(tv.saname, tv.roles, tv.project, tv.condition)
@@ -167,7 +168,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			policy:    nil,
 			condition: nil,
 		}
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 
 		policy, err := client.AddSAtoRole(tv.saname, tv.roles, tv.project, tv.condition)
@@ -222,7 +223,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			},
 			condition: nil}
 
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, errors.New("GetPolicy() error."))
@@ -289,7 +290,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			},
 			condition: nil}
 
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(func(string, *cloudresourcemanager.GetIamPolicyRequest) *cloudresourcemanager.Policy {
@@ -364,7 +365,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			},
 			condition: nil,
 		}
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(tv.policy, nil)
 		mockCRM.On("SetPolicy", tv.project, mock.AnythingOfType("*cloudresourcemanager.SetIamPolicyRequest")).Return(nil, errors.New("crmservice.SetPolicy-error"))
@@ -465,7 +466,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			ForceSendFields: nil,
 			NullFields:      nil,
 		}
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(tv.policy, nil)
 		mockCRM.On("SetPolicy", tv.project, &cloudresourcemanager.SetIamPolicyRequest{Policy: returnpolicy}).Return(returnpolicy, nil)
@@ -577,7 +578,7 @@ func TestClient_AddSAtoRole(t *testing.T) {
 			ForceSendFields: nil,
 			NullFields:      nil,
 		}
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(tv.policy, nil)
 		mockCRM.On("SetPolicy", tv.project, &cloudresourcemanager.SetIamPolicyRequest{Policy: returnpolicy}).Return(returnpolicy, nil)
@@ -675,7 +676,7 @@ func TestClient_getPolicy(t *testing.T) {
 
 	t.Run("getPolicy() should get policy without errors.", func(t *testing.T) {
 		tv := testvalues[0]
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 
 		mockCRM.On("GetPolicy", tv.project, &cloudresourcemanager.GetIamPolicyRequest{}).Return(tv.policy, nil)
@@ -708,7 +709,7 @@ func TestClient_getPolicy(t *testing.T) {
 
 	t.Run("getPolicy() should fail and return not nil error.", func(t *testing.T) {
 		testError := errors.New("Get test-project policy error")
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 
 		mockCRM.On("GetPolicy", "test-project", &cloudresourcemanager.GetIamPolicyRequest{}).Return(nil, testError)
@@ -828,7 +829,7 @@ func TestClient_addToRole(t *testing.T) {
 	//test with existing role with not matching condition
 	t.Run("addToRole should fail because missing role binding.", func(t *testing.T) {
 		tv := testvalues[0]
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		policy := tv.policy
 		rolefullname := client.makeRoleFullname(tv.roles[0])
@@ -850,7 +851,7 @@ func TestClient_addToRole(t *testing.T) {
 	//test with existing role
 	t.Run("addToRole should add sa to role without errors.", func(t *testing.T) {
 		tv := testvalues[1]
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		policy := tv.policy
 		rolefullname := client.makeRoleFullname(tv.roles[0])
@@ -885,7 +886,7 @@ func TestClient_makeSafqdn(t *testing.T) {
 	}
 
 	t.Run("makeSafqdn() should return GCP policy valid FQDN serviceaccount name.", func(t *testing.T) {
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		safqdn := client.MakeSafqdn(testvalues[0].saname, testvalues[0].project)
 		require.Equalf(t, testvalues[0].safqdn, safqdn, "\tnot expected: makeSafqdn() returned unexpected string value.")
@@ -907,7 +908,7 @@ func TestClient_makeRoleFullname(t *testing.T) {
 
 	for _, tv := range testvalues {
 		t.Run("makeRoleFullname() should return GCP policy valid name", func(t *testing.T) {
-			mockCRM := &mocks.CRM{}
+			mockCRM := &automock.CRM{}
 			client, _ := New(mockCRM)
 			rolefullname := client.makeRoleFullname(tv.role)
 			assert.Equalf(t, tv.rolefullname, rolefullname, "\tnot expected: makeRoleFullname() returned unexpected value for GCP policy role name.")
@@ -959,7 +960,7 @@ func TestClient_addRole(t *testing.T) {
 
 	for _, tv := range testvalues[:1] {
 		t.Run("addRole() added expected role to the policy.", func(t *testing.T) {
-			mockCRM := mocks.CRM{}
+			mockCRM := automock.CRM{}
 			client, _ := New(&mockCRM)
 			policy := tv.policy
 			safqdn := client.MakeSafqdn(tv.saname, tv.project)
@@ -1028,7 +1029,7 @@ func TestClient_setPolicy(t *testing.T) {
 
 	projectname := "test-project"
 	t.Run("setPolicy() set policy on GCP without errors.", func(t *testing.T) {
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		policy := testvalues[0].policy
 		projectname := testvalues[0].project
@@ -1079,7 +1080,7 @@ func TestClient_setPolicy(t *testing.T) {
 
 	t.Run("setPolicy() returned PolicyModifiedError error.", func(t *testing.T) {
 		tv := testvalues[0]
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		policy := tv.policy
 
@@ -1110,7 +1111,7 @@ func TestClient_setPolicy(t *testing.T) {
 	})
 
 	t.Run("setPolicy() returned non PolicyModifiedError error when checking if policy was modified.", func(t *testing.T) {
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		policy := testvalues[0].policy
 		projectname := testvalues[0].project
@@ -1147,7 +1148,7 @@ func TestClient_setPolicy(t *testing.T) {
 		}
 	})
 	t.Run("setPolicy() returned error when setting new policy.", func(t *testing.T) {
-		mockCRM := &mocks.CRM{}
+		mockCRM := &automock.CRM{}
 		client, _ := New(mockCRM)
 		policy := testvalues[0].policy
 

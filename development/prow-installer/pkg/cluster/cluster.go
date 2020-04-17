@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/k8s"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/kubectl"
 	"k8s.io/client-go/kubernetes"
@@ -14,7 +15,7 @@ type Option struct {
 	ServiceAccount string // filename of the serviceaccount to use
 }
 
-//go:generate mockery -name=API -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=API -output=automock -outpkg=automock -case=underscore
 
 // Client wrapper for KMS and GCS secret storage
 type Client struct {
@@ -87,14 +88,14 @@ func (cc *Client) Create(ctx context.Context, clusterConfig Cluster) error {
 }
 
 // Delete attempts to delete a GKE cluster
-func (cc *Client) Delete(ctx context.Context, name string, zoneId string) error {
+func (cc *Client) Delete(ctx context.Context, name string, zoneID string) error {
 	if name == "" {
 		return fmt.Errorf("name cannot be empty")
 	}
-	if zoneId == "" {
-		return fmt.Errorf("zoneId cannot be empty")
+	if zoneID == "" {
+		return fmt.Errorf("zoneID cannot be empty")
 	}
-	return cc.api.Delete(ctx, name, zoneId)
+	return cc.api.Delete(ctx, name, zoneID)
 }
 
 // WithProjectID modifies option to have a project id

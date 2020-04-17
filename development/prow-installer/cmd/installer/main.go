@@ -4,6 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/config"
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/installer"
@@ -14,8 +17,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"os"
-	"time"
 )
 
 var (
@@ -125,11 +126,11 @@ func main() {
 		// TODO implement handling error when SA already exists in GCP
 		sa, err := iamClient.CreateSA(serviceAccount.Name, readConfig.Project)
 		if err != nil {
-			log.Errorf("Error creating Service Account %v", err)
+			log.Errorf("%v", fmt.Errorf("Error creating Service Account %w", err))
 		} else {
 			key, err := iamClient.CreateSAKey(sa.Email)
 			if err != nil {
-				log.Errorf("failed create serviceaccount %s key, got: %w", sa.Name, err)
+				log.Errorf("%v", fmt.Errorf("failed create serviceaccount %s key, got: %w", sa.Name, err))
 			}
 			readConfig.ServiceAccounts[i].Key = key
 			//TODO: Creating prefixed resource names should be done in helper function. Possibly in config package during loading config in to struct, all names which require prefix, should be changed in to prefixed version. ServiceAccounts should be trimmed to 30 characters as well.
@@ -139,7 +140,7 @@ func main() {
 			saname = fmt.Sprintf("%.30s", saname)
 			_, err = crmClient.AddSAtoRole(saname, serviceAccount.Roles, readConfig.Project, nil)
 			if err != nil {
-				log.Errorf("Failed assign sa %s to roles, got: %v", saname, err)
+				log.Errorf("%v", fmt.Errorf("Failed assign sa %s to roles, got: %w", saname, err))
 			}
 		}
 	}

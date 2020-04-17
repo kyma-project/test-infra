@@ -22,6 +22,17 @@ echo -e "${NC}"
 cd "${DIR}" || exit 1
 
 ##
+# GO GENERATE
+##
+go generate ./...
+generateResult=$?
+if [ ${generateResult} != 0 ]; then
+	echo -e "${RED}✗ go generate ./...${NC}\n$generateResult${NC}"
+	exit 1
+else echo -e "${GREEN}√ go generate ./...${NC}"
+fi
+
+##
 # Tidy dependencies
 ##
 echo "? go mod tidy"
@@ -41,14 +52,14 @@ if [[ "$1" == "$CI_FLAG" ]]; then
   fi
 fi
 
-
 ##
 # Validate dependencies
 ##
 echo "? go mod verify"
-depResult=$(go mod verify)
-if [ $? != 0 ]; then
-	echo -e "${RED}✗ go mod verify\n$depResult${NC}"
+go mod verify
+verifyResult=$?
+if [ ${ensureResult} != 0 ]; then
+	echo -e "${RED}✗ go mod verify\n$verifyResult${NC}"
 	exit 1
 else echo -e "${GREEN}√ go mod verify${NC}"
 fi

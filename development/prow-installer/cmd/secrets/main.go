@@ -46,7 +46,7 @@ func main() {
 
 	kmsClient, err := kms.NewKeyManagementClient(ctx)
 	if err != nil {
-		log.Fatalf("Initialising KMS client failed: %w", err)
+		log.Fatalf("%v", fmt.Errorf("Initialising KMS client failed: %w", err))
 	}
 
 	wrappedKmsAPI := &secrets.APIWrapper{
@@ -62,12 +62,12 @@ func main() {
 
 	secretClient, err := secrets.New(kmsClientOpts, wrappedKmsAPI)
 	if err != nil {
-		log.Fatalf("Could not create KMS Management Client: %v", err)
+		log.Fatalf("%v", fmt.Errorf("Could not create KMS Management Client: %w", err))
 	}
 
 	gcsClient, err := gcs.NewClient(ctx)
 	if err != nil {
-		log.Fatalf("Initializing storage client failed: %w", err)
+		log.Fatalf("%v", fmt.Errorf("Initializing storage client failed: %w", err))
 	}
 
 	wrappedGCSAPI := &storage.APIWrapper{

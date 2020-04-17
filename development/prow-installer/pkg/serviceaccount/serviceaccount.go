@@ -16,11 +16,14 @@ type Client struct {
 	prefix     string
 }
 
+// ServiceAccount holds service account information
 type ServiceAccount struct {
 	Name  string                 `yaml:"name"`
 	Roles []string               `yaml:"roles,omitempty"`
 	Key   *iam.ServiceAccountKey `yaml:"key,omitempty"`
 }
+
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=IAM -output=automock -outpkg=automock -case=underscore
 
 // IAM is a mockable interface for GCP IAM API.
 type IAM interface {
@@ -30,7 +33,7 @@ type IAM interface {
 	DeleteSA(sa string) (*iam.Empty, error)
 }
 
-//
+// NewClient creates a new IAM client
 func NewClient(prefix string, iamservice IAM) *Client {
 	return &Client{
 		iamservice: iamservice,
@@ -38,7 +41,7 @@ func NewClient(prefix string, iamservice IAM) *Client {
 	}
 }
 
-// Creates GKE Service Account. SA name is trimed to 30 characters per GCP limits.
+// CreateSA Creates GKE Service Account. SA name is trimed to 30 characters per GCP limits.
 func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount, error) {
 	if client.prefix != "" {
 		name = fmt.Sprintf("%s-%s", client.prefix, name)
@@ -50,15 +53,15 @@ func (client *Client) CreateSA(name string, project string) (*iam.ServiceAccount
 	}
 	sa, err := client.iamservice.CreateSA(request, project)
 	if err != nil {
-		log.Printf("When creating %s serviceaccount in %s project got error: %w.", name, project, err)
+		log.Printf("%v", fmt.Errorf("When creating %s serviceaccount in %s project got error: %w", name, project, err))
 		return nil, err
-	} else {
-		log.Printf("Created serviceaccount: %s", name)
-		return sa, nil
 	}
+	log.Printf("Created serviceaccount: %s", name)
+	return sa, nil
+
 }
 
-// safqdn should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
+// CreateSAKey should be serviceaccount mail. Pass here iam.ServiceAccount.Email returned by Client.CreateSA().
 func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error) {
 	//var gkey []byte
 	//TODO: creating resource string should be package global function treated as helper function. It can be used in installer package in Cleaner.CleanALL method.
@@ -72,6 +75,7 @@ func (client *Client) CreateSAKey(safqdn string) (*iam.ServiceAccountKey, error)
 	return key, nil
 }
 
+// Delete deletes a service account
 func (client *Client) Delete(name string) (*iam.Empty, error) {
 	return client.iamservice.DeleteSA(name)
 }

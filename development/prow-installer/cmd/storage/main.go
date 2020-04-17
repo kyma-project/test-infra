@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -36,7 +37,7 @@ func main() {
 
 	gcsClient, err := gcs.NewClient(ctx)
 	if err != nil {
-		log.Errorf("Initializing storage client failed: %w", err)
+		log.Errorf("%v", fmt.Errorf("Initializing storage client failed: %w", err))
 	}
 
 	wrappedAPI := &storage.APIWrapper{

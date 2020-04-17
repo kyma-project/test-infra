@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/kyma-project/test-infra/development/prow-installer/pkg/cluster"
@@ -34,7 +35,7 @@ func main() {
 
 	containerService, err := container.NewService(ctx, option.WithServiceAccountFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")))
 	if err != nil {
-		log.Fatalf("Couldn't create service handle for GCP: %w", err)
+		log.Fatalf("%v", fmt.Errorf("Couldn't create service handle for GCP: %w", err))
 	}
 	clusterService := containerService.Projects.Zones.Clusters
 
@@ -62,6 +63,6 @@ func main() {
 	// }
 	err = gkeClient.Delete(ctx, "", "europe-west-3-c")
 	if err != nil {
-		log.Fatalf("Couldn't delete cluster %w", err)
+		log.Fatalf("%v", fmt.Errorf("Couldn't delete cluster %w", err))
 	}
 }

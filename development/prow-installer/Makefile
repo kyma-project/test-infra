@@ -1,39 +1,30 @@
 APP_NAME ?= prow-installer
-IMG ?= $(APP_NAME):latest
-IMG-CI = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME):$(DOCKER_TAG)
+IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
+TAG = $(DOCKER_TAG)
 
-all: test installer
+.PHONY: build
+build:
+	./before-commit.sh ci
 
-# Run tests
-test:
-	go test ./pkg/... ./cmd/... -coverprofile cover.out
+.PHONY: build-image
+build-image:
+	docker build -t $(APP_NAME):latest
 
-# Build config binary
-installer: test
-	go build -o bin/installer github.com/kyma-project/test-infra/development/prow-installer/cmd/installer
+.PHONY: push-image
+push-image:
+	docker tag $(APP_NAME) $(IMG):$(TAG)
+	docker push $(IMG):$(TAG)
 
-# Run against the configured Kubernetes cluster in ~/.kube/config
-run:
-	go run ./cmd/installer/main.go
+.PHONY: ci-pr
+ci-pr: build build-image push-image
 
-# Run go fmt against code
-fmt:
-	go fmt ./pkg/... ./cmd/...
+.PHONY: ci-master
+ci-master: build build-image push-image
 
-# Run go vet against code
-vet:
-	go vet ./pkg/... ./cmd/...
+.PHONY: ci-release
+ci-release: build build-image push-image
 
-# Build the docker image
-docker-build: test
-	docker build . -t ${IMG}
+.PHONY: clean
+clean:
+	rm -f $(APP_NAME)
 
-# Push the docker image
-docker-push:
-	docker tag $(IMG) $(IMG-CI)
-	docker push $(IMG-CI)
-
-# CI specified targets
-ci-pr: docker-build docker-push
-ci-master: docker-build docker-push
-ci-release: docker-build docker-push

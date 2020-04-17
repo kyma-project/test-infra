@@ -4,9 +4,10 @@ import (
 	//"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 	"log"
 	"os"
+
+	"github.com/kyma-project/test-infra/development/prow-installer/pkg/serviceaccount"
 )
 
 var (
@@ -38,7 +39,7 @@ func main() {
 
 	iamservice, err := serviceaccount.NewService(*credentialsfile)
 	if err != nil {
-		log.Fatalf("When creating serviceaccount got error: %w", err)
+		log.Fatalf("%v", fmt.Errorf("When creating serviceaccount got error: %w", err))
 	}
 	iamclient := serviceaccount.NewClient(*prefix, iamservice)
 
@@ -56,11 +57,11 @@ func main() {
 		log.Printf("Creating service account with values:\nname: %s\nproject: %s\nprefix: %s\n", value, *project, *prefix)
 		sa, err := iamclient.CreateSA(value, *project)
 		if err != nil {
-			log.Printf("Failed create serviceaccount %s, got error: %w", value, err)
+			log.Printf("%v", fmt.Errorf("Failed create serviceaccount %s, got error: %w", value, err))
 		}
 		key, err := iamclient.CreateSAKey(sa.Email)
 		if err != nil {
-			log.Printf("Failed create key for serviceaccount %s, got error: %w", value, err)
+			log.Printf("%v", fmt.Errorf("Failed create key for serviceaccount %s, got error: %w", value, err))
 		}
 		fmt.Println(key)
 		log.Printf("Got key for serviceaccount: %s", value)

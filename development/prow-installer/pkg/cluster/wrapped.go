@@ -3,8 +3,9 @@ package cluster
 import (
 	"context"
 	"fmt"
-	"google.golang.org/api/option"
 	"os"
+
+	"google.golang.org/api/option"
 
 	log "github.com/sirupsen/logrus"
 
@@ -58,11 +59,12 @@ func (caw *APIWrapper) Create(ctx context.Context, clusterConfig Cluster) error 
 	var nodePools []*container.NodePool
 
 	for _, pool := range clusterConfig.Pools {
-		if nodePool, err := NewNodePool(pool); err != nil {
+		nodePool, err := NewNodePool(pool)
+		if err != nil {
 			return fmt.Errorf("error creating node pool configuration: %w", err)
-		} else {
-			nodePools = append(nodePools, nodePool)
 		}
+		nodePools = append(nodePools, nodePool)
+
 	}
 
 	ccRequest := &container.CreateClusterRequest{
