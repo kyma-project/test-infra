@@ -11,6 +11,10 @@ replace (
 )
 
 require (
+	github.com/aws/aws-k8s-tester v0.9.3 // indirect
+	github.com/frankban/quicktest v1.8.1 // indirect
 	github.com/sirupsen/logrus v1.5.0
-	k8s.io/test-infra v0.0.0-20200331085241-bf7dc9346358
+	k8s.io/apimachinery v0.17.3
+	k8s.io/test-infra v0.0.0-20200320172837-fbc86f22b087
+	sigs.k8s.io/yaml v1.1.0
 )

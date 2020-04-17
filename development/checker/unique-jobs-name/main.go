@@ -4,10 +4,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/config"
-
-	"os"
 )
 
 type options struct {
