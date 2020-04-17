@@ -2,9 +2,6 @@ module github.com/kyma-project/test-infra/development/checker
 
 go 1.13
 
-//cloud.google.com/go => cloud.google.com/go v0.44.3
-//github.com/Azure/go-autorest => github.com/Azure/go-autorest v12.2.0+incompatible
-//golang.org/x/lint => golang.org/x/lint v0.0.0-20190409202823-959b441ac422
 replace (
 	github.com/Azure/go-autorest => github.com/Azure/go-autorest v12.2.0+incompatible
 	k8s.io/api => k8s.io/api v0.17.3

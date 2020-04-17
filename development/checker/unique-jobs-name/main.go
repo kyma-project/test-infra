@@ -66,8 +66,8 @@ func main() {
 		logrus.Fatalf("Cannot load config from directory %q: %s", o.jobConfigDir, err)
 	}
 
-	addPreSubmitJobsName(jobs, c.JobConfig.Presubmits)
-	addPostSubmitJobsName(jobs, c.JobConfig.Postsubmits)
+	addPreSubmitJobsName(jobs, c.JobConfig.PresubmitsStatic)
+	addPostSubmitJobsName(jobs, c.JobConfig.PostsubmitsStatic)
 
 	rep := report{foundDuplicates: false}
 	for name, val := range jobs {
