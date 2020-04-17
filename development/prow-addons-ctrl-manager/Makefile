@@ -57,9 +57,10 @@ docker-push:
 ### Custom targets
 # Resolve dependencies
 resolve:
-	@echo 'prow-addons-ctrl-manager was migrated to go mod'
+	dep ensure -v -vendor-only
 
 validate: fmt vet
+	dep status
 
 # CI specified targets
 ci-pr: docker-build docker-push
