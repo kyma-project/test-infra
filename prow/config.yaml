@@ -79,18 +79,6 @@ presets:
     - name: sa-kyma-artifacts
       mountPath: /etc/credentials/sa-kyma-artifacts
   - labels:
-      preset-knative-sa: "true" # Created for knative tests
-    env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/credentials/knative-sa/service-account.json
-    volumes:
-    - name: knative-sa
-      secret:
-        secretName: knative-sa
-    volumeMounts:
-    - name: knative-sa
-      mountPath: /etc/credentials/knative-sa
-  - labels:
       preset-gardener-azure-kyma-integration: "true"
     env:
     - name: GARDENER_KYMA_PROW_KUBECONFIG
