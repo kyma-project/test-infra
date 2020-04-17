@@ -39,7 +39,6 @@ presubmits: # runs on PRs
             image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
-      run_if_changed: "^./"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -61,7 +60,6 @@ postsubmits:
             image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
-      run_if_changed: "^./"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master

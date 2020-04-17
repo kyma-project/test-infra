@@ -60,7 +60,6 @@ presubmits: # runs on PRs
             image: {{ .Values.buildpack }}
             args:
               - "/home/prow/go/src/{{ .Values.repository }}"
-      run_if_changed: "{{ $watch }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -100,7 +99,6 @@ presubmits: # runs on PRs
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
       path_alias: {{ $.Values.repository }}
-      run_if_changed: "{{ $watch }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -132,7 +130,6 @@ postsubmits:
             image: {{ .Values.buildpack }}
             args:
               - "/home/prow/go/src/{{ .Values.repository }}"
-      run_if_changed: "{{ $watch }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
@@ -153,7 +150,6 @@ postsubmits:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
       path_alias: {{ $.Values.repository }}
-      run_if_changed: "{{ $watch }}"
 {{- if $isNotTestInfra }}
       extra_refs:
         - <<: *test_infra_ref
