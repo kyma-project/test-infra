@@ -15,7 +15,7 @@ type Option struct {
 	ServiceAccount string // filename of the serviceaccount to use
 }
 
-//go:generate go run github.com/vektra/mockery/cmd/mockery -name=API -output=automock -outpkg=automock -case=underscore
+//go:generate go run github.com/vektra/mockery/cmd/mockery -name=API -inpkg -case=underscore
 
 // Client wrapper for KMS and GCS secret storage
 type Client struct {

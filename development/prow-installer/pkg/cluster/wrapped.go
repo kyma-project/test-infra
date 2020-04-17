@@ -10,7 +10,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	container "google.golang.org/api/container/v1"
-	// "google.golang.org/api/option"
 )
 
 // APIWrapper wraps the GCP api
