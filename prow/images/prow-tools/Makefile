@@ -15,7 +15,7 @@ ci-pr: build-image push-image
 ci-release: build-image push-image
 
 build-image:
-	docker build -t $(IMG_NAME) .
+	docker build -t $(IMG_NAME) -f Dockerfile ../../../.
 push-image:
 	docker tag $(IMG_NAME) $(IMG):$(TAG)
 	docker push $(IMG):$(TAG)
