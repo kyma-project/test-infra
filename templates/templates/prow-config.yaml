@@ -647,3 +647,13 @@ push_gateway:
   endpoint: pushgateway
   interval: 10s
   serve_metrics: true
+
+slack_reporter_configs:
+  '*':
+    job_types_to_report:
+      - postsubmit
+      - periodic
+    job_states_to_report:
+      - failure
+      - error
+    channel: c4core-kyma-ci-force
