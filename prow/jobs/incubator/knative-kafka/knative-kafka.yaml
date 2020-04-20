@@ -28,6 +28,7 @@ container_template: &container_template
 presubmits: # runs on PRs
   kyma-incubator/knative-kafka:
     - name: pre-master-knative-kafka
+      always_run: true
       branches:
         - ^master$
         - ^release-.*$  
@@ -49,6 +50,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/knative-kafka:
     - name: post-master-knative-kafka
+      always_run: true
       branches:
         - ^master$
         - ^release-.*$
