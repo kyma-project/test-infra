@@ -24,4 +24,5 @@ require (
 	k8s.io/code-generator v0.17.3
 	k8s.io/test-infra v0.0.0-20200417080107-13d4a722f14a
 	sigs.k8s.io/controller-runtime v0.5.2
+	sigs.k8s.io/controller-tools v0.2.9
 )
