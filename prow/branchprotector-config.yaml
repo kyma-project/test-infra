@@ -1,0 +1,132 @@
+branch-protection:
+  enforce_admins: false
+  required_pull_request_reviews:
+    dismiss_stale_reviews: false
+    require_code_owner_reviews: true
+    required_approving_review_count: 1
+  # all jobs that have ContextRequired() set to true are also treated as required_status_checks, so there is no point to mention it here.
+  required_status_checks:
+    contexts:
+      - license/cla
+  orgs:
+    kyma-project:
+      protect: true # protect all repos & branches in kyma-project org
+      repos:
+        kyma:
+          branches:
+            release-1.11:
+              required_status_checks:
+                contexts:
+                  - pre-rel111-kyma-integration
+                  - pre-rel111-kyma-gke-integration
+                  - pre-rel111-kyma-gke-upgrade
+                  - pre-rel111-kyma-gke-central-connector
+                  - pre-rel111-kyma-artifacts
+                  - pre-rel111-kyma-installer
+            release-1.10:
+              required_status_checks:
+                contexts:
+                  - pre-rel110-kyma-integration
+                  - pre-rel110-kyma-gke-integration
+                  - pre-rel110-kyma-gke-upgrade
+                  - pre-rel110-kyma-gke-central-connector
+                  - pre-rel110-kyma-artifacts
+                  - pre-rel110-kyma-installer
+            release-1.9:
+              required_status_checks:
+                contexts:
+                  - pre-rel19-kyma-integration
+                  - pre-rel19-kyma-gke-integration
+                  - pre-rel19-kyma-gke-upgrade
+                  - pre-rel19-kyma-gke-central-connector
+                  - pre-rel19-kyma-artifacts
+                  - pre-rel19-kyma-installer
+        website:
+          required_status_checks:
+            contexts:
+              - "netlify/kyma-project/deploy-preview"
+        cli:
+          branches:
+            master:
+              protect: true
+        helm-broker:
+          branches:
+            master:
+              protect: true
+    kyma-incubator:
+      repos:
+        varkes:
+          branches:
+            master:
+              protect: true
+        vstudio-extension:
+          branches:
+            master:
+              protect: true
+        service-catalog-tester:
+          branches:
+            master:
+              protect: true
+        gcp-service-broker:
+          branches:
+            master:
+              protect: true
+        octopus:
+          branches:
+            master:
+              protect: true
+        podpreset-crd:
+          branches:
+            master:
+              protect: true
+        compass:
+          branches:
+            master:
+              protect: true
+        marketplaces:
+          protect: true
+        documentation-component:
+          protect: true
+        github-slack-connectors:
+          branches:
+            master:
+              protect: true
+        dex:
+          branches:
+            master:
+              protect: true
+            kyma-master:
+              protect: true
+        api-gateway:
+          branches:
+            master:
+              protect: true
+        knative-kafka:
+          branches:
+            master:
+              protect: true
+            release-0.12:
+              protect: true
+        third-party-images:
+          branches:
+            master:
+              protect: true
+
+plank:
+  job_url_template: 'https://status.build.kyma-project.io/view/gcs/kyma-prow-logs/{{if eq .Spec.Type "presubmit"}}pr-logs/pull{{else if eq .Spec.Type "batch"}}pr-logs/pull{{else}}logs{{end}}{{if .Spec.Refs}}{{if ne .Spec.Refs.Org ""}}/{{.Spec.Refs.Org}}_{{.Spec.Refs.Repo}}{{end}}{{end}}{{if eq .Spec.Type "presubmit"}}/{{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}{{else if eq .Spec.Type "batch"}}/batch{{end}}/{{.Spec.Job}}/{{.Status.BuildID}}/'
+  job_url_prefix: 'https://status.build.kyma-project.io/view/gcs/'
+  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
+  max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
+  pod_pending_timeout: 60m
+  default_decoration_config:
+    timeout: 7200000000000 # 2h
+    grace_period: 600000000000 # 10min
+    utility_images:
+      clonerefs: "eu.gcr.io/kyma-project/test-infra/clonerefs:v20200414-6b49853d"
+      initupload: "gcr.io/k8s-prow/initupload:v20200319-1aea24112"
+      entrypoint: "gcr.io/k8s-prow/entrypoint:v20200319-1aea24112"
+      sidecar: "gcr.io/k8s-prow/sidecar:v20200319-1aea24112"
+    gcs_configuration:
+      bucket: kyma-prow-logs
+      path_strategy: "explicit"
+    gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
