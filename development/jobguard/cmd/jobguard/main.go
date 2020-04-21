@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/jobguard/pkg/jobguard"
 	"log"
 	"strings"
 	"time"
 
-	jobguard "github.com/kyma-project/test-infra/development/jobguard/pkg"
 	"github.com/pkg/errors"
 	"github.com/vrischmann/envconfig"
 	prowCfg "k8s.io/test-infra/prow/config"

@@ -8,7 +8,7 @@ echo "KYMA PROJECT DIR ${KYMA_PROJECT_DIR}"
 echo "COMMIT SHA: ${PULL_PULL_SHA}"
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-cd "${ROOT_PATH}/cmd" || exit 1
+cd "${ROOT_PATH}/cmd/jobguard" || exit 1
 
 env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
     INITIAL_SLEEP_TIME=1m \
