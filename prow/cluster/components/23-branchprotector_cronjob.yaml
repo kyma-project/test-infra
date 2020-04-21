@@ -20,7 +20,7 @@ spec:
             - name: branchprotector
               image: gcr.io/k8s-prow/branchprotector:v20190125-2aca69d
               args:
-                - --config-path=/etc/config/config.yaml
+                - --config-path=/etc/config/branchprotector-config.yaml
                 - --job-config-path=/etc/job-config
                 - --github-token-path=/etc/github/oauth
                 - --confirm
@@ -43,7 +43,7 @@ spec:
                 secretName: oauth-token
             - name: config
               configMap:
-                name: config
+                name: branchprotector-config
             - name: job-config
               configMap:
                 name: job-config
