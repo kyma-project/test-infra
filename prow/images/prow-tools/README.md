@@ -10,6 +10,7 @@ The image consists of:
 - prebuilt binaries from the `development/tools/cmd` directory
 
 ## Installation
+
 To build the Docker image, run this command:
 
 ```bash
