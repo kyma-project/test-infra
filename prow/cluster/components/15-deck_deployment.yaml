@@ -36,7 +36,6 @@ spec:
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
             - --github-token-path=/etc/github/oauth
-            - --gcs-credentials-file=/etc/gcs-credentials/service-account.json
             - --build-cluster=/etc/cluster/cluster.yaml
             - --redirect-http-to=status.build.kyma-project.io
           ports:
@@ -57,9 +56,6 @@ spec:
               readOnly: true
             - name: branding
               mountPath: /static/extensions
-              readOnly: true
-            - mountPath: /etc/gcs-credentials
-              name: gcs-credentials
               readOnly: true
             - mountPath: /etc/cluster
               name: cluster
@@ -94,10 +90,6 @@ spec:
           configMap:
             defaultMode: 420
             name: branding
-        - name: gcs-credentials
-          secret:
-            defaultMode: 420
-            secretName: sa-gcs-plank
         - name: cluster
           secret:
             defaultMode: 420
