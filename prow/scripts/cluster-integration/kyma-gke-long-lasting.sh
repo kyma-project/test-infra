@@ -164,7 +164,7 @@ function installKyma() {
 
 	kyma install \
 			--ci \
-			--source latest \
+			--source latest-published \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
 			--domain "${DOMAIN}" \
 			--tlsCert "${TLS_CERT}" \

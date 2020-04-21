@@ -162,7 +162,7 @@ curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-pro
 set -x
 kyma install \
     --ci \
-    --source latest \
+    --source latest-published \
     -o installer-config-production.yaml.tpl \
     --timeout 90m
 )

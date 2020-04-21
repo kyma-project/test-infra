@@ -197,7 +197,7 @@ cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.
 set -x
 kyma install \
     --ci \
-    --source latest \
+    --source latest-published \
     -o installer-cr-gardener-azure.yaml.tpl \
     -o installer-config-production.yaml.tpl \
     -o installer-config-azure-eventhubs.yaml.tpl \
