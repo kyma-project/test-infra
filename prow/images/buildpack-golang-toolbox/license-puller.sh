@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Description: This script is responsible for downloading license files for dependencies
-
 set -e
 
 readonly ARGS=("$@")
@@ -54,8 +53,6 @@ function pullLicensesByDir() {
     echo "Downloading license files to '${LICENSES_DIR}'"
     # shellcheck disable=SC2016
     jq -sr '[{ data: map(.) } | .data[] | select(has("ImportMap")) | .ImportMap | keys[]] | unique | values[]' "${TMP_DIR}/golang.json" \
-        | sed -e 's/sigs\.k8s\.io/github\.com\/kubernetes-sigs/g' \
-        | sed -e 's/k8s\.io/github\.com\/kubernetes/g' \
         | grep -oE "^[^\/]+\/[^\/]+\/[^\/]+" \
         | sort -u \
         | while IFS=$'\t' read -r repository; do
@@ -69,7 +66,10 @@ function pullLicensesByDir() {
 # TODO: This is temporary solution for Golang
 function downloadLicense() {
     local output=${1}
-    local repository=${2}
+    local importPath=${2}
+
+    # laymans vanity-import support
+    local repository=$(curl -L ${importPath}?go-get=1 | pup 'meta[name="go-import"] attr{content}' | paste -sd "," - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
     local url="https://${repository/github.com/raw.githubusercontent.com}/master"
 
     echo "Downloading license from '${repository}' to '${output}''"

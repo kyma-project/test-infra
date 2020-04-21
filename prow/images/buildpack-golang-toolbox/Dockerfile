@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN go get golang.org/x/tools/cmd/goimports  \
     golang.org/x/lint/golint \
     github.com/vektra/mockery \
+    github.com/ericchiang/pup\
     github.com/kisielk/errcheck && \
     GO111MODULE="on" go get sigs.k8s.io/kind@v0.5.1
 
