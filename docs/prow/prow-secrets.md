@@ -27,12 +27,10 @@ This document lists all types of secrets used in kyma-prow cluster as well as wo
 | **kyma-bot-github-token**| stores personal access token (called `Prow - Job`) used by the kyma-bot github user.| 
 | **kyma-guard-bot-github-token** | stores personal access token of the kyma-guard-bot Github account|
 | **kyma-bot@sap.com**| stores credentials to the kyma-bot Github account. |
-| **kyma-bot-npm-token** | it is a token for publishing npm packages in npmjs.com registry. Kyma-bot user credentials are uset to authenticate to the registry. The secret is used by `post-master-varkes` job.| 
-
+| **kyma-bot-npm-token** | it is a token for publishing npm packages in npmjs.com registry. Kyma-bot user credentials are uset to authenticate to the registry. The secret is used by `post-master-varkes` job. |
 | **gardener-kyma-prow-kubeconfig**| it is a kubeconfig file, that allows connection to the Gardener `kyma-prow` project.| 
 | **slack-nightly-token**| it is slack token that allows stability checker to push notifications to Slack. | 
 | **sap-slack-bot-token** | it is a token for publishing messages to the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot.|
 | **kyma-alerts-slack-api-url** | it is a token for publishing messages to the SAP CX workspace.  It is used by nightly and weekly ProwJobs.|
 | **neighbors-alerts-slack-api-url** | publishes alerts to the private neighbors channel.|
 | **kyma-azure-credential-*** | This set of secrets stores Azure subscription and service principal credentials. |
-| **kyma-bot-github-ssh** | |
