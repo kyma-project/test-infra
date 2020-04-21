@@ -301,7 +301,7 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
           cpu: 0.8
 
 prow_tools_job_template: &prow_tools_job_template
-  run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod|Dockerfile|Makefile)$'
+  run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)|prow/images/prow-tools/$'
   <<: *common_job_template
   spec:
     containers:
@@ -311,7 +311,7 @@ prow_tools_job_template: &prow_tools_job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
         resources:
           requests:
             memory: 1.5Gi
