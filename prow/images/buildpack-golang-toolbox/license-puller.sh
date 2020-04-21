@@ -16,7 +16,8 @@ function read_arguments() {
     do
         case $arg in
             --dirs-to-pulling=*)
-              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
+	      local dirs_to_pulling=()
+	      IFS=" " read -r -a dirs_to_pulling <<< "${arg#*=}"
               shift # remove --dirs-to-pulling=
             ;;
             *)
@@ -27,7 +28,7 @@ function read_arguments() {
 
     if [ "${#dirs_to_pulling[@]}" -ne 0 ]; then
         for d in "${dirs_to_pulling[@]}"; do
-            DIRS_TO_PULLING+=($( cd "${CWD}/${d}" && pwd ))
+            DIRS_TO_PULLING+=( "$( cd "${CWD}/${d}" && pwd )" )
         done
     fi
     readonly DIRS_TO_PULLING
@@ -69,7 +70,8 @@ function downloadLicense() {
     local importPath=${2}
 
     # laymans vanity-import support
-    local repository=$(curl -L ${importPath}?go-get=1 | pup 'meta[name="go-import"] attr{content}' | paste -sd "," - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
+    local repository
+    repository=$(curl -L "${importPath}?go-get=1" | pup 'meta[name="go-import"] attr{content}' | paste -sd "," - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
     local url="https://${repository/github.com/raw.githubusercontent.com}/master"
 
     echo "Downloading license from '${repository}' to '${output}''"
