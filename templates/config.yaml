@@ -290,7 +290,7 @@ templates:
         values:
           <<: *compass_generic_component
           path: components/external-services-mock
-          since: "1.10"
+          since: "1.12"
           optional: true
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         values:
