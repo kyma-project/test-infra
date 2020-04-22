@@ -286,6 +286,12 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/audit-log-mock-service/mock-service-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/audit-log-mock-service
+          since: "1.10"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/mock-external-test-component/mock-external-test-component-generic.yaml
         values:
           <<: *compass_generic_component
@@ -303,7 +309,7 @@ templates:
           <<: *compass_generic_component
           path: components/pairing-adapter
           since: "1.11"
-          optional: true
+          optional: false
 
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
