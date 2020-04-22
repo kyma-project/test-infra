@@ -241,19 +241,6 @@ presets:
         value: "kyma.bot@sap.com"
       - name: BOT_GITHUB_USER
         value: "Kyma Bot"
-  - labels:
-      preset-bot-github-ssh: "true"
-    env:
-      - name: BOT_GITHUB_SSH_PATH
-        value: /etc/credentials/kyma-bot-github-ssh/key.pem
-    volumes:
-      - name: kyma-bot-github-ssh
-        secret:
-          secretName: kyma-bot-github-ssh
-    volumeMounts:
-      - name: kyma-bot-github-ssh
-        mountPath: /etc/credentials/kyma-bot-github-ssh
-        readOnly: true
   # Kyma-website-bot
   - labels:
       preset-website-bot-github-token: "true"
