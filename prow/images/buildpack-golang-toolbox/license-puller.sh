@@ -16,8 +16,8 @@ function read_arguments() {
     do
         case $arg in
             --dirs-to-pulling=*)
-	      local dirs_to_pulling=()
-	      IFS="," read -r -a dirs_to_pulling <<< "${arg#*=}"
+              local dirs_to_pulling=()
+              IFS="," read -r -a dirs_to_pulling <<< "${arg#*=}"
               shift # remove --dirs-to-pulling=
             ;;
             *)
