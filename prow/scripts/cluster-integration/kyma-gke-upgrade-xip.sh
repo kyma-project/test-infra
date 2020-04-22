@@ -325,7 +325,7 @@ function upgradeKyma() {
         shout "Update tiller"
         kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
 
-        # Wait untill tiller is correctly rolled out
+        shout "Wait untill tiller is correctly rolled out"
         kubectl -n kube-system rollout status deployment/tiller-deploy
 
         shout "Update kyma installer"
@@ -345,6 +345,9 @@ function upgradeKyma() {
 
         shout "Update tiller"
         kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
+
+        shout "Wait untill tiller is correctly rolled out"
+        kubectl -n kube-system rollout status deployment/tiller-deploy
 
         shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
         "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
