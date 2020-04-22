@@ -125,3 +125,5 @@ function main() {
 }
 
 main
+
+# vim: set expandtab:
