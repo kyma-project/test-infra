@@ -71,6 +71,15 @@ function downloadLicense() {
 
     # laymans vanity-import support
     local repository
+    # the gist of the line below:
+    # 1. go get queries ${importpath} and appends ?go-get=1 to this call
+    #    so we do the same, and the server responds the same way it does for go get. 
+    # 2. the web page returned has to contain a meta tag similar to this:
+    # <meta name="go-import" content="knative.dev/serving git https://github.com/knative/serving">
+    # 3. pup (a html parser) extracts the content attribute from this meta-tag
+    # 4. in some cases the output is multiline (github.com does this). paste joins these lines into one
+    # 5. extract 3rd element from the line (this is the repository
+    # 6. clean it up
     repository=$(curl -L "${importPath}?go-get=1" | pup 'meta[name="go-import"] attr{content}' | paste -sd " " - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
     local url="https://${repository/github.com/raw.githubusercontent.com}/master"
 
