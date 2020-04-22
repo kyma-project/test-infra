@@ -11,5 +11,5 @@ push-image:
 	docker tag $(IMG_NAME) $(IMG):$(TAG)
 	docker push $(IMG):$(TAG)
 push-image-release: push-image
-	docker tag $(IMG_NAME) $(IMG):go1.13
-	docker push $(IMG):go1.13
+	docker tag $(IMG_NAME) $(IMG):go1.14
+	docker push $(IMG):go1.14
