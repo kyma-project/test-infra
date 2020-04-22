@@ -286,10 +286,10 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/components/audit-log-mock-service/mock-service-generic.yaml
+      - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
           <<: *compass_generic_component
-          path: components/audit-log-mock-service
+          path: components/external-services-mock
           since: "1.10"
           optional: true
       - to: ../prow/jobs/incubator/compass/components/mock-external-test-component/mock-external-test-component-generic.yaml

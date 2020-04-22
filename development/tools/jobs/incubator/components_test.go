@@ -121,7 +121,7 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "audit-log-mock-service",
+		name:  "external-services-mock",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
