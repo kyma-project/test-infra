@@ -71,7 +71,7 @@ function downloadLicense() {
 
     # laymans vanity-import support
     local repository
-    repository=$(curl -L "${importPath}?go-get=1" | pup 'meta[name="go-import"] attr{content}' | paste -sd "," - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
+    repository=$(curl -L "${importPath}?go-get=1" | pup 'meta[name="go-import"] attr{content}' | paste -sd " " - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
     local url="https://${repository/github.com/raw.githubusercontent.com}/master"
 
     echo "Downloading license from '${repository}' to '${output}''"
