@@ -31,4 +31,4 @@ The `development` folder has the following structure:
 
 ```
 
-Each directory which holds go module, should follow structure described in [project layout](https://github.com/golang-standards/project-layout).
+Every directory which holds a go module must follow the structure described in the [project layout](https://github.com/golang-standards/project-layout).
