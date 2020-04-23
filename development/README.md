@@ -2,7 +2,7 @@
 
 ## Overview
 
-The purpose of the folder is to store scripts used for the development of the `test-infra` repository.
+The purpose of the folder is to store tools developed and used in the `test-infra` repository.
 
 ### Project structure
 
@@ -26,6 +26,9 @@ The `development` folder has the following structure:
   ├── disks-cleanup.sh         # This script invokes the tool for cleaning orphaned disks created by the "kyma-gke-integration" job.
   ├── loadbalancer-cleanup.sh  # This script invokes the tool for cleaning orphaned load balancers created by the "kyma-gke-integration" job.
   ├── firewall-cleanup.sh      # This script invokes the tool for cleaning orphaned firewall rules.
-  └── resources-cleanup.sh     # This script is a generic resource cleanup tool launcher.
+  ├── resources-cleanup.sh     # This script is a generic resource cleanup tool launcher.
+  └── jobguard                 # This folder contains the jobguard tool source code. It's used to control dependencies between running jobs.
 
 ```
+
+Every directory which holds a go module must follow the structure described in the [project layout](https://github.com/golang-standards/project-layout).
