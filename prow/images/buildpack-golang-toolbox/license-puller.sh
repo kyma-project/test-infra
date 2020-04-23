@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Description: This script is responsible for downloading license files for dependencies
-
 set -e
 
 readonly ARGS=("$@")
@@ -17,7 +16,8 @@ function read_arguments() {
     do
         case $arg in
             --dirs-to-pulling=*)
-              local dirs_to_pulling=($( echo "${arg#*=}" | tr "," "\n" ))
+              local dirs_to_pulling=()
+              IFS="," read -r -a dirs_to_pulling <<< "${arg#*=}"
               shift # remove --dirs-to-pulling=
             ;;
             *)
@@ -28,7 +28,7 @@ function read_arguments() {
 
     if [ "${#dirs_to_pulling[@]}" -ne 0 ]; then
         for d in "${dirs_to_pulling[@]}"; do
-            DIRS_TO_PULLING+=($( cd "${CWD}/${d}" && pwd ))
+            DIRS_TO_PULLING+=( "$( cd "${CWD}/${d}" && pwd )" )
         done
     fi
     readonly DIRS_TO_PULLING
@@ -54,8 +54,6 @@ function pullLicensesByDir() {
     echo "Downloading license files to '${LICENSES_DIR}'"
     # shellcheck disable=SC2016
     jq -sr '[{ data: map(.) } | .data[] | select(has("ImportMap")) | .ImportMap | keys[]] | unique | values[]' "${TMP_DIR}/golang.json" \
-        | sed -e 's/sigs\.k8s\.io/github\.com\/kubernetes-sigs/g' \
-        | sed -e 's/k8s\.io/github\.com\/kubernetes/g' \
         | grep -oE "^[^\/]+\/[^\/]+\/[^\/]+" \
         | sort -u \
         | while IFS=$'\t' read -r repository; do
@@ -69,7 +67,20 @@ function pullLicensesByDir() {
 # TODO: This is temporary solution for Golang
 function downloadLicense() {
     local output=${1}
-    local repository=${2}
+    local importPath=${2}
+
+    # laymans vanity-import support
+    local repository
+    # the gist of the line below:
+    # 1. go get queries ${importpath} and appends ?go-get=1 to this call
+    #    so we do the same, and the server responds the same way it does for go get. 
+    # 2. the web page returned has to contain a meta tag similar to this:
+    # <meta name="go-import" content="knative.dev/serving git https://github.com/knative/serving">
+    # 3. pup (a html parser) extracts the content attribute from this meta-tag
+    # 4. in some cases the output is multiline (github.com does this). paste joins these lines into one
+    # 5. extract 3rd element from the line (this is the repository
+    # 6. clean it up
+    repository=$(curl -L "${importPath}?go-get=1" | pup 'meta[name="go-import"] attr{content}' | paste -sd " " - | awk '{print $3}' | sed 's/.git$// ; s%^[^:]\+://%%')
     local url="https://${repository/github.com/raw.githubusercontent.com}/master"
 
     echo "Downloading license from '${repository}' to '${output}''"
@@ -123,3 +134,5 @@ function main() {
 }
 
 main
+
+# vim: set expandtab:
