@@ -4,7 +4,7 @@ FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20200124-900eb728
 
 # Versions
 
-ENV GO_VERSION 1.13.4
+ENV GO_VERSION 1.14.2
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
