@@ -27,7 +27,7 @@ The `development` folder has the following structure:
   ├── loadbalancer-cleanup.sh  # This script invokes the tool for cleaning orphaned load balancers created by the "kyma-gke-integration" job.
   ├── firewall-cleanup.sh      # This script invokes the tool for cleaning orphaned firewall rules.
   ├── resources-cleanup.sh     # This script is a generic resource cleanup tool launcher.
-  └── jobguard                 # This folder contains source code of jobguard toole. It's used to control dependency between running jobs.
+  └── jobguard                 # This folder contains the jobguard tool source code. It's used to control dependencies between running jobs.
 
 ```
 
