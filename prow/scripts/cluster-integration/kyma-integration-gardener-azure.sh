@@ -157,7 +157,7 @@ install::kyma_cli
 shout "Provision cluster: \"${CLUSTER_NAME}\""
 
 if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="Standard_D4_v3"
+      export MACHINE_TYPE="Standard_D8_v3"
 fi
 
 CLEANUP_CLUSTER="true"
