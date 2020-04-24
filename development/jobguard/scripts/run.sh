@@ -8,13 +8,23 @@ echo "KYMA PROJECT DIR ${KYMA_PROJECT_DIR}"
 echo "COMMIT SHA: ${PULL_PULL_SHA}"
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-cd "${ROOT_PATH}/cmd/jobguard" || exit 1
-
-env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
-    INITIAL_SLEEP_TIME=1m \
-    COMMIT_SHA="${PULL_PULL_SHA}" \
-    JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
-    PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
-    PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
-    GO111MODULE=on \
-    go run main.go
+if [ -x "/prow-tools/jobguard" ]; then
+  env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
+      INITIAL_SLEEP_TIME=1m \
+      COMMIT_SHA="${PULL_PULL_SHA}" \
+      JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
+      PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
+      PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
+      GO111MODULE=on \
+      /prow-tools/jobguard
+else
+  cd "${ROOT_PATH}/cmd/jobguard" || exit 1
+  env GITHUB_TOKEN="${BOT_GITHUB_TOKEN}" \
+      INITIAL_SLEEP_TIME=1m \
+      COMMIT_SHA="${PULL_PULL_SHA}" \
+      JOB_NAME_PATTERN="${JOB_NAME_PATTERN}" \
+      PROW_CONFIG_FILE="${TEST_INFRA_SOURCES_DIR}/prow/config.yaml" \
+      PROW_JOBS_DIRECTORY="${TEST_INFRA_SOURCES_DIR}/prow/jobs" \
+      GO111MODULE=on \
+      go run main.go
+fi
