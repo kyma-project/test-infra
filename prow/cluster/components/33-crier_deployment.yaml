@@ -25,6 +25,7 @@ spec:
             - --job-config-path=/etc/job-config
             - --slack-workers=1
             - --slack-token-file=/etc/slack/token
+            - --gcs-workers=1
             - --build-cluster=/etc/cluster/cluster.yaml
           volumeMounts:
             - name: config
