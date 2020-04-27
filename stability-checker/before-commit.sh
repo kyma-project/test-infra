@@ -8,9 +8,9 @@ INVERTED='\033[7m'
 NC='\033[0m' # No Color
 
 echo -e "${INVERTED}"
-echo "USER: " + "$USER"
-echo "PATH: " + "$PATH"
-echo "GOPATH:" + "$GOPATH"
+echo "USER: $USER"
+echo "PATH: $PATH"
+echo "GOPATH: $GOPATH"
 echo -e "${NC}"
 
 
@@ -55,7 +55,7 @@ if [ ${buildLintResult} != 0 ]; then
 	exit 1
 fi
 
-golintResult=$(echo "${goFilesToCheck}" | xargs -L1 golint)
+golintResult=$(echo "${goFilesToCheck}" | xargs -L1 "${GOPATH}"/bin/golint)
 
 if [ "${#golintResult}" != 0 ]; then
 	echo -e "${RED}✗ golint\n$golintResult${NC}"
@@ -73,7 +73,7 @@ if [ ${buildGoImportResult} != 0 ]; then
 	exit 1
 fi
 
-goImportsResult=$(echo "${goFilesToCheck}" | xargs -L1 goimports -w -l)
+goImportsResult=$(echo "${goFilesToCheck}" | xargs -L1 "${GOPATH}"/bin/goimports -w -l)
 
 if [ "${#goImportsResult}" != 0 ]; then
 	echo -e "${RED}✗ goimports and fmt ${NC}\n$goImportsResult${NC}"
