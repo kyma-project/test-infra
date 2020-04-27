@@ -26,4 +26,4 @@ Find out more about:
 - [Obligatory security measures](./obligatory-security-measures.md) to take regularly for the Prow production cluster and when someone leaves the Kyma project.
 - [Presets](./presets.md) you can use to define Prow jobs.
 - [Authorization](./authorization.md) concepts employed in Prow.
-- [List of secrets used by Prow](./prow-secrets.md)
+- [List of Secrets used by Prow](./prow-secrets.md)
