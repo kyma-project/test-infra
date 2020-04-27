@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.12"
+  nextRelease: "1.13"
   releases:
+    - "1.12"
     - "1.11"
     - "1.10"
-    - "1.9"
   whitesource:
     - name: "kyma"
       language: "golang"
