@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.11|1\.10|1\.9)-gateway$
+    - ^release-(1\.12|1\.11|1\.10)-gateway$
   run_if_changed: "^components/gateway/|^scripts/"
   spec:
     containers:
