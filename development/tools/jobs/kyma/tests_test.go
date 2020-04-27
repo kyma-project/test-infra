@@ -156,6 +156,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release110),
+			jobsuite.Until(releases.Release111),
 		},
 	},
 }
