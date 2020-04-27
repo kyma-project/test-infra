@@ -2,8 +2,11 @@
 
 ## Overview
 
-This command reads Secrets stored in a Gcloud bucket, decrypts them with a Key Management Service(KMS) key, and saves them as Kubernetes Secrets in a cluster.
-You define Secrets to populate in the `secrets-def-file` input parameter.
+This command reads Secrets stored in a GCloud bucket, decrypts them with a Key Management Service(KMS) key, and saves them as Kubernetes Secrets in a cluster.
+
+The tool populates Secrets from the list stored in the `secrets-def-file` parameter. For the Prow setup, it is necessary to place the Secrets in two clusters:
+- `kyma-prow`, which uses [cluster/required-secrets.yaml](/prow/cluster/required-secrets.yaml) as the `secrets-def-file` input parameter.
+- `workload-kyma-prow`, which uses [workload-cluster/required-secrets.yaml](/prow/workload-cluster/required-secrets.yaml) as the `secrets-def-file` input parameter.
 
 ## Usage
 
