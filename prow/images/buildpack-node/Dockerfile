@@ -25,3 +25,6 @@ RUN npm install -g eslint-config-react-app@^3.0.4 \
     tslint-config-prettier@^1.15.0 \
     typescript@^3.1.3 \
     prettier@^1.14.3
+
+COPY ./license-puller.sh /license-puller.sh
+ENV LICENSE_PULLER_PATH=/license-puller.sh
