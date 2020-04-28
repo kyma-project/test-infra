@@ -12,7 +12,7 @@ import (
 	"github.com/kyma-project/test-infra/stability-checker/internal"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
