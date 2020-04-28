@@ -533,11 +533,12 @@ templates:
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
-      - to: ../prow/jobs/console/core-ui/core-ui.yaml
+      - to: ../prow/jobs/console/core-ui/core-ui-tmp.yaml
         values:
           <<: *console_generic_component
           path: core-ui
           since: "1.11"
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
