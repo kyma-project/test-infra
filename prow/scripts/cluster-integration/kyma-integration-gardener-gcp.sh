@@ -154,16 +154,11 @@ kyma provision gardener \
 shout "Installing Kyma"
 date
 
-echo "Downlading production profile"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
-    --output installer-config-production.yaml.tpl
-
 (
 set -x
 kyma install \
     --ci \
     --source latest-published \
-    -o installer-config-production.yaml.tpl \
     --timeout 90m
 )
 

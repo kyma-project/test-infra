@@ -43,6 +43,21 @@ job_labels_template: &job_labels_template
 
 postsubmits:
   kyma-project/kyma:
+    - name: post-rel112-kyma-release-candidate
+      annotations:
+        testgrid-dashboards: kyma-release
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - release-1.12
+      <<: *job_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.12
+      labels:
+        <<: *job_labels_template
     - name: post-rel111-kyma-release-candidate
       annotations:
         testgrid-dashboards: kyma-release
@@ -71,20 +86,5 @@ postsubmits:
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.10
-      labels:
-        <<: *job_labels_template
-    - name: post-rel19-kyma-release-candidate
-      annotations:
-        testgrid-dashboards: kyma-release
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
-      branches:
-        - release-1.9
-      <<: *job_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.9
       labels:
         <<: *job_labels_template

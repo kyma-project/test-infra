@@ -6,7 +6,7 @@ Read about the obligatory security measures to take on a regular basis and when 
 
 All Secret used in the Prow production cluster must be changed every six months. Follow [Prow secret management](./prow-secrets-management.md) to create a new key ring and new Secrets. Then, use [Secrets populator](./../../development/tools/cmd/secretspopulator/README.md) to change all Secrets in the Prow cluster.
 
->**NOTE:** The next Secrets change is planned for August 1, 2019.
+>**NOTE:** The next Secrets change is planned for October 1, 2020.
 
 ## Preventive measures
 
