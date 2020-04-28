@@ -6,7 +6,6 @@ readonly TOOLS_DIR="${PWD}/development/tools"
 cd "${TOOLS_DIR}"
 
 mkdir -p ./bin
-dep ensure -v -vendor-only
 
 for D in "${TOOLS_DIR}"/cmd/*;
 do
