@@ -122,6 +122,14 @@ compass_generic_component: &compass_generic_component
   additionalRunIfChanged:
     - ^scripts/
 
+console_generic_component: &console_generic_component
+  repository: github.com/kyma-project/console
+  pushRepository: kyma
+  build: build-console
+  bootstrapTag: v20181204-a6e79be
+  additionalRunIfChanged:
+    - ^components/
+    - ^shared/
 
 knative_kafka_component: &knative_kafka_component
   repository: github.com/kyma-incubator/knative-kafka
@@ -132,7 +140,6 @@ knative_kafka_component: &knative_kafka_component
 go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
   <<: *knative_kafka_component
   buildpack: *go_buildpack_1_12
-
 
 templates:
   - from: templates/generic-component.yaml
@@ -449,12 +456,12 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/event-service
-          since: '1.7'
+          since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
         values:
           <<: *kyma_generic_component
           path: tests/integration/event-service
-          since: '1.7'
+          since: "1.7"
       - to: ../prow/jobs/kyma/tests/kubeless/kubeless-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -520,12 +527,18 @@ templates:
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *kyma_generic_component
-          path: tests/rafter       
+          path: tests/rafter
       - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
         values:
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
+      - to: ../prow/jobs/console/core-ui/core-ui-tmp.yaml
+        values:
+          <<: *console_generic_component
+          path: core-ui
+          since: "1.11"
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -907,18 +920,6 @@ templates:
             cpu: 1.5
             memory: 2Gi
           buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
-      - to: ../prow/jobs/console/core-ui/core-ui.yaml
-        values:
-          repository: github.com/kyma-project/console
-          path: core-ui
-          presets:
-            build: build-console
-            pushRepository: kyma
-          noRelease: yes
-          resources:
-            cpu: 1.5
-            memory: 2Gi
-          buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-node:v20191009-19b4b28
       - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         values:
           repository: github.com/kyma-project/test-infra
@@ -931,7 +932,7 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: tools/alpine-net
-          until: "1.6"      
+          until: "1.6"
   - from: templates/whitesource-periodics.yaml
     render:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
@@ -942,4 +943,3 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: .
           optional: false
-
