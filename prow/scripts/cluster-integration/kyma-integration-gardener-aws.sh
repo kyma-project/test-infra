@@ -145,10 +145,12 @@ fi
 CLEANUP_CLUSTER="true"
 (
 set -x
-kyma provision gardener \
-        --target-provider aws --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
-        --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" --disk-type gp2 --nodes 4 --scaler-min 3 --kube-version=${GARDENER_CLUSTER_VERSION} \
+kyma provision gardener aws \
+        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+        --nodes 4 --scaler-min 3 \
+        --kube-version=${GARDENER_CLUSTER_VERSION}
 )
 
 shout "Installing Kyma"
