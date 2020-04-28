@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.12"
+  nextRelease: "1.13"
   releases:
+    - "1.12"
     - "1.11"
     - "1.10"
-    - "1.9"
   whitesource:
     - name: "kyma"
       language: "golang"
@@ -397,6 +397,7 @@ templates:
           <<: *kyma_generic_component
           path: components/backup-plugins
           since: "1.7"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -515,6 +516,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/end-to-end/backup
           since: "1.10"
+          until: "1.11"
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *kyma_generic_component

@@ -87,7 +87,6 @@ serviceAccounts:
       - storage.admin
       - storage.objectAdmin
       - compute.storageAdmin
-  - name : sa-kyma-release-candidate
 generics:
   - prefix: kyma-bot-github-token
     key: token

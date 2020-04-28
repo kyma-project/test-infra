@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/compass/compass-integration.yaml"
+const compassIntegrationAuditLogTempTestJobPath = "./../../../../../prow/jobs/incubator/compass/compass-integration-auditlog-temp.yaml"
 
-func TestCompassIntegrationJobsPresubmit(t *testing.T) {
+func TestCompassIntegrationAuditLogTempJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName            string
 		expPresets              []preset.Preset
@@ -21,7 +21,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 		expNotRunIfChangedPaths []string
 	}{
 		"Should contain the compass-integration job": {
-			givenJobName: "pre-master-compass-integration",
+			givenJobName: "pre-master-compass-integration-auditlog-temp",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -45,7 +45,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	for tn, tc := range tests {
 		t.Run(tn, func(t *testing.T) {
 			// given
-			jobConfig, err := tester.ReadJobConfig(compassIntegrationTestJobPath)
+			jobConfig, err := tester.ReadJobConfig(compassIntegrationAuditLogTempTestJobPath)
 			require.NoError(t, err)
 
 			// when
@@ -57,6 +57,8 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			assert.Equal(t, "github.com/kyma-incubator/compass", actualJob.PathAlias)
 			assert.Equal(t, tc.expRunIfChangedRegex, actualJob.RunIfChanged)
 			assert.True(t, actualJob.Decorate)
+			assert.Equal(t, "true", actualJob.Labels["prow.kyma-project.io/slack.skipReport"])
+			assert.True(t, actualJob.Optional)
 			assert.False(t, actualJob.SkipReport)
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
@@ -75,13 +77,13 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	}
 }
 
-func TestCompassIntegrationJobsPostsubmit(t *testing.T) {
+func TestCompassIntegrationAuditLogTempPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
 		expPresets   []preset.Preset
 	}{
 		"Should contain the compass-integration job": {
-			givenJobName: "post-master-compass-integration",
+			givenJobName: "post-master-compass-integration-auditlog-temp",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
@@ -92,7 +94,7 @@ func TestCompassIntegrationJobsPostsubmit(t *testing.T) {
 	for tn, tc := range tests {
 		t.Run(tn, func(t *testing.T) {
 			// given
-			jobConfig, err := tester.ReadJobConfig(compassIntegrationTestJobPath)
+			jobConfig, err := tester.ReadJobConfig(compassIntegrationAuditLogTempTestJobPath)
 			require.NoError(t, err)
 
 			// when
@@ -105,6 +107,7 @@ func TestCompassIntegrationJobsPostsubmit(t *testing.T) {
 			assert.Equal(t, 10, actualJob.MaxConcurrency)
 			assert.Equal(t, "", actualJob.RunIfChanged)
 			assert.True(t, actualJob.Decorate)
+			assert.Equal(t, "true", actualJob.Labels["prow.kyma-project.io/slack.skipReport"])
 			assert.Equal(t, "github.com/kyma-incubator/compass", actualJob.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 			tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)

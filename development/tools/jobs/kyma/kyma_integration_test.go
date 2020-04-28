@@ -27,7 +27,9 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			if currentRelease == releases.Release111 {
+			if currentRelease == releases.Release112 {
+				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+			} else if currentRelease == releases.Release111 {
 				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			} else {
 				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
@@ -55,7 +57,9 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			if currentRelease == releases.Release111 {
+			if currentRelease == releases.Release112 {
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
+			} else if currentRelease == releases.Release111 {
 				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else {
 				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
@@ -67,7 +71,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 }
 
 func TestKymaGKEBackupJobsReleases(t *testing.T) {
-	for _, currentRelease := range releases.GetAllKymaReleases() {
+	for _, currentRelease := range releases.GetKymaReleasesUntil(releases.Release111) {
 		t.Run(currentRelease.String(), func(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
@@ -82,7 +86,9 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			if currentRelease == releases.Release111 {
+			if currentRelease == releases.Release112 {
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
+			} else if currentRelease == releases.Release111 {
 				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else {
 				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
@@ -218,30 +224,6 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 		"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration")
 }
 
-func TestKymaBackupTestJobPresubmit(t *testing.T) {
-	// given
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-	require.NoError(t, err)
-
-	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-backup", "master")
-	require.NotNil(t, actualJob)
-
-	// then
-	assert.True(t, actualJob.Decorate)
-	assert.True(t, actualJob.Optional)
-	assert.Equal(t, "^((resources/backup\\S+|tests/end-to-end/backup/chart/backup-test/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatHasPresets(t, actualJob.JobBase, preset.KymaBackupRestoreBucket, preset.KymaBackupCredentials, preset.GCProjectEnv, preset.BuildPr,
-		preset.SaGKEKymaIntegration, "preset-weekly-github-integration")
-	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
-	assert.Equal(t, tester.ImageKymaIntegrationK15, actualJob.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, actualJob.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"}, actualJob.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
-	assert.Len(t, actualJob.Spec.Containers[0].Env, 1)
-	tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
-}
-
 func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	tests := map[string]struct {
 		givenJobName string
@@ -316,7 +298,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
-	assert.Len(t, periodics, 15)
+	assert.Len(t, periodics, 14)
 
 	expName := "orphaned-disks-cleaner"
 	disksCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -502,22 +484,5 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS", "cluster-access")
 	tester.AssertThatContainerHasEnv(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_CHANNEL", "#c4core-kyma-ci-force")
 	tester.AssertThatContainerHasEnvFromSecret(t, nightlyAksPeriodic.Spec.Containers[0], "KYMA_ALERTS_SLACK_API_URL", "kyma-alerts-slack-api-url", "secret")
-
-	expName = "kyma-gke-backup-nightly"
-	backupRestorePeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, backupRestorePeriodic)
-	assert.Equal(t, expName, backupRestorePeriodic.Name)
-	assert.True(t, backupRestorePeriodic.Decorate)
-	assert.Equal(t, "0 5 * * 1-5", backupRestorePeriodic.Cron)
-	tester.AssertThatHasPresets(t, backupRestorePeriodic.JobBase, preset.KymaBackupRestoreBucket, preset.KymaBackupCredentials, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-weekly-github-integration")
-	tester.AssertThatHasExtraRefs(t, backupRestorePeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
-	assert.Equal(t, tester.ImageKymaIntegrationK15, backupRestorePeriodic.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"bash"}, backupRestorePeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"}, backupRestorePeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, backupRestorePeriodic.JobBase)
-	assert.Len(t, backupRestorePeriodic.Spec.Containers[0].Env, 3)
-	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
-	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_OWNER", "kyma-project")
-	tester.AssertThatContainerHasEnv(t, backupRestorePeriodic.Spec.Containers[0], "REPO_NAME", "kyma")
 
 }

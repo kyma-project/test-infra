@@ -79,18 +79,6 @@ presets:
     - name: sa-kyma-artifacts
       mountPath: /etc/credentials/sa-kyma-artifacts
   - labels:
-      preset-knative-sa: "true" # Created for knative tests
-    env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /etc/credentials/knative-sa/service-account.json
-    volumes:
-    - name: knative-sa
-      secret:
-        secretName: knative-sa
-    volumeMounts:
-    - name: knative-sa
-      mountPath: /etc/credentials/knative-sa
-  - labels:
       preset-gardener-azure-kyma-integration: "true"
     env:
     - name: GARDENER_KYMA_PROW_KUBECONFIG
@@ -255,19 +243,6 @@ presets:
         value: "kyma.bot@sap.com"
       - name: BOT_GITHUB_USER
         value: "Kyma Bot"
-  - labels:
-      preset-bot-github-ssh: "true"
-    env:
-      - name: BOT_GITHUB_SSH_PATH
-        value: /etc/credentials/kyma-bot-github-ssh/key.pem
-    volumes:
-      - name: kyma-bot-github-ssh
-        secret:
-          secretName: kyma-bot-github-ssh
-    volumeMounts:
-      - name: kyma-bot-github-ssh
-        mountPath: /etc/credentials/kyma-bot-github-ssh
-        readOnly: true
   # Kyma-website-bot
   - labels:
       preset-website-bot-github-token: "true"
@@ -349,24 +324,6 @@ presets:
         value: gs://kyma-cli-stable
       - name: STABLE
         value: "true"
-  - labels:
-      preset-kyma-backup-restore-bucket: "true"
-    env:
-      - name: KYMA_BACKUP_RESTORE_BUCKET
-        value: kyma-backup-restore
-  - labels:
-      preset-kyma-backup-credentials: "true"
-    env:
-    - name: KYMA_BACKUP_CREDENTIALS
-      value: /etc/credentials/sa-kyma-backup-restore/service-account.json
-    volumes:
-      - name: sa-kyma-backup-restore
-        secret:
-          secretName: sa-kyma-backup-restore
-    volumeMounts:
-      - name: sa-kyma-backup-restore
-        mountPath: /etc/credentials/sa-kyma-backup-restore
-        readOnly: true
   - labels:
       preset-stability-checker-slack-notifications: "true"
     env:
@@ -516,6 +473,15 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.12:
+              required_status_checks:
+                contexts:
+                  - pre-rel112-kyma-integration
+                  - pre-rel112-kyma-gke-integration
+                  - pre-rel112-kyma-gke-upgrade
+                  - pre-rel112-kyma-gke-central-connector
+                  - pre-rel112-kyma-artifacts
+                  - pre-rel112-kyma-installer
             release-1.11:
               required_status_checks:
                 contexts:
@@ -534,15 +500,6 @@ branch-protection:
                   - pre-rel110-kyma-gke-central-connector
                   - pre-rel110-kyma-artifacts
                   - pre-rel110-kyma-installer
-            release-1.9:
-              required_status_checks:
-                contexts:
-                  - pre-rel19-kyma-integration
-                  - pre-rel19-kyma-gke-integration
-                  - pre-rel19-kyma-gke-upgrade
-                  - pre-rel19-kyma-gke-central-connector
-                  - pre-rel19-kyma-artifacts
-                  - pre-rel19-kyma-installer
         website:
           required_status_checks:
             contexts:

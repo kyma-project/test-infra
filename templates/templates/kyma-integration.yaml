@@ -543,21 +543,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-    - name: pre-master-kyma-gke-backup
-      optional: true
-      branches:
-        - ^master$
-      <<: *gke_backup_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/backup\\S+|tests/end-to-end/backup/chart/backup-test/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      labels:
-        preset-build-pr: "true"
-        <<: *gke_backup_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-{{- range (matchingReleases .Global.releases "1.11" nil) }}
+{{- range (matchingReleases .Global.releases "1.11" "1.11") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
       optional: true
       branches:
@@ -1121,41 +1107,6 @@ periodics:
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
-
-  - name: kyma-gke-backup-nightly
-    cron: "0 5 * * 1-5" # "At 05:00 on every day-of-week from Monday through Friday."
-    labels:
-      preset-build-master: "true"
-      <<: *gke_backup_job_labels_template
-    decorate: true
-    extra_refs:
-      - org: kyma-project
-        repo: test-infra
-        base_ref: master
-        path_alias: github.com/kyma-project/test-infra
-      - <<: *kyma_ref
-        base_ref: master
-    spec:
-      containers:
-        - <<: *base_image_k15
-          securityContext:
-            privileged: true
-          command:
-            - "bash"
-          env:
-            - name: CLOUDSDK_COMPUTE_ZONE
-              value: "europe-west4-a"
-            - name: REPO_OWNER
-              value: "kyma-project"
-            - name: REPO_NAME
-              value: "kyma"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-backup-test.sh"
           resources:
             requests:
               memory: 200Mi
