@@ -927,7 +927,7 @@ templates:
           presets:
             build: build
             pushRepository: kyma
-          buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+          buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net.yaml
         values:
           <<: *go_kyma_component_v20181119

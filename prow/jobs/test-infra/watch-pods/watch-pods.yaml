@@ -32,7 +32,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
       run_if_changed: "^watch-pods/"
@@ -50,7 +50,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
       run_if_changed: "^watch-pods/"

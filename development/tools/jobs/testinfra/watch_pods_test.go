@@ -11,7 +11,7 @@ import (
 func TestWatchPods(t *testing.T) {
 	config := jobsuite.NewConfig(
 		jobsuite.TestInfraRepo(),
-		jobsuite.Project("watch-pods", tester.ImageGolangBuildpack1_11),
+		jobsuite.Project("watch-pods", tester.ImageGolangBuildpack1_14),
 		jobsuite.AllReleases(),
 		jobsuite.DockerRepositoryPreset(preset.DockerPushRepoKyma),
 	)
