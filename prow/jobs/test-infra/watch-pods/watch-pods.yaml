@@ -12,8 +12,6 @@ job_labels_template: &job_labels_template
   preset-sa-gcr-push: "true"
   preset-docker-push-repository-kyma: "true"
 
-base_image: &base_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
-
 container_template: &container_template
   securityContext:
     privileged: true
@@ -34,7 +32,7 @@ presubmits: # runs on PRs
       spec:
         containers:
           - <<: *container_template
-            image: *base_image
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
       run_if_changed: "^watch-pods/"
@@ -52,7 +50,7 @@ postsubmits:
       spec:
         containers:
           - <<: *container_template
-            image: *base_image
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
       run_if_changed: "^watch-pods/"
