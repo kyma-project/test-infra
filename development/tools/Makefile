@@ -1,5 +1,5 @@
 resolve:
-	dep ensure -v -vendor-only
+	go mod verify
 
 validate: resolve
 	./before-commit.sh
