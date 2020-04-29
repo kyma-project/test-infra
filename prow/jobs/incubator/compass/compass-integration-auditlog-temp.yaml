@@ -24,11 +24,15 @@ vm_job_template: &vm_job_template
       - name: GO111MODULE
         value: "on"
 
+slack_skip_report_template: &slack_skip_report_template
+  reporter_config:
+    slack:
+      channel: '' # empty channel overrides slack reporting in crier
+
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
-  prow.kyma-project.io/slack.skipReport: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
@@ -40,6 +44,7 @@ presubmits: # runs on PRs
     labels:
       preset-build-pr: "true"
       <<: *vm_job_labels_template
+    <<: *slack_skip_report_template
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -53,6 +58,7 @@ postsubmits:
     labels:
       preset-build-master: "true"
       <<: *vm_job_labels_template
+    <<: *slack_skip_report_template
     annotations:
       testgrid-dashboards: kyma-incubator
     extra_refs:
