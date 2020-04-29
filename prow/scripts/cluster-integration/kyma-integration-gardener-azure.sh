@@ -7,6 +7,7 @@
 #
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - GARDENER_REGION - Gardener compute region
+# - GARDENER_ZONES - Gardener compute zones inside the region
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
@@ -21,6 +22,7 @@ discoverUnsetVar=false
 VARIABLES=(
     KYMA_PROJECT_DIR
     GARDENER_REGION
+    GARDENER_ZONES
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
@@ -163,13 +165,12 @@ fi
 CLEANUP_CLUSTER="true"
 (
 set -x
-kyma provision gardener \
-        --target-provider azure --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" \
-        --name "${CLUSTER_NAME}" --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -t "${MACHINE_TYPE}" --disk-size 35 --disk-type=Standard_LRS --extra vnetcidr="10.250.0.0/16" \
-        --nodes 4 --scaler-min 3 \
-        --kube-version=${GARDENER_CLUSTER_VERSION} \
-        -z="1"
+kyma provision gardener az \
+        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+        --scaler-max 4 --scaler-min 3 \
+        --kube-version=${GARDENER_CLUSTER_VERSION}
 )
 
 shout "Installing Kyma"
