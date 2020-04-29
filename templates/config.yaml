@@ -345,7 +345,7 @@ templates:
         values:
           <<: *compass_generic_component
           path: components/metris
-          since: "1.11"
+          since: "1.13"
           optional: true
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
