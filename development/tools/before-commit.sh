@@ -27,6 +27,18 @@ function check_result() {
 }
 
 ##
+# GO MOD VERIFY
+##
+go mod verify
+ensureResult=$?
+if [ ${ensureResult} != 0 ]; then
+  echo -e "${RED}✗ go mod verify${NC}\n$ensureResult${NC}"
+  exit 1
+else
+  echo -e "${GREEN}√ go mod verify${NC}"
+fi
+
+##
 # GO BUILD
 ##
 
@@ -50,36 +62,42 @@ do
 done <   <(find "./cmd" -mindepth 1 -type d -print0)
 
 ##
-# DEP STATUS
-##
-echo "? dep status"
-dep status -v
-check_result "dep status" $?
-
-##
 #  GO LINT
 ##
-echo "? golint"
-go build -o golint-vendored ./vendor/golang.org/x/lint/golint
-check_result "go build lint" $?
+go get golang.org/x/lint/golint
+buildLintResult=$?
+if [ ${buildLintResult} != 0 ]; then
+  echo -e "${RED}✗ go get golint${NC}\n$buildLintResult${NC}"
+  exit 1
+fi
 
-golintResult=$(echo "${goFilesToCheck}" | xargs -L1 ./golint-vendored)
-rm golint-vendored
+golintResult=$(echo "${goFilesToCheck}" | xargs -L1 "${GOPATH}"/bin/golint)
 
-check_result "golint" "${#golintResult}" "${golintResult}"
+if [ "${#golintResult}" != 0 ]; then
+  echo -e "${RED}✗ golint\n$golintResult${NC}"
+  exit 1
+else
+  echo -e "${GREEN}√ golint${NC}"
+fi
 
 ##
 # GO IMPORTS & FMT
 ##
-echo "? goimports and fmt"
-go build -o goimports-vendored ./vendor/golang.org/x/tools/cmd/goimports
-check_result "go build goimports" $?
+go get golang.org/x/tools/cmd/goimports
+buildGoImportResult=$?
+if [ ${buildGoImportResult} != 0 ]; then
+  echo -e "${RED}✗ go build goimports${NC}\n$buildGoImportResult${NC}"
+  exit 1
+fi
 
-goImportsResult=$(echo "${goFilesToCheck}" | xargs -L1 ./goimports-vendored -w -l)
-rm goimports-vendored
+goImportsResult=$(echo "${goFilesToCheck}" | xargs -L1 "${GOPATH}"/bin/goimports -w -l)
 
-check_result "goimports and fmt" "${#goImportsResult}" "${goImportsResult}"
-
+if [ "${#goImportsResult}" != 0 ]; then
+  echo -e "${RED}✗ goimports and fmt ${NC}\n$goImportsResult${NC}"
+  exit 1
+else
+  echo -e "${GREEN}√ goimports and fmt ${NC}"
+fi
 ##
 # GO VET
 ##
