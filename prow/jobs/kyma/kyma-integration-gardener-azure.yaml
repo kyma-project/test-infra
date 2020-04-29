@@ -7,7 +7,7 @@ periodics:
   decoration_config:
     timeout: 14400000000000 # 4h
     grace_period: 600000000000 # 10min
-  cron: "00 11 * * *"
+  cron: "0 4,7,10,13 * * *"
   extra_refs:
     - org: kyma-project
       repo: test-infra
