@@ -3,7 +3,7 @@ IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 TAG = $(DOCKER_TAG)
 
 resolve:
-	dep ensure -v -vendor-only
+	go mod verify
 
 validate: resolve
 	./before-commit.sh
