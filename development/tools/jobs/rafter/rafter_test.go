@@ -101,7 +101,7 @@ func TestRafterJobsPresubmits(t *testing.T) {
 	} {
 		t.Run(jobName, func(t *testing.T) {
 			// when
-			preJob := tester.FindPresubmitJobByName(jobConfig.Presubmits["kyma-project/rafter"], jobName)
+			preJob := tester.FindPresubmitJobByName(jobConfig.PresubmitsStatic["kyma-project/rafter"], jobName)
 			require.NotNil(t, actualJob)
 
 			assert.False(t, preJob.SkipReport)
@@ -231,7 +231,7 @@ func TestRafterJobsPostsubmits(t *testing.T) {
 	} {
 		t.Run(jobName, func(t *testing.T) {
 			// when
-			preJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/rafter"], jobName)
+			preJob := tester.FindPostsubmitJobByName(jobConfig.PostsubmitsStatic["kyma-project/rafter"], jobName)
 
 			// then
 			require.NotNil(t, actualJob)

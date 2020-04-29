@@ -16,7 +16,7 @@ func TestConsoleIntegrationJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-master-console-tests"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/console"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -41,7 +41,7 @@ func TestConsoleWhitesourceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-master-console-whitesource-scan"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/console"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -62,7 +62,7 @@ func TestConsoleIntegrationJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-console-tests"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/console"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)

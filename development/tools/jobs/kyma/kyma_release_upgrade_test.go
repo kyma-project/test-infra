@@ -20,7 +20,7 @@ func TestKymaReleaseUpgradeJobsPostsubmit(t *testing.T) {
 		require.NoError(err)
 
 		//when
-		actualJob := tester.FindPostsubmitJobByName(jobConfig.Postsubmits["kyma-project/kyma"], "post-kyma-release-upgrade")
+		actualJob := tester.FindPostsubmitJobByName(jobConfig.PostsubmitsStatic["kyma-project/kyma"], "post-kyma-release-upgrade")
 
 		//then
 		require.NotNil(actualJob)

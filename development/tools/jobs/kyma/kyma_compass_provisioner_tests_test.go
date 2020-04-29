@@ -14,7 +14,7 @@ func TestKymaGKECompassProvisionerTestsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-compass-provisioner-tests", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/kyma"], "pre-master-kyma-gke-compass-provisioner-tests", "master")
 	require.NotNil(t, actualJob)
 
 	// then
@@ -57,7 +57,7 @@ func TestKymaGKECompassProvisionerTestsPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-gke-compass-provisioner-tests", "master")
+	actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/kyma"], "post-master-kyma-gke-compass-provisioner-tests", "master")
 	require.NotNil(t, actualJob)
 
 	// then

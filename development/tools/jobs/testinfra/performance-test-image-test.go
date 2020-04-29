@@ -16,7 +16,7 @@ func TestPerfTestJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/test-infra"], "pre-master-perf-test", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/test-infra"], "pre-master-perf-test", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
@@ -36,7 +36,7 @@ func TestPerfTestJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-perf-test"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/test-infra"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/test-infra"], expName, "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)

@@ -16,8 +16,8 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	varkesPresubmits, ex := jobConfig.Presubmits["kyma-incubator/varkes"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	varkesPresubmits, ex := jobConfig.PresubmitsStatic["kyma-incubator/varkes"]
 	assert.True(t, ex)
 	assert.Len(t, varkesPresubmits, 1)
 
@@ -44,8 +44,8 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	varkesPostsubmits, ex := jobConfig.Postsubmits["kyma-incubator/varkes"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	varkesPostsubmits, ex := jobConfig.PostsubmitsStatic["kyma-incubator/varkes"]
 	assert.True(t, ex)
 	assert.Len(t, varkesPostsubmits, 2)
 
@@ -70,8 +70,8 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	varkesPostsubmits, ex := jobConfig.Postsubmits["kyma-incubator/varkes"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	varkesPostsubmits, ex := jobConfig.PostsubmitsStatic["kyma-incubator/varkes"]
 	assert.True(t, ex)
 	assert.Len(t, varkesPostsubmits, 2)
 

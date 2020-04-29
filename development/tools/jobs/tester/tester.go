@@ -3,18 +3,17 @@ package tester
 import (
 	"fmt"
 	"io/ioutil"
+	v1 "k8s.io/api/core/v1"
 	"os"
 	"testing"
 
 	"github.com/ghodss/yaml"
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
-	"k8s.io/test-infra/prow/kube"
-
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 const (
@@ -91,13 +90,13 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 		return config.JobConfig{}, errors.Wrapf(err, "while unmarshalling file [%s]", fileName)
 	}
 
-	for _, v := range jobConfig.Presubmits {
+	for _, v := range jobConfig.PresubmitsStatic {
 		if err := config.SetPresubmitRegexes(v); err != nil {
 			return config.JobConfig{}, errors.Wrap(err, "while setting presubmit regexes")
 		}
 	}
 
-	for _, v := range jobConfig.Postsubmits {
+	for _, v := range jobConfig.PostsubmitsStatic {
 		if err := config.SetPostsubmitRegexes(v); err != nil {
 			return config.JobConfig{}, errors.Wrap(err, "while setting postsubmit regexes")
 		}
@@ -108,7 +107,7 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 // FindPresubmitJobByNameAndBranch finds presubmit job by name from provided jobs list
 func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch) {
+		if job.Name == name && job.Brancher.ShouldRun(branch) {
 			return &job
 		}
 	}
@@ -140,7 +139,7 @@ func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedR
 // FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch) {
+		if job.Name == name && job.Brancher.ShouldRun(branch) {
 			return &job
 		}
 	}
@@ -252,7 +251,7 @@ func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
 }
 
 // AssertThatContainerHasEnv checks if container has specified given environment variable
-func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expValue string) {
+func AssertThatContainerHasEnv(t *testing.T, cont v1.Container, expName, expValue string) {
 	for _, env := range cont.Env {
 		if env.Name == expName && env.Value == expValue {
 			return
@@ -262,7 +261,7 @@ func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expVa
 }
 
 // AssertThatContainerHasEnvFromSecret checks if container has specified given environment variable
-func AssertThatContainerHasEnvFromSecret(t *testing.T, cont kube.Container, expName, expSecretName, expSecretKey string) {
+func AssertThatContainerHasEnvFromSecret(t *testing.T, cont v1.Container, expName, expSecretName, expSecretKey string) {
 	for _, env := range cont.Env {
 		if env.ValueFrom != nil && env.ValueFrom.SecretKeyRef != nil && env.ValueFrom.SecretKeyRef.Name == expSecretName && env.ValueFrom.SecretKeyRef.Key == expSecretKey {
 			return

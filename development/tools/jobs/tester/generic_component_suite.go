@@ -41,7 +41,7 @@ func (s GenericComponentSuite) testRunAgainstAnyBranch(t *testing.T) {
 
 func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPresubmitJobByName(jobConfig.Presubmits[s.repositorySectionKey()], s.jobName("pre"))
+		job := FindPresubmitJobByName(jobConfig.PresubmitsStatic[s.repositorySectionKey()], s.jobName("pre"))
 		require.NotNil(t, job)
 
 		assert.False(t, job.SkipReport, "Must not skip report")
@@ -51,10 +51,10 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 		assert.Equal(t, s.Repository, job.PathAlias)
 
 		for _, branch := range s.branchesToRunAgainst() {
-			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
+			assert.True(t, job.Brancher.ShouldRun(branch), "Must run against branch %s", branch)
 		}
 		for _, branch := range s.branchesNotToRunAgainst() {
-			assert.False(t, job.RunsAgainstBranch(branch), "Must NOT run against branch %s", branch)
+			assert.False(t, job.Brancher.ShouldRun(branch), "Must NOT run against branch %s", branch)
 		}
 
 		s.assertContainer(t, job.JobBase)
@@ -70,7 +70,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 
 func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPostsubmitJobByName(jobConfig.Postsubmits[s.repositorySectionKey()], s.jobName("post"))
+		job := FindPostsubmitJobByName(jobConfig.PostsubmitsStatic[s.repositorySectionKey()], s.jobName("post"))
 		require.NotNil(t, job, "Job must exists")
 
 		assert.True(t, job.Decorate, "Must decorate")
@@ -78,7 +78,7 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 		assert.Equal(t, s.Repository, job.PathAlias)
 
 		for _, branch := range s.branchesToRunAgainst() {
-			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
+			assert.True(t, job.Brancher.ShouldRun(branch), "Must run against branch %s", branch)
 		}
 
 		s.assertContainer(t, job.JobBase)

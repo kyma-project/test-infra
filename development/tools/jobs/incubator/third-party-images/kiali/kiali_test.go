@@ -18,7 +18,7 @@ func TestKialiJobsPresubmit(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/third-party-images"], "pre-master-tpi-kiali", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-incubator/third-party-images"], "pre-master-tpi-kiali", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -39,7 +39,7 @@ func TestKialiJobPostsubmit(t *testing.T) {
 	// then
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/third-party-images"], "post-master-tpi-kiali", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-incubator/third-party-images"], "post-master-tpi-kiali", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)

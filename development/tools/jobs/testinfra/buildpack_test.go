@@ -16,8 +16,8 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-bootstrap"
@@ -44,8 +44,8 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-bootstrap"
@@ -69,8 +69,8 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-bootstrap-helm"
@@ -97,8 +97,8 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-bootstrap-helm"
@@ -122,8 +122,8 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-golang"
@@ -150,8 +150,8 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-golang"
@@ -175,8 +175,8 @@ func TestBuildpackGolangKubebuilderJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-golang-kubebuilder"
@@ -203,8 +203,8 @@ func TestBuildpackGolangKubebuilderJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-golang-kubebuilder"
@@ -228,8 +228,8 @@ func TestBuildpackGolangKubebuilder2JobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-golang-kubebuilder2"
@@ -256,8 +256,8 @@ func TestBuildpackGolangKubebuilder2JobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-golang-kubebuilder2"
@@ -281,7 +281,7 @@ func TestKymaClusterInfraPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/test-infra"], "pre-test-infra-kyma-cluster-infra", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/test-infra"], "pre-test-infra-kyma-cluster-infra", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.False(t, actualPresubmit.SkipReport)
@@ -302,7 +302,7 @@ func TestKymaClusterInfraPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/test-infra"], "post-test-infra-kyma-cluster-infra", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/test-infra"], "post-test-infra-kyma-cluster-infra", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.True(t, actualPostsubmit.Decorate)
@@ -322,8 +322,8 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-node"
@@ -350,8 +350,8 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-node-chromium"
@@ -376,8 +376,8 @@ func TestBuildpackNodeChromiumPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-buildpack-node-chromium"
@@ -403,8 +403,8 @@ func TestBuildpackNodeChromiumPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-buildpack-node"
@@ -428,8 +428,8 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-cleaner"
@@ -456,8 +456,8 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-cleaner"
@@ -481,8 +481,8 @@ func TestVulnerabilityScannerJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-vulnerability-scanner"
@@ -509,8 +509,8 @@ func TestVulnerabilityScannerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-vulnerability-scanner"
@@ -534,8 +534,8 @@ func TestKubectlJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	infraPresubmits, ex := jobConfig.Presubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "pre-test-infra-kubectl"
@@ -562,8 +562,8 @@ func TestKubectlJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	infraPost, ex := jobConfig.Postsubmits["kyma-project/test-infra"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
 	assert.True(t, ex)
 
 	expName := "post-test-infra-kubectl"

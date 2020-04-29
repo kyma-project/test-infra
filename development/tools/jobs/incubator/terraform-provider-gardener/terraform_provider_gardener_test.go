@@ -16,8 +16,8 @@ func TestTerraformProviderGardenerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-incubator/terraform-provider-gardener"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	kymaPresubmits, ex := jobConfig.PresubmitsStatic["kyma-incubator/terraform-provider-gardener"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
@@ -46,8 +46,8 @@ func TestTerraformProviderGardenerJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-incubator/terraform-provider-gardener"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	kymaPost, ex := jobConfig.PostsubmitsStatic["kyma-incubator/terraform-provider-gardener"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 

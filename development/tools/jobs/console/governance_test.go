@@ -18,7 +18,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-master-console-governance"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/console"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/console"], expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)

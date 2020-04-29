@@ -18,7 +18,7 @@ func TestFluentbitJobsPresubmit(t *testing.T) {
 
 	// then
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/third-party-images"], "pre-master-tpi-fluent-bit", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-incubator/third-party-images"], "pre-master-tpi-fluent-bit", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
@@ -39,7 +39,7 @@ func TestFluentbitJobPostsubmit(t *testing.T) {
 	// then
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/third-party-images"], "post-master-tpi-fluent-bit", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-incubator/third-party-images"], "post-master-tpi-fluent-bit", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, 10, actualPostsubmit.MaxConcurrency)

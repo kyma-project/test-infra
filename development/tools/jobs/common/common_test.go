@@ -16,8 +16,8 @@ func TestCommonJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-common", "master")
-	assert.Len(t, jobConfig.Presubmits, 1)
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/kyma"], "pre-master-kyma-common", "master")
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "common/")
@@ -38,8 +38,8 @@ func TestCommonJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-common", "master")
-	assert.Len(t, jobConfig.Postsubmits, 1)
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/kyma"], "post-master-kyma-common", "master")
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 	require.NotNil(t, actualPostsubmit)
 
 	assert.Equal(t, []string{"^master$"}, actualPostsubmit.Branches)

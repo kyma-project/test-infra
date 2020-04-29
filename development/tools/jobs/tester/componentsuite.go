@@ -32,18 +32,18 @@ func (s ComponentSuite) Run(t *testing.T) {
 	if !s.Deprecated {
 		expectedNumberOfPresubmits++
 	}
-	require.Len(t, jobConfig.Presubmits, 1)
-	require.Len(t, jobConfig.Presubmits[s.repositorySectionKey()], expectedNumberOfPresubmits)
+	require.Len(t, jobConfig.PresubmitsStatic, 1)
+	require.Len(t, jobConfig.PresubmitsStatic[s.repositorySectionKey()], expectedNumberOfPresubmits)
 
 	expectedNumberOfPostsubmit := len(s.PatchReleases)
 	if !s.Deprecated {
 		expectedNumberOfPostsubmit++
 	}
 	if expectedNumberOfPostsubmit > 0 {
-		require.Len(t, jobConfig.Postsubmits, 1)
-		require.Len(t, jobConfig.Postsubmits[s.repositorySectionKey()], expectedNumberOfPostsubmit)
+		require.Len(t, jobConfig.PostsubmitsStatic, 1)
+		require.Len(t, jobConfig.PostsubmitsStatic[s.repositorySectionKey()], expectedNumberOfPostsubmit)
 	} else {
-		require.Empty(t, jobConfig.Postsubmits)
+		require.Empty(t, jobConfig.PostsubmitsStatic)
 	}
 
 	if !s.Deprecated {
@@ -57,13 +57,13 @@ func (s ComponentSuite) Run(t *testing.T) {
 func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		job := FindPresubmitJobByNameAndBranch(
-			jobConfig.Presubmits[s.repositorySectionKey()],
+			jobConfig.PresubmitsStatic[s.repositorySectionKey()],
 			s.jobName("pre-master"),
 			"master",
 		)
 		require.NotNil(t, job)
 
-		assert.True(t, job.RunsAgainstBranch("master"))
+		assert.True(t, job.Brancher.ShouldRun("master"))
 		assert.False(t, job.SkipReport)
 		assert.True(t, job.Decorate)
 		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)
@@ -82,7 +82,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		job := FindPostsubmitJobByNameAndBranch(
-			jobConfig.Postsubmits[s.repositorySectionKey()],
+			jobConfig.PostsubmitsStatic[s.repositorySectionKey()],
 			s.jobName("post-master"),
 			"master",
 		)
@@ -106,7 +106,7 @@ func (s ComponentSuite) preReleaseTest(jobConfig config.JobConfig) func(t *testi
 		for _, currentRelease := range s.PatchReleases {
 			t.Run(currentRelease.String(), func(t *testing.T) {
 				job := FindPresubmitJobByNameAndBranch(
-					jobConfig.Presubmits[s.repositorySectionKey()],
+					jobConfig.PresubmitsStatic[s.repositorySectionKey()],
 					GetReleaseJobName(s.moduleName(), currentRelease),
 					s.patchReleaseBranch(currentRelease),
 				)
@@ -134,7 +134,7 @@ func (s ComponentSuite) postReleaseTest(jobConfig config.JobConfig) func(t *test
 		for _, currentRelease := range s.PatchReleases {
 			t.Run(currentRelease.String(), func(t *testing.T) {
 				job := FindPostsubmitJobByNameAndBranch(
-					jobConfig.Postsubmits[s.repositorySectionKey()],
+					jobConfig.PostsubmitsStatic[s.repositorySectionKey()],
 					GetReleasePostSubmitJobName(s.moduleName(), currentRelease),
 					s.patchReleaseBranch(currentRelease),
 				)

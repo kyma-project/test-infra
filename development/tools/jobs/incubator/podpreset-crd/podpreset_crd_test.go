@@ -15,8 +15,8 @@ func TestPodpresetCrdJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-incubator/podpreset-crd"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	kymaPresubmits, ex := jobConfig.PresubmitsStatic["kyma-incubator/podpreset-crd"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPresubmits, 1)
 
@@ -43,8 +43,8 @@ func TestPodpresetCrdJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-incubator/podpreset-crd"]
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	kymaPost, ex := jobConfig.PostsubmitsStatic["kyma-incubator/podpreset-crd"]
 	assert.True(t, ex)
 	assert.Len(t, kymaPost, 1)
 

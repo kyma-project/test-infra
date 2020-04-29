@@ -17,8 +17,8 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	presubmits, ex := jobConfig.Presubmits["kyma-project/examples"]
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	presubmits, ex := jobConfig.PresubmitsStatic["kyma-project/examples"]
 	assert.True(t, ex)
 	assert.Len(t, presubmits, 1)
 
