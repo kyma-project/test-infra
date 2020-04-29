@@ -539,6 +539,12 @@ templates:
           path: core-ui
           since: "1.11"
           optional: true
+      - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui-tmp.yaml
+        values:
+          <<: *console_generic_component
+          path: service-catalog-ui
+          since: "1.11"
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
