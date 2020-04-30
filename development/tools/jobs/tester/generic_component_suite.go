@@ -51,10 +51,10 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 		assert.Equal(t, s.Repository, job.PathAlias)
 
 		for _, branch := range s.branchesToRunAgainst() {
-			assert.True(t, job.Brancher.ShouldRun(branch), "Must run against branch %s", branch)
+			assert.True(t, job.CouldRun(branch), "Must run against branch %s", branch)
 		}
 		for _, branch := range s.branchesNotToRunAgainst() {
-			assert.False(t, job.Brancher.ShouldRun(branch), "Must NOT run against branch %s", branch)
+			assert.False(t, job.CouldRun(branch), "Must NOT run against branch %s", branch)
 		}
 
 		s.assertContainer(t, job.JobBase)
@@ -78,7 +78,7 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 		assert.Equal(t, s.Repository, job.PathAlias)
 
 		for _, branch := range s.branchesToRunAgainst() {
-			assert.True(t, job.Brancher.ShouldRun(branch), "Must run against branch %s", branch)
+			assert.True(t, job.CouldRun(branch), "Must run against branch %s", branch)
 		}
 
 		s.assertContainer(t, job.JobBase)

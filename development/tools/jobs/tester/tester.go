@@ -107,7 +107,7 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 // FindPresubmitJobByNameAndBranch finds presubmit job by name from provided jobs list
 func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.Brancher.ShouldRun(branch) {
+		if job.Name == name && job.CouldRun(branch) {
 			return &job
 		}
 	}
@@ -139,7 +139,7 @@ func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedR
 // FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.Brancher.ShouldRun(branch) {
+		if job.Name == name && job.CouldRun(branch) {
 			return &job
 		}
 	}

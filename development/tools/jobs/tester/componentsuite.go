@@ -63,7 +63,7 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 		)
 		require.NotNil(t, job)
 
-		assert.True(t, job.Brancher.ShouldRun("master"))
+		assert.True(t, job.CouldRun("master"))
 		assert.False(t, job.SkipReport)
 		assert.True(t, job.Decorate)
 		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)

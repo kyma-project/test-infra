@@ -1,7 +1,6 @@
 package testinfra_test
 
 import (
-	"k8s.io/test-infra/prow/config"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
@@ -11,10 +10,10 @@ import (
 
 func TestValidateProwPresubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := config.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
 	require.NoError(t, err)
-	testInfraPresubmits := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
+	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-master-test-infra-validate-prow", "master")
 	require.NotNil(t, sut)
@@ -40,7 +39,7 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
 	require.NoError(t, err)
-	testInfraPresubmits := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
+	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-test-infra-validate-configs", "master")
 	require.NotNil(t, sut)
@@ -68,7 +67,7 @@ func TestValidateScriptsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
 	require.NoError(t, err)
-	testInfraPresubmits := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
+	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-test-infra-validate-scripts", "master")
 	require.NotNil(t, sut)
