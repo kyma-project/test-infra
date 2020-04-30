@@ -22,11 +22,21 @@ var components = []struct {
 	{path: "core-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
+		},
+	},
+	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release111),
 			jobsuite.JobFileSuffix("tmp"),
 			jobsuite.Optional(),
 		},
 	},
-	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release111),
+		},
+	},
+	{path: "logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
 			jobsuite.JobFileSuffix("tmp"),

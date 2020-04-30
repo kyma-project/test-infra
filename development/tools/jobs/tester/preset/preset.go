@@ -40,8 +40,6 @@ const (
 	KymaBackupRestoreBucket Preset = "preset-kyma-backup-restore-bucket"
 	// KymaBackupCredentials means the credentials for the service account
 	KymaBackupCredentials Preset = "preset-kyma-backup-credentials"
-	// ProwKymaProjectIoSlackSkipReport means the skip report on slack
-	ProwKymaProjectIoSlackSkipReport Preset = "prow.kyma-project.io/slack.skipReport"
 	// GardenerAzureIntegration contains all necessary configuration to deploy on gardener azure from prow
 	GardenerAzureIntegration Preset = "preset-gardener-azure-kyma-integration"
 	// GardenerGCPIntegration contains all necessary configuration to deploy on gardener GCP from prow
