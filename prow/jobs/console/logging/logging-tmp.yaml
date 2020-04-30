@@ -22,8 +22,8 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11)-core-ui$
-  run_if_changed: "^core-ui/|^components/|^shared/"
+    - ^release-(1\.12|1\.11)-logging$
+  run_if_changed: "^logging/|^components/|^shared/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -32,7 +32,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/core-ui"
+          - "/home/prow/go/src/github.com/kyma-project/console/logging"
         resources:
           requests:
             memory: 1.5Gi
@@ -40,12 +40,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: pre-console-core-ui
+    - name: pre-console-logging
       skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/console:
-    - name: post-console-core-ui
+    - name: post-console-logging
       <<: *job_template
