@@ -136,15 +136,14 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
 {{- end }}
-{{- if .Values.optional }}
-      prow.kyma-project.io/slack.skipReport: "true"
-{{- end }}
+{{- if or .Values.optional .Values.skipSlackReport }}
+      reporter_config:
+        slack:
+          channel: '' # empty channel overrides slack reporting in crier
+{{- end}}
       labels:
         <<: *job_labels_template
         preset-{{ $.Values.presets.build }}-master: "true"
-        {{- if .Values.skipSlackReport }}
-        prow.kyma-project.io/slack.skipReport: "true"
-        {{- end }}
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
       branches:
