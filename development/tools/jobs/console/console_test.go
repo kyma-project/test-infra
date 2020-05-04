@@ -46,8 +46,6 @@ var components = []struct {
 	{path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
-			jobsuite.JobFileSuffix("tmp"),
-			jobsuite.Optional(),
 		},
 	},
 }

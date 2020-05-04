@@ -561,7 +561,7 @@ templates:
           path: logging
           since: "1.11"
           optional: true
-      - to: ../prow/jobs/console/tests/tests-tmp.yaml
+      - to: ../prow/jobs/console/tests/tests.yaml
         values:
           <<: *console_generic_component
           path: tests
