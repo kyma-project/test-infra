@@ -51,6 +51,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 		assert.Equal(t, s.Repository, job.PathAlias)
 
 		for _, branch := range s.branchesToRunAgainst() {
+			fmt.Println(branch)
 			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
 		}
 		for _, branch := range s.branchesNotToRunAgainst() {
@@ -93,7 +94,10 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 }
 
 func (s GenericComponentSuite) componentName() string {
-	return path.Base(s.Path)
+	if s.YamlName == nil {
+		return path.Base(s.Path)
+	}
+	return *s.YamlName
 }
 
 func (s GenericComponentSuite) repositoryName() string {
@@ -108,6 +112,8 @@ func (s GenericComponentSuite) JobConfigPath() string {
 	jobConfigPath := ""
 	switch {
 	case strings.Contains(s.Repository, "kyma-project"):
+		fmt.Println(s.YamlName)
+		fmt.Printf("%s %s %s\n", "AA", s.componentName(), s.JobsFileSuffix)
 		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
 
 	case strings.Contains(s.Repository, "kyma-incubator"):

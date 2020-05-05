@@ -49,9 +49,10 @@ func Tool(name, image string) Option {
 	}
 }
 
-func Project(name, image string) Option {
+func Project(name string, yamlName *string, image string) Option {
 	return func(suite *Config) {
 		suite.Path = name
+		suite.YamlName = yamlName
 		suite.Image = image
 		suite.FilesTriggeringJob = []string{fmt.Sprintf("%s/fix", suite.Path)}
 	}

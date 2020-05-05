@@ -13,37 +13,40 @@ const (
 	jobBasePath = "./../../../../prow/jobs/"
 )
 
+var lisp = "console-logging"
+
 var components = []struct {
 	path              string
 	image             string
+	yamlName          *string
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "core-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	// {path: "core-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	// 	additionalOptions: []jobsuite.Option{
+	// 		jobsuite.Since(releases.Release111),
+	// 	},
+	// },
+	// {path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	// 	additionalOptions: []jobsuite.Option{
+	// 		jobsuite.Since(releases.Release111),
+	// 	},
+	// },
+	// {path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	// 	additionalOptions: []jobsuite.Option{
+	// 		jobsuite.Since(releases.Release111),
+	// 	},
+	// },
+	{path: "logging", yamlName: &lisp, image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
 		},
 	},
-	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
-		},
-	},
-	{path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
-		},
-	},
-	{path: "console-logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
-		},
-	},
-	{path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
-		},
-	},
+	// {path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	// 	additionalOptions: []jobsuite.Option{
+	// 		jobsuite.Since(releases.Release111),
+	// 	},
+	// },
 }
 
 func TestConsoleJobs(t *testing.T) {
@@ -51,8 +54,12 @@ func TestConsoleJobs(t *testing.T) {
 	repos := map[string]struct{}{}
 	for _, component := range components {
 		t.Run(component.path, func(t *testing.T) {
+			// fmt.Println(component.path)
+			// fmt.Println(component.yamlName)
+			// fmt.Println(component.image)
+			// fmt.Println(component.additionalOptions)
 			opts := []jobsuite.Option{
-				jobsuite.Project(component.path, component.image),
+				jobsuite.Project(component.path, component.yamlName, component.image),
 				jobsuite.ConsoleRepo(),
 				jobsuite.AllReleases(),
 			}
