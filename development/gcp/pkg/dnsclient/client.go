@@ -2,6 +2,7 @@ package dnsclient
 
 import (
 	"context"
+	"google.golang.org/api/dns/v2beta1"
 	"time"
 )
 
