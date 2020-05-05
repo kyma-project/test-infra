@@ -15,7 +15,7 @@ var (
 	data            = flag.StringP("data", "d", "", "Record data [Required]")
 	project         = flag.StringP("project", "p", "sap-kyma-prow-workloads", "GCP project name [Required]")
 	recordType      = flag.StringP("type", "t", "A", "DNS record type [Optional]")
-	ttl             = flag.Int64P("tlt", "t", 1800, "Record time to live [Optional]")
+	ttl             = flag.Int64P("ttl", "T", 1800, "Record time to live [Optional]")
 	credentialsfile = flag.StringP("credentialsfile", "c", "", "Google Application Credentials file path. [Required]")
 	deleteRecord    = flag.BoolP("delete", "D", false, "If set to true, record will be deleted. Default: false [Optional]")
 )
