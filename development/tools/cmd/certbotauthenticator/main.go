@@ -7,8 +7,6 @@ import (
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 	"time"
-
-	//"log"
 	"os"
 )
 
