@@ -10,9 +10,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/console
   max_concurrency: 10
-  reporter_config:
-    slack:
-      channel: '' # empty channel overrides slack reporting in crier
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -42,7 +39,7 @@ presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-console-logging
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
