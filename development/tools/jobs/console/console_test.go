@@ -13,7 +13,7 @@ const (
 	jobBasePath = "./../../../../prow/jobs/"
 )
 
-var lisp = "console-logging"
+var loggingYamlName = "console-logging"
 
 var components = []struct {
 	path              string
@@ -37,7 +37,7 @@ var components = []struct {
 			jobsuite.Since(releases.Release111),
 		},
 	},
-	{path: "logging", yamlName: &lisp, image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
 		},
