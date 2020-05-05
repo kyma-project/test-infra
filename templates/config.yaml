@@ -549,13 +549,13 @@ templates:
           <<: *console_generic_component
           path: add-ons
           since: "1.11"
-      - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui-tmp.yaml
+      - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
         values:
           <<: *console_generic_component
           path: service-catalog-ui
           since: "1.11"
           optional: true
-      - to: ../prow/jobs/console/logging/logging-tmp.yaml
+      - to: ../prow/jobs/console/logging/logging.yaml
         values:
           <<: *console_generic_component
           path: logging
