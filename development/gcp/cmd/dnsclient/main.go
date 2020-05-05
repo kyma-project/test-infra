@@ -13,10 +13,10 @@ var (
 	zoneName        = flag.StringP("zone", "z", "build-kyma-workloads", "DNS zone name [Optional]")
 	name            = flag.StringP("name", "n", "", "Record name example: www.example.com. [Required]")
 	data            = flag.StringP("data", "d", "", "Record data [Required]")
-	project         = flag.StringP("project", "p", "sap-kyma-prow-workloads", "GCP project name [Required]")
+	project         = flag.StringP("project", "p", "sap-kyma-prow-workloads", "GCP project name [Optional]")
 	recordType      = flag.StringP("type", "t", "A", "DNS record type [Optional]")
 	ttl             = flag.Int64P("ttl", "T", 1800, "Record time to live [Optional]")
-	credentialsfile = flag.StringP("credentialsfile", "c", "", "Google Application Credentials file path. [Required]")
+	credentialsfile = flag.StringP("credentialsfile", "c", "", "Google Application Credentials file path. [Optional]")
 	deleteRecord    = flag.BoolP("delete", "D", false, "If set to true, record will be deleted. Default: false [Optional]")
 )
 
