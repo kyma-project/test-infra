@@ -94,10 +94,7 @@ func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) fun
 }
 
 func (s GenericComponentSuite) componentName() string {
-	if s.YamlName == nil {
-		return path.Base(s.Path)
-	}
-	return *s.YamlName
+	return path.Base(s.Path)
 }
 
 func (s GenericComponentSuite) repositoryName() string {
@@ -110,17 +107,21 @@ func (s GenericComponentSuite) JobConfigPath() string {
 	// will generate path: `kyma-incubator` which is not valid in current state
 	// Current valid path is `incubator`
 	jobConfigPath := ""
+	filename := s.componentName()
+	if s.YamlName != nil {
+		filename = *s.YamlName
+	}
+
 	switch {
 	case strings.Contains(s.Repository, "kyma-project"):
-		fmt.Println(s.YamlName)
-		fmt.Printf("%s %s %s\n", "AA", s.componentName(), s.JobsFileSuffix)
-		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
+
+		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, filename, s.JobsFileSuffix)
 
 	case strings.Contains(s.Repository, "kyma-incubator"):
 		repos := path.Dir(s.Repository)
 		org := path.Base(repos)
 		orgPath := strings.Replace(org, "kyma-", "", 1)
-		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, s.componentName(), s.JobsFileSuffix)
+		jobConfigPath = fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", orgPath, s.Path, filename, s.JobsFileSuffix)
 
 	default:
 		log.Fatalf("organization not supported: %s", s.Repository)
