@@ -51,7 +51,6 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 		assert.Equal(t, s.Repository, job.PathAlias)
 
 		for _, branch := range s.branchesToRunAgainst() {
-			fmt.Println(branch)
 			assert.True(t, job.RunsAgainstBranch(branch), "Must run against branch %s", branch)
 		}
 		for _, branch := range s.branchesNotToRunAgainst() {
