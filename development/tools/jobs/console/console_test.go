@@ -34,7 +34,7 @@ var components = []struct {
 			jobsuite.Since(releases.Release111),
 		},
 	},
-	{path: "log-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
 		},

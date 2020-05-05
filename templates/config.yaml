@@ -554,7 +554,7 @@ templates:
           <<: *console_generic_component
           path: service-catalog-ui
           since: "1.11"
-      - to: ../prow/jobs/console/log-ui/log-ui.yaml
+      - to: ../prow/jobs/console/logging/logging.yaml
         values:
           <<: *console_generic_component
           path: logging
