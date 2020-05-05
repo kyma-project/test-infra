@@ -1,0 +1,36 @@
+2020-05-03 22:36:00,019:DEBUG:certbot._internal.main:certbot version: 1.3.0
+2020-05-03 22:36:00,019:DEBUG:certbot._internal.main:Arguments: ['--agree-tos', '--no-eff-email', '--server', 'https://acme-staging-v02.api.letsencrypt.org/directory', '--manual', '--preferred-challenges', 'dns', '--manual-auth-hook', '/bot/certbotauthenticator', '--manual-cleanup-hook', '/bot/certbotauthenticator', '-d', 'a.build.kyma-project.io']
+2020-05-03 22:36:00,020:DEBUG:certbot._internal.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2020-05-03 22:36:00,327:DEBUG:certbot._internal.log:Root logging level set at 20
+2020-05-03 22:36:00,328:INFO:certbot._internal.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2020-05-03 22:36:00,333:DEBUG:certbot._internal.plugins.selection:Requested authenticator manual and installer None
+2020-05-03 22:36:00,341:DEBUG:certbot._internal.plugins.selection:Single candidate plugin: * manual
+Description: Manual configuration or run your own shell scripts
+Interfaces: IAuthenticator, IPlugin
+Entry point: manual = certbot._internal.plugins.manual:Authenticator
+Initialized: <certbot._internal.plugins.manual.Authenticator object at 0x7f2ef58e6970>
+Prep: True
+2020-05-03 22:36:00,342:DEBUG:certbot._internal.plugins.selection:Selected authenticator <certbot._internal.plugins.manual.Authenticator object at 0x7f2ef58e6970> and installer None
+2020-05-03 22:36:00,343:INFO:certbot._internal.plugins.selection:Plugins selected: Authenticator manual, Installer None
+2020-05-03 22:36:00,347:DEBUG:certbot._internal.log:Exiting abnormally:
+Traceback (most recent call last):
+  File "/usr/local/bin/certbot", line 11, in <module>
+    load_entry_point('certbot', 'console_scripts', 'certbot')()
+  File "/opt/certbot/src/certbot/certbot/main.py", line 15, in main
+    return internal_main.main(cli_args)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1347, in main
+    return config.func(config, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1217, in certonly
+    le_client = _init_le_client(config, auth, installer)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 603, in _init_le_client
+    acc, acme = _determine_account(config)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 516, in _determine_account
+    config.email = display_ops.get_email()
+  File "/opt/certbot/src/certbot/certbot/display/ops.py", line 50, in get_email
+    code, email = z_util(interfaces.IDisplay).input(
+  File "/opt/certbot/src/certbot/certbot/display/util.py", line 178, in input
+    ans = input_with_timeout(message)
+  File "/opt/certbot/src/certbot/certbot/display/util.py", line 85, in input_with_timeout
+    raise EOFError
+EOFError
+2020-05-03 22:36:00,349:ERROR:certbot._internal.log:An unexpected error occurred:

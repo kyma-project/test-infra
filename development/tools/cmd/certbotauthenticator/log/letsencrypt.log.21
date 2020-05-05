@@ -1,0 +1,245 @@
+2020-05-03 23:22:43,848:DEBUG:certbot._internal.main:certbot version: 1.3.0
+2020-05-03 23:22:43,848:DEBUG:certbot._internal.main:Arguments: ['--agree-tos', '--no-eff-email', '-m', 'przemek.pokrywka@gmail.com', '--server', 'https://acme-staging-v02.api.letsencrypt.org/directory', '--manual', '--manual-public-ip-logging-ok', '--preferred-challenges', 'dns', '--manual-auth-hook', '/bot/certbotauthenticator', '--manual-cleanup-hook', '/bot/certbotauthenticator', '-d', 'a.build.kyma-project.io.']
+2020-05-03 23:22:43,848:DEBUG:certbot._internal.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2020-05-03 23:22:44,169:DEBUG:certbot._internal.log:Root logging level set at 20
+2020-05-03 23:22:44,170:INFO:certbot._internal.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2020-05-03 23:22:44,177:DEBUG:certbot._internal.plugins.selection:Requested authenticator manual and installer None
+2020-05-03 23:22:44,187:DEBUG:certbot._internal.plugins.selection:Single candidate plugin: * manual
+Description: Manual configuration or run your own shell scripts
+Interfaces: IAuthenticator, IPlugin
+Entry point: manual = certbot._internal.plugins.manual:Authenticator
+Initialized: <certbot._internal.plugins.manual.Authenticator object at 0x7f7380deaac0>
+Prep: True
+2020-05-03 23:22:44,189:DEBUG:certbot._internal.plugins.selection:Selected authenticator <certbot._internal.plugins.manual.Authenticator object at 0x7f7380deaac0> and installer None
+2020-05-03 23:22:44,190:INFO:certbot._internal.plugins.selection:Plugins selected: Authenticator manual, Installer None
+2020-05-03 23:22:44,215:DEBUG:certbot._internal.main:Picked account: <Account(RegistrationResource(body=Registration(key=None, contact=(), agreement=None, status=None, terms_of_service_agreed=None, only_return_existing=None, external_account_binding=None), uri='https://acme-staging-v02.api.letsencrypt.org/acme/acct/13474575', new_authzr_uri=None, terms_of_service=None), 0ca10773bedaf0252bc041e7c5277c08, Meta(creation_dt=datetime.datetime(2020, 5, 3, 22, 46, 17, tzinfo=<UTC>), creation_host='1fe450f9cd72'))>
+2020-05-03 23:22:44,217:DEBUG:acme.client:Sending GET request to https://acme-staging-v02.api.letsencrypt.org/directory.
+2020-05-03 23:22:44,220:DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): acme-staging-v02.api.letsencrypt.org:443
+2020-05-03 23:22:44,969:DEBUG:urllib3.connectionpool:https://acme-staging-v02.api.letsencrypt.org:443 "GET /directory HTTP/1.1" 200 724
+2020-05-03 23:22:44,971:DEBUG:acme.client:Received response:
+HTTP 200
+Server: nginx
+Date: Sun, 03 May 2020 23:22:44 GMT
+Content-Type: application/json
+Content-Length: 724
+Connection: keep-alive
+Cache-Control: public, max-age=0, no-cache
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=604800
+
+{
+  "jZqGJ-eVagk": "https://community.letsencrypt.org/t/adding-random-entries-to-the-directory/33417",
+  "keyChange": "https://acme-staging-v02.api.letsencrypt.org/acme/key-change",
+  "meta": {
+    "caaIdentities": [
+      "letsencrypt.org"
+    ],
+    "termsOfService": "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf",
+    "website": "https://letsencrypt.org/docs/staging-environment/"
+  },
+  "newAccount": "https://acme-staging-v02.api.letsencrypt.org/acme/new-acct",
+  "newNonce": "https://acme-staging-v02.api.letsencrypt.org/acme/new-nonce",
+  "newOrder": "https://acme-staging-v02.api.letsencrypt.org/acme/new-order",
+  "revokeCert": "https://acme-staging-v02.api.letsencrypt.org/acme/revoke-cert"
+}
+2020-05-03 23:22:44,976:INFO:certbot._internal.main:Obtaining a new certificate
+2020-05-03 23:22:45,095:DEBUG:certbot.crypto_util:Generating key (2048 bits): /etc/letsencrypt/keys/0005_key-certbot.pem
+2020-05-03 23:22:45,101:DEBUG:certbot.crypto_util:Creating CSR: /etc/letsencrypt/csr/0005_csr-certbot.pem
+2020-05-03 23:22:45,103:DEBUG:acme.client:Requesting fresh nonce
+2020-05-03 23:22:45,104:DEBUG:acme.client:Sending HEAD request to https://acme-staging-v02.api.letsencrypt.org/acme/new-nonce.
+2020-05-03 23:22:45,294:DEBUG:urllib3.connectionpool:https://acme-staging-v02.api.letsencrypt.org:443 "HEAD /acme/new-nonce HTTP/1.1" 200 0
+2020-05-03 23:22:45,296:DEBUG:acme.client:Received response:
+HTTP 200
+Server: nginx
+Date: Sun, 03 May 2020 23:22:45 GMT
+Connection: keep-alive
+Cache-Control: public, max-age=0, no-cache
+Link: <https://acme-staging-v02.api.letsencrypt.org/directory>;rel="index"
+Replay-Nonce: 0001mctdWkcQXrJiVBjv7MwXpiKPeH3G57g7YObPHP7yes8
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=604800
+
+
+2020-05-03 23:22:45,298:DEBUG:acme.client:Storing nonce: 0001mctdWkcQXrJiVBjv7MwXpiKPeH3G57g7YObPHP7yes8
+2020-05-03 23:22:45,299:DEBUG:acme.client:JWS payload:
+b'{\n  "identifiers": [\n    {\n      "type": "dns",\n      "value": "a.build.kyma-project.io"\n    }\n  ]\n}'
+2020-05-03 23:22:45,302:DEBUG:acme.client:Sending POST request to https://acme-staging-v02.api.letsencrypt.org/acme/new-order:
+{
+  "protected": "eyJhbGciOiAiUlMyNTYiLCAia2lkIjogImh0dHBzOi8vYWNtZS1zdGFnaW5nLXYwMi5hcGkubGV0c2VuY3J5cHQub3JnL2FjbWUvYWNjdC8xMzQ3NDU3NSIsICJub25jZSI6ICIwMDAxbWN0ZFdrY1FYckppVkJqdjdNd1hwaUtQZUgzRzU3ZzdZT2JQSFA3eWVzOCIsICJ1cmwiOiAiaHR0cHM6Ly9hY21lLXN0YWdpbmctdjAyLmFwaS5sZXRzZW5jcnlwdC5vcmcvYWNtZS9uZXctb3JkZXIifQ",
+  "signature": "DEn_GMxli1L7fqu3CalynzTPBbM6IFb71qMtax26T1VFySpZjrRbHG55jywgvW1oy9QRGhSGk2uggcR4BsP1upK9NBeRami4M9rIcdsoaTJB0m30X6OtRGzjGiwpgy9LezrKzaSl1V2WBLyp7ky8DG_j61o5C5X3VQqSGplG34K6uvxmDBK2FWE3B2emGesHNzFeQ3wRuE4FbZM4ooym1Osq-skeqBj30CmVaP_l7jRvjD2_DMJE3AMmWD4C4SadM9CkOblVsNYkDt155FqUsIHtJb-GXpyoPATVciMVlc-XQk1KIX-V5sg6zS7xkUjrTe896bR2TMIiKTHfISho8A",
+  "payload": "ewogICJpZGVudGlmaWVycyI6IFsKICAgIHsKICAgICAgInR5cGUiOiAiZG5zIiwKICAgICAgInZhbHVlIjogImEuYnVpbGQua3ltYS1wcm9qZWN0LmlvIgogICAgfQogIF0KfQ"
+}
+2020-05-03 23:22:45,503:DEBUG:urllib3.connectionpool:https://acme-staging-v02.api.letsencrypt.org:443 "POST /acme/new-order HTTP/1.1" 201 355
+2020-05-03 23:22:45,505:DEBUG:acme.client:Received response:
+HTTP 201
+Server: nginx
+Date: Sun, 03 May 2020 23:22:45 GMT
+Content-Type: application/json
+Content-Length: 355
+Connection: keep-alive
+Boulder-Requester: 13474575
+Cache-Control: public, max-age=0, no-cache
+Link: <https://acme-staging-v02.api.letsencrypt.org/directory>;rel="index"
+Location: https://acme-staging-v02.api.letsencrypt.org/acme/order/13474575/89380797
+Replay-Nonce: 00021V6EHT4X6Aw3rRkGDaE-Tph9lkYMhYzz41wvmzYJPdI
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=604800
+
+{
+  "status": "pending",
+  "expires": "2020-05-10T22:46:17Z",
+  "identifiers": [
+    {
+      "type": "dns",
+      "value": "a.build.kyma-project.io"
+    }
+  ],
+  "authorizations": [
+    "https://acme-staging-v02.api.letsencrypt.org/acme/authz-v3/53674078"
+  ],
+  "finalize": "https://acme-staging-v02.api.letsencrypt.org/acme/finalize/13474575/89380797"
+}
+2020-05-03 23:22:45,506:DEBUG:acme.client:Storing nonce: 00021V6EHT4X6Aw3rRkGDaE-Tph9lkYMhYzz41wvmzYJPdI
+2020-05-03 23:22:45,508:DEBUG:acme.client:JWS payload:
+b''
+2020-05-03 23:22:45,510:DEBUG:acme.client:Sending POST request to https://acme-staging-v02.api.letsencrypt.org/acme/authz-v3/53674078:
+{
+  "protected": "eyJhbGciOiAiUlMyNTYiLCAia2lkIjogImh0dHBzOi8vYWNtZS1zdGFnaW5nLXYwMi5hcGkubGV0c2VuY3J5cHQub3JnL2FjbWUvYWNjdC8xMzQ3NDU3NSIsICJub25jZSI6ICIwMDAyMVY2RUhUNFg2QXczclJrR0RhRS1UcGg5bGtZTWhZeno0MXd2bXpZSlBkSSIsICJ1cmwiOiAiaHR0cHM6Ly9hY21lLXN0YWdpbmctdjAyLmFwaS5sZXRzZW5jcnlwdC5vcmcvYWNtZS9hdXRoei12My81MzY3NDA3OCJ9",
+  "signature": "e2rlLiphdKuwftiR49m0RiWMOt9zam42_FIQyTMjaHL4jrB-U5Ni3sG4oUKPqzZTWlIX8fj2F1MZs6eH5fuULfoxi1D3pgsDAKpVRGErSgvaCesA3v3h997yd1SxbNkmubIatLcoSY0AZE-gicayajBKKfVyIg5oB4rIK_9nBjQojsguw-GyQoIeZNYPNJW2Mpb5g2ZyQD7L9WAilfGVEynIyiBgnb0XorxDFBlMVK6o67Nn6F-ZW-2MZlJ5ZyTORPv3LjiHe_2sPMxWBPTk9HA_8e9AYvJhj4KvBCYGAaELIBKAHkKYnxpy4mED6yf0jYTvUxg7lfCKsJ2P6YF47Q",
+  "payload": ""
+}
+2020-05-03 23:22:45,701:DEBUG:urllib3.connectionpool:https://acme-staging-v02.api.letsencrypt.org:443 "POST /acme/authz-v3/53674078 HTTP/1.1" 200 819
+2020-05-03 23:22:45,704:DEBUG:acme.client:Received response:
+HTTP 200
+Server: nginx
+Date: Sun, 03 May 2020 23:22:45 GMT
+Content-Type: application/json
+Content-Length: 819
+Connection: keep-alive
+Boulder-Requester: 13474575
+Cache-Control: public, max-age=0, no-cache
+Link: <https://acme-staging-v02.api.letsencrypt.org/directory>;rel="index"
+Replay-Nonce: 0001A89dZ1Os1xu5sp6EXNesg69Pb8s8EYPK_4G5k1Fup_4
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=604800
+
+{
+  "identifier": {
+    "type": "dns",
+    "value": "a.build.kyma-project.io"
+  },
+  "status": "pending",
+  "expires": "2020-05-10T22:46:17Z",
+  "challenges": [
+    {
+      "type": "http-01",
+      "status": "pending",
+      "url": "https://acme-staging-v02.api.letsencrypt.org/acme/chall-v3/53674078/k-IiAw",
+      "token": "O7KrprNdoYPEngG60zf3vIJbmgRlVgmHvLzJGgaU_GQ"
+    },
+    {
+      "type": "dns-01",
+      "status": "pending",
+      "url": "https://acme-staging-v02.api.letsencrypt.org/acme/chall-v3/53674078/czGg-w",
+      "token": "O7KrprNdoYPEngG60zf3vIJbmgRlVgmHvLzJGgaU_GQ"
+    },
+    {
+      "type": "tls-alpn-01",
+      "status": "pending",
+      "url": "https://acme-staging-v02.api.letsencrypt.org/acme/chall-v3/53674078/ugxT7g",
+      "token": "O7KrprNdoYPEngG60zf3vIJbmgRlVgmHvLzJGgaU_GQ"
+    }
+  ]
+}
+2020-05-03 23:22:45,705:DEBUG:acme.client:Storing nonce: 0001A89dZ1Os1xu5sp6EXNesg69Pb8s8EYPK_4G5k1Fup_4
+2020-05-03 23:22:45,707:INFO:certbot._internal.auth_handler:Performing the following challenges:
+2020-05-03 23:22:45,709:INFO:certbot._internal.auth_handler:dns-01 challenge for a.build.kyma-project.io
+2020-05-03 23:22:45,712:INFO:certbot._internal.hooks:Running manual-auth-hook command: /bot/certbotauthenticator
+2020-05-03 23:22:45,735:DEBUG:certbot._internal.error_handler:Encountered exception:
+Traceback (most recent call last):
+  File "/opt/certbot/src/certbot/certbot/_internal/auth_handler.py", line 70, in handle_authorizations
+    resps = self.auth.perform(achalls)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 119, in perform
+    perform_achall(achall)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 145, in _perform_achall_with_script
+    _, out = self._execute_hook('auth-hook')
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 184, in _execute_hook
+    return hooks.execute(self.option_name(hook_name), self.conf(hook_name))
+  File "/opt/certbot/src/certbot/certbot/_internal/hooks.py", line 250, in execute
+    out, err = cmd.communicate()
+  File "/usr/local/lib/python3.8/subprocess.py", line 1024, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/usr/local/lib/python3.8/subprocess.py", line 1908, in _communicate
+    stderr = self._translate_newlines(stderr,
+  File "/usr/local/lib/python3.8/subprocess.py", line 901, in _translate_newlines
+    data = data.decode(encoding, errors)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xcf in position 35: invalid continuation byte
+
+2020-05-03 23:22:45,737:DEBUG:certbot._internal.error_handler:Calling registered functions
+2020-05-03 23:22:45,739:INFO:certbot._internal.auth_handler:Cleaning up challenges
+2020-05-03 23:22:45,741:ERROR:certbot._internal.error_handler:Encountered exception during recovery: 
+Traceback (most recent call last):
+  File "/opt/certbot/src/certbot/certbot/_internal/auth_handler.py", line 70, in handle_authorizations
+    resps = self.auth.perform(achalls)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 119, in perform
+    perform_achall(achall)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 145, in _perform_achall_with_script
+    _, out = self._execute_hook('auth-hook')
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 184, in _execute_hook
+    return hooks.execute(self.option_name(hook_name), self.conf(hook_name))
+  File "/opt/certbot/src/certbot/certbot/_internal/hooks.py", line 250, in execute
+    out, err = cmd.communicate()
+  File "/usr/local/lib/python3.8/subprocess.py", line 1024, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/usr/local/lib/python3.8/subprocess.py", line 1908, in _communicate
+    stderr = self._translate_newlines(stderr,
+  File "/usr/local/lib/python3.8/subprocess.py", line 901, in _translate_newlines
+    data = data.decode(encoding, errors)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xcf in position 35: invalid continuation byte
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/certbot/src/certbot/certbot/_internal/error_handler.py", line 125, in _call_registered
+    self.funcs[-1]()
+  File "/opt/certbot/src/certbot/certbot/_internal/auth_handler.py", line 243, in _cleanup_challenges
+    self.auth.cleanup(achalls)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 176, in cleanup
+    env = self.env.pop(achall)
+KeyError: KeyAuthorizationAnnotatedChallenge(challb=ChallengeBody(chall=DNS01(token=b';\xb2\xab\xa6\xb3]\xa1\x83\xc4\x9e\x01\xba\xd37\xf7\xbc\x82[\x9a\x04eV\t\x87\xbc\xbc\xc9\x1a\x06\x94\xfcd'), uri='https://acme-staging-v02.api.letsencrypt.org/acme/chall-v3/53674078/czGg-w', _url='https://acme-staging-v02.api.letsencrypt.org/acme/chall-v3/53674078/czGg-w', status=Status(pending), validated=None, error=None), domain='a.build.kyma-project.io', account_key=JWKRSA(key=<ComparableRSAKey(<cryptography.hazmat.backends.openssl.rsa._RSAPrivateKey object at 0x7f73810d4940>)>))
+2020-05-03 23:22:45,744:DEBUG:certbot._internal.log:Exiting abnormally:
+Traceback (most recent call last):
+  File "/usr/local/bin/certbot", line 11, in <module>
+    load_entry_point('certbot', 'console_scripts', 'certbot')()
+  File "/opt/certbot/src/certbot/certbot/main.py", line 15, in main
+    return internal_main.main(cli_args)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1347, in main
+    return config.func(config, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1233, in certonly
+    lineage = _get_and_save_cert(le_client, config, domains, certname, lineage)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 121, in _get_and_save_cert
+    lineage = le_client.obtain_and_enroll_certificate(domains, certname)
+  File "/opt/certbot/src/certbot/certbot/_internal/client.py", line 410, in obtain_and_enroll_certificate
+    cert, chain, key, _ = self.obtain_certificate(domains)
+  File "/opt/certbot/src/certbot/certbot/_internal/client.py", line 344, in obtain_certificate
+    orderr = self._get_order_and_authorizations(csr.data, self.config.allow_subset_of_names)
+  File "/opt/certbot/src/certbot/certbot/_internal/client.py", line 391, in _get_order_and_authorizations
+    authzr = self.auth_handler.handle_authorizations(orderr, best_effort)
+  File "/opt/certbot/src/certbot/certbot/_internal/auth_handler.py", line 70, in handle_authorizations
+    resps = self.auth.perform(achalls)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 119, in perform
+    perform_achall(achall)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 145, in _perform_achall_with_script
+    _, out = self._execute_hook('auth-hook')
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 184, in _execute_hook
+    return hooks.execute(self.option_name(hook_name), self.conf(hook_name))
+  File "/opt/certbot/src/certbot/certbot/_internal/hooks.py", line 250, in execute
+    out, err = cmd.communicate()
+  File "/usr/local/lib/python3.8/subprocess.py", line 1024, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/usr/local/lib/python3.8/subprocess.py", line 1908, in _communicate
+    stderr = self._translate_newlines(stderr,
+  File "/usr/local/lib/python3.8/subprocess.py", line 901, in _translate_newlines
+    data = data.decode(encoding, errors)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xcf in position 35: invalid continuation byte
+2020-05-03 23:22:45,749:ERROR:certbot._internal.log:An unexpected error occurred:

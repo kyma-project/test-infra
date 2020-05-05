@@ -1,0 +1,99 @@
+2020-05-04 12:32:12,790:DEBUG:certbot._internal.main:certbot version: 1.3.0
+2020-05-04 12:32:12,791:DEBUG:certbot._internal.main:Arguments: ['--agree-tos', '--no-eff-email', '-m', 'przemek.pokrywka@gmail.com', '--server', 'https://acme-staging-v02.api.letsencrypt.org/directory', '--manual', '--manual-public-ip-logging-ok', '--preferred-challenges', 'dns', '--manual-auth-hook', '/bot/certbotauthenticator', '-d', 'a.build.kyma-project.io.']
+2020-05-04 12:32:12,791:DEBUG:certbot._internal.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2020-05-04 12:32:13,124:DEBUG:certbot._internal.log:Root logging level set at 20
+2020-05-04 12:32:13,126:INFO:certbot._internal.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2020-05-04 12:32:13,134:DEBUG:certbot._internal.plugins.selection:Requested authenticator manual and installer None
+2020-05-04 12:32:13,143:DEBUG:certbot._internal.plugins.selection:Single candidate plugin: * manual
+Description: Manual configuration or run your own shell scripts
+Interfaces: IAuthenticator, IPlugin
+Entry point: manual = certbot._internal.plugins.manual:Authenticator
+Initialized: <certbot._internal.plugins.manual.Authenticator object at 0x7fdd847340a0>
+Prep: True
+2020-05-04 12:32:13,145:DEBUG:certbot._internal.plugins.selection:Selected authenticator <certbot._internal.plugins.manual.Authenticator object at 0x7fdd847340a0> and installer None
+2020-05-04 12:32:13,146:INFO:certbot._internal.plugins.selection:Plugins selected: Authenticator manual, Installer None
+2020-05-04 12:32:13,181:DEBUG:certbot._internal.main:Picked account: <Account(RegistrationResource(body=Registration(key=None, contact=(), agreement=None, status=None, terms_of_service_agreed=None, only_return_existing=None, external_account_binding=None), uri='https://acme-staging-v02.api.letsencrypt.org/acme/acct/13474575', new_authzr_uri=None, terms_of_service=None), 0ca10773bedaf0252bc041e7c5277c08, Meta(creation_dt=datetime.datetime(2020, 5, 3, 22, 46, 17, tzinfo=<UTC>), creation_host='1fe450f9cd72'))>
+2020-05-04 12:32:13,185:DEBUG:acme.client:Sending GET request to https://acme-staging-v02.api.letsencrypt.org/directory.
+2020-05-04 12:32:13,189:DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): acme-staging-v02.api.letsencrypt.org:443
+2020-05-04 12:32:13,958:DEBUG:urllib3.connectionpool:https://acme-staging-v02.api.letsencrypt.org:443 "GET /directory HTTP/1.1" 200 724
+2020-05-04 12:32:13,960:DEBUG:acme.client:Received response:
+HTTP 200
+Server: nginx
+Date: Mon, 04 May 2020 12:32:13 GMT
+Content-Type: application/json
+Content-Length: 724
+Connection: keep-alive
+Cache-Control: public, max-age=0, no-cache
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=604800
+
+{
+  "TVBhuojCjXw": "https://community.letsencrypt.org/t/adding-random-entries-to-the-directory/33417",
+  "keyChange": "https://acme-staging-v02.api.letsencrypt.org/acme/key-change",
+  "meta": {
+    "caaIdentities": [
+      "letsencrypt.org"
+    ],
+    "termsOfService": "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf",
+    "website": "https://letsencrypt.org/docs/staging-environment/"
+  },
+  "newAccount": "https://acme-staging-v02.api.letsencrypt.org/acme/new-acct",
+  "newNonce": "https://acme-staging-v02.api.letsencrypt.org/acme/new-nonce",
+  "newOrder": "https://acme-staging-v02.api.letsencrypt.org/acme/new-order",
+  "revokeCert": "https://acme-staging-v02.api.letsencrypt.org/acme/revoke-cert"
+}
+2020-05-04 12:32:14,036:DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): ocsp.stg-int-x1.letsencrypt.org:80
+2020-05-04 12:32:14,378:ERROR:certbot._internal.log:Exiting abnormally:
+Traceback (most recent call last):
+  File "/usr/local/bin/certbot", line 11, in <module>
+    load_entry_point('certbot', 'console_scripts', 'certbot')()
+  File "/opt/certbot/src/certbot/certbot/main.py", line 15, in main
+    return internal_main.main(cli_args)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1347, in main
+    return config.func(config, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1226, in certonly
+    should_get_cert, lineage = _find_cert(config, domains, certname)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 286, in _find_cert
+    action, lineage = _find_lineage_for_domains_and_certname(config, domains, certname)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 313, in _find_lineage_for_domains_and_certname
+    return _find_lineage_for_domains(config, domains)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 263, in _find_lineage_for_domains
+    return _handle_identical_cert_request(config, ident_names_cert)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 195, in _handle_identical_cert_request
+    if renewal.should_renew(config, lineage):
+  File "/opt/certbot/src/certbot/certbot/_internal/renewal.py", line 264, in should_renew
+    if lineage.should_autorenew():
+  File "/opt/certbot/src/certbot/certbot/_internal/storage.py", line 946, in should_autorenew
+    if self.ocsp_revoked(self.latest_common_version()):
+  File "/opt/certbot/src/certbot/certbot/_internal/storage.py", line 905, in ocsp_revoked
+    return ocsp.RevocationChecker().ocsp_revoked_by_paths(cert_path,
+  File "/opt/certbot/src/certbot/certbot/ocsp.py", line 100, in ocsp_revoked_by_paths
+    return _check_ocsp_cryptography(cert_path, chain_path, url)
+  File "/opt/certbot/src/certbot/certbot/ocsp.py", line 167, in _check_ocsp_cryptography
+    response = requests.post(url, data=request_binary,
+  File "/usr/local/lib/python3.8/site-packages/requests/api.py", line 116, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/requests/api.py", line 60, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/requests/sessions.py", line 533, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/local/lib/python3.8/site-packages/requests/sessions.py", line 646, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/local/lib/python3.8/site-packages/urllib3/connectionpool.py", line 665, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/local/lib/python3.8/site-packages/urllib3/connectionpool.py", line 421, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/local/lib/python3.8/site-packages/urllib3/connectionpool.py", line 416, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/local/lib/python3.8/http/client.py", line 1322, in getresponse
+    response.begin()
+  File "/usr/local/lib/python3.8/http/client.py", line 303, in begin
+    version, status, reason = self._read_status()
+  File "/usr/local/lib/python3.8/http/client.py", line 264, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/local/lib/python3.8/socket.py", line 669, in readinto
+    return self._sock.recv_into(b)
+KeyboardInterrupt

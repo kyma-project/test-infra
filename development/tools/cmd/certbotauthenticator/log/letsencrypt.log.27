@@ -1,0 +1,67 @@
+2020-05-03 23:00:53,311:DEBUG:certbot._internal.main:certbot version: 1.3.0
+2020-05-03 23:00:53,311:DEBUG:certbot._internal.main:Arguments: ['--agree-tos', '--no-eff-email', '-m', 'przemek.pokrywka@gmail.com', '--server', 'https://acme-staging-v02.api.letsencrypt.org/directory', '--manual', '--manual-public-ip-logging-ok']
+2020-05-03 23:00:53,311:DEBUG:certbot._internal.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2020-05-03 23:00:53,611:DEBUG:certbot._internal.log:Root logging level set at 20
+2020-05-03 23:00:53,611:INFO:certbot._internal.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2020-05-03 23:00:53,619:DEBUG:certbot._internal.plugins.selection:Requested authenticator manual and installer None
+2020-05-03 23:00:53,624:DEBUG:certbot._internal.plugins.selection:Single candidate plugin: * manual
+Description: Manual configuration or run your own shell scripts
+Interfaces: IAuthenticator, IPlugin
+Entry point: manual = certbot._internal.plugins.manual:Authenticator
+Initialized: <certbot._internal.plugins.manual.Authenticator object at 0x7f529883aa90>
+Prep: True
+2020-05-03 23:00:53,626:DEBUG:certbot._internal.plugins.selection:Selected authenticator <certbot._internal.plugins.manual.Authenticator object at 0x7f529883aa90> and installer None
+2020-05-03 23:00:53,627:INFO:certbot._internal.plugins.selection:Plugins selected: Authenticator manual, Installer None
+2020-05-03 23:00:53,651:DEBUG:certbot._internal.main:Picked account: <Account(RegistrationResource(body=Registration(key=None, contact=(), agreement=None, status=None, terms_of_service_agreed=None, only_return_existing=None, external_account_binding=None), uri='https://acme-staging-v02.api.letsencrypt.org/acme/acct/13474575', new_authzr_uri=None, terms_of_service=None), 0ca10773bedaf0252bc041e7c5277c08, Meta(creation_dt=datetime.datetime(2020, 5, 3, 22, 46, 17, tzinfo=<UTC>), creation_host='1fe450f9cd72'))>
+2020-05-03 23:00:53,652:DEBUG:acme.client:Sending GET request to https://acme-staging-v02.api.letsencrypt.org/directory.
+2020-05-03 23:00:53,655:DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): acme-staging-v02.api.letsencrypt.org:443
+2020-05-03 23:00:54,417:DEBUG:urllib3.connectionpool:https://acme-staging-v02.api.letsencrypt.org:443 "GET /directory HTTP/1.1" 200 724
+2020-05-03 23:00:54,419:DEBUG:acme.client:Received response:
+HTTP 200
+Server: nginx
+Date: Sun, 03 May 2020 23:00:54 GMT
+Content-Type: application/json
+Content-Length: 724
+Connection: keep-alive
+Cache-Control: public, max-age=0, no-cache
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=604800
+
+{
+  "Hr6rPoMuBIA": "https://community.letsencrypt.org/t/adding-random-entries-to-the-directory/33417",
+  "keyChange": "https://acme-staging-v02.api.letsencrypt.org/acme/key-change",
+  "meta": {
+    "caaIdentities": [
+      "letsencrypt.org"
+    ],
+    "termsOfService": "https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf",
+    "website": "https://letsencrypt.org/docs/staging-environment/"
+  },
+  "newAccount": "https://acme-staging-v02.api.letsencrypt.org/acme/new-acct",
+  "newNonce": "https://acme-staging-v02.api.letsencrypt.org/acme/new-nonce",
+  "newOrder": "https://acme-staging-v02.api.letsencrypt.org/acme/new-order",
+  "revokeCert": "https://acme-staging-v02.api.letsencrypt.org/acme/revoke-cert"
+}
+2020-05-03 23:00:54,421:DEBUG:certbot.display.ops:No installer, picking names manually
+2020-05-03 23:00:54,423:DEBUG:certbot._internal.log:Exiting abnormally:
+Traceback (most recent call last):
+  File "/usr/local/bin/certbot", line 11, in <module>
+    load_entry_point('certbot', 'console_scripts', 'certbot')()
+  File "/opt/certbot/src/certbot/certbot/main.py", line 15, in main
+    return internal_main.main(cli_args)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1347, in main
+    return config.func(config, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1225, in certonly
+    domains, certname = _find_domains_or_certname(config, installer)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 419, in _find_domains_or_certname
+    domains = display_ops.choose_names(installer, question)
+  File "/opt/certbot/src/certbot/certbot/display/ops.py", line 119, in choose_names
+    return _choose_names_manually()
+  File "/opt/certbot/src/certbot/certbot/display/ops.py", line 192, in _choose_names_manually
+    code, input_ = z_util(interfaces.IDisplay).input(
+  File "/opt/certbot/src/certbot/certbot/display/util.py", line 178, in input
+    ans = input_with_timeout(message)
+  File "/opt/certbot/src/certbot/certbot/display/util.py", line 85, in input_with_timeout
+    raise EOFError
+EOFError
+2020-05-03 23:00:54,426:ERROR:certbot._internal.log:An unexpected error occurred:

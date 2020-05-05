@@ -1,0 +1,37 @@
+2020-05-03 22:38:57,859:DEBUG:certbot._internal.main:certbot version: 1.3.0
+2020-05-03 22:38:57,859:DEBUG:certbot._internal.main:Arguments: ['--agree-tos', '--no-eff-email', '--server', 'https://acme-staging-v02.api.letsencrypt.org/directory', '--manual', '--preferred-challenges', 'dns', '--manual-auth-hook', '/bot/certbotauthenticator/certbotauthenticator', '--manual-cleanup-hook', '/bot/certbotauthenticator/certbotauthenticator', '-d', 'a.build.kyma-project.io']
+2020-05-03 22:38:57,859:DEBUG:certbot._internal.main:Discovered plugins: PluginsRegistry(PluginEntryPoint#manual,PluginEntryPoint#null,PluginEntryPoint#standalone,PluginEntryPoint#webroot)
+2020-05-03 22:38:58,151:DEBUG:certbot._internal.log:Root logging level set at 20
+2020-05-03 22:38:58,152:INFO:certbot._internal.log:Saving debug log to /var/log/letsencrypt/letsencrypt.log
+2020-05-03 22:38:58,159:DEBUG:certbot._internal.plugins.selection:Requested authenticator manual and installer None
+2020-05-03 22:38:58,164:DEBUG:certbot.plugins.util:Failed to find executable /bot/certbotauthenticator/certbotauthenticator in PATH: /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+2020-05-03 22:38:58,166:DEBUG:certbot._internal.log:Exiting abnormally:
+Traceback (most recent call last):
+  File "/usr/local/bin/certbot", line 11, in <module>
+    load_entry_point('certbot', 'console_scripts', 'certbot')()
+  File "/opt/certbot/src/certbot/certbot/main.py", line 15, in main
+    return internal_main.main(cli_args)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1347, in main
+    return config.func(config, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/main.py", line 1212, in certonly
+    installer, auth = plug_sel.choose_configurator_plugins(config, plugins, "certonly")
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/selection.py", line 226, in choose_configurator_plugins
+    authenticator = pick_authenticator(config, req_auth, plugins)
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/selection.py", line 38, in pick_authenticator
+    return pick_plugin(
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/selection.py", line 104, in pick_plugin
+    verified.prepare()
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/disco.py", line 253, in prepare
+    return [plugin_ep.prepare() for plugin_ep in six.itervalues(self._plugins)]
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/disco.py", line 253, in <listcomp>
+    return [plugin_ep.prepare() for plugin_ep in six.itervalues(self._plugins)]
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/disco.py", line 134, in prepare
+    self._initialized.prepare()
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 90, in prepare
+    self._validate_hooks()
+  File "/opt/certbot/src/certbot/certbot/_internal/plugins/manual.py", line 98, in _validate_hooks
+    hooks.validate_hook(hook, hook_prefix)
+  File "/opt/certbot/src/certbot/certbot/_internal/hooks.py", line 58, in validate_hook
+    raise errors.HookCommandNotFound(msg)
+certbot.errors.HookCommandNotFound: Unable to find manual-auth-hook command /bot/certbotauthenticator/certbotauthenticator in the PATH.
+(PATH is /usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin)
