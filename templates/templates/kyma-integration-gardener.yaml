@@ -1,0 +1,185 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+base_image_115: &base_image_115
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.15
+
+base_image_116: &base_image_116
+  image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4
+
+gardener_aws_job_labels_template: &gardener_aws_job_labels_template
+  preset-gardener-aws-kyma-integration: "true"
+  preset-kyma-cli-stable: "true"
+
+gardener_aws_job_template: &gardener_aws_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_116
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-aws.sh"
+        env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "eu-west-3"
+          - name: GARDENER_ZONES
+            value: "eu-west-3a"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
+gardener_gcp_job_labels_template: &gardener_gcp_job_labels_template
+  preset-gardener-gcp-kyma-integration: "true"
+  preset-kyma-cli-stable: "true"
+
+gardener_gcp_job_template: &gardener_gcp_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_115
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp.sh"
+        env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "europe-west4"
+          - name: GARDENER_ZONES
+            value: "europe-west4-b"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
+gardener_azure_job_labels_template: &gardener_azure_job_labels_template
+  preset-gardener-azure-kyma-integration: "true"
+  preset-kyma-cli-stable: "true"
+  preset-creds-aks-kyma-integration: "true"
+
+gardener_azure_job_template: &gardener_azure_job_template
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_115
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"
+        env:
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
+          - name: EVENTHUB_NAMESPACE_NAME
+            value: "kyma-gardener-azure"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "westeurope"
+          - name: GARDENER_ZONES
+            value: "1"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
+presubmits:
+  kyma-project/kyma:
+    - name: pre-master-kyma-gardener-azure-integration
+      <<: *gardener_azure_job_template
+      optional: {{ .Values.optional }}
+      branches:
+        - ^master$
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: {{  .Values.resource_changes_triggering_kafka_tests | join "|" | printf "^(((%s)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" | quote }}
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+postsubmits:
+  kyma-project/kyma: []
+#    - name: post-master-kyma-gardener-azure-integration
+#      <<: *gardener_azure_job_template
+#      optional: {{ .Values.optional }}
+#      annotations:
+#        testgrid-dashboards: kyma-postsubmit
+#        # testgrid-alert-email: email-here@sap.com
+#        testgrid-num-failures-to-alert: '1'
+#      branches:
+#        - ^master$
+#      labels:
+#        preset-build-master: "true"
+#        <<: *gardener_azure_job_labels_template
+#      extra_refs:
+#        - <<: *test_infra_ref
+#          base_ref: master
+
+periodics:
+  - name: kyma-integration-gardener-gcp
+    <<: *gardener_gcp_job_template
+    decorate: true
+    decoration_config:
+      timeout: 14400000000000 # 4h
+      grace_period: 600000000000 # 10min
+    cron: "00 08 * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    labels:
+      <<: *gardener_gcp_job_labels_template
+
+  - name: kyma-integration-gardener-aws
+    <<: *gardener_aws_job_template
+    decorate: true
+    decoration_config:
+      timeout: 14400000000000 # 4h
+      grace_period: 600000000000 # 10min
+    cron: "00 14 * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    labels:
+      <<: *gardener_aws_job_labels_template
+
+  - name: kyma-integration-gardener-azure
+    <<: *gardener_azure_job_template
+    decorate: true
+    decoration_config:
+      timeout: 14400000000000 # 4h
+      grace_period: 600000000000 # 10min
+    cron: "0 4,7,10,13 * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    labels:
+      <<: *gardener_azure_job_labels_template
+

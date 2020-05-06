@@ -569,6 +569,17 @@ templates:
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
+  - from: templates/kyma-integration-gardener.yaml
+    render:
+      - to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
+        values:
+          optional: true
+          resource_changes_triggering_kafka_tests:
+            - resources/knative-eventing
+            - resources/event-sources
+            - resources/knative-eventing-kafka
+            - resources/knative-serving
+            - resources/application-connector
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
