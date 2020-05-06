@@ -6,8 +6,8 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/dnsclient"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
-	"time"
 	"os"
+	"time"
 )
 
 var deleteRecord = flag.BoolP("delete", "D", false, "If set to true, record will be deleted. Default: false [Optional]")
