@@ -561,6 +561,11 @@ templates:
           path: logging
           since: "1.11"
           optional: true
+      - to: ../prow/jobs/console/tests/tests.yaml
+        values:
+          <<: *console_generic_component
+          path: tests
+          since: "1.11"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
