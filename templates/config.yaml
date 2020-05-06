@@ -539,18 +539,33 @@ templates:
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
-      - to: ../prow/jobs/console/core-ui/core-ui-tmp.yaml
+      - to: ../prow/jobs/console/core-ui/core-ui.yaml
         values:
           <<: *console_generic_component
           path: core-ui
           since: "1.11"
-          optional: true
+      - to: ../prow/jobs/console/add-ons/add-ons.yaml
+        values:
+          <<: *console_generic_component
+          path: add-ons
+          since: "1.11"
       - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui-tmp.yaml
         values:
           <<: *console_generic_component
           path: service-catalog-ui
           since: "1.11"
           optional: true
+      - to: ../prow/jobs/console/logging/logging-tmp.yaml
+        values:
+          <<: *console_generic_component
+          path: logging
+          since: "1.11"
+          optional: true
+      - to: ../prow/jobs/console/tests/tests.yaml
+        values:
+          <<: *console_generic_component
+          path: tests
+          since: "1.11"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml

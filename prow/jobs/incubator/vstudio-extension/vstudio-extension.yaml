@@ -38,4 +38,6 @@ postsubmits:
       <<: *job_template
       labels:
         preset-build-master: "true"
-        prow.kyma-project.io/slack.skipReport: "true" # this job will be ignored by Slack reporter
+      reporter_config:
+        slack:
+          channel: '' # empty channel overrides slack reporting in crier

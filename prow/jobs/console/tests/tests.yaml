@@ -14,14 +14,13 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-    prow.kyma-project.io/slack.skipReport: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11)-core-ui$
-  run_if_changed: "^core-ui/|^components/|^shared/"
+    - ^release-(1\.12|1\.11)-tests$
+  run_if_changed: "^tests/|^components/|^shared/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -30,7 +29,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/core-ui"
+          - "/home/prow/go/src/github.com/kyma-project/console/tests"
         resources:
           requests:
             memory: 1.5Gi
@@ -38,12 +37,12 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/console:
-    - name: pre-console-core-ui
+    - name: pre-console-tests
       skip_report: false
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/console:
-    - name: post-console-core-ui
+    - name: post-console-tests
       <<: *job_template

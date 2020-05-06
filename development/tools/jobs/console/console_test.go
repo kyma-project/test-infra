@@ -22,8 +22,6 @@ var components = []struct {
 	{path: "core-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
-			jobsuite.JobFileSuffix("tmp"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -31,6 +29,23 @@ var components = []struct {
 			jobsuite.Since(releases.Release111),
 			jobsuite.JobFileSuffix("tmp"),
 			jobsuite.Optional(),
+		},
+	},
+	{path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release111),
+		},
+	},
+	{path: "logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release111),
+			jobsuite.JobFileSuffix("tmp"),
+			jobsuite.Optional(),
+		},
+	},
+	{path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release111),
 		},
 	},
 }
