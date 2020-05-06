@@ -8,7 +8,7 @@ The image consists of:
 
 - Kubebuilder 2.0.0
 - Kustomize 3.1.0
-- Go 1.12
+- Go 1.14
 - Dep 0.5.0
 - Gcloud 219.0.1
 - Docker 18.06.1*
