@@ -119,7 +119,7 @@ presubmits:
       branches:
         - ^master$
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^(((resources/knative-eventing|resources/knative-eventing-kafka|resources/knative-serving|resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^(((resources/knative-eventing|resources/event-sources|resources/knative-eventing-kafka|resources/knative-serving|resources/application-connector)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         <<: *gardener_azure_job_labels_template

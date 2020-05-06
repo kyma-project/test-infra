@@ -571,6 +571,7 @@ templates:
           optional: true
           resource_changes_triggering_kafka_tests:
             - resources/knative-eventing
+            - resources/event-sources
             - resources/knative-eventing-kafka
             - resources/knative-serving
             - resources/application-connector
