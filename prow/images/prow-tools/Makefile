@@ -16,13 +16,13 @@ push-image:
 	docker push $(IMG):$(TAG)
 
 .PHONY: ci-pr
-ci-pr: build build-image push-image
+ci-pr: build-image push-image
 
 .PHONY: ci-master
-ci-master: build build-image push-image
+ci-master: build-image push-image
 
 .PHONY: ci-release
-ci-release: build build-image push-image
+ci-release: build-image push-image
 
 .PHONY: clean
 clean:
