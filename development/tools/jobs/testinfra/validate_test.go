@@ -29,7 +29,7 @@ func TestValidateProwPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, cont.Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, cont.Image)
 	assert.Equal(t, []string{"make"}, cont.Command)
 	assert.Equal(t, []string{"-C", "development/tools", "validate"}, cont.Args)
 }
@@ -52,7 +52,7 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageGolangBuildpack1_13, cont.Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, cont.Image)
 	assert.Equal(t,
 		[]string{
 			"/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml",
