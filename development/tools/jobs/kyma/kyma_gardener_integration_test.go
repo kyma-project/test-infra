@@ -2,6 +2,7 @@ package kyma_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,6 +23,8 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
 	assert.Equal(t, "0 4,7,10,13 * * *", job.Cron)
+	assert.Equal(t, job.DecorationConfig.Timeout, 4*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod, 10*time.Minute)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageKymaIntegrationK15, job.Spec.Containers[0].Image)
@@ -47,6 +50,8 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
 	assert.Equal(t, "00 08 * * *", job.Cron)
+	assert.Equal(t, job.DecorationConfig.Timeout, 4*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod, 10*time.Minute)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageKymaIntegrationK15, job.Spec.Containers[0].Image)
@@ -68,6 +73,8 @@ func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
+	assert.Equal(t, job.DecorationConfig.Timeout, 4*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod, 10*time.Minute)
 	assert.Equal(t, "00 14 * * *", job.Cron)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAWSIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
