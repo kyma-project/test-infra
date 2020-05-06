@@ -11,9 +11,7 @@ import (
 )
 
 func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
-	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
-	// THEN
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
@@ -38,9 +36,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 }
 
 func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
-	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
-	// THEN
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
@@ -62,9 +58,7 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 }
 
 func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
-	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
-	// THEN
 	require.NoError(t, err)
 
 	periodics := jobConfig.Periodics
@@ -85,10 +79,8 @@ func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
-func TestKymaGardenerAzureIntegratioPresubmit(t *testing.T) {
-	// WHEN
+func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
-	// THEN
 	require.NoError(t, err)
 
 	presubmits := jobConfig.Presubmits["kyma-project/kyma"]
@@ -112,11 +104,9 @@ func TestKymaGardenerAzureIntegratioPresubmit(t *testing.T) {
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 
-func TestKymaGardenerAzureIntegratioPostsubmit(t *testing.T) {
+func TestKymaGardenerAzureIntegrationPostsubmit(t *testing.T) {
 	t.SkipNow() // currently this test is flaky and disabled in the template
-	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
-	// THEN
 	require.NoError(t, err)
 
 	postsubmits := jobConfig.Postsubmits["kyma-project/kyma"]
