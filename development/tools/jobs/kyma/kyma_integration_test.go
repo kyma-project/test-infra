@@ -187,10 +187,10 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the job specific expectation
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
-				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
+				assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 			for _, path := range tc.expNotRunIfChangedPaths {
-				tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, path)
+				assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 		})
 	}
@@ -209,10 +209,10 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "resources/values.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "installation/file.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml"))
+	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/README.md"))
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)

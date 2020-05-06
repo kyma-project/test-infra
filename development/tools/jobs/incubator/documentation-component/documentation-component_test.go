@@ -28,10 +28,7 @@ func TestDocumentationComponentJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.BuildPr)
 
-	//tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "add-ons/some_random_file.js")
-	shouldRun, err := actualPresubmit.ShouldRun("master", func() ([]string, error) { return []string{"add-ons/some_random_file.js"}, nil }, false, true)
-	assert.NoError(t, err)
-	assert.True(t, shouldRun)
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "add-ons/some_random_file.js"))
 
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20190724-d41df0f", actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
@@ -62,8 +59,8 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
 
-	//tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
-	//tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "milv.config.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "some_markdown.md"))
 	shouldRun, err := actualPresubmit.ShouldRun("master", changedFiles, false, true)
 	assert.NoError(t, err)
 	assert.True(t, shouldRun)

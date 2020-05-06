@@ -22,7 +22,7 @@ func TestStabilityCheckerJobsPresubmit(t *testing.T) {
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "stability-checker/fix")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "stability-checker/fix"))
 	assert.Equal(t, "^stability-checker/", actualPresubmit.RunIfChanged)
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_14, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker")
 }

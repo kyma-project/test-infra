@@ -20,7 +20,7 @@ func TestCommonJobsPresubmit(t *testing.T) {
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "common/")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "common/"))
 	assert.Equal(t, "^common/", actualPresubmit.RunIfChanged)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)

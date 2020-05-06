@@ -66,10 +66,10 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 			assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
-				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
+				assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 			for _, path := range tc.expNotRunIfChangedPaths {
-				tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, path)
+				assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 		})
 	}
