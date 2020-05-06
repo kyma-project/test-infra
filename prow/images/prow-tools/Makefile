@@ -1,5 +1,5 @@
-APP_NAME ?= prow-tools
-IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(APP_NAME)
+IMG_NAME = prow-tools
+IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 TAG = $(DOCKER_TAG)
 
 .PHONY: validate
@@ -12,7 +12,7 @@ build-image:
 
 .PHONY: push-image
 push-image:
-	docker tag $(APP_NAME) $(IMG):$(TAG)
+	docker tag $(IMG_NAME) $(IMG):$(TAG)
 	docker push $(IMG):$(TAG)
 
 .PHONY: ci-pr
