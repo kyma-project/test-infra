@@ -505,6 +505,8 @@ branch-protection:
             contexts:
               - "netlify/kyma-project/deploy-preview"
         cli:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: true
           branches:
             master:
               protect: true
@@ -512,6 +514,12 @@ branch-protection:
           branches:
             master:
               protect: true
+        rafter:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: true
+        test-infra:
+          required_pull_request_reviews:
+            dismiss_stale_reviews: true
     kyma-incubator:
       repos:
         varkes:
