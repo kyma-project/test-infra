@@ -15,6 +15,9 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
+// dummy comment aw
+// another comment
+// another one
 // Designed to check validity of jobs generated from /templates/templates/component.yaml
 type ComponentSuite struct {
 	*jobsuite.Config
