@@ -15,7 +15,7 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
 
-	periodics := jobConfig.Periodics
+	periodics := jobConfig.AllPeriodics()
 
 	jobName := "kyma-integration-gardener-azure"
 	job := tester.FindPeriodicJobByName(periodics, jobName)
@@ -23,8 +23,8 @@ func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
 	assert.Equal(t, "0 4,7,10,13 * * *", job.Cron)
-	assert.Equal(t, job.DecorationConfig.Timeout, 4*time.Hour)
-	assert.Equal(t, job.DecorationConfig.GracePeriod, 10*time.Minute)
+	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageKymaIntegrationK15, job.Spec.Containers[0].Image)
@@ -42,7 +42,7 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
 
-	periodics := jobConfig.Periodics
+	periodics := jobConfig.AllPeriodics()
 
 	jobName := "kyma-integration-gardener-gcp"
 	job := tester.FindPeriodicJobByName(periodics, jobName)
@@ -50,8 +50,8 @@ func TestKymaGardenerGCPIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
 	assert.Equal(t, "00 08 * * *", job.Cron)
-	assert.Equal(t, job.DecorationConfig.Timeout, 4*time.Hour)
-	assert.Equal(t, job.DecorationConfig.GracePeriod, 10*time.Minute)
+	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageKymaIntegrationK15, job.Spec.Containers[0].Image)
@@ -66,15 +66,15 @@ func TestKymaGardenerAWSIntegrationJobPeriodics(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
 
-	periodics := jobConfig.Periodics
+	periodics := jobConfig.AllPeriodics()
 
 	jobName := "kyma-integration-gardener-aws"
 	job := tester.FindPeriodicJobByName(periodics, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
 	assert.True(t, job.Decorate)
-	assert.Equal(t, job.DecorationConfig.Timeout, 4*time.Hour)
-	assert.Equal(t, job.DecorationConfig.GracePeriod, 10*time.Minute)
+	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
+	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
 	assert.Equal(t, "00 14 * * *", job.Cron)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAWSIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRefs(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
@@ -90,7 +90,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
 
-	presubmits := jobConfig.Presubmits["kyma-project/kyma"]
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 
 	jobName := "pre-master-kyma-gardener-azure-integration"
 	job := tester.FindPresubmitJobByName(presubmits, jobName)
@@ -116,7 +116,7 @@ func TestKymaGardenerAzureIntegrationPostsubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
 	require.NoError(t, err)
 
-	postsubmits := jobConfig.Postsubmits["kyma-project/kyma"]
+	postsubmits := jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"})
 
 	jobName := "post-master-kyma-gardener-azure-integration"
 	job := tester.FindPostsubmitJobByName(postsubmits, jobName)

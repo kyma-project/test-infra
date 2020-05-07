@@ -46,7 +46,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	periodics := jobConfig.Periodics
+	periodics := jobConfig.AllPeriodics()
 	assert.Len(t, periodics, 1)
 
 	expName := "community-governance-nightly"
