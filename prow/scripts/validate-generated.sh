@@ -13,9 +13,6 @@ source "${SCRIPT_DIR}/library.sh"
 
 shout " - Running jobs generator tool..."
 
-cd "${TEST_INFRA_SOURCES_DIR}/development/tools/"
-make resolve
-
 cd "${TEST_INFRA_SOURCES_DIR}"
 go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
 
