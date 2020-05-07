@@ -13,8 +13,9 @@ source "${SCRIPT_DIR}/library.sh"
 
 shout " - Running jobs generator tool..."
 
-cd "${TEST_INFRA_SOURCES_DIR}"
-go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
+cd "${TEST_INFRA_SOURCES_DIR}/development/tools"
+# TODO use rendertemplates binary instead of building one
+go run cmd/rendertemplates/main.go --config "${TEST_INFRA_SOURCES_DIR}"/templates/config.yaml
 
 shout " - Looking for job definition and rendered job files inconsistency..."
 
@@ -25,8 +26,8 @@ if [[ -n "${CHANGES}" ]]; then
 
   echo "
     Run:
-        go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
-    in the root of the repository and commit changes.
+        go run cmd/rendertemplates/main.go --config ${TEST_INFRA_SOURCES_DIR}/templates/config.yaml
+    in the development/tools directory of the repository and commit changes.
     For more info read: /docs/prow/templates.md
     "
   exit 1
