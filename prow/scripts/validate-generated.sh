@@ -26,7 +26,7 @@ if [[ -n "${CHANGES}" ]]; then
 
   echo "
     Run:
-        go run cmd/rendertemplates/main.go --config ${TEST_INFRA_SOURCES_DIR}/templates/config.yaml
+        go run cmd/rendertemplates/main.go --config ../../templates/config.yaml
     in the development/tools directory of the repository and commit changes.
     For more info read: /docs/prow/templates.md
     "
