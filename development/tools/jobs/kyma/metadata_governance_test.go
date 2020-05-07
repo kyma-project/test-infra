@@ -16,8 +16,7 @@ func TestMetadataGovernanceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	presubmits, ex := jobConfig.PresubmitsStatic["kyma-project/kyma"]
-	assert.True(t, ex)
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, presubmits, 1)
 	expName := "kyma-metadata-schema-governance"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(presubmits, expName, "master")

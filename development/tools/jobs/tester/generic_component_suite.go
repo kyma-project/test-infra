@@ -41,7 +41,7 @@ func (s GenericComponentSuite) testRunAgainstAnyBranch(t *testing.T) {
 
 func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPresubmitJobByName(jobConfig.PresubmitsStatic[s.repositorySectionKey()], s.jobName("pre"))
+		job := FindPresubmitJobByName(jobConfig.AllStaticPresubmits([]string{s.repositorySectionKey()}), s.jobName("pre"))
 		require.NotNil(t, job)
 
 		assert.False(t, job.SkipReport, "Must not skip report")
@@ -70,7 +70,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 
 func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
-		job := FindPostsubmitJobByName(jobConfig.PostsubmitsStatic[s.repositorySectionKey()], s.jobName("post"))
+		job := FindPostsubmitJobByName(jobConfig.AllStaticPostsubmits([]string{s.repositorySectionKey()}), s.jobName("post"))
 		require.NotNil(t, job, "Job must exists")
 
 		assert.True(t, job.Decorate, "Must decorate")

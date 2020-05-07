@@ -17,8 +17,7 @@ func TestBootstrapJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-bootstrap"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -45,8 +44,7 @@ func TestBootstrapJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-bootstrap"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -70,8 +68,7 @@ func TestBootstrapHelmJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-bootstrap-helm"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -98,8 +95,7 @@ func TestBootstrapHelmJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-bootstrap-helm"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -123,8 +119,7 @@ func TestBuildpackGolangJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-buildpack-golang"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -151,8 +146,7 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-buildpack-golang"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -176,8 +170,7 @@ func TestBuildpackGolangKubebuilderJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-buildpack-golang-kubebuilder"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -204,8 +197,7 @@ func TestBuildpackGolangKubebuilderJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-buildpack-golang-kubebuilder"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -229,8 +221,7 @@ func TestBuildpackGolangKubebuilder2JobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-buildpack-golang-kubebuilder2"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -257,8 +248,7 @@ func TestBuildpackGolangKubebuilder2JobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-buildpack-golang-kubebuilder2"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -281,7 +271,7 @@ func TestKymaClusterInfraPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/test-infra"], "pre-test-infra-kyma-cluster-infra", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-test-infra-kyma-cluster-infra", "master")
 	require.NotNil(t, actualPresubmit)
 
 	assert.False(t, actualPresubmit.SkipReport)
@@ -302,7 +292,7 @@ func TestKymaClusterInfraPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/test-infra"], "post-test-infra-kyma-cluster-infra", "master")
+	actualPostsubmit := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"}), "post-test-infra-kyma-cluster-infra", "master")
 	require.NotNil(t, actualPostsubmit)
 
 	assert.True(t, actualPostsubmit.Decorate)
@@ -323,8 +313,7 @@ func TestBuildpackNodeJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-buildpack-node"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -351,8 +340,7 @@ func TestBuildpackNodeJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-buildpack-node-chromium"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -377,8 +365,7 @@ func TestBuildpackNodeChromiumPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-buildpack-node-chromium"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -404,8 +391,7 @@ func TestBuildpackNodeChromiumPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-buildpack-node"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -429,8 +415,7 @@ func TestCleanerJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-cleaner"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -457,8 +442,7 @@ func TestCleanerJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-cleaner"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -482,8 +466,7 @@ func TestVulnerabilityScannerJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-vulnerability-scanner"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -510,8 +493,7 @@ func TestVulnerabilityScannerJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-vulnerability-scanner"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
@@ -535,8 +517,7 @@ func TestKubectlJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits, ex := jobConfig.PresubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	expName := "pre-test-infra-kubectl"
 	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
@@ -563,8 +544,7 @@ func TestKubectlJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost, ex := jobConfig.PostsubmitsStatic["kyma-project/test-infra"]
-	assert.True(t, ex)
+	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
 
 	expName := "post-test-infra-kubectl"
 	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")

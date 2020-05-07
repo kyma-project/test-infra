@@ -14,7 +14,7 @@ func TestKymaReleasePrImageGuard(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-release-pr-image-guard.yaml")
 	// THEN
 	require.NoError(t, err)
-	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.PresubmitsStatic["kyma-project/kyma"], "pre-release-pr-image-guard")
+	actualPresubmit := tester.FindPresubmitJobByName(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), "pre-release-pr-image-guard")
 	assert.True(t, actualPresubmit.CouldRun("release-1.6"))
 	assert.True(t, actualPresubmit.CouldRun("release-2.3"))
 	require.NotNil(t, actualPresubmit)

@@ -18,8 +18,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	presubmits, ex := jobConfig.PresubmitsStatic["kyma-project/website"]
-	assert.True(t, ex)
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/website"})
 	assert.Len(t, presubmits, 1)
 
 	expName := "pre-master-website-governance"

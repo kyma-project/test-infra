@@ -17,8 +17,7 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	varkesPresubmits, ex := jobConfig.PresubmitsStatic["kyma-incubator/varkes"]
-	assert.True(t, ex)
+	varkesPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/varkes"})
 	assert.Len(t, varkesPresubmits, 1)
 
 	masterPresubmit := tester.FindPresubmitJobByNameAndBranch(varkesPresubmits, jobName, "master")
@@ -45,8 +44,7 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	varkesPostsubmits, ex := jobConfig.PostsubmitsStatic["kyma-incubator/varkes"]
-	assert.True(t, ex)
+	varkesPostsubmits := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/varkes"})
 	assert.Len(t, varkesPostsubmits, 2)
 
 	masterPostsubmit := tester.FindPostsubmitJobByNameAndBranch(varkesPostsubmits, jobName, "master")
@@ -71,8 +69,7 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	varkesPostsubmits, ex := jobConfig.PostsubmitsStatic["kyma-incubator/varkes"]
-	assert.True(t, ex)
+	varkesPostsubmits := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/varkes"})
 	assert.Len(t, varkesPostsubmits, 2)
 
 	releasePostsubmit := tester.FindPostsubmitJobByNameAndBranch(varkesPostsubmits, jobName, "release")

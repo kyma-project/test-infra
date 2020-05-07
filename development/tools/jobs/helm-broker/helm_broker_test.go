@@ -45,7 +45,7 @@ func TestHelmBrokerJobsPresubmit(t *testing.T) {
 	for tn, tc := range tests {
 		t.Run(tn, func(t *testing.T) {
 			// when
-			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.PresubmitsStatic["kyma-project/helm-broker"], tc.givenJobName, "master")
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/helm-broker"}), tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -69,8 +69,7 @@ func TestHelmBrokerJobsPostsubmits(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 
-	kymaPost, ex := jobConfig.PostsubmitsStatic["kyma-project/helm-broker"]
-	assert.True(t, ex)
+	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/helm-broker"})
 	assert.Len(t, kymaPost, 2)
 
 	for i, tests := range []struct {

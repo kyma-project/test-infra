@@ -18,7 +18,7 @@ func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-release-candidate.yaml")
 			require.NoError(t, err)
 
-			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.PostsubmitsStatic["kyma-project/kyma"], tester.GetReleasePostSubmitJobName("kyma-release-candidate", currentRelease), currentRelease.Branch())
+			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"}), tester.GetReleasePostSubmitJobName("kyma-release-candidate", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualJob)
 
 			// then

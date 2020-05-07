@@ -18,8 +18,7 @@ func TestAddonsGovernanceJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	presubmits, ex := jobConfig.PresubmitsStatic["kyma-project/addons"]
-	assert.True(t, ex)
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/addons"})
 	assert.Len(t, presubmits, 1)
 
 	expName := "pre-master-addons-governance"
