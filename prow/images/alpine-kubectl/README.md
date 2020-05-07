@@ -6,12 +6,13 @@ This folder contains a minimal Docker image used to control the cluster.
 
 This image consists of:
 
-- alpine linux 3.8
+- alpine linux 3.11
 - openssl
 - curl
 - base64
-- kubectl (1.13)
-- helm (2.10)
+- kubectl (1.17)
+- helm (2.16)
+- grep
 
 ## Installation
 
