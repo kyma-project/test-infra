@@ -426,6 +426,7 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/cluster-users
           since: "1.7"
+          until: "1.12"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging-generic.yaml
         values:
           <<: *kyma_generic_component
