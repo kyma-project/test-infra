@@ -15,9 +15,8 @@ func TestVStudioExtensionJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-incubator/vstudio-extension"]
-	assert.True(t, ex)
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/vstudio-extension"})
 	assert.Len(t, kymaPresubmits, 1)
 
 	actualPresubmit := kymaPresubmits[0]
@@ -42,9 +41,8 @@ func TestVStudioExtensionJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-incubator/vstudio-extension"]
-	assert.True(t, ex)
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/vstudio-extension"})
 	assert.Len(t, kymaPost, 1)
 
 	actualPost := kymaPost[0]

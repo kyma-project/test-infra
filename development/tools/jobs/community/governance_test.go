@@ -17,9 +17,8 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	presubmits, ex := jobConfig.Presubmits["kyma-project/community"]
-	assert.True(t, ex)
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/community"})
 	assert.Len(t, presubmits, 1)
 
 	expName := "pre-master-community-governance"
@@ -34,8 +33,8 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "milv.config.yaml|.md$", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "milv.config.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "some_markdown.md")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "milv.config.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "some_markdown.md"))
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--repository", "community"}, actualPresubmit.Spec.Containers[0].Args)
@@ -47,7 +46,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	periodics := jobConfig.Periodics
+	periodics := jobConfig.AllPeriodics()
 	assert.Len(t, periodics, 1)
 
 	expName := "community-governance-nightly"

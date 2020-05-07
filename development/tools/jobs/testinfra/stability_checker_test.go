@@ -15,14 +15,14 @@ func TestStabilityCheckerJobsPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/test-infra"], "pre-master-stability-checker", "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"}), "pre-master-stability-checker", "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
 	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "stability-checker/fix")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "stability-checker/fix"))
 	assert.Equal(t, "^stability-checker/", actualPresubmit.RunIfChanged)
 	tester.AssertThatExecGolangBuildpack(t, actualPresubmit.JobBase, tester.ImageGolangBuildpack1_14, "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker")
 }
@@ -34,7 +34,7 @@ func TestStabilityCheckerJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-stability-checker"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/test-infra"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"}), expName, "master")
 	require.NotNil(t, actualPost)
 
 	assert.Equal(t, expName, actualPost.Name)

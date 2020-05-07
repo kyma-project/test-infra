@@ -16,7 +16,7 @@ func TestCompassJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-master-console-compass"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/console"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/console"}), expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -27,7 +27,7 @@ func TestCompassJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "(^compass/)|(^components/react/)", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "compass/some_random_file.js")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "compass/some_random_file.js"))
 	assert.Equal(t, tester.ImageNodeBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/compass"}, actualPresubmit.Spec.Containers[0].Args)
@@ -40,7 +40,7 @@ func TestCompassJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-console-compass"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/console"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/console"}), expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)

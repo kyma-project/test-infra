@@ -2,19 +2,18 @@ package tester
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"github.com/stretchr/testify/require"
 	"io/ioutil"
+	v1 "k8s.io/api/core/v1"
 	"os"
 	"testing"
 
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
-	"k8s.io/test-infra/prow/kube"
-
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
 const (
@@ -91,13 +90,13 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 		return config.JobConfig{}, errors.Wrapf(err, "while unmarshalling file [%s]", fileName)
 	}
 
-	for _, v := range jobConfig.Presubmits {
+	for _, v := range jobConfig.PresubmitsStatic {
 		if err := config.SetPresubmitRegexes(v); err != nil {
 			return config.JobConfig{}, errors.Wrap(err, "while setting presubmit regexes")
 		}
 	}
 
-	for _, v := range jobConfig.Postsubmits {
+	for _, v := range jobConfig.PostsubmitsStatic {
 		if err := config.SetPostsubmitRegexes(v); err != nil {
 			return config.JobConfig{}, errors.Wrap(err, "while setting postsubmit regexes")
 		}
@@ -108,7 +107,7 @@ func ReadJobConfig(fileName string) (config.JobConfig, error) {
 // FindPresubmitJobByNameAndBranch finds presubmit job by name from provided jobs list
 func FindPresubmitJobByNameAndBranch(jobs []config.Presubmit, name, branch string) *config.Presubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch) {
+		if job.Name == name && job.CouldRun(branch) {
 			return &job
 		}
 	}
@@ -127,6 +126,51 @@ func FindPresubmitJobByName(jobs []config.Presubmit, name string) *config.Presub
 	return nil
 }
 
+/*
+IfPresubmitShouldRunAgainstChanges determines if the given presubmit job should run against given list of files
+by checking them against regular expression if present. If the state of the job execution could not be determined
+the function returns default state def.
+*/
+func IfPresubmitShouldRunAgainstChanges(job config.Presubmit, def bool, changedFiles ...string) bool {
+	if job.AlwaysRun {
+		return true
+	}
+
+	changed := func() ([]string, error) {
+		return changedFiles, nil
+	}
+	det, shouldRun, err := job.RegexpChangeMatcher.ShouldRun(changed)
+	if err != nil {
+		fmt.Printf("An error occured during IfPresubmitShouldRunAgainstChanges execution: %v", err)
+		return false
+	}
+	if det {
+		return shouldRun
+	}
+	return def
+}
+
+/*
+IfPostsubmitShouldRunAgainstChanges determines if the given postsubmit job should run against given list of files
+by checking them against regular expression if present.
+*/
+func IfPostsubmitShouldRunAgainstChanges(job config.Postsubmit, changedFiles ...string) bool {
+	changed := func() ([]string, error) {
+		return changedFiles, nil
+	}
+	det, shouldRun, err := job.RegexpChangeMatcher.ShouldRun(changed)
+	if err != nil {
+		fmt.Printf("An error occured during IfPostsubmitShouldRunAgainstChanges execution: %v", err)
+		return false
+	}
+	if det {
+		return shouldRun
+	}
+	// postsubmits should run by default
+	return true
+
+}
+
 // GetReleaseJobName returns name of release job based on branch name by adding release prefix
 func GetReleaseJobName(moduleName string, release *releases.SupportedRelease) string {
 	return fmt.Sprintf("pre-%s-%s", release.JobPrefix(), moduleName)
@@ -140,7 +184,7 @@ func GetReleasePostSubmitJobName(moduleName string, release *releases.SupportedR
 // FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch string) *config.Postsubmit {
 	for _, job := range jobs {
-		if job.Name == name && job.RunsAgainstBranch(branch) {
+		if job.Name == name && job.CouldRun(branch) {
 			return &job
 		}
 	}
@@ -219,12 +263,18 @@ func AssertThatHasPresets(t *testing.T, in config.JobBase, expected ...preset.Pr
 	}
 }
 
-// AssertThatJobRunIfChanged checks if job that has specified run_if_changed parameter will be triggered by changes in specified file.
+/*
+AssertThatJobRunIfChanged checks if job that has specified run_if_changed parameter will be triggered by changes in specified file.
+Deprecated: Please use IfPresubmitShouldRunAgainstChanges or IfPostsubmitShouldRunAgainstChanges for determining if job should run against given files.
+*/
 func AssertThatJobRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.True(t, p.RunsAgainstChanges([]string{changedFile}), "missed change [%s]", changedFile)
 }
 
-// AssertThatJobDoesNotRunIfChanged checks if job that has specified run_if_changed parameter will not be triggered by changes in specified file.
+/*
+AssertThatJobDoesNotRunIfChanged checks if job that has specified run_if_changed parameter will not be triggered by changes in specified file.
+Deprecated: Please use IfPresubmitShouldRunAgainstChanges or IfPostsubmitShouldRunAgainstChanges for determining if job should run against given files.
+*/
 func AssertThatJobDoesNotRunIfChanged(t *testing.T, p jobRunner, changedFile string) {
 	assert.False(t, p.RunsAgainstChanges([]string{changedFile}), "triggered by changed file [%s]", changedFile)
 }
@@ -252,7 +302,7 @@ func AssertThatSpecifiesResourceRequests(t *testing.T, job config.JobBase) {
 }
 
 // AssertThatContainerHasEnv checks if container has specified given environment variable
-func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expValue string) {
+func AssertThatContainerHasEnv(t *testing.T, cont v1.Container, expName, expValue string) {
 	for _, env := range cont.Env {
 		if env.Name == expName && env.Value == expValue {
 			return
@@ -262,7 +312,7 @@ func AssertThatContainerHasEnv(t *testing.T, cont kube.Container, expName, expVa
 }
 
 // AssertThatContainerHasEnvFromSecret checks if container has specified given environment variable
-func AssertThatContainerHasEnvFromSecret(t *testing.T, cont kube.Container, expName, expSecretName, expSecretKey string) {
+func AssertThatContainerHasEnvFromSecret(t *testing.T, cont v1.Container, expName, expSecretName, expSecretKey string) {
 	for _, env := range cont.Env {
 		if env.ValueFrom != nil && env.ValueFrom.SecretKeyRef != nil && env.ValueFrom.SecretKeyRef.Name == expSecretName && env.ValueFrom.SecretKeyRef.Key == expSecretKey {
 			return

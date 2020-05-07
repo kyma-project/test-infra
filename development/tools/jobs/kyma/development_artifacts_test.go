@@ -15,13 +15,13 @@ func TestPresubmitDevelopmentArtifacts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-development-artifacts", "master")
+	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), "pre-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 
-	tester.AssertThatJobRunIfChanged(t, job, "resources/helm-broker/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, job, "installation/scripts/concat-yamls.sh")
-	tester.AssertThatJobRunIfChanged(t, job, "components/kyma-operator/Makefile")
-	tester.AssertThatJobRunIfChanged(t, job, "tools/kyma-installer/kyma.Dockerfile")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "resources/helm-broker/values.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "installation/scripts/concat-yamls.sh"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "components/kyma-operator/Makefile"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "tools/kyma-installer/kyma.Dockerfile"))
 	assert.False(t, job.SkipReport)
 	assert.False(t, job.AlwaysRun)
 	assert.True(t, job.Optional)
@@ -47,7 +47,7 @@ func TestPostsubmitDevelopmentArtifcts(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], "post-master-kyma-development-artifacts", "master")
+	job := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"}), "post-master-kyma-development-artifacts", "master")
 	require.NotNil(t, job)
 	assert.Empty(t, job.RunIfChanged)
 	tester.AssertThatHasExtraRefTestInfra(t, job.UtilityConfig, "master")

@@ -15,9 +15,8 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Presubmits, 1)
-	kymaPresubmits, ex := jobConfig.Presubmits["kyma-project/kyma"]
-	assert.True(t, ex)
+	assert.Len(t, jobConfig.PresubmitsStatic, 1)
+	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, kymaPresubmits, 1)
 
 	expName := "pre-master-kyma-tools-failery"
@@ -33,7 +32,7 @@ func TestFaileryJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr)
 	assert.Equal(t, "^tools/failery/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "tools/failery/some_random_file.go")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "tools/failery/some_random_file.go"))
 	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/kyma/tools/failery"}, actualPresubmit.Spec.Containers[0].Args)
@@ -45,9 +44,8 @@ func TestFaileryJobPostsubmit(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	assert.Len(t, jobConfig.Postsubmits, 1)
-	kymaPost, ex := jobConfig.Postsubmits["kyma-project/kyma"]
-	assert.True(t, ex)
+	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
+	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"})
 	assert.Len(t, kymaPost, 1)
 
 	expName := "post-master-kyma-tools-failery"

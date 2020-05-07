@@ -17,7 +17,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-integration", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-integration", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -47,7 +47,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-integration", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-integration", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -76,7 +76,7 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
 			// THEN
 			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tester.GetReleaseJobName("kyma-gke-backup", currentRelease), currentRelease.Branch())
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-backup", currentRelease), currentRelease.Branch())
 			require.NotNil(t, actualPresubmit)
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
@@ -171,7 +171,7 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], tc.givenJobName, "master")
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -187,10 +187,10 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			// the job specific expectation
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
-				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
+				assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 			for _, path := range tc.expNotRunIfChangedPaths {
-				tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, path)
+				assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 		})
 	}
@@ -203,16 +203,16 @@ func TestKymaGKEUpgradeJobsPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	// when
-	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/kyma"], "pre-master-kyma-gke-upgrade", "master")
+	actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), "pre-master-kyma-gke-upgrade", "master")
 	require.NotNil(t, actualJob)
 
 	// then
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "resources/values.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "installation/file.yaml")
-	tester.AssertThatJobRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml")
-	tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, "tests/end-to-end/upgrade/chart/upgrade/README.md")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "resources/values.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "installation/file.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/Chart.yaml"))
+	assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, "tests/end-to-end/upgrade/chart/upgrade/README.md"))
 	assert.True(t, actualJob.Decorate)
 	assert.False(t, actualJob.SkipReport)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
@@ -272,7 +272,7 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/kyma"], tc.givenJobName, "master")
+			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/kyma"}), tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -297,7 +297,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	// THEN
 	require.NoError(t, err)
 
-	periodics := jobConfig.Periodics
+	periodics := jobConfig.AllPeriodics()
 	assert.Len(t, periodics, 14)
 
 	expName := "orphaned-disks-cleaner"

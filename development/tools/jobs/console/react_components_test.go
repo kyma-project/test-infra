@@ -16,7 +16,7 @@ func TestReactComponentsJobPresubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "pre-master-console-react-components"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-project/console"], expName, "master")
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/console"}), expName, "master")
 	require.NotNil(t, actualPresubmit)
 	assert.Equal(t, expName, actualPresubmit.Name)
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
@@ -28,7 +28,7 @@ func TestReactComponentsJobPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr)
 	assert.Equal(t, "^components/react/", actualPresubmit.RunIfChanged)
-	tester.AssertThatJobRunIfChanged(t, *actualPresubmit, "components/react/some_random_file.js")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "components/react/some_random_file.js"))
 	assert.Equal(t, tester.ImageNode10Buildpack, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/console/components/react"}, actualPresubmit.Spec.Containers[0].Args)
@@ -41,7 +41,7 @@ func TestReactComponentsJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	expName := "post-master-console-react-components"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-project/console"], expName, "master")
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-project/console"}), expName, "master")
 	require.NotNil(t, actualPost)
 	assert.Equal(t, expName, actualPost.Name)
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)

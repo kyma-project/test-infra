@@ -49,7 +49,7 @@ func TestCompassIntegrationAuditLogTempJobsPresubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.Presubmits["kyma-incubator/compass"], tc.givenJobName, "master")
+			actualJob := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-incubator/compass"}), tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then
@@ -67,10 +67,10 @@ func TestCompassIntegrationAuditLogTempJobsPresubmit(t *testing.T) {
 			assert.Equal(t, tester.ImageGolangKubebuilder2BuildpackLatest, actualJob.Spec.Containers[0].Image)
 			tester.AssertThatHasPresets(t, actualJob.JobBase, tc.expPresets...)
 			for _, path := range tc.expRunIfChangedPaths {
-				tester.AssertThatJobRunIfChanged(t, *actualJob, path)
+				assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 			for _, path := range tc.expNotRunIfChangedPaths {
-				tester.AssertThatJobDoesNotRunIfChanged(t, *actualJob, path)
+				assert.False(t, tester.IfPresubmitShouldRunAgainstChanges(*actualJob, true, path))
 			}
 		})
 	}
@@ -97,7 +97,7 @@ func TestCompassIntegrationAuditLogTempPostsubmit(t *testing.T) {
 			require.NoError(t, err)
 
 			// when
-			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.Postsubmits["kyma-incubator/compass"], tc.givenJobName, "master")
+			actualJob := tester.FindPostsubmitJobByNameAndBranch(jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/compass"}), tc.givenJobName, "master")
 			require.NotNil(t, actualJob)
 
 			// then

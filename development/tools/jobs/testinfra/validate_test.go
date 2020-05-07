@@ -13,16 +13,16 @@ func TestValidateProwPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
 	require.NoError(t, err)
-	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
+	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-master-test-infra-validate-prow", "master")
 	require.NotNil(t, sut)
 
-	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/cmd/configuploader/main.go")
-	tester.AssertThatJobRunIfChanged(t, *sut, "development/tools/jobs/console_backend_module_test.go")
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/config.yaml")
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/plugins.yaml")
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/jobs/random/job.yaml")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/tools/cmd/configuploader/main.go"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/tools/jobs/console_backend_module_test.go"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/config.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/plugins.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/jobs/random/job.yaml"))
 
 	assert.Equal(t, []string{"^master$"}, sut.Branches)
 	assert.False(t, sut.SkipReport)
@@ -39,14 +39,14 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
 	require.NoError(t, err)
-	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
+	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-test-infra-validate-configs", "master")
 	require.NotNil(t, sut)
 
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/config.yaml")
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/plugins.yaml")
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/jobs/random/job.yaml")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/config.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/plugins.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/jobs/random/job.yaml"))
 
 	assert.False(t, sut.SkipReport)
 
@@ -67,13 +67,13 @@ func TestValidateScriptsPresubmit(t *testing.T) {
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/validation.yaml")
 	// THEN
 	require.NoError(t, err)
-	testInfraPresubmits := jobConfig.Presubmits["kyma-project/test-infra"]
+	testInfraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
 
 	sut := tester.FindPresubmitJobByNameAndBranch(testInfraPresubmits, "pre-test-infra-validate-scripts", "master")
 	require.NotNil(t, sut)
 
-	tester.AssertThatJobRunIfChanged(t, *sut, "development/ala.sh")
-	tester.AssertThatJobRunIfChanged(t, *sut, "prow/ela.sh")
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "development/ala.sh"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*sut, true, "prow/ela.sh"))
 
 	assert.False(t, sut.SkipReport)
 

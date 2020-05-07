@@ -47,7 +47,7 @@ func TestBranchProtection(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(fmt.Sprintf("Org: %s, repository: %s, branch: %s", testcase.organization, testcase.repository, testcase.branch), func(t *testing.T) {
-			masterPolicy, err := actual.GetBranchProtection(testcase.organization, testcase.repository, testcase.branch)
+			masterPolicy, err := actual.GetBranchProtection(testcase.organization, testcase.repository, testcase.branch, []config.Presubmit{})
 			require.NoError(t, err)
 			require.NotNil(t, masterPolicy)
 			assert.True(t, *masterPolicy.Protect)
@@ -71,7 +71,7 @@ func TestBranchProtectionRelease(t *testing.T) {
 	for _, currentRelease := range releases.GetAllKymaReleases() {
 		relBranch = currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
-			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch)
+			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch, []config.Presubmit{})
 			require.NoError(t, err)
 			assert.NotNil(t, p)
 			assert.True(t, *p.Protect)
