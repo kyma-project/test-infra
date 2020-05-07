@@ -3,9 +3,11 @@ plugins:
   kyma-project:
     - cat
     - trigger
+    - project
   kyma-incubator:
     - cat
     - trigger
+    - project
   kyma-project/test-infra:
     - config-updater
 
@@ -27,3 +29,10 @@ triggers:
   only_org_members: true
   ignore_ok_to_test: true
   elide_skipped_contexts: false
+
+project_config:
+  project_org_configs:
+    kyma-project:
+      org_default_column_map:
+        Wookiee:
+          Inbox
