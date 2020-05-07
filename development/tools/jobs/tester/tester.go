@@ -192,6 +192,8 @@ func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch str
 	return nil
 }
 
+// dummy comment
+
 // FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
 	for _, job := range jobs {
