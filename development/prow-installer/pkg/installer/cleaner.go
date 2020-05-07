@@ -64,8 +64,6 @@ func (c *Cleaner) CleanAll(ctx context.Context) error {
 		}
 	}
 	for _, v := range c.config.ServiceAccounts {
-		//TODO: Adding prefix, creating fqdn and adding resource dependent name string should be done within called methods not in calling package. Move such code to called methods for all packages.
-		//
 		var name string
 		if c.config.Prefix != "" {
 			name = fmt.Sprintf("%s-%s", c.config.Prefix, v.Name)
