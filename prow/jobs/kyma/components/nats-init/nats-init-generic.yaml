@@ -10,6 +10,7 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
+  report: false
   reporter_config:
     slack:
       channel: '' # empty channel overrides slack reporting in crier

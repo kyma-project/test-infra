@@ -137,6 +137,7 @@ postsubmits:
           base_ref: master
 {{- end }}
 {{- if or .Values.optional .Values.skipSlackReport }}
+      report: false
       reporter_config:
         slack:
           channel: '' # empty channel overrides slack reporting in crier
