@@ -79,7 +79,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.13.4
+ENV GO_VERSION 1.14.2
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -135,3 +135,5 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 #################################################################
 
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200423-7436dd60 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools
