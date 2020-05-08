@@ -371,7 +371,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fill": 2,
+      "fill": 10,
       "gridPos": {
         "h": 10,
         "w": 24,
@@ -484,13 +484,13 @@
     },
     {
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
       "decimals": 0,
       "description": "Show number of prow services present on a kubernetes cluster.",
-      "fill": 1,
+      "fill": 10,
       "gridPos": {
         "h": 9,
         "w": 12,
@@ -507,7 +507,7 @@
         "total": false,
         "values": true
       },
-      "lines": false,
+      "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
@@ -747,6 +747,19 @@
       }
     },
     {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 23,
+      "panels": [],
+      "title": "Github",
+      "type": "row"
+    },
+    {
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": true,
@@ -768,9 +781,9 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 25
+        "y": 26
       },
-      "id": 23,
+      "id": 24,
       "interval": null,
       "links": [],
       "mappingType": 1,
