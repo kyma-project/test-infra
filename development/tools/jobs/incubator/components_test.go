@@ -116,7 +116,6 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Optional(),
 			jobsuite.Since(releases.Release112),
 		},
 	},

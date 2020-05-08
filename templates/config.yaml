@@ -298,7 +298,7 @@ templates:
           <<: *compass_generic_component
           path: components/external-services-mock
           since: "1.12"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         values:
           <<: *compass_generic_component
