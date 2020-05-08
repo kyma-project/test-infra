@@ -10,13 +10,13 @@ plugins:
     - config-updater
 
 config_updater:
-  config_file: prow/config.yaml
-  plugin_file: prow/plugins.yaml
   maps:
     prow/jobs/**/*.yaml:
       name: job-config
     prow/config.yaml:
       name: config
+    prow/branchprotector-config.yaml:
+      name: branchprotector-config
     prow/plugins.yaml:
       name: plugins
 
