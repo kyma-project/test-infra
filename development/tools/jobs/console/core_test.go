@@ -11,7 +11,7 @@ import (
 func TestCore(t *testing.T) {
 	config := jobsuite.NewConfig(
 		jobsuite.ConsoleRepo(),
-		jobsuite.Project("core", tester.ImageNodeChromiumBuildpackLatest),
+		jobsuite.Project("core", nil, tester.ImageNodeChromiumBuildpackLatest),
 	)
 	tester.NewComponentSuite(config).Run(t)
 }

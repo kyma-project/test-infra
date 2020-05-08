@@ -13,9 +13,12 @@ const (
 	jobBasePath = "./../../../../prow/jobs/"
 )
 
+var loggingYamlName = "console-logging"
+
 var components = []struct {
 	path              string
 	image             string
+	yamlName          *string
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
@@ -27,8 +30,6 @@ var components = []struct {
 	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
-			jobsuite.JobFileSuffix("tmp"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -36,11 +37,9 @@ var components = []struct {
 			jobsuite.Since(releases.Release111),
 		},
 	},
-	{path: "logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release111),
-			jobsuite.JobFileSuffix("tmp"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -56,7 +55,7 @@ func TestConsoleJobs(t *testing.T) {
 	for _, component := range components {
 		t.Run(component.path, func(t *testing.T) {
 			opts := []jobsuite.Option{
-				jobsuite.Project(component.path, component.image),
+				jobsuite.Project(component.path, component.yamlName, component.image),
 				jobsuite.ConsoleRepo(),
 				jobsuite.AllReleases(),
 			}

@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	Path                   string
+	YamlName               *string
 	Repository             string
 	Image                  string
 	Releases               []*releases.SupportedRelease
