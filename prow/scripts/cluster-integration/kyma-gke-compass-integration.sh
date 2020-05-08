@@ -262,6 +262,12 @@ function installKyma() {
       --label "component=compass"
   fi
 
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "compass-auditlog-mock-tests" \
+    --data "global.externalServicesMock.enabled=true" \
+    --data "gateway.gateway.auditlog.enabled=true" \
+    --data "gateway.gateway.auditlog.authMode=oauth" \
+    --label "component=compass"
+
   waitUntilInstallerApiAvailable
 
   shout "Trigger installation"
