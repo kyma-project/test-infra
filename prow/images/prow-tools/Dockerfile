@@ -1,4 +1,4 @@
-FROM golang:1.14.1-alpine3.11 AS builder
+FROM golang:1.14.2-alpine3.11 AS builder
 
 WORKDIR /go/src/github.com/kyma-project/test-infra
 COPY . .
@@ -13,3 +13,5 @@ RUN apk --update --no-cache add ca-certificates bash
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /prow-tools
 COPY --from=builder /prow-tools/jobguard /prow-tools
 WORKDIR /prow-tools
+# for better access in a container
+ENV PATH=$PATH:/prow-tools
