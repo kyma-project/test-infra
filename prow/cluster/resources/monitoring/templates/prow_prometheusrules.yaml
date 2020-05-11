@@ -189,8 +189,9 @@ spec:
                   severity: warning
                 annotations:
                   summary: Github API token usage is high for current time window.
-                  description: |-
+                  description: |
                     Github API token quota usage reached warning treshold. Current value: {{"{{"}} $value {{"}}"}}
+                    See time to token quota rest: https://monitoring.build.kyma-project.io/d/rzdkVLPik/prow?refresh=10s&panelId=25&fullscreen&orgId=1
               - alert: GithubAPITokenExhausted
                 expr: github_token_usage{token_hash=~"^a.*"} < 1
                 for: 30s
@@ -199,4 +200,6 @@ spec:
                   severity: critical
                 annotations:
                   summary: Github API token quota exhausted for current time window.
-                  description: "Github API token quota exhausted for current time window."
+                  description: |
+                    Github API token quota exhausted for current time window.
+                    See time to token quota rest: https://monitoring.build.kyma-project.io/d/rzdkVLPik/prow?refresh=10s&panelId=25&fullscreen&orgId=1
