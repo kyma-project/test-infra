@@ -428,7 +428,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "12h",
       "timeShift": null,
       "title": "Queue",
       "tooltip": {
@@ -566,7 +566,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "12h",
       "timeShift": null,
       "title": "Prow service availability",
       "tooltip": {
@@ -685,7 +685,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "12h",
       "timeShift": null,
       "title": "Prow endpoints count",
       "tooltip": {
@@ -810,7 +810,7 @@
       "thresholds": "200,500",
       "timeFrom": "12h",
       "timeShift": null,
-      "title": "Github token usage",
+      "title": "Github token quota usage",
       "transparent": false,
       "type": "singlestat",
       "valueFontSize": "50%",
@@ -892,7 +892,7 @@
         }
       ],
       "thresholds": "",
-      "title": "Time to next Github token quota reset.",
+      "title": "Time to Github token quota reset.",
       "transparent": true,
       "type": "singlestat",
       "valueFontSize": "50%",
