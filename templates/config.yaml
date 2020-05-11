@@ -565,6 +565,11 @@ templates:
           <<: *console_generic_component
           path: tests
           since: "1.11"
+      - to: ../prow/jobs/console/core/core.tmp.yaml
+        values:
+          <<: *console_generic_component
+          path: core
+          since: "1.11"
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
