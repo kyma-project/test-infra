@@ -826,7 +826,7 @@
   "style": "dark",
   "tags": [],
   "templating": {
-  "list": []
+    "list": []
   },
   "time": {
     "from": "now-1h",
