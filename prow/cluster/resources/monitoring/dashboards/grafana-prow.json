@@ -381,7 +381,7 @@
       "id": 2,
       "legend": {
         "avg": false,
-        "current": true,
+        "current": false,
         "max": false,
         "min": false,
         "show": true,
@@ -500,7 +500,7 @@
       "id": 21,
       "legend": {
         "avg": false,
-        "current": true,
+        "current": false,
         "max": false,
         "min": false,
         "show": true,
