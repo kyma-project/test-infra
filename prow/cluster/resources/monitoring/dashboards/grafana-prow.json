@@ -762,6 +762,7 @@
         "x": 0,
         "y": 26
       },
+      "hideTimeOverride": false,
       "id": 24,
       "interval": null,
       "links": [],
@@ -807,8 +808,92 @@
         }
       ],
       "thresholds": "200,500",
+      "timeFrom": "12h",
+      "timeShift": null,
       "title": "Github token usage",
       "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "datasource": "Prometheus",
+      "format": "dthms",
+      "gauge": {
+        "maxValue": 3600,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": false
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 25,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "#052b51",
+        "full": true,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "github_token_reset{token_hash=~\"^a6.*$\"} / 1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Time to next Github token quota reset.",
+      "transparent": true,
       "type": "singlestat",
       "valueFontSize": "50%",
       "valueMaps": [
@@ -857,9 +942,8 @@
       "30d"
     ]
   },
-
   "timezone": "",
   "title": "Prow",
   "uid": "rzdkVLPik",
-  "version": 3
+  "version": 1
 }
