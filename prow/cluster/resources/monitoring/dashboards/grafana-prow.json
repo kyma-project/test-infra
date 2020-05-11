@@ -625,7 +625,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fill": 1,
+      "fill": 10,
       "gridPos": {
         "h": 9,
         "w": 12,
