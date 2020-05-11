@@ -558,20 +558,6 @@
           "refId": "E"
         },
         {
-          "expr": "kube_service_info{service=\"tide\", namespace=\"default\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "tide",
-          "refId": "F"
-        },
-        {
-          "expr": "kube_service_info{service=\"prow-addons-controller-manager-service\", namespace=\"default\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "prow-addons-controller-manager-service",
-          "refId": "G"
-        },
-        {
           "expr": "kube_service_info{service=\"ingress-nginx\", namespace=\"ingress-nginx\"}",
           "format": "time_series",
           "intervalFactor": 1,
@@ -689,13 +675,6 @@
           "intervalFactor": 1,
           "legendFormat": "pushgateway_endpoints",
           "refId": "E"
-        },
-        {
-          "expr": "kube_endpoint_address_available{endpoint=\"tide\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "tide_endpoints",
-          "refId": "F"
         },
         {
           "expr": "kube_endpoint_address_available{endpoint=\"ingress-nginx\"}",
