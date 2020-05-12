@@ -27,3 +27,6 @@ ci-release: build build-image push-image
 .PHONY: clean
 clean:
 	rm -f $(APP_NAME)
+
+jobs-tests:
+	go test ./jobs/...
