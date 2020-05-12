@@ -5,54 +5,121 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-vm_job_template: &vm_job_template
-  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
+kyma_ref: &kyma_ref
+  org: kyma-project
+  repo: kyma
+  path_alias: github.com/kyma-project/kyma
+
+base_image: &base_image
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.15
+
+# upgrade when stable GKE 1.16 will be available
+cluster_version: &cluster_version
+  name: CLUSTER_VERSION
+  value: "1.15"
+
+gke_integration_job_template: &gke_integration_job_template
+  skip_report: false
   decorate: true
-  path_alias: github.com/kyma-incubator/compass
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
-      resources:
-        requests:
-          memory: 100Mi
-          cpu: 50m
-      env:
-      - name: GO111MODULE
-        value: "on"
+      - <<: *base_image
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+        env:
+          - <<: *cluster_version
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
 
-vm_job_labels_template: &vm_job_labels_template
+gke_integration_job_labels_template: &gke_integration_job_labels_template
+  preset-kyma-keyring: "true"
+  preset-kyma-encryption-key: "true"
+  preset-kms-gc-project-env: "true"
   preset-kyma-guard-bot-github-token: "true"
-  preset-sa-vm-kyma-integration: "true"
+  preset-sa-gke-kyma-integration: "true"
+  preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
+  preset-docker-push-repository-gke-integration: "true"
+  preset-dind-enabled: "true"
+  preset-kyma-artifacts-bucket: "true"
+  preset-gardener-azure-kyma-integration: "true"
 
 presubmits: # runs on PRs
-  kyma-incubator/compass:
-  - name: pre-master-kyma-gke-compass-integration
-    branches:
-    - ^master$
-    <<: *vm_job_template
-    run_if_changed: "^(chart|installation)/"
-    labels:
-      preset-build-pr: "true"
-      <<: *vm_job_labels_template
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-  
+  kyma-project/kyma:
+    - name: pre-master-kyma-gke-compass-integration
+      branches:
+        - ^master$
+      <<: *gke_integration_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      reporter_config:
+        slack:
+          channel: '' # empty channel overrides slack reporting in crier
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+    - name: pre-rel112-kyma-integration
+      branches:
+        - release-1.12
+      always_run: false
+      <<: *gke_integration_job_template
+      labels:
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.12
+
 postsubmits:
-  kyma-incubator/compass:
-  - name: post-master-kyma-gke-compass-integration
-    <<: *vm_job_template
-    branches:
-    - ^master$
-    labels:
-      preset-build-master: "true"
-      <<: *vm_job_labels_template
-    annotations:
-      testgrid-dashboards: kyma-incubator
-    extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
+  kyma-project/kyma:
+    - name: post-master-kyma-gke-compass-integration
+      annotations:
+        testgrid-dashboards: kyma-cleaners
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      skip_report: false
+      max_concurrency: 10
+      spec:
+        containers:
+          - <<: *base_image
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+            env:
+              - <<: *cluster_version
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
+      branches:
+        - ^master$
+      reporter_config:
+        slack:
+          channel: '' # empty channel overrides slack reporting in crier
+      labels:
+        preset-build-master: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
