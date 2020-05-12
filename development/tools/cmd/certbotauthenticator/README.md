@@ -18,9 +18,8 @@ In manual mode, certbot passes these data as environment variables when calling 
 - **CERTBOT_DOMAIN** - domain name against which Let's Encrypt will execute validation.
 - **CERTBOT_AUTH_OUTPUT** - the output from the authentication step, passed only to call during the clean-up.
 
-###Authentication
-
-GOOGLE_APPLICATION_CREDENTIALS environment variable is used to provide credentials for authentication in GCP.
+### Authentication
+Use the **GOOGLE_APPLICATION_CREDENTIALS** environment variable to provide credentials for authentication in GCP.
 
 ###CLI parameters
 
