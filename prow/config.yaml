@@ -620,7 +620,7 @@ deck:
     'kyma-project/test-infra':
       github_team_ids:
       - 2944419 # prow team
-      
+
 sinker:
   max_pod_age: 5h
 
