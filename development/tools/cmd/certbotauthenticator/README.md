@@ -1,8 +1,8 @@
 # certbotauthenticator
 
-##Overview
+## Overview
 
-Certbotauthenticator is a binary called by certbot during certificate generation process. It's used in phase of manual DNS challenge authentication. Cerbot in manual mode is passing domain name and authentication token as environment variables to the certbotauthenticator, for the purpose os creating TXT record in a domain, to let LetsEncrypt system validate domain ownership. After validation, certbotauthenticator is called again to clean TXT records created for validation.
+Certbotauthenticator is a binary called by the certbot when it generates the certificate. The binary is used in during manual DNS challenge authentication. In the manual mode, the certbot passes the domain name and the authentication token as environment variables to the certbotauthenticator to create a TXT record in the domain. This way, the Let's Encrypt system can validate the domain ownership. After the validation completes, the certbotauthenticator is called again to clean the TXT records.
 
 ##Justification
 
