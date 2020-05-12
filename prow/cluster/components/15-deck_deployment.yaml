@@ -42,6 +42,10 @@ spec:
         - --github-token-path=/etc/github/oauth
         - --build-cluster=/etc/cluster/cluster.yaml
         - --redirect-http-to=status.build.kyma-project.io
+        - --oauth-url=/github-login
+        - --rerun-creates-job=true
+        - --github-oauth-config-file=/etc/githuboauth/secret
+        - --cookie-secret=/etc/cookie/secret
         livenessProbe:
             httpGet:
               path: /healthz
@@ -80,9 +84,6 @@ spec:
           - name: cookie-secret
             mountPath: /etc/cookie
             readOnly: true
-          - name: rerun-token
-            mountPath: /etc/githubrerun
-            readOnly: true
       volumes:
         - name: config
           configMap:
@@ -110,6 +111,3 @@ spec:
         - name: cookie-secret
           secret:
             secretName: cookie
-        - name: rerun-token
-          secret:
-            secretName: rerun-token
