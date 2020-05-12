@@ -25,6 +25,6 @@ Use the **GOOGLE_APPLICATION_CREDENTIALS** environment variable to provide crede
 
 The certbotauthenticator accepts the following command line parameters:
 
-|Parameter | Description | Value|
+|Parameter | Description | Default value|
 |-----------|------------|-------|
 | **-D** | When set to `true`, the record will be deleted. | `False` | 
