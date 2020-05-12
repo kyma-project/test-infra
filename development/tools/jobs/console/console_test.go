@@ -31,6 +31,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release112),
 			jobsuite.JobFileSuffix("tmp"),
+			jobsuite.Optional(),
 		},
 	},
 	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
