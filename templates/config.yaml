@@ -572,6 +572,14 @@ templates:
           since: "1.12"
           additionalRunIfChanged: []
           optional: true
+      - to: ../prow/jobs/console/content/content-tmp.yaml
+        values:
+          <<: *console_generic_component
+          path: content
+          since: "1.12"
+          additionalRunIfChanged:
+            - ^components/
+          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml

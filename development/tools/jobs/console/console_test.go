@@ -54,6 +54,13 @@ var components = []struct {
 			jobsuite.Since(releases.Release111),
 		},
 	},
+	{path: "content", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release112),
+			jobsuite.JobFileSuffix("tmp"),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestConsoleJobs(t *testing.T) {
