@@ -10,37 +10,49 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
-base_image: &base_image
+# Kubectl 1.14 and CLUSTER_VERSION=1.14
+base_image_k14: &base_image_k14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.14
+
+# Kubectl 1.15 and CLUSTER_VERSION=1.15
+base_image_k15: &base_image_k15
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.15
 
-# upgrade when stable GKE 1.16 will be available
-cluster_version: &cluster_version
-  name: CLUSTER_VERSION
-  value: "1.15"
+base_container_config: &base_container_config
+  securityContext:
+    privileged: true
+  command:
+    - "bash"
+  args:
+    - "-c"
+    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+  env:
+    - name: CLOUDSDK_COMPUTE_ZONE
+      value: "europe-west4-b"
+  resources:
+    requests:
+      memory: 200Mi
+      cpu: 80m
 
 gke_integration_job_template: &gke_integration_job_template
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
+
+gke_integration_job_template_k14: &gke_integration_job_template_k14
+  <<: *gke_integration_job_template
   spec:
     containers:
-      - <<: *base_image
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
-        env:
-          - <<: *cluster_version
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-b"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
+      - <<: *base_image_k14
+        <<: *base_container_config
+
+gke_integration_job_template_k15: &gke_integration_job_template_k15
+  <<: *gke_integration_job_template
+  spec:
+    containers:
+      - <<: *base_image_k15
+        <<: *base_container_config
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
@@ -60,7 +72,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-gke-compass-integration
       branches:
         - ^master$
-      <<: *gke_integration_job_template
+      <<: *gke_integration_job_template_k15
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       reporter_config:
@@ -76,19 +88,42 @@ presubmits: # runs on PRs
       branches:
         - release-1.12
       always_run: false
-      <<: *gke_integration_job_template
+      <<: *gke_integration_job_template_k15
       labels:
+        preset-build-release: "true"
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.12
+    - name: pre-rel111-kyma-gke-compass-integration
+      branches:
+        - release-1.11
+      always_run: false
+      <<: *gke_integration_job_template_k15
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.11
+    - name: pre-rel110-kyma-gke-compass-integration
+      branches:
+        - release-1.10
+      always_run: false
+      <<: *gke_integration_job_template_k14
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.10
 
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-gke-compass-integration
       branches:
         - ^master$
-      <<: *gke_integration_job_template
+      <<: *gke_integration_job_template_k15
       annotations:
         testgrid-dashboards: kyma-cleaners
         # testgrid-alert-email: email-here@sap.com
