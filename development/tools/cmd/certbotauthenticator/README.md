@@ -8,15 +8,15 @@ Certbotauthenticator is a binary called by the certbot when it generates the cer
 
 We made this tool, becasue certbot dns-google plugin doesn't support creating TXT records within DNS Zone existing in different project, than service account used to authenticate in GCP.
 
-##Usage
+## Usage
 
-###Environment variables
+### Environment variables
 
-Certbot in manual mode when calling external tools for authentication and cleaning steps, is passing required data as environment variables.
+In manual mode, certbot passes these data as environment variables when calling external tools for authentication and clean-up.
 
-- CERTBOT_VALIDATION - validation token, expected by LetsEnrypt as a record value.
-- CERTBOT_DOMAIN - domain name against which LetsEncrypt will execute validation.
-- CERTBOT_AUTH_OUTPUT - output from authentication step, it's passed only to call in cleaning step.
+- **CERTBOT_VALIDATION** - validation token, expected by Let's Enrypt as a record value.
+- **CERTBOT_DOMAIN** - domain name against which Let's Encrypt will execute validation.
+- **CERTBOT_AUTH_OUTPUT** - the output from the authentication step, passed only to call during the clean-up.
 
 ###Authentication
 
