@@ -12,7 +12,7 @@ We have created this tool because the certbot dns-google plugin does not support
 
 ### Environment variables
 
-In manual mode, certbot passes these data as environment variables when calling external tools for authentication and clean-up.
+In manual mode, certbot passes this data as environment variables when calling external tools for authentication and clean-up.
 
 - **CERTBOT_VALIDATION** - validation token, expected by Let's Enrypt as a record value.
 - **CERTBOT_DOMAIN** - domain name against which Let's Encrypt will execute validation.
