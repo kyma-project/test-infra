@@ -30,8 +30,6 @@ var components = []struct {
 	{path: "core", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release112),
-			jobsuite.JobFileSuffix("tmp"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
