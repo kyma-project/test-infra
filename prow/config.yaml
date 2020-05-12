@@ -617,7 +617,7 @@ deck:
     logo: "/static/extensions/logo.svg"
     favicon: "/static/extensions/favicon.png"
   rerun_auth_configs:
-    'test-infra':
+    'kyma-project/test-infra':
       github_team_ids:
       - 2944419 # prow team
       
