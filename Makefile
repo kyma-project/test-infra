@@ -6,6 +6,3 @@ jobs-tests:
 	$(MAKE) -C development/tools $@
 
 jobs: jobs-definitions jobs-tests ;
-
-
-
