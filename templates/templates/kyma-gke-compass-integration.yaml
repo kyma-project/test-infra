@@ -100,7 +100,7 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases "1.10" "1.10") }}
+{{- range (matchingReleases .Global.releases nil "1.10") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-compass-integration
       branches:
         - release-{{ . }}
