@@ -591,6 +591,9 @@ templates:
   - from: templates/kyma-github-release.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-github-release.yaml
+  - from: templates/kyma-gke-compass-integration.yaml
+    render:
+      - to: ../prow/jobs/kyma/kyma-gke-compass-integration.yaml
   - from: templates/kyma-release-candidate.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
