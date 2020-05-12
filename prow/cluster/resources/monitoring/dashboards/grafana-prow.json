@@ -428,7 +428,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "12h",
       "timeShift": null,
       "title": "Queue",
       "tooltip": {
@@ -484,13 +484,13 @@
     },
     {
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
       "decimals": 0,
       "description": "Show number of prow services present on a kubernetes cluster.",
-      "fill": 1,
+      "fill": 10,
       "gridPos": {
         "h": 9,
         "w": 12,
@@ -500,14 +500,14 @@
       "id": 21,
       "legend": {
         "avg": false,
-        "current": true,
+        "current": false,
         "max": false,
         "min": false,
         "show": true,
         "total": false,
         "values": true
       },
-      "lines": false,
+      "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
@@ -558,20 +558,6 @@
           "refId": "E"
         },
         {
-          "expr": "kube_service_info{service=\"tide\", namespace=\"default\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "tide",
-          "refId": "F"
-        },
-        {
-          "expr": "kube_service_info{service=\"prow-addons-controller-manager-service\", namespace=\"default\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "prow-addons-controller-manager-service",
-          "refId": "G"
-        },
-        {
           "expr": "kube_service_info{service=\"ingress-nginx\", namespace=\"ingress-nginx\"}",
           "format": "time_series",
           "intervalFactor": 1,
@@ -580,7 +566,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "12h",
       "timeShift": null,
       "title": "Prow service availability",
       "tooltip": {
@@ -625,7 +611,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fill": 1,
+      "fill": 10,
       "gridPos": {
         "h": 9,
         "w": 12,
@@ -691,13 +677,6 @@
           "refId": "E"
         },
         {
-          "expr": "kube_endpoint_address_available{endpoint=\"tide\"}",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "tide_endpoints",
-          "refId": "F"
-        },
-        {
           "expr": "kube_endpoint_address_available{endpoint=\"ingress-nginx\"}",
           "format": "time_series",
           "intervalFactor": 1,
@@ -706,7 +685,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
+      "timeFrom": "12h",
       "timeShift": null,
       "title": "Prow endpoints count",
       "tooltip": {
@@ -745,6 +724,186 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 23,
+      "panels": [],
+      "title": "Github",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": true,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "datasource": "Prometheus",
+      "format": "none",
+      "gauge": {
+        "maxValue": 5000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": true,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "hideTimeOverride": false,
+      "id": 24,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "#052b51",
+        "full": true,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "github_token_usage{token_hash=~\"^a6.*$\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "200,500",
+      "timeFrom": "12h",
+      "timeShift": null,
+      "title": "Github token quota usage",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#d44a3a",
+        "rgba(237, 129, 40, 0.89)",
+        "#299c46"
+      ],
+      "datasource": "Prometheus",
+      "format": "dthms",
+      "gauge": {
+        "maxValue": 3600,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": false
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 25,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "#052b51",
+        "full": true,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "github_token_reset{token_hash=~\"^a6.*$\"} / 1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Time to Github token quota reset.",
+      "transparent": true,
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     }
   ],
   "refresh": "10s",
@@ -783,9 +942,8 @@
       "30d"
     ]
   },
-
   "timezone": "",
   "title": "Prow",
   "uid": "rzdkVLPik",
-  "version": 3
+  "version": 1
 }
