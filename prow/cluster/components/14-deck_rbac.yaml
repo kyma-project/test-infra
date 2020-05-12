@@ -38,3 +38,4 @@ rules:
       - get
       - list
       - watch
+      - create # Required when deck runs with `--rerun-creates-job=true`
