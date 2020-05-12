@@ -54,6 +54,9 @@ gke_integration_job_template_k15: &gke_integration_job_template_k15
       - <<: *base_image_k15
         <<: *base_container_config
 
+gke_integration_job_template_latest: &gke_integration_job_template_latest
+  <<: *gke_integration_job_template_k15
+
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
   preset-kyma-encryption-key: "true"
@@ -123,7 +126,7 @@ postsubmits:
     - name: post-master-kyma-gke-compass-integration
       branches:
         - ^master$
-      <<: *gke_integration_job_template_k15
+      <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma-cleaners
         # testgrid-alert-email: email-here@sap.com
