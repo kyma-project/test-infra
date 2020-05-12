@@ -21,8 +21,10 @@ In manual mode, certbot passes these data as environment variables when calling 
 ### Authentication
 Use the **GOOGLE_APPLICATION_CREDENTIALS** environment variable to provide credentials for authentication in GCP.
 
-###CLI parameters
+### CLI parameters
 
-Certbotauthenticator is accepting following command line parameters.
+The certbotauthenticator accepts the following command line parameters:
 
-- -D - When set to true, record will be deleted, default _false_
+|Parameter | Description | Value|
+|-----------|------------|-------|
+| **-D** | When set to `true`, the record will be deleted. | `False` | 
