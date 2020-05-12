@@ -616,6 +616,10 @@ deck:
     header_color: "#0b74de" # Kyma color
     logo: "/static/extensions/logo.svg"
     favicon: "/static/extensions/favicon.png"
+  rerun_auth_configs:
+    'test-infra':
+      github_team_ids:
+      - 2944419 # prow team
 
 sinker:
   max_pod_age: 5h
