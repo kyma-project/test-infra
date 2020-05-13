@@ -564,14 +564,13 @@ templates:
           path: core
           since: "1.12"
           additionalRunIfChanged: []
-      - to: ../prow/jobs/console/content/content-tmp.yaml
+      - to: ../prow/jobs/console/content/content.yaml
         values:
           <<: *console_generic_component
           path: content
           since: "1.12"
           additionalRunIfChanged:
             - ^components/
-          optional: true
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
