@@ -149,7 +149,7 @@ templates:
           <<: *kyma_generic_component
           path: components/api-gateway-migrator
           since: "1.12"
-          until: "1.13"
+          until: "1.12"
           optional: true
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
         values:

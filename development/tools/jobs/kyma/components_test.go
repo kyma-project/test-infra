@@ -23,6 +23,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release112),
+			jobsuite.Until(releases.Release112),
 			jobsuite.Optional(),
 		},
 	},
