@@ -18,3 +18,11 @@ RUN go get golang.org/x/tools/cmd/goimports  \
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
+
+#################################################################
+########################## Prow Tools ###########################
+#################################################################
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200512-e400f399 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools
