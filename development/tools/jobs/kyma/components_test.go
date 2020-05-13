@@ -22,8 +22,6 @@ var components = []struct {
 	{path: "api-gateway-migrator", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release112),
-			jobsuite.Until(releases.Release112),
 			jobsuite.Optional(),
 		},
 	},
