@@ -638,3 +638,4 @@ slack_reporter_configs:
       - failure
       - error
     channel: c4core-kyma-ci-force
+    report_template: ":octagonal_sign: Job alert!\n *Name:* {{.Spec.Job}}\n *Type:* {{.Spec.Type}}\n *Status:* {{.Status.State}}\n {{if eq .Spec.Type `postsubmit` }}*Repository:* {{.Spec.Refs.Org}}/{{.Spec.Refs.Repo}}\n *Commit:* <{{.Spec.Refs.BaseLink}}|{{.Spec.Refs.BaseSHA}}>\n {{end}}*<{{.Status.URL}}|View logs>*"
