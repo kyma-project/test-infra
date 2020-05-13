@@ -47,9 +47,9 @@ const (
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaIntegrationLatest represents boostrap image published on 20.11.2019
-	ImageKymaIntegrationK14    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.14"
-	ImageKymaIntegrationK15    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.15"
-	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.16"
+	ImageKymaIntegrationK14    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.14"
+	ImageKymaIntegrationK15    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15"
+	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 	ImageBootstrapHelm20191227 = "eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8"
