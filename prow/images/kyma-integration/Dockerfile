@@ -134,6 +134,6 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 ########################## Prow Tools ###########################
 #################################################################
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200423-7436dd60 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200512-e400f399 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
