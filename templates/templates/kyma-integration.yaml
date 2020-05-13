@@ -18,7 +18,7 @@ base_image_k15: &base_image_k15
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200423-7436dd60
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200512-e400f399
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
