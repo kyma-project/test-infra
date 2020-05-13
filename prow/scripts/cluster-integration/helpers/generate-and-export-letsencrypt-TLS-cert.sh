@@ -32,16 +32,21 @@ cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
 docker run  --name certbot \
     --rm  \
     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-    certbot/dns-google \
+    -v "$(pwd)/certbot-log:/var/log/letsencrypt"    \
+    -v "/prow-tools:/prow-tools" \
+    -e "GOOGLE_APPLICATION_CREDENTIALS=/etc/letsencrypt/service-account.json"
+    certbot/certbot \
     certonly \
     -m "kyma.bot@sap.com" \
     --agree-tos \
     --no-eff-email \
-    --dns-google \
-    --dns-google-credentials /etc/letsencrypt/service-account.json \
     --server https://acme-v02.api.letsencrypt.org/directory \
-    --dns-google-propagation-seconds=600 \
-    -d "*.${DOMAIN}"
+    --manual \
+    --manual-public-ip-logging-ok \
+    --preferred-challenges dns \
+    --manual-auth-hook /prow-tools/certbotauthenticator \
+    --manual-cleanup-hook "/prow-tools/certbotauthenticator -D" \
+    -d "${DOMAIN}"
 
 TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
 export TLS_CERT
