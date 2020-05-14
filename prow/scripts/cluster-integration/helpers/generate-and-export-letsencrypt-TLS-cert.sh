@@ -34,7 +34,7 @@ docker run  --name certbot \
     -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
     -v "$(pwd)/certbot-log:/var/log/letsencrypt"    \
     -v "/prow-tools:/prow-tools" \
-    -e "GOOGLE_APPLICATION_CREDENTIALS=/etc/letsencrypt/service-account.json"
+    -e "GOOGLE_APPLICATION_CREDENTIALS=/etc/letsencrypt/service-account.json" \
     certbot/certbot \
     certonly \
     -m "kyma.bot@sap.com" \
