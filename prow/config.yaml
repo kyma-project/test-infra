@@ -638,4 +638,10 @@ slack_reporter_configs:
       - failure
       - error
     channel: c4core-kyma-ci-force
-    report_template: "*Name:* {{.Spec.Job}}\n *Type:* {{.Spec.Type}}\n *Status:* {{.Status.State}}\n {{with .Spec.Refs}}*Repository:* {{.Spec.Refs.Org}}/{{.Spec.Refs.Repo}}\n *Commit:* <{{.Spec.Refs.BaseLink}}|{{.Spec.Refs.BaseSHA}}>\n {{end}}*<{{.Status.URL}}|View logs>*"
+    report_template: |
+      *Name:* {{.Spec.Job}}
+      *Type:* {{.Spec.Type}}
+      *Status:* {{.Status.State}}
+      {{with .Spec.Refs}}*Repository:* {{.Spec.Refs.Org}}/{{.Spec.Refs.Repo}}
+      *Commit:* <{{.Spec.Refs.BaseLink}}|{{.Spec.Refs.BaseSHA}}>
+      {{end}}*<{{.Status.URL}}|View logs>*
