@@ -24,7 +24,7 @@ periodics:
           base_ref: {{ default "master" .base_ref }}
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200325-924b0a14
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200513-7e0fade2
           command:
             - "bash"
           args:

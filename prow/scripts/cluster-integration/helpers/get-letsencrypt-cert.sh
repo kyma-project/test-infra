@@ -14,23 +14,8 @@ set -o errexit
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function generateLetsEncryptCert() {
-    shout "Generate lets encrypt certificate"
-    
-    mkdir -p ./letsencrypt
-    cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
-    docker run  --name certbot \
-        --rm  \
-        -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
-        certbot/dns-google \
-        certonly \
-        -m "kyma.bot@sap.com" \
-        --agree-tos \
-        --no-eff-email \
-        --dns-google \
-        --dns-google-credentials /etc/letsencrypt/service-account.json \
-        --server https://acme-v02.api.letsencrypt.org/directory \
-        --dns-google-propagation-seconds=600 \
-        -d "*.${DOMAIN}"
+    DOMAIN="${DOMAIN}" GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS}" "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/helpers/generate-and-export-letsencrypt-TLS-cert.sh
+
     shout "Encrypting certs"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh" \

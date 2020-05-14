@@ -8,7 +8,7 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   decorate: true
-  path_alias: github.com/kyma-project/console
+  path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   report: false
   reporter_config:
@@ -22,9 +22,8 @@ job_template: &job_template
     - <<: *test_infra_ref
       base_ref: master
   branches:
-    - ^master$
-    - ^release-(1\.12)-content$
-  run_if_changed: "^content/|^components/"
+    - ^release-(1\.12)-api-gateway-migrator$
+  run_if_changed: "^components/api-gateway-migrator/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -33,20 +32,20 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/console/content"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/api-gateway-migrator"
         resources:
           requests:
             memory: 1.5Gi
             cpu: 0.8
 
 presubmits: # runs on PRs
-  kyma-project/console:
-    - name: pre-console-content
+  kyma-project/kyma:
+    - name: pre-kyma-components-api-gateway-migrator
       skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
-  kyma-project/console:
-    - name: post-console-content
+  kyma-project/kyma:
+    - name: post-kyma-components-api-gateway-migrator
       <<: *job_template
