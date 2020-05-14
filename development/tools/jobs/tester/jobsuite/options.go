@@ -109,6 +109,13 @@ func Until(rel *releases.SupportedRelease) Option {
 	}
 }
 
+func Between(since *releases.SupportedRelease, until *releases.SupportedRelease) Option {
+	return func(suite *Config) {
+		suite.Releases = releases.GetKymaReleasesBetween(since, until)
+		suite.Deprecated = !until.IsNotOlderThan(releases.GetNextKymaRelease())
+	}
+}
+
 func AllReleases() Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetAllKymaReleases()
