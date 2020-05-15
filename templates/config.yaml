@@ -981,3 +981,6 @@ templates:
           <<: *go_knative_kafka_component_1_12
           path: .
           optional: false
+  - from: templates/branchprotector-config.yaml
+    render:
+      - to: ../prow/branchprotector-config.yaml
