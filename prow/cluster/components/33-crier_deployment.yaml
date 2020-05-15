@@ -26,6 +26,7 @@ spec:
             - --slack-workers=1
             - --slack-token-file=/etc/slack/token
             - --gcs-workers=1
+            - --gcs-credentials-file=/etc/credentials/service-account.json
             - --build-cluster=/etc/cluster/cluster.yaml
           volumeMounts:
             - name: config
@@ -39,6 +40,9 @@ spec:
               readOnly: true
             - name: cluster
               mountPath: /etc/cluster
+              readOnly: true
+            - name: gcs-service-account
+              mountPath: /etc/credentials
               readOnly: true
       volumes:
         - name: config
@@ -54,3 +58,6 @@ spec:
           secret:
             defaultMode: 420
             secretName: workload-cluster
+        - name: gcs-service-account
+          secret:
+            secretName: sa-gcs-plank
