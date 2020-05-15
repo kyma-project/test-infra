@@ -46,7 +46,7 @@ docker run  --name certbot \
     --preferred-challenges dns \
     --manual-auth-hook /prow-tools/certbotauthenticator \
     --manual-cleanup-hook "/prow-tools/certbotauthenticator -D" \
-    -d "${DOMAIN}"
+    -d "*.${DOMAIN}"
 
 TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
 export TLS_CERT
