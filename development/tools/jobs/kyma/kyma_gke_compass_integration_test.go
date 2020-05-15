@@ -80,12 +80,7 @@ func TestKymaGKECompassIntegrationJobsReleases(t *testing.T) {
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 
-			switch currentRelease {
-			case releases.Release112, releases.Release111:
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
-			default:
-				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
-			}
+			assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
