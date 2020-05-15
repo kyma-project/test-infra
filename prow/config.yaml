@@ -642,6 +642,6 @@ slack_reporter_configs:
       *Name:* {{.Spec.Job}}
       *Type:* {{.Spec.Type}}
       *Status:* {{.Status.State}}
-      {{if eq .Spec.Type "postsubmit"}}*Repository:* {{.Spec.Refs.Org}}/{{.Spec.Refs.Repo}}
-      *Commit:* <{{.Spec.Refs.BaseLink}}|{{.Spec.Refs.BaseSHA}}>
+      {{with .Spec.Refs}}*Repository:* {{.Org}}/{{.Repo}}
+      *Commit:* <{{.BaseLink}}|{{.BaseSHA}}>
       {{end}}*<{{.Status.URL}}|View logs>*
