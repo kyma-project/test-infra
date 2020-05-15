@@ -20,6 +20,7 @@ require (
 	github.com/google/go-querystring v1.0.0
 	github.com/huandu/xstrings v1.3.1 // indirect
 	github.com/jamiealquiza/envy v1.1.0
+	github.com/kyma-project/test-infra/development/gcp v0.0.0-20200507124533-9b586ac404eb
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1
@@ -27,9 +28,11 @@ require (
 	github.com/sirupsen/logrus v1.5.0
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/cobra v1.0.0
+	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.5.1
 	github.com/vrischmann/envconfig v1.2.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	golang.org/x/tools v0.0.0-20200507050207-a1532b81a28f // indirect
 	google.golang.org/api v0.22.0
 	gopkg.in/yaml.v2 v2.2.8
 	k8s.io/api v0.17.3

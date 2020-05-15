@@ -149,7 +149,7 @@ templates:
           <<: *kyma_generic_component
           path: components/api-gateway-migrator
           since: "1.12"
-          until: "1.13"
+          until: "1.12"
           optional: true
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
         values:
@@ -565,6 +565,19 @@ templates:
           <<: *console_generic_component
           path: tests
           since: "1.11"
+      - to: ../prow/jobs/console/core/core.yaml
+        values:
+          <<: *console_generic_component
+          path: core
+          since: "1.12"
+          additionalRunIfChanged: []
+      - to: ../prow/jobs/console/content/content.yaml
+        values:
+          <<: *console_generic_component
+          path: content
+          since: "1.12"
+          additionalRunIfChanged:
+            - ^components/
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -951,18 +964,6 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
-      - to: ../prow/jobs/console/core/core.yaml
-        values:
-          repository: github.com/kyma-project/console
-          path: core
-          presets:
-            build: build-console
-            pushRepository: kyma
-          noRelease: yes
-          resources:
-            cpu: 1.5
-            memory: 2Gi
-          buildpack: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013
       - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         values:
           repository: github.com/kyma-project/test-infra

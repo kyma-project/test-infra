@@ -101,10 +101,10 @@ Use a tool called [mkpj](https://github.com/kubernetes/test-infra/tree/master/pr
 git clone "git@github.com:kubernetes/test-infra.git" $GOPATH/src/k8s.io
 ```
 
-2. Reset the compatible `kubernetes/test-infra` state:
+2. Reset the [compatible](./production-cluster-configuration.md#overview) `kubernetes/test-infra` state:
 
 ```shell
-git reset b9a576b397892c55487e495721d23b3a52ac9472 --hard
+git reset <compatible commit sha> --hard
 ```
 
 See the example of generating the `kyma-gke-nightly` target:

@@ -6,7 +6,7 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 base_image_115: &base_image_115
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200424-06d3cb6d-k8s1.15
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15
 
 base_image_116: &base_image_116
   image: eu.gcr.io/kyma-project/test-infra/kyma-cluster-infra:v20200206-22eb97a4

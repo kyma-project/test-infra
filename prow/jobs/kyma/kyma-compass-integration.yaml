@@ -32,8 +32,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-  - name: pre-master-kyma-gke-compass-provisioner-tests
-    optional: true
+  - name: pre-master-kyma-gke-compass-integration
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: false
@@ -52,15 +51,14 @@ presubmits: # runs on PRs
             - <<: *cluster_version
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
-            - name: RUN_PROVISIONER_TESTS
-              value: "true"
           resources:
             requests:
               memory: 200Mi
               cpu: 80m
     branches:
       - ^master$
-    run_if_changed: "resources/compass/charts/provisioner"
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
     reporter_config:
       slack:
         channel: '' # empty channel overrides slack reporting in crier
@@ -70,17 +68,11 @@ presubmits: # runs on PRs
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
-
-postsubmits:
-  kyma-project/kyma:
-  - name: post-master-kyma-gke-compass-provisioner-tests
-    annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+  - name: pre-rel-1-11-kyma-gke-compass-integration
     decorate: true
+    optional: true
     path_alias: github.com/kyma-project/kyma
-    skip_report: true
+    skip_report: false
     max_concurrency: 10
     spec:
       containers:
@@ -93,11 +85,52 @@ postsubmits:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
           env:
-            - <<: *cluster_version       
+            - <<: *cluster_version
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
-            - name: RUN_PROVISIONER_TESTS
-              value: "true"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+    branches:
+      - ^release-1.11$
+    # following regexp won't start build if only Markdown files were changed
+    run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+    reporter_config:
+      slack:
+        channel: '' # empty channel overrides slack reporting in crier
+    labels:
+      preset-build-pr: "true"
+      <<: *gke_integration_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.11
+
+postsubmits:
+  kyma-project/kyma:
+  - name: post-master-kyma-gke-compass-integration
+    annotations:
+      testgrid-dashboards: kyma-cleaners
+      # testgrid-alert-email: email-here@sap.com
+      testgrid-num-failures-to-alert: '1'
+    decorate: true
+    path_alias: github.com/kyma-project/kyma
+    skip_report: false
+    max_concurrency: 10
+    spec:
+      containers:
+        - <<: *base_image
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-compass-integration.sh"
+          env:
+            - <<: *cluster_version
+            - name: CLOUDSDK_COMPUTE_ZONE
+              value: "europe-west4-b"
           resources:
             requests:
               memory: 200Mi
