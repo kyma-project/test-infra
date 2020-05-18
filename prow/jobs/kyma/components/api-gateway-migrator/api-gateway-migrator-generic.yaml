@@ -11,9 +11,6 @@ job_template: &job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   report: false
-  reporter_config:
-    slack:
-      channel: '' # empty channel overrides slack reporting in crier
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"

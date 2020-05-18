@@ -84,9 +84,6 @@ postsubmits:
         preset-build-master: "true"
         preset-bot-github-token: "true"
       report: false
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
     - name: post-release-helm-broker
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
@@ -97,9 +94,6 @@ postsubmits:
         preset-bot-github-token: "true"
         preset-kind-volume-mounts: "true"
       report: false
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
       skip_report: false
       decorate: true
       optional: false

@@ -66,9 +66,6 @@ presubmits: # runs on PRs
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       report: false
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
       labels:
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
@@ -101,9 +98,6 @@ postsubmits:
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
       report: false
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
       labels:
         preset-build-master: "true"
         <<: *gke_integration_job_labels_template

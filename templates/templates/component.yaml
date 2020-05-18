@@ -138,9 +138,6 @@ postsubmits:
 {{- end }}
 {{- if or .Values.optional .Values.skipSlackReport }}
       report: false
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
 {{- end}}
       labels:
         <<: *job_labels_template
