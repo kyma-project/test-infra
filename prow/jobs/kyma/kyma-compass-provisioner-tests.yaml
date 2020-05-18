@@ -61,6 +61,7 @@ presubmits: # runs on PRs
     branches:
       - ^master$
     run_if_changed: "resources/compass/charts/provisioner"
+    report: false
     reporter_config:
       slack:
         channel: '' # empty channel overrides slack reporting in crier
@@ -104,6 +105,7 @@ postsubmits:
               cpu: 80m
     branches:
       - ^master$
+    report: false
     reporter_config:
       slack:
         channel: '' # empty channel overrides slack reporting in crier
