@@ -478,6 +478,7 @@ branch-protection:
                 contexts:
                   - pre-rel112-kyma-integration
                   - pre-rel112-kyma-gke-integration
+                  - pre-rel112-kyma-gke-compass-inegration
                   - pre-rel112-kyma-gke-upgrade
                   - pre-rel112-kyma-gke-central-connector
                   - pre-rel112-kyma-artifacts
