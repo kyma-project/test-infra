@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# COPIED FROM test-infra/prow/scripts/testing-helpers.sh
+
 CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # shellcheck disable=SC1090

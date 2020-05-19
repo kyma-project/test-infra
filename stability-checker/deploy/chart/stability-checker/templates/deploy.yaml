@@ -32,9 +32,6 @@ spec:
       serviceAccountName: {{ template "stability-checker.fullname" . }}
 
       volumes:
-        - name: testing-script-volume
-          persistentVolumeClaim:
-            claimName: {{ .Values.storage.claimName }}
         {{ if .Values.logsPersistence.enabled }}
         - name: config
           emptyDir: {}
@@ -96,8 +93,8 @@ spec:
         - /bin/sh
         - -c
         - |-
-          ./data/input/pre-start-scripts.sh 2>&1 | jq --slurp --raw-input 'split("\n")[:-1] | map({level: "info", log: {message: .}})' | jq -c -M '.[]' && ./root/stability-checker
-        image: "{{ .Values.containerRegistry.path }}/develop/stability-checker:{{ .Values.image.tag }}"
+          sleep 15 && ./root/stability-checker
+        image: "{{ .Values.containerRegistry.path }}/{{ .Values.image.dir }}stability-checker:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
 
         ports:
@@ -130,12 +127,6 @@ spec:
             value: "{{ .Values.stats.failingTestRegexp }}"
           - name: APP_STATS_SUCCESSFUL_TEST_REGEXP
             value: "{{ .Values.stats.successfulTestRegexp }}"
-
-
-
-        volumeMounts:
-          - name: testing-script-volume
-            mountPath: /data
 
         readinessProbe:
           exec:

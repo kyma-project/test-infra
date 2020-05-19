@@ -5,7 +5,7 @@ const (
 	{{- if .TestRunnerInfo.ClusterName }}{{"\n"}}_Running on the *{{ .TestRunnerInfo.ClusterName }}* cluster_{{- end }}`
 	body = `
 	{{- if .FailedExecutions }}
-	*Summary:* {{ .TotalTestsCnt }} test executions and {{ len .FailedExecutions }} of them failed :sad-frog:
+	*Summary:* {{ .TotalTestsCnt }} test executions and {{ len .FailedExecutions }} of them failed :sadcat:
 	{{- if .ShowTestStats -}}
  	  {{"\n"}}Test statistics from failed executions:
       {{- range .TestStats -}}
