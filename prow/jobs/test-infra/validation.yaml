@@ -24,11 +24,11 @@ presubmits:
         containers:
           - image: *buildpack_golang_image
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-config.sh"
+              - "prow/scripts/validate-config.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
+              - "prow/plugins.yaml"
+              - "prow/config.yaml"
+              - "prow/jobs"
             resources:
               requests:
                 memory: 1.5Gi
