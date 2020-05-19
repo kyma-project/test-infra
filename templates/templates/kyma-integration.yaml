@@ -901,7 +901,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/github-stats.sh"
+            - "prow/scripts/github-stats.sh"
           resources:
             requests:
               memory: 100Mi
