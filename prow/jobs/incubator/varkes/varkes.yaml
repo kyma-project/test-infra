@@ -47,9 +47,7 @@ postsubmits:
       labels:
         <<: *job_labels_template
         preset-build-master: "true"
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
+      report: false
     - name: post-release-varkes #publishes to npm
       branches:
         - release
@@ -58,6 +56,4 @@ postsubmits:
         <<: *job_labels_template
         preset-build-release: "true"
         preset-bot-npm-token: "true"
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
+      report: false
