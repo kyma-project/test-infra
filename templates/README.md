@@ -9,6 +9,7 @@ Jobs and Prow configuration are generated from templates. The `templates` direct
 
 The template list includes:
 
+- `branchprotector-config.yaml` that defines configuration for branch-protection. Any changes for branch protection should be done in that file.
 - `compass-integration.yaml` that defines presubmit and postsubmit integration jobs which build Kyma to check its compatibility with the Compass component.
 - `component.yaml` that defines component jobs with specified buildpacks.
 - `generic-component.yaml` that provides a new way of creating component jobs. Instead of a predefined buildpack, it uses a generic bootstrap that contains Makefile and Docker but no component-specific dependencies.

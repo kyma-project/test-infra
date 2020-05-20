@@ -455,6 +455,7 @@ presets:
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
 
+# any changes regarding branch protection should be edited in separate branchprotector-config.yaml file
 branch-protection:
   enforce_admins: false
   required_pull_request_reviews:
