@@ -40,12 +40,6 @@ Branch Protector is a Prow component that is responsible for defining branch pro
 ### gcsweb
 gcsweb is a lightweight web frontend for GCS which allows you to access the content of the **artifacts** tab in Spyglass without the need to log in. For more information on gcsweb read [this](https://github.com/kubernetes/k8s.io/tree/master/gcsweb.k8s.io) document.
 
-### Prow Addons Controller Manager
-
-The Prow Addons Controller Manager contains all custom controller extensions for Prow infrastructure, such as the Notifier controller. Notifier watches all Prow jobs and sends notifications to a given Slack channel. Find detailed documentation [here](../../development/prow-addons-ctrl-manager/README.md).
-
->**NOTE:** Unlike other Prow components, the Prow Addons Controller Manager is a tool developed in Kyma.
-
 ## Plugins
 There are different kinds of plugins that react to GitHub events forwarded by the Hook component. Plugins are configured per repository using `plugins.yaml`.
 Prow plugins applied for the Kyma project include:

@@ -125,14 +125,12 @@ kubectl apply -f "${CLUSTER_DIR}/26-pushgateway_service.yaml"
 # Deploy PodDisruptionBudgets
 kubectl apply -f "${CLUSTER_DIR}/27-kube-system_poddisruptionbudgets.yaml"
 
-# Deploy prow-addons-ctrl-manager
-kubectl apply -f "${CLUSTER_DIR}/28-prow-addons-ctrl-manager_rbac.yaml"
-kubectl apply -f "${CLUSTER_DIR}/29-prow-addons-ctrl-manager_statefulset.yaml"
-kubectl apply -f "${CLUSTER_DIR}/30-prow-addons-ctrl-manager_service.yaml"
-
 # Deploy gcsweb
-kubectl apply -f "${CLUSTER_DIR}/31-gcsweb_deployment.yaml"
-kubectl apply -f "${CLUSTER_DIR}/32-gcsweb_service.yaml"
+kubectl apply -f "${CLUSTER_DIR}/28-gcsweb_deployment.yaml"
+kubectl apply -f "${CLUSTER_DIR}/29-gcsweb_service.yaml"
+
+kubectl apply -f "${CLUSTER_DIR}/30-crier_deployment.yaml"
+kubectl apply -f "${CLUSTER_DIR}/31-crier_rbac.yaml"
 
 # Remove Insecure ingress 
 kubectl delete ingress ing
