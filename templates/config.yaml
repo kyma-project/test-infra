@@ -565,6 +565,12 @@ templates:
           <<: *console_generic_component
           path: tests
           since: "1.11"
+      - to: ../prow/jobs/console/compass/compass-tmp.yaml
+        values:
+          <<: *console_generic_component
+          path: compass
+          since: "1.12"
+          optional: true
       - to: ../prow/jobs/console/core/core.yaml
         values:
           <<: *console_generic_component

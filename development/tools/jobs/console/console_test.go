@@ -52,6 +52,13 @@ var components = []struct {
 			jobsuite.Since(releases.Release111),
 		},
 	},
+	{path: "compass", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.Since(releases.Release112),
+			jobsuite.Optional(),
+			jobsuite.JobFileSuffix("tmp"),
+		},
+	},
 	{path: "content", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.Since(releases.Release112),
