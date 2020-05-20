@@ -6,7 +6,7 @@ set -e
 set -o pipefail
 
 export LC_ALL=C.UTF-8
-find "./" -type f -name "*.sh" -exec "shellcheck" {} +
+find "./development/" -type f -name "*.sh" -exec "shellcheck" {} +
 find "./prow" -type f -name "*.sh" -exec "shellcheck" {} +
 
 echo "No issues detected!"
