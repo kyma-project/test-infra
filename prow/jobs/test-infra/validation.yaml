@@ -10,7 +10,7 @@ presubmits:
         containers:
           - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
+              - "prow/scripts/validate-scripts.sh"
             resources:
               requests:
                 memory: 1.5Gi
