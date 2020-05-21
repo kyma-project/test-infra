@@ -618,7 +618,7 @@ deck:
     favicon: "/static/extensions/favicon.png"
   rerun_auth_config:
     github_team_ids:
-    - 2944419 # prow
+    - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
   max_pod_age: 5h
