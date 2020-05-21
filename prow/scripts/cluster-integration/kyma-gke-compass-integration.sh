@@ -241,6 +241,7 @@ function installKyma() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
     --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
     --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+    --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
