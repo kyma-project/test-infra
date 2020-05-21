@@ -643,5 +643,5 @@ slack_reporter_configs:
       *Type:* {{.Spec.Type}}
       *Status:* {{.Status.State}}
       {{with .Spec.Refs}}*Repository:* {{.Org}}/{{.Repo}}
-      *Commit:* <{{.BaseLink}}|{{.BaseSHA}}>
+      *Commit:* <{{.BaseLink}}|{{printf "%.7s" .BaseSHA}}>
       {{end}}*<{{.Status.URL}}|View logs>*
