@@ -99,7 +99,7 @@ func generateStatusCheck(commonJobName, releaseBranch string) string {
 
 func readConfig(t *testing.T) config.Config {
 	// WHEN
-	f, err := os.Open("../../../../prow/config.yaml")
+	f, err := os.Open("../../../../prow/branchprotector-config.yaml")
 	// THEN
 	require.NoError(t, err)
 	defer f.Close()
