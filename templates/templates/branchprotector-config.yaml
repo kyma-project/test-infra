@@ -14,17 +14,16 @@ branch-protection:
       repos:
         kyma:
           branches:
-            {{- range .Global.releases}}
-            release-{{.}}:
+            {{- range $rel := .Global.releases }}
+            release-{{ $rel }}:
               required_status_checks:
                 contexts:
-                  - pre-rel{{. | replace "." ""}}-kyma-integration
-                  - pre-rel{{. | replace "." ""}}-kyma-gke-integration
-                  - pre-rel{{. | replace "." ""}}-kyma-gke-upgrade
-                  - pre-rel{{. | replace "." ""}}-kyma-gke-central-connector
-                  - pre-rel{{. | replace "." ""}}-kyma-artifacts
-                  - pre-rel{{. | replace "." ""}}-kyma-installer
-            {{- end}}
+                  {{- range $.Values.contexts }}
+                  {{- if releaseMatches $rel .since .until }}
+                  - pre-rel{{ $rel | replace "." "" }}-{{ .name }}
+                  {{- end }}
+                  {{- end }}
+            {{- end }}
         website:
           required_status_checks:
             contexts:
