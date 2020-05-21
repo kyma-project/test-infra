@@ -60,4 +60,4 @@ spec:
             secretName: workload-cluster
         - name: gcs-service-account
           secret:
-            secretName: sa-gcs-plank
+            secretName: sa-crier
