@@ -86,7 +86,7 @@ func main() {
 	if cfg.Stats.Enabled {
 		outputProcessor, err := summary.NewOutputProcessor(cfg.Stats.FailingTestRegexp, cfg.Stats.SuccessfulTestRegexp)
 		fatalOnError(err)
-		summarizer := summary.NewService(logFetcher, outputProcessor)
+		summarizer := summary.NewService(logFetcher, outputProcessor, log)
 
 		sNotifier.WithSummarizer(summarizer)
 	}
