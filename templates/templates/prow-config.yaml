@@ -521,7 +521,7 @@ slack_reporter_configs:
     job_states_to_report:
       - failure
       - error
-    channel: c4core-kyma-ci-force
+    channel: kyma-ci-force
     report_template: |
       {{`*Name:* {{.Spec.Job}}
       *Type:* {{.Spec.Type}}

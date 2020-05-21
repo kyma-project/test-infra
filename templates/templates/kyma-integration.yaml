@@ -959,7 +959,7 @@ periodics:
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
               value: "cluster-access"
             - name: KYMA_ALERTS_SLACK_API_URL
@@ -968,7 +968,7 @@ periodics:
                   name: kyma-alerts-slack-api-url
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
           args:
@@ -1028,7 +1028,7 @@ periodics:
             - name: TEST_RESULT_WINDOW_TIME
               value: "24h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
               value: "cluster-access"
             - name: KYMA_ALERTS_SLACK_API_URL
@@ -1037,7 +1037,7 @@ periodics:
                   name: kyma-alerts-slack-api-url
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
           args:
@@ -1092,7 +1092,7 @@ periodics:
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
               value: "cluster-access"
             - name: KYMA_ALERTS_SLACK_API_URL
@@ -1101,7 +1101,7 @@ periodics:
                   name: kyma-alerts-slack-api-url
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
           command:
             - "bash"
           args:
