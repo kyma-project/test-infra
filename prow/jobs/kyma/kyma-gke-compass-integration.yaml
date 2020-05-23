@@ -74,6 +74,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel113-kyma-gke-compass-integration
+      branches:
+        - release-1.13
+      always_run: false
+      <<: *gke_integration_job_template_k15
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
     - name: pre-rel112-kyma-gke-compass-integration
       branches:
         - release-1.12

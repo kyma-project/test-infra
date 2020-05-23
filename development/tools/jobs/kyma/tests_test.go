@@ -68,7 +68,6 @@ var tests = []struct {
 	{path: "end-to-end/external-solution-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Since(releases.Release110),
 		},
 	},
 	{path: "end-to-end/kubeless-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -143,20 +142,17 @@ var tests = []struct {
 	{path: "contract/knative-channel-kafka", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Since(releases.Release110),
 		},
 	},
 	{path: "function-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Since(releases.Release110),
 			jobsuite.Optional(),
 		},
 	},
 	{path: "end-to-end/backup", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release110),
 			jobsuite.Until(releases.Release111),
 		},
 	},

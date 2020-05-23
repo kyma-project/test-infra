@@ -1,7 +1,8 @@
 .DEFAULT_GOAL := jobs
 
 jobs-definitions:
-	go run development/tools/cmd/rendertemplates/main.go --config templates/config.yaml
+	go get github.com/kyma-project/test-infra/development/tools/cmd/rendertemplates 
+	go run github.com/kyma-project/test-infra/development/tools/cmd/rendertemplates --config templates/config.yaml
 jobs-tests:
 	$(MAKE) -C development/tools $@
 

@@ -18,7 +18,7 @@ job_template: &job_template
     - <<: *test_infra_ref
       base_ref: master
   branches:
-    - ^release-(1\.11|1\.10)-backup-plugins$
+    - ^release-(1\.11)-backup-plugins$
   run_if_changed: "^components/backup-plugins/|^common/makefiles/"
   spec:
     containers:

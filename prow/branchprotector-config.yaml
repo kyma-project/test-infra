@@ -16,6 +16,16 @@ branch-protection:
       repos:
         kyma:
           branches:
+            release-1.13:
+              required_status_checks:
+                contexts:
+                  - pre-rel113-kyma-integration
+                  - pre-rel113-kyma-gke-integration
+                  - pre-rel113-kyma-gke-compass-inegration
+                  - pre-rel113-kyma-gke-upgrade
+                  - pre-rel113-kyma-gke-central-connector
+                  - pre-rel113-kyma-artifacts
+                  - pre-rel113-kyma-installer
             release-1.12:
               required_status_checks:
                 contexts:
@@ -35,15 +45,6 @@ branch-protection:
                   - pre-rel111-kyma-gke-central-connector
                   - pre-rel111-kyma-artifacts
                   - pre-rel111-kyma-installer
-            release-1.10:
-              required_status_checks:
-                contexts:
-                  - pre-rel110-kyma-integration
-                  - pre-rel110-kyma-gke-integration
-                  - pre-rel110-kyma-gke-upgrade
-                  - pre-rel110-kyma-gke-central-connector
-                  - pre-rel110-kyma-artifacts
-                  - pre-rel110-kyma-installer
         website:
           required_status_checks:
             contexts:
