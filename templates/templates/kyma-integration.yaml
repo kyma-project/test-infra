@@ -728,7 +728,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+            - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
           resources:
             requests:
               memory: 100Mi
