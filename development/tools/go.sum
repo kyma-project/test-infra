@@ -486,7 +486,6 @@ github.com/kr/pty v1.1.5/go.mod h1:9r2w37qlBe7rQ6e1fg1S/9xpWHSnaqNdHD3WcMdbPDA=
 github.com/kr/pty v1.1.8/go.mod h1:O1sed60cT9XZ5uDucP5qwvh+TE3NnUj51EiZO/lmSfw=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/kyma-project/test-infra/development/gcp v0.0.0-20200507124533-9b586ac404eb h1:I6K/Ksnf1iOp6OLye3IzCcTPXFzbZd/rBulER9h7OUY=
 github.com/kyma-project/test-infra/development/gcp v0.0.0-20200507124533-9b586ac404eb/go.mod h1:y72ZzeQrdJn2KI+lmPGO/MNpwHz+Q10NvPhliKR/J5E=
 github.com/kyma-project/test-infra/development/prow-installer v0.0.0-20200430100116-e8df1115f513/go.mod h1:aVr1F6r36YeGZRUveYz/MjfKxVb0bw2hy0WO6blNWU8=
 github.com/lib/pq v1.1.1/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
@@ -964,7 +963,6 @@ golang.org/x/tools v0.0.0-20200212150539-ea181f53ac56/go.mod h1:TB2adYChydJhpapK
 golang.org/x/tools v0.0.0-20200224181240-023911ca70b2/go.mod h1:TB2adYChydJhpapKDTa4BR/hXlZSLoq2Wpct/0txZ28=
 golang.org/x/tools v0.0.0-20200303214625-2b0b585e22fe h1:Kh3iY7o/2bMfQXZdwLdL9jDMU1k9HoVn0P1mGCfoFLc=
 golang.org/x/tools v0.0.0-20200303214625-2b0b585e22fe/go.mod h1:o4KQGtdN14AW+yjsvvwRTJJuXz8XRtIHtEnmAXLyFUw=
-golang.org/x/tools v0.0.0-20200507050207-a1532b81a28f h1:8vKMSP2LYgBjfB4WCpdfkW5sK5C9eDWguFX9xhqSN2U=
 golang.org/x/tools v0.0.0-20200507050207-a1532b81a28f/go.mod h1:EkVYQZoAsY45+roYkvgYkIh4xh/qjgUK9TdY2XT94GE=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
