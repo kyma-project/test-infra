@@ -328,7 +328,7 @@ presets:
       preset-stability-checker-slack-notifications: "true"
     env:
       - name: SLACK_CLIENT_WEBHOOK_URL
-        value: https://sap-cx.slack.com/services/hooks/jenkins-ci
+        value: https://sap-ti.slack.com/services/hooks/jenkins-ci
       - name: SLACK_CLIENT_TOKEN
         valueFrom:
           secretKeyRef:
@@ -522,7 +522,7 @@ slack_reporter_configs:
     job_states_to_report:
       - failure
       - error
-    channel: c4core-kyma-ci-force
+    channel: kyma-ci-force
     report_template: |
       *Name:* {{.Spec.Job}}
       *Type:* {{.Spec.Type}}
