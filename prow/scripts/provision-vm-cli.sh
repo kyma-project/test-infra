@@ -119,12 +119,18 @@ gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" 
 
 shout "Checking the versions"
 date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma version"
-
+for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma version" && break;
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+done;
 shout "Running a simple test on Kyma"
 date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test run dex-connection"
-
+for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test run dex-connection" && break;
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+done;
 echo "Check if the test succeeds"
 date
 attempts=3
