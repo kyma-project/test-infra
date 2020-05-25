@@ -249,8 +249,8 @@ function installKyma() {
     --label "component=istio"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 2h
-    export KYMA_TEST_TIMEOUT=2h
+    # Change timeout for kyma test to 3h
+    export KYMA_TEST_TIMEOUT=3h
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "provisioner-tests-overrides" \
