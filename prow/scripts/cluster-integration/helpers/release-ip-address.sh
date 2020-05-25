@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-if [ -x /prow-tools/dnscleaner ];
+if [ -x /prow-tools/ipcleaner ];
 then
   /prow-tools/ipcleaner "$@"
 else
