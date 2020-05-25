@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-service-catalog$
+    - ^release-(1\.13|1\.12|1\.11)-service-catalog$
   run_if_changed: "^tests/service-catalog/|^common/makefiles/"
   spec:
     containers:

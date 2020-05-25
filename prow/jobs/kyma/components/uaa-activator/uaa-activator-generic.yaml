@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-uaa-activator$
+    - ^release-(1\.13|1\.12|1\.11)-uaa-activator$
   run_if_changed: "^components/uaa-activator/|^common/makefiles/"
   spec:
     containers:
