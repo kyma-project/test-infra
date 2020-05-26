@@ -97,7 +97,6 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
             cpu: 80m
 
 gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -120,7 +119,6 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
             cpu: 80m
 
 gke_job_template: &gke_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -143,7 +141,6 @@ gke_job_template: &gke_job_template
             cpu: 80m
 
 gke_job_template_k14: &gke_job_template_k14
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -166,7 +163,6 @@ gke_job_template_k14: &gke_job_template_k14
             cpu: 80m
 
 gke_upgrade_job_template: &gke_upgrade_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -189,7 +185,6 @@ gke_upgrade_job_template: &gke_upgrade_job_template
             cpu: 80m
 
 gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -212,7 +207,6 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
             cpu: 80m
 
 gke_central_job_template: &gke_central_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -235,7 +229,6 @@ gke_central_job_template: &gke_central_job_template
             cpu: 80m
 
 gke_central_job_template_k14: &gke_central_job_template_k14
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -258,7 +251,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
             cpu: 80m
 
 gke_backup_job_template: &gke_backup_job_template
-
   decorate: true
   spec:
     containers:
@@ -279,7 +271,6 @@ gke_backup_job_template: &gke_backup_job_template
             cpu: 80m
 
 gke_backup_job_template_k14: &gke_backup_job_template_k14
-
   decorate: true
   spec:
     containers:
