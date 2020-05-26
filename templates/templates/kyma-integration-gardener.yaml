@@ -44,7 +44,6 @@ gardener_gcp_job_labels_template: &gardener_gcp_job_labels_template
   preset-kyma-cli-stable: "true"
 
 gardener_gcp_job_template: &gardener_gcp_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
