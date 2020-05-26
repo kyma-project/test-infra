@@ -38,7 +38,7 @@ job_template: &job_template
   path_alias: {{ .Values.repository }}
   max_concurrency: 10
 {{- if or .Values.optional .Values.skipSlackReport }}
-  report: false
+  skip_report: true
 {{- end}}
   labels:
     preset-dind-enabled: "true"

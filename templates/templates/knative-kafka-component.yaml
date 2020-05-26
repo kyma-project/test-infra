@@ -137,7 +137,7 @@ postsubmits:
           base_ref: master
 {{- end }}
 {{- if or .Values.optional .Values.skipSlackReport }}
-      report: false
+      skip_report: true
 {{- end}}
       labels:
         <<: *job_labels_template
