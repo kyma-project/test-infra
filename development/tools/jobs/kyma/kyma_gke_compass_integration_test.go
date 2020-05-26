@@ -23,7 +23,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	assert.True(t, actualJob.SkipReport)
+	assert.False(t, actualJob.SkipReport)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
 		"preset-kyma-guard-bot-github-token",
 		"preset-kyma-keyring",
