@@ -39,7 +39,6 @@ vm_job_template: &vm_job_template
             cpu: 50m
 
 vm_job_template_k14: &vm_job_template_k14
-
   decorate: true
   optional: true
   path_alias: github.com/kyma-project/kyma
@@ -76,7 +75,6 @@ presets:
         value: westeurope
 
 gke_minio_gateway_job_template: &gke_minio_gateway_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10

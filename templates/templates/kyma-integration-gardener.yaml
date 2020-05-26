@@ -76,7 +76,6 @@ gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-creds-aks-kyma-integration: "true"
 
 gardener_azure_job_template: &gardener_azure_job_template
-
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
