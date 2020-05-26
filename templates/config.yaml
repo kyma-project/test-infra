@@ -978,8 +978,6 @@ templates:
           contexts:
             - name: kyma-integration
             - name: kyma-gke-integration
-            - name: kyma-gke-compass-integration
-              since: "1.12"
             - name: kyma-gke-upgrade
             - name: kyma-gke-central-connector
             - name: kyma-artifacts
