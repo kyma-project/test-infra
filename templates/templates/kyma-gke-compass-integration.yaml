@@ -73,20 +73,6 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-# {{- range (matchingReleases .Global.releases "1.12" nil) }}
-#     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-compass-integration
-#       branches:
-#         - release-{{ . }}
-#       always_run: false
-#       <<: *gke_integration_job_template_k15
-#       labels:
-#         preset-build-release: "true"
-#         <<: *gke_integration_job_labels_template
-#       extra_refs:
-#         - <<: *test_infra_ref
-#           base_ref: release-{{ . }}
-# {{- end }}
-
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-gke-compass-integration
