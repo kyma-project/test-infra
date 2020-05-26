@@ -74,7 +74,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
-      skip_report: false
       optional: {{ .Values.optional | default false }}
       <<: *job_template
 

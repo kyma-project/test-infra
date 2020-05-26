@@ -29,7 +29,6 @@ base_container_config: &base_container_config
       cpu: 80m
 
 gke_integration_job_template: &gke_integration_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
