@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-console-core-ui
-      skip_report: false
       optional: false
       <<: *job_template
 

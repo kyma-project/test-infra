@@ -27,7 +27,6 @@ base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16
 
 vm_job_template: &vm_job_template
-  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -42,7 +41,6 @@ vm_job_template: &vm_job_template
             cpu: 50m
 
 vm_job_template_k14: &vm_job_template_k14
-  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   optional: true
   path_alias: github.com/kyma-project/kyma
@@ -79,7 +77,6 @@ presets:
         value: westeurope
 
 gke_minio_gateway_job_template: &gke_minio_gateway_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -102,7 +99,7 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
             cpu: 80m
 
 gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_template
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -125,7 +122,7 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
             cpu: 80m
 
 gke_job_template: &gke_job_template
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -148,7 +145,7 @@ gke_job_template: &gke_job_template
             cpu: 80m
 
 gke_job_template_k14: &gke_job_template_k14
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -171,7 +168,7 @@ gke_job_template_k14: &gke_job_template_k14
             cpu: 80m
 
 gke_upgrade_job_template: &gke_upgrade_job_template
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -194,7 +191,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
             cpu: 80m
 
 gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -217,7 +214,7 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
             cpu: 80m
 
 gke_central_job_template: &gke_central_job_template
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -240,7 +237,7 @@ gke_central_job_template: &gke_central_job_template
             cpu: 80m
 
 gke_central_job_template_k14: &gke_central_job_template_k14
-  skip_report: false
+
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -263,7 +260,7 @@ gke_central_job_template_k14: &gke_central_job_template_k14
             cpu: 80m
 
 gke_backup_job_template: &gke_backup_job_template
-  skip_report: false
+
   decorate: true
   spec:
     containers:
@@ -284,7 +281,7 @@ gke_backup_job_template: &gke_backup_job_template
             cpu: 80m
 
 gke_backup_job_template_k14: &gke_backup_job_template_k14
-  skip_report: false
+
   decorate: true
   spec:
     containers:
