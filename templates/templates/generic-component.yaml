@@ -38,7 +38,7 @@ job_template: &job_template
   path_alias: {{ .Values.repository }}
   max_concurrency: 10
 {{- if or .Values.optional .Values.skipSlackReport }}
-  report: false
+  skip_report: true
 {{- end}}
   labels:
     preset-dind-enabled: "true"
@@ -74,7 +74,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
-      skip_report: false
       optional: {{ .Values.optional | default false }}
       <<: *job_template
 

@@ -37,7 +37,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-event-bus
-      skip_report: false
       optional: false
       <<: *job_template
 

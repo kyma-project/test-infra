@@ -3,7 +3,6 @@
 
 
 job_template: &job_template
-  skip_report: false
   decorate: true
   max_concurrency: 10
 
