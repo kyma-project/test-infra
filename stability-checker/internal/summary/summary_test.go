@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"testing"
 
 	"github.com/kyma-project/test-infra/stability-checker/internal/log"
@@ -31,7 +32,7 @@ func TestForGettingTestSummaryForExecutions(t *testing.T) {
 			Successes: 1,
 		}}, nil).Times(3)
 
-	sut := summary.NewService(mockLogFetcher, mockLogProcessor)
+	sut := summary.NewService(mockLogFetcher, mockLogProcessor, logrus.New())
 	// WHEN
 	actualStats, err := sut.GetTestSummaryForExecutions(fixTestIDs())
 	// THEN

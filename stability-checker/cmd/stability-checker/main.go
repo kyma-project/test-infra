@@ -81,12 +81,12 @@ func main() {
 	logFetcher, err := podlogger.NewPodLogFetcher(cfg.WorkingNamespace, cfg.PodName)
 	fatalOnError(err)
 
-	sNotifier := notifier.New(slackClient, testRenderer, cfgMapClient, cfg.TestConfigMapName, cfg.TestResultWindowTime, cfg.PodName, cfg.WorkingNamespace, cfg.ClusterName, log)
+	sNotifier := notifier.New(slackClient, testRenderer, cfgMapClient, cfg.TestConfigMapName, cfg.TestResultWindowTime, cfg.PodName, cfg.WorkingNamespace, cfg.ClusterName)
 
 	if cfg.Stats.Enabled {
 		outputProcessor, err := summary.NewOutputProcessor(cfg.Stats.FailingTestRegexp, cfg.Stats.SuccessfulTestRegexp)
 		fatalOnError(err)
-		summarizer := summary.NewService(logFetcher, outputProcessor)
+		summarizer := summary.NewService(logFetcher, outputProcessor, log)
 
 		sNotifier.WithSummarizer(summarizer)
 	}
