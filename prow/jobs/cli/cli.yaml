@@ -47,6 +47,7 @@ postsubmits: # runs on merges
     labels:
       preset-build-release: "true"
       preset-bot-github-token: "true"
+      preset-dind-enabled: "true"
   - name: stable-kyma-cli
     branches:
     - "^stable$" # stable tag
