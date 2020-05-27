@@ -7,13 +7,12 @@ CURRENT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # shellcheck disable=SC1090
 source "${CURRENT_DIR}/log.sh"
 
-kc="kubectl $(context_arg)"
-
 function context_arg() {
     if [ -n "$KUBE_CONTEXT" ]; then
         echo "--context $KUBE_CONTEXT"
     fi
 }
+kc="kubectl $(context_arg)"
 
 # retries are useful when api call can fail due to the infrastructure issue
 function executeKubectlWithRetries() {
