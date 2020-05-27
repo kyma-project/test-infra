@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
-for var in DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
   if [ -z "${!var}" ] ; then
     echo "ERROR: $var is not set"
     discoverUnsetVar=true
@@ -16,53 +16,64 @@ fi
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
-export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export GARDENER_PROJECT_NAME="${GARDENER_KYMA_PROW_PROJECT_NAME}"
 export GARDENER_APPLICATION_CREDENTIALS="${GARDENER_KYMA_PROW_KUBECONFIG}"
 export GARDENER_AZURE_SECRET_NAME="${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}"
 
-readonly REPO_OWNER="kyma-project"
-readonly REPO_NAME="kyma"
-readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
+# Enforce lowercase
+readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+export REPO_OWNER
+readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+export REPO_NAME
 
+readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
-    # In case of PR, operate on PR number
-    readonly COMMON_NAME_PREFIX="gkecompint-pr"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
-    export KYMA_INSTALLER_IMAGE
+  # In case of PR, operate on PR number
+  readonly COMMON_NAME_PREFIX="gkecompint-pr"
+  COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}")
+  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+  export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
-    readonly COMMON_NAME_PREFIX="gkecompint-rel"
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}")
-    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-    shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+  readonly COMMON_NAME_PREFIX="gkecompint-rel"
+  readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+  shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+  COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}")
 else
-    # Otherwise (master), operate on triggering commit id
-    readonly COMMON_NAME_PREFIX="gkecompint-commit"
-    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
-    export KYMA_INSTALLER_IMAGE
+  # Otherwise (master), operate on triggering commit id
+  readonly COMMON_NAME_PREFIX="gkecompint-commit"
+  readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+  COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}")
+  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+  export KYMA_INSTALLER_IMAGE
 fi
 
-readonly STANDARIZED_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
-readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
+### Cluster name must be less than 40 characters!
+COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
+export CLUSTER_NAME="${COMMON_NAME}"
 
-export CLUSTER_NAME="${STANDARIZED_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+### For provision-gke-cluster.sh
+export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+
+#Local variables
+DNS_SUBDOMAIN="${COMMON_NAME}"
+KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+
+INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
 function removeCluster() {
   #Turn off exit-on-error so that next step is executed even if previous one fails.
@@ -123,9 +134,24 @@ function removeCluster() {
 }
 
 function createCluster() {
+  #Used to detect errors for logging purposes
+  ERROR_LOGGING_GUARD="true"
+
+  shout "Authenticate"
+  date
+  init
+  DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+
+  if [[ "$BUILD_TYPE" != "release" ]]; then
+      shout "Build Kyma-Installer Docker image"
+      date
+      CLEANUP_DOCKER_IMAGE="true"
+      "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+  fi
+
   shout "Reserve IP Address for Ingressgateway"
   date
-  GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
+  GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
   GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
@@ -192,12 +218,10 @@ function installKyma() {
   date
   KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
 
-  KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-  INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-  INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
-
   shout "Generate self-signed certificate"
   date
+  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+  export DOMAIN
   CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
   TLS_CERT=$(echo "${CERT_KEY}" | head -1)
   TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
@@ -212,7 +236,7 @@ function installKyma() {
     --data "global.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "feature-flags-overrides" \
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "feature-flags-overrides" \
     --data "global.enableAPIPackages=true" \
     --data "global.disableLegacyConnectivity=true"
 
