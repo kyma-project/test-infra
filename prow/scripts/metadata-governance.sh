@@ -85,7 +85,7 @@ function copy_files() {
 
 function run_metadata_validation() {
     set +e
-    pushd "development/tools"
+    pushd "${SCRIPT_DIR}/../../development/tools"
     go run "${VALIDATOR}" "${@}"
     local result=$?
     if [[ ${result} -ne 0 ]]; then
