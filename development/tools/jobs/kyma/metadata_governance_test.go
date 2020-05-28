@@ -31,7 +31,7 @@ func TestMetadataGovernanceJobPresubmit(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildPr, preset.DindEnabled)
 	assert.Equal(t, "^resources/.*/values.schema.json$", actualPresubmit.RunIfChanged)
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "resources/test/values.schema.json"))
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.MetadataGovernanceScriptDir}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"--repository", "kyma", "--validator", "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/pkg/metadata/jsonmetadatavalidator.go"}, actualPresubmit.Spec.Containers[0].Args)
 }

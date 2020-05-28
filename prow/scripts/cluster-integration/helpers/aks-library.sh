@@ -45,11 +45,15 @@ function createPublicIPandDNS() {
 function addGithubDexConnector() {
     shout "Add Github Dex Connector"
     date
-    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools"
-    dep ensure -v -vendor-only
-    popd
+    pushd "${KYMA_PROJECT_DIR}/test-infra/development/tools" || exit 1
     export DEX_CALLBACK_URL="https://dex.${CLUSTER_NAME}.build.kyma-project.io/callback"
-    go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
+    if [ -x /prow-tools/enablegithubauth ];
+    then
+      /prow-tools/enablegithubauth
+    else
+      go run "cmd/enablegithubauth/main.go"
+    fi
+    popd || exit 1
 }
 
 function createGroup() {
