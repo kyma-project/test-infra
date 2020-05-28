@@ -85,13 +85,13 @@ function copy_files() {
 
 function run_metadata_validation() {
     set +e
-    # shellcheck disable=SC2068
-    go run "${VALIDATOR}" ${@}
-
+    pushd "development/tools"
+    go run "${VALIDATOR}" "${@}"
     local result=$?
     if [[ ${result} -ne 0 ]]; then
         OUTPUT=1
     fi
+    popd
     set -e
 }
 
@@ -131,13 +131,6 @@ function validate_metadata_schema_on_pr() {
 function main() {
     read_arguments "${ARGS[@]}"
     init
-
-    if [ ! -d "${SCRIPT_DIR}/../../development/tools/vendor" ]; then
-        echo "Vendoring 'tools'"
-        pushd "${SCRIPT_DIR}/../../development/tools"
-        dep ensure -v -vendor-only
-        popd
-    fi
 
     shout "Validate changed json schema files"
     validate_metadata_schema_on_pr
