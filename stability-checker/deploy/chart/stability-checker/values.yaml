@@ -6,7 +6,7 @@ containerRegistry:
   path: eu.gcr.io/kyma-project
 
 image:
-  tag: PR-2408
+  tag: PR-2414
   dir: "pr/"
   # valid values are "IfNotPresent", "Never", and "Always"
   pullPolicy: "IfNotPresent"
