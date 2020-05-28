@@ -51,7 +51,7 @@ function addGithubDexConnector() {
     then
       /prow-tools/enablegithubauth
     else
-      go run "${KYMA_PROJECT_DIR}/test-infra/development/tools/cmd/enablegithubauth/main.go"
+      go run "cmd/enablegithubauth/main.go"
     fi
     popd || exit 1
 }
