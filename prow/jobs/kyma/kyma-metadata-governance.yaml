@@ -18,7 +18,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:go1.14
+          - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
             securityContext:
               privileged: true
             command:
