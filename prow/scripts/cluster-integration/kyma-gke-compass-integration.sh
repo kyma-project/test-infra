@@ -75,62 +75,67 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
-function removeCluster() {
-  #Turn off exit-on-error so that next step is executed even if previous one fails.
-  set +e
+cleanup() {
+    #!!! Must be at the beginning of this function !!!
+    EXIT_STATUS=$?
 
-  # CLUSTER_NAME variable is used in other scripts so we need to change it for a while
-  ORIGINAL_CLUSTER_NAME=${CLUSTER_NAME}
-  CLUSTER_NAME=$1
+    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+        shout "AN ERROR OCCURED! Take a look at preceding log entries."
+        echo
+    fi
 
-  EXIT_STATUS=$?
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
 
-  shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
-  readonly OLD_TIMESTAMP=$(gcloud container clusters describe "${CLUSTER_NAME}" --zone="${GCLOUD_COMPUTE_ZONE}" --project="${GCLOUD_PROJECT_NAME}" --format=json | jq --raw-output '.resourceLabels."created-at-readable"')
+    if [ -n "${CLEANUP_CLUSTER}" ]; then
+        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
+        date
 
-  shout "Delete cluster $CLUSTER_NAME"
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
-  TMP_STATUS=$?
-  if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+        #save disk names while the cluster still exists to remove them later
+        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        export DISKS
 
-  shout "Delete Gateway DNS Record"
-  date
-  GATEWAY_IP_ADDRESS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --format json --region "${CLOUDSDK_COMPUTE_REGION}" | jq '.address' | tr -d '"')
-  GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_DOMAIN}"
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-  TMP_STATUS=$?
-  if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+        #Delete cluster
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
 
-  shout "Release Gateway IP Address"
-  date
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}" --ipname="${CLUSTER_NAME}" --dryRun=false
-  TMP_STATUS=$?
-  if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+        #Delete orphaned disks
+        shout "Delete orphaned PVC disks..."
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+    fi
 
-  echo "Remove DNS Record for Apiserver Proxy IP"
-  APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-  APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-  if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    TMP_STATUS=$?
-    if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-  fi
+    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+        shout "Delete Gateway DNS Record"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+    fi
 
-  shout "Delete temporary Kyma-Installer Docker image"
-  date
+    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+        shout "Release Gateway IP Address"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+    fi
 
-  KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
-  TMP_STATUS=$?
-  if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
-  MSG=""
-  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-  shout "Job is finished ${MSG}"
-  date
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+    fi
 
-  # Revert previous value for CLUSTER_NAME variable
-  CLUSTER_NAME=${ORIGINAL_CLUSTER_NAME}
-  set -e
+    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+        shout "Delete Apiserver proxy DNS Record"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+    fi
+
+    MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+    shout "Job is finished ${MSG}"
+    date
+    set -e
+
+    exit "${EXIT_STATUS}"
 }
 
 function createCluster() {
@@ -153,11 +158,13 @@ function createCluster() {
   date
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
   GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
+  CLEANUP_GATEWAY_IP_ADDRESS="true"
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
   shout "Create DNS Record for Ingressgateway IP"
   date
   GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+  CLEANUP_GATEWAY_DNS_RECORD="true"
   IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 
   NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
@@ -171,13 +178,14 @@ function createCluster() {
 
   shout "Provision cluster: \"${CLUSTER_NAME}\""
   date
-
+  export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   if [ -z "$MACHINE_TYPE" ]; then
     export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
   fi
   if [ -z "${CLUSTER_VERSION}" ]; then
     export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
   fi
+  CLEANUP_CLUSTER="true"
   env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
@@ -307,6 +315,7 @@ function installKyma() {
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
   fi
+  
   shout "Installation triggered"
   date
   "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
@@ -316,11 +325,17 @@ function installKyma() {
     date
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    CLEANUP_APISERVER_DNS_RECORD="true"
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
   fi
 }
 
-trap 'removeCluster ${CLUSTER_NAME}' EXIT INT
+trap cleanup EXIT INT
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+fi
 
 shout "Authenticate"
 date
@@ -348,3 +363,8 @@ installKyma
 shout "Test Kyma with Compass"
 date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+
+shout "Success"
+
+#!!! Must be at the end of the script !!!
+ERROR_LOGGING_GUARD="false"
