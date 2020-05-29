@@ -46,5 +46,5 @@ postsubmits:
     - name: post-kyma-tests-function-controller
       reporter_config:
         slack:
-          channel: 'dev-null-kyma-prow'
+          channel: 'kyma-prow-dev-null'
       <<: *job_template
