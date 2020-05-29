@@ -11,7 +11,8 @@ This image consists of:
 - curl
 - base64
 - kubectl (1.17)
-- helm (2.16)
+- helm (2.16.1)
+- helm3 (3.2.1)
 - grep
 
 ## Installation
