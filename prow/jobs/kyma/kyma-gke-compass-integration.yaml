@@ -66,9 +66,6 @@ presubmits: # runs on PRs
       <<: *gke_integration_job_template_k15
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      reporter_config:
-        slack:
-          channel: 'dev-null-kyma-prow'
       labels:
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
