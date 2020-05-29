@@ -139,7 +139,7 @@ postsubmits:
 {{- if or .Values.optional .Values.skipSlackReport }}
       reporter_config:
         slack:
-          channel: 'dev-null-kyma-prow'
+          channel: 'kyma-prow-dev-null'
 {{- end}}
       labels:
         <<: *job_labels_template
