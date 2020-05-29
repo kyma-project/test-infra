@@ -10,6 +10,7 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
+  skip_report: true
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -44,5 +45,4 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tests-function-controller
-      skip_report: true
       <<: *job_template
