@@ -38,7 +38,9 @@ job_template: &job_template
   path_alias: {{ .Values.repository }}
   max_concurrency: 10
 {{- if or .Values.optional .Values.skipSlackReport }}
-  skip_report: true
+  reporter_config:
+    slack:
+      channel: 'dev-null-kyma-prow'
 {{- end}}
   labels:
     preset-dind-enabled: "true"

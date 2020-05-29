@@ -10,7 +10,9 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
-  skip_report: true
+  reporter_config:
+    slack:
+      channel: 'dev-null-kyma-prow'
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
