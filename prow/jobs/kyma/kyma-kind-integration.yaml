@@ -22,8 +22,6 @@ presubmits:
   - name: pre-master-kyma-kind-lite-integration
     branches:
     - ^master$
-    # Temporarly
-    skip_report: true
     decorate: true
     path_alias: github.com/kyma-project/kyma
     max_concurrency: 10
@@ -73,8 +71,6 @@ presubmits:
   - name: pre-master-kyma-kind-integration
     branches:
     - ^master$
-    # Temporarly
-    skip_report: true
     decorate: true
     path_alias: github.com/kyma-project/kyma
     max_concurrency: 10
@@ -124,8 +120,6 @@ presubmits:
   - name: pre-master-kyma-kind-upgrade
     branches:
     - ^master$
-    # Temporarly
-    skip_report: true
     decorate: true
     path_alias: github.com/kyma-project/kyma
     max_concurrency: 10
