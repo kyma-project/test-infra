@@ -109,7 +109,7 @@ postsubmits:
         testgrid-num-failures-to-alert: '1'
       reporter_config:
         slack:
-          channel: 'dev-null-kyma-prow'
+          channel: 'kyma-prow-dev-null'
       labels:
         preset-build-master: "true"
         <<: *gke_integration_job_labels_template

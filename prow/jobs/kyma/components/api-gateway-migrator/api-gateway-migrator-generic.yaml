@@ -10,9 +10,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  reporter_config:
-    slack:
-      channel: 'dev-null-kyma-prow'
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -46,4 +43,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-api-gateway-migrator
+      reporter_config:
+        slack:
+          channel: 'dev-null-kyma-prow'
       <<: *job_template
