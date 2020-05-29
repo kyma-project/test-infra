@@ -13,7 +13,7 @@ RUN apk update &&\
 	wget https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
 	chmod +x /usr/local/bin/helm &&\
 	helm init --client-only &&\
-	wget https://get.helm.sh/helm-${HELM_3_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm3 > /usr/local/bin/helm3 &&\
+	wget https://get.helm.sh/helm-${HELM_3_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm3 &&\
 	chmod +x /usr/local/bin/helm3
 
 ENTRYPOINT ["/bin/bash"]
