@@ -25,7 +25,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-attempts=3
+attempts=10
 retryTimeInSec="5"
 function createDNSWithRetries() {
     set +e
