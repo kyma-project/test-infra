@@ -146,6 +146,9 @@ function createCluster() {
   date
   init
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+  export DNS_DOMAIN
+  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+  export DOMAIN
 
   if [[ "$BUILD_TYPE" != "release" ]]; then
       shout "Build Kyma-Installer Docker image"
@@ -337,14 +340,6 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
 fi
 
-shout "Authenticate"
-date
-init
-
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
-export DNS_DOMAIN
-DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-export DOMAIN
 
 shout "Create new cluster"
 date
