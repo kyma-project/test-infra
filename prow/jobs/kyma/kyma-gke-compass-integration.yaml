@@ -101,9 +101,9 @@ presubmits: # runs on PRs
           base_ref: fix-compass-integration-script
     - name: pre-rel113-kyma-gke-compass-integration-test
       optional: true
+      decorate: false
       branches:
         - ^master$
-      always_run: false
       <<: *gke_integration_job_template_k15
       labels:
         preset-build-release: "true"
