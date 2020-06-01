@@ -79,10 +79,10 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
       extra_refs:
-          org: rafalpotempa
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: fix-compass-integration-script
+          - org: rafalpotempa
+            repo: test-infra
+            path_alias: github.com/kyma-project/test-infra
+            base_ref: fix-compass-integration-script
     - name: pre-master-kyma-gke-compint-rafal-rel
       optional: true
       branches:
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
         preset-build-release: "true"
         <<: *gke_integration_job_labels_template
       extra_refs:
-          org: rafalpotempa
+        - org: rafalpotempa
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: fix-compass-integration-script
