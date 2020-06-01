@@ -98,7 +98,22 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: fix-compass-integration-script
 
-{{- range (matchingReleases .Global.releases "1.12" nil) }}
+{{- range (matchingReleases .Global.releases "1.13" nil) }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-compass-integration-test
+      optional: true
+      branches:
+        - ^master$
+      always_run: false
+      <<: *gke_integration_job_template_k15
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
+{{- end }}
+
+{{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-compass-integration
       optional: true
       branches:
