@@ -75,7 +75,7 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
-cleanup() {
+function cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
