@@ -101,9 +101,9 @@ presubmits: # runs on PRs
 {{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-compass-integration-test
       optional: true
+      decorate: false
       branches:
         - ^master$
-      always_run: false
       <<: *gke_integration_job_template_k15
       labels:
         preset-build-release: "true"
