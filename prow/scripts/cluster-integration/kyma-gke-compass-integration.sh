@@ -72,8 +72,8 @@ DNS_SUBDOMAIN="${COMMON_NAME}"
 KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 
-INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
+INSTALLER_YAML="${KYMA_SOURCES_DIR}/installer.yaml"
+INSTALLER_CR="${KYMA_SOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
 function cleanup() {
     #!!! Must be at the beginning of this function !!!
