@@ -37,7 +37,7 @@ readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
   ### to remove
-  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+  KYMA_INSTALLER_IMAGE=""
   export KYMA_INSTALLER_IMAGE
   ###
 
@@ -50,7 +50,8 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
 elif [[ "$BUILD_TYPE" == "release" ]]; then
   readonly COMMON_NAME_PREFIX="gkecompint-rel"
   readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-  readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+  readonly RELEASE_VERSION=1.13.0-rc1
+  # readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
   shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}")
 else
