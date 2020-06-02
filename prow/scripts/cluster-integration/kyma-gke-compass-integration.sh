@@ -337,9 +337,8 @@ trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
-
 
 shout "Create new cluster"
 date
