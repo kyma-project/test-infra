@@ -93,7 +93,7 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 
 ## Rerun jobs from UI
 
-All [cluster-acces](https://github.com/orgs/kyma-project/teams/cluster-access) team members are authorized to rerun jobs from UI.
+All [cluster-access](https://github.com/orgs/kyma-project/teams/cluster-access) team members are authorized to rerun jobs from UI.
 
 ![rerun job](./assets/rerun.png)
 
