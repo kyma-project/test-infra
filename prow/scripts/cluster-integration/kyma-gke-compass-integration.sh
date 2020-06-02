@@ -36,6 +36,11 @@ export REPO_NAME
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
+  ### to remove
+  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-compass-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+  export KYMA_INSTALLER_IMAGE
+  ###
+
 if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
   readonly COMMON_NAME_PREFIX="gkecompint-pr"
