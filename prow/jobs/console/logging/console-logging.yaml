@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11)-logging$
+    - ^release-(1\.13|1\.12|1\.11)-logging$
   run_if_changed: "^logging/|^components/|^shared/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-console-logging
-      skip_report: false
       optional: false
       <<: *job_template
 

@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-kyma-environment-broker$
+    - ^release-(1\.13|1\.12|1\.11)-kyma-environment-broker$
   run_if_changed: "^components/kyma-environment-broker/|^scripts/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-components-kyma-environment-broker
-      skip_report: false
       optional: false
       <<: *job_template
 

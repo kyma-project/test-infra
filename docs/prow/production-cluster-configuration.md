@@ -101,7 +101,6 @@ where:
    - Deploys Prow components with the `a202e595a33ac92ab503f913f2d710efabd3de21`revision
    - Deploys the Cert Manager
    - Deploys secure Ingress
-   - Deploys the [Prow Addons Controller Manager](../../development/prow-addons-ctrl-manager/README.md)
    - Removes insecure Ingress
 
 7. Verify the installation.

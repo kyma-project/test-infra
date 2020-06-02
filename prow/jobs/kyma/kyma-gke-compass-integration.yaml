@@ -31,7 +31,6 @@ base_container_config: &base_container_config
       cpu: 80m
 
 gke_integration_job_template: &gke_integration_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -67,16 +66,53 @@ presubmits: # runs on PRs
       <<: *gke_integration_job_template_k15
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
       labels:
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-master-kyma-gke-compint-rafal-pr
+      optional: true
+      branches:
+        - ^master$
+      <<: *gke_integration_job_template_k15
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+          - org: rafalpotempa
+            repo: test-infra
+            path_alias: github.com/kyma-project/test-infra
+            base_ref: fix-compass-integration-script
+    - name: pre-master-kyma-gke-compint-rafal-rel
+      optional: true
+      branches:
+        - ^master$
+      always_run: false
+      <<: *gke_integration_job_template_k15
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - org: rafalpotempa
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: fix-compass-integration-script
+    - name: pre-rel113-kyma-gke-compass-integration
+      optional: true
+      branches:
+        - release-1.13
+      always_run: false
+      <<: *gke_integration_job_template_k15
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
     - name: pre-rel112-kyma-gke-compass-integration
+      optional: true
       branches:
         - release-1.12
       always_run: false
@@ -100,7 +136,7 @@ postsubmits:
         testgrid-num-failures-to-alert: '1'
       reporter_config:
         slack:
-          channel: '' # empty channel overrides slack reporting in crier
+          channel: 'kyma-prow-dev-null'
       labels:
         preset-build-master: "true"
         <<: *gke_integration_job_labels_template

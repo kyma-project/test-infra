@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-application-registry$
+    - ^release-(1\.13|1\.12|1\.11)-application-registry$
   run_if_changed: "^components/application-registry/|^common/makefiles/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-application-registry
-      skip_report: false
       optional: false
       <<: *job_template
 

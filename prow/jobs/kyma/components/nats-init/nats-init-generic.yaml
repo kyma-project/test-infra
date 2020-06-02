@@ -10,10 +10,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  report: false
-  reporter_config:
-    slack:
-      channel: '' # empty channel overrides slack reporting in crier
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -23,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12)-nats-init$
+    - ^release-(1\.13|1\.12)-nats-init$
   run_if_changed: "^components/nats-init/|^common/makefiles/"
   spec:
     containers:
@@ -42,11 +38,13 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-nats-init
-      skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-nats-init
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

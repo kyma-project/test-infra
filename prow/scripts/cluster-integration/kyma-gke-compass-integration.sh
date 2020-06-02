@@ -241,6 +241,7 @@ function installKyma() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
     --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
     --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+    --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
@@ -248,8 +249,8 @@ function installKyma() {
     --label "component=istio"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 2h
-    export KYMA_TEST_TIMEOUT=2h
+    # Change timeout for kyma test to 3h
+    export KYMA_TEST_TIMEOUT=3h
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "provisioner-tests-overrides" \

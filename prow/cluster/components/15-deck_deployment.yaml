@@ -24,55 +24,66 @@ spec:
       serviceAccountName: "deck"
       terminationGracePeriodSeconds: 30
       containers:
-        - name: deck
-          image: gcr.io/k8s-prow/deck:v20200319-1aea24112
-          args:
-            - --dry-run=false
-            - --hook-url=http://hook:8888/plugin-help
-            - --config-path=/etc/config/config.yaml
-            - --job-config-path=/etc/job-config
-            - --plugin-config=/etc/plugins/plugins.yaml
-            - --spyglass=true
-            - --github-endpoint=http://ghproxy
-            - --github-endpoint=https://api.github.com
-            - --github-token-path=/etc/github/oauth
-            - --build-cluster=/etc/cluster/cluster.yaml
-            - --redirect-http-to=status.build.kyma-project.io
-          ports:
-            - name: http
-              containerPort: 8080
-          volumeMounts:
-            - name: config
-              mountPath: /etc/config
-              readOnly: true
-            - name: job-config
-              mountPath: /etc/job-config
-              readOnly: true
-            - name: oauth
-              mountPath: /etc/github
-              readOnly: true
-            - name: plugins
-              mountPath: /etc/plugins
-              readOnly: true
-            - name: branding
-              mountPath: /static/extensions
-              readOnly: true
-            - mountPath: /etc/cluster
-              name: cluster
-              readOnly: true
-          livenessProbe:
+      - name: deck
+        image: gcr.io/k8s-prow/deck:v20200517-9a99ab6ac
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8080 
+        args:
+        - --dry-run=false
+        - --hook-url=http://hook:8888/plugin-help
+        - --config-path=/etc/config/config.yaml
+        - --job-config-path=/etc/job-config
+        - --plugin-config=/etc/plugins/plugins.yaml
+        - --spyglass=true
+        - --github-endpoint=http://ghproxy
+        - --github-endpoint=https://api.github.com
+        - --github-token-path=/etc/github/oauth
+        - --build-cluster=/etc/cluster/cluster.yaml
+        - --redirect-http-to=status.build.kyma-project.io
+        - --oauth-url=/github-login
+        - --rerun-creates-job=true
+        - --github-oauth-config-file=/etc/githuboauth/secret
+        - --cookie-secret=/etc/cookie/secret
+        livenessProbe:
             httpGet:
               path: /healthz
               port: 8081
             initialDelaySeconds: 3
             periodSeconds: 3
-          readinessProbe:
-            httpGet:
-              path: /healthz/ready
-              port: 8081
-            initialDelaySeconds: 10
-            periodSeconds: 3
-            timeoutSeconds: 600
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 600
+        volumeMounts:
+          - name: config
+            mountPath: /etc/config
+            readOnly: true
+          - name: job-config
+            mountPath: /etc/job-config
+            readOnly: true
+          - name: oauth
+            mountPath: /etc/github
+            readOnly: true
+          - name: plugins
+            mountPath: /etc/plugins
+            readOnly: true
+          - name: branding
+            mountPath: /static/extensions
+            readOnly: true
+          - mountPath: /etc/cluster
+            name: cluster
+            readOnly: true
+          - name: oauth-config
+            mountPath: /etc/githuboauth
+            readOnly: true
+          - name: cookie-secret
+            mountPath: /etc/cookie
+            readOnly: true
       volumes:
         - name: config
           configMap:
@@ -94,3 +105,9 @@ spec:
           secret:
             defaultMode: 420
             secretName: workload-cluster
+        - name: oauth-config
+          secret:
+            secretName: github-oauth-config
+        - name: cookie-secret
+          secret:
+            secretName: cookie

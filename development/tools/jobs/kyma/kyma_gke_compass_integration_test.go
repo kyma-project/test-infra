@@ -23,7 +23,6 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/kyma", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
-	assert.False(t, actualJob.SkipReport)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
 		"preset-kyma-guard-bot-github-token",
 		"preset-kyma-keyring",
@@ -59,6 +58,7 @@ func TestKymaGKECompassIntegrationJobsReleases(t *testing.T) {
 				require.NoError(t, err)
 				actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-compass-integration", currentRelease), currentRelease.Branch())
 				require.NotNil(t, actualPresubmit)
+				assert.True(t, actualPresubmit.Optional)
 				assert.False(t, actualPresubmit.SkipReport)
 				assert.True(t, actualPresubmit.Decorate)
 				assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)

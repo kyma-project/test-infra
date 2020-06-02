@@ -37,12 +37,6 @@ job_template: &job_template
   decorate: true
   path_alias: {{ .Values.repository }}
   max_concurrency: 10
-{{- if or .Values.optional .Values.skipSlackReport }}
-  report: false
-  reporter_config:
-    slack:
-      channel: '' # empty channel overrides slack reporting in crier
-{{- end}}
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -77,11 +71,15 @@ job_template: &job_template
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
-      skip_report: false
       optional: {{ .Values.optional | default false }}
       <<: *job_template
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      {{- if or .Values.optional .Values.skipSlackReport }}
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      {{- end}}
       <<: *job_template

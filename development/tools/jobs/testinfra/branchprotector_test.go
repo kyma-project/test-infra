@@ -65,11 +65,8 @@ func TestBranchProtection(t *testing.T) {
 func TestBranchProtectionRelease(t *testing.T) {
 	actual := readConfig(t)
 
-	currentRelease := releases.Release110
-	relBranch := currentRelease.Branch()
-
 	for _, currentRelease := range releases.GetAllKymaReleases() {
-		relBranch = currentRelease.Branch()
+		relBranch := currentRelease.Branch()
 		t.Run("repository kyma, branch "+relBranch, func(t *testing.T) {
 			p, err := actual.GetBranchProtection("kyma-project", "kyma", relBranch, []config.Presubmit{})
 			require.NoError(t, err)
@@ -99,7 +96,7 @@ func generateStatusCheck(commonJobName, releaseBranch string) string {
 
 func readConfig(t *testing.T) config.Config {
 	// WHEN
-	f, err := os.Open("../../../../prow/config.yaml")
+	f, err := os.Open("../../../../prow/branchprotector-config.yaml")
 	// THEN
 	require.NoError(t, err)
 	defer f.Close()

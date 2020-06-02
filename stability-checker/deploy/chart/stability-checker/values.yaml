@@ -6,13 +6,10 @@ containerRegistry:
   path: eu.gcr.io/kyma-project
 
 image:
-  tag: b514eafa
+  tag: PR-2414
+  dir: "pr/"
   # valid values are "IfNotPresent", "Never", and "Always"
   pullPolicy: "IfNotPresent"
-
-
-storage:
-  claimName: "stability-test-scripts-pvc"
 
 logsPersistence:
   enabled: false

@@ -38,6 +38,4 @@ postsubmits:
       <<: *job_template
       labels:
         preset-build-master: "true"
-      reporter_config:
-        slack:
-          channel: '' # empty channel overrides slack reporting in crier
+      report: false

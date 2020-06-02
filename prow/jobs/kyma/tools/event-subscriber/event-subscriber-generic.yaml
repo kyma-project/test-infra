@@ -10,10 +10,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
-  report: false
-  reporter_config:
-    slack:
-      channel: '' # empty channel overrides slack reporting in crier
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -23,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12)-event-subscriber$
+    - ^release-(1\.13|1\.12)-event-subscriber$
   run_if_changed: "^tools/event-subscriber/|^common/makefiles/"
   spec:
     containers:
@@ -42,11 +38,13 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tools-event-subscriber
-      skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tools-event-subscriber
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

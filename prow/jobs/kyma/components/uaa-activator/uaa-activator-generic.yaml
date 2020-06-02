@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-uaa-activator$
+    - ^release-(1\.13|1\.12|1\.11)-uaa-activator$
   run_if_changed: "^components/uaa-activator/|^common/makefiles/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-uaa-activator
-      skip_report: false
       optional: false
       <<: *job_template
 

@@ -5,9 +5,10 @@ set -o pipefail
 
 if [ -x /prow-tools/dnscleaner ];
 then
-  /prow-tools/dnscleaner "$@"
+  /prow-tools/dnscleaner --attempts=10 "$@"
 else
   cd "development/tools"
-  go run "cmd/dnscleaner" "$@"
+  go run "cmd/dnscleaner" --attempts=10 "$@"
 fi
+
 echo "DNS Record deleted, but it can be visible for some time due to DNS caches"

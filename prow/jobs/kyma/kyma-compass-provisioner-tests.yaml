@@ -61,9 +61,7 @@ presubmits: # runs on PRs
     branches:
       - ^master$
     run_if_changed: "resources/compass/charts/provisioner"
-    reporter_config:
-      slack:
-        channel: '' # empty channel overrides slack reporting in crier
+    report: false
     labels:
       preset-build-pr: "true"
       <<: *gke_integration_job_labels_template
@@ -104,9 +102,7 @@ postsubmits:
               cpu: 80m
     branches:
       - ^master$
-    reporter_config:
-      slack:
-        channel: '' # empty channel overrides slack reporting in crier
+    report: false
     labels:
       preset-build-master: "true"
       <<: *gke_integration_job_labels_template

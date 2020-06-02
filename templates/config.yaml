@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.13"
+  nextRelease: "1.14"
   releases:
+    - "1.13"
     - "1.12"
     - "1.11"
-    - "1.10"
   whitesource:
     - name: "kyma"
       language: "golang"
@@ -565,6 +565,11 @@ templates:
           <<: *console_generic_component
           path: tests
           since: "1.11"
+      - to: ../prow/jobs/console/compass/compass.yaml
+        values:
+          <<: *console_generic_component
+          path: compass
+          since: "1.12"
       - to: ../prow/jobs/console/core/core.yaml
         values:
           <<: *console_generic_component
@@ -618,28 +623,6 @@ templates:
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
-        values:
-          contexts:
-            - name: kyma-integration
-            - name: kyma-gke-integration
-            - name: kyma-gke-compass-inegration
-              since: "1.12"
-            - name: kyma-gke-upgrade
-            - name: kyma-gke-central-connector
-            - name: kyma-artifacts
-            - name: kyma-installer
-            - name: kyma-gke-minio-gcs-gateway
-              since: "1.6"
-              until: "1.8"
-            - name: kyma-gke-minio-az-gateway
-              since: "1.6"
-              until: "1.8"
-            - name: kyma-gke-minio-gcs-gateway-migration
-              since: "1.6"
-              until: "1.8"
-            - name: kyma-gke-minio-az-gateway-migration
-              since: "1.6"
-              until: "1.8"
   - from: templates/component.yaml
     render:
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
@@ -991,3 +974,23 @@ templates:
   - from: templates/branchprotector-config.yaml
     render:
       - to: ../prow/branchprotector-config.yaml
+        values:
+          contexts:
+            - name: kyma-integration
+            - name: kyma-gke-integration
+            - name: kyma-gke-upgrade
+            - name: kyma-gke-central-connector
+            - name: kyma-artifacts
+            - name: kyma-installer
+            - name: kyma-gke-minio-gcs-gateway
+              since: "1.6"
+              until: "1.8"
+            - name: kyma-gke-minio-az-gateway
+              since: "1.6"
+              until: "1.8"
+            - name: kyma-gke-minio-gcs-gateway-migration
+              since: "1.6"
+              until: "1.8"
+            - name: kyma-gke-minio-az-gateway-migration
+              since: "1.6"
+              until: "1.8"

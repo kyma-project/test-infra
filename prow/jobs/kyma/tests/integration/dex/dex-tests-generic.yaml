@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-dex$
+    - ^release-(1\.13|1\.12|1\.11)-dex$
   run_if_changed: "^tests/integration/dex/|^common/makefiles/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-integration-dex
-      skip_report: false
       optional: false
       <<: *job_template
 

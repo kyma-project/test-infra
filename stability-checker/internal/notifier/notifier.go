@@ -55,7 +55,6 @@ func New(
 	testRunnerClusterName string, log logrus.FieldLogger) *SlackNotifier {
 
 	return &SlackNotifier{
-		log:                   log,
 		cfgMapName:            cfgMapName,
 		cfgMapClient:          cfgMapClient,
 		testResultWindowTime:  resultWindowTime,
@@ -65,6 +64,7 @@ func New(
 		testRunnerNamespace:   testRunnerNamespace,
 		testRunnerClusterName: testRunnerClusterName,
 		showTestStats:         false,
+		log:                   log,
 	}
 }
 

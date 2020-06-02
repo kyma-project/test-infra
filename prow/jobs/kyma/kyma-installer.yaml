@@ -6,7 +6,6 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -32,6 +31,18 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
 
+    - name: pre-rel113-kyma-installer
+      branches:
+        - release-1.13
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
     - name: pre-rel112-kyma-installer
       branches:
         - release-1.12
@@ -52,18 +63,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.11
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-
-    - name: pre-rel110-kyma-installer
-      branches:
-        - release-1.10
-      <<: *job_template
-      always_run: false
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.10
       labels:
         <<: *job_labels_template
         preset-build-release: "true"

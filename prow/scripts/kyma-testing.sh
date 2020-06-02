@@ -53,39 +53,33 @@ install::kyma_cli() {
     popd
 }
 
-cts::check_crd_exist() {
-  ${kc} get clustertestsuites.testing.kyma-project.io > /dev/null 2>&1
-  if [[ $? -eq 1 ]]
-  then
-     echo "ERROR: script requires ClusterTestSuite CRD"
-     exit 1
-  fi
-}
+function printImagesWithLatestTag() {
+    retry=10
+    while true; do
+        # shellcheck disable=SC2046
+        images=$(kubectl $(context_arg)  get pods --all-namespaces -o jsonpath="{..image}" |\
+        tr -s '[:space:]' '\n' |\
+        grep ":latest")
 
-cts::delete() {
-  existingCTSs=$(${kc} get cts -o custom-columns=NAME:.metadata.name --no-headers=true)
-  for cts in ${existingCTSs}
-  do
-    kyma test delete "${cts}"
-  done
+        # TODO(michal-hudy): it shoudn't be done that way, grep returns 1 when no lines match, same bug in kyma repository....
+        if [[ $? -lt 2 ]]; then
+            break
+        fi
+        (( retry-- ))
+        if [[ ${retry} -eq 0 ]]; then
+            log::error "Reached maximum attempts, not trying any longer"
+            return 1
+        fi
+        sleep 5
+    done
 
-}
-
-inject_addons_if_necessary() {
-  tdWithAddon=$(${kc} get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
-
-  if [ -z "$tdWithAddon" ]
-  then
-      log::info "- Skipping injecting ClusterAddonsConfiguration"
-  else
-      log::info "- Creating ClusterAddonsConfiguration which provides the testing addons"
-      injectTestingAddons
-      if [[ $? -eq 1 ]]; then
-        exit 1
-      fi
-
-      trap removeTestingAddons EXIT
-  fi
+    if [ ${#images} -ne 0 ]; then
+        log::error "${images}"
+        log::error "FAILED"
+        return 1
+    fi
+    log::success "OK"
+    return 0
 }
 
 function main() {
@@ -142,7 +136,7 @@ function main() {
   cleanupExitCode=$?
 
   log::info "- ClusterTestSuite details"
-  kubectl get cts "${SUITE_NAME}" -oyaml
+  ${kc} get cts "${SUITE_NAME}" -oyaml
 
   # TODO (mhudy): cts shouldn't be deleted because all test pods are deleted too and kind export will not store them
   # cts::delete

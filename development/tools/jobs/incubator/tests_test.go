@@ -32,7 +32,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic-approach"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release110),
 		},
 	},
 	{
@@ -52,7 +51,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("test-generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release110),
 		},
 	},
 	{

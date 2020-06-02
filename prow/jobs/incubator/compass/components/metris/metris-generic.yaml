@@ -10,10 +10,6 @@ job_template: &job_template
   decorate: true
   path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
-  report: false
-  reporter_config:
-    slack:
-      channel: '' # empty channel overrides slack reporting in crier
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
@@ -23,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.13)-metris$
   run_if_changed: "^components/metris/|^scripts/"
   spec:
     containers:
@@ -41,11 +38,13 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-components-metris
-      skip_report: false
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
     - name: post-compass-components-metris
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

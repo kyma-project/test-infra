@@ -27,7 +27,6 @@ base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16
 
 vm_job_template: &vm_job_template
-  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -42,7 +41,6 @@ vm_job_template: &vm_job_template
             cpu: 50m
 
 vm_job_template_k14: &vm_job_template_k14
-  skip_report: false # from documentation: SkipReport skips commenting and setting status on GitHub.
   decorate: true
   optional: true
   path_alias: github.com/kyma-project/kyma
@@ -79,7 +77,6 @@ presets:
         value: westeurope
 
 gke_minio_gateway_job_template: &gke_minio_gateway_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -102,7 +99,6 @@ gke_minio_gateway_job_template: &gke_minio_gateway_job_template
             cpu: 80m
 
 gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -125,7 +121,6 @@ gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_templ
             cpu: 80m
 
 gke_job_template: &gke_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -148,7 +143,6 @@ gke_job_template: &gke_job_template
             cpu: 80m
 
 gke_job_template_k14: &gke_job_template_k14
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -171,7 +165,6 @@ gke_job_template_k14: &gke_job_template_k14
             cpu: 80m
 
 gke_upgrade_job_template: &gke_upgrade_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -194,7 +187,6 @@ gke_upgrade_job_template: &gke_upgrade_job_template
             cpu: 80m
 
 gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -217,7 +209,6 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
             cpu: 80m
 
 gke_central_job_template: &gke_central_job_template
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -240,7 +231,6 @@ gke_central_job_template: &gke_central_job_template
             cpu: 80m
 
 gke_central_job_template_k14: &gke_central_job_template_k14
-  skip_report: false
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -263,7 +253,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
             cpu: 80m
 
 gke_backup_job_template: &gke_backup_job_template
-  skip_report: false
   decorate: true
   spec:
     containers:
@@ -284,7 +273,6 @@ gke_backup_job_template: &gke_backup_job_template
             cpu: 80m
 
 gke_backup_job_template_k14: &gke_backup_job_template_k14
-  skip_report: false
   decorate: true
   spec:
     containers:
@@ -334,6 +322,16 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel113-kyma-integration
+      branches:
+        - release-1.13
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
     - name: pre-rel112-kyma-integration
       branches:
         - release-1.12
@@ -354,16 +352,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.11
-    - name: pre-rel110-kyma-integration
-      branches:
-        - release-1.10
-      always_run: false
-      <<: *vm_job_template_k14
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.10
 
     - name: pre-master-kyma-gke-integration
       branches:
@@ -377,6 +365,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel113-kyma-gke-integration
+      branches:
+        - release-1.13
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.13
     - name: pre-rel112-kyma-gke-integration
       branches:
         - release-1.12
@@ -403,19 +404,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.11
-    - name: pre-rel110-kyma-gke-integration
-      branches:
-        - release-1.10
-      <<: *gke_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.10
 
     - name: pre-master-kyma-gke-upgrade
       branches:
@@ -429,6 +417,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel113-kyma-gke-upgrade
+      branches:
+        - release-1.13
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
     - name: pre-rel112-kyma-gke-upgrade
       branches:
         - release-1.12
@@ -451,17 +450,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.11
-    - name: pre-rel110-kyma-gke-upgrade
-      branches:
-        - release-1.10
-      <<: *gke_upgrade_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.10
 
     - name: pre-master-kyma-gke-central-connector
       branches:
@@ -475,6 +463,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel113-kyma-gke-central-connector
+      branches:
+        - release-1.13
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.13
     - name: pre-rel112-kyma-gke-central-connector
       branches:
         - release-1.12
@@ -497,17 +496,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.11
-    - name: pre-rel110-kyma-gke-central-connector
-      branches:
-        - release-1.10
-      <<: *gke_central_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.10
     - name: pre-rel111-kyma-gke-backup
       optional: true
       branches:
@@ -520,18 +508,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.11
-    - name: pre-rel110-kyma-gke-backup
-      optional: true
-      branches:
-        - release-1.10
-      <<: *gke_backup_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.10
 
 postsubmits:
   kyma-project/kyma:
@@ -919,7 +895,7 @@ periodics:
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
               value: "cluster-access"
             - name: KYMA_ALERTS_SLACK_API_URL
@@ -928,7 +904,7 @@ periodics:
                   name: kyma-alerts-slack-api-url
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
           args:
@@ -988,7 +964,7 @@ periodics:
             - name: TEST_RESULT_WINDOW_TIME
               value: "24h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
               value: "cluster-access"
             - name: KYMA_ALERTS_SLACK_API_URL
@@ -997,7 +973,7 @@ periodics:
                   name: kyma-alerts-slack-api-url
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: CLOUDSDK_COMPUTE_ZONE
               value: "europe-west4-b"
           args:
@@ -1052,7 +1028,7 @@ periodics:
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
             - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
               value: "cluster-access"
             - name: KYMA_ALERTS_SLACK_API_URL
@@ -1061,7 +1037,7 @@ periodics:
                   name: kyma-alerts-slack-api-url
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
-              value: "#c4core-kyma-ci-force"
+              value: "#kyma-ci-force"
           command:
             - "bash"
           args:

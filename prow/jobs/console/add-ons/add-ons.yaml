@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11)-add-ons$
+    - ^release-(1\.13|1\.12|1\.11)-add-ons$
   run_if_changed: "^add-ons/|^components/|^shared/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-console-add-ons
-      skip_report: false
       optional: false
       <<: *job_template
 

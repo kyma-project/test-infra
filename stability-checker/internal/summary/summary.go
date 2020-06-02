@@ -2,6 +2,7 @@ package summary
 
 import (
 	"encoding/json"
+	"github.com/sirupsen/logrus"
 	"io"
 
 	"github.com/kyma-project/test-infra/stability-checker/internal/log"
@@ -23,13 +24,15 @@ type logFetcher interface {
 type Service struct {
 	logFetcher logFetcher
 	processor  logProcessor
+	log        logrus.FieldLogger
 }
 
 // NewService returns Service
-func NewService(logFetcher logFetcher, processor logProcessor) *Service {
+func NewService(logFetcher logFetcher, processor logProcessor, log logrus.FieldLogger) *Service {
 	return &Service{
 		logFetcher: logFetcher,
 		processor:  processor,
+		log:        log,
 	}
 }
 

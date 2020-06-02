@@ -15,7 +15,6 @@ test_infra_ref: &test_infra_ref
 {{- end }}
 
 job_template: &job_template
-  skip_report: false
   decorate: true
   max_concurrency: 10
 
@@ -137,10 +136,9 @@ postsubmits:
           base_ref: master
 {{- end }}
 {{- if or .Values.optional .Values.skipSlackReport }}
-      report: false
       reporter_config:
         slack:
-          channel: '' # empty channel overrides slack reporting in crier
+          channel: 'kyma-prow-dev-null'
 {{- end}}
       labels:
         <<: *job_labels_template

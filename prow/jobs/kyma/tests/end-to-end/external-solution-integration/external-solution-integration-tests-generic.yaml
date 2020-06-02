@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.12|1\.11|1\.10)-external-solution-integration$
+    - ^release-(1\.13|1\.12|1\.11)-external-solution-integration$
   run_if_changed: "^tests/end-to-end/external-solution-integration/|^common/makefiles/"
   spec:
     containers:
@@ -38,7 +38,6 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-end-to-end-external-solution-integration
-      skip_report: false
       optional: false
       <<: *job_template
 
