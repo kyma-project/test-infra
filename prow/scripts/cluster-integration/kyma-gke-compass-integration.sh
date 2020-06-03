@@ -186,25 +186,6 @@ function createCluster() {
   env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
-function waitUntilInstallerApiAvailable() {
-  shout "Waiting for Installer API"
-
-  attempts=5
-  for ((i=1; i<=attempts; i++)); do
-    numberOfLines=$(kubectl api-versions | grep -c "installer.kyma-project.io")
-    if [[ "$numberOfLines" == "1" ]]; then
-      echo "API found"
-      break
-    elif [[ "${i}" == "${attempts}" ]]; then
-      echo "ERROR: API not found, exit"
-      exit 1
-    fi
-
-    echo "Sleep for 3 seconds"
-    sleep 3
-  done
-}
-
 function installKyma() {
   kymaUnsetVar=false
 
@@ -299,8 +280,6 @@ function installKyma() {
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --label "component=compass"
-
-  waitUntilInstallerApiAvailable
 
   if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
