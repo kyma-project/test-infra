@@ -428,7 +428,6 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": "12h",
       "timeShift": null,
       "title": "Queue",
       "tooltip": {
@@ -566,7 +565,6 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": "12h",
       "timeShift": null,
       "title": "Prow service availability",
       "tooltip": {
@@ -685,7 +683,6 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": "12h",
       "timeShift": null,
       "title": "Prow endpoints count",
       "tooltip": {
@@ -808,7 +805,6 @@
         }
       ],
       "thresholds": "200,500",
-      "timeFrom": "12h",
       "timeShift": null,
       "title": "Github token quota usage",
       "transparent": false,
