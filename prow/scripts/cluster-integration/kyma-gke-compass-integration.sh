@@ -151,13 +151,6 @@ function createCluster() {
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
 
-  if [[ "$BUILD_TYPE" != "release" ]]; then
-      shout "Build Kyma-Installer Docker image"
-      date
-      CLEANUP_DOCKER_IMAGE="true"
-      "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-  fi
-
   shout "Reserve IP Address for Ingressgateway"
   date
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
@@ -226,9 +219,12 @@ function installKyma() {
     exit 1
   fi
 
-  shout "Build Kyma-Installer Docker image"
-  date
-  KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
+  if [[ "$BUILD_TYPE" != "release" ]]; then
+    shout "Build Kyma-Installer Docker image"
+    date
+    CLEANUP_DOCKER_IMAGE="true"
+    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
+  fi
 
   shout "Generate self-signed certificate"
   date
