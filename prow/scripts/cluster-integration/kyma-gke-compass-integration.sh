@@ -237,8 +237,7 @@ function installKyma() {
   shout "Apply Kyma config"
   date
 
-  sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
-    | kubectl apply -f-
+  kubectl create namespace "kyma-installer"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
