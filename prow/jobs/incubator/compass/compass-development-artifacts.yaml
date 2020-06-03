@@ -1,0 +1,63 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+job_template: &job_template
+  optional: true
+  reporter_config: # TODO: Remove after testing
+        slack:
+          channel: 'kyma-prow-dev-null'
+  decorate: true
+  path_alias: github.com/kyma-incubator/compass
+  max_concurrency: 10
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-compass-development-artifacts.sh"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 0.2
+      volumeMounts:
+        - name: sa-kyma-artifacts
+          mountPath: /etc/credentials/sa-kyma-artifacts
+    volumes:
+      # we cannot use preset-sa-kyma-artifacts because we are using preset-sa-gcr-push which also set environment variable: GOOGLE_APPLICATION_CREDENTIALS.
+      - name: sa-kyma-artifacts
+        secret:
+          secretName: sa-kyma-artifacts
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-docker-push-repository-kyma: "true"
+  preset-kyma-development-artifacts-bucket: "true"
+  preset-sa-gcr-push: "true"
+
+presubmits: # runs on PRs
+  kyma-incubator/compass:
+  - name: pre-master-compass-development-artifacts
+    run_if_changed: "^installation|^chart|^tools/compass-installer"
+    branches:
+    - ^master$
+    <<: *job_template
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    labels:
+      <<: *job_labels_template
+
+postsubmits:
+  kyma-incubator/compass:
+  - name: post-master-compass-development-artifacts
+    branches:
+      - ^master$
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    labels:
+      <<: *job_labels_template
