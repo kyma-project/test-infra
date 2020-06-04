@@ -703,7 +703,7 @@ periodics:
       # testgrid-alert-email: email-here@sap.com
       testgrid-num-failures-to-alert: '1'
     labels:
-      preset-sa-gke-kyma-integration: "true"
+      preset-sa-prow-job-resource-cleaner: "true"
       preset-gc-project-env: "true"
     decorate: true
     extra_refs:
