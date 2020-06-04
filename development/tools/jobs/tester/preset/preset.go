@@ -60,4 +60,6 @@ const (
 	KymaKeyring Preset = "preset-kyma-keyring"
 	// KymaEncriptionKey contains the kyma cryptographic key
 	KymaEncriptionKey Preset = "preset-kyma-encryption-key"
+	// SaProwJobResourceCleaner means access to service account capable of cleaning various resources
+	SaProwJobResourceCleaner Preset = "preset-sa-prow-job-resource-cleaner"
 )
