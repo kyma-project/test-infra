@@ -158,7 +158,7 @@ If the job is still in testing phase we can set `optional: true`.
 
 ## Migration from plank for github report
 
-First, you need to disable GitHub reporting in Plank, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/prow/cluster/components/11-plank_deployment.yaml).
+First, you need to disable GitHub reporting in Plank, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
 
 Before migrating, be sure plank is setting the [PrevReportStates field](https://github.com/kubernetes/test-infra/blob/de3775a7480fe0a724baacf24a87cbf058cd9fd5/prow/apis/prowjobs/v1/types.go#L566)
 by describing a finished presubmit ProwJob. Plank started to set this field after commit [2118178](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f), if not, you want to upgrade your plank to a version includes this commit before moving forward.
