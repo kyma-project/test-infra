@@ -13,11 +13,11 @@ For any reporter you want to use, you need to mount your prow configs and specif
 
 ### GitHub reporter
 
-You can enable github reporter in crier by specifying `--github-workers=N` flag (N>0).
+You can enable github reporter in crier by specifying `--github-workers=N` flag.
 
 You also need to mount a github oauth token by specifying `--github-token-path` flag, which defaults to `/etc/github/oauth`.
 
-If you have a [ghproxy](/ghproxy) deployed, also remember to point `--github-endpoint` to your ghproxy to avoid token throttle.
+If you have a [ghproxy] deployed, also remember to point `--github-endpoint` to your ghproxy to avoid token throttle.
 
 ### Slack reporter
 
@@ -140,6 +140,21 @@ postsubmits:
             command:
               - echo
 ```
+
+## Current Slack notification settings
+
+Crier does not send Slack notifications at all for presubmit jobs.
+
+Reporter config:
+```
+job_types_to_report:
+  - postsubmit
+  - periodic
+  - batch
+```
+
+If you don't want to report postsubmit or periodic jobs to report to Slack channel use `skip_report:true`.
+If the job is still in testing phase we can set `optional: true`.
 
 ## Migration from plank for github report
 
