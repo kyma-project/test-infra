@@ -857,6 +857,7 @@ periodics:
       preset-stability-checker-slack-notifications: "true"
       preset-nightly-github-integration: "true"
       preset-kms-gc-project-env: "true"
+      preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
@@ -928,6 +929,7 @@ periodics:
       preset-stability-checker-slack-notifications: "true"
       preset-weekly-github-integration: "true"
       preset-kms-gc-project-env: "true"
+      preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
@@ -998,6 +1000,7 @@ periodics:
       preset-nightly-aks-github-integration: "true"
       preset-creds-aks-kyma-integration: "true"
       preset-kms-gc-project-env: "true"
+      preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:

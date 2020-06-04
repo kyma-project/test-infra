@@ -21,6 +21,7 @@ branch-protection:
                 contexts:
                   - pre-rel113-kyma-integration
                   - pre-rel113-kyma-gke-integration
+                  - pre-rel113-kyma-gke-compass-integration
                   - pre-rel113-kyma-gke-upgrade
                   - pre-rel113-kyma-gke-central-connector
                   - pre-rel113-kyma-artifacts

@@ -1,5 +1,10 @@
 presets:
   - labels:
+      preset-certificates-bucket: "true"
+    env:
+      - name: CERTIFICATES_BUCKET
+        value: "kyma-prowjobs-secrets"
+  - labels:
       preset-gke-kyma-developers-group: "true"
     env:
       - name: GCLOUD_SECURITY_GROUP

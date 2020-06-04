@@ -26,17 +26,17 @@ function generateLetsEncryptCert() {
         "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
         "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
 
-    gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" "gs://kyma-prow-secrets/certificates/"
-    gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" "gs://kyma-prow-secrets/certificates/"    
+    gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted" "gs://${CERTIFICATES_BUCKET}/certificates/"
+    gsutil cp "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted" "gs://${CERTIFICATES_BUCKET}/certificates/"
 
 }
 
 shout "Copying certificate if it is already in GCP Bucket."
 
 set +e # temp disable fail on exit to retrieve error codes of stat
-gsutil -q stat "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted"
+gsutil -q stat "gs://${CERTIFICATES_BUCKET}/certificates/${DOMAIN}.cert.encrypted"
 VALID_CERT_FILE=$?
-gsutil -q stat "gs://kyma-prow-secrets/certificates/${DOMAIN}.key.encrypted"
+gsutil -q stat "gs://${CERTIFICATES_BUCKET}/certificates/${DOMAIN}.key.encrypted"
 VALID_KEY_FILE=$?
 set -o errexit # reset to errexit
 
@@ -45,8 +45,8 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
 
     #copy the files
     mkdir -p "./letsencrypt/live/${DOMAIN}"
-    gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.cert.encrypted" "./letsencrypt/live/${DOMAIN}" 
-    gsutil cp "gs://kyma-prow-secrets/certificates/${DOMAIN}.key.encrypted" "./letsencrypt/live/${DOMAIN}" 
+    gsutil cp "gs://${CERTIFICATES_BUCKET}/certificates/${DOMAIN}.cert.encrypted" "./letsencrypt/live/${DOMAIN}"
+    gsutil cp "gs://${CERTIFICATES_BUCKET}/certificates/${DOMAIN}.key.encrypted" "./letsencrypt/live/${DOMAIN}"
 
 
     shout "Decrypting certs"
