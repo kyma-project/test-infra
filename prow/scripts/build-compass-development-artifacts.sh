@@ -21,6 +21,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
+readonly CURRENT_TIMESTAMP=$(date +%s)
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
@@ -30,10 +31,10 @@ function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     COMPASS_INSTALLER_PUSH_DIR=""
    if [[ -n "${PULL_NUMBER}" ]]; then
-        DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
+        DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
     else
-        DOCKER_TAG="master-${COMMIT_ID}"
+        DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
     fi
 
