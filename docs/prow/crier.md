@@ -170,7 +170,7 @@ Flags required by Crier:
 - Point `--github-endpoint` to ghproxy, if you have set that for Plank.
 - Bind GitHub OAuth token as a Secret and set `--github-token-path` if you have that set for Plank.
 
-In your Plank deployment, you can:
+In your Plank deployment, you must:
 - Remove the `--github-endpoint` flag.
 - Remove the GitHub OAuth Secret and the `--github-token-path` flag if set.
 - Add`--skip-report`, so Plank will skip the reporting logic.
