@@ -229,3 +229,75 @@ shout "Success"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
+
+
+function upgradeKyma() {
+    shout "Delete the kyma-installation CR and kyma-installer deployment"
+    # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
+    # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
+    kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+    kubectl delete Installation -n default kyma-installation
+
+    # Remove the current installer to prevent it performing any action.
+    kubectl delete deployment -n kyma-installer kyma-installer
+
+    if [[ "$BUILD_TYPE" == "release" ]]; then
+        echo "Use released artifacts"
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
+
+        shout "Update tiller"
+        kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
+
+        shout "Wait untill tiller is correctly rolled out"
+        kubectl -n kube-system rollout status deployment/tiller-deploy
+
+        shout "Update kyma installer"
+        kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+    else
+        shout "Build Kyma Installer Docker image"
+        date
+        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+        KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+        export KYMA_INSTALLER_IMAGE
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+        CLEANUP_DOCKER_IMAGE="true"
+
+        KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+        INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+        INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+        shout "Update tiller"
+        kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
+
+        shout "Wait untill tiller is correctly rolled out"
+        kubectl -n kube-system rollout status deployment/tiller-deploy
+
+        shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
+        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+        | sed -e "s/__VERSION__/0.0.1/g" \
+        | sed -e "s/__.*__//g" \
+        | kubectl apply -f-
+    fi
+
+    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
+    date
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+
+
+    if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+        shout "Create DNS Record for Apiserver proxy IP"
+        date
+        APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+        CLEANUP_APISERVER_DNS_RECORD="true"
+        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+    fi
+}
+
+function testKyma() {
+    shout "Test Kyma"
+    date
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+}
