@@ -13,6 +13,7 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 | **sa-kyma-backup-restore** | Used for backups. | `Compute Storage Admin`, `Storage Admin` (`roles/storage.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-stability-fluentd-storage-writer** | Used for fluentd storage. |  `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-gcs-plank**              | Currently not in use. | no roles attached
+| **sa-crier**                  | Reports ProwJob statuses to GitHub. | `Service Account User` |
 
 
 ## Kubernetes RBAC roles on Prow cluster
@@ -45,6 +46,7 @@ Following roles exist on Prow cluster:
 | **sinker** | - `prowjobs.prow.k8s.io` <br> - `pods` | delete, list <br> delete, list |
 | **hook** | - `prowjobs.prow.k8s.io` <br> - `configmaps` | create, get <br> get, update |
 | **tide** | - `prowjobs.prow.k8s.io` |  create, list  |
+| **crier** | - `prowjobs.prow.k8s.io` | get, watch <br> list, patch |
 
 ## User permissions on GitHub
 
