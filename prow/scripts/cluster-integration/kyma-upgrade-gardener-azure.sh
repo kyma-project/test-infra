@@ -243,8 +243,6 @@ function upgradeKyma() {
 
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
 
         shout "Update tiller"
         kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
@@ -258,7 +256,7 @@ function upgradeKyma() {
         shout "Build Kyma Installer Docker image"
         date
         COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+
         export KYMA_INSTALLER_IMAGE
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
         CLEANUP_DOCKER_IMAGE="true"
