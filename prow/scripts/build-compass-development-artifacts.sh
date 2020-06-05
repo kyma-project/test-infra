@@ -31,7 +31,7 @@ function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     COMPASS_INSTALLER_PUSH_DIR=""
    if [[ -n "${PULL_NUMBER}" ]]; then
-        DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
+        DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
     else
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
