@@ -1,50 +1,50 @@
 # Crier
 
-Crier reports ProwJob status changes. For now it is responsible for Slack notifications as Plank is still reporting ProwJob statuses to the Github.
+Crier reports ProwJob status changes. For now, it is responsible for Slack notifications as Plank is still reporting ProwJob statuses to GitHub.
 
 ## Available reporters
 
-Crier supports multiple reporters, each reporter will become a crier controller. Reporters that can can be used:
-- Github reporter
+Crier supports multiple reporters. Each reporter will become a Crier controller. Reporters that can can be used:
+- GitHub reporter
 - Slack reporter
 - PubSub reporter
 
-For any reporter you want to use, you need to mount your prow configs and specify `--config-path` and `--job-config-path` flag.
+For any reporter that you want to use, you must mount your Prow configs and specify the `--config-path` and `--job-config-path` flags.
 
 ### GitHub reporter
 
-You can enable github reporter in crier by specifying `--github-workers=N` flag.
+You can enable the GitHub reporter in Crier by specifying the `--github-workers=N` flag.
 
-You also need to mount a github oauth token by specifying `--github-token-path` flag, which defaults to `/etc/github/oauth`.
+You must also mount a GitHub OAuth token by specifying the `--github-token-path` flag, which defaults to `/etc/github/oauth`.
 
 If you have a [ghproxy] deployed, also remember to point `--github-endpoint` to your ghproxy to avoid token throttle.
 
 ### Slack reporter
 
-> **NOTE:** when you enable Crier for the first time it will message to the Slack all ProwJobs matching the configured filtering criteria.
+> **NOTE:** When you enable Crier for the first time, it will sent to Slack all ProwJobs matching the configured filtering criteria.
 
-You can enable the Slack reporter in crier by specifying the `--slack-workers` and `--slack-token-file` flags.
+You can enable the Slack reporter in Crier by specifying the `--slack-workers` and `--slack-token-file` flags.
 
-The `--slack-token-file` flag takes a path to a file containing a Slack [**OAuth Access Token**](https://api.slack.com/docs/oauth).
+The `--slack-token-file` flag takes the path to the file containing the Slack [**OAuth Access Token**](https://api.slack.com/docs/oauth).
 
 The **OAuth Access Token** can be obtained as follows:
 
-1. Navigate to: https://api.slack.com/apps.
+1. Navigate to `https://api.slack.com/apps`.
 1. Click **Create New App**.
-1. Provide an **App Name** (e.g. Prow Slack Reporter) and **Development Slack Workspace** (e.g. Kubernetes).
+1. Provide the **App Name** (e.g. *Prow Slack Reporter*) and **Development Slack Workspace** (e.g. *Kubernetes*).
 1. Click **Permissions**.
-1. Add the `chat:write.public` scope using the **Scopes / Bot Token Scopes** dropdown and **Save Changes**.
-1. Click **Install App to Workspace**
-1. Click **Allow** to authorize the Oauth scopes.
+1. Add the `chat:write.public` scope using the **Scopes / Bot Token Scopes** dropdown and click **Save Changes**.
+1. Click **Install App to Workspace**.
+1. Click **Allow** to authorize the OAuth scopes.
 1. Copy the **OAuth Access Token**.
 
-Once the **access token** is obtained, you can create a `secret` in the cluster using that value:
+Once the access token is obtained, you can create a Secret in the cluster using that value:
 
 ```shell
-kubectl create secret generic slack-token --from-literal=token=< access token >
+kubectl create secret generic slack-token --from-literal=token="{ACCESS_TOKEN}"
 ```
 
-Furthermore, to make this token available to **Crier**, mount the *slack-token* `secret` using a `volume` and set the `--slack-token-file` flag in the deployment spec.
+Furthermore, to make this token available to Crier, mount the `slack-token` Secret as a volume and set the `--slack-token-file` flag in the deployment spec.
 
 ```yaml
 apiVersion: apps/v1
@@ -88,7 +88,7 @@ spec:
 
 Additionally, in order for it to work with Prow you must add the following to your `config.yaml`:
 
-> **NOTE:** `slack_reporter_configs` is a map of `org`, `org/repo`, or `*` wildcard to a set of slack reporter configs.
+> **NOTE:** `slack_reporter_configs` is a map of the `org`, `org/repo`, or `*` wildcard to a set of Slack reporter configs.
 
 ```yaml
 slack_reporter_configs:
@@ -125,7 +125,8 @@ slack_reporter_configs:
     channel: istio-channel
 ```
 
-The Slack `channel` can be overridden at the ProwJob level via the `reporter_config.slack.channel` field:
+The Slack channel can be overridden at the ProwJob level via the **reporter_config.slack.channel** field:
+
 ```yaml
 postsubmits:
   some-org/some-repo:
@@ -143,9 +144,10 @@ postsubmits:
 
 ## Current Slack notification settings
 
-Crier does not send Slack notifications at all for presubmit jobs.
+Crier does not send any Slack notifications for presubmit jobs.
 
 Reporter config:
+
 ```
 job_types_to_report:
   - postsubmit
@@ -153,25 +155,25 @@ job_types_to_report:
   - batch
 ```
 
-If you don't want to report postsubmit or periodic jobs to report to Slack channel use `skip_report:true`.
-If the job is still in testing phase we can set `optional: true`.
+If you don't want to configure postsubmit or periodic jobs to report to a Slack channel, use `skip_report:true`.
+If the job is still in the testing phase, we can set `optional: true`.
 
-## Migration from plank for github report
+## Migration from Plank for GitHub report
 
-First, you need to disable GitHub reporting in Plank, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
+First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
 
-Before migrating, be sure plank is setting the [PrevReportStates field](https://github.com/kubernetes/test-infra/blob/de3775a7480fe0a724baacf24a87cbf058cd9fd5/prow/apis/prowjobs/v1/types.go#L566)
-by describing a finished presubmit ProwJob. Plank started to set this field after commit [2118178](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f), if not, you want to upgrade your plank to a version includes this commit before moving forward.
+Before migrating, be sure Plank is setting the [**PrevReportStates**](https://github.com/kubernetes/test-infra/blob/de3775a7480fe0a724baacf24a87cbf058cd9fd5/prow/apis/prowjobs/v1/types.go#L566) field
+by describing a finished presubmit ProwJob. Plank started to set this field after commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f). If it is not being set, you must upgrade your Plank to a version that includes this commit before moving forward.
 
 Flags required by Crier:
-- Point `config-path` and `--job-config-path` to your prow config and job configs accordingly.
-- Set `--github-worker` to be number of parallel github reporting threads you need.
-- Point `--github-endpoint` to ghproxy, if you have set that for plank.
-- Bind github oauth token as a secret and set `--github-token-path` if you've have that set for plank.
+- Point `config-path` and `--job-config-path` to your Prow config and job configs accordingly.
+- Set `--github-worker` to be the number of parallel GitHub reporting threads you need.
+- Point `--github-endpoint` to ghproxy, if you have set that for Plank.
+- Bind GitHub OAuth token as a Secret and set `--github-token-path` if you have that set for Plank.
 
-In your plank deployment, you can:
+In your Plank deployment, you can:
 - Remove the `--github-endpoint` flag.
-- Remove the github oauth secret, and `--github-token-path` flag if set.
-- Add`--skip-report`, so plank will skip the reporting logic.
+- Remove the GitHub OAuth Secret and the `--github-token-path` flag if set.
+- Add`--skip-report`, so Plank will skip the reporting logic.
 
-Both change should be deployed at the same time, if have an order preference, deploy crier first since report twice should just be a no-op.
+Both changes should be deployed at the same time. If you need to deploy them sequentially, deploy Crier first to avoid double-reporting.
