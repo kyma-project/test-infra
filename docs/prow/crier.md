@@ -29,9 +29,9 @@ The `--slack-token-file` flag takes the path to the file containing the Slack [*
 
 The **OAuth Access Token** can be obtained as follows:
 
-1. Navigate to `https://api.slack.com/apps`.
+1. Navigate to [`https://api.slack.com/apps`](https://api.slack.com/apps).
 1. Click **Create New App**.
-1. Provide the **App Name** (e.g. *Prow Slack Reporter*) and **Development Slack Workspace** (e.g. *Kubernetes*).
+1. Provide the **App Name** (e.g. `Prow Slack Reporter`) and **Development Slack Workspace** (e.g. `Kubernetes`).
 1. Click **Permissions**.
 1. Add the `chat:write.public` scope using the **Scopes / Bot Token Scopes** dropdown and click **Save Changes**.
 1. Click **Install App to Workspace**.
@@ -44,7 +44,7 @@ Once the access token is obtained, you can create a Secret in the cluster using 
 kubectl create secret generic slack-token --from-literal=token="{ACCESS_TOKEN}"
 ```
 
-Furthermore, to make this token available to Crier, mount the `slack-token` Secret as a volume and set the `--slack-token-file` flag in the deployment spec.
+Furthermore, to make this token available to Crier, mount the `slack-token` Secret as a volume and set the `--slack-token-file` flag in the deployment spec:
 
 ```yaml
 apiVersion: apps/v1
@@ -156,13 +156,13 @@ job_types_to_report:
 ```
 
 If you don't want to configure postsubmit or periodic jobs to report to a Slack channel, use `skip_report:true`.
-If the job is still in the testing phase, we can set `optional: true`.
+If the job is still in the testing phase, you can set `optional: true`.
 
 ## Migration from Plank for GitHub report
 
 First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
 
-Before migrating, upgrade your Plank to a version that includes this commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f).
+Before migrating, upgrade your Plank to a version that includes the commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f).
 
 Flags required by Crier:
 - Point `config-path` and `--job-config-path` to your Prow config and job configs accordingly.
@@ -173,6 +173,6 @@ Flags required by Crier:
 In your Plank deployment, you must:
 - Remove the `--github-endpoint` flag.
 - Remove the GitHub OAuth Secret and the `--github-token-path` flag if set.
-- Add`--skip-report`, so Plank will skip the reporting logic.
+- Add `--skip-report`, so Plank will skip the reporting logic.
 
 Both changes should be deployed at the same time. If you need to deploy them sequentially, deploy Crier first to avoid double-reporting.
