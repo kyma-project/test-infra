@@ -4,7 +4,7 @@ Crier reports ProwJob status changes. For now, it is responsible for Slack notif
 
 ## Available reporters
 
-Crier supports multiple reporters. Each reporter will become a Crier controller. Reporters that can can be used:
+Crier supports multiple reporters. Each reporter will become a Crier controller. Reporters that can be used:
 - GitHub reporter
 - Slack reporter
 - PubSub reporter
@@ -17,7 +17,7 @@ You can enable the GitHub reporter in Crier by specifying the `--github-workers=
 
 You must also mount a GitHub OAuth token by specifying the `--github-token-path` flag, which defaults to `/etc/github/oauth`.
 
-If you have a [ghproxy] deployed, also remember to point `--github-endpoint` to your ghproxy to avoid token throttle.
+If you have a ghproxy deployed, also remember to point `--github-endpoint` to your ghproxy to avoid token throttle.
 
 ### Slack reporter
 
@@ -162,8 +162,7 @@ If the job is still in the testing phase, we can set `optional: true`.
 
 First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
 
-Before migrating, be sure Plank is setting the [**PrevReportStates**](https://github.com/kubernetes/test-infra/blob/de3775a7480fe0a724baacf24a87cbf058cd9fd5/prow/apis/prowjobs/v1/types.go#L566) field
-by describing a finished presubmit ProwJob. Plank started to set this field after commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f). If it is not being set, you must upgrade your Plank to a version that includes this commit before moving forward.
+Before migrating, upgrade your Plank to a version that includes this commit [`2118178`](https://github.com/kubernetes/test-infra/pull/10975/commits/211817826fc3c4f3315a02e46f3d6aa35573d22f).
 
 Flags required by Crier:
 - Point `config-path` and `--job-config-path` to your Prow config and job configs accordingly.
