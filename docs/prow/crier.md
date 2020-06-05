@@ -158,7 +158,7 @@ job_types_to_report:
 If you don't want to configure postsubmit or periodic jobs to report to a Slack channel, use `skip_report:true`.
 If the job is still in the testing phase, you can set `optional: true`.
 
-## Migration from Plank for GitHub report
+## Migration from Plank to GitHub reporter
 
 First, you need to disable GitHub reporting in Plank. To do that, add the `--skip-report=true` flag to the Plank [deployment](https://github.com/kyma-project/test-infra/blob/master/prow/cluster/components/11-plank_deployment.yaml).
 
