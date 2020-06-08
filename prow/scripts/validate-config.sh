@@ -8,7 +8,6 @@ usage () {
     exit 1
 }
 
-readonly BASE_DIR=$(pwd)
 readonly PLUGINS_PATH=$1
 readonly CONFIG_PATH=$2
 readonly JOBS_CONFIG_PATH=$3
@@ -19,7 +18,7 @@ fi
 
 echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
 
-/prow-tools/checkconfig --plugin-config="${BASE_DIR}/${PLUGINS_PATH}" --config-path="${BASE_DIR}/${CONFIG_PATH}" --job-config-path="${BASE_DIR}/${JOBS_CONFIG_PATH}"
+/prow-tools/checkconfig --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]
@@ -31,7 +30,7 @@ else
 fi
 
 echo "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
-/prow-tools/unique-jobs-name --config-path="${BASE_DIR}/${CONFIG_PATH}" --jobs-config-dir="${BASE_DIR}/${JOBS_CONFIG_PATH}"
+/prow-tools/unique-jobs-name --config-path="${CONFIG_PATH}" --jobs-config-dir="${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]
