@@ -12,6 +12,8 @@ branch-protection:
       - license/cla
   orgs:
     kyma-project:
+      required_pull_request_reviews:
+        dismiss_stale_reviews: true
       protect: true # protect all repos & branches in kyma-project org
       repos:
         kyma:
@@ -48,16 +50,9 @@ branch-protection:
           required_status_checks:
             contexts:
               - "netlify/kyma-project/deploy-preview"
-        cli:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: true
-        rafter:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: true
-        test-infra:
-          required_pull_request_reviews:
-            dismiss_stale_reviews: true
     kyma-incubator:
+      required_pull_request_reviews:
+        dismiss_stale_reviews: true
       repos:
         varkes:
           branches:
