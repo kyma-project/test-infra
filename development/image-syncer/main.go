@@ -53,7 +53,7 @@ func getAuthString(user, password string) (string, error) {
 	return base64.URLEncoding.EncodeToString(encodedJSON), nil
 }
 
-func getImageIdAndRepoDigest(ctx context.Context, cli *client.Client, authString, image string) (string, string, error) {
+func getImageIdAndRepoDigest(ctx context.Context, cli *client.Client, image string) (string, string, error) {
 	if reader, err := cli.ImagePull(ctx, image, types.ImagePullOptions{}); err != nil {
 		return "", "", fmt.Errorf("image pull failed: %w", err)
 	} else {
@@ -88,7 +88,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 		return errors.New("source image can not be empty")
 	}
 	log.Infof("Source image: %s", source)
-	sourceId, sourceDigest, err := getImageIdAndRepoDigest(ctx, cli, authString, source)
+	sourceId, sourceDigest, err := getImageIdAndRepoDigest(ctx, cli, source)
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 	log.Infof("Source repo digest: %s", sourceDigest)
 
 	log.Infof("Target image: %s", target)
-	targetId, targetDigest, err := getImageIdAndRepoDigest(ctx, cli, authString, target)
+	targetId, targetDigest, err := getImageIdAndRepoDigest(ctx, cli, target)
 	if isImageNotFoundError(err) {
 		log.Info("Target image does not exist")
 		if dryRun {
