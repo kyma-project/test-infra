@@ -350,6 +350,7 @@ createTestResources() {
         --name "${E2E_UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${E2E_UPGRADE_TEST_NAMESPACE}" \
         --timeout "${E2E_UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
+        --set domain="${DOMAIN}" \
         --wait ${HELM_ARGS}
 
     prepareResult=$?
