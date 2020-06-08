@@ -11,7 +11,7 @@
 
 set -o errexit
 
-for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
+for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT GOOGLE_APPLICATION_CREDENTIALS TEST_INFRA_SOURCES_DIR; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -20,6 +20,12 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+shout "Authenticate"
+date
+authenticate
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
