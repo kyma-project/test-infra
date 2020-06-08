@@ -1,5 +1,18 @@
 presets:
   - labels:
+      preset-sa-prow-job-resource-cleaner: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
+    volumes:
+      - name: sa-prow-job-resource-cleaner
+        secret:
+          secretName: sa-prow-job-resource-cleaner
+    volumeMounts:
+      - name: sa-prow-job-resource-cleaner
+        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
+        readOnly: true
+  - labels:
       preset-certificates-bucket: "true"
     env:
       - name: CERTIFICATES_BUCKET
