@@ -19,9 +19,7 @@ fi
 
 echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
 
-cd "development/checker"
-go get k8s.io/test-infra/prow/cmd/checkconfig@v0.0.0-20200320172837-fbc86f22b087
-"${GOPATH}/bin/checkconfig" --plugin-config="${BASE_DIR}/${PLUGINS_PATH}" --config-path="${BASE_DIR}/${CONFIG_PATH}" --job-config-path="${BASE_DIR}/${JOBS_CONFIG_PATH}"
+/prow-tools/checkconfig --plugin-config="${BASE_DIR}/${PLUGINS_PATH}" --config-path="${BASE_DIR}/${CONFIG_PATH}" --job-config-path="${BASE_DIR}/${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]
@@ -33,7 +31,7 @@ else
 fi
 
 echo "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
-go run "unique-jobs-name/main.go" --config-path="${BASE_DIR}/${CONFIG_PATH}" --jobs-config-dir="${BASE_DIR}/${JOBS_CONFIG_PATH}"
+/prow-tools/unique-jobs-name --config-path="${BASE_DIR}/${CONFIG_PATH}" --jobs-config-dir="${BASE_DIR}/${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]
