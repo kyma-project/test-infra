@@ -1,0 +1,5 @@
+targetRepoPrefix:  "eu.gcr.io/sap-kyma-prow/external/"
+images:
+- source: "quay.io/prometheus/prometheus:v2.17.1"
+- source: "grafana/grafana:7.0.1"
+- source: "grafana/loki:v1.3.0"
