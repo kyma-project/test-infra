@@ -52,7 +52,7 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageGolangBuildpack1_14, cont.Image)
+	assert.Equal(t, tester.ImageProwToolsLatest, cont.Image)
 	assert.Equal(t,
 		[]string{
 			"prow/plugins.yaml",

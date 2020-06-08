@@ -1,4 +1,5 @@
 buildpack_golang_image: &buildpack_golang_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
+prow_tools_image: &prow_tools_image eu.gcr.io/kyma-project/test-infra/prow-tools:v20200608-2db047ac
 
 presubmits:
   kyma-project/test-infra:
@@ -44,7 +45,7 @@ presubmits:
       path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
-          - image: *buildpack_golang_image
+          - image: *prow_tools_image
             command:
               - "make"
             args:
