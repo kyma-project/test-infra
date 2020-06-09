@@ -21,11 +21,15 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+credentials="${1}"
 
-shout "Authenticate"
-date
-authenticate
+if [ -n "${credentials}" ]; then
+  source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+  shout "Authenticate"
+  date
+  authenticate
+fi
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
