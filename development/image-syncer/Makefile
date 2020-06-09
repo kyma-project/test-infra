@@ -21,10 +21,8 @@ clean:
 	rm -f logs-printer
 .PHONY: dry-run
 dry-run:
-    # environment variable SYNCER_TARGET_KEY_FILE has to be set
-	go run main.go --dry-run=true --images-file external-images.yaml
+	go run main.go --dry-run=true --images-file external-images.yaml --target-key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 .PHONY: run
 run:
-    # environment variable SYNCER_TARGET_KEY_FILE has to be set
-	@go run main.go --dry-run=false --images-file external-images.yaml --target-key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+	go run main.go --dry-run=false --images-file external-images.yaml --target-key-file="${GOOGLE_APPLICATION_CREDENTIALS}"

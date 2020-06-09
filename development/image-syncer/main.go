@@ -134,11 +134,13 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 	return nil
 }
 
+//TODO: we should check for error type not match strings
 func isImageNotFoundError(err error) bool {
 	if err == nil {
 		return false
 	}
-	if strings.Index(err.Error(), "not found: manifest unknown") != -1 {
+	if strings.Index(err.Error(), "not found: manifest unknown") != -1 ||
+		strings.HasSuffix(err.Error(), "not found") {
 		return true
 	}
 	return false

@@ -56,6 +56,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/test-infra:
   - name: post-master-test-infra-image-syncer-run
+    run_if_changed: "^(development/image-syncer/external-images.yaml)"
     branches:
     - ^master$
     max_concurrency: 10
