@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -26,18 +25,18 @@ var (
 	log = logrus.New()
 )
 
-// SyncDef x
+// SyncDef stores synchronisation definition
 type SyncDef struct {
 	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
 	Images           []Image
 }
 
-// Image x
+// Image stores image location
 type Image struct {
 	Source string
 }
 
-// Config x
+// Config stores command line arguments
 type Config struct {
 	ImagesFile    string
 	TargetKeyFile string
@@ -88,7 +87,7 @@ func getImageIDAndRepoDigest(ctx context.Context, cli *client.Client, image stri
 
 func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, target string, dryRun bool) error {
 	if source == "" {
-		return errors.New("source image can not be empty")
+		return fmt.Errorf("source image can not be empty")
 	}
 	log.Infof("Source image: %s", source)
 	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, source)
@@ -126,7 +125,7 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 		log.Infof("Target ID: %s", targetID)
 		log.Infof("Target repo digest: %s", targetDigest)
 		if sourceID != targetID {
-			return errors.New("source and target IDs are different - probably source image has been changed")
+			return fmt.Errorf("source and target IDs are different - probably source image has been changed")
 		}
 		log.Info("Source and target IDs are the same, nothing to do")
 	}
@@ -181,7 +180,7 @@ func copyImages(cfg Config) error {
 		return err
 	}
 	if syncDef.TargetRepoPrefix == "" {
-		return errors.New("TargetRepoPrefix can not be empty")
+		return fmt.Errorf("TargetRepoPrefix can not be empty")
 	}
 
 	jsonKey, err := ioutil.ReadFile(cfg.TargetKeyFile)
