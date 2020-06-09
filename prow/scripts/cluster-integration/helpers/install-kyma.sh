@@ -104,7 +104,7 @@ function installKyma() {
 function createImage() {
     shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
     # shellcheck disable=SC1090
-    GOOGLE_APPLICATION_CREDENTIALS="${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh" "${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
 }
 
 function waitUntilInstallerApiAvailable() {
