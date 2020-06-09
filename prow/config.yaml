@@ -85,6 +85,19 @@ presets:
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
         readOnly: true
   - labels:
+      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
+    env:
+      - name: SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-test-gcr-push/service-account.json
+    volumes:
+      - name: sa-test-gcr-push
+        secret:
+          secretName: sa-gcr-push-kyma-project
+    volumeMounts:
+      - name: sa-test-gcr-push
+        mountPath: /etc/credentials/sa-test-gcr-push
+        readOnly: true
+  - labels:
       preset-sa-kyma-artifacts: "true"
     env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
