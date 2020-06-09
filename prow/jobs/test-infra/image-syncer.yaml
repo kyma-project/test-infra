@@ -1,0 +1,79 @@
+buildpack_golang_image: &buildpack_golang_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+
+presubmits: # runs on PRs
+  kyma-project/test-infra:
+  - name: pre-master-test-infra-image-syncer-validate
+    run_if_changed: "^(development/image-syncer)"
+    branches:
+    - ^master$
+    max_concurrency: 10
+    labels:
+      <<: *job_labels_template
+    decorate: true
+    path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+      - image: *buildpack_golang_image
+        command:
+        - "make"
+        args:
+        - "-C"
+        - "development/image-syncer"
+        - "validate"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
+  - name: pre-master-test-infra-image-syncer-dry-run
+    run_if_changed: "^(development/image-syncer/external-images.yaml)"
+    branches:
+    - ^master$
+    max_concurrency: 10
+    labels:
+      <<: *job_labels_template
+    decorate: true
+    path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+      - image: *buildpack_golang_image
+        command:
+        - "bash"
+        args:
+        - "-c"
+        - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run'
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
+postsubmits:
+  kyma-project/test-infra:
+  - name: post-master-test-infra-image-syncer-run
+    branches:
+    - ^master$
+    max_concurrency: 10
+    decorate: true
+    path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+      - image: *buildpack_golang_image
+        command:
+        - "bash"
+        args:
+        - "-c"
+        - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run'
+        securityContext:
+          privileged: true
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+    labels:
+      <<: *job_labels_template

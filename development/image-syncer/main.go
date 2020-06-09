@@ -26,15 +26,18 @@ var (
 	log = logrus.New()
 )
 
+// SyncDef x
 type SyncDef struct {
 	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
 	Images           []Image
 }
 
+// Image x
 type Image struct {
 	Source string
 }
 
+// Config x
 type Config struct {
 	ImagesFile    string
 	TargetKeyFile string
@@ -53,14 +56,14 @@ func getAuthString(user, password string) (string, error) {
 	return base64.URLEncoding.EncodeToString(encodedJSON), nil
 }
 
-func getImageIdAndRepoDigest(ctx context.Context, cli *client.Client, image string) (string, string, error) {
-	if reader, err := cli.ImagePull(ctx, image, types.ImagePullOptions{}); err != nil {
+func getImageIDAndRepoDigest(ctx context.Context, cli *client.Client, image string) (string, string, error) {
+	reader, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
+	if err != nil {
 		return "", "", fmt.Errorf("image pull failed: %w", err)
-	} else {
-		w := log.WriterLevel(logrus.DebugLevel)
-		defer w.Close()
-		io.Copy(w, reader)
 	}
+	w := log.WriterLevel(logrus.DebugLevel)
+	defer w.Close()
+	io.Copy(w, reader)
 
 	details, _, err := cli.ImageInspectWithRaw(ctx, image)
 	if err != nil {
@@ -80,7 +83,7 @@ func getImageIdAndRepoDigest(ctx context.Context, cli *client.Client, image stri
 		}
 	}
 
-	return "", "", errors.New(fmt.Sprintf("Unable to find digest for '%s'", image))
+	return "", "", fmt.Errorf("unable to find digest for '%s'", image)
 }
 
 func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, target string, dryRun bool) error {
@@ -88,15 +91,15 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 		return errors.New("source image can not be empty")
 	}
 	log.Infof("Source image: %s", source)
-	sourceId, sourceDigest, err := getImageIdAndRepoDigest(ctx, cli, source)
+	sourceID, sourceDigest, err := getImageIDAndRepoDigest(ctx, cli, source)
 	if err != nil {
 		return err
 	}
-	log.Infof("Source ID: %s", sourceId)
+	log.Infof("Source ID: %s", sourceID)
 	log.Infof("Source repo digest: %s", sourceDigest)
 
 	log.Infof("Target image: %s", target)
-	targetId, targetDigest, err := getImageIdAndRepoDigest(ctx, cli, target)
+	targetID, targetDigest, err := getImageIDAndRepoDigest(ctx, cli, target)
 	if isImageNotFoundError(err) {
 		log.Info("Target image does not exist")
 		if dryRun {
@@ -108,20 +111,21 @@ func safeCopyImage(ctx context.Context, cli *client.Client, authString, source, 
 		}
 		log.Info("Image re-tagged")
 		log.Info("Pushing to target repo")
-		if reader, err := cli.ImagePush(ctx, target, types.ImagePushOptions{RegistryAuth: authString}); err != nil {
+		reader, err := cli.ImagePush(ctx, target, types.ImagePushOptions{RegistryAuth: authString})
+		if err != nil {
 			return err
-		} else {
-			w := log.WriterLevel(logrus.DebugLevel)
-			defer w.Close()
-			io.Copy(w, reader)
 		}
+		w := log.WriterLevel(logrus.DebugLevel)
+		defer w.Close()
+		io.Copy(w, reader)
+
 		log.Info("Image pushed successfully")
 	} else if err != nil {
 		return err
 	} else {
-		log.Infof("Target ID: %s", targetId)
+		log.Infof("Target ID: %s", targetID)
 		log.Infof("Target repo digest: %s", targetDigest)
-		if sourceId != targetId {
+		if sourceID != targetID {
 			return errors.New("source and target IDs are different - probably source image has been changed")
 		}
 		log.Info("Source and target IDs are the same, nothing to do")
