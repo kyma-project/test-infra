@@ -2,6 +2,22 @@
 
 presets:
   - labels:
+      preset-wssagent-keys: "true"
+    volumes:
+      - name: whitesource-apikey
+        secret:
+          secretName: whitesource-apikey
+      - name: whitesource-userkey
+        secret:
+          secretName: whitesource-userkey
+    volumeMounts:
+      - name: whitesource-apikey
+        mountPath: /etc/credentials/whitesource-apikey
+        readOnly: true
+      - name: whitesource-userkey
+        mountPath: /etc/credentials/whitesource-userkey
+        readOnly: true
+  - labels:
       preset-sa-prow-job-resource-cleaner: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
