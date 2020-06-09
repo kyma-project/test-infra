@@ -11,6 +11,7 @@ periodics:
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
         preset-kyma-wssagent-config: "true"
+        preset-wssagent-keys: "true"
         preset-kyma-keyring: "true"
         preset-kyma-encryption-key: "true"
         preset-kms-gc-project-env: "true"
