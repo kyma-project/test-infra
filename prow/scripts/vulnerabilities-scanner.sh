@@ -20,7 +20,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 readonly TMP_DIR="$(mktemp -d)"
 readonly ARTIFACTS_DIR="${ARTIFACTS:-"${TMP_DIR}/artifacts"}"

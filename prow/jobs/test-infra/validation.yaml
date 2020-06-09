@@ -1,4 +1,5 @@
 buildpack_golang_image: &buildpack_golang_image eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
+prow_tools_image: &prow_tools_image eu.gcr.io/kyma-project/test-infra/prow-tools:v20200608-2db047ac
 
 presubmits:
   kyma-project/test-infra:
@@ -10,7 +11,7 @@ presubmits:
         containers:
           - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"
+              - "prow/scripts/validate-scripts.sh"
             resources:
               requests:
                 memory: 1.5Gi
@@ -22,13 +23,13 @@ presubmits:
       skip_report: false
       spec:
         containers:
-          - image: *buildpack_golang_image
+          - image: *prow_tools_image
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-config.sh"
+              - "prow/scripts/validate-config.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
+              - "prow/plugins.yaml"
+              - "prow/config.yaml"
+              - "prow/jobs"
             resources:
               requests:
                 memory: 1.5Gi

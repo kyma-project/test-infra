@@ -3,8 +3,6 @@
 set -e
 set -o pipefail
 
-readonly DEVELOPMENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/plugins.yaml /path/to/config.yaml /path/to/jobs/dir"
     exit 1
@@ -19,15 +17,8 @@ if [[ -z "${PLUGINS_PATH}" ]] || [[ -z "${CONFIG_PATH}" ]] || [[ -z "${JOBS_CONF
 fi
 
 echo "Checking plugin configuration from '${PLUGINS_PATH}' and prow configuration from '${CONFIG_PATH} and jobs configuration from '${JOBS_CONFIG_PATH}'"
-cd "${DEVELOPMENT_DIR}/checker"
 
-vendoredChecker="${DEVELOPMENT_DIR}/checker/vendor/k8s.io/test-infra/prow/cmd/checkconfig/main.go"
-if [ ! -f "${vendoredChecker}" ]; then
-    echo "Vendoring 'k8s.io/test-infra/prow/cmd/checkconfig'"
-    go mod vendor
-fi
-
-go run "${vendoredChecker}" --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
+/prow-tools/checkconfig --plugin-config="${PLUGINS_PATH}" --config-path="${CONFIG_PATH}" --job-config-path="${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]
@@ -39,10 +30,7 @@ else
 fi
 
 echo "Checking unique name of prow config jobs from '${JOBS_CONFIG_PATH}' directory"
-
-configChecker="${DEVELOPMENT_DIR}/checker/unique-jobs-name/main.go"
-go run "${configChecker}" --config-path="${CONFIG_PATH}" --jobs-config-dir="${JOBS_CONFIG_PATH}"
-
+/prow-tools/unique-jobs-name --config-path="${CONFIG_PATH}" --jobs-config-dir="${JOBS_CONFIG_PATH}"
 status=$?
 
 if [ ${status} -ne 0 ]

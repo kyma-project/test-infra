@@ -18,7 +18,7 @@ base_image_k15: &base_image_k15
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200512-e400f399
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200608-2db047ac
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
@@ -783,7 +783,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+            - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
           resources:
             requests:
               memory: 100Mi
@@ -956,7 +956,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/github-stats.sh"
+            - "prow/scripts/github-stats.sh"
           resources:
             requests:
               memory: 100Mi
