@@ -5,7 +5,6 @@ presubmits:
     - name: pre-test-infra-validate-scripts
       run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
       decorate: true
-      skip_report: false
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
@@ -18,8 +17,6 @@ presubmits:
     - name: pre-test-infra-validate-configs
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
-      optional: true
-      skip_report: false
       spec:
         containers:
           - image: *buildpack_golang_image
