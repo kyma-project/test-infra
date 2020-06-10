@@ -260,7 +260,7 @@ readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
 set -x
 kyma install \
     --ci \
-    --source ${RELEASE_VERSION} \
+    --source "${RELEASE_VERSION}" \
     -o installer-cr-gardener-azure.yaml.tpl \
     -o installer-config-production.yaml.tpl \
     -o installer-config-azure-eventhubs.yaml.tpl \
