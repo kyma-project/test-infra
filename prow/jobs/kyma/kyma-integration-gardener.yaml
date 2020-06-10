@@ -112,6 +112,9 @@ presubmits:
   kyma-project/kyma:
     - name: pre-master-kyma-gardener-azure-integration
       <<: *gardener_azure_job_template
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
       optional: true
       branches:
         - ^master$
