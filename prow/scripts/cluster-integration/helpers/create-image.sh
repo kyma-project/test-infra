@@ -24,7 +24,7 @@ fi
 credentials="${1}"
 
 if [ -n "${credentials}" ]; then
-  # shellcheck source=../../library.sh
+  # shellcheck disable=SC1090 #shellcheck is running without -x argument
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
   shout "Authenticate"
