@@ -24,6 +24,7 @@ fi
 credentials="${1}"
 
 if [ -n "${credentials}" ]; then
+  # shellcheck source=../../library.sh
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
   shout "Authenticate"
