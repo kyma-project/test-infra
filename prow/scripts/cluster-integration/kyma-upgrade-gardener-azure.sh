@@ -111,6 +111,40 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
+function upgradeKyma() {
+    shout "Delete the kyma-installation CR and kyma-installer deployment"
+    # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
+    # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
+    kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+    kubectl delete Installation -n default kyma-installation
+
+    # Remove the current installer to prevent it performing any action.
+    kubectl delete deployment -n kyma-installer kyma-installer
+
+        shout "Build Kyma Installer Docker image"
+        date
+        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+
+        export KYMA_INSTALLER_IMAGE
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+        CLEANUP_DOCKER_IMAGE="true"
+
+    kyma install \
+        --ci \
+        --source ${KYMA_INSTALLER_IMAGE} \
+        -o installer-cr-gardener-azure.yaml.tpl \
+        -o installer-config-production.yaml.tpl \
+        -o installer-config-azure-eventhubs.yaml.tpl \
+        --timeout 90m
+
+}
+
+function testKyma() {
+    shout "Test Kyma"
+    date
+    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+}
+
 testSummary() {
     echo "Test Summary"
     kyma test status "${SUITE_NAME}" -owide
@@ -229,37 +263,6 @@ shout "Success"
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
 
+upgradeKyma
 
-function upgradeKyma() {
-    shout "Delete the kyma-installation CR and kyma-installer deployment"
-    # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
-    # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
-    kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-    kubectl delete Installation -n default kyma-installation
-
-    # Remove the current installer to prevent it performing any action.
-    kubectl delete deployment -n kyma-installer kyma-installer
-
-        shout "Build Kyma Installer Docker image"
-        date
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-
-        export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-        CLEANUP_DOCKER_IMAGE="true"
-
-    kyma install \
-        --ci \
-        --source ${KYMA_INSTALLER_IMAGE} \
-        -o installer-cr-gardener-azure.yaml.tpl \
-        -o installer-config-production.yaml.tpl \
-        -o installer-config-azure-eventhubs.yaml.tpl \
-        --timeout 90m
-
-}
-
-function testKyma() {
-    shout "Test Kyma"
-    date
-    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
-}
+testKyma
