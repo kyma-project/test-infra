@@ -273,6 +273,9 @@ kyma version
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
 createTestResources
 
 upgradeKyma
