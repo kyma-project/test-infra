@@ -111,6 +111,42 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
+createTestResources() {
+    shout "Create e2e upgrade test resources"
+    date
+
+    injectTestingAddons
+
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
+    helm install "${UPGRADE_TEST_PATH}" \
+        --name "${UPGRADE_TEST_RELEASE_NAME}" \
+        --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
+        --wait ${HELM_ARGS}
+
+    prepareResult=$?
+    if [ "${prepareResult}" != 0 ]; then
+        echo "Helm install operation failed: ${prepareResult}"
+        exit "${prepareResult}"
+    fi
+
+    set +o errexit
+    checkTestPodTerminated
+    prepareTestResult=$?
+    set -o errexit
+
+    echo "Logs for prepare data operation to test e2e upgrade: "
+    # shellcheck disable=SC2046
+    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" $(kubectl get pod -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
+    if [ "${prepareTestResult}" != 0 ]; then
+        echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
+        exit "${prepareTestResult}"
+    fi
+}
+
 function upgradeKyma() {
     shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
@@ -121,17 +157,9 @@ function upgradeKyma() {
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
 
-        shout "Build Kyma Installer Docker image"
-        date
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-
-        export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-        CLEANUP_DOCKER_IMAGE="true"
-
     kyma install \
         --ci \
-        --source ${KYMA_INSTALLER_IMAGE} \
+        --source latest-published \
         -o installer-cr-gardener-azure.yaml.tpl \
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
@@ -227,11 +255,12 @@ date
 # shellcheck disable=SC1090
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
-
+readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
 (
 set -x
 kyma install \
     --ci \
+    --source ${RELEASE_VERSION} \
     -o installer-cr-gardener-azure.yaml.tpl \
     -o installer-config-production.yaml.tpl \
     -o installer-config-azure-eventhubs.yaml.tpl \
@@ -242,27 +271,12 @@ shout "Checking the versions"
 date
 kyma version
 
-shout "Running Kyma tests"
-date
-
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-readonly CONCURRENCY=5
-(
-set -x
-kyma test run \
-    --name "${SUITE_NAME}" \
-    --concurrency "${CONCURRENCY}" \
-    --max-retries 1 \
-    --timeout 90m \
-    --watch \
-    --non-interactive
-)
-
-shout "Success"
-
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
+createTestResources
 
 upgradeKyma
 
 testKyma
+
+shout "Job finished with success"
