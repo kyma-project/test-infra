@@ -180,7 +180,7 @@ if [[ "$BUILD_TYPE" != "release" ]]; then
     shout "Build Kyma-Installer Docker image"
     date
     CLEANUP_DOCKER_IMAGE="true"
-    GOOGLE_APPLICATION_CREDENTIALS="${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh" "${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
 fi
 
 shout "Reserve IP Address for Ingressgateway"

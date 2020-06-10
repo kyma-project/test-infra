@@ -27,9 +27,9 @@ if [ -n "${credentials}" ]; then
   # shellcheck disable=SC1090
   source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-  shout "Authenticate"
+  shout "Login to gcr with provided credentials"
   date
-  authenticate
+  docker login -u _json_key -p "(cat ${credentials})" "https://${KYMA_INSTALLER_IMAGE%%/*}"
 fi
 
 echo "--------------------------------------------------------------------------------"
