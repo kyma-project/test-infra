@@ -1,6 +1,11 @@
 presets:
   - labels:
       preset-wssagent-keys: "true"
+    env:
+      - name: WHITESOURCE-APIKEY
+        value: /etc/credentials/whitesource-apikey/apikey
+      - name: WHITESOURCE-USERKEY
+        value: /etc/credentials/whitesource-userkey/userkey
     volumes:
       - name: whitesource-apikey
         secret:
