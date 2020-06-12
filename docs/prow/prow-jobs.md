@@ -90,6 +90,14 @@ go run development/tools/cmd/rendertemplates/main.go --config templates/config.y
 - For details on how to create jobs, see [Manage component jobs with templates](./manage-component-jobs-with-templates.md).
 - For further reference, read a more technical insight into the Kubernetes [Prow jobs](https://github.com/kubernetes/test-infra/blob/master/prow/jobs.md).
 
+
+## Rerun jobs from UI
+
+All [cluster-access](https://github.com/orgs/kyma-project/teams/cluster-access) team members are authorized to rerun jobs from UI.
+
+![rerun job](./assets/rerun.png)
+
+
 ## Trigger jobs manually
 
 In most situations, re-running the job means that Prow uses the same commit. To make sure the job uses the updated code base, you can trigger the job manually.

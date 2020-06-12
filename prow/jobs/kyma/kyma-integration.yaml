@@ -20,7 +20,7 @@ base_image_k15: &base_image_k15
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200512-e400f399
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200608-2db047ac
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
@@ -203,6 +203,28 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_upgrade_e2e_job_template: &gke_upgrade_e2e_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k15
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-e2e.sh"
         resources:
           requests:
             memory: 200Mi
@@ -417,6 +439,21 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+
+    - name: pre-master-kyma-gke-upgrade-e2e
+      optional: true
+      always_run: false
+      branches:
+        - ^master$
+      <<: *gke_upgrade_e2e_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
     - name: pre-rel113-kyma-gke-upgrade
       branches:
         - release-1.13
@@ -567,6 +604,23 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
 
+    - name: post-master-kyma-gke-upgrade-e2e
+      optional: true
+      always_run: false
+      <<: *gke_upgrade_e2e_job_template
+      annotations:
+        testgrid-dashboards: kyma-postsubmit
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
@@ -651,7 +705,7 @@ periodics:
       # testgrid-alert-email: email-here@sap.com
       testgrid-num-failures-to-alert: '1'
     labels:
-      preset-sa-gke-kyma-integration: "true"
+      preset-sa-prow-job-resource-cleaner: "true"
       preset-gc-project-env: "true"
     decorate: true
     extra_refs:
@@ -664,7 +718,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+            - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
           resources:
             requests:
               memory: 100Mi
@@ -837,7 +891,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "development/github-stats.sh"
+            - "prow/scripts/github-stats.sh"
           resources:
             requests:
               memory: 100Mi
@@ -857,6 +911,7 @@ periodics:
       preset-stability-checker-slack-notifications: "true"
       preset-nightly-github-integration: "true"
       preset-kms-gc-project-env: "true"
+      preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
@@ -928,6 +983,7 @@ periodics:
       preset-stability-checker-slack-notifications: "true"
       preset-weekly-github-integration: "true"
       preset-kms-gc-project-env: "true"
+      preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
@@ -998,6 +1054,7 @@ periodics:
       preset-nightly-aks-github-integration: "true"
       preset-creds-aks-kyma-integration: "true"
       preset-kms-gc-project-env: "true"
+      preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:

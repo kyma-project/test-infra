@@ -2,6 +2,45 @@
 
 presets:
   - labels:
+      preset-wssagent-keys: "true"
+    env:
+      - name: WHITESOURCE-APIKEY
+        value: /etc/credentials/whitesource-apikey/apikey
+      - name: WHITESOURCE-USERKEY
+        value: /etc/credentials/whitesource-userkey/userkey
+    volumes:
+      - name: whitesource-apikey
+        secret:
+          secretName: whitesource-apikey
+      - name: whitesource-userkey
+        secret:
+          secretName: whitesource-userkey
+    volumeMounts:
+      - name: whitesource-apikey
+        mountPath: /etc/credentials/whitesource-apikey
+        readOnly: true
+      - name: whitesource-userkey
+        mountPath: /etc/credentials/whitesource-userkey
+        readOnly: true
+  - labels:
+      preset-sa-prow-job-resource-cleaner: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
+    volumes:
+      - name: sa-prow-job-resource-cleaner
+        secret:
+          secretName: sa-prow-job-resource-cleaner
+    volumeMounts:
+      - name: sa-prow-job-resource-cleaner
+        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
+        readOnly: true
+  - labels:
+      preset-certificates-bucket: "true"
+    env:
+      - name: CERTIFICATES_BUCKET
+        value: "kyma-prowjobs-secrets"
+  - labels:
       preset-gke-kyma-developers-group: "true"
     env:
       - name: GCLOUD_SECURITY_GROUP

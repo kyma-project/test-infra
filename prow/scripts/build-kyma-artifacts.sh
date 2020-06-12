@@ -27,6 +27,7 @@ make -C /home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer ci-c
 
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster-compass.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster-compass.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer-cluster-compass-dependencies.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster-compass-dependencies.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster-runtime.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster-runtime.yaml"
 
 gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-local.yaml"

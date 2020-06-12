@@ -66,7 +66,6 @@ presubmits: # runs on PRs
       <<: *gke_integration_job_template_k15
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      skip_report: true
       labels:
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
@@ -85,18 +84,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-compass-integration
-      optional: true
-      branches:
-        - release-1.12
-      always_run: false
-      <<: *gke_integration_job_template_k15
-      labels:
-        preset-build-release: "true"
-        <<: *gke_integration_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
 postsubmits:
   kyma-project/kyma:
@@ -108,7 +95,9 @@ postsubmits:
         testgrid-dashboards: kyma-cleaners
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
-      skip_report: true
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       labels:
         preset-build-master: "true"
         <<: *gke_integration_job_labels_template

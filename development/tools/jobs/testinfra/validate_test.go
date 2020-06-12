@@ -52,12 +52,12 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageGolangBuildpack1_14, cont.Image)
+	assert.Equal(t, tester.ImageProwToolsLatest, cont.Image)
 	assert.Equal(t,
 		[]string{
-			"/home/prow/go/src/github.com/kyma-project/test-infra/prow/plugins.yaml",
-			"/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml",
-			"/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs",
+			"prow/plugins.yaml",
+			"prow/config.yaml",
+			"prow/jobs",
 		},
 		cont.Args)
 }
@@ -80,5 +80,5 @@ func TestValidateScriptsPresubmit(t *testing.T) {
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
 	assert.Equal(t, tester.ImageBootstrapLatest, cont.Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/development/validate-scripts.sh"}, cont.Command)
+	assert.Equal(t, []string{"prow/scripts/validate-scripts.sh"}, cont.Command)
 }

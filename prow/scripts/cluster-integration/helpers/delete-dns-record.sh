@@ -3,10 +3,12 @@
 set -e
 set -o pipefail
 
-readonly DEVELOPMENT_DIR="$( cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../../../development" && pwd )"
+if [ -x /prow-tools/dnscleaner ];
+then
+  /prow-tools/dnscleaner --attempts=10 "$@"
+else
+  cd "development/tools"
+  go run "cmd/dnscleaner" --attempts=10 "$@"
+fi
 
-readonly TOOL_DIR=dnscleaner
-readonly OBJECT_NAME="Long lasting cluster DNS cleaner"
-
-"${DEVELOPMENT_DIR}"/resources-cleanup.sh "${TOOL_DIR}" "${OBJECT_NAME}" "$@"
 echo "DNS Record deleted, but it can be visible for some time due to DNS caches"

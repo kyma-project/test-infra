@@ -26,14 +26,9 @@ init
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-gsutil cp "gs://kyma-prow-secrets/whitesource-userkey.encrypted" "." 
-gsutil cp "gs://kyma-prow-secrets/whitesource-apikey.encrypted" "." 
+USERKEY=$(cat "${WHITESOURCE-USERKEY}")
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-userkey" "whitesource-userkey.encrypted"
-USERKEY=$(cat "whitesource-userkey")
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" "whitesource-apikey" "whitesource-apikey.encrypted"
-APIKEY=$(cat "whitesource-apikey")
+APIKEY=$(cat "${WHITESOURCE-APIKEY}")
 
 
 case "${SCAN_LANGUAGE}" in

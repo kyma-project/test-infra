@@ -21,6 +21,8 @@ The structure of the folder looks as follows:
   ├── kind-upgrade-kyma.sh               # This script tests Kyma upgradeability on kind
   ├── library.sh                         # This script is used as an integral part of other scripts, such as the "build.sh" script. With proper parameters defined, it authenticates you to GCP and sets up the Docker-in-Docker environment.
   ├── provision-vm-and-start-kyma.sh     # This script starts a virtual machine as part of the integration job and runs integration tests for Kyma on Minikube.
+  ├── validate-config.sh                 # This script runs the "Checker" application and checks the uniqueness of jobs names.
+  ├── validate-scripts.sh                # This script performs a static analysis of bash scripts in the "test-infra" repository.
   └── publish-buildpack.sh               # This script builds and pushes Docker images for test infrastructure by running the respective "Makefile" target.
 
 

@@ -48,6 +48,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-build-pr: "true"
         preset-kyma-wssagent-config: "true"
+        preset-wssagent-keys: "true"
         preset-kyma-keyring: "true"
         preset-kyma-encryption-key: "true"
         preset-kms-gc-project-env: "true"

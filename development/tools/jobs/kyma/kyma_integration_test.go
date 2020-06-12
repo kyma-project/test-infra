@@ -329,11 +329,11 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, expName, assetstoreGcpBucketCleaner.Name)
 	assert.True(t, assetstoreGcpBucketCleaner.Decorate)
 	assert.Equal(t, "00 00 * * *", assetstoreGcpBucketCleaner.Cron)
-	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
+	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, preset.GCProjectEnv, preset.SaProwJobResourceCleaner)
 	tester.AssertThatHasExtraRefs(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra"})
 	assert.Equal(t, tester.ImageProwToolsLatest, assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, assetstoreGcpBucketCleaner.JobBase)
 
 	expName = "orphaned-clusters-cleaner"
@@ -409,7 +409,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, "0 6 * * *", githubStatsPeriodic.Cron)
 	assert.Equal(t, tester.ImageProwToolsLatest, githubStatsPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, githubStatsPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "development/github-stats.sh"}, githubStatsPeriodic.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "prow/scripts/github-stats.sh"}, githubStatsPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, githubStatsPeriodic.JobBase)
 
 	expName = "kyma-gke-nightly"
