@@ -10,7 +10,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20191004-f931536
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20200423-1d9d6590
         securityContext:
           privileged: true
         command:
