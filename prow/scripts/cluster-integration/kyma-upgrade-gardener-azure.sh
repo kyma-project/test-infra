@@ -255,7 +255,7 @@ date
 # shellcheck disable=SC1090
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
-readonly RELEASE_VERSION=$(cat "${TEST_INFRA_SOURCES_DIR}/prow/RELEASE_VERSION")
+readonly RELEASE_VERSION=1.12.0 #!!! remove fix version after correct current release version configured $(cat "${TEST_INFRA_SOURCES_DIR}/prow/RELEASE_VERSION")
 (
 set -x
 kyma install \
