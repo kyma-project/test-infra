@@ -26,9 +26,9 @@ init
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-USERKEY=$(cat /etc/credentials/whitesource-userkey/userKey)
+USERKEY=$(cat /etc/credentials/whitesource-userkey/userkey)
 
-APIKEY=$(cat /etc/credentials/whitesource-apikey/apiKey)
+APIKEY=$(cat /etc/credentials/whitesource-apikey/apikey)
 
 
 case "${SCAN_LANGUAGE}" in
