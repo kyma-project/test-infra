@@ -16,12 +16,11 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-export TEST_INFRA_SOURCES_DIR
 function installKyma() {
 
     kymaUnsetVar=false
 
-    for var in DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY GOOGLE_APPLICATION_CREDENTIALS STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
+    for var in DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY GOOGLE_APPLICATION_CREDENTIALS STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP; do
         if [ -z "${!var}" ] ; then
             echo "ERROR: $var is not set"
             kymaUnsetVar=true
@@ -104,7 +103,7 @@ function installKyma() {
 function createImage() {
     shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
     # shellcheck disable=SC1090
-    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh" "${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+    source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 }
 
 function waitUntilInstallerApiAvailable() {
