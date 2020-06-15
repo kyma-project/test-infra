@@ -75,6 +75,10 @@ cleanup() {
 
     if [[ -n "${SUITE_NAME}" ]]; then
         testSummary
+        SUITE_EXIT_STATUS=$?
+        if [[ ${EXIT_STATUS} -eq 0 ]]; then 
+                EXIT_STATUS=$SUITE_EXIT_STATUS
+        fi
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
@@ -112,11 +116,13 @@ cleanup() {
 }
 
 testSummary() {
+    local tests_exit=0
     echo "Test Summary"
     kyma test status "${SUITE_NAME}" -owide
 
     statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
     if [[ "${statusSucceeded}" != *"True"* ]]; then
+        tests_exit=1
         echo "- Fetching logs due to test suite failure"
 
         echo "- Fetching logs from testing pods in Failed status..."
@@ -127,15 +133,11 @@ testSummary() {
 
         echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
         kyma test logs "${SUITE_NAME}" --test-status Running
-
-        echo "ClusterTestSuite details"
-        kubectl get cts "${SUITE_NAME}" -oyaml
-
-        exit 1
     fi
 
     echo "ClusterTestSuite details"
     kubectl get cts "${SUITE_NAME}" -oyaml
+    return $tests_exit
 }
 
 trap cleanup EXIT INT
@@ -225,7 +227,7 @@ kyma test run \
     --non-interactive
 )
 
-shout "Success"
+shout "Tests completed"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
