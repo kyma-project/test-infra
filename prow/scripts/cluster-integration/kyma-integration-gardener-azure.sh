@@ -220,7 +220,7 @@ kyma test run \
     --non-interactive
 )
 
-shout "Success"
+shout "Tests completed"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
