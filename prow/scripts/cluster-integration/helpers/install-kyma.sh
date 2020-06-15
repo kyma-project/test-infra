@@ -16,7 +16,7 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-export TEST_INFRA_SOURCES_DIR
+
 function installKyma() {
 
     kymaUnsetVar=false
