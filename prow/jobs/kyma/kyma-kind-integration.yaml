@@ -35,7 +35,6 @@ presubmits:
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-      preset-sa-test-gcr-push: "true"
     spec:
       containers:
       - <<: *job_image_template
@@ -87,7 +86,6 @@ presubmits:
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
-      preset-sa-test-gcr-push: "true"
     spec:
       containers:
       - <<: *job_image_template
