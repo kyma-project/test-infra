@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
   if [ -z "${!var}" ] ; then
     echo "ERROR: $var is not set"
     discoverUnsetVar=true
@@ -76,7 +76,7 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-compass-dependencies.yaml.tpl"
+INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-with-compass-runtime-agent.yaml.tpl"
 
 function cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -279,7 +279,7 @@ function installKyma() {
     shout "Build Kyma-Installer Docker image"
     date
     CLEANUP_DOCKER_IMAGE="true"
-    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
+    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh "${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
   fi
 
   shout "Generate self-signed certificate"
@@ -335,8 +335,7 @@ installCompass() {
   readonly COMPASS_TMP_DIR="/tmp/compass-gke-integration"
   gsutil cp "${COMPASS_MASTER_ARTIFACTS}/compass-installer.yaml" ${COMPASS_TMP_DIR}/compass-installer.yaml
   gsutil cp "${COMPASS_MASTER_ARTIFACTS}/is-installed.sh" ${COMPASS_TMP_DIR}/is-installed.sh
-	"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh ${COMPASS_TMP_DIR}/compass-installer.yaml "${INSTALLER_CR}" \
-	| kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
+	kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
 
   shout "Installation triggered"
   date

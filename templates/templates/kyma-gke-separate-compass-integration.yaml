@@ -3,11 +3,6 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-kyma_ref: &kyma_ref
-  org: kyma-project
-  repo: kyma
-  path_alias: github.com/kyma-project/kyma
-
 # Kubectl 1.15 and CLUSTER_VERSION=1.15
 base_image_k15: &base_image_k15
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15
@@ -52,6 +47,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
   preset-docker-push-repository-gke-integration: "true"
+  preset-sa-test-gcr-push: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-gardener-azure-kyma-integration: "true"
@@ -59,6 +55,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-separate-compass-integration
+      optional: true
       branches:
         - ^master$
       <<: *gke_integration_job_template_k15
