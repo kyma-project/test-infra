@@ -47,7 +47,6 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
   preset-docker-push-repository-gke-integration: "true"
-  preset-sa-test-gcr-push: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-gardener-azure-kyma-integration: "true"
