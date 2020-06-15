@@ -85,9 +85,9 @@ function init() {
         start_docker
     fi
 
-	if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]] && [[ "${PERFORMACE_CLUSTER_SETUP}" == "true" ]]; then
+	  if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
 	    authenticateDocker
-	fi
+	  fi
 
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
         configure_git
