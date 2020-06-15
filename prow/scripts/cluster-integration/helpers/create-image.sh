@@ -11,7 +11,7 @@
 
 set -o errexit
 
-for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
+for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT GOOGLE_APPLICATION_CREDENTIALS TEST_INFRA_SOURCES_DIR; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -19,6 +19,17 @@ for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
 done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
+fi
+
+credentials="${1}"
+
+if [ -n "${credentials}" ]; then
+  # shellcheck disable=SC1090
+  source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+  shout "Login to gcr with provided credentials"
+  date
+  docker login -u _json_key -p "(cat ${credentials})" "https://${KYMA_INSTALLER_IMAGE%%/*}"
 fi
 
 echo "--------------------------------------------------------------------------------"

@@ -26,9 +26,9 @@ init
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-USERKEY=$(cat "${WHITESOURCE-USERKEY}")
+USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 
-APIKEY=$(cat "${WHITESOURCE-APIKEY}")
+APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
 
 case "${SCAN_LANGUAGE}" in

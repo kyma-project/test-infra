@@ -2,9 +2,9 @@ presets:
   - labels:
       preset-wssagent-keys: "true"
     env:
-      - name: WHITESOURCE-APIKEY
+      - name: WHITESOURCE_APIKEY
         value: /etc/credentials/whitesource-apikey/apikey
-      - name: WHITESOURCE-USERKEY
+      - name: WHITESOURCE_USERKEY
         value: /etc/credentials/whitesource-userkey/userkey
     volumes:
       - name: whitesource-apikey
@@ -102,6 +102,19 @@ presets:
     volumeMounts:
       - name: sa-gcr-push-kyma-project
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
+        readOnly: true
+  - labels:
+      preset-sa-test-gcr-push: "true" # Service account with write access to test gcr.
+    env:
+      - name: SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-test-gcr-push/service-account.json
+    volumes:
+      - name: sa-test-gcr-push
+        secret:
+          secretName: sa-gcr-push-kyma-project
+    volumeMounts:
+      - name: sa-test-gcr-push
+        mountPath: /etc/credentials/sa-test-gcr-push
         readOnly: true
   - labels:
       preset-sa-kyma-artifacts: "true"
@@ -414,7 +427,7 @@ presets:
       preset-kyma-keyring: "true"
     env:
       - name: KYMA_KEYRING
-        value: "kyma-prow"
+        value: "prow-workloads-keyring"
   - labels:
       preset-kyma-development-artifacts-bucket: "true"
     env:
@@ -424,7 +437,7 @@ presets:
       preset-kyma-encryption-key: "true"
     env:
       - name: KYMA_ENCRYPTION_KEY
-        value: kyma-prow-encryption
+        value: prow-workloads-encrypt
   - labels:
      preset-kyma-slack-channel: "true"
     env:
