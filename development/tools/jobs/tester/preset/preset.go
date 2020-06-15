@@ -20,6 +20,8 @@ const (
 	BuildPr Preset = "preset-build-pr"
 	// BuildMaster means master environment
 	BuildMaster Preset = "preset-build-master"
+	// BuildArtifactsMaster means building artifacts master environment
+	BuildArtifactsMaster Preset = "preset-build-artifacts-master"
 	// BuildConsoleMaster means console master environment
 	BuildConsoleMaster Preset = "preset-build-console-master"
 	// BuildConsoleMaster means console PR environment

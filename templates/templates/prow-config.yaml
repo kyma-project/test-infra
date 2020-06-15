@@ -242,6 +242,11 @@ presets:
       - name: DOCKER_PUSH_DIRECTORY
         value: "/develop"
   - labels:
+      preset-build-artifacts-master: "true"
+    env:
+      - name: BUILD_TYPE
+        value: master
+  - labels:
       preset-build-console-master: "true"
     env:
       - name: BUILD_TYPE
