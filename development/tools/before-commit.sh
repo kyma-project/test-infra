@@ -85,7 +85,7 @@ if [ ${buildGoImportResult} != 0 ]; then
 fi
 
 dirs=$(go list -f '{{ .Dir }}' "${DIRS_TO_CHECK[@]}" | grep -E -v "/vendor|/automock|/testdata")
-goimportsCmd="$(for d in $dirs; do goimports -l "$d"/*.go; done)"
+goimportsCmd="$(for d in $dirs; do "${GOPATH}"/goimports -l "$d"/*.go; done)"
 goImportsResult=$(test -z "$goimportsCmd") # check if result of command is empty
 
 if [ "$goImportsResult" != 0 ]; then
