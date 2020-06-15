@@ -29,7 +29,7 @@ if [ -n "${credentials}" ]; then
 
   shout "Login to gcr with provided credentials"
   date
-  docker login -u _json_key -p "(cat ${credentials})" "https://${KYMA_INSTALLER_IMAGE%%/*}"
+  docker login -u _json_key -p "$(cat ${credentials})" "https://${KYMA_INSTALLER_IMAGE%%/*}"
 fi
 
 echo "--------------------------------------------------------------------------------"
