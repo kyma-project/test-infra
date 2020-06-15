@@ -127,11 +127,6 @@ testSummary() {
 
         echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
         kyma test logs "${SUITE_NAME}" --test-status Running
-
-        echo "ClusterTestSuite details"
-        kubectl get cts "${SUITE_NAME}" -oyaml
-
-        exit 1
     fi
 
     echo "ClusterTestSuite details"
