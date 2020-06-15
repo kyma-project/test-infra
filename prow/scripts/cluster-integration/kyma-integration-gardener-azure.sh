@@ -148,7 +148,9 @@ COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]"
 export CLUSTER_NAME="${COMMON_NAME}"
 
 # Local variables
-# DNS_SUBDOMAIN="${COMMON_NAME}"
+if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
+    EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
+fi
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
