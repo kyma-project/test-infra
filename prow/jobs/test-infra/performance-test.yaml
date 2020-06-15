@@ -21,6 +21,8 @@ job_labels_template: &job_labels_template
   preset-dind-enabled: "true"
   preset-sa-gcr-push: "true"
   preset-docker-push-repository-kyma: "true"
+  preset-sa-test-gcr-push: "true"
+  
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
