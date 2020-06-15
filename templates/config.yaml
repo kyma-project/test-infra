@@ -347,6 +347,12 @@ templates:
           path: components/metris
           since: "1.13"
           optional: true
+      - to: ../prow/jobs/incubator/compass/components/kubeconfig-service/kubeconfig-service-generic.yaml
+        values:
+          <<: *compass_generic_component
+          path: components/kubeconfig-service
+          since: "1.14"
+          optional: true
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
           <<: *compass_generic_component
