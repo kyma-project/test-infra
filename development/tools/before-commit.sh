@@ -56,24 +56,6 @@ go test -count=1 "${DIRS_TO_CHECK[@]}"
 
 check_result "go test" $?
 
-echo "? go build"
-buildEnv=""
-if [ $CI_ENABLED -eq 1 ]; then
-  # build binary statically
-  buildEnv="env CGO_ENABLED=0"
-fi
-
-while IFS= read -r -d '' directory; do
-  cmdName=$(basename "${directory}")
-  if [ -a "${directory}/nobuild.lock" ]; then
-    continue
-  fi
-  ${buildEnv} go build -o "${cmdName}" "${directory}"
-  buildResult=$?
-  rm "${cmdName}"
-  check_result "go build ${directory}" "${buildResult}"
-done < <(find "./cmd" -mindepth 1 -type d -print0)
-
 ##
 #  GO LINT
 ##
@@ -103,11 +85,13 @@ if [ ${buildGoImportResult} != 0 ]; then
 fi
 
 dirs=$(go list -f '{{ .Dir }}' "${DIRS_TO_CHECK[@]}" | grep -E -v "/vendor|/automock|/testdata")
-test -z "$(for d in $dirs; do goimports -w -l "$d"/*.go; done)"
-goImportsResult=$?
+goimportsCmd="$(for d in $dirs; do goimports -l "$d"/*.go; done)"
+goImportsResult=$(test -z "$goimportsCmd") # check if result of command is empty
 
-if [ $goImportsResult != 0 ]; then
+if [ "$goImportsResult" != 0 ]; then
   echo -e "${RED}✗ goimports and fmt ${NC}\n$goImportsResult${NC}"
+    echo -e "changed files: \n$goimportsCmd"
+    echo "run goimports against the development/tools/ and commit your changes"
   exit 1
 else
   echo -e "${GREEN}√ goimports and fmt ${NC}"
@@ -121,3 +105,21 @@ for vPackage in "${DIRS_TO_CHECK[@]}"; do
   vetResult=$(go vet "${vPackage}")
   check_result "go vet ${vPackage}" "${#vetResult}" "${vetResult}"
 done
+
+echo "? go build"
+buildEnv=""
+if [ $CI_ENABLED -eq 1 ]; then
+  # build binary statically
+  buildEnv="env CGO_ENABLED=0"
+fi
+
+while IFS= read -r -d '' directory; do
+  cmdName=$(basename "${directory}")
+  if [ -a "${directory}/nobuild.lock" ]; then
+    continue
+  fi
+  ${buildEnv} go build -o "${cmdName}" "${directory}"
+  buildResult=$?
+  rm "${cmdName}"
+  check_result "go build ${directory}" "${buildResult}"
+done < <(find "./cmd" -mindepth 1 -type d -print0)
