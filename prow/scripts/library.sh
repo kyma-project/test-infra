@@ -44,7 +44,7 @@ function authenticate() {
 function authenticateDocker() {
     shout "Authenticating on docker registry ${DOCKER_REGISTRY}"
 
-    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://"${DOCKER_REGISTRY}"
+    docker login -u _json_key --password-stdin https://"${DOCKER_REGISTRY}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
 }
 
 function configure_git() {

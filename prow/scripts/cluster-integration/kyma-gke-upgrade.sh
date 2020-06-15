@@ -404,7 +404,7 @@ function upgradeKyma() {
         COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
         KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
         export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh" "${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
         CLEANUP_DOCKER_IMAGE="true"
 
         KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
