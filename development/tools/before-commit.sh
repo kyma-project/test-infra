@@ -26,6 +26,8 @@ function check_result() {
     fi
 }
 
+goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")
+
 ##
 # GO MOD VERIFY
 ##
@@ -41,6 +43,17 @@ fi
 ##
 # GO BUILD
 ##
+
+##
+# GO TEST
+##
+echo "? go test"
+if [ "$1" == "$CI_FLAG" ]; then
+  go test -count=1 ./pkg/...
+else
+  go test -count=1 ./...
+fi
+check_result "go test" $?
 
 echo "? go build"
 buildEnv=""
@@ -75,7 +88,6 @@ golintResult=$(echo "${goFilesToCheck}" | xargs -L1 "${GOPATH}"/bin/golint)
 
 if [ "${#golintResult}" != 0 ]; then
   echo -e "${RED}✗ golint\n$golintResult${NC}"
-  exit 1
 else
   echo -e "${GREEN}√ golint${NC}"
 fi
@@ -109,11 +121,3 @@ for vPackage in "${packagesToVet[@]}"; do
     check_result "go vet ${vPackage}" "${#vetResult}" "${vetResult}"
 done
 
-##
-# GO TEST
-##
-echo "? go test"
-go test -count=1 ./...
-check_result "go test" $?
-
-goFilesToCheck=$(find . -type f -name "*.go" | grep -E -v "/vendor/|/automock/|/testdata/")
