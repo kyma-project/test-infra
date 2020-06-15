@@ -21,7 +21,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-credentials="${1}"
+export credentials="${1}"
 
 if [ -n "${credentials}" ]; then
   # shellcheck disable=SC1090
@@ -29,8 +29,8 @@ if [ -n "${credentials}" ]; then
 
   shout "Login to gcr with provided credentials"
   date
-  #shellcheck disable=2046
-  docker login -u _json_key -p $(cat "${credentials}") "https://${KYMA_INSTALLER_IMAGE%%/*}"
+  #shellcheck disable=2086
+  docker login -u _json_key -p "$(cat ${credentials})" "https://${KYMA_INSTALLER_IMAGE%%/*}"
 fi
 
 echo "--------------------------------------------------------------------------------"
