@@ -84,8 +84,6 @@ function configure_git() {
 function init() {
     echo "Initializing"
 
-    sleep 3600
-
     if [[ ! -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
         authenticate
     fi
@@ -93,10 +91,6 @@ function init() {
     if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
         start_docker
     fi
-
-	  if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
-	    authenticateDocker
-	  fi
 
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
         configure_git
