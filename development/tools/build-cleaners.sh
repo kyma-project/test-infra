@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -e
 
 readonly TOOLS_DIR="${PWD}/development/tools"
 cd "${TOOLS_DIR}"
@@ -25,5 +25,7 @@ done
 
 if [ "$1" == "no-upx" ];
 then
- upx -q "${TOOLS_DIR}/bin/"*
+  exit 0
+else
+  upx -q "${TOOLS_DIR}/bin/"*
 fi

@@ -87,13 +87,15 @@ if [ ${buildGoImportResult} != 0 ]; then
   exit 1
 fi
 
-dirs=$(go list -f '{{ .Dir }}' "${DIRS_TO_CHECK[@]}" | grep -E -v "/vendor|/automock|/testdata")
-goimportsCmd="$(for d in $dirs; do "${GOPATH}"/bin/goimports -l "$d"/*.go; done)"
-goImportsResult=$(test -z "$goimportsCmd") # check if result of command is empty
+dirs=$(go list -f '{{ .Dir }}' "${DIRS_TO_CHECK[@]}")
+changedFiles=$(for d in $dirs; do "${GOPATH}"/bin/goimports -l "$d"/*.go; done)
+test -z "$changedFiles"
+goImportsResult=$? # check if result of command is empty
 
 if [ "$goImportsResult" != 0 ]; then
   echo -e "${RED}✗ goimports ${NC}\n$goImportsResult${NC}"
-    echo -e "changed files: \n$goimportsCmd"
+    echo "changed files:"
+    echo "$changedFiles"
     echo "run \"goimports -w -l\" against the development/tools/ and commit your changes"
   exit 1
 else
