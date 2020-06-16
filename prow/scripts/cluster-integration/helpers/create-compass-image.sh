@@ -11,7 +11,7 @@
 
 set -o errexit
 
-for var in COMPASS_SOURCES_DIR COMPASS_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT GOOGLE_APPLICATION_CREDENTIALS TEST_INFRA_SOURCES_DIR; do
+for var in COMPASS_SOURCES_DIR COMPASS_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -19,18 +19,6 @@ for var in COMPASS_SOURCES_DIR COMPASS_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT GOO
 done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
-fi
-
-credentials="${1}"
-
-if [ -n "${credentials}" ]; then
-  # shellcheck disable=SC1090
-  source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
-  shout "Login to gcr with provided credentials"
-  date
-  #shellcheck disable=2046
-  docker login -u _json_key -p $(cat "${credentials}") "https://${COMPASS_INSTALLER_IMAGE%%/*}"
 fi
 
 echo "--------------------------------------------------------------------------------"
