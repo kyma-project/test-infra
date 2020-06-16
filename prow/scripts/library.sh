@@ -48,7 +48,7 @@ function authenticateSaGcr() {
 }
 
 function activateDefaultSa() {
-    client_email=$(echo "${GOOGLE_APPLICATION_CREDENTIALS}" | jq -r '.client_email')
+    client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
     echo "Activating account $client_email"
     gcloud config set account "${client_email}" || exit 1
 
