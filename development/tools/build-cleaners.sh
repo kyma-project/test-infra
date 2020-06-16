@@ -22,3 +22,4 @@ do
     chmod a+x "${TOOLS_DIR}/bin/${name}"
   fi
 done
+upx -q "${TOOLS_DIR}/bin/"*
