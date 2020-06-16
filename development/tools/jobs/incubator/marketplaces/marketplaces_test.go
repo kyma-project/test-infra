@@ -2,6 +2,9 @@ package marketplaces_test
 
 import (
 	"fmt"
+
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
 
@@ -106,7 +109,15 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
-	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "marketplaces"})
+	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
+	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
+		{
+			Org:            "kyma-incubator",
+			Repo:           "marketplaces",
+			BaseRef:        "master",
+			PathAlias:      "github.com/kyma-incubator/marketplaces",
+		},
+	})
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/marketplaces", tester.KymaIncubatorDir)
 	assert.Equal(t, []string{"--repository", "marketplaces", "--repository-org", "kyma-incubator", "--repository-dir", repositoryDirArg, "--full-validation", "true"}, actualPeriodic.Spec.Containers[0].Args)

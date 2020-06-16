@@ -6,10 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/require"
 	v1 "k8s.io/api/core/v1"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
@@ -242,15 +244,22 @@ func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig
 	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s] sha", expectedBaseSHA))
 }
 
-// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
-func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories []string) {
+// AssertThatHasExtraRef checks if UtilityConfig has repositories passed in argument defined
+func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, extraRefs []prowapi.Refs) {
+	for _, ref := range extraRefs {
+		assert.Contains(t,in.ExtraRefs, ref)
+	}
+}
+// AssertThatHasExtraRepoRef checks if UtilityConfig has repositories passed in argument defined
+func AssertThatHasExtraRepoRef(t *testing.T, in config.UtilityConfig, repositories []string) {
+	REPO:
 	for _, repository := range repositories {
 		for _, curr := range in.ExtraRefs {
 			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
 				curr.Org == "kyma-project" &&
 				curr.Repo == repository &&
 				curr.BaseRef == "master" {
-				return
+				continue REPO
 			}
 		}
 		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
