@@ -6,7 +6,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 INVERTED='\033[7m'
 NC='\033[0m' # No Color
-CI_ENABLED=0
+export CI_ENABLED=0
 if [ "$1" == "$CI_FLAG" ]; then
   CI_ENABLED=1
   shift
