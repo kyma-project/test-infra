@@ -53,6 +53,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-gardener-azure-kyma-integration: "true"
+  preset-kyma-development-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
