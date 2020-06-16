@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 readonly TOOLS_DIR="${PWD}/development/tools"
 cd "${TOOLS_DIR}"
@@ -22,10 +22,3 @@ do
     chmod a+x "${TOOLS_DIR}/bin/${name}"
   fi
 done
-
-if [ "$1" == "no-upx" ];
-then
-  exit 0
-else
-  upx -q "${TOOLS_DIR}/bin/"*
-fi

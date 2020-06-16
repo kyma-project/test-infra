@@ -5,7 +5,6 @@ TAG = $(DOCKER_TAG)
 .PHONY: validate
 validate:
 	./before-commit.sh ./cmd/... ./pkg/...
-	./build-cleaners.sh no-upx
 
 .PHONY: build-image
 build-image:
