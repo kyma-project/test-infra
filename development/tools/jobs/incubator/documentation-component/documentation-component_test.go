@@ -2,8 +2,9 @@ package documentation_component_test
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
