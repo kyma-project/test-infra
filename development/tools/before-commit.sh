@@ -35,6 +35,7 @@ function check_result() {
 ##
 # GO MOD VERIFY
 ##
+echo "? go mod verify"
 go mod verify
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
@@ -59,6 +60,7 @@ check_result "go test" $?
 ##
 #  GO LINT
 ##
+echo "? golint"
 go get golang.org/x/lint/golint
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
@@ -77,6 +79,7 @@ fi
 ##
 # GO IMPORTS & FMT
 ##
+echo "? goimports"
 go get golang.org/x/tools/cmd/goimports
 buildGoImportResult=$?
 if [ ${buildGoImportResult} != 0 ]; then
@@ -85,16 +88,16 @@ if [ ${buildGoImportResult} != 0 ]; then
 fi
 
 dirs=$(go list -f '{{ .Dir }}' "${DIRS_TO_CHECK[@]}" | grep -E -v "/vendor|/automock|/testdata")
-goimportsCmd="$(for d in $dirs; do "${GOPATH}"/goimports -l "$d"/*.go; done)"
+goimportsCmd="$(for d in $dirs; do "${GOPATH}"/bin/goimports -l "$d"/*.go; done)"
 goImportsResult=$(test -z "$goimportsCmd") # check if result of command is empty
 
 if [ "$goImportsResult" != 0 ]; then
-  echo -e "${RED}✗ goimports and fmt ${NC}\n$goImportsResult${NC}"
+  echo -e "${RED}✗ goimports ${NC}\n$goImportsResult${NC}"
     echo -e "changed files: \n$goimportsCmd"
     echo "run goimports against the development/tools/ and commit your changes"
   exit 1
 else
-  echo -e "${GREEN}√ goimports and fmt ${NC}"
+  echo -e "${GREEN}√ goimports${NC}"
 fi
 
 ##
