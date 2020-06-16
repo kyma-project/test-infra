@@ -41,11 +41,17 @@ function authenticate() {
 
 }
 
-function authenticateDocker() {
-    shout "Authenticating on docker registry ${DOCKER_PUSH_REPOSITORY%%/*}"
+function authenticateSaGcr() {
+    echo "Authenticating"
+    gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
 
-    docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-    sleep 3600
+}
+
+function activateDefaultSa() {
+    client_email=$(echo "${GOOGLE_APPLICATION_CREDENTIALS}" | jq -r '.client_email')
+    echo "Activating account $client_email"
+    gcloud config set account "${client_email}" || exit 1
+
 }
 
 function configure_git() {
