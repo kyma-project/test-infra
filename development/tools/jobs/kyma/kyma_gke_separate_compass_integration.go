@@ -37,6 +37,7 @@ func TestKymaGKESeparateCompassIntegrationPresubmit(t *testing.T) {
 		"preset-kyma-artifacts-bucket",
 		"preset-gardener-azure-kyma-integration",
 		"preset-build-pr",
+		"preset-kyma-development-artifacts-bucket",
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
@@ -77,6 +78,7 @@ func TestKymaGKESeparateCompassIntegrationJobsReleases(t *testing.T) {
 					"preset-kyma-artifacts-bucket",
 					"preset-gardener-azure-kyma-integration",
 					"preset-build-release",
+					"preset-kyma-development-artifacts-bucket",
 				)
 				assert.False(t, actualPresubmit.AlwaysRun)
 				assert.Len(t, actualPresubmit.Spec.Containers, 1)
@@ -117,6 +119,7 @@ func TestKymaGKECompassIntegrationPostsubmit(t *testing.T) {
 		"preset-kyma-artifacts-bucket",
 		"preset-gardener-azure-kyma-integration",
 		"preset-build-master",
+		"preset-kyma-development-artifacts-bucket",
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
