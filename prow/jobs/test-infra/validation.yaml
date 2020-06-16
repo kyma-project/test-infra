@@ -32,7 +32,7 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-tools
-      run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)" # Also for any changes in prow directory
+      run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
       branches:
         - ^master$
       max_concurrency: 10

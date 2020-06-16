@@ -22,4 +22,8 @@ do
     chmod a+x "${TOOLS_DIR}/bin/${name}"
   fi
 done
-upx -q "${TOOLS_DIR}/bin/"*
+
+if [ "$1" == "no-upx" ];
+then
+ upx -q "${TOOLS_DIR}/bin/"*
+fi

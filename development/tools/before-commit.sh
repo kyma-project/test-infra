@@ -105,21 +105,3 @@ for vPackage in "${DIRS_TO_CHECK[@]}"; do
   vetResult=$(go vet "${vPackage}")
   check_result "go vet ${vPackage}" "${#vetResult}" "${vetResult}"
 done
-
-echo "? go build"
-buildEnv=""
-if [ $CI_ENABLED -eq 1 ]; then
-  # build binary statically
-  buildEnv="env CGO_ENABLED=0"
-fi
-
-while IFS= read -r -d '' directory; do
-  cmdName=$(basename "${directory}")
-  if [ -a "${directory}/nobuild.lock" ]; then
-    continue
-  fi
-  ${buildEnv} go build -o "${cmdName}" "${directory}"
-  buildResult=$?
-  rm "${cmdName}"
-  check_result "go build ${directory}" "${buildResult}"
-done < <(find "./cmd" -mindepth 1 -type d -print0)
