@@ -23,3 +23,5 @@ func GetAllKymaReleases() []*SupportedRelease {
 func GetNextKymaRelease() *SupportedRelease {
 	return Release114
 }
+
+

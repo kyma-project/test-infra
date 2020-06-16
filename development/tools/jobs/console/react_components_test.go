@@ -1,9 +1,8 @@
 package console_test
 
 import (
-	"testing"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
