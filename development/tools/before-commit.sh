@@ -1,12 +1,23 @@
 #!/usr/bin/env bash
 
+# before-commit.sh executes basic tests and code format checking against go files in provided directory.
+# It accepts go directory syntax. For example to check all files under ./pkg/ directory use argument "./pkg/..."
+#
+# Usage: ./before-commit.sh ./dir/... ./dir/...
+
 readonly CI_FLAG=ci
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 INVERTED='\033[7m'
 NC='\033[0m' # No Color
-DIRS_TO_CHECK=("$@")
+if [ "$#" -eq 0 ];
+then
+  echo "No arguments passed! Continuing with all directories in current directory!"
+  DIRS_TO_CHECK=("./...")
+else
+  DIRS_TO_CHECK=("$@")
+fi
 
 echo -e "${INVERTED}"
 echo "USER: ${USER}"
