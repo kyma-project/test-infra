@@ -31,7 +31,7 @@ function cleanup() {
 
 shout "Authenticate to SA with write access to GCR"
 date
-trap cleanup exit
+trap cleanup EXIT
 authenticateSaGcr
 
 echo "--------------------------------------------------------------------------------"
