@@ -94,7 +94,7 @@ goImportsResult=$(test -z "$goimportsCmd") # check if result of command is empty
 if [ "$goImportsResult" != 0 ]; then
   echo -e "${RED}✗ goimports ${NC}\n$goImportsResult${NC}"
     echo -e "changed files: \n$goimportsCmd"
-    echo "run goimports against the development/tools/ and commit your changes"
+    echo "run \"goimports -w -l\" against the development/tools/ and commit your changes"
   exit 1
 else
   echo -e "${GREEN}√ goimports${NC}"
