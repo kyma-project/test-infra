@@ -78,6 +78,8 @@ function configure_git() {
 function init() {
     echo "Initializing"
 
+    sleep 3600
+
     if [[ ! -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
         authenticate
     fi
