@@ -45,6 +45,7 @@ function authenticateDocker() {
     shout "Authenticating on docker registry ${DOCKER_PUSH_REPOSITORY%%/*}"
 
     docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+    sleep 1800
 }
 
 function configure_git() {
