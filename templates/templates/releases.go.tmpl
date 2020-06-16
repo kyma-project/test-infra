@@ -21,5 +21,3 @@ func GetAllKymaReleases() []*SupportedRelease {
 func GetNextKymaRelease() *SupportedRelease {
 	return Release{{ .Global.nextRelease | replace "." "" }}
 }
-
-
