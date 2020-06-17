@@ -249,7 +249,6 @@ function applyCommonOverrides() {
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "installation-config-overrides" \
     --data "global.domainName=${DOMAIN}" \
-    --data "global.ingress.domainName=${DOMAIN}" \
     --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "feature-flags-overrides" \
@@ -260,6 +259,12 @@ function applyCommonOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "global-ingress-overrides" \
+    --data "global.ingress.domainName=${DOMAIN}" \
+    --data "global.ingress.tlsCrt=${TLS_CERT}" \
+    --data "global.ingress.tlsKey=${TLS_KEY}" \
+    --data "global.environment.gardener=false"
 }
 
 function installKyma() {
