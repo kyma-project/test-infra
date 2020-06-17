@@ -264,6 +264,7 @@ function installKyma() {
   readonly TMP_DIR="/tmp/compass-gke-integration"
   gsutil cp "${KYMA_ARTIFACTS}/kyma-installer-cluster-compass-dependencies.yaml" ${TMP_DIR}/kyma-installer-cluster-compass-dependencies.yaml
   gsutil cp "${KYMA_ARTIFACTS}/is-installed.sh" ${TMP_DIR}/is-installed.sh
+  chmod +x ${TMP_DIR}/is-installed.sh
 	kubectl apply -f ${TMP_DIR}/kyma-installer-cluster-compass-dependencies.yaml
 
   shout "Installation triggered"
