@@ -345,18 +345,22 @@ function installTestChartOrFail() {
   local path=$1
   local name=$2
   local namespace=$3
-  local helmArgs=$4
-  local label=$5
+  local label=$4
 
   shout "Create ${name} resources"
   date
+
+  local HELM_ARGS
+  if [[ -f "$(helm home)/ca.pem" ]]; then
+      HELM_ARGS="--tls"
+  fi
 
   helm install "${path}" \
       --name "${name}" \
       --namespace "${namespace}" \
       --timeout "${HELM_TIMEOUT_SEC}" \
       --set domain="${DOMAIN}" \
-      --wait ${helmArgs}
+      --wait ${HELM_ARGS}
 
   prepareResult=$?
   if [[ "${prepareResult}" != 0 ]]; then
@@ -365,7 +369,7 @@ function installTestChartOrFail() {
   fi
 
   set +o errexit
-  checkTestPodTerminated ${namespace}
+  checkTestPodTerminated "${namespace}"
   prepareTestResult=$?
   set -o errexit
 
@@ -381,13 +385,8 @@ function installTestChartOrFail() {
 createTestResources() {
     injectTestingAddons
 
-    local HELM_ARGS
-    if [[  -f "$(helm home)/ca.pem" ]]; then
-        HELM_ARGS="--tls"
-    fi
-
-    installTestChartOrFail ${UPGRADE_TEST_PATH} ${UPGRADE_TEST_RELEASE_NAME} ${UPGRADE_TEST_NAMESPACE} ${HELM_ARGS} ${UPGRADE_TEST_RESOURCE_LABEL}
-    installTestChartOrFail ${EXTERNAL_SOLUTION_TEST_PATH} ${EXTERNAL_SOLUTION_TEST_RELEASE_NAME} ${EXTERNAL_SOLUTION_TEST_NAMESPACE} ${HELM_ARGS} ${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}
+    installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
+    installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
 }
 
 function upgradeKyma() {
