@@ -1,13 +1,11 @@
 package addons_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-
-	"fmt"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -6,16 +6,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ghodss/yaml"
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	v1 "k8s.io/api/core/v1"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-
-	"github.com/ghodss/yaml"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 	"k8s.io/test-infra/prow/config"
 )
 

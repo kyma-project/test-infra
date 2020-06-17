@@ -2,16 +2,13 @@ package marketplaces_test
 
 import (
 	"fmt"
-
-	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 const registryJobPath = "./../../../../../prow/jobs/incubator/marketplaces/marketplaces.yaml"
