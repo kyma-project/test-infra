@@ -204,7 +204,7 @@ function installKyma() {
     shout "Build Kyma-Installer Docker image"
     date
     CLEANUP_DOCKER_IMAGE="true"
-    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+    KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
   fi
 
   shout "Generate self-signed certificate"

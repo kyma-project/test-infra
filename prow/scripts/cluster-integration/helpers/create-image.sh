@@ -26,10 +26,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 function cleanup() {
   activateDefaultSa
-  sleep 1800
 }
 
-shout "Authenticate to SA with write access to GCR"
+shout "Authenticate as service account with write access to GCR"
 date
 trap cleanup EXIT
 authenticateSaGcr
