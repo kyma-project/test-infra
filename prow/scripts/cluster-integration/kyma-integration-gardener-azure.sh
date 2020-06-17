@@ -28,7 +28,6 @@ VARIABLES=(
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
     RS_GROUP
     REGION
-    EVENTHUB_NAMESPACE_NAME
     AZURE_SUBSCRIPTION_ID
     AZURE_SUBSCRIPTION_APP_ID
     AZURE_SUBSCRIPTION_SECRET
@@ -48,7 +47,6 @@ readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
 export RS_GROUP \
-    EVENTHUB_NAMESPACE_NAME \
     REGION \
     AZURE_SUBSCRIPTION_ID \
     AZURE_SUBSCRIPTION_APP_ID \
@@ -146,11 +144,14 @@ COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]"
 
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
-
+EVENTHUB_NAMESPACE_NAME=""
 # Local variables
 if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
     EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
+else
+    EVENTHUB_NAMESPACE_NAME="kyma-gardener-azure-${RANDOM_NAME_SUFFIX}"
 fi
+export EVENTHUB_NAMESPACE_NAME
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
