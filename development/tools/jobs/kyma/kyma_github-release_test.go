@@ -1,8 +1,9 @@
 package kyma_test
 
 import (
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"

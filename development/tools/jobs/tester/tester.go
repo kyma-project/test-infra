@@ -251,9 +251,10 @@ func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig
 func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, extraRefs []prowapi.Refs) {
 	t.Helper()
 	for _, ref := range extraRefs {
-		assert.Contains(t,in.ExtraRefs, ref, fmt.Sprintf("\"%s\" ExtraRef not found in job", ref.Repo))
+		assert.Contains(t, in.ExtraRefs, ref, fmt.Sprintf("\"%s\" ExtraRef not found in job", ref.Repo))
 	}
 }
+
 // AssertThatHasExtraRepoRef checks if UtilityConfig has repositories passed in argument defined
 func AssertThatHasExtraRepoRef(t *testing.T, in config.UtilityConfig, repositories []string) {
 	t.Helper()

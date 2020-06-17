@@ -5,8 +5,9 @@ import (
 
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/stretchr/testify/assert"
@@ -112,10 +113,10 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:            "kyma-incubator",
-			Repo:           "marketplaces",
-			BaseRef:        "master",
-			PathAlias:      "github.com/kyma-incubator/marketplaces",
+			Org:       "kyma-incubator",
+			Repo:      "marketplaces",
+			BaseRef:   "master",
+			PathAlias: "github.com/kyma-incubator/marketplaces",
 		},
 	})
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
