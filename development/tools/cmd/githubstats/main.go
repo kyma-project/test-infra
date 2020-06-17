@@ -17,11 +17,13 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// Issues DTO
 type Issues struct {
 	Open   IssuesStats
 	Closed IssuesStats
 }
 
+// IssuesStats DTO
 type IssuesStats struct {
 	TotalCount       int64
 	Bugs             int64
@@ -31,6 +33,7 @@ type IssuesStats struct {
 	TestMissing      int64
 }
 
+// Report represents output data
 type Report struct {
 	Issues     Issues
 	Type       string
@@ -39,6 +42,7 @@ type Report struct {
 	Timestamp  time.Time
 }
 
+// Config to keep command line parameters
 type Config struct {
 	GithubAccessToken string
 	GithubRepoOwner   string
@@ -54,7 +58,7 @@ var (
 		} `graphql:"repository(owner: $repositoryOwner, name: $repositoryName)"`
 	}
 
-	query_no_labels struct {
+	queryNoLabels struct {
 		Repository struct {
 			Issues struct {
 				TotalCount int64
@@ -88,16 +92,16 @@ func getStats(cfg Config) {
 
 	// Total count
 	variables["state"] = githubv4.IssueState("OPEN")
-	err := client.Query(ctx, &query_no_labels, variables)
+	err := client.Query(ctx, &queryNoLabels, variables)
 	fatalOnError(err, "while fetching number of open issues")
 
-	r.Issues.Open.TotalCount = query_no_labels.Repository.Issues.TotalCount
+	r.Issues.Open.TotalCount = queryNoLabels.Repository.Issues.TotalCount
 
 	variables["state"] = githubv4.IssueState("CLOSED")
-	err = client.Query(ctx, &query_no_labels, variables)
+	err = client.Query(ctx, &queryNoLabels, variables)
 	fatalOnError(err, "while fetching number of closed issues")
 
-	r.Issues.Closed.TotalCount = query_no_labels.Repository.Issues.TotalCount
+	r.Issues.Closed.TotalCount = queryNoLabels.Repository.Issues.TotalCount
 
 	// Closed
 	variables["labels"] = []githubv4.String{"bug"}
