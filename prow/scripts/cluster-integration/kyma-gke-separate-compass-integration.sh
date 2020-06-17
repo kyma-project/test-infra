@@ -240,6 +240,8 @@ function applyCompassOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
     --data "global.istio.gateway.name=kyma-gateway" \
     --data "global.istio.gateway.namespace=kyma-system" \
+    --data "global.connector.secrets.ca.name=connector-service-app-ca" \
+    --data "global.connector.secrets.ca.namespace=kyma-integration" \
     --label "component=compass"
   
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
