@@ -1,9 +1,8 @@
 package examples_test
 
 import (
-	"testing"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"testing"
 
 	"fmt"
 
