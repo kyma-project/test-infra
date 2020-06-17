@@ -6,10 +6,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/require"
 	v1 "k8s.io/api/core/v1"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
@@ -242,19 +244,26 @@ func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig
 	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s] sha", expectedBaseSHA))
 }
 
-// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
-func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories []string) {
-	for _, repository := range repositories {
-		for _, curr := range in.ExtraRefs {
-			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
-				curr.Org == "kyma-project" &&
-				curr.Repo == repository &&
-				curr.BaseRef == "master" {
-				return
-			}
-		}
-		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+// AssertThatHasExtraRef checks if UtilityConfig has ExtraRefs passed in argument defined
+func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, extraRefs []prowapi.Refs) {
+	t.Helper()
+	for _, ref := range extraRefs {
+		assert.Contains(t,in.ExtraRefs, ref, fmt.Sprintf("\"%s\" ExtraRef not found in job", ref.Repo))
 	}
+}
+// AssertThatHasExtraRepoRef checks if UtilityConfig has repositories passed in argument defined
+func AssertThatHasExtraRepoRef(t *testing.T, in config.UtilityConfig, repositories []string) {
+	t.Helper()
+	var extraRefs []prowapi.Refs
+	for _, repository := range repositories {
+		extraRefs = append(extraRefs, prowapi.Refs{
+			Org:       "kyma-project",
+			Repo:      repository,
+			BaseRef:   "master",
+			PathAlias: fmt.Sprintf("github.com/kyma-project/%s", repository),
+		})
+	}
+	AssertThatHasExtraRef(t, in, extraRefs)
 }
 
 // AssertThatHasPresets checks if JobBase has expected labels
