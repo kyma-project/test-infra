@@ -2,16 +2,25 @@
 
 #Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
 #
-#
 #Expected vars:
 #
+# - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
+# - DOCKER_PUSH_REPOSITORY - Docker repository hostname
+# - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
 # - GARDENER_REGION - Gardener compute region
 # - GARDENER_ZONES - Gardener compute zones inside the region
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
+# - RS_GROUP - azure resource group
+# - REGION - azure region
+# - EVENTHUB_NAMESPACE_NAME
+# - AZURE_SUBSCRIPTION_ID
+# - AZURE_SUBSCRIPTION_APP_ID
+# - AZURE_SUBSCRIPTION_SECRET
+# - AZURE_SUBSCRIPTION_TENANT
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
@@ -20,7 +29,10 @@ set -e
 discoverUnsetVar=false
 
 VARIABLES=(
+    JOB_TYPE
     KYMA_PROJECT_DIR
+    DOCKER_PUSH_REPOSITORY
+    DOCKER_PUSH_DIRECTORY
     GARDENER_REGION
     GARDENER_ZONES
     GARDENER_KYMA_PROW_KUBECONFIG
@@ -77,7 +89,7 @@ cleanup() {
         testSummary
         SUITE_EXIT_STATUS=$?
         if [[ ${EXIT_STATUS} -eq 0 ]]; then 
-                EXIT_STATUS=$SUITE_EXIT_STATUS
+            EXIT_STATUS=$SUITE_EXIT_STATUS
         fi
     fi 
 
@@ -102,6 +114,12 @@ cleanup() {
         shout "Deleting Azure Resource Group: \"${RS_GROUP}\""
         # Delete the Azure Resource Group
         az group delete -n "${RS_GROUP}" -y
+    fi
+
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
     fi
 
     rm -rf "${TMP_DIR}"
@@ -166,8 +184,8 @@ fi
 
 CLEANUP_CLUSTER="true"
 (
-set -x
-kyma provision gardener az \
+    set -x
+    kyma provision gardener az \
         --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
         --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
@@ -175,36 +193,36 @@ kyma provision gardener az \
         --kube-version=${GARDENER_CLUSTER_VERSION}
 )
 
-shout "Installing Kyma"
-date
-
-shout "Downloading Kyma installer CR"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
-    --output installer-cr-gardener-azure.yaml.tpl
-
-echo "Downlading production profile"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
-    --output installer-config-production.yaml.tpl
-
-shout "Downloading Azure EventHubs config"
-curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
-    --output installer-config-azure-eventhubs.yaml.tpl
-
 shout "Generate Azure Event Hubs overrides"
 date
 # shellcheck disable=SC1090
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
+if [[ "$JOB_TYPE" -eq "presubmit" ]]; then
+    shout "Build Kyma-Installer Docker image"
+    date
+    CLEANUP_DOCKER_IMAGE="true"
+    export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gardener-azure-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+else
+    KYMA_INSTALLER_IMAGE=latest-published
+fi
+
+shout "Installing Kyma"
+date
+
 (
-set -x
-kyma install \
-    --ci \
-    --source latest-published \
-    -o installer-cr-gardener-azure.yaml.tpl \
-    -o installer-config-production.yaml.tpl \
-    -o installer-config-azure-eventhubs.yaml.tpl \
-    --timeout 90m
+    set -x
+    INSTALLATION_RESOURCES_DIR=${KYMA_PROJECT_DIR}/installation/resources
+    kyma install \
+        --ci \
+        --source $KYMA_INSTALLER_IMAGE \
+        -o ${INSTALLATION_RESOURCES_DIR}/installer-cr-azure-eventhubs.yaml.tpl \
+        -o ${INSTALLATION_RESOURCES_DIR}/installer-config-production.yaml.tpl \
+        -o ${INSTALLATION_RESOURCES_DIR}/installer-config-azure-eventhubs.yaml.tpl \
+        --timeout 90m
 )
 
 shout "Checking the versions"
@@ -217,14 +235,14 @@ date
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
 (
-set -x
-kyma test run \
-    --name "${SUITE_NAME}" \
-    --concurrency "${CONCURRENCY}" \
-    --max-retries 1 \
-    --timeout 90m \
-    --watch \
-    --non-interactive
+    set -x
+    kyma test run \
+        --name "${SUITE_NAME}" \
+        --concurrency "${CONCURRENCY}" \
+        --max-retries 1 \
+        --timeout 90m \
+        --watch \
+        --non-interactive
 )
 
 shout "Tests completed"
