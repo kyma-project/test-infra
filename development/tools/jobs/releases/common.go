@@ -35,7 +35,7 @@ func GetKymaReleasesSince(firstRelease *SupportedRelease) []*SupportedRelease {
 	return supportedReleases
 }
 
-// GetKymaReleasesSince filters all available releases later or the same as the given one
+// GetKymaReleasesBetween filters all available releases later or the same as the given one
 func GetKymaReleasesBetween(firstRelease *SupportedRelease, lastRelease *SupportedRelease) []*SupportedRelease {
 	var supportedReleases []*SupportedRelease
 
@@ -54,10 +54,14 @@ func (r *SupportedRelease) Compare(other *SupportedRelease) int {
 	return (*semver.Version)(r).Compare((*semver.Version)(other))
 }
 
+// IsNotOlderThan compares releases and returns true if the release
+// is older than the one provided.
 func (r *SupportedRelease) IsNotOlderThan(other *SupportedRelease) bool {
 	return r.Compare(other) >= 0
 }
 
+// IsNotNewerThan compares releases and returns true if the release
+// is newer than the one provided.
 func (r *SupportedRelease) IsNotNewerThan(other *SupportedRelease) bool {
 	return r.Compare(other) <= 0
 }
@@ -82,6 +86,7 @@ func mustParse(v string) *SupportedRelease {
 	return &parsed
 }
 
+// ByVersion type is a list of supported releases
 type ByVersion []*SupportedRelease
 
 func (s ByVersion) Len() int {

@@ -8,7 +8,7 @@ const (
 	KindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// GcrPush means GCR push service account
 	GcrPush Preset = "preset-sa-gcr-push"
-	// DockerPushRepo means Docker repository
+	// DockerPushRepoKyma means Docker repository
 	DockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
 	// DockerPushRepoTestInfra means Docker repository test-infra images
 	DockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
@@ -24,7 +24,7 @@ const (
 	BuildArtifactsMaster Preset = "preset-build-artifacts-master"
 	// BuildConsoleMaster means console master environment
 	BuildConsoleMaster Preset = "preset-build-console-master"
-	// BuildConsoleMaster means console PR environment
+	// BuildConsolePr means console PR environment
 	BuildConsolePr Preset = "preset-build-console-pr"
 	// BuildRelease means release environment
 	BuildRelease Preset = "preset-build-release"
@@ -46,7 +46,7 @@ const (
 	GardenerAzureIntegration Preset = "preset-gardener-azure-kyma-integration"
 	// GardenerGCPIntegration contains all necessary configuration to deploy on gardener GCP from prow
 	GardenerGCPIntegration Preset = "preset-gardener-gcp-kyma-integration"
-	// GardenerGCPIntegration contains all necessary configuration to deploy on gardener GCP from prow
+	// GardenerAWSIntegration contains all necessary configuration to deploy on gardener GCP from prow
 	GardenerAWSIntegration Preset = "preset-gardener-aws-kyma-integration"
 	// KymaCLIStable contains all the configuraion to be able to download the stable master kyma CLI binary
 	KymaCLIStable Preset = "preset-kyma-cli-stable"

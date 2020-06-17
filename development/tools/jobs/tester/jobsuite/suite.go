@@ -8,17 +8,20 @@ import (
 	"testing"
 )
 
+// Suite interface implements Run function
 type Suite interface {
 	Run(t *testing.T)
 }
 
+// JobConfigPathProvider interface provides function to provide JobConfigPath
 type JobConfigPathProvider interface {
 	JobConfigPath() string
 }
 
+// CheckFilesAreTested function
 func CheckFilesAreTested(repos map[string]struct{}, testedConfigurations map[string]struct{}, jobBasePath, subfolder string) func(t *testing.T) {
 	return func(t *testing.T) {
-		for repo, _ := range repos {
+		for repo := range repos {
 			folderToCheck := path.Join(jobBasePath, path.Base(repo), subfolder)
 			err := filepath.Walk(folderToCheck,
 				func(fp string, info os.FileInfo, err error) error {
@@ -32,7 +35,7 @@ func CheckFilesAreTested(repos map[string]struct{}, testedConfigurations map[str
 						return nil
 					}
 
-					if ! strings.Contains(path.Base(fp), "generic") {
+					if !strings.Contains(path.Base(fp), "generic") {
 						return nil
 					}
 
