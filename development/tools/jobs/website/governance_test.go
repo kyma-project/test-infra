@@ -56,7 +56,7 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
-	tester.AssertThatHasExtraRefs(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "website"})
+	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "website"})
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{tester.GovernanceScriptDir}, actualPeriodic.Spec.Containers[0].Command)
 	repositoryDirArg := fmt.Sprintf("%s/website", tester.KymaProjectDir)
