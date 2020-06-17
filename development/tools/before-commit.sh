@@ -73,6 +73,7 @@ fi
 golintResult=$("${GOPATH}"/bin/golint "${DIRS_TO_CHECK[@]}")
 if [ "${#golintResult}" != 0 ]; then
   echo -e "${RED}✗ golint\n$golintResult${NC}"
+  exit 1
 else
   echo -e "${GREEN}√ golint${NC}"
 fi
