@@ -8,7 +8,7 @@ var (
 {{- end }}
 )
 
-// GetAllKymaReleaseBranches returns all supported kyma release branches
+// GetAllKymaReleases returns all supported kyma release branches
 func GetAllKymaReleases() []*SupportedRelease {
 	return []*SupportedRelease{
 {{- range .Global.releases }}

@@ -7,24 +7,25 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"k8s.io/test-infra/prow/config"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
 )
 
-// Designed to check validity of jobs generated from /templates/templates/generic-component.yaml
+// GenericComponentSuite is designed to check validity of jobs generated from /templates/templates/generic-component.yaml
 type GenericComponentSuite struct {
 	*jobsuite.Config
 }
 
+// NewGenericComponentSuite returns GenericComponentSuite
 func NewGenericComponentSuite(config *jobsuite.Config) jobsuite.Suite {
 	return &GenericComponentSuite{config}
 }
 
+// Run runs tests on a ComponentSuite
 func (s GenericComponentSuite) Run(t *testing.T) {
 	s.testRunAgainstAnyBranch(t)
 
@@ -99,6 +100,7 @@ func (s GenericComponentSuite) repositoryName() string {
 	return path.Base(s.Repository)
 }
 
+// JobConfigPath returns path to job config
 func (s GenericComponentSuite) JobConfigPath() string {
 	// Components outside kyma-project need this switch, because generic job will create for example:
 	// Repository = github.com/kyma-incubator/compass,

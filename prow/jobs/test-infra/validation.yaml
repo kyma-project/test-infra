@@ -54,7 +54,7 @@ presubmits:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-test-infra-validate-prowjobs
+    - name: pre-master-test-infra-validate-prow-jobs
       run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
       optional: true
       branches:

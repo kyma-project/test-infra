@@ -4,14 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
-
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 func TestDocumentationComponentJobPresubmit(t *testing.T) {
@@ -93,10 +90,10 @@ func TestGovernanceJobPeriodic(t *testing.T) {
 	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
 	tester.AssertThatHasExtraRef(t, actualPeriodic.JobBase.UtilityConfig, []prowapi.Refs{
 		{
-			Org:            "kyma-incubator",
-			Repo:           "documentation-component",
-			BaseRef:        "master",
-			PathAlias:      "github.com/kyma-incubator/documentation-component",
+			Org:       "kyma-incubator",
+			Repo:      "documentation-component",
+			BaseRef:   "master",
+			PathAlias: "github.com/kyma-incubator/documentation-component",
 		},
 	})
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)

@@ -6,24 +6,25 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"k8s.io/test-infra/prow/config"
-
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"k8s.io/test-infra/prow/config"
 )
 
-// Designed to check validity of jobs generated from /templates/templates/component.yaml
+// ComponentSuite is designed to check validity of jobs generated from /templates/templates/component.yaml
 type ComponentSuite struct {
 	*jobsuite.Config
 }
 
+// NewComponentSuite returns new ComponentSuite
 func NewComponentSuite(config *jobsuite.Config) jobsuite.Suite {
 	return &ComponentSuite{config}
 }
 
+// Run runs tests on a ComponentSuite
 func (s ComponentSuite) Run(t *testing.T) {
 	jobConfig, err := ReadJobConfig(s.JobConfigPath())
 	require.NoError(t, err)
@@ -170,6 +171,7 @@ func (s ComponentSuite) moduleName() string {
 	return fmt.Sprintf("%s-%s", s.repositoryName(), strings.Replace(s.Path, "/", "-", -1))
 }
 
+// JobConfigPath returns path to job config
 func (s ComponentSuite) JobConfigPath() string {
 	return fmt.Sprintf("./../../../../prow/jobs/%s/%s/%s%s.yaml", s.repositoryName(), s.Path, s.componentName(), s.JobsFileSuffix)
 }
