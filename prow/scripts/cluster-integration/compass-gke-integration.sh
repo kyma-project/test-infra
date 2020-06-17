@@ -18,6 +18,8 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export COMPASS_SOURCES_DIR="/home/prow/go/src/github.com/kyma-incubator/compass"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
+readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -181,7 +183,7 @@ function createCluster() {
 }
 
 function applyKymaOverrides() {
- "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
     --data "application-operator.tests.enabled=false" \
     --data "tests.application_connector_tests.enabled=false" \
     --data "application-registry.tests.enabled=false" \
@@ -209,6 +211,21 @@ function applyKymaOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "api-gateway-overrides" \
+    --data "tests.env.gatewayName=compass-istio-gateway" \
+    --data "tests.env.gatewayNamespace=compass-system" \
+    --label "component=api-gateway"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
+    --data "global.istio.gateway.name=compass-istio-gateway" \
+    --data "global.istio.gateway.namespace=compass-system" \
+    --label "component=dex"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "ory-overrides" \
+    --data "global.istio.gateway.name=compass-istio-gateway" \
+    --data "global.istio.gateway.namespace=compass-system" \
+    --label "component=ory"
 }
 
 function applyCompassOverrides() {
@@ -251,6 +268,12 @@ function applyCommonOverrides() {
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "cluster-certificate-overrides" \
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "global-ingress-overrides" \
+    --data "global.ingress.domainName=${DOMAIN}" \
+    --data "global.ingress.tlsCrt=${TLS_CERT}" \
+    --data "global.ingress.tlsKey=${TLS_KEY}" \
+    --data "global.environment.gardener=false"
 }
 
 function installKyma() {
@@ -258,18 +281,23 @@ function installKyma() {
   applyCommonOverrides "kyma-installer"
   applyKymaOverrides
 
-  echo "Use Kyma artifacts from KYMA_VERSION file"
-  readonly KYMA_VERSION=$(cat "${COMPASS_RESOURCES_DIR}/KYMA_VERSION")
-  readonly KYMA_ARTIFACTS="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${KYMA_VERSION}"
+  if [[ "$BUILD_TYPE" == "pr" ]]; then
+    COMPASS_VERSION="PR-${PULL_NUMBER}"
+  else
+    COMPASS_VERSION="master-${COMMIT_ID}"
+  fi
+  readonly COMPASS_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${COMPASS_VERSION}"
+  
   readonly TMP_DIR="/tmp/compass-gke-integration"
-  gsutil cp "${KYMA_ARTIFACTS}/kyma-installer-cluster-compass-dependencies.yaml" ${TMP_DIR}/kyma-installer-cluster-compass-dependencies.yaml
-  gsutil cp "${KYMA_ARTIFACTS}/is-installed.sh" ${TMP_DIR}/is-installed.sh
-  chmod +x ${TMP_DIR}/is-installed.sh
-	kubectl apply -f ${TMP_DIR}/kyma-installer-cluster-compass-dependencies.yaml
+
+  gsutil cp "${COMPASS_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
+  gsutil cp "${COMPASS_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
+  chmod +x ${TMP_DIR}/is-kyma-installed.sh
+  kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
   shout "Installation triggered"
   date
-  "${TMP_DIR}"/is-installed.sh --timeout 30m
+  "${TMP_DIR}"/is-kyma-installed.sh --timeout 30m
 }
 
 function installCompass() {
