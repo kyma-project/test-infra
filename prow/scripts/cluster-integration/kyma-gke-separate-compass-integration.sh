@@ -335,7 +335,8 @@ installCompass() {
   readonly COMPASS_TMP_DIR="/tmp/compass-gke-integration"
   gsutil cp "${COMPASS_MASTER_ARTIFACTS}/compass-installer.yaml" ${COMPASS_TMP_DIR}/compass-installer.yaml
   gsutil cp "${COMPASS_MASTER_ARTIFACTS}/is-installed.sh" ${COMPASS_TMP_DIR}/is-installed.sh
-	kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
+  chmod +x ${COMPASS_TMP_DIR}/is-installed.sh
+  kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
 
   shout "Installation triggered"
   date
