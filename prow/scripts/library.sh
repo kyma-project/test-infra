@@ -41,23 +41,14 @@ function authenticate() {
 
 }
 
-function authenticateSaGcr() {
-    echo "Authenticating"
-    gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
-
-}
-
-function activateDefaultSa() {
-    client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
-    echo "Activating  account $client_email"
-    gcloud config set account "${client_email}" || exit 1
-
-}
-
 function authenticateDocker() {
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+      client_email=$(jq -r '.client_email' < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}")
+      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
       docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
     else
+      client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
+      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
       docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
 
