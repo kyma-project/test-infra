@@ -79,10 +79,14 @@ authenticate
 
 shout "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
+gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer.yaml"
 gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
+gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-kyma-installed.sh"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
   shout "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
+  gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-kyma-installed.sh"
   gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
+  gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer.yaml"
 fi
