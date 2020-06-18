@@ -24,6 +24,7 @@ function export_variables() {
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
         shout "Execute Job Guard for Release jobs"
+        export TIMEOUT="75min"
         export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$)"
         "${SCRIPT_DIR}/../../development/tools/cmd/jobguard/run.sh"
         # TODO: Improve this part

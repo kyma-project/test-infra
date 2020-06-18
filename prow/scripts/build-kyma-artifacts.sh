@@ -14,6 +14,7 @@ source "${SCRIPT_DIR}/library.sh"
     
 if [[ "${BUILD_TYPE}" == "release" ]]; then
    shout "Execute Job Guard for Release jobs"
+   export TIMEOUT="100min"
    export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$ | ^pre-rel\\d\\d\\d-kyma-installer$)"
    "${SCRIPT_DIR}/../../development/tools/cmd/jobguard/run.sh"
 fi
