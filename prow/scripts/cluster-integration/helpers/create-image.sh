@@ -24,15 +24,6 @@ fi
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-function cleanup() {
-  activateDefaultSa
-}
-
-shout "Authenticate as service account with write access to GCR"
-date
-trap cleanup EXIT
-authenticateSaGcr
-
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
 echo "--------------------------------------------------------------------------------"
