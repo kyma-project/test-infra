@@ -111,7 +111,7 @@ spec:
             value: "{{ .Chart.Name }}-test-results"
           - name: APP_PATH_TO_TESTING_SCRIPT
             value: "{{ .Values.pathToTestingScript }}"
-          - name: APP_ _CLIENT_CHANNEL_ID
+          - name: APP_SLACK_CLIENT_CHANNEL_ID
             value: "{{ .Values.slackClientChannelId }}"
           - name: APP_SLACK_CLIENT_WEBHOOK_URL
             value: "{{ .Values.slackClientWebhookUrl }}"
