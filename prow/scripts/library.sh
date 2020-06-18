@@ -45,11 +45,13 @@ function authenticateDocker() {
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       client_email=$(jq -r '.client_email' < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}")
       echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
-      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
-    else
+      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+    elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]];then
       client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
       echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
-      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GOOGLE_APPLICATION_CREDENTIALS}"
+      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+    else
+      echo "Skipping docker authnetication in registry. No credentials provided."
     fi
 
 }
