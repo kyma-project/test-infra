@@ -11,7 +11,7 @@
 
 set -o errexit
 
-for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
+for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT TEST_INFRA_SOURCES_DIR GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -20,6 +20,9 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
