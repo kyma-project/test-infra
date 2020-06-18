@@ -160,7 +160,6 @@ function upgradeKyma() {
     kyma install \
         --ci \
         --source latest-published \
-        -o installer-cr-gardener-azure.yaml.tpl \
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
         --timeout 90m
@@ -261,7 +260,6 @@ set -x
 kyma install \
     --ci \
     --source "${RELEASE_VERSION}" \
-    -o installer-cr-gardener-azure.yaml.tpl \
     -o installer-config-production.yaml.tpl \
     -o installer-config-azure-eventhubs.yaml.tpl \
     --timeout 90m
