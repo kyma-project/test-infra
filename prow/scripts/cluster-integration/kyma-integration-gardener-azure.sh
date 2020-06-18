@@ -67,9 +67,10 @@ export RS_GROUP \
     AZURE_SUBSCRIPTION_SECRET \
     AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
+TMP_DIR=$(mktemp -d)
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -77,12 +78,14 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+set -o
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
     #Turn off exit-on-error so that next step is executed even if previous one fails.
+    shout "Cleanup"
     set +e
 
     if [[ -n "${SUITE_NAME}" ]]; then
@@ -196,6 +199,7 @@ CLEANUP_CLUSTER="true"
 shout "Generate Azure Event Hubs overrides"
 date
 # shellcheck disable=SC1090
+export EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 

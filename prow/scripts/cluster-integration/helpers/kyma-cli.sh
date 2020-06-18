@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 install::kyma_cli() {
+    local settings="$(set +o); set -$-"
+    set -u
     mkdir -p "${INSTALL_DIR}/bin"
     export PATH="${INSTALL_DIR}/bin:${PATH}"
     os=$(host::os)
@@ -15,6 +17,8 @@ install::kyma_cli() {
     log::success "OK"
 
     popd
+
+    eval "${settings}"
 }
 
 host::os() {
