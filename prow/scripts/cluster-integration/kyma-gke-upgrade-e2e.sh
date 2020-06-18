@@ -345,7 +345,6 @@ function installTestChartOrFail() {
   local path=$1
   local name=$2
   local namespace=$3
-  local label=$4
 
   shout "Create ${name} resources"
   date
@@ -367,6 +366,12 @@ function installTestChartOrFail() {
       echo "Helm install ${name} operation failed: ${prepareResult}"
       exit "${prepareResult}"
   fi
+}
+
+function waitForTestPodToFinish() {
+  local name=$1
+  local namespace=$2
+  local label=$3
 
   set +o errexit
   checkTestPodTerminated "${namespace}"
@@ -385,8 +390,10 @@ function installTestChartOrFail() {
 createTestResources() {
     injectTestingAddons
 
-    installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
-    installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
+    installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
+    installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
+    waitForTestPodToFinish "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
+    waitForTestPodToFinish "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
 }
 
 function upgradeKyma() {
