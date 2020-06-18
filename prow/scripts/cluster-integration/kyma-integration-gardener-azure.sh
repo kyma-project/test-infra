@@ -198,12 +198,14 @@ CLEANUP_CLUSTER="true"
 
 shout "Generate Azure Event Hubs overrides"
 date
-# shellcheck disable=SC1090
-export EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
+
+EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
+export EVENTHUB_SECRET_OVERRIDE_FILE
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
-if [[ "$JOB_TYPE" -eq "presubmit" ]]; then
+if [[ "$JOB_TYPE" == "presubmit" ]]; then
     shout "Build Kyma-Installer Docker image"
     date
     CLEANUP_DOCKER_IMAGE="true"
@@ -223,9 +225,9 @@ date
     kyma install \
         --ci \
         --source $KYMA_INSTALLER_IMAGE \
-        -o ${INSTALLATION_RESOURCES_DIR}/installer-cr-azure-eventhubs.yaml.tpl \
-        -o ${INSTALLATION_RESOURCES_DIR}/installer-config-production.yaml.tpl \
-        -o ${INSTALLATION_RESOURCES_DIR}/installer-config-azure-eventhubs.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
         --timeout 90m
 )
 

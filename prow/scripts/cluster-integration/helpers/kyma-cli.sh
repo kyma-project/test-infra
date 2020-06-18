@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 install::kyma_cli() {
-    local settings="$(set +o); set -$-"
+    local settings
+    settings="$(set +o); set -$-"
     set -u
     mkdir -p "${INSTALL_DIR}/bin"
     export PATH="${INSTALL_DIR}/bin:${PATH}"
