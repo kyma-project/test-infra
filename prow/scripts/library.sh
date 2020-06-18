@@ -31,7 +31,7 @@ function start_docker() {
     done
     printf '=%.0s' {1..80}; echo
 
-    docker-credential-gcr configure-docker
+    authenticateDocker
     echo "Done setting up docker in docker."
 }
 
@@ -42,9 +42,16 @@ function authenticate() {
 }
 
 function authenticateDocker() {
-    shout "Authenticating on docker registry ${DOCKER_REGISTRY}"
+    if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+      client_email=$(jq -r '.client_email' < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}")
+      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
+      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+    else
+      client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
+      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
+      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${GOOGLE_APPLICATION_CREDENTIALS}"
+    fi
 
-    gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://"${DOCKER_REGISTRY}"
 }
 
 function configure_git() {
@@ -84,10 +91,6 @@ function init() {
     if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then
         start_docker
     fi
-
-	if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]] && [[ "${PERFORMACE_CLUSTER_SETUP}" == "true" ]]; then
-	    authenticateDocker
-	fi
 
     if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
         configure_git

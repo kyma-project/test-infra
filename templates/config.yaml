@@ -625,6 +625,11 @@ templates:
       - to: ../prow/jobs/kyma/kyma-gke-separate-compass-integration.yaml
         values:
           since: "1.13"
+  - from: templates/compass-gke-integration.yaml
+    render:
+      - to: ../prow/jobs/incubator/compass/compass-gke-integration.yaml
+        values:
+          since: "1.13"
   - from: templates/kyma-release-candidate.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-release-candidate.yaml

@@ -100,8 +100,6 @@ gardener_azure_job_template: &gardener_azure_job_template
             value: "kyma-gardener-azure"
           - name: REGION
             value: "northeurope"
-          - name: EVENTHUB_NAMESPACE_NAME
-            value: "kyma-gardener-azure"
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION

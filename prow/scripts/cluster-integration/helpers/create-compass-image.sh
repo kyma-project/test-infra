@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-#Description: Builds Kyma-Installer image from Kyma sources and pushes it to the repository
+#Description: Builds Compass-Installer image from Compass sources and pushes it to the repository
 #
 #Expected vars:
-# - KYMA_SOURCES_DIR: directory with Kyma sources to build Kyma-Installer image
-# - KYMA_INSTALLER_IMAGE: Full image name (with tag)
-# - CLOUDSDK_CORE_PROJECT: GCloud Project name, used for KYMA_INSTALLER_IMAGE validation
+# - COMPASS_SOURCES_DIR: directory with Compass sources to build Compass-Installer image
+# - COMPASS_INSTALLER_IMAGE: Full image name (with tag)
+# - CLOUDSDK_CORE_PROJECT: GCloud Project name, used for COMPASS_INSTALLER_IMAGE validation
 #
 #Permissions: In order to run this script you need to use a service account with "Storage Admin" role
 
 set -o errexit
 
-for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT TEST_INFRA_SOURCES_DIR GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
+for var in COMPASS_SOURCES_DIR COMPASS_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -21,20 +21,17 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
 echo "--------------------------------------------------------------------------------"
-echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"
+echo "Building Compass-Installer image: ${COMPASS_INSTALLER_IMAGE}"
 echo "--------------------------------------------------------------------------------"
 echo
-docker build "${KYMA_SOURCES_DIR}" -f "${KYMA_SOURCES_DIR}"/tools/kyma-installer/kyma.Dockerfile -t "${KYMA_INSTALLER_IMAGE}"
+docker build "${COMPASS_SOURCES_DIR}" -f "${COMPASS_SOURCES_DIR}"/tools/compass-installer/compass.Dockerfile -t "${COMPASS_INSTALLER_IMAGE}"
 
 echo "--------------------------------------------------------------------------------"
-echo "pushing Kyma-Installer image"
+echo "pushing Compass-Installer image"
 echo "--------------------------------------------------------------------------------"
 echo
-docker push "${KYMA_INSTALLER_IMAGE}"
+docker push "${COMPASS_INSTALLER_IMAGE}"
 echo "--------------------------------------------------------------------------------"
-echo "Kyma-Installer image pushed: ${KYMA_INSTALLER_IMAGE}"
+echo "Compass-Installer image pushed: ${COMPASS_INSTALLER_IMAGE}"
 echo "--------------------------------------------------------------------------------"

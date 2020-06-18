@@ -319,6 +319,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
+  preset-sa-test-gcr-push: "true"
   preset-docker-push-repository-gke-integration: "true"
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
