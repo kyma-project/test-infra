@@ -41,6 +41,23 @@ function authenticate() {
 
 }
 
+function authenticateSaGcr() {
+    echo "Authenticating"
+    if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
+      gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+    else
+      echo "No GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
+    fi
+
+}
+
+function activateDefaultSa() {
+    client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
+    echo "Activating account $client_email"
+    gcloud config set account "${client_email}" || exit 1
+
+}
+
 function authenticateDocker() {
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       client_email=$(jq -r '.client_email' < "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}")

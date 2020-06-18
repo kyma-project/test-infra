@@ -10,7 +10,7 @@
 
 set -o errexit
 
-for var in KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
+for var in KYMA_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -19,6 +19,15 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+function cleanup() {
+  activateDefaultSa
+}
+
+shout "Authenticate as service account with write access to GCR"
+date
+trap cleanup EXIT
+authenticateSaGcr
 
 gcloud container images delete "${KYMA_INSTALLER_IMAGE}"
 
