@@ -11,6 +11,13 @@ set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
+    
+if [[ "${BUILD_TYPE}" == "release" ]]; then
+   shout "Execute Job Guard for Release jobs"
+   export TIMEOUT="100m"
+   export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$ | ^pre-rel\\d\\d\\d-kyma-installer$)"
+   "${SCRIPT_DIR}/../../development/jobguard/scripts/run.sh"
+fi
 
 function export_variables() {
    DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
