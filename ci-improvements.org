@@ -59,4 +59,4 @@ and provide documentation to setup your own environment to do this
 test if jobs are allowed to do things (use a certain secret, access a certain docker repository)
 
 ** Make on long term the CI/CD a part of our Kyma offering. 
-If someone will built a product based on Kyma, he will also want to use first our CI/CD. The target user (persona) of the new CI/CD should be not only the developer of Kyma but also the developer of a Kyma based app.
+If someone will build a product based on Kyma, he will also want to use first our CI/CD. The target user (persona) of the new CI/CD should be not only the developer of Kyma but also the developer of a Kyma based app.
