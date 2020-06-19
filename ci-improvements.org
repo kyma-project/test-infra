@@ -1,0 +1,59 @@
+CI Improvements -*- mode: org -*-
+
+* current problems
+** shell scripts
+*** no code guidelines
+
+snake case, camel case, chaos case. GLOBAL Variables, local variables ....
+libraries can be sourced, and they can be executed
+`function` as keyword for functions, sometimes without
+short shell options, long options mixup
+
+*** multiple "libraries"
+
+we have libraries with basically the same code, but in different locations
+
+*** not every kyma developer is good at shell
+
+... and that is ok. But we should not force them into a field where they might feel not really confident
+
+** development really hard
+*** almost impossible to execute locally
+
+jobs currently rely on a base image, multiple repositories, some secrets. The effort to set this up on your local machine is high. We should enable developers to run jobs locally as easy as possible.
+*** scripts located in test-infra need to be merged before they are used in jobs
+
+the problem here is, that usually you implement a feature in a PR. If the PR fails, you can update it with the fixed code. As scripts are only ever used from "master" you need to merge your pr before youre changes can be tested using another PR (this time usually a dummy pr on kyma that executes the job)
+
+** functionality exists multiple times (go, shell)
+
+sometimes functionality has been developed in go, and in shell (im looking at you azure secret generation)
+
+** job tests incomplete
+our tests do not prevent misconfiguration, but they test, that the configuration is as the author expected it to be.
+
+
+* Requirements
+** easy development cycle
+*** job scripts (or binaries ...) should not live in the test-infra repository, but in the same repository as the code they are testing
+
+this could fix the multiple PR issue
+
+*** scripts should be locally executable and testable (locally means the script can be started on your local machine, but might require external resources)
+
+and provide documentation to setup your own environment to do this
+
+** chose a different language than shell if possible
+
+*** requirements:
++ proper test frameworks exist
++ easy to execute shell commands
++ ideally: lightweight
+
+
+*** potential candidates
++ python (batteries included)
++ golang (kyma developers have experience)
+
+** test for misconfiguration in job configs
+test if jobs are allowed to do things (use a certain secret, access a certain docker repository)
