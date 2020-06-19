@@ -442,8 +442,6 @@ presubmits: # runs on PRs
           base_ref: master
 
     - name: pre-master-kyma-gke-upgrade-e2e
-      optional: true
-      always_run: false
       branches:
         - ^master$
       <<: *gke_upgrade_e2e_job_template
@@ -606,8 +604,6 @@ postsubmits:
           base_ref: master
 
     - name: post-master-kyma-gke-upgrade-e2e
-      optional: true
-      always_run: false
       <<: *gke_upgrade_e2e_job_template
       annotations:
         testgrid-dashboards: kyma-postsubmit
