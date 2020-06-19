@@ -15,7 +15,7 @@ source "${SCRIPT_DIR}/library.sh"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
-    "${TEST_INFRA_SOURCES_DIR}development/jobguard/scripts/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {

@@ -118,7 +118,7 @@ trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}development/jobguard/scripts/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
    shout "Execute Job Guard for Release jobs"
    export TIMEOUT="75m"

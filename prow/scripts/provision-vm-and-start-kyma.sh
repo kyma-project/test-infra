@@ -13,7 +13,7 @@ source "${SCRIPT_DIR}/library.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}development/jobguard/scripts/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {
