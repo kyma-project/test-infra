@@ -1,16 +1,15 @@
-# Image Syncer
+# image-syncer
 
 ## Overview
 
-Image Syncer is used to **safely** copy container images from one registry to another. 
-The main use-case is to preserve images from third party registries in our own registry that we can relay on.
+ image-syncer is used to **safely** copy container images from one registry to another. 
+The main use case is to preserve images from third party registries in our own registry that we can rely on.
 
 Syncing process steps:
-- pull image from source
-- check if image exists in target
-- if it does not exist - re-tag image and push to target registry
-- if it exists compare IDs - if they are different synchronisation is interrupted, 
-it means that something is wrong - source image was changed (that should not happen)
+1. Pull image from source.
+2. Check if image exists in target.
+3a. If image does not exist: re-tag image and push to target registry.
+3b. If image exists: compare IDs. If they are different, synchronization is interrupted. It means that something is wrong and the source image was changed (this should not happen).
 
 These steps guarantee that images in our registry are immutable.
 
@@ -19,14 +18,14 @@ These steps guarantee that images in our registry are immutable.
 To run it, use:
 ```bash
 go run main.go \ 
-    --images-file={path to a yaml file containing sync definition} \
-    --target-key-file={path to a json key file} \
+    --images-file={PATH_TO_A_YAML_FILE_CONTAINING_SYNC_DEFINITION} \
+    --target-key-file={PATH_TO_A_JSON_KEY_FILE} \
     --dry-run=true
 ```
 
-***Defintion file***
+### Definition file
 
-Image syncer as an input parameter takes a file containing following structure: 
+image-syncer as an input parameter takes a file having the following structure: 
 
 ```yaml
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
@@ -58,6 +57,6 @@ All flags can also be set using these environment variables:
 
 | Name                           | Required | Description                                                           |
 | :----------------------------- | :------: | :-------------------------------------------------------------------- |
-| **SYNCER_IMAGES_FILE**         |    Yes   | The string value with a path to yaml file with sync definition.       |
-| **SYNCER_TARGET_KEY_FILE**     |    Yes   | The string value with a path to json key file.                        |
-| **SYNCER_DRY_RUN**             |    No    | The boolean value controlling the `dry run` mode.                     |
+| **SYNCER_IMAGES_FILE**         |    Yes   | Path to the YAML file with the sync definition, provided as a string.       |
+| **SYNCER_TARGET_KEY_FILE**     |    Yes   | Path to the JSON key file, provided as a string.                        |
+| **SYNCER_DRY_RUN**             |    No    | Value controlling the `dry run` mode, provided as a boolean.                     |
