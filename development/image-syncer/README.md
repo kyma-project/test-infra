@@ -2,20 +2,20 @@
 
 ## Overview
 
- image-syncer is used to **safely** copy container images from one registry to another. 
+image-syncer is used to **safely** copy container images from one registry to another. 
 The main use case is to preserve images from third party registries in our own registry that we can rely on.
 
 Syncing process steps:
 1. Pull image from source.
 2. Check if image exists in target.
-3a. If image does not exist: re-tag image and push to target registry.
-3b. If image exists: compare IDs. If they are different, synchronization is interrupted. It means that something is wrong and the source image was changed (this should not happen).
+3. If image does not exist: re-tag image and push to target registry.  
+If image exists: compare IDs. If they are different, synchronization is interrupted. It means that something is wrong and the source image was changed (this should not happen).
 
 These steps guarantee that images in our registry are immutable.
 
 ## Usage
 
-To run it, use:
+To run image-syncer, use:
 ```bash
 go run main.go \ 
     --images-file={PATH_TO_A_YAML_FILE_CONTAINING_SYNC_DEFINITION} \
@@ -25,7 +25,7 @@ go run main.go \
 
 ### Definition file
 
-image-syncer as an input parameter takes a file having the following structure: 
+image-syncer takes as an input parameter a file having the following structure: 
 
 ```yaml
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
