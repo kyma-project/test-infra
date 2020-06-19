@@ -26,7 +26,7 @@ function export_variables() {
         shout "Execute Job Guard for Release jobs"
         export TIMEOUT="75m"
         export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$)"
-        "${SCRIPT_DIR}/../../development/tools/cmd/jobguard/run.sh"
+        "${SCRIPT_DIR}/../../development/jobguard/scripts/run.sh"
         # TODO: Improve this part
         if [[ ( "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ) || "${REPO_OWNER}" == "kyma-incubator" && "${REPO_NAME}" == "compass" ]]; then
             DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
