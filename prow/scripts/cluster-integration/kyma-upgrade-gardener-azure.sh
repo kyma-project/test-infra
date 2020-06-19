@@ -56,9 +56,16 @@ export RS_GROUP \
     AZURE_SUBSCRIPTION_TENANT
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
-
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
+export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
+export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
+export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
+export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
+export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
+export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
+export TEST_CONTAINER_NAME="tests"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
