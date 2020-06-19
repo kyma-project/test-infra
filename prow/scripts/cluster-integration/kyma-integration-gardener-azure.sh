@@ -228,7 +228,7 @@ date
     kyma install \
         --ci \
         --source $KYMA_INSTALLER_IMAGE \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+        -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
         -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
         -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
         --timeout 90m
