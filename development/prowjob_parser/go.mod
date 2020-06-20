@@ -13,5 +13,5 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.0.0
-	k8s.io/test-infra v0.0.0-20200619155958-19b0ee30b305
+	k8s.io/test-infra v0.0.0-20200320172837-fbc86f22b087
 )

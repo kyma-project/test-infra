@@ -72,7 +72,7 @@ func findPostsubmits(postsubmits []config.Postsubmit) {
 	}
 }
 
-func findPeridics(periodics []config.Periodic) {
+func findPeriodics(periodics []config.Periodic) {
 	for _, job := range periodics {
 		matchLabels(job.JobBase)
 	}
@@ -85,7 +85,7 @@ func findProwjobs() error {
 	}
 	findPresubmits(prowCfg.JobConfig.AllStaticPresubmits([]string{}))
 	findPostsubmits(prowCfg.JobConfig.AllStaticPostsubmits([]string{}))
-	findPeridics(prowCfg.JobConfig.AllPeriodics())
+	findPeriodics(prowCfg.JobConfig.AllPeriodics())
 
 	return nil
 }
