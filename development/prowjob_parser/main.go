@@ -108,7 +108,7 @@ func main() {
 
 	rootCmd.PersistentFlags().StringVarP(&runCfg.configPath, "configpath", "c", "", "Path to yaml file containing prow configuration.")
 	rootCmd.PersistentFlags().StringVarP(&runCfg.jobPath, "jobpath", "j", "", "Path to directory containing yaml files with prowjobs definitions.")
-	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.includePreset, "includepreset", "i", []string{}, "Prowjobs with this preset added will be included in output.")
+	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.includePreset, "includepreset", "i", []string{}, "Prowjobs must contain this preset to be included in output.")
 	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.excludePreset, "excludepreset", "e", []string{}, "Prowjobs with this preset added will be excluded from output.")
 
 	rootCmd.MarkPersistentFlagRequired("configpath")
