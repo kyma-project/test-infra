@@ -86,6 +86,7 @@ gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-kyma-cli-stable: "true"
   preset-creds-aks-kyma-integration: "true"
   preset-dind-enabled: "true"
+  preset-sa-kyma-artifacts: "true"
 
 gardener_azure_job_template: &gardener_azure_job_template
   decorate: true
