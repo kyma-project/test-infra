@@ -11,7 +11,7 @@ BUCKET_OBJECT_WORKERS_NUMBER=10
 LOG_LEVEL=info
 
 /prow-tools/gcscleaner "assetstore GCP buckets" \
-      -bucketNameRegexp  "${BUCKET_REGEXP_NAME}"\
+      -bucketNameRegexp "${BUCKET_REGEXP_NAME}"\
       -excludedBuckets "${EXCLUDED_BUCKETS}"\
       -workerNumber "${BUCKET_OBJECT_WORKERS_NUMBER}"\
       -logLevel "${LOG_LEVEL}" "$@"
