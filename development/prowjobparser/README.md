@@ -2,7 +2,7 @@
 
 ## Overview
 
-Prowjobparser is a helper tool which parse all prowjobs under provided path, match them against provided labels filters and print matching prowjob names to stdout.
+The prowjobparser is a helper tool which parses all ProwJobs under the provided path, matches them against the provided label filters, and prints matching ProwJob names to the standard output.
 
 ## Usage
 
