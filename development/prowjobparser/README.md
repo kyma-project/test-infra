@@ -12,7 +12,7 @@ The prowjobsparser accepts the following command line parameters:
 
 |Parameter | Shorthand | Description |
 |-----------|-----------|------------|
-| **configpath** | **-c** | Path to prow config yaml file. |
+| **configpath** | **-c** | Path to the Prow config YAML file. |
 | **jobpath** | **-j** | Path to directory containing yaml files with prowjobs. |
 | **includepreset** | **-i** | Preset name which must be added to prowjob. Accept multiple param instances. | 
 | **excludepreset** | **-e** | Preset name which shouldn't be added to prowjob. Accept multiple param instances. | 
