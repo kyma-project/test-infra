@@ -33,7 +33,6 @@ presubmits:
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-tools
       run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
-      optional: true
       branches:
         - ^master$
       max_concurrency: 10
@@ -56,7 +55,6 @@ presubmits:
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-jobs
       run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
-      optional: true
       branches:
         - ^master$
       max_concurrency: 10

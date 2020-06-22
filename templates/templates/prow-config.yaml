@@ -521,7 +521,7 @@ plank:
   pod_pending_timeout: 60m
   default_decoration_configs:
     '*':
-      timeout: 2h
+      timeout: 3h
       grace_period: 10m
       utility_images:
         clonerefs: "eu.gcr.io/kyma-project/test-infra/clonerefs:v20200414-6b49853d"

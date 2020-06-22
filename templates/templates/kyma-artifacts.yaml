@@ -24,6 +24,7 @@ job_labels_template: &job_labels_template
   preset-sa-kyma-artifacts: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-bot-github-token: "true"
+  preset-build-release: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:

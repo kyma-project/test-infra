@@ -8,6 +8,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 func TestKymaGardenerAzureIntegrationJobPeriodics(t *testing.T) {
@@ -97,7 +98,12 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	assert.True(t, job.Decorate)
 	assert.True(t, job.Optional)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable)
-	tester.AssertThatHasExtraRepoRef(t, job.JobBase.UtilityConfig, []string{"test-infra"})
+	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
+		Org:       "k15r",
+		Repo:      "test-infra",
+		BaseRef:   "fix-azure-jobs-new-script",
+		PathAlias: "github.com/kyma-project/test-infra",
+	}})
 	assert.Equal(t, tester.ImageKymaIntegrationK15, job.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"}, job.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
