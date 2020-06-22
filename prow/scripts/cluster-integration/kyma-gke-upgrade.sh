@@ -395,9 +395,16 @@ function waitForTestPodToFinish() {
 createTestResources() {
     injectTestingAddons
 
+    # install upgrade test
     installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
+
+    # install external-solution test
     installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
+
+    # wait for upgrade test to finish
     waitForTestPodToFinish "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
+
+    # wait for external-solution test to finish
     waitForTestPodToFinish "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
 }
 
