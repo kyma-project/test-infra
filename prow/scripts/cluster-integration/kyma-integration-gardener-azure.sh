@@ -223,7 +223,7 @@ fi
 shout "Installing Kyma"
 date
 
-INSTALLATION_RESOURCES_DIR=${KYMA_PROJECT_DIR}/installation/resources
+INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
 kyma install \
     --ci \
     --source $KYMA_INSTALLER_IMAGE \
