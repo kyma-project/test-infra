@@ -3,6 +3,12 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+test_infra_ref: &test_infra_ref_k15r_for_testing
+  org: k15r 
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+  base_ref: fix-azure-jobs-new-script
+
 kyma_ref: &kyma_ref
   org: kyma-project
   repo: kyma
@@ -125,8 +131,9 @@ presubmits:
         preset-build-pr: "true"
         <<: *gardener_azure_job_labels_template
       extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+        #        - <<: *test_infra_ref
+        #          base_ref: master
+        - <<: *test_infra_ref_k15r_for_testing
 
 periodics:
   - name: kyma-integration-gardener-gcp
