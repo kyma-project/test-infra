@@ -13,5 +13,6 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.0.0
+	golang.org/x/tools v0.0.0-20200619210111-0f592d2728bb // indirect
 	k8s.io/test-infra v0.0.0-20200320172837-fbc86f22b087
 )

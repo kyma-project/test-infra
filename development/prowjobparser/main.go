@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/jamiealquiza/envy"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"k8s.io/test-infra/prow/config"
-	"os"
 )
 
 var (
@@ -27,6 +28,7 @@ var (
 	excludeok bool
 )
 
+// RunConfig holds cli params passed for execution.
 type RunConfig struct {
 	configPath    string
 	jobPath       string
