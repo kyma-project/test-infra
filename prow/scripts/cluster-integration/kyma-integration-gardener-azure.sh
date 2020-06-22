@@ -78,6 +78,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 set -o
 
+# we need to start the docker daemon. This is done by calling init from the library.sh
+init
+
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
