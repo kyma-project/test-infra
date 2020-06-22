@@ -192,16 +192,13 @@ if [ -z "$MACHINE_TYPE" ]; then
 fi
 
 CLEANUP_CLUSTER="true"
-(
-    set -x
-    kyma provision gardener az \
-        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-        --scaler-max 4 --scaler-min 3 \
-        --kube-version=${GARDENER_CLUSTER_VERSION} \
-        --verbose
-)
+kyma provision gardener az \
+    --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+    --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+    --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+    --scaler-max 4 --scaler-min 3 \
+    --kube-version=${GARDENER_CLUSTER_VERSION} \
+    --verbose
 
 shout "Generate Azure Event Hubs overrides"
 date
@@ -226,17 +223,14 @@ fi
 shout "Installing Kyma"
 date
 
-(
-    set -x
-    INSTALLATION_RESOURCES_DIR=${KYMA_PROJECT_DIR}/installation/resources
-    kyma install \
-        --ci \
-        --source $KYMA_INSTALLER_IMAGE \
-        -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-        --timeout 90m
-)
+INSTALLATION_RESOURCES_DIR=${KYMA_PROJECT_DIR}/installation/resources
+kyma install \
+    --ci \
+    --source $KYMA_INSTALLER_IMAGE \
+    -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+    -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+    -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
+    --timeout 90m
 
 shout "Checking the versions"
 date
@@ -247,16 +241,13 @@ date
 
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
-(
-    set -x
-    kyma test run \
-        --name "${SUITE_NAME}" \
-        --concurrency "${CONCURRENCY}" \
-        --max-retries 1 \
-        --timeout 90m \
-        --watch \
-        --non-interactive
-)
+kyma test run \
+    --name "${SUITE_NAME}" \
+    --concurrency "${CONCURRENCY}" \
+    --max-retries 1 \
+    --timeout 90m \
+    --watch \
+    --non-interactive
 
 shout "Tests completed"
 
