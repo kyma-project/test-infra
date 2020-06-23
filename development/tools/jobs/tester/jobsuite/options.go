@@ -7,8 +7,10 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
+// Option type
 type Option func(suite *Config)
 
+// Component function returns Option type
 func Component(name, image string) Option {
 	return func(suite *Config) {
 		suite.Path = fmt.Sprintf("components/%s", name)
@@ -17,6 +19,7 @@ func Component(name, image string) Option {
 	}
 }
 
+// CompassComponent function returns Option type
 func CompassComponent(name, image string) Option {
 	return func(suite *Config) {
 		suite.Path = fmt.Sprintf("compass/components/%s", name)
@@ -25,6 +28,7 @@ func CompassComponent(name, image string) Option {
 	}
 }
 
+// CompassTest function returns Option type
 func CompassTest(name, image string) Option {
 	return func(suite *Config) {
 		suite.Path = fmt.Sprintf("compass/tests/%s", name)
@@ -33,6 +37,7 @@ func CompassTest(name, image string) Option {
 	}
 }
 
+// Test function returns Option type
 func Test(name, image string) Option {
 	return func(suite *Config) {
 		suite.Path = fmt.Sprintf("tests/%s", name)
@@ -41,6 +46,7 @@ func Test(name, image string) Option {
 	}
 }
 
+// Tool function returns Option type
 func Tool(name, image string) Option {
 	return func(suite *Config) {
 		suite.Path = fmt.Sprintf("tools/%s", name)
@@ -49,6 +55,7 @@ func Tool(name, image string) Option {
 	}
 }
 
+// Project function returns Option type
 func Project(name string, yamlName *string, image string) Option {
 	return func(suite *Config) {
 		suite.Path = name
@@ -58,6 +65,7 @@ func Project(name string, yamlName *string, image string) Option {
 	}
 }
 
+// KymaRepo function returns Option type
 func KymaRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/kyma"
@@ -66,6 +74,7 @@ func KymaRepo() Option {
 	}
 }
 
+// CompassRepo function returns Option type
 func CompassRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-incubator/compass"
@@ -74,6 +83,7 @@ func CompassRepo() Option {
 	}
 }
 
+// TestInfraRepo function returns Option type
 func TestInfraRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/test-infra"
@@ -82,6 +92,7 @@ func TestInfraRepo() Option {
 	}
 }
 
+// ConsoleRepo function returns Option type
 func ConsoleRepo() Option {
 	return func(suite *Config) {
 		suite.Repository = "github.com/kyma-project/console"
@@ -90,18 +101,21 @@ func ConsoleRepo() Option {
 	}
 }
 
+// DockerRepositoryPreset function returns Option type
 func DockerRepositoryPreset(preset preset.Preset) Option {
 	return func(suite *Config) {
 		suite.DockerRepositoryPreset = preset
 	}
 }
 
+// JobFileSuffix function returns Option type
 func JobFileSuffix(suffix string) Option {
 	return func(suite *Config) {
 		suite.JobsFileSuffix = "-" + suffix
 	}
 }
 
+// Until function returns Option type that returns all Kyma releases until provided release.
 func Until(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetKymaReleasesUntil(rel)
@@ -109,6 +123,7 @@ func Until(rel *releases.SupportedRelease) Option {
 	}
 }
 
+// Between function returns Option type that returns all Kyma releases between provided releases.
 func Between(since *releases.SupportedRelease, until *releases.SupportedRelease) Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetKymaReleasesBetween(since, until)
@@ -116,30 +131,35 @@ func Between(since *releases.SupportedRelease, until *releases.SupportedRelease)
 	}
 }
 
+// AllReleases function returns Option type that returns all Kyma releases.
 func AllReleases() Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetAllKymaReleases()
 	}
 }
 
+// Since function returns Option type that returns all Kyma releases since provided releases.
 func Since(rel *releases.SupportedRelease) Option {
 	return func(suite *Config) {
 		suite.Releases = releases.GetKymaReleasesBetween(rel, releases.GetNextKymaRelease())
 	}
 }
 
+// RunIfChanged function returns Option type
 func RunIfChanged(filesTriggeringJob ...string) Option {
 	return func(suite *Config) {
 		suite.FilesTriggeringJob = filesTriggeringJob
 	}
 }
 
+// Optional function returns Option type
 func Optional() Option {
 	return func(suite *Config) {
 		suite.Optional = true
 	}
 }
 
+// PatchReleases function returns Option type
 func PatchReleases(patchReleases ...*releases.SupportedRelease) Option {
 	return func(suite *Config) {
 		suite.PatchReleases = patchReleases

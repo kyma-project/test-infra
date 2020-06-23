@@ -61,3 +61,4 @@ postsubmits:
         base_ref: master
     labels:
       <<: *job_labels_template
+      preset-build-artifacts-master: "true"

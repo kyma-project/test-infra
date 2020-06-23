@@ -33,7 +33,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [[ -z "${!var}" ]] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -51,15 +51,16 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="25m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
-# timeout in sec for helm operation install/test
-export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
-# timeout in sec for e2e upgrade test pods until they reach the terminating state
-export UPGRADE_TEST_TIMEOUT_SEC=600
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
 export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
-export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
-export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
+export EXTERNAL_SOLUTION_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/external-solution-integration/chart/external-solution"
+export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
+export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
+export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
+export TEST_RESOURCE_LABEL_VALUE_PREPARE="prepareData"
+export HELM_TIMEOUT_SEC=10000 # timeout in sec for helm install/test operation
+export TEST_TIMEOUT_SEC=600   # timeout in sec for test pods until they reach the terminating state
 export TEST_CONTAINER_NAME="tests"
 
 # shellcheck disable=SC1090
@@ -133,7 +134,12 @@ trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/tools/cmd/jobguard/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+elif [[ "${BUILD_TYPE}" == "release" ]]; then
+   shout "Execute Job Guard for Release jobs"
+   export TIMEOUT="75m"
+   export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$ | ^pre-rel\\d\\d\\d-kyma-installer$ | ^pre-rel\\d\\d\\d-kyma-artifacts$)"
+   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 function generateAndExportClusterName() {
@@ -289,17 +295,18 @@ function installKyma() {
 }
 
 function checkTestPodTerminated() {
+    local namespace=$1
     local retry=0
     local runningPods=0
     local succeededPods=0
     local failedPods=0
 
-    while [ "${retry}" -lt "${UPGRADE_TEST_TIMEOUT_SEC}" ]; do
+    while [[ "${retry}" -lt "${TEST_TIMEOUT_SEC}" ]]; do
         # check status phase for each testing pods
-        for podName in $(kubectl get pods -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq -sr '.[]|.items[].metadata.name')
+        for podName in $(kubectl get pods -n "${namespace}" -o json | jq -sr '.[]|.items[].metadata.name')
         do
             runningPods=$((runningPods + 1))
-            phase=$(kubectl get pod "${podName}" -n "${UPGRADE_TEST_NAMESPACE}" -o json | jq '.status.phase')
+            phase=$(kubectl get pod "${podName}" -n "${namespace}" -o json | jq '.status.phase')
             echo "Test pod '${podName}' has phase: ${phase}"
 
             if [[ "${phase}" == *"Succeeded"* ]]
@@ -313,22 +320,22 @@ function checkTestPodTerminated() {
         done
 
         # exit permanently if one of cluster has failed status
-        if [ "${failedPods}" -gt 0 ]
+        if [[ "${failedPods}" -gt 0 ]]
         then
             echo "${failedPods} pod(s) has failed status"
             return 1
         fi
 
         # exit from function if each pod has succeeded status
-        if [ "${runningPods}" == "${succeededPods}" ]
+        if [[ "${runningPods}" == "${succeededPods}" ]]
         then
-            echo "All pods in ${UPGRADE_TEST_NAMESPACE} namespace have succeeded phase"
+            echo "All pods in ${namespace} namespace have succeeded phase"
             return 0
         fi
 
         # reset all counters and rerun checking
         delta=$((runningPods-succeededPods))
-        echo "${delta} pod(s) in ${UPGRADE_TEST_NAMESPACE} namespace have not terminated phase. Retry checking."
+        echo "${delta} pod(s) in ${namespace} namespace have not terminated phase. Retry checking."
         runningPods=0
         succeededPods=0
         retry=$((retry + 1))
@@ -339,40 +346,66 @@ function checkTestPodTerminated() {
     return 1
 }
 
-createTestResources() {
-    shout "Create e2e upgrade test resources"
-    date
+function installTestChartOrFail() {
+  local path=$1
+  local name=$2
+  local namespace=$3
 
+  shout "Create ${name} resources"
+  date
+
+  local HELM_ARGS
+  if [[ -f "$(helm home)/ca.pem" ]]; then
+      HELM_ARGS="--tls"
+  fi
+
+  helm install "${path}" \
+      --name "${name}" \
+      --namespace "${namespace}" \
+      --timeout "${HELM_TIMEOUT_SEC}" \
+      --set domain="${DOMAIN}" \
+      --wait ${HELM_ARGS}
+
+  prepareResult=$?
+  if [[ "${prepareResult}" != 0 ]]; then
+      echo "Helm install ${name} operation failed: ${prepareResult}"
+      exit "${prepareResult}"
+  fi
+}
+
+function waitForTestPodToFinish() {
+  local name=$1
+  local namespace=$2
+  local label=$3
+
+  set +o errexit
+  checkTestPodTerminated "${namespace}"
+  prepareTestResult=$?
+  set -o errexit
+
+  echo "Logs for prepare data operation to ${name}: "
+  # shellcheck disable=SC2046
+  kubectl logs -n "${namespace}" $(kubectl get pod -n "${name}" -l "${label}=${TEST_RESOURCE_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
+  if [[ "${prepareTestResult}" != 0 ]]; then
+      echo "Exit status for prepare ${name}: ${prepareTestResult}"
+      exit "${prepareTestResult}"
+  fi
+}
+
+createTestResources() {
     injectTestingAddons
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
+    # install upgrade test
+    installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
 
-    helm install "${UPGRADE_TEST_PATH}" \
-        --name "${UPGRADE_TEST_RELEASE_NAME}" \
-        --namespace "${UPGRADE_TEST_NAMESPACE}" \
-        --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS}
+    # install external-solution test
+    installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 
-    prepareResult=$?
-    if [ "${prepareResult}" != 0 ]; then
-        echo "Helm install operation failed: ${prepareResult}"
-        exit "${prepareResult}"
-    fi
+    # wait for upgrade test to finish
+    waitForTestPodToFinish "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
 
-    set +o errexit
-    checkTestPodTerminated
-    prepareTestResult=$?
-    set -o errexit
-
-    echo "Logs for prepare data operation to test e2e upgrade: "
-    # shellcheck disable=SC2046
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" $(kubectl get pod -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
-    if [ "${prepareTestResult}" != 0 ]; then
-        echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
-        exit "${prepareTestResult}"
-    fi
+    # wait for external-solution test to finish
+    waitForTestPodToFinish "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
 }
 
 function upgradeKyma() {
@@ -404,7 +437,7 @@ function upgradeKyma() {
         COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
         KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
         export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh" "${SA_TEST_GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
         CLEANUP_DOCKER_IMAGE="true"
 
         KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"

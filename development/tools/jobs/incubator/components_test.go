@@ -129,6 +129,17 @@ var components = []struct {
 			jobsuite.Since(releases.Release113),
 		},
 	},
+	{
+		name:  "kubeconfig-service",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Optional(),
+			jobsuite.Since(releases.Release114),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

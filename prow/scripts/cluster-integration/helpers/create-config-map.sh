@@ -20,7 +20,7 @@ function checkLabel {
 }
 
 function usage {
-    echo "Incorrect input. Available flags: --name, --data, --label"
+    echo "Incorrect input. Available flags: --name, --namespace, --data, --label"
     exit 1
 }
 
@@ -49,6 +49,12 @@ do
         --name)
             checkScriptInput "$2"
             NAME="$2"
+            shift # past argument
+            shift # past value
+            ;;
+        --namespace)
+            checkScriptInput "$2"
+            NAMESPACE="$2"
             shift # past argument
             shift # past value
             ;;

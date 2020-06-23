@@ -23,6 +23,10 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
+        shout "Execute Job Guard for Release jobs"
+        export TIMEOUT="75m"
+        export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$)"
+        "${SCRIPT_DIR}/../../development/jobguard/scripts/run.sh"
         # TODO: Improve this part
         if [[ ( "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ) || "${REPO_OWNER}" == "kyma-incubator" && "${REPO_NAME}" == "compass" ]]; then
             DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")

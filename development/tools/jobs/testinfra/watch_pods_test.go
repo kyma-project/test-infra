@@ -3,10 +3,9 @@ package testinfra
 import (
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 )
 
 func TestWatchPods(t *testing.T) {

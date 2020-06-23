@@ -4,7 +4,7 @@ TAG = $(DOCKER_TAG)
 
 .PHONY: validate
 validate:
-	./before-commit.sh ci
+	./before-commit.sh ./cmd/... ./pkg/...
 
 .PHONY: build-image
 build-image:
@@ -29,4 +29,4 @@ clean:
 	rm -f $(APP_NAME)
 
 jobs-tests:
-	go test ./jobs/...
+	./before-commit.sh ./jobs/...

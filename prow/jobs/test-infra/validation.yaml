@@ -31,8 +31,8 @@ presubmits:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-    - name: pre-master-test-infra-validate-prow
-      run_if_changed: "^(development/tools|prow)" # Also for any changes in prow directory
+    - name: pre-master-test-infra-validate-prow-tools
+      run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
       branches:
         - ^master$
       max_concurrency: 10
@@ -49,6 +49,28 @@ presubmits:
               - "-C"
               - "development/tools"
               - "validate"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: pre-master-test-infra-validate-prow-jobs
+      run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
+      branches:
+        - ^master$
+      max_concurrency: 10
+      labels:
+        preset-build-pr: "true"
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      spec:
+        containers:
+          - image: *buildpack_golang_image
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "development/tools"
+              - "jobs-tests"
             resources:
               requests:
                 memory: 1.5Gi

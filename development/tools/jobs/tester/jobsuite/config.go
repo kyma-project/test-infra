@@ -5,6 +5,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 )
 
+// Config struct
 type Config struct {
 	Path                   string
 	YamlName               *string
@@ -20,6 +21,7 @@ type Config struct {
 	PatchReleases          []*releases.SupportedRelease
 }
 
+// NewConfig returns new Config
 func NewConfig(opts ...Option) *Config {
 	suite := &Config{}
 

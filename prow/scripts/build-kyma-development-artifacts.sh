@@ -57,8 +57,6 @@ export_variables
 export KYMA_PATH="/home/prow/go/src/github.com/kyma-project/kyma"
 buildTarget="release"
 
-shout "Build kyma-operator with target ${buildTarget}"
-make -C "${KYMA_PATH}/components/kyma-operator" ${buildTarget}
 shout "Build kyma-installer with target ${buildTarget}"
 make -C "${KYMA_PATH}/tools/kyma-installer" ${buildTarget}
 

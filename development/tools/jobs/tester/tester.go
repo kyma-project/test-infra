@@ -6,14 +6,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
-	"github.com/stretchr/testify/require"
-	v1 "k8s.io/api/core/v1"
-
-	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	v1 "k8s.io/api/core/v1"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 	"k8s.io/test-infra/prow/config"
 )
 
@@ -47,12 +47,15 @@ const (
 	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
-	// ImageKymaIntegrationLatest represents boostrap image published on 20.11.2019
-	ImageKymaIntegrationK14    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.14"
-	ImageKymaIntegrationK15    = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15"
+	// ImageKymaIntegrationK14 represents kyma integration image with kubectl 1.14
+	ImageKymaIntegrationK14 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.14"
+	// ImageKymaIntegrationK15 represents kyma integration image with kubectl 1.15
+	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15"
+	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
+	// ImageBootstrapHelm20191227 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20191227 = "eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20200423-1d9d6590"
@@ -193,7 +196,7 @@ func FindPostsubmitJobByNameAndBranch(jobs []config.Postsubmit, name, branch str
 	return nil
 }
 
-// FindPostsubmitJobByNameAndBranch finds postsubmit job by name from provided jobs list
+// FindPostsubmitJobByName finds postsubmit job by name from provided jobs list
 func FindPostsubmitJobByName(jobs []config.Postsubmit, name string) *config.Postsubmit {
 	for _, job := range jobs {
 		if job.Name == name {
@@ -242,19 +245,27 @@ func AssertThatHasExtraRefTestInfraWithSHA(t *testing.T, in config.UtilityConfig
 	assert.Fail(t, fmt.Sprintf("Job has not configured extra ref to test-infra repository with base ref set to [%s] sha", expectedBaseSHA))
 }
 
-// AssertThatHasExtraRefs checks if UtilityConfig has repositories passed in argument defined
-func AssertThatHasExtraRefs(t *testing.T, in config.UtilityConfig, repositories []string) {
-	for _, repository := range repositories {
-		for _, curr := range in.ExtraRefs {
-			if curr.PathAlias == fmt.Sprintf("github.com/kyma-project/%s", repository) &&
-				curr.Org == "kyma-project" &&
-				curr.Repo == repository &&
-				curr.BaseRef == "master" {
-				return
-			}
-		}
-		assert.FailNow(t, fmt.Sprintf("Job has not configured %s as a extra ref", repository))
+// AssertThatHasExtraRef checks if UtilityConfig has ExtraRefs passed in argument defined
+func AssertThatHasExtraRef(t *testing.T, in config.UtilityConfig, extraRefs []prowapi.Refs) {
+	t.Helper()
+	for _, ref := range extraRefs {
+		assert.Contains(t, in.ExtraRefs, ref, fmt.Sprintf("\"%s\" ExtraRef not found in job", ref.Repo))
 	}
+}
+
+// AssertThatHasExtraRepoRef checks if UtilityConfig has repositories passed in argument defined
+func AssertThatHasExtraRepoRef(t *testing.T, in config.UtilityConfig, repositories []string) {
+	t.Helper()
+	var extraRefs []prowapi.Refs
+	for _, repository := range repositories {
+		extraRefs = append(extraRefs, prowapi.Refs{
+			Org:       "kyma-project",
+			Repo:      repository,
+			BaseRef:   "master",
+			PathAlias: fmt.Sprintf("github.com/kyma-project/%s", repository),
+		})
+	}
+	AssertThatHasExtraRef(t, in, extraRefs)
 }
 
 // AssertThatHasPresets checks if JobBase has expected labels
