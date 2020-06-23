@@ -186,12 +186,6 @@ ERROR_LOGGING_GUARD="true"
 export INSTALL_DIR=${TMP_DIR}
 install::kyma_cli
 
-shout "Provision cluster: \"${CLUSTER_NAME}\""
-
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="Standard_D8_v3"
-fi
-
 shout "Generate Azure Event Hubs overrides"
 date
 
@@ -201,7 +195,15 @@ export EVENTHUB_SECRET_OVERRIDE_FILE
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 cat "${EVENTHUB_SECRET_OVERRIDE_FILE}"
 
+shout "Provision cluster: \"${CLUSTER_NAME}\""
+
+if [ -z "$MACHINE_TYPE" ]; then
+      export MACHINE_TYPE="Standard_D8_v3"
+fi
+
+
 CLEANUP_CLUSTER="true"
+set -x
 kyma provision gardener az \
     --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
     --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
@@ -209,6 +211,7 @@ kyma provision gardener az \
     --scaler-max 4 --scaler-min 3 \
     --kube-version=${GARDENER_CLUSTER_VERSION} \
     --verbose
+set +x
 
 
 if [[ "$JOB_TYPE" == "presubmit" ]]; then
@@ -226,13 +229,16 @@ shout "Installing Kyma"
 date
 
 INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
+set -x
 kyma install \
     --ci \
     --source $KYMA_INSTALLER_IMAGE \
     -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
     -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
     -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
-    --timeout 90m
+    --timeout 90m \
+    --verbose
+set +x
 
 shout "Checking the versions"
 date
@@ -243,6 +249,8 @@ date
 
 readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
 readonly CONCURRENCY=5
+
+set -x
 kyma test run \
     --name "${SUITE_NAME}" \
     --concurrency "${CONCURRENCY}" \
@@ -250,6 +258,7 @@ kyma test run \
     --timeout 90m \
     --watch \
     --non-interactive
+set +x
 
 shout "Tests completed"
 
