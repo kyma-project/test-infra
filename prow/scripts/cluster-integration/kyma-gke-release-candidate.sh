@@ -228,6 +228,7 @@ kubectl create namespace "kyma-installer"
     --label "component=istio"
 
 echo "Use released artifacts"
+wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-crd.yaml"
 wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml"
 
 # There is possibility of a race condition when applying kyma-installer-cluster.yaml
@@ -235,8 +236,8 @@ wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/
 n=0
 until [ $n -ge 2 ]
 do
-    kubectl apply -f kyma-installer-cluster.yaml && break
-    echo "Failed to apply kyma-installer-cluster.yaml"
+    kubectl apply -f kyma-installer-crd.yaml && kubectl apply -f kyma-installer-cluster.yaml && break
+    echo "Failed to apply kyma-installer-crd.yaml or kyma-installer-cluster.yaml"
     n=$((n+1))
     if [ 2 -gt "$n" ]
     then

@@ -286,6 +286,9 @@ function installKyma() {
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-crd.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer-crd.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer-crd.yaml
+
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
 
@@ -420,6 +423,7 @@ function upgradeKyma() {
 
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-crd.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer-crd.yaml
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
 
@@ -449,6 +453,9 @@ function upgradeKyma() {
 
         shout "Wait untill tiller is correctly rolled out"
         kubectl -n kube-system rollout status deployment/tiller-deploy
+
+        echo "Installing Installer CRD"
+        kubectl apply -f "${INSTALLER_CRD_YAML}"
 
         shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
         "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \

@@ -32,6 +32,7 @@ export_variables
 
 make -C /home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer ci-create-release-artifacts
 
+gsutil cp "${ARTIFACTS}/kyma-installer-crd.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-crd.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster-compass.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster-compass.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cluster-compass-dependencies.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster-compass-dependencies.yaml"

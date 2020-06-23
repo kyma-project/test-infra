@@ -3,6 +3,7 @@
 # This script generates development artifacts:
 # - installer image
 # - kyma-installer image
+# - kyma-installer-crd.yaml
 # - kyma-installer-cluster.yaml
 # - is-installed.sh
 # Yaml files, as well as is-installed.sh script are stored on GCS.
@@ -77,6 +78,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service
 authenticate
 
 shout "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
+gsutil cp  "${ARTIFACTS}/kyma-installer-crd.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-crd.yaml"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster.yaml"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster-compass.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster-compass.yaml"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster-compass-dependencies.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster-compass-dependencies.yaml"
@@ -87,6 +89,7 @@ gsutil cp  "${KYMA_PATH}/installation/resources/tiller.yaml" "${KYMA_DEVELOPMENT
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
   shout "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  gsutil cp "${ARTIFACTS}/kyma-installer-crd.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-crd.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cluster-compass.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster-compass.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cluster-compass-dependencies.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster-compass-dependencies.yaml"

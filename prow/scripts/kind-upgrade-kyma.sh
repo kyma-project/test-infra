@@ -342,6 +342,7 @@ function main {
 
     junit::test_start "Install_Kyma_From_Release"
     log::info "Downloading Kyma artifacts from version ${latest_release}" 2>&1 | junit::test_output
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${latest_release}/kyma-installer-crd.yaml" --output "${TMP_DIR}/last-release-installer-crd.yaml"
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${latest_release}/kyma-installer-cluster.yaml" --output "${TMP_DIR}/last-release-installer.yaml"
     log::info "Installing Kyma from version ${latest_release}" 2>&1 | junit::test_output
     kubectl apply -f "${TMP_DIR}/last-release-installer.yaml" 2>&1 | junit::test_output

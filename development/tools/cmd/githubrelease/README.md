@@ -6,6 +6,7 @@ This command creates GitHub releases based on artifacts stored in a Google bucke
 - `kyma-installer-cluster.yaml`
 - `kyma-config-local.yaml`
 - `kyma-installer-local.yaml`
+- `kyma-installed-crd.yaml`
 - `release-changelog.md`
 
 ## Usage
@@ -28,6 +29,7 @@ See the list of available flags:
 | :----------------------------- | :------: | :--------------------------------------------------------------------------------------------------- |
 | **--targetCommit**             |   Yes    | The string which specifies the [commitish value](https://developer.github.com/v3/repos/releases/#create-a-release) that the GitHub tag refers to.
 | **--bucketName**               |    No    | The string value with the name of the Google bucket containing release artifacts. It defaults to `kyma-prow-artifacts`.
+| **--kymaInstallerCRD**         |    No    | The string value with the name of the Kyma installer CRD file. It defaults to `kyma-installer-crd.yaml`.
 | **--kymaInstallerCluster**     |    No    | The string value with the name of the Kyma cluster configuration file. It defaults to `kyma-installer-cluster.yaml`.
 | **--kymaConfigLocal**          |    No    | The string value with the name of the Kyma local configuration file. It defaults to `kyma-config-local.yaml`.
 | **--kymaInstallerLocal**       |    No    | The string value with the name of the Kyma local configuration file. It defaults to `kyma-installer-local.yaml`.

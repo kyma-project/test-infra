@@ -221,6 +221,9 @@ function installKyma() {
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-crd.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer-crd.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer-crd.yaml
+
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
 

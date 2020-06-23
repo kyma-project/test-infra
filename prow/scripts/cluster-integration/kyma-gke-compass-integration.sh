@@ -74,6 +74,7 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+INSTALLER_CRD_YAML="${KYMA_RESOURCES_DIR}/installer-crd.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
 
 function cleanup() {
@@ -283,10 +284,14 @@ function installKyma() {
 
   if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-crd.yaml" /tmp/kyma-gke-integration/downloaded-installer-crd.yaml
+		| kubectl apply -f-
     gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
 		"${KYMA_SCRIPTS_DIR}"/concat-yamls.sh /tmp/kyma-gke-integration/downloaded-installer.yaml "${INSTALLER_CR}" \
 		| kubectl apply -f-
   else
+    echo "Installing Installer CRD"
+    kubectl apply -f "${INSTALLER_CRD_YAML}"
     echo "Manual concatenating yamls"
     "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
     | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
