@@ -323,7 +323,7 @@ data:
     config:
       clientID: "${GITHUB_INTEGRATION_APP_CLIENT_ID}"
       clientSecret: "${GITHUB_INTEGRATION_APP_CLIENT_SECRET}"
-      redirectURI: "https://dex.${DOMAIN}/callback"
+      redirectURI: 'https://dex."${DOMAIN}"/callback'
       orgs:
       - name: kyma-project
 EOF
