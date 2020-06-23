@@ -150,7 +150,7 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-		component: core
+    component: core
 data:
   test.acceptance.ui.logging.enabled: true
 ---
@@ -162,7 +162,7 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-		component: application-connector
+    component: application-connector
 data:
   application-registry.deployment.args.detailedErrorResponse: true
 ---
@@ -174,10 +174,10 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-		component: monitoring
+    component: monitoring
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
-	global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
+  global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -187,7 +187,7 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-		component: istio
+    component: istio
 data:
   gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
 ---
@@ -199,16 +199,16 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-		component: dex
+    component: dex
 data:
  connectors: |
   - type: github
     id: github
     name: GitHub
     config:
-      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
-      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
-      redirectURI: ${DEX_CALLBACK_URL}
+      clientID: "${GITHUB_INTEGRATION_APP_CLIENT_ID}"
+      clientSecret: "${GITHUB_INTEGRATION_APP_CLIENT_SECRET}"
+      redirectURI: "https://dex.${DOMAIN}/callback"
       orgs:
       - name: kyma-project
 EOF

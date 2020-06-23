@@ -161,34 +161,6 @@ function checkInfraInputParameterValue() {
     fi
 }
 
-function applyDexGithubConnectorOverride() {
-	shout "Apply Dex Githubauth connector overrides"
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-	
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dex-config-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    component: dex
-    kyma-project.io/installation: ""
-data:
- connectors: |
-  - type: github
-    id: github
-    name: GitHub
-    config:
-      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
-      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
-      redirectURI: ${DEX_CALLBACK_URL}
-      orgs:
-      - name: kyma-project
-EOF
-}
-
 function applyDexGithibKymaAdminGroup() {
     kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
 - apiGroup: rbac.authorization.k8s.io
