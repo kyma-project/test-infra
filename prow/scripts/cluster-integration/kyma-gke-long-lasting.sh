@@ -152,7 +152,7 @@ metadata:
     kyma-project.io/installation: ""
     component: core
 data:
-  test.acceptance.ui.logging.enabled: true
+  test.acceptance.ui.logging.enabled: "true"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -164,7 +164,7 @@ metadata:
     kyma-project.io/installation: ""
     component: application-connector
 data:
-  application-registry.deployment.args.detailedErrorResponse: true
+  application-registry.deployment.args.detailedErrorResponse: "true"
 ---
 apiVersion: v1
 kind: ConfigMap
