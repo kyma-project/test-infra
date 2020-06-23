@@ -201,7 +201,7 @@ metadata:
     kyma-project.io/installation: ""
     component: dex
 data:
- connectors: |
+  connectors: |
   - type: github
     id: github
     name: GitHub

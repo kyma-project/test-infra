@@ -266,8 +266,8 @@ metadata:
     kyma-project.io/installation: ""
     component: core
 data:
-	console.test.acceptance.ui.logging.enabled: "true"
-	console.test.acceptance.enabled: "false"
+  console.test.acceptance.ui.logging.enabled: "true"
+  console.test.acceptance.enabled: "false"
 ---
 apiVersion: v1
 kind: ConfigMap
