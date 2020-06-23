@@ -5,6 +5,8 @@
 #Expected vars:
 # - KYMA_INSTALLER_IMAGE: Image name with tag
 # - CLOUDSDK_CORE_PROJECT: GCloud Project name, used for KYMA_INSTALLER_IMAGE validation
+# - GOOGLE_APPLICATION_CREDENTIALS
+# - TEST_INFRA_SOURCES_DIR
 #
 #Permissions: In order to run this script you need to use a service account with "Storage Admin" role
 

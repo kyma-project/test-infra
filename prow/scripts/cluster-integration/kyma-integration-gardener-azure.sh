@@ -44,6 +44,7 @@ VARIABLES=(
     AZURE_SUBSCRIPTION_APP_ID
     AZURE_SUBSCRIPTION_SECRET
     AZURE_SUBSCRIPTION_TENANT
+    CLOUDSDK_CORE_PROJECT
 )
 
 for var in "${VARIABLES[@]}"; do
@@ -207,7 +208,6 @@ EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
 export EVENTHUB_SECRET_OVERRIDE_FILE
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
 if [[ "$JOB_TYPE" == "presubmit" ]]; then
     shout "Build Kyma-Installer Docker image"
@@ -229,7 +229,7 @@ kyma install \
     --source $KYMA_INSTALLER_IMAGE \
     -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
     -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-    -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
+    -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
     --timeout 90m
 
 shout "Checking the versions"
