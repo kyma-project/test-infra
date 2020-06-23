@@ -1,4 +1,4 @@
-package control_plane
+package controlplane
 
 import (
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
