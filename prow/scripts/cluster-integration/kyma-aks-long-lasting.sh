@@ -243,6 +243,8 @@ function installKyma() {
 	shout "Prepare Kyma overrides"
 	date
 
+	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
+
 	componentOverridesFile="component-overrides.yaml"
 	componentOverrides=$(cat << EOF
 apiVersion: v1
@@ -321,9 +323,9 @@ data:
     id: github
     name: GitHub
     config:
-      clientID: "${GITHUB_INTEGRATION_APP_CLIENT_ID}"
-      clientSecret: "${GITHUB_INTEGRATION_APP_CLIENT_SECRET}"
-      redirectURI: 'https://dex."${DOMAIN}"/callback'
+      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
+      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+      redirectURI: ${DEX_CALLBACK_URL}
       orgs:
       - name: kyma-project
 EOF
