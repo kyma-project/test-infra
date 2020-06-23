@@ -192,6 +192,15 @@ if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="Standard_D8_v3"
 fi
 
+shout "Generate Azure Event Hubs overrides"
+date
+
+EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
+export EVENTHUB_SECRET_OVERRIDE_FILE
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+cat "${EVENTHUB_SECRET_OVERRIDE_FILE}"
+
 CLEANUP_CLUSTER="true"
 kyma provision gardener az \
     --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
@@ -201,13 +210,6 @@ kyma provision gardener az \
     --kube-version=${GARDENER_CLUSTER_VERSION} \
     --verbose
 
-shout "Generate Azure Event Hubs overrides"
-date
-
-EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
-export EVENTHUB_SECRET_OVERRIDE_FILE
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 
 if [[ "$JOB_TYPE" == "presubmit" ]]; then
     shout "Build Kyma-Installer Docker image"
