@@ -1,11 +1,12 @@
 package controlplane
 
 import (
+	"path"
+	"testing"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
-	"path"
-	"testing"
 )
 
 const (
