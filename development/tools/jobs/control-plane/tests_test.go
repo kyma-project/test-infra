@@ -19,7 +19,7 @@ var tests = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("control-plane-generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
 		},
@@ -29,7 +29,7 @@ var tests = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("test-generic"),
+			jobsuite.JobFileSuffix("test-control-plane-generic"),
 			jobsuite.ControlPlaneRepo(),
 		},
 	},

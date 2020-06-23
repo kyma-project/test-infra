@@ -23,7 +23,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("control-plane-generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
 		},
@@ -33,7 +33,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("control-plane-generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
 		},
@@ -43,7 +43,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("control-plane-generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
 		},
@@ -53,7 +53,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("control-plane-generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.Optional(),
 			jobsuite.Since(releases.Release113),
