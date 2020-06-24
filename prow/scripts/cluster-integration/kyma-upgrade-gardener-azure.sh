@@ -224,6 +224,8 @@ ERROR_LOGGING_GUARD="true"
 export INSTALL_DIR=${TMP_DIR}
 install::kyma_cli
 
+shout "Updated script"
+
 shout "Provision cluster: \"${CLUSTER_NAME}\""
 
 if [ -z "$MACHINE_TYPE" ]; then
