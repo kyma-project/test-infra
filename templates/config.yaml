@@ -390,6 +390,12 @@ templates:
           path: components/kubeconfig-service
           since: "1.14"
           optional: true
+      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-control-plane-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: components/kubeconfig-service
+          since: "1.14"
+          optional: true
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
           <<: *compass_generic_component
