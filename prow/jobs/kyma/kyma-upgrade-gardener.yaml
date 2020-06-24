@@ -61,6 +61,8 @@ periodics:
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
     labels:
       <<: *gardener_azure_job_labels_template
 
