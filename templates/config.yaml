@@ -344,7 +344,7 @@ templates:
           path: components/provisioner
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/provisioner
@@ -355,7 +355,7 @@ templates:
           <<: *compass_generic_component
           path: components/kyma-environment-broker
           since: "1.9"
-      - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/kyma-environment-broker
@@ -366,7 +366,7 @@ templates:
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/schema-migrator
@@ -378,7 +378,7 @@ templates:
           path: components/metris
           since: "1.13"
           optional: true
-      - to: ../prow/jobs/control-plane/components/metris/metris-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/components/metris/metris-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/metris
@@ -390,7 +390,7 @@ templates:
           path: components/kubeconfig-service
           since: "1.14"
           optional: true
-      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/kubeconfig-service
@@ -413,7 +413,7 @@ templates:
           path: tests/provisioner-tests
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: tests/provisioner-tests
@@ -424,7 +424,7 @@ templates:
           <<: *compass_generic_component
           path: tests/e2e/provisioning
           since: "1.10"
-      - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-control-plane-generic.yaml
+      - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: tests/e2e/provisioning
