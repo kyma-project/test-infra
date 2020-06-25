@@ -16,7 +16,6 @@
 # - MACHINE_TYPE (optional): AKS machine type
 # - RS_GROUP - azure resource group
 # - REGION - azure region
-# - EVENTHUB_NAMESPACE_NAME
 # - AZURE_SUBSCRIPTION_ID
 # - AZURE_SUBSCRIPTION_APP_ID
 # - AZURE_SUBSCRIPTION_SECRET
@@ -81,6 +80,21 @@ set -o
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
 init
+
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+readonly COMMON_NAME_PREFIX="grd"
+COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+
+### Cluster name must be less than 10 characters!
+export CLUSTER_NAME="${COMMON_NAME}"
+EVENTHUB_NAMESPACE_NAME=""
+# Local variables
+if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
+    EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
+else
+    EVENTHUB_NAMESPACE_NAME="kyma-gardener-azure-${RANDOM_NAME_SUFFIX}"
+fi
+export EVENTHUB_NAMESPACE_NAME
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
@@ -164,103 +178,112 @@ testSummary() {
     return $tests_exit
 }
 
+install_cli(){
+    export INSTALL_DIR=${TMP_DIR}
+    install::kyma_cli
+}
+
+generate_azure_overrides() {
+    shout "Generate Azure Event Hubs overrides"
+    date
+
+    EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
+    export EVENTHUB_SECRET_OVERRIDE_FILE
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+}
+
+provision_cluster() {
+    shout "Provision cluster: \"${CLUSTER_NAME}\""
+
+    if [ -z "$MACHINE_TYPE" ]; then
+        export MACHINE_TYPE="Standard_D8_v3"
+    fi
+
+
+    CLEANUP_CLUSTER="true"
+    set -x
+    kyma provision gardener az \
+        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+        --scaler-max 4 --scaler-min 3 \
+        --kube-version=${GARDENER_CLUSTER_VERSION} \
+        --verbose
+    set +x
+}
+
+build_image() {
+    if [[ "$JOB_TYPE" == "presubmit" ]]; then
+        shout "Build Kyma-Installer Docker image"
+        date
+        CLEANUP_DOCKER_IMAGE="true"
+        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gardener-azure-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+    else
+        KYMA_INSTALLER_IMAGE=latest-published
+    fi
+}
+
+install_kyma() {
+    shout "Installing Kyma"
+    date
+
+    INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
+    set -x
+    kyma install \
+        --ci \
+        --source $KYMA_INSTALLER_IMAGE \
+        -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+        -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+        --timeout 90m \
+        --verbose
+    set +x
+
+    shout "Checking the versions"
+    date
+    kyma version
+}
+
+test_kyma(){
+    shout "Running Kyma tests"
+    date
+
+    readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
+    readonly CONCURRENCY=5
+
+    set -x
+    kyma test run \
+        --name "${SUITE_NAME}" \
+        --concurrency "${CONCURRENCY}" \
+        --max-retries 1 \
+        --timeout 90m \
+        --watch \
+        --non-interactive
+    set +x
+
+    shout "Tests completed"
+}
+
 trap cleanup EXIT INT
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-readonly COMMON_NAME_PREFIX="grd"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-
-### Cluster name must be less than 10 characters!
-export CLUSTER_NAME="${COMMON_NAME}"
-EVENTHUB_NAMESPACE_NAME=""
-# Local variables
-if [[ -n "${PULL_NUMBER}" ]]; then  ### Creating name of the eventhub namespaces for pre-submit jobs
-    EVENTHUB_NAMESPACE_NAME="pr-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}"
-else
-    EVENTHUB_NAMESPACE_NAME="kyma-gardener-azure-${RANDOM_NAME_SUFFIX}"
-fi
-export EVENTHUB_NAMESPACE_NAME
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-export INSTALL_DIR=${TMP_DIR}
 install::kyma_cli
 
-shout "Generate Azure Event Hubs overrides"
-date
+generate_azure_overrides
 
-EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
-export EVENTHUB_SECRET_OVERRIDE_FILE
+provision_cluster
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+build_image
 
-shout "Provision cluster: \"${CLUSTER_NAME}\""
+install_kyma
 
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="Standard_D8_v3"
-fi
-
-
-CLEANUP_CLUSTER="true"
-set -x
-kyma provision gardener az \
-    --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-    --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-    --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-    --scaler-max 4 --scaler-min 3 \
-    --kube-version=${GARDENER_CLUSTER_VERSION} \
-    --verbose
-set +x
-
-
-if [[ "$JOB_TYPE" == "presubmit" ]]; then
-    shout "Build Kyma-Installer Docker image"
-    date
-    CLEANUP_DOCKER_IMAGE="true"
-    export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gardener-azure-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
-
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-else
-    KYMA_INSTALLER_IMAGE=latest-published
-fi
-
-shout "Installing Kyma"
-date
-
-INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
-set -x
-kyma install \
-    --ci \
-    --source $KYMA_INSTALLER_IMAGE \
-    -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-    -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-    -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
-    --timeout 90m \
-    --verbose
-set +x
-
-shout "Checking the versions"
-date
-kyma version
-
-shout "Running Kyma tests"
-date
-
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-readonly CONCURRENCY=5
-
-set -x
-kyma test run \
-    --name "${SUITE_NAME}" \
-    --concurrency "${CONCURRENCY}" \
-    --max-retries 1 \
-    --timeout 90m \
-    --watch \
-    --non-interactive
-set +x
-
-shout "Tests completed"
+test_kyma
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
