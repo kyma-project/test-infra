@@ -194,7 +194,6 @@ EVENTHUB_SECRET_OVERRIDE_FILE=$(mktemp)
 export EVENTHUB_SECRET_OVERRIDE_FILE
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-cat "${EVENTHUB_SECRET_OVERRIDE_FILE}"
 
 shout "Provision cluster: \"${CLUSTER_NAME}\""
 
