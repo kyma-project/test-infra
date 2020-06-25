@@ -163,6 +163,7 @@ function upgradeKyma() {
 
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
+    shout "Deleting old tiller installation"
     kubectl delete -f "${KYMA_SOURCES_DIR}/installation/resources/tiller.yaml"
     kyma install \
         --ci \
