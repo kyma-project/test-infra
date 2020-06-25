@@ -238,6 +238,11 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project/incubator"
   - labels:
+      preset-docker-push-repository-control-plane: "true"
+    env:
+      - name: DOCKER_PUSH_REPOSITORY
+        value: "eu.gcr.io/kyma-project/control-plane"
+  - labels:
       preset-docker-push-repository-global: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
