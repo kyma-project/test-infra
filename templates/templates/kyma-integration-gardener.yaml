@@ -53,8 +53,6 @@ gardener_aws_job_template: &gardener_aws_job_template
 gardener_gcp_job_labels_template: &gardener_gcp_job_labels_template
   preset-gardener-gcp-kyma-integration: "true"
   preset-kyma-cli-stable: "true"
-  preset-docker-push-repository-gke-integration: "true"
-  preset-dind-enabled: "true"
 
 gardener_gcp_job_template: &gardener_gcp_job_template
   decorate: true
