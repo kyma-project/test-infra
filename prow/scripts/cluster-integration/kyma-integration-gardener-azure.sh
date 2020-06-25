@@ -273,7 +273,7 @@ trap cleanup EXIT INT
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-install::kyma_cli
+install_cli
 
 generate_azure_overrides
 
