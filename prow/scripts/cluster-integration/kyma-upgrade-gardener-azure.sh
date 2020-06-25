@@ -169,8 +169,6 @@ function upgradeKyma() {
     kyma install \
         --ci \
         --source latest-published \
-        -o installer-config-production.yaml.tpl \
-        -o installer-config-azure-eventhubs.yaml.tpl \
         --timeout 90m
 
 }
