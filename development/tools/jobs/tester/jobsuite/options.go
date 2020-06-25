@@ -83,6 +83,15 @@ func CompassRepo() Option {
 	}
 }
 
+// ControlPlaneRepo function returns Option type
+func ControlPlaneRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-project/control-plane"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoControlPlane
+		suite.BuildPresetMaster = preset.BuildMaster
+	}
+}
+
 // TestInfraRepo function returns Option type
 func TestInfraRepo() Option {
 	return func(suite *Config) {

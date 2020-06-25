@@ -239,40 +239,103 @@ function setupKubeconfig() {
 }
 
 function installKyma() {
-	shout "Install kyma"
+
+	shout "Prepare Kyma overrides"
 	date
+
+	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
+
+	componentOverridesFile="component-overrides.yaml"
+	componentOverrides=$(cat << EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "installation-config-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+data:
+  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "core-test-ui-acceptance-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: core
+data:
+  console.test.acceptance.ui.logging.enabled: "true"
+  console.test.acceptance.enabled: "false"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "application-registry-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: application-connector
+data:
+  application-registry.deployment.args.detailedErrorResponse: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "monitoring-config-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: monitoring
+data:
+  global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
+  global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "istio-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: istio
+data:
+  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex-config-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: dex
+data:
+ connectors: |
+  - type: github
+    id: github
+    name: GitHub
+    config:
+      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
+      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+      redirectURI: ${DEX_CALLBACK_URL}
+      orgs:
+      - name: kyma-project
+EOF
+)
+  echo "${componentOverrides}" > "${componentOverridesFile}"
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
-	kubectl create namespace "kyma-installer"
-
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
-
-	shout "Apply Kyma config"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-		--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-		--label "component=istio"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-		--data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-		--data "console.test.acceptance.ui.logging.enabled=true" \
-		--data "console.test.acceptance.enabled=false" \
-		--label "component=core"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-		--data "application-registry.deployment.args.detailedErrorResponse=true" \
-		--label "component=application-connector"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
-		--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
-		--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
-		--label "component=monitoring"
-
-	applyDexGithubConnectorOverride
 
 	shout "Trigger installation"
 	date
@@ -281,6 +344,7 @@ function installKyma() {
 			--ci \
 			--source latest-published \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+			-o "${componentOverridesFile}" \
 			--domain "${DOMAIN}" \
 			--tlsCert "${TLS_CERT}" \
 			--tlsKey "${TLS_KEY}" \

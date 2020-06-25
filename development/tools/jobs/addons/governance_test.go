@@ -53,7 +53,7 @@ func TestAddonsGovernanceJobPeriodic(t *testing.T) {
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
-	assert.Equal(t, "0 1 * * 1-5", actualPeriodic.Cron)
+	assert.Equal(t, "0 22 * * 1-5", actualPeriodic.Cron)
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.DindEnabled)
 	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "addons"})
 	assert.Equal(t, tester.ImageBootstrapLatest, actualPeriodic.Spec.Containers[0].Image)

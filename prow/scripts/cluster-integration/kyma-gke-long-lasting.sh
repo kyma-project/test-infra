@@ -126,33 +126,97 @@ function installKyma() {
 	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 	export TLS_KEY
 
-	shout "Apply Kyma overrides"
+	shout "Prepare Kyma overrides"
 	date
 
-	kubectl create namespace "kyma-installer"
+	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-			--data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+	componentOverridesFile="component-overrides.yaml"
+	componentOverrides=$(cat << EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "installation-config-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+data:
+  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "core-test-ui-acceptance-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: core
+data:
+  test.acceptance.ui.logging.enabled: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "application-registry-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: application-connector
+data:
+  application-registry.deployment.args.detailedErrorResponse: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "monitoring-config-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: monitoring
+data:
+  global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
+  global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "istio-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: istio
+data:
+  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dex-config-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: dex
+data:
+ connectors: |
+  - type: github
+    id: github
+    name: GitHub
+    config:
+      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
+      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
+      redirectURI: ${DEX_CALLBACK_URL}
+      orgs:
+      - name: kyma-project
+EOF
+)
+  echo "${componentOverrides}" > "${componentOverridesFile}"
 
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-			--data "test.acceptance.ui.logging.enabled=true" \
-			--label "component=core"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-			--data "application-registry.deployment.args.detailedErrorResponse=true" \
-			--label "component=application-connector"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
-			--data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
-			--data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
-			--label "component=monitoring"
-
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-			--data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-			--label "component=istio"
-
-	applyDexGithubConnectorOverride
-			
 	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
 			applyServiceCatalogCRDOverride
 	fi
@@ -166,6 +230,7 @@ function installKyma() {
 			--ci \
 			--source latest-published \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+			-o "${componentOverridesFile}" \
 			--domain "${DOMAIN}" \
 			--tlsCert "${TLS_CERT}" \
 			--tlsKey "${TLS_KEY}" \
@@ -183,7 +248,8 @@ function installKyma() {
 function applyServiceCatalogCRDOverride(){
     shout "Apply override for ServiceCatalog to enable CRD implementation"
 
-cat <<EOF | kubectl apply -f -
+serviceCatalogOverrides=$(cat << EOF
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -197,6 +263,9 @@ data:
   service-catalog-apiserver.enabled: "false"
   service-catalog-crds.enabled: "true"
 EOF
+)
+
+echo "${serviceCatalogOverrides}" >> "${componentOverridesFile}"
 }
 
 function installStackdriverPrometheusCollector(){
