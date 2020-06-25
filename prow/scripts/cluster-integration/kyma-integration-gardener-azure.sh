@@ -86,6 +86,11 @@ init
 cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
+    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+        shout "AN ERROR OCCURED! Take a look at preceding log entries."
+        echo
+    fi
+
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     shout "Cleanup"
     set +e
@@ -98,10 +103,6 @@ cleanup() {
         fi
     fi 
 
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
