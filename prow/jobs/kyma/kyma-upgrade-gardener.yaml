@@ -62,7 +62,6 @@ gardener_azure_job_template: &gardener_azure_job_template
 periodics:
   - name: kyma-upgrade-gardener-azure
     <<: *gardener_azure_job_template
-    decorate: true
     decoration_config:
       timeout: 14400000000000 # 4h
       grace_period: 600000000000 # 10min

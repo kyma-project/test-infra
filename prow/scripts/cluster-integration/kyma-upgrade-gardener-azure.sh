@@ -66,6 +66,7 @@ export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="tests"
+export KYMA_UPDATE_TIMEOUT="30m"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -105,12 +106,6 @@ cleanup() {
         shout "Deleting Azure Resource Group: \"${RS_GROUP}\""
         # Delete the Azure Resource Group
         az group delete -n "${RS_GROUP}" -y
-    fi
-
-    if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
     fi
 
     rm -rf "${TMP_DIR}"
@@ -170,30 +165,28 @@ function upgradeKyma() {
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
 
-    shout "Build Kyma Installer Docker image"
+    TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
+        --output /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
+
+    curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
+        --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+
+    shout "Install Tiller from version ${TARGET_VERSION}"
     date
-    COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}/periodic/gke-upgradeability/kyma-project/kyma:COMMIT-${COMMIT_ID}"
-    export KYMA_INSTALLER_IMAGE
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-    CLEANUP_DOCKER_IMAGE="true"
-
-    KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-    INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-    INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
-    shout "Update tiller"
-    kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
-
-    shout "Wait untill tiller is correctly rolled out"
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
+    
+    shout "Wait until tiller is correctly rolled out"
     kubectl -n kube-system rollout status deployment/tiller-deploy
+    
+    shout "Use release artifacts from version ${TARGET_VERSION}"
+    date
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
 
-    shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
+    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
+    date
+    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 }
 
 function testKyma() {
