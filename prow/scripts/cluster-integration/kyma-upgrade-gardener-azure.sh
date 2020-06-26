@@ -166,8 +166,8 @@ function upgradeKyma() {
     shout "Deleting old tiller installation"
     kubectl delete -f "${KYMA_SOURCES_DIR}/installation/resources/tiller.yaml"
     kubectl delete namespace kyma-installer
-    kubectl delete installations.installer.kyma-project.io kyma-installation
-    kubectl delete crd installations.installer.kyma-project.io
+    kubectl delete installations.installer.kyma-project.io kyma-installation --ignore-not-found
+    kubectl delete crd installations.installer.kyma-project.io --ignore-not-found
     kyma install \
         --ci \
         --source latest-published \
