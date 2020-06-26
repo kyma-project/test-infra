@@ -773,6 +773,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-vms-cleaner
+    cluster: trusted-workload
     cron: "0 * * * *" # "At minute 0 past every hour"
     annotations:
       testgrid-dashboards: kyma-cleaners

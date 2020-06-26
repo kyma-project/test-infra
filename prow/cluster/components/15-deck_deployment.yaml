@@ -40,7 +40,7 @@ spec:
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --github-token-path=/etc/github/oauth
-        - --build-cluster=/etc/cluster/cluster.yaml
+        - --kubeconfig=/etc/workload-clusters/config
         - --redirect-http-to=status.build.kyma-project.io
         - --oauth-url=/github-login
         - --rerun-creates-job=true
@@ -60,6 +60,9 @@ spec:
           periodSeconds: 3
           timeoutSeconds: 600
         volumeMounts:
+          - name: kubeconfig
+            mountPath: /etc/workload-clusters
+            readOnly: true
           - name: config
             mountPath: /etc/config
             readOnly: true
@@ -85,6 +88,9 @@ spec:
             mountPath: /etc/cookie
             readOnly: true
       volumes:
+        - name: kubeconfig
+          secret:
+            secretName: workload-clusters-kubeconfig
         - name: config
           configMap:
             name: config

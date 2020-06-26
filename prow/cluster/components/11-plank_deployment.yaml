@@ -26,11 +26,14 @@ spec:
             - --dry-run=false
             - --config-path=/etc/config/config.yaml
             - --job-config-path=/etc/job-config
-            - --build-cluster=/etc/cluster/cluster.yaml
+            - --kubeconfig=/etc/workload-clusters/config
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
             - --github-token-path=/etc/github/oauth
           volumeMounts:
+            - name: kubeconfig
+              mountPath: /etc/workload-clusters
+              readOnly: true
             - name: oauth
               mountPath: /etc/github
               readOnly: true
@@ -44,6 +47,9 @@ spec:
               mountPath: /etc/cluster
               readOnly: true
       volumes:
+        - name: kubeconfig
+          secret:
+            secretName: workload-clusters-kubeconfig
         - name: oauth
           secret:
             secretName: oauth-token
