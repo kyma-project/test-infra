@@ -158,14 +158,14 @@ function upgradeKyma() {
     shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
-    kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-    kubectl delete Installation -n default kyma-installation
+    # kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+    # kubectl delete Installation -n default kyma-installation
 
     # Remove the current installer to prevent it performing any action.
-    kubectl delete deployment -n kyma-installer kyma-installer
-    shout "Deleting old tiller installation"
-    kubectl delete -f "${KYMA_SOURCES_DIR}/installation/resources/tiller.yaml"
-    kubectl delete namespace kyma-installer
+    # kubectl delete deployment -n kyma-installer kyma-installer
+    # shout "Deleting old tiller installation"
+    # kubectl delete -f "${KYMA_SOURCES_DIR}/installation/resources/tiller.yaml"
+    # kubectl delete namespace kyma-installer
     kyma install \
         --ci \
         --source latest-published \
