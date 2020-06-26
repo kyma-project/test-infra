@@ -1,4 +1,4 @@
-package controlplane
+package controlplane_test
 
 import (
 	"path"
