@@ -57,7 +57,6 @@ export RS_GROUP \
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
 export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
@@ -156,39 +155,22 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-   shout "Delete the kyma-installation CR and kyma-installer deployment"
+    shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-    kubectl delete Installation -n default kyma-installation
+    #kubectl delete Installation -n default kyma-installation
 
     # Remove the current installer to prevent it performing any action.
-    kubectl delete deployment -n kyma-installer kyma-installer
+    #kubectl delete deployment -n kyma-installer kyma-installer
+    #shout "Deleting old tiller installation"
+    #kubectl delete -f "${KYMA_SOURCES_DIR}/installation/resources/tiller.yaml"
+    #kubectl delete namespace kyma-installer
+    kyma install \
+        --ci \
+        --source latest-published \
+        --timeout 90m
 
-    shout "Build Kyma Installer Docker image"
-        date
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
-        export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-        CLEANUP_DOCKER_IMAGE="true"
-
-        KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-        INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-        INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
-        shout "Update tiller"
-        kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
-
-        shout "Wait untill tiller is correctly rolled out"
-        kubectl -n kube-system rollout status deployment/tiller-deploy
-
-        shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
-        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-        | sed -e "s/__VERSION__/0.0.1/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
 }
 
 function testKyma() {
