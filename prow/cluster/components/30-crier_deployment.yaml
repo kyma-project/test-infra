@@ -27,8 +27,11 @@ spec:
             - --slack-token-file=/etc/slack/token
             - --gcs-workers=1
             - --gcs-credentials-file=/etc/credentials/service-account.json
-            - --build-cluster=/etc/cluster/cluster.yaml
+            - --kubeconfig=/etc/workload-clusters/config
           volumeMounts:
+            - name: kubeconfig
+              mountPath: /etc/workload-clusters
+              readOnly: true
             - name: config
               mountPath: /etc/config
               readOnly: true
@@ -45,6 +48,9 @@ spec:
               mountPath: /etc/credentials
               readOnly: true
       volumes:
+        - name: kubeconfig
+          secret:
+            secretName: workload-clusters-kubeconfig
         - name: config
           configMap:
             name: config

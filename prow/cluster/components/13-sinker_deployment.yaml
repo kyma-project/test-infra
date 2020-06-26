@@ -23,9 +23,12 @@ spec:
           args:
             - --job-config-path=/etc/job-config
             - --config-path=/etc/config/config.yaml
-            - --build-cluster=/etc/cluster/cluster.yaml
+            - --kubeconfig=/etc/workload-clusters/config
             - --dry-run=false
           volumeMounts:
+            - name: kubeconfig
+              mountPath: /etc/workload-clusters
+              readOnly: true
             - name: config
               mountPath: /etc/config
               readOnly: true
@@ -36,6 +39,9 @@ spec:
               mountPath: /etc/cluster
               readOnly: true
       volumes:
+        - name: kubeconfig
+          secret:
+            secretName: workload-clusters-kubeconfig
         - name: config
           configMap:
             name: config
