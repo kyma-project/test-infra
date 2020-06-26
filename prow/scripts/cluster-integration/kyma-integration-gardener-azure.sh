@@ -20,6 +20,7 @@
 # - AZURE_SUBSCRIPTION_APP_ID
 # - AZURE_SUBSCRIPTION_SECRET
 # - AZURE_SUBSCRIPTION_TENANT
+# - CLOUDSDK_CORE_PROJECT - required for cleanup of resources
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
