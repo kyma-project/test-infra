@@ -237,6 +237,7 @@ install_kyma() {
         --source $KYMA_INSTALLER_IMAGE \
         -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
         -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
         -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         --timeout 90m \
         --verbose
