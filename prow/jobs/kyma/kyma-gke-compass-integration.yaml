@@ -58,7 +58,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-compass-integration
-      optional: true
+      optional: false
       branches:
         - ^master$
       <<: *gke_integration_job_template_k15
@@ -71,7 +71,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-rel113-kyma-gke-compass-integration
-      optional: true
+      optional: false
       branches:
         - release-1.13
       always_run: false
