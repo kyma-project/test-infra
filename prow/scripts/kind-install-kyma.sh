@@ -263,11 +263,6 @@ function main {
     kind::load_image "${CLUSTER_NAME}" "${KYMA_INSTALLER_NAME}" 2>&1 | junit::test_output
     junit::test_pass
 
-    junit::test_start "Install_Tiller"
-    log::info "Installing Tiller" 2>&1 | junit::test_output
-    kyma::install_tiller "${KYMA_SOURCES}" 2>&1 | junit::test_output
-    junit::test_pass
-
     junit::test_start "Load_Kyma_Configuration"
     log::info "Loading Kyma Configuration" 2>&1 | junit::test_output
     kyma::load_config "${worker_ip}" "${KYMA_DOMAIN}" "${KYMA_OVERRIDES}" 2>&1 | junit::test_output

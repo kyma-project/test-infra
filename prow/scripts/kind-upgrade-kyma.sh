@@ -327,12 +327,6 @@ function main {
     log::info "Latest Kyma release is ${latest_release}" 2>&1 | junit::test_output
     junit::test_pass
 
-    junit::test_start "Install_Tiller_From_Release"
-    log::info "Installing Tiller from version ${latest_release}" 2>&1 | junit::test_output
-    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${latest_release}/installation/resources/tiller.yaml" 2>&1 | junit::test_output
-    kubernetes::is_pod_ready "${KYMA_SOURCES}" kube-system name tiller 2>&1 | junit::test_output
-    junit::test_pass
-
     junit::test_start "Load_Kyma_Configuration_From_Release"
     log::info "Downloading Kyma Configuration from version ${latest_release}" 2>&1 | junit::test_output
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${latest_release}/installation/resources/installer-config-kind.yaml.tpl" --output "${TMP_DIR}/installer-config-kind.yaml.tpl" 2>&1 | junit::test_output
@@ -381,11 +375,6 @@ function main {
     junit::test_start "Load_Kyma_Installer"
     log::info "Loading Kyma Installer to cluster" 2>&1 | junit::test_output
     kind::load_image "${CLUSTER_NAME}" "${KYMA_INSTALLER_NAME}" 2>&1 | junit::test_output
-    junit::test_pass
-
-    junit::test_start "Update_Tiller"
-    log::info "Updating Tiller" 2>&1 | junit::test_output
-    kubectl apply -f "${KYMA_SOURCES}/installation/resources/tiller.yaml" 2>&1 | junit::test_output
     junit::test_pass
 
     junit::test_start "Load_Kyma_Configuration"

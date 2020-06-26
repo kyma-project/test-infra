@@ -153,14 +153,8 @@ downloadAssets() {
         exit 1
     fi
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${SOURCE_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/original-tiller.yaml
-
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
-
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
 
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
