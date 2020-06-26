@@ -168,6 +168,7 @@ function upgradeKyma() {
     kubectl delete namespace kyma-installer
     kubectl delete installations.installer.kyma-project.io kyma-installation --ignore-not-found
     kubectl delete crd installations.installer.kyma-project.io --ignore-not-found
+    kubectl delete crd releases.release.kyma-project.io --ignore-not-found
     kyma install \
         --ci \
         --source latest-published \
