@@ -192,12 +192,6 @@ shout "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD
 date
 kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"
 
-shout "Install Tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
-
-
 shout "Generate certificate"
 date
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"

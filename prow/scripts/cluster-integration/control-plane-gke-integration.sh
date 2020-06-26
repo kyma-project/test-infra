@@ -349,7 +349,7 @@ function installKyma() {
   kubectl create namespace "kyma-installer"
   applyCommonOverrides "kyma-installer"
   applyKymaOverrides
-  
+
   TMP_DIR="/tmp/kcp-gke-integration"
 
   gsutil cp "${KCP_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
@@ -436,11 +436,6 @@ fi
 shout "Create new cluster"
 date
 createCluster
-
-shout "Install tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KCP_SCRIPTS_DIR}"/install-tiller.sh
 
 shout "Generate self-signed certificate"
 date

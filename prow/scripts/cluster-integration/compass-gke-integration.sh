@@ -358,11 +358,6 @@ shout "Create new cluster"
 date
 createCluster
 
-shout "Install tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${COMPASS_SCRIPTS_DIR}"/install-tiller.sh
-
 shout "Generate self-signed certificate"
 date
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
