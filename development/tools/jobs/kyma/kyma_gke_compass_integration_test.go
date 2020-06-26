@@ -58,7 +58,7 @@ func TestKymaGKECompassIntegrationJobsReleases(t *testing.T) {
 				require.NoError(t, err)
 				actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-compass-integration", currentRelease), currentRelease.Branch())
 				require.NotNil(t, actualPresubmit)
-				assert.True(t, actualPresubmit.Optional)
+				assert.False(t, actualPresubmit.Optional)
 				assert.False(t, actualPresubmit.SkipReport)
 				assert.True(t, actualPresubmit.Decorate)
 				assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)

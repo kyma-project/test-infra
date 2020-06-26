@@ -673,11 +673,6 @@ templates:
     render:
       - to: ../prow/jobs/kyma/kyma-gke-compass-integration.yaml
         values:
-          since: "1.12"
-  - from: templates/kyma-gke-separate-compass-integration.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-gke-separate-compass-integration.yaml
-        values:
           since: "1.13"
   - from: templates/compass-gke-integration.yaml
     render:
