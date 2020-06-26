@@ -107,6 +107,12 @@ cleanup() {
         az group delete -n "${RS_GROUP}" -y
     fi
 
+    if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+    fi
+
     rm -rf "${TMP_DIR}"
 
     MSG=""
@@ -155,7 +161,7 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-   shout "Delete the kyma-installation CR and kyma-installer deployment"
+    shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
@@ -167,7 +173,7 @@ function upgradeKyma() {
     shout "Build Kyma Installer Docker image"
     date
     COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}/periodic/gke-upgradeability/kyma-project/kyma:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
     CLEANUP_DOCKER_IMAGE="true"
@@ -188,7 +194,6 @@ function upgradeKyma() {
     | sed -e "s/__VERSION__/0.0.1/g" \
     | sed -e "s/__.*__//g" \
     | kubectl apply -f-
-
 }
 
 function testKyma() {
