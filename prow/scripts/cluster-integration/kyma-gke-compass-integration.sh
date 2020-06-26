@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 discoverUnsetVar=false
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
   if [ -z "${!var}" ] ; then
     echo "ERROR: $var is not set"
     discoverUnsetVar=true
@@ -17,6 +17,8 @@ fi
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
+readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -74,7 +76,7 @@ KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster-with-compass.yaml.tpl"
+INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-with-compass-runtime-agent.yaml.tpl"
 
 function cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -186,6 +188,93 @@ function createCluster() {
   env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
 }
 
+function applyKymaOverrides() {
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
+    --data "application-operator.tests.enabled=false" \
+    --data "tests.application_connector_tests.enabled=false" \
+    --data "application-registry.tests.enabled=false" \
+    --data "console-backend-service.tests.enabled=false" \
+    --data "test.acceptance.service-catalog.enabled=false" \
+    --data "test.acceptance.external_solution.enabled=false" \
+    --data "console.test.acceptance.enabled=false" \
+    --data "test.external_solution.event_mesh.enabled=false"
+
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+    --data "application-registry.deployment.args.detailedErrorResponse=true" \
+    --label "component=application-connector"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
+    --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
+    --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
+    --data "pushgateway.enabled=true" \
+    --label "component=monitoring"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+}
+
+function applyCompassOverrides() {
+  NAMESPACE="compass-installer"
+
+  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
+    # Change timeout for kyma test to 3h
+    export KYMA_TEST_TIMEOUT=3h
+
+    # Create Config map for Provisioner Tests
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
+      --data "global.provisioning.enabled=true" \
+      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
+      --data "provisioner.tests.enabled=true" \
+      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
+      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
+      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
+      --label "component=compass"
+  fi
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
+    --data "global.connector.secrets.ca.name=connector-service-app-ca" \
+    --data "global.connector.secrets.ca.namespace=kyma-integration" \
+    --data "gateway.gateway.enabled=false" \
+    --label "component=compass"
+  
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
+    --data "global.externalServicesMock.enabled=true" \
+    --data "gateway.gateway.auditlog.enabled=true" \
+    --data "gateway.gateway.auditlog.authMode=oauth" \
+    --label "component=compass"
+}
+
+function applyCommonOverrides() {
+  NAMESPACE=${1}
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "feature-flags-overrides" \
+    --data "global.enableAPIPackages=true" \
+    --data "global.disableLegacyConnectivity=true"
+
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "global-ingress-overrides" \
+    --data "global.ingress.domainName=${DOMAIN}" \
+    --data "global.ingress.tlsCrt=${TLS_CERT}" \
+    --data "global.ingress.tlsKey=${TLS_KEY}" \
+    --data "global.environment.gardener=false"
+}
+
 function installKyma() {
   kymaUnsetVar=false
 
@@ -219,67 +308,8 @@ function installKyma() {
   date
 
   kubectl create namespace "kyma-installer"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "feature-flags-overrides" \
-    --data "global.enableAPIPackages=true" \
-    --data "global.disableLegacyConnectivity=true"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
-    --data "application-operator.tests.enabled=false" \
-    --data "tests.application_connector_tests.enabled=false" \
-    --data "application-registry.tests.enabled=false" \
-    --data "console-backend-service.tests.enabled=false" \
-    --data "test.acceptance.service-catalog.enabled=false" \
-    --data "test.acceptance.external_solution.enabled=false" \
-    --data "console.test.acceptance.enabled=false" \
-    --data "test.external_solution.event_mesh.enabled=false"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-    --data "application-registry.deployment.args.detailedErrorResponse=true" \
-    --label "component=application-connector"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=${TLS_CERT}" \
-    --data "global.tlsKey=${TLS_KEY}"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "monitoring-config-overrides" \
-    --data "global.alertTools.credentials.slack.channel=${KYMA_ALERTS_CHANNEL}" \
-    --data "global.alertTools.credentials.slack.apiurl=${KYMA_ALERTS_SLACK_API_URL}" \
-    --data "pushgateway.enabled=true" \
-    --label "component=monitoring"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --label "component=istio"
-
-  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 3h
-    export KYMA_TEST_TIMEOUT=3h
-
-    # Create Config map for Provisioner Tests
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
-      --data "provisioner.tests.enabled=true" \
-      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
-  fi
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "compass-auditlog-mock-tests" \
-    --data "global.externalServicesMock.enabled=true" \
-    --data "gateway.gateway.auditlog.enabled=true" \
-    --data "gateway.gateway.auditlog.authMode=oauth" \
-    --label "component=compass"
+  applyCommonOverrides "kyma-installer"
+  applyKymaOverrides
 
   if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"
@@ -309,6 +339,24 @@ function installKyma() {
   fi
 }
 
+installCompass() {
+  kubectl create namespace "compass-installer"
+  applyCommonOverrides "compass-installer"
+  applyCompassOverrides
+
+  echo "Use master Compass artifacts"
+  readonly COMPASS_MASTER_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  readonly COMPASS_TMP_DIR="/tmp/compass-gke-integration"
+  gsutil cp "${COMPASS_MASTER_ARTIFACTS}/compass-installer.yaml" ${COMPASS_TMP_DIR}/compass-installer.yaml
+  gsutil cp "${COMPASS_MASTER_ARTIFACTS}/is-installed.sh" ${COMPASS_TMP_DIR}/is-installed.sh
+  chmod +x ${COMPASS_TMP_DIR}/is-installed.sh
+  kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
+
+  shout "Installation triggered"
+  date
+  "${COMPASS_TMP_DIR}"/is-installed.sh --timeout 30m
+}
+
 trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
@@ -325,9 +373,14 @@ date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
-shout "Install Kyma with Compass"
+shout "Install Kyma components"
 date
 installKyma
+
+shout "Install Compass on top of Kyma"
+date
+installCompass
+
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Test Kyma with Compass"
