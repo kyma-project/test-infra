@@ -149,7 +149,7 @@ function getLastReleaseVersion() {
 
 function installKyma() {
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-
+    mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         shout "Couldn't grab latest version from GitHub API, stopping."
         exit 1
@@ -240,21 +240,21 @@ function upgradeKyma() {
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
+        --output /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
 
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+        --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
 
     shout "Install Tiller from version ${TARGET_VERSION}"
     date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
+    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
     
     shout "Wait until tiller is correctly rolled out"
     kubectl -n kube-system rollout status deployment/tiller-deploy
     
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
 
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
