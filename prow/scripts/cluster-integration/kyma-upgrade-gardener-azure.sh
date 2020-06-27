@@ -258,7 +258,7 @@ function upgradeKyma() {
 
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+    "${KYMA_SOURCES_DIR}"/installation/scripts/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 }
 
 remove_addons_if_necessary() {
