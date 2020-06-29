@@ -18,12 +18,6 @@ gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-kyma-cli-stable: "true"
   preset-creds-aks-kyma-integration: "true"
   preset-kyma-guard-bot-github-token: "true"
-  preset-gc-compute-envs: "true"
-  preset-gc-project-env: "true"
-  preset-sa-test-gcr-push: "true"
-  preset-docker-push-repository-gke-integration: "true"
-  preset-dind-enabled: "true"
-  preset-kyma-artifacts-bucket: "true"
 
 
 gardener_azure_job_template: &gardener_azure_job_template

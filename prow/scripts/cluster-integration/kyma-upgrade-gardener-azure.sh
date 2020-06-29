@@ -318,9 +318,6 @@ COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]"
 ### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# Local variables
-# DNS_SUBDOMAIN="${COMMON_NAME}"
-
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
