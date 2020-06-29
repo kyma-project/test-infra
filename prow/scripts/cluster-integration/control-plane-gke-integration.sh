@@ -245,8 +245,8 @@ function applyCompassOverrides() {
       --data "global.provisioning.enabled=true" \
       --data "provisioner.security.skipTLSCertificateVeryfication=true" \
       --data "provisioner.tests.enabled=true" \
-      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
+      --data "gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
+      --data "gardener.project=$GARDENER_PROJECT_NAME" \
       --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
       --label "component=compass"
   fi
