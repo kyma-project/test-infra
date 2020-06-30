@@ -283,7 +283,7 @@ mkdir -p /tmp/kyma-gke-integration
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-secret.sh" --name "serverless-external-registry-overrides" \
     --data "dockerRegistry.enableInternal=false" \
     --data "dockerRegistry.username=_json_key" \
-    --file "dockerRegistry.password=${dockerPassword}" \
+    --file "dockerRegistry.jsonKey=${dockerPassword}" \
     --data "dockerRegistry.serverAddress=$(echo "${DOCKER_PUSH_REPOSITORY}" | cut -d'/' -f1)" \
     --data "dockerRegistry.registryAddress=${DOCKER_PUSH_REPOSITORY}/functions" \
     --label "component=serverless"
