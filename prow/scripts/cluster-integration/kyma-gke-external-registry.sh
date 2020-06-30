@@ -151,7 +151,7 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gkeext-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-external/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
     export KYMA_INSTALLER_IMAGE
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gkeext-rel"
@@ -164,7 +164,7 @@ else
     readonly COMMON_NAME_PREFIX="gkeext-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-external/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
 
@@ -239,6 +239,10 @@ fi
 CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
+shout "Install Tiller"
+date
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
 shout "Generate self-signed certificate"
 date
