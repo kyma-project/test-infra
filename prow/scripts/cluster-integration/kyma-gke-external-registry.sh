@@ -116,6 +116,19 @@ cleanup() {
 
 trap cleanup EXIT INT
 
+verify_internal_registry() {
+    local pods
+    pods="$(kubectl get pods --all-namespaces | grep docker-registry)"
+
+    if [[ -n "${pods}" ]]; then
+        echo "Pods with docker registry are running:"
+        echo "${pods}"
+        return 1
+    fi
+
+    return 0
+}
+
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
@@ -305,6 +318,10 @@ fi
 shout "Test Kyma"
 date
 KYMA_TESTS="serverless serverless-long core-test-external-solution" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/kyma-testing.sh"
+
+shout "Verify if internal docker registry is disabled"
+date
+verify_internal_registry
 
 shout "Success"
 
