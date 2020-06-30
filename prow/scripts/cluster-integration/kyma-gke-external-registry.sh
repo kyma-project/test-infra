@@ -277,10 +277,13 @@ kubectl create namespace "kyma-installer"
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
 
+dockerPassword=/tmp/kyma-gke-integration/dockerPassword.json
+mkdir -p /tmp/kyma-gke-integration
+< "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" tr -d '\n' > /tmp/kyma-gke-integration/dockerPassword.json
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-secret.sh" --name "serverless-external-registry-overrides" \
     --data "dockerRegistry.enableInternal=false" \
     --data "dockerRegistry.username=_json_key" \
-    --data "dockerRegistry.password=$(< "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" tr -d '\n')" \
+    --file "dockerRegistry.password=${dockerPassword}" \
     --data "dockerRegistry.serverAddress=$(echo "${DOCKER_PUSH_REPOSITORY}" | cut -d'/' -f1)" \
     --data "dockerRegistry.registryAddress=${DOCKER_PUSH_REPOSITORY}/functions" \
     --label "component=serverless"
