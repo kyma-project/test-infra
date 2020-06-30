@@ -309,13 +309,13 @@ fi
 
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
-shout "Test Kyma"
-date
-KYMA_TESTS="serverless serverless-long core-test-external-solution" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/kyma-testing.sh"
-
 shout "Verify if internal docker registry is disabled"
 date
 verify_internal_registry
+
+shout "Test Kyma"
+date
+KYMA_TESTS="serverless serverless-long core-test-external-solution" "${TEST_INFRA_SOURCES_DIR}/prow/scripts/kyma-testing.sh"
 
 shout "Success"
 
