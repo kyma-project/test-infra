@@ -280,7 +280,7 @@ kubectl create namespace "kyma-installer"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-secret.sh" --name "serverless-external-registry-overrides" \
     --data "dockerRegistry.enableInternal=false" \
     --data "dockerRegistry.username=_json_key" \
-    --file "dockerRegistry.password=${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" \
+    --data "dockerRegistry.password=$(< "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" base64 | tr -d '\n')" \
     --data "dockerRegistry.serverAddress=$(echo "${DOCKER_PUSH_REPOSITORY}" | cut -d'/' -f1)" \
     --data "dockerRegistry.registryAddress=${DOCKER_PUSH_REPOSITORY}/functions" \
     --label "component=serverless"
