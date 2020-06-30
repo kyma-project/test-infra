@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^release-(1\.13|1\.12|1\.11)-core-ui$
-  run_if_changed: "^core-ui/|^components/|^shared/"
+  run_if_changed: "^core-ui/|^components/|^shared/|^package.json"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
