@@ -6,6 +6,8 @@ The prowjobparser is a helper tool which parses all ProwJobs under the provided 
 
 ## Usage
 
+ `~/go/src/github.com/dekiel/test-infra/development/prowjobparser$ go run main.go -c ../../../../kyma-project/test-infra/prow/config.yaml -j ../../../../kyma-project/test-infra/prow/jobs -i preset-sa-gke-kyma-integration -e preset-sa-kyma-artifacts`
+
 ### CLI parameters
 
 The prowjobsparser accepts the following command line parameters:
