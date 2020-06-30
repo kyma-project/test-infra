@@ -399,6 +399,11 @@ shout "Create new cluster"
 date
 createCluster
 
+shout "Install tiller"
+date
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
+
 shout "Generate self-signed certificate"
 date
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
@@ -412,6 +417,12 @@ installKyma
 shout "Install Compass"
 date
 installCompass
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+
+shout "Install Control Plane"
+date
+installControlPlane
 
 shout "Test Kyma, Compass and Control Plane"
 date
