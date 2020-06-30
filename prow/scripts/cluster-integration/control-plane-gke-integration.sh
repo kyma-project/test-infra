@@ -121,7 +121,7 @@ function cleanup() {
 
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        shout "Delete temporary Compass-Installer Docker image"
+        shout "Delete temporary KCP-Installer Docker image"
         date
         KYMA_INSTALLER_IMAGE="${KCP_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
     fi
@@ -331,8 +331,8 @@ function installCompass() {
 
   readonly TMP_DIR="/tmp/kcp-gke-integration"
 
-  gsutil cp "${COMPASS_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
-  gsutil cp "${COMPASS_ARTIFACTS}/is-compass-installed.sh" ${TMP_DIR}/is-compass-installed.sh
+  gsutil cp "${KCP_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
+  gsutil cp "${KCP_ARTIFACTS}/is-compass-installed.sh" ${TMP_DIR}/is-compass-installed.sh
   chmod +x ${TMP_DIR}/is-compass-installed.sh
   kubectl apply -f ${TMP_DIR}/compass-installer.yaml
 
@@ -402,7 +402,7 @@ createCluster
 shout "Install tiller"
 date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
+"${KCP_SCRIPTS_DIR}"/install-tiller.sh
 
 shout "Generate self-signed certificate"
 date
