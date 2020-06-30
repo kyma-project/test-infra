@@ -277,7 +277,7 @@ kubectl create namespace "kyma-installer"
     --data "dockerRegistry.enableInternal=false" \
     --data "dockerRegistry.username=_json_key" \
     --file "dockerRegistry.password=${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" \
-    --data "dockerRegistry.serverAddress=gcr.io" \
+    --data "dockerRegistry.serverAddress=$(echo "${DOCKER_PUSH_REPOSITORY}" | cut -d'/' -f1)" \
     --data "dockerRegistry.registryAddress=${DOCKER_PUSH_REPOSITORY}/functions" \
     --label "component=serverless"
 
