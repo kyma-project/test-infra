@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^release-(1\.13|1\.12)-compass$
-  run_if_changed: "^compass/|^components/|^shared/"
+  run_if_changed: "^compass/|^components/|^shared/|^package.json"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be

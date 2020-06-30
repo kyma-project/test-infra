@@ -144,6 +144,7 @@ console_generic_component: &console_generic_component
   additionalRunIfChanged:
     - ^components/
     - ^shared/
+    - ^package.json
 
 knative_kafka_component: &knative_kafka_component
   repository: github.com/kyma-incubator/knative-kafka
@@ -635,7 +636,8 @@ templates:
           <<: *console_generic_component
           path: core
           since: "1.12"
-          additionalRunIfChanged: []
+          additionalRunIfChanged: 
+            - ^package.json
       - to: ../prow/jobs/console/content/content.yaml
         values:
           <<: *console_generic_component
@@ -643,6 +645,7 @@ templates:
           since: "1.12"
           additionalRunIfChanged:
             - ^components/
+            - ^package.json
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
