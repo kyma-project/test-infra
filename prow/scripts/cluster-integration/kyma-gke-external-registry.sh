@@ -118,7 +118,7 @@ trap cleanup EXIT INT
 
 verify_internal_registry() {
     local pods
-    pods="$(kubectl get pods --all-namespaces | grep docker-registry)"
+    pods="$(kubectl get pods --all-namespaces | grep docker-registry || echo "")"
 
     if [[ -n "${pods}" ]]; then
         echo "Pods with docker registry are running:"
