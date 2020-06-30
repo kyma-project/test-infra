@@ -26,20 +26,20 @@ function usage {
 
 function checkName {
     if [[ -z "${NAME}" ]]; then
-	    echo "error: configmap name has not been specified"
+	    echo "error: secret name has not been specified"
 	    exit 1
     fi
 }
 
 function checkIfExists {
-    kubectl get configmap -n "${NAMESPACE}" "${NAME}" >> /dev/null 2>&1 \
-        && echo "error: configmap ${NAME} already exists in the ${NAMESPACE} namespace. Exiting..."  \
+    kubectl get secret -n "${NAMESPACE}" "${NAME}" >> /dev/null 2>&1 \
+        && echo "error: secret ${NAME} already exists in the ${NAMESPACE} namespace. Exiting..."  \
         && exit 1
 }
 
-function createConfigmap {
-    kubectl create configmap -n ${NAMESPACE} ${NAME} "${DATA[@]}"
-    kubectl label configmap -n ${NAMESPACE} ${NAME} "${LABELS[@]}"
+function createSecret {
+    kubectl create secret -n ${NAMESPACE} ${NAME} "${DATA[@]}"
+    kubectl label secret -n ${NAMESPACE} ${NAME} "${LABELS[@]}"
 }
 
 while [[ $# -gt 0 ]]
@@ -85,4 +85,4 @@ done
 
 checkName
 checkIfExists
-createConfigmap
+createSecret
