@@ -312,7 +312,7 @@ function installKyma() {
   applyCommonOverrides "kyma-installer"
   applyKymaOverrides
   
-  readonly TMP_DIR="/tmp/kcp-gke-integration"
+  TMP_DIR="/tmp/kcp-gke-integration"
 
   gsutil cp "${KCP_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
   gsutil cp "${KCP_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
@@ -329,7 +329,7 @@ function installCompass() {
   applyCommonOverrides "compass-installer"
   applyCompassOverrides
 
-  readonly TMP_DIR="/tmp/kcp-gke-integration"
+  TMP_DIR="/tmp/kcp-gke-integration"
 
   gsutil cp "${KCP_ARTIFACTS}/compass-installer.yaml" ${TMP_DIR}/compass-installer.yaml
   gsutil cp "${KCP_ARTIFACTS}/is-compass-installed.sh" ${TMP_DIR}/is-compass-installed.sh
