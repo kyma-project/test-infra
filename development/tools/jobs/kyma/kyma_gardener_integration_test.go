@@ -99,9 +99,9 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 	assert.True(t, job.Optional)
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRef(t, job.JobBase.UtilityConfig, []prowapi.Refs{{
-		Org:       "k15r",
+		Org:       "kyma-project",
 		Repo:      "test-infra",
-		BaseRef:   "fix-azure-jobs-new-script",
+		BaseRef:   "master",
 		PathAlias: "github.com/kyma-project/test-infra",
 	}})
 	assert.Equal(t, tester.ImageKymaIntegrationK15, job.Spec.Containers[0].Image)
