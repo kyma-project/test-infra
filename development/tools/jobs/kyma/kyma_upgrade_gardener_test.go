@@ -36,5 +36,3 @@ func TestKymaGardenerAzureUpgradeJobPeriodics(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "RS_GROUP", "kyma-gardener-upgrade-azure")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
-
-
