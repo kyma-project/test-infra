@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
+#Description: Kyma upgrade plan on Gardener with Azure. This scripts implements a pipeline that consists of many steps. The purpose is to install, upgrade, and test Kyma using the CLI on a real Gardener Azure cluster.
 #
 #
 #Expected vars:
