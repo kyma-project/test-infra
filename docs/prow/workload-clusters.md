@@ -1,4 +1,4 @@
-# Prow workload clusters
+# Prow Workload Clusters
 
 It's a description of prow workload clusters. These are clusters where prow is scheduling pods which execute prowjob logic. All workload clusters are aggregated under kyma-prow GCP project. We use two workload clusters for trusted and untrusted prowjobs.
 
