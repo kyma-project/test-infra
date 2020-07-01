@@ -4,12 +4,13 @@ It's a description of prow workload clusters. These are clusters where prow is s
 
 ## Clusters design
 
-Clusters have enabled autoupgrade and follow stable channel.
-Clusters have enabled autoscaling for all node pools.
-Clusters are private with unrestricted access to k8s API from Internet domain.
-Clusters use CloudNAT and Private Google Access.
-Clusters are regional.
-Clusters use separate subnets for nodes, pods and services.
+Workload clusters:
+- Have autoupgrade enabled and follow a stable channel.
+- Have autoscaling enabled for all node pools.
+- Are [private](https://cloud.google.com/kubernetes-engine/docs/concepts/private-cluster-concept), and have unrestricted access to the k8s API from the Internet domain.
+- Use Cloud NAT and Private Google Access.
+- Are regional.
+- Use separate subnets for nodes, Pods, and services.
 
 ```gcloud container clusters list
    NAME                          LOCATION        MASTER_VERSION  MASTER_IP       MACHINE_TYPE   NODE_VERSION    NUM_NODES  STATUS
