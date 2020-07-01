@@ -99,7 +99,7 @@ function main() {
   log::info "- Running Kyma tests"
   # match all tests
   # shellcheck disable=SC2086
-  kyma test run \
+  kyma test run ${KYMA_TESTS} \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
