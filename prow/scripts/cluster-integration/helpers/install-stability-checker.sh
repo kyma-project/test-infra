@@ -12,6 +12,18 @@ VARIABLES=(
    TEST_RESULT_WINDOW_TIME
 )
 
+readonly HELM_VERSION="v3.2.4"
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TMP_DIR="$(mktemp -d)"
+readonly TMP_BIN_DIR="${TMP_DIR}/bin"
+mkdir -p "${TMP_BIN_DIR}"
+export PATH="${TMP_BIN_DIR}:${PATH}"
+readonly LIB_DIR="$( cd "${SCRIPT_DIR}/../../lib" && pwd )"
+# shellcheck disable=SC1090
+source "${LIB_DIR}/helm.sh"
+# shellcheck disable=SC1090
+source "${LIB_DIR}/host.sh"
+
 discoverUnsetVar=false
 
 for var in "${VARIABLES[@]}"; do
@@ -25,6 +37,8 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function installStabilityChecker() {
+  helm::ensure_client "${HELM_VERSION}" "$(host::os)" "${TMP_BIN_DIR}"
+
 	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
 	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"Test status: ([0-9A-Za-z_-]+) - Failed"}
