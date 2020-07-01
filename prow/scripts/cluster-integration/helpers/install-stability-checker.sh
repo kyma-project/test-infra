@@ -38,7 +38,8 @@ fi
 
 function installStabilityChecker() {
   curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
+  helm version
+  which helm
 	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
 	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"Test status: ([0-9A-Za-z_-]+) - Failed"}
