@@ -22,7 +22,7 @@ Workload clusters:
 
 Clusters are located in separate networks for trusted and untrusted components. Each network provides three subnets for cluster nodes, Pods, and services.
 There is no peering between networks, thus clusters are isolated on the network level.
-Each cluster has dedicated Cloud Router with CloudNAT and external IP. This provide outgoing connectivity for clusters and fixed external IP from which all traffic is seen.
+Each cluster has a dedicated Cloud Router with Cloud NAT and an external IP address. This provides outgoing connectivity for clusters and a fixed external IP to see all traffic originated from Pods and worker nodes.
 
 ```
 gcloud compute networks list
