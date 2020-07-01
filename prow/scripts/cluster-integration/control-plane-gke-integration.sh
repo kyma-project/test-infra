@@ -251,9 +251,6 @@ kind: ConfigMap
 metadata:
   name: "compass-gateway-auditlog-config"
   namespace: "kcp-system"
-  labels:
-    app: {{ .Chart.Name }}
-    release: {{ .Release.Name }}
 data:
   auditlog-url: "http://compass-external-services-mock.kcp-system.svc.cluster.local:80"
   auditlog-config-path: "audit-log/v2/configuration-changes"
@@ -296,7 +293,6 @@ function applyControlPlaneOverrides() {
 
   #Create Config map for Provisioner
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-overrides" \
-    --data "global.provisioning.enabled=true" \
     --data "security.skipTLSCertificateVeryfication=true" \
     --data "gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
     --data "gardener.project=$GARDENER_PROJECT_NAME" \
