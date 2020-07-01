@@ -1,6 +1,6 @@
-# Prow workload clusters
+# Prow Workload Clusters
 
-It's a description of prow workload clusters. These are clusters where prow is scheduling pods which execute prowjob logic. All workload clusters are aggregated under kyma-prow GCP project. We use two workload clusters for trusted and untrusted prowjobs.
+This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
 
 ## Clusters design
 
@@ -20,8 +20,8 @@ Workload clusters:
 
 ## Infrastructure design
 
-Cluster are located in separate networks for trusted and untrusted components. Each networks provide three subnets for cluster nodes, pods and services.
-There is no peering between networks, thus clusters are isolated on network level.
+Clusters are located in separate networks for trusted and untrusted components. Each network provides three subnets for cluster nodes, Pods, and services.
+There is no peering between networks, thus clusters are isolated on the network level.
 Each cluster has dedicated Cloud Router with CloudNAT and external IP. This provide outgoing connectivity for clusters and fixed external IP from which all traffic is seen.
 
 ```
@@ -47,9 +47,9 @@ untrusted-workload-kyma-prow  _____________   EXTERNAL                    europe
 ```
 ## Prow design
 
-Prow is accessing workload clusters using x509 client certificates with cluster admin role.
-Certificates are combined in to kubeconfig file and stored as a secret on prow cluster.
-Jobs use context names to indicate target workload cluster to run.
+Prow accesses workload clusters using X.509 client certificates and the **cluster-admin** role.
+Certificates are combined into a kubeconfig file and stored as a secret on a Prow cluster.
+Jobs use context names to indicate the target workload cluster to run.
 
 ```
 k config get-contexts --kubeconfig workload-clusters-kubeconfig.yaml
