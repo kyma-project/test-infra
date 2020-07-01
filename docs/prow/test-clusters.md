@@ -1,6 +1,6 @@
 # Prow Test Clusters
 
-This document gathers information about test clusters that Prow jobs build. All test clusters (a.k.a. workload clusters) are built in the `sap-kyma-prow-workloads` project.
+This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
 
 
 ## Cluster authorization
