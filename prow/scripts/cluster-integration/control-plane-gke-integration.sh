@@ -245,7 +245,12 @@ function applyCompassOverrides() {
 
 function applyKebResources() {
 
-  echo $(cat << EOF
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kcp-system
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -274,7 +279,7 @@ data:
   auditlog-config-path: "/path"
   auditlog-security-path: "/path"
   auditlog-tenant: "tnt"
-EOF) | kubectl apply -f-
+EOF
 }
 
 function applyControlPlaneOverrides() {
