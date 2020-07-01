@@ -244,22 +244,8 @@ function applyCompassOverrides() {
 }
 
 function applyKebResources() {
-  local auditLogCM
-  auditLogCM=$(cat << EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "kcp-auditlog-config"
-  namespace: "kcp-system"
-data:
-  auditlog-url: "http://compass-external-services-mock.kcp-system.svc.cluster.local:80"
-  auditlog-config-path: "audit-log/v2/configuration-changes"
-  auditlog-security-path: "audit-log/v2/security-events"
-  auditlog-tenant: "56068fc4-a6d9-4623-ad06-405c009c830a"
-EOF
-)
-  local auditLogScript
-  auditLogScript=$(cat << EOF
+
+  echo $(cat << EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -267,25 +253,28 @@ metadata:
   namespace: kcp-system
 data:
   script: ""
-EOF
-)
-  local auditLogSecret
-  auditLogSecret=$(cat << EOF
+---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: "kcp-auditlog-secret"
-  namespace: "kcp-system"
+  name: compass-gateway-auditlog-secret
+  namespace: kcp-system
 type: Opaque
 data:
-  auditlog-user: {{ "client_id" | b64enc | quote }}
-  auditlog-password: {{ "client_secret" | b64enc | quote }}
-EOF
-)
-
- "${KCP_SCRIPTS_DIR}"/concat-yamls.sh "${auditLogCM}" "${auditLogScript}" "${auditLogSecret}"\
-  | kubectl apply -f-
-
+  auditlog-user: "dXNyCg=="
+  auditlog-password: "dXNyCg=="
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compass-gateway-auditlog-config
+  namespace: kcp-system
+data:
+  auditlog-url: "http://dummy.url"
+  auditlog-config-path: "/path"
+  auditlog-security-path: "/path"
+  auditlog-tenant: "tnt"
+EOF) | kubectl apply -f-
 }
 
 function applyControlPlaneOverrides() {
