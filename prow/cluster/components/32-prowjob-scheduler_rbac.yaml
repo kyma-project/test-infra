@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prowjob-scheduler
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prowjob-scheduler
+  namespace: default
+rules:
+  - apiGroups:
+      - prow.k8s.io
+    resources:
+      - prowjobs
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: prowjob-scheduler
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prowjob-scheduler
+subjects:
+  - kind: ServiceAccount
+    name: prowjob-scheduler
+    namespace: default
