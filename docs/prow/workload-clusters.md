@@ -20,7 +20,7 @@ Clusters use separate subnets for nodes, pods and services.
 ## Infrastructure design
 
 Clusters are located in separate networks for trusted and untrusted components. Each network provides three subnets for cluster nodes, Pods, and services.
-There is no peering between networks, thus clusters are isolated on network level.
+There is no peering between networks, thus clusters are isolated on the network level.
 Each cluster has dedicated Cloud Router with CloudNAT and external IP. This provide outgoing connectivity for clusters and fixed external IP from which all traffic is seen.
 
 ```
