@@ -3,9 +3,9 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-# Kubectl 1.15 and CLUSTER_VERSION=1.15
-base_image_k15: &base_image_k15
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15
+# Kubectl 1.16 and CLUSTER_VERSION=1.16
+base_image_k16: &base_image_k16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16
 
 base_container_config: &base_container_config
   securityContext:
@@ -31,15 +31,15 @@ gke_integration_job_template: &gke_integration_job_template
   path_alias: github.com/kyma-project/control-plane
   max_concurrency: 10
 
-gke_integration_job_template_k15: &gke_integration_job_template_k15
+gke_integration_job_template_k16: &gke_integration_job_template_k16
   <<: *gke_integration_job_template
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         <<: *base_container_config
 
 gke_integration_job_template_latest: &gke_integration_job_template_latest
-  <<: *gke_integration_job_template_k15
+  <<: *gke_integration_job_template_k16
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
@@ -61,7 +61,7 @@ presubmits: # runs on PRs
     - name: pre-master-control-plane-gke-provisioner-integration
       branches:
         - ^master$
-      <<: *gke_integration_job_template_k15
+      <<: *gke_integration_job_template_k16
       run_if_changed: "resources/provisioner"
       labels:
         preset-build-pr: "true"

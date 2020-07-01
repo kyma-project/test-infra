@@ -262,7 +262,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: compass-gateway-auditlog-secret
+  name: kcp-auditlog-secret
   namespace: kcp-system
 type: Opaque
 data:
@@ -272,7 +272,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: compass-gateway-auditlog-config
+  name: kcp-auditlog-config
   namespace: kcp-system
 data:
   auditlog-url: "http://dummy.url"
