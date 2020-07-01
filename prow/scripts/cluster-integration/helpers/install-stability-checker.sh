@@ -37,7 +37,7 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function installStabilityChecker() {
-  helm::ensure_client "${HELM_VERSION}" "$(host::os)" "${TMP_BIN_DIR}"
+  curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
