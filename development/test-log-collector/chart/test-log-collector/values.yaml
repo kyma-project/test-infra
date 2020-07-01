@@ -1,0 +1,11 @@
+image:
+  repository: aerfio/joby
+  tag: latest
+  pullPolicy: Always
+
+serviceAccountName: ""
+
+slackToken: ""
+
+nameOverride: ""
+fullnameOverride: ""

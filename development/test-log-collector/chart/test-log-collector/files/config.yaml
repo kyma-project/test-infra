@@ -1,0 +1,16 @@
+- channelName: "#dontworkbruh"
+  channelID: "C014YQ2R44E"
+  onlyReportFailure: false
+  testCases:
+    - default
+- channelName: "#dontworkbruh"
+  channelID: "C014YQ2R44E"
+  onlyReportFailure: false
+  testCases:
+    - "rafter"
+- channelName: "#serverless-test"
+  channelID: "C0164BCSY75"
+  onlyReportFailure: false
+  testCases:
+    - serverless-long
+    - serverless
