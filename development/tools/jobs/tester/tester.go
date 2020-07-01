@@ -50,7 +50,7 @@ const (
 	// ImageKymaIntegrationK14 represents kyma integration image with kubectl 1.14
 	ImageKymaIntegrationK14 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.14"
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.15
-	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15"
+	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15"
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
 	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
