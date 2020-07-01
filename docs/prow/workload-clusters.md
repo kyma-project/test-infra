@@ -47,7 +47,7 @@ untrusted-workload-kyma-prow  _____________   EXTERNAL                    europe
 ## Prow design
 
 Prow accesses workload clusters using X.509 client certificates and the **cluster-admin** role.
-Certificates are combined in to kubeconfig file and stored as a secret on prow cluster.
+Certificates are combined into a kubeconfig file and stored as a secret on a Prow cluster.
 Jobs use context names to indicate target workload cluster to run.
 
 ```
