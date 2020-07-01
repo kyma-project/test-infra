@@ -18,14 +18,6 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KCP_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
-if [[ "$BUILD_TYPE" == "pr" ]]; then
-  KCP_VERSION="PR-${PULL_NUMBER}"
-else
-  KCP_VERSION="master-${COMMIT_ID}"
-fi
-readonly KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -58,6 +50,14 @@ else
   KCP_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-control-plane-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
   export KCP_INSTALLER_IMAGE
 fi
+
+readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
+if [[ "$BUILD_TYPE" == "pr" ]]; then
+  KCP_VERSION="PR-${PULL_NUMBER}"
+else
+  KCP_VERSION="master-${COMMIT_ID}"
+fi
+readonly KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
 
 ### Cluster name must be less than 40 characters!
 COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
@@ -236,21 +236,6 @@ function applyKymaOverrides() {
 function applyCompassOverrides() {
   NAMESPACE="compass-installer"
 
-  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 3h
-    export KYMA_TEST_TIMEOUT=3h
-
-    # Create Config map for Provisioner Tests
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
-      --data "provisioner.tests.enabled=true" \
-      --data "gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "gardener.project=$GARDENER_PROJECT_NAME" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
-  fi
-
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
     --data "global.externalServicesMock.enabled=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
@@ -258,9 +243,54 @@ function applyCompassOverrides() {
     --label "component=compass"
 }
 
-# TODO: Update overrides after Control Plane chart modification
+function applyKebResources() {
+
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kcp-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auditlog-script
+  namespace: kcp-system
+data:
+  script: ""
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-auditlog-secret
+  namespace: kcp-system
+type: Opaque
+data:
+  auditlog-user: "dXNyCg=="
+  auditlog-password: "dXNyCg=="
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kcp-auditlog-config
+  namespace: kcp-system
+data:
+  auditlog-url: "http://dummy.url"
+  auditlog-config-path: "/path"
+  auditlog-security-path: "/path"
+  auditlog-tenant: "tnt"
+EOF
+}
+
 function applyControlPlaneOverrides() {
   NAMESPACE="kcp-installer"
+
+  #Create Config map for Provisioner
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-overrides" \
+    --data "security.skipTLSCertificateVeryfication=true" \
+    --data "gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
+    --data "gardener.project=$GARDENER_PROJECT_NAME" \
+    --label "component=provisioner"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
     # Change timeout for kyma test to 3h
@@ -268,13 +298,9 @@ function applyControlPlaneOverrides() {
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
-      --data "provisioner.tests.enabled=true" \
-      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
+      --data "tests.enabled=true" \
+      --data "tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
+      --label "component=provisioner"
   fi
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
@@ -282,6 +308,8 @@ function applyControlPlaneOverrides() {
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --label "component=compass"
+
+  applyKebResources
 }
 
 function applyCommonOverrides() {
