@@ -288,7 +288,6 @@ elif [[ "${ACTION}" == "create" ]]; then
 
     setupKubeConfig
     installKyma
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 else
    shoutFail "None of the actions met"
 fi

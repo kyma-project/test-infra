@@ -418,7 +418,6 @@ shout "Install Compass"
 date
 installCompass
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Install Control Plane"
 date

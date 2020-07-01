@@ -47,8 +47,7 @@ function installStabilityChecker() {
 	        --namespace=kyma-system \
 	        --name=stability-checker \
 	        --wait \
-	        --timeout=600 \
-	        --tls
+	        --timeout=600
 }
 
 installStabilityChecker
