@@ -236,21 +236,6 @@ function applyKymaOverrides() {
 function applyCompassOverrides() {
   NAMESPACE="compass-installer"
 
-  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 3h
-    export KYMA_TEST_TIMEOUT=3h
-
-    # Create Config map for Provisioner Tests
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
-      --data "provisioner.tests.enabled=true" \
-      --data "gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "gardener.project=$GARDENER_PROJECT_NAME" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
-  fi
-
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
     --data "global.externalServicesMock.enabled=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
@@ -258,9 +243,16 @@ function applyCompassOverrides() {
     --label "component=compass"
 }
 
-# TODO: Update overrides after Control Plane chart modification
 function applyControlPlaneOverrides() {
   NAMESPACE="kcp-installer"
+
+  #Create Config map for Provisioner
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-overrides" \
+    --data "global.provisioning.enabled=true" \
+    --data "provisioner.security.skipTLSCertificateVeryfication=true" \
+    --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
+    --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
+    --label "component=provisioner"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
     # Change timeout for kyma test to 3h
@@ -268,13 +260,9 @@ function applyControlPlaneOverrides() {
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "global.provisioning.enabled=true" \
-      --data "provisioner.security.skipTLSCertificateVeryfication=true" \
       --data "provisioner.tests.enabled=true" \
-      --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-      --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
       --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=compass"
+      --label "component=provisioner"
   fi
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
@@ -341,6 +329,53 @@ function installCompass() {
   "${TMP_DIR}"/is-compass-installed.sh --timeout 30m
 }
 
+function applyKebResources() {
+  local auditLogCM=$(cat << EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "compass-gateway-auditlog-config"
+  namespace: "kcp-system"
+  labels:
+    app: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+data:
+  auditlog-url: "http://compass-external-services-mock.kcp-system.svc.cluster.local:80"
+  auditlog-config-path: "audit-log/v2/configuration-changes"
+  auditlog-security-path: "audit-log/v2/security-events"
+  auditlog-tenant: "56068fc4-a6d9-4623-ad06-405c009c830a"
+EOF
+)
+
+  local auditLogScript=$(cat << EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auditlog-script
+  namespace: kcp-system
+data:
+  script: ""
+EOF
+)
+
+  local auditLogSecret=$(cat << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "compass-gateway-auditlog-secret"
+  namespace: "kcp-system"
+type: Opaque
+data:
+  auditlog-user: {{ "client_id" | b64enc | quote }}
+  auditlog-password: {{ "client_secret" | b64enc | quote }}
+EOF
+)
+
+ "${KCP_SCRIPTS_DIR}"/concat-yamls.sh "${auditLogCM}" "${auditLogScript}" "${auditLogSecret}"\
+  | kubectl apply -f-
+
+}
+
 function installControlPlane() {
   kcpUnsetVar=false
 
@@ -365,6 +400,7 @@ function installControlPlane() {
   kubectl create namespace "kcp-installer"
   applyCommonOverrides "kcp-installer"
   applyControlPlaneOverrides
+  applyKebResources
 
   echo "Manual concatenating yamls"
   "${KCP_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \

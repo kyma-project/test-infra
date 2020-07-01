@@ -18,6 +18,8 @@ base_container_config: &base_container_config
   env:
     - name: CLOUDSDK_COMPUTE_ZONE
       value: "europe-west4-b"
+    - name: RUN_PROVISIONER_TEST
+      value: "true"
   resources:
     requests:
       memory: 200Mi
@@ -56,12 +58,11 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-master-control-plane-gke-integration
+    - name: pre-master-control-plane-gke-provisioner-integration
       branches:
         - ^master$
       <<: *gke_integration_job_template_k15
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "resources/provisioner"
       labels:
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
@@ -71,7 +72,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-project/control-plane:
-    - name: post-master-control-plane-gke-integration
+    - name: post-master-control-plane-gke-provisioner-integration
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest
