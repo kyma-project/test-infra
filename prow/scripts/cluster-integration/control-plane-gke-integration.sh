@@ -18,14 +18,6 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KCP_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
-if [[ "$BUILD_TYPE" == "pr" ]]; then
-  KCP_VERSION="PR-${PULL_NUMBER}"
-else
-  KCP_VERSION="master-${COMMIT_ID}"
-fi
-readonly KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
@@ -58,6 +50,14 @@ else
   KCP_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-control-plane-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
   export KCP_INSTALLER_IMAGE
 fi
+
+readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
+if [[ "$BUILD_TYPE" == "pr" ]]; then
+  KCP_VERSION="PR-${PULL_NUMBER}"
+else
+  KCP_VERSION="master-${COMMIT_ID}"
+fi
+readonly KCP_ARTIFACTS="${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${KCP_VERSION}"
 
 ### Cluster name must be less than 40 characters!
 COMMON_NAME=$(echo "${COMMON_NAME}" | tr "[:upper:]" "[:lower:]")
