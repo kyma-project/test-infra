@@ -12,17 +12,6 @@ VARIABLES=(
    TEST_RESULT_WINDOW_TIME
 )
 
-readonly HELM_VERSION="v3.2.4"
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TMP_DIR="$(mktemp -d)"
-readonly TMP_BIN_DIR="${TMP_DIR}/bin"
-mkdir -p "${TMP_BIN_DIR}"
-export PATH="${TMP_BIN_DIR}:${PATH}"
-readonly LIB_DIR="$( cd "${SCRIPT_DIR}/../../lib" && pwd )"
-# shellcheck disable=SC1090
-source "${LIB_DIR}/helm.sh"
-# shellcheck disable=SC1090
-source "${LIB_DIR}/host.sh"
 
 discoverUnsetVar=false
 
@@ -38,8 +27,7 @@ fi
 
 function installStabilityChecker() {
   curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-  helm version
-  which helm
+
 	SC_DIR=${TEST_INFRA_SOURCES_DIR}/stability-checker
 
 	STATS_FAILING_TEST_REGEXP=${STATS_FAILING_TEST_REGEXP:-"Test status: ([0-9A-Za-z_-]+) - Failed"}
@@ -61,7 +49,7 @@ function installStabilityChecker() {
 	        "${SC_DIR}/deploy/chart/stability-checker" \
 	        --namespace=kyma-system \
 	        --wait \
-	        --timeout=600
+	        --timeout=600s
 }
 
 installStabilityChecker
