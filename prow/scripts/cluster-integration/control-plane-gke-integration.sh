@@ -330,7 +330,8 @@ function installCompass() {
 }
 
 function applyKebResources() {
-  local auditLogCM=$(cat << EOF
+  local auditLogCM
+  auditLogCM=$(cat << EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -346,8 +347,8 @@ data:
   auditlog-tenant: "56068fc4-a6d9-4623-ad06-405c009c830a"
 EOF
 )
-
-  local auditLogScript=$(cat << EOF
+  local auditLogScript
+  auditLogScript=$(cat << EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -357,8 +358,8 @@ data:
   script: ""
 EOF
 )
-
-  local auditLogSecret=$(cat << EOF
+  local auditLogSecret
+  auditLogSecret=$(cat << EOF
 apiVersion: v1
 kind: Secret
 metadata:
