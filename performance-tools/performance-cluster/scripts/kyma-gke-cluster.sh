@@ -126,6 +126,8 @@ elif [[ "${ACTION}" == "create" ]]; then
     date
 
     source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-kyma.sh"
+
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 else
    shoutFail "None of the actions met"
 fi
