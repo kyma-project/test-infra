@@ -8,6 +8,7 @@
 
 # All .md files
 *.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc @mmitoraj @majakurcius @alexandra-simeonova
+
 * @kyma-project/prow
 
 # The `/prow/scripts/` directory
