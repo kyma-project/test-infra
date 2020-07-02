@@ -60,26 +60,6 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "provisioner",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "kyma-environment-broker",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
 		name:  "schema-migrator",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
@@ -116,28 +96,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release112),
-		},
-	},
-	{
-		name:  "metris",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.Optional(),
-			jobsuite.Since(releases.Release113),
-		},
-	},
-	{
-		name:  "kubeconfig-service",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.Optional(),
-			jobsuite.Since(releases.Release114),
 		},
 	},
 }

@@ -8,7 +8,7 @@ whitesource_job_template: &whitesource_job_template
   run_if_changed: "go.mod|go.sum"
   decorate: true
   optional: true
-  path_alias: github.com/kyma-incubator/compass
+  path_alias: github.com/kyma-project/control-plane
   max_concurrency: 1
   extra_refs:
     - org: kyma-project
@@ -27,7 +27,7 @@ whitesource_job_template: &whitesource_job_template
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
         env:
           - name : PROJECTNAME
-            value: compass
+            value: control-plane
           - name: DRYRUN
             value: "false"
           - name: SCAN_LANGUAGE
@@ -38,7 +38,7 @@ whitesource_job_template: &whitesource_job_template
             cpu: 0.8
 
 presubmits: # runs on PRs
-  kyma-incubator/compass:
+  kyma-project/control-plane:
     - name: pre-master-provisioner-whitesource-scan
       branches:
         - ^master$

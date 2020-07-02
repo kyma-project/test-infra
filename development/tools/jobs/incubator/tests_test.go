@@ -35,25 +35,6 @@ var tests = []struct {
 		},
 	},
 	{
-		name:  "provisioner-tests",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
-		name:  "e2e/provisioning",
-		image: tester.ImageBootstrap20181204,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("test-generic"),
-			jobsuite.CompassRepo(),
-		},
-	},
-	{
 		name:  "connectivity-adapter",
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,

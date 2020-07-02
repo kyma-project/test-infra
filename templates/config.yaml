@@ -339,64 +339,12 @@ templates:
           path: components/healthchecker
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/components/provisioner/provisioner-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: components/provisioner
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: components/provisioner
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: components/kyma-environment-broker
-          since: "1.9"
-      - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: components/kyma-environment-broker
-          since: "1.9"
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           <<: *compass_generic_component
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: components/schema-migrator
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/components/metris/metris-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: components/metris
-          since: "1.13"
-          optional: true
-      - to: ../prow/jobs/control-plane/components/metris/metris-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: components/metris
-          since: "1.13"
-          optional: true
-      - to: ../prow/jobs/incubator/compass/components/kubeconfig-service/kubeconfig-service-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: components/kubeconfig-service
-          since: "1.14"
-          optional: true
-      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: components/kubeconfig-service
-          since: "1.14"
-          optional: true
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
           <<: *compass_generic_component
@@ -408,34 +356,52 @@ templates:
           <<: *compass_generic_component
           path: tests/director
           since: "1.10"
-      - to: ../prow/jobs/incubator/compass/tests/provisioner-tests/provisioner-tests-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: tests/provisioner-tests
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: tests/provisioner-tests
-          since: "1.7"
-          optional: false
-      - to: ../prow/jobs/incubator/compass/tests/e2e/provisioning/provisioning-test-generic.yaml
-        values:
-          <<: *compass_generic_component
-          path: tests/e2e/provisioning
-          since: "1.10"
-      - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-kcp-generic.yaml
-        values:
-          <<: *control_plane_generic_component
-          path: tests/e2e/provisioning
-          since: "1.10"
       - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
         values:
           <<: *compass_generic_component
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
+      - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: components/provisioner
+          since: "1.7"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: components/kyma-environment-broker
+          since: "1.9"
+      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: components/schema-migrator
+          since: "1.7"
+          optional: false
+      - to: ../prow/jobs/control-plane/components/metris/metris-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: components/metris
+          since: "1.13"
+          optional: true
+      - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: components/kubeconfig-service
+          since: "1.14"
+          optional: true
+      - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: tests/provisioner-tests
+          since: "1.7"
+          optional: false
+      - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
+        values:
+          <<: *control_plane_generic_component
+          path: tests/e2e/provisioning
+          since: "1.10"
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -636,7 +602,7 @@ templates:
           <<: *console_generic_component
           path: core
           since: "1.12"
-          additionalRunIfChanged: 
+          additionalRunIfChanged:
             - ^package.json
       - to: ../prow/jobs/console/content/content.yaml
         values:
