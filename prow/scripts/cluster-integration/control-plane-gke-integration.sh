@@ -276,6 +276,7 @@ metadata:
   namespace: kcp-system
 data:
   auditlog-url: "http://dummy.url"
+  auditlog-url-basic: "http://dummy.url"
   auditlog-config-path: "/path"
   auditlog-security-path: "/path"
   auditlog-tenant: "tnt"
