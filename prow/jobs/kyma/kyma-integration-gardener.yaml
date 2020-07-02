@@ -137,6 +137,7 @@ presubmits:
 
 periodics:
   - name: kyma-integration-gardener-gcp
+    cluster: trusted-workload
     <<: *gardener_gcp_job_template
     decorate: true
     decoration_config:
@@ -152,6 +153,7 @@ periodics:
       <<: *gardener_gcp_job_labels_template
 
   - name: kyma-integration-gardener-aws
+    cluster: trusted-workload
     <<: *gardener_aws_job_template
     decorate: true
     decoration_config:
@@ -167,6 +169,7 @@ periodics:
       <<: *gardener_aws_job_labels_template
 
   - name: kyma-integration-gardener-azure
+    cluster: trusted-workload
     <<: *gardener_azure_job_template
     decorate: true
     decoration_config:

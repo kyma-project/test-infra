@@ -9,6 +9,7 @@ test_infra_ref: &test_infra_ref
 periodics:
 
   - name: kyma-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -48,6 +49,7 @@ periodics:
               cpu: 400m
 
   - name: kyma-mod-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -87,6 +89,7 @@ periodics:
               cpu: 400m
 
   - name: console-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -126,6 +129,7 @@ periodics:
               cpu: 400m
 
   - name: cli-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -165,6 +169,7 @@ periodics:
               cpu: 400m
 
   - name: helm-broker-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -204,6 +209,7 @@ periodics:
               cpu: 400m
 
   - name: rafter-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -243,6 +249,7 @@ periodics:
               cpu: 400m
 
   - name: compass-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -282,6 +289,7 @@ periodics:
               cpu: 400m
 
   - name: knative-kafka-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -321,6 +329,7 @@ periodics:
               cpu: 400m
 
   - name: api-gateway-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -360,6 +369,7 @@ periodics:
               cpu: 400m
 
   - name: dex-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
