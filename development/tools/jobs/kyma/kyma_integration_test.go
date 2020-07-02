@@ -27,7 +27,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease.IsNotOlderThan(releases.Release111) {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else {
 				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
 			}
@@ -55,7 +55,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease.IsNotOlderThan(releases.Release111) {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else {
 				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
 			}
@@ -82,9 +82,9 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease == releases.Release112 {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else if currentRelease == releases.Release111 {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else {
 				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
 			}

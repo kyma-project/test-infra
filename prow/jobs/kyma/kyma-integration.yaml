@@ -67,29 +67,7 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-b"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-gke_job_template_k14: &gke_job_template_k14
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *base_image_k14
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -111,7 +89,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -155,7 +133,7 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -197,7 +175,7 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -543,7 +521,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           command:
             - "bash"
           args:
@@ -560,7 +538,6 @@ periodics:
             requests:
               memory: 100Mi
               cpu: 50m
-
   - name: orphaned-assetstore-gcp-bucket-cleaner
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
@@ -761,7 +738,6 @@ periodics:
               memory: 100Mi
               cpu: 50m
 
-
   - name: kyma-gke-nightly
     cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
     annotations:
@@ -791,7 +767,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:
@@ -861,7 +837,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:
@@ -932,7 +908,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:
