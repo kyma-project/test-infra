@@ -287,10 +287,11 @@ function applyControlPlaneOverrides() {
 
   #Create Config map for Provisioner
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-overrides" \
-    --data "security.skipTLSCertificateVeryfication=true" \
-    --data "gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
-    --data "gardener.project=$GARDENER_PROJECT_NAME" \
-    --label "component=provisioner"
+    --data "global.provisioning.enabled=true" \
+    --data "provisioner.security.skipTLSCertificateVeryfication=true" \
+    --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
+    --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
+    --label "component=kcp"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
     # Change timeout for kyma test to 3h
@@ -298,9 +299,9 @@ function applyControlPlaneOverrides() {
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "tests.enabled=true" \
-      --data "tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=provisioner"
+      --data "provisioner.tests.enabled=true" \
+      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
+      --label "component=kcp"
   fi
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
