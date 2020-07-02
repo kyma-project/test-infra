@@ -12,5 +12,5 @@ function helm::ensure_client {
         | tar -xzO "${2}-amd64/helm" > "${3}/helm" \
         && chmod +x "${3}/helm"
 
-    helm init --client-only
+    helm init
 }
