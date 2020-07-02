@@ -74,8 +74,6 @@ RUN curl -o /tmp/$HELM_FILE_NAME ${HELM_URL} \
   && mv /tmp/linux-amd64/helm /usr/local/bin/helm \
   && rm -rf /tmp/linux-amd64/helm
 
-RUN helm init
-
 RUN mkdir /test-infra
 
 COPY prow/scripts/library.sh /test-infra/prow/scripts/library.sh

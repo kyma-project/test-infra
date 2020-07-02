@@ -14,7 +14,7 @@ ENV AZURE_CLI_VERSION="2.0.62-1~stretch"
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
 
-RUN helm init
+RUN 
 
 # Install az
 # If you receive error related to recv-keys please make sure you have latest signing key

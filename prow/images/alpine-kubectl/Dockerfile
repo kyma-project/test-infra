@@ -12,7 +12,6 @@ RUN apk update &&\
 	chmod +x /usr/local/bin/kubectl &&\
 	wget https://storage.googleapis.com/kubernetes-helm/helm-${HELM_2_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
 	chmod +x /usr/local/bin/helm &&\
-	helm init &&\
 	wget https://get.helm.sh/helm-${HELM_3_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm3 &&\
 	chmod +x /usr/local/bin/helm3
 
