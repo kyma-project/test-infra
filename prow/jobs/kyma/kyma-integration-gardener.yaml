@@ -30,7 +30,7 @@ gardener_aws_job_template: &gardener_aws_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_116
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
