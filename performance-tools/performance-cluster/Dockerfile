@@ -64,7 +64,7 @@ RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/a
 RUN apt-get update && apt-get install k6 && rm -rf /var/lib/apt/lists/*
 
 # Install Helm
-ENV HELM_VERSION=v2.0.0
+ENV HELM_VERSION=v3.2.4
 
 ENV HELM_FILE_NAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
 ENV HELM_URL=https://storage.googleapis.com/kubernetes-helm/${HELM_FILE_NAME}
