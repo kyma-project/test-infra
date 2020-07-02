@@ -103,7 +103,7 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 #Install helm
 
-ENV HELM_VERSION=""
+ENV HELM_VERSION="dev-v3"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm && \
