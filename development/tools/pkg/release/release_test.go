@@ -40,16 +40,11 @@ func TestCreateRelease(t *testing.T) {
 				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalConfigArtifactName, mockLocalInstallerArtifactName)
 
 				//then
-				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 3)
+				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 1)
 
 				So(err, ShouldBeNil)
 				So(fakeGithub.Release.GetBody(), ShouldEqual, expectedBody)
 				So(fakeGithub.Release.GetPrerelease(), ShouldBeFalse)
-
-				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 2)
-				So(fakeGithub.AssetCount, ShouldEqual, 2)
-				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalConfigArtifactName)
-				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockLocalInstallerArtifactName)
 
 			})
 		})
@@ -72,16 +67,11 @@ func TestCreateRelease(t *testing.T) {
 				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalConfigArtifactName, mockLocalInstallerArtifactName)
 
 				//then
-				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 3)
+				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 1)
 
 				So(err, ShouldBeNil)
 				So(fakeGithub.Release.GetBody(), ShouldEqual, expectedBody)
 				So(fakeGithub.Release.GetPrerelease(), ShouldBeTrue)
-
-				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 2)
-				So(fakeGithub.AssetCount, ShouldEqual, 2)
-				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalConfigArtifactName)
-				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockLocalInstallerArtifactName)
 
 			})
 		})

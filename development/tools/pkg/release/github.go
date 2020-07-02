@@ -2,12 +2,6 @@ package release
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"net/url"
-	"reflect"
-
-	"github.com/google/go-querystring/query"
 
 	"golang.org/x/oauth2"
 
@@ -18,7 +12,6 @@ import (
 // GithubAPI exposes functions to interact with Github releases
 type GithubAPI interface {
 	CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error)
-	UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error)
 }
 
 // githubAPIWrapper implements functions to interact with Github releases
@@ -58,48 +51,4 @@ func (gaw *githubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Opti
 	}
 
 	return gaw.githubClient.Repositories.CreateRelease(ctx, gaw.repoOwner, gaw.repoName, input)
-}
-
-// UploadContent creates an asset by uploading a file into a release repository
-func (gaw *githubAPIWrapper) UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error) {
-
-	common.Shout("Uploading %s artifact", artifactName)
-
-	u := fmt.Sprintf("repos/%s/%s/releases/%d/assets", gaw.repoOwner, gaw.repoName, releaseID)
-
-	opt := &github.UploadOptions{Name: artifactName}
-
-	u, err := addOptions(u, opt)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := gaw.githubClient.NewUploadRequest(u, reader, size, "")
-	if err != nil {
-		return nil, err
-	}
-
-	asset := new(github.ReleaseAsset)
-
-	return gaw.githubClient.Do(ctx, req, asset)
-}
-
-func addOptions(s string, opt interface{}) (string, error) {
-	v := reflect.ValueOf(opt)
-	if v.Kind() == reflect.Ptr && v.IsNil() {
-		return s, nil
-	}
-
-	u, err := url.Parse(s)
-	if err != nil {
-		return s, err
-	}
-
-	qs, err := query.Values(opt)
-	if err != nil {
-		return s, err
-	}
-
-	u.RawQuery = qs.Encode()
-	return u.String(), nil
 }

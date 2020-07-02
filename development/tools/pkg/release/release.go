@@ -2,6 +2,7 @@ package release
 
 import (
 	"context"
+	"log"
 
 	"github.com/pkg/errors"
 )
@@ -34,31 +35,7 @@ func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, ar
 		return errors.Wrap(err, "while creating Github release")
 	}
 
-	for _, artifact := range artifactNames {
-		if err = c.createReleaseArtifact(ctx, *release.ID, artifact, relOpts.Version); err != nil {
-			return errors.Wrapf(err, "while creating release artifact: %s", artifact)
-		}
-	}
+	log.Printf("Successfully created release: %v", *release.ID)
 
 	return nil
-}
-
-func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64, artifactName, folderName string) error {
-
-	fullArtifactName := folderName + "/" + artifactName
-
-	artifactData, size, err := c.storage.ReadBucketObject(ctx, fullArtifactName)
-	if err != nil {
-		return errors.Wrapf(err, "while reading %s file", artifactName)
-	}
-
-	defer artifactData.Close()
-
-	_, err = c.github.UploadContent(ctx, releaseID, artifactName, artifactData, size)
-	if err != nil {
-		return errors.Wrapf(err, "while uploading %s file", artifactName)
-	}
-
-	return nil
-
 }

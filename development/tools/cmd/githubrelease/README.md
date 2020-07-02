@@ -31,6 +31,7 @@ See the list of available flags:
 | **--kymaInstallerCluster**     |    No    | The string value with the name of the Kyma cluster configuration file. It defaults to `kyma-installer-cluster.yaml`.
 | **--kymaConfigLocal**          |    No    | The string value with the name of the Kyma local configuration file. It defaults to `kyma-config-local.yaml`.
 | **--kymaInstallerLocal**       |    No    | The string value with the name of the Kyma local configuration file. It defaults to `kyma-installer-local.yaml`.
+| **--components**               |    No    | The string value with the name of the file with list of components installed by the installer. It defaults to `components.yaml`.
 | **--kymaChangelog**            |    No    | The string value with the name of the release changelog file. It defaults to `release-changelog.md`.
 | **--githubRepoOwner**          |   Yes    | The string value with the name of the GitHub repository owner.
 | **--githubRepoName**           |   Yes    | The string value with the name of the GitHub repository.
