@@ -31,7 +31,7 @@ gke_integration_job_template: &gke_integration_job_template
   path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
 
-gke_integration_job_template_k15: &gke_integration_job_template_k15
+gke_integration_job_template_k16: &gke_integration_job_template_k16
   <<: *gke_integration_job_template
   spec:
     containers:
@@ -39,7 +39,7 @@ gke_integration_job_template_k15: &gke_integration_job_template_k15
         <<: *base_container_config
 
 gke_integration_job_template_latest: &gke_integration_job_template_latest
-  <<: *gke_integration_job_template_k15
+  <<: *gke_integration_job_template_k16
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
@@ -61,7 +61,7 @@ presubmits: # runs on PRs
     - name: pre-master-compass-gke-integration
       branches:
         - ^master$
-      <<: *gke_integration_job_template_k15
+      <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.13
       always_run: false
-      <<: *gke_integration_job_template_k15
+      <<: *gke_integration_job_template_k16
       labels:
         preset-build-release: "true"
         <<: *gke_integration_job_labels_template

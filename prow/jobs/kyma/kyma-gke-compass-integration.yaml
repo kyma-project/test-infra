@@ -60,7 +60,7 @@ presubmits: # runs on PRs
     - name: pre-master-kyma-gke-compass-integration
       branches:
         - ^master$
-      <<: *gke_integration_job_template_k15
+      <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.13
       always_run: false
-      <<: *gke_integration_job_template_k15
+      <<: *gke_integration_job_template_k16
       labels:
         preset-build-release: "true"
         <<: *gke_integration_job_labels_template
