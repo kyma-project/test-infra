@@ -1,16 +1,13 @@
-- channelName: "#dontworkbruh"
-  channelID: "C014YQ2R44E"
-  onlyReportFailure: false
+- channelName: "#default-notification"
+  channelID: "C016DBKVDSR"
+  onlyReportFailure: true
   testCases:
     - default
-- channelName: "#dontworkbruh"
-  channelID: "C014YQ2R44E"
-  onlyReportFailure: false
-  testCases:
-    - "rafter"
-- channelName: "#serverless-test"
-  channelID: "C0164BCSY75"
+- channelName: "#wookiee-notifications"
+  channelID: "C016TBM2Z2M"
   onlyReportFailure: false
   testCases:
     - serverless-long
     - serverless
+    - rafter
+    - console-backend
