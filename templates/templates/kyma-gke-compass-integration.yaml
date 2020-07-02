@@ -101,3 +101,17 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+
+periodics:
+  - name: kyma-gke-compass-integration-daily
+    decorate: true
+    cron: "00 00 * * *" # "At 00:00 each day"
+    branches:
+      - ^master$
+    <<: *gke_integration_job_template_latest
+    labels:
+      preset-build-master: "true"
+      <<: *gke_integration_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
