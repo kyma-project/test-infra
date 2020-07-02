@@ -373,7 +373,7 @@ templates:
           <<: *control_plane_generic_component
           path: components/kyma-environment-broker
           since: "1.9"
-      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-generic.yaml
+      - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/schema-migrator
