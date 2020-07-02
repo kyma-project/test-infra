@@ -315,7 +315,6 @@ install::kyma_cli
 shout "Install kyma"
 date
 installKyma
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
 applyDexGithibKymaAdminGroup

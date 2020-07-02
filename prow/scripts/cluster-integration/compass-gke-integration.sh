@@ -377,7 +377,6 @@ shout "Install Compass"
 date
 installCompass
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Test Kyma with Compass"
 date
