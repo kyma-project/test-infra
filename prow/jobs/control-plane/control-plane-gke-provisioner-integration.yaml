@@ -62,7 +62,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
-      run_if_changed: "resources/kcp/provisioner"
+      run_if_changed: "^resources/kcp/charts/provisioner/"
       labels:
         preset-build-pr: "true"
         <<: *gke_integration_job_labels_template
