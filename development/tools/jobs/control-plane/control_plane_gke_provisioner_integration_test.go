@@ -20,7 +20,7 @@ func TestKCPGKEProvisionerIntegrationPresubmit(t *testing.T) {
 	// then
 	assert.True(t, actualJob.Optional)
 	assert.True(t, actualJob.Decorate)
-	assert.Equal(t, "resources/provisioner", actualJob.RunIfChanged)
+	assert.Equal(t, "resources/kcp/provisioner", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,

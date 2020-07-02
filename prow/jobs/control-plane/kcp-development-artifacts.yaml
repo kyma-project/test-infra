@@ -40,7 +40,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/control-plane:
   - name: pre-master-kcp-development-artifacts
-    run_if_changed: "^installation|^chart|^tools/kcp-installer"
+    run_if_changed: "^installation|^resources|^tools/kcp-installer"
     branches:
     - ^master$
     <<: *job_template
