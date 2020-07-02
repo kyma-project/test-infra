@@ -288,10 +288,17 @@ function applyControlPlaneOverrides() {
 
   #Create Config map for Provisioner
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-overrides" \
-    --data "global.provisioning.enabled=true" \
     --data "provisioner.security.skipTLSCertificateVeryfication=true" \
     --data "provisioner.gardener.kubeconfig=$(base64 -w 0 < "${GARDENER_APPLICATION_CREDENTIALS}")" \
     --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
+    --label "component=kcp"
+
+   #Create Provisioning overrides
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioning-enable-overrides" \
+    --data "global.provisioning.enabled=true" \
+    --data "global.metris.enabled=true" \
+    --data "global.database.embedded.enabled=true" \
+    --data "global.kyma_environment_broker.enabled=true" \
     --label "component=kcp"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
