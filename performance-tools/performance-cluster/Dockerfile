@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get clean
 
 # Install gcloud
-ENV CLOUDION=299.0.0
+ENV CLOUD_SDK_VERSION=299.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
   CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
