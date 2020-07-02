@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dirmngr \
     gnupg2
 
-ENV HELM_VERSION="v3.2.4"
+ENV HELM_VERSION="dev-v3"
 ENV AZURE_CLI_VERSION="2.0.62-1~stretch"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
