@@ -27,9 +27,9 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease.IsNotOlderThan(releases.Release111) {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			} else {
-				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			}
 			assert.Len(t, testContainer.Command, 1)
 			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
@@ -55,9 +55,9 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 			if currentRelease.IsNotOlderThan(releases.Release111) {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			} else {
-				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			}
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -84,9 +84,9 @@ func TestKymaGKEBackupJobsReleases(t *testing.T) {
 			if currentRelease == releases.Release112 {
 				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			} else if currentRelease == releases.Release111 {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			} else {
-				assert.Equal(t, tester.ImageKymaIntegrationK14, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
 			}
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
