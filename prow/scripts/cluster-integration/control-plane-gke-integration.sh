@@ -254,7 +254,7 @@ metadata:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: auditlog-script
+  name: kcp-auditlog-script
   namespace: kcp-system
 data:
   script: ""
