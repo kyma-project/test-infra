@@ -18,7 +18,7 @@ func TestKCPPresubmitDevelopmentArtifacts(t *testing.T) {
 	job := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/control-plane"}), "pre-master-kcp-development-artifacts", "master")
 	require.NotNil(t, job)
 
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "chart/provisioner/values.yaml"))
+	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "resources/provisioner/values.yaml"))
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "installation/scripts/concat-yamls.sh"))
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*job, true, "tools/kcp-installer/kcp.Dockerfile"))
 	assert.False(t, job.SkipReport)
