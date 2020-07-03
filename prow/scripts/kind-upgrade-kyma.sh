@@ -81,7 +81,7 @@ TUNE_INOTIFY="false"
 START_DOCKER="false"
 
 ENSURE_HELM="false"
-readonly HELM_VERSION="dev-v3"
+readonly HELM_VERSION="v3.2.1"
 
 CLUSTER_NAME="kyma"
 KUBERNETES_VERSION="v1.16.3"

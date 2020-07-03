@@ -103,10 +103,11 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 #Install helm
 
-ENV HELM_VERSION="dev-v3"
+ENV HELM_VERSION="v3.2.1"
 
-RUN wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
-    chmod +x /usr/local/bin/helm
+RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
+	  chmod +x /usr/local/bin/helm3 &&\
+      rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 # Install Azure CLI
 # If you receive error related to recv-keys please make sure you have latest signing key
