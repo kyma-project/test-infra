@@ -21,6 +21,7 @@ type Message struct {
 	Attributes  Attributes
 	ChannelName string
 	ChannelID   string
+	PodName     string
 }
 
 type CLient struct {
@@ -109,7 +110,7 @@ func (s CLient) UploadLogFile(msg Message, parentMsgTimestamp string) error {
 		Content:        msg.Data,
 		Filename:       "logs.txt",
 		Title:          "Test logs",
-		InitialComment: fmt.Sprintf("Test %s, status: %s", msg.Attributes.Name, msg.Attributes.Status),
+		InitialComment: fmt.Sprintf("Test: `%s`, status: `%s`, pod name: `%s`", msg.Attributes.Name, msg.Attributes.Status, msg.PodName),
 		Channels: []string{
 			msg.ChannelID,
 		},

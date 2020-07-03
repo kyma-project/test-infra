@@ -1,6 +1,6 @@
-- channelName: "#default-notification"
+- channelName: "#default-notifications"
   channelID: "C016DBKVDSR"
-  onlyReportFailure: true
+  onlyReportFailure: false
   testCases:
     - default
 - channelName: "#wookiee-notifications"

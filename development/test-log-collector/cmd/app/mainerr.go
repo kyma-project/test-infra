@@ -138,7 +138,10 @@ func Mainerr() error {
 		}
 
 		messages = append(messages, pkgSlack.Message{
-			Data: string(data),
+			Data:        string(data),
+			PodName:     pod.Name,
+			ChannelName: testConfig.ChannelName,
+			ChannelID:   testConfig.ChannelID,
 			Attributes: pkgSlack.Attributes{
 				Name:             testName,
 				Status:           string(status),
@@ -146,8 +149,6 @@ func Mainerr() error {
 				CompletionTime:   newestCts.Status.CompletionTime.String(),
 				Platform:         string(platform),
 			},
-			ChannelName: testConfig.ChannelName,
-			ChannelID:   testConfig.ChannelID,
 		})
 	}
 
