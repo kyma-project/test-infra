@@ -377,6 +377,8 @@ createCluster
 shout "Install tiller"
 date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+echo "project dir: ${KYMA_PROJECT_DIR}"
+echo "sources dir: ${KYMA_SOURCES_DIR}"
 echo "${KYMA_SCRIPTS_DIR}"
 echo "commit id: ${COMMIT_ID}"
 ls -la "${KYMA_SCRIPTS_DIR}"
