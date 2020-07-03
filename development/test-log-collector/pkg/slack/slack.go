@@ -2,10 +2,13 @@ package slack
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
 	logf "github.com/sirupsen/logrus"
 	"github.com/slack-go/slack"
+
+	octopusTypes "github.com/kyma-project/test-infra/development/test-log-collector/pkg/resources/clustertestsuite/types"
 )
 
 type Attributes struct {
@@ -43,15 +46,13 @@ func (s CLient) parentMessageTimestamp(hist slack.History, parentMsg string) (st
 	return "", false
 }
 
-func (s CLient) createParentMessage(ctsName, channelID, completionTime, platform string) error {
+func (s CLient) createParentMessage(channelID, parentMessage string) error {
 	hist, err := s.client.GetChannelHistory(channelID, slack.HistoryParameters{
 		Count: 100,
 	})
 	if err != nil {
 		return errors.Wrapf(err, "while getting channel historical messages by id: %s", channelID)
 	}
-
-	parentMessage := fmt.Sprintf("ClusterTestSuite %s, completionTime %s, platform %s", ctsName, completionTime, platform)
 
 	_, exists := s.parentMessageTimestamp(*hist, parentMessage)
 	if exists {
@@ -69,8 +70,13 @@ func (s CLient) createParentMessage(ctsName, channelID, completionTime, platform
 }
 
 func (s CLient) UploadLogFiles(messages []Message, ctsName, completionTime, platform string) error {
+	failedTestNames := getFailedTestNames(messages)
+
 	for channelID, messageSlice := range s.groupMessagesByChannelID(messages) {
-		if err := s.createParentMessage(ctsName, channelID, completionTime, platform); err != nil {
+
+		parentMsg := fmt.Sprintf("ClusterTestSuite %s; completionTime %s; platform %s; other failed test names: %s", ctsName, completionTime, platform, strings.Join(failedTestNames, ", "))
+
+		if err := s.createParentMessage(channelID, parentMsg); err != nil {
 			return errors.Wrapf(err, "while creating parent slack message in channel %s", messageSlice[0].ChannelName)
 		}
 
@@ -82,9 +88,7 @@ func (s CLient) UploadLogFiles(messages []Message, ctsName, completionTime, plat
 			return errors.Wrapf(err, "while getting %s channel historical messages", messageSlice[0].ChannelName)
 		}
 
-		parentMessage := fmt.Sprintf("ClusterTestSuite %s, completionTime %s, platform %s", ctsName, completionTime, platform)
-
-		parentMsgTimestamp, _ := s.parentMessageTimestamp(*hist, parentMessage)
+		parentMsgTimestamp, _ := s.parentMessageTimestamp(*hist, parentMsg)
 
 		for _, msg := range messageSlice {
 			if err := s.UploadLogFile(msg, parentMsgTimestamp); err != nil {
@@ -94,6 +98,18 @@ func (s CLient) UploadLogFiles(messages []Message, ctsName, completionTime, plat
 	}
 
 	return nil
+}
+
+func getFailedTestNames(messages []Message) []string {
+	var names []string
+
+	for _, msg := range messages {
+		if msg.Attributes.Status == string(octopusTypes.SuiteFailed) {
+			names = append(names, msg.Attributes.Name)
+		}
+	}
+
+	return names
 }
 
 func (s CLient) groupMessagesByChannelID(messages []Message) map[string][]Message {
