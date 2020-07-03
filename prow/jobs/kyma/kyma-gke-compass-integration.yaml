@@ -5,9 +5,20 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
+<<<<<<< HEAD
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16
+=======
+kyma_ref: &kyma_ref
+  org: kyma-project
+  repo: kyma
+  path_alias: github.com/kyma-project/kyma
+
+# Kubectl 1.15 and CLUSTER_VERSION=1.15
+base_image_k15: &base_image_k15
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.15
+>>>>>>> add kyma extra_ref
 
 base_container_config: &base_container_config
   securityContext:
@@ -113,4 +124,6 @@ periodics:
       <<: *gke_integration_job_labels_template
     extra_refs:
       - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_ref
         base_ref: master
