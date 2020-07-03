@@ -46,7 +46,7 @@ curl -Lo /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/
 
 # install helm
 wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
-	chmod +x /usr/local/bin/helm3 &&\
+	chmod +x /usr/local/bin/helm &&\
    rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 # install minikube

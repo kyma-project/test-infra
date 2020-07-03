@@ -67,7 +67,7 @@ RUN apt-get update && apt-get install k6 && rm -rf /var/lib/apt/lists/*
 ENV HELM_VERSION="v3.2.1"
 
 RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
-	  chmod +x /usr/local/bin/helm3 &&\
+	  chmod +x /usr/local/bin/helm &&\
     rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 RUN mkdir /test-infra
