@@ -492,6 +492,7 @@ periodics:
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
 
   - name: utilities-kyma-integration-cleaner
+    cluster: trusted-workload
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -508,6 +509,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-az-storage-accounts-cleaner
+    cluster: trusted-workload
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -539,6 +541,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-assetstore-gcp-bucket-cleaner
+    cluster: trusted-workload
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -564,6 +567,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-disks-cleaner
+    cluster: trusted-workload
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -589,6 +593,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-clusters-cleaner
+    cluster: trusted-workload
     cron: "0 * * * *" # "At 0 minute every hour"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -640,6 +645,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-loadbalancer-cleaner
+    cluster: trusted-workload
     cron: "15 * * * *" # "At 15 past every hour"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -665,6 +671,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: firewall-cleaner
+    cluster: trusted-workload
     cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -690,6 +697,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-dns-cleaner
+    cluster: trusted-workload
     cron: "30 * * * *" # "At minute 30 past every hour"
     annotations:
       testgrid-dashboards: kyma-cleaners
@@ -717,6 +725,7 @@ periodics:
               cpu: 50m
 
   - name: github-stats
+    cluster: trusted-workload
     cron: "0 6 * * *" # "At 6:00 every day"
     annotations:
     labels:
@@ -739,6 +748,7 @@ periodics:
               cpu: 50m
 
   - name: kyma-gke-nightly
+    cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
     annotations:
       testgrid-dashboards: kyma-nightly
@@ -811,6 +821,7 @@ periodics:
               cpu: 80m
 
   - name: kyma-gke-weekly
+    cluster: trusted-workload
     cron: "0 6 * * 1" # "At 06:00 on Monday."
     annotations:
       testgrid-dashboards: kyma-weekly
@@ -881,6 +892,7 @@ periodics:
               cpu: 80m
 
   - name: kyma-aks-nightly
+    cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     annotations:
       testgrid-dashboards: kyma-nightly

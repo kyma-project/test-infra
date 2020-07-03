@@ -7,6 +7,7 @@ test_infra_ref: &test_infra_ref
 periodics:
 {{ range .Global.whitesource }}
   - name: {{ default .name .custom_projectname }}-whitesource-scan
+    cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
