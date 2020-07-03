@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && apt-get clean
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=247.0.0
+ENV CLOUD_SDK_VERSION=299.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
   CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -64,17 +64,11 @@ RUN echo "deb https://dl.bintray.com/loadimpact/deb stable main" | tee -a /etc/a
 RUN apt-get update && apt-get install k6 && rm -rf /var/lib/apt/lists/*
 
 # Install Helm
-ENV HELM_VERSION=v2.0.0
+ENV HELM_VERSION="v3.2.1"
 
-ENV HELM_FILE_NAME=helm-${HELM_VERSION}-linux-amd64.tar.gz
-ENV HELM_URL=https://storage.googleapis.com/kubernetes-helm/${HELM_FILE_NAME}
-
-RUN curl -o /tmp/$HELM_FILE_NAME ${HELM_URL} \
-  && tar -zxvf /tmp/${HELM_FILE_NAME} -C /tmp \
-  && mv /tmp/linux-amd64/helm /usr/local/bin/helm \
-  && rm -rf /tmp/linux-amd64/helm
-
-RUN helm init --client-only
+RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
+	  chmod +x /usr/local/bin/helm &&\
+    rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 RUN mkdir /test-infra
 
