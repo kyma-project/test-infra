@@ -366,42 +366,44 @@ templates:
         values:
           <<: *control_plane_generic_component
           path: components/provisioner
-          since: "1.7"
+          since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/kyma-environment-broker
-          since: "1.9"
+          since: "1.14"
+          optional: false
       - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/schema-migrator
-          since: "1.7"
+          since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/components/metris/metris-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/metris
-          since: "1.13"
-          optional: true
+          since: "1.14"
+          optional: false
       - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: components/kubeconfig-service
           since: "1.14"
-          optional: true
+          optional: false
       - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: tests/provisioner-tests
-          since: "1.7"
+          since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
         values:
           <<: *control_plane_generic_component
           path: tests/e2e/provisioning
-          since: "1.10"
+          since: "1.14"
+          optional: false
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         values:
           <<: *kyma_generic_component

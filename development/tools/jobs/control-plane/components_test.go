@@ -26,7 +26,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release114),
 		},
 	},
 	{
@@ -36,7 +36,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release114),
 		},
 	},
 	{
@@ -46,7 +46,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("kcp-generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release114),
 		},
 	},
 	{
@@ -56,8 +56,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Optional(),
-			jobsuite.Since(releases.Release113),
+			jobsuite.Since(releases.Release114),
 		},
 	},
 	{
@@ -67,7 +66,6 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Optional(),
 			jobsuite.Since(releases.Release114),
 		},
 	},
@@ -81,7 +79,7 @@ func TestComponentJobs(t *testing.T) {
 			opts := []jobsuite.Option{
 				jobsuite.Component(component.name, component.image),
 				jobsuite.ControlPlaneRepo(),
-				jobsuite.AllReleases(),
+				jobsuite.Since(releases.Release114),
 			}
 			opts = append(opts, component.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
