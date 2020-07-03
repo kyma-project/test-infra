@@ -299,6 +299,7 @@ function applyControlPlaneOverrides() {
     --data "global.metris.enabled=true" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \
+    --data "kyma-environment-broker.e2e.enabled=false" \
     --label "component=kcp"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
