@@ -21,6 +21,8 @@ The template list includes:
 - `prow-config.yaml` that serves to create the main Prow configuration without job definitions.
 - `releases.go.tmpl` that contains a set of functions for the release which provide the list of currently supported releases and all supported Kyma release branches.
 
+Jobs and Prow configurations have unit tests that are located [here](../development/tools/jobs).
+
 ### Configuration file
 
 The `config.yaml` file has two keys:
@@ -91,8 +93,3 @@ See the description of values used by both component templates:
 All the functions from the [`sprig`](https://github.com/Masterminds/sprig) library are available in the templates. It is the same library that is used by Helm, so if you know Helm, you are already familiar with them. Also, a few additional functions are available:
 - `releaseMatches {release} {since} {until}` returns a boolean value indicating whether `release` fits in the range. Use `nil` to remove one of the bounds. For example, `releaseMatches {{ $rel }} '1.2' '1.5'` checks if the release `$rel` is not earlier than `1.2` and not later than `1.5`.
 - `matchingReleases {all-releases} {since} {until}` returns a list of releases filtered to only those that fit in the range.
-
-
-### Rendering templates
-See [README](../development/tools/cmd/rendertemplates/README.md). 
-Unit test of jobs are located [here](../development/tools/jobs).
