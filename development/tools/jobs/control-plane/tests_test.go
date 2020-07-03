@@ -4,6 +4,7 @@ import (
 	"path"
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -21,7 +22,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -43,7 +43,7 @@ func TestTestJobs(t *testing.T) {
 			opts := []jobsuite.Option{
 				jobsuite.Test(test.name, test.image),
 				jobsuite.ControlPlaneRepo(),
-				jobsuite.AllReleases(),
+				jobsuite.Since(releases.Release114),
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
