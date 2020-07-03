@@ -40,21 +40,6 @@ vm_job_template: &vm_job_template
             memory: 100Mi
             cpu: 50m
 
-vm_job_template_k14: &vm_job_template_k14
-  decorate: true
-  optional: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *base_image_k14
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
-        resources:
-          requests:
-            memory: 100Mi
-            cpu: 50m
-
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
@@ -76,79 +61,13 @@ presets:
       - name: AZURE_REGION
         value: westeurope
 
-gke_minio_gateway_job_template: &gke_minio_gateway_job_template
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *base_image_k14
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-a"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-gke_minio_gateway_migration_job_template: &gke_minio_gateway_migration_job_template
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *base_image_k14
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-a"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-minio-gateway-migration.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
 gke_job_template: &gke_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-b"
-        args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-gke_job_template_k14: &gke_job_template_k14
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *base_image_k14
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -170,7 +89,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -214,7 +133,7 @@ gke_central_job_template: &gke_central_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -256,7 +175,7 @@ gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
@@ -604,7 +523,7 @@ periodics:
         base_ref: master
     spec:
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           command:
             - "bash"
           args:
@@ -617,33 +536,6 @@ periodics:
               value: rafter-minio-gateway
             - name: AZURE_REGION
               value: westeurope
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 50m
-  # TODO (@michal-hudy): Remove when release 1.8 not supported
-  - name: orphaned-az-storage-accounts-cleaner-old
-    cluster: trusted-workload
-    cron: "00 00 * * *" # "At 00:00 each day"
-    annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
-    labels:
-      preset-creds-aks-kyma-integration: "true"
-      preset-minio-az-gateway: "true"
-    decorate: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-    spec:
-      containers:
-        - <<: *base_image_k15
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "prow/scripts/cluster-integration/minio/azure-cleaner.sh"
           resources:
             requests:
               memory: 100Mi
@@ -855,7 +747,6 @@ periodics:
               memory: 100Mi
               cpu: 50m
 
-
   - name: kyma-gke-nightly
     cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
@@ -886,7 +777,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:
@@ -957,7 +848,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:
@@ -1029,7 +920,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k15
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:

@@ -42,7 +42,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
-	assert.Equal(t, tester.ImageKymaIntegrationK15, compassCont.Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, compassCont.Image)
 	assert.Equal(t, []string{"bash"}, compassCont.Command)
 	require.Len(t, compassCont.Args, 2)
 	assert.Equal(t, "-c", compassCont.Args[0])
@@ -84,7 +84,7 @@ func TestCompassGKEIntegrationJobsReleases(t *testing.T) {
 				assert.Len(t, actualPresubmit.Spec.Containers, 1)
 				testContainer := actualPresubmit.Spec.Containers[0]
 
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
+				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 
 				assert.Len(t, testContainer.Command, 1)
 				tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -124,7 +124,7 @@ func TestCompassGKEIntegrationPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	compassCont := actualJob.Spec.Containers[0]
-	assert.Equal(t, tester.ImageKymaIntegrationK15, compassCont.Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, compassCont.Image)
 	assert.Equal(t, []string{"bash"}, compassCont.Command)
 	require.Len(t, compassCont.Args, 2)
 	assert.Equal(t, "-c", compassCont.Args[0])
