@@ -24,7 +24,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("kcp-generic"),
+			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
 		},
@@ -34,7 +34,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("kcp-generic"),
+			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.AllReleases(),
 		},
@@ -54,7 +54,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("kcp-generic"),
+			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.Optional(),
 			jobsuite.Since(releases.Release113),
@@ -65,7 +65,7 @@ var components = []struct {
 		image: tester.ImageBootstrap20181204,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("kcp-generic"),
+			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.Optional(),
 			jobsuite.Since(releases.Release114),
