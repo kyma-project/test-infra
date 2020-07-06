@@ -74,7 +74,7 @@ func (s CLient) UploadLogFiles(messages []Message, ctsName, completionTime, plat
 
 	for channelID, messageSlice := range s.groupMessagesByChannelID(messages) {
 
-		parentMsg := fmt.Sprintf("ClusterTestSuite %s; completionTime %s; platform %s; other failed test names: %s", ctsName, completionTime, platform, strings.Join(failedTestNames, ", "))
+		parentMsg := fmt.Sprintf("ClusterTestSuite `%s`; completionTime `%s`; platform `%s`; other failed test names: `%s`", ctsName, completionTime, platform, strings.Join(failedTestNames, ", "))
 
 		if err := s.createParentMessage(channelID, parentMsg); err != nil {
 			return errors.Wrapf(err, "while creating parent slack message in channel %s", messageSlice[0].ChannelName)
