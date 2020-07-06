@@ -132,13 +132,8 @@ func Mainerr() error {
 			Container: container,
 		})
 
-		data, err := ConsumeRequest(req)
-		if err != nil {
-			return errors.Wrapf(err, "while reading request from container %s in pod %s in namespace %s", container, pod.Name, pod.Namespace)
-		}
-
-		messages = append(messages, pkgSlack.Message{
-			Data:        string(data),
+		msg := pkgSlack.Message{
+			Data:        "",
 			PodName:     pod.Name,
 			ChannelName: testConfig.ChannelName,
 			ChannelID:   testConfig.ChannelID,
@@ -149,9 +144,22 @@ func Mainerr() error {
 				CompletionTime:   newestCts.Status.CompletionTime.String(),
 				Platform:         string(platform),
 			},
-		})
+		}
+
+		data, err := ConsumeRequest(req)
+		if err != nil {
+			// one of the possible things in test is like a failed init container, in which case we send error as string
+			reqErr := errors.Wrapf(err, "while reading request from container %s in pod %s in namespace %s", container, pod.Name, pod.Namespace)
+			logf.Warnf("couldn't read logs from pod %s, error: %s", pod.Name, reqErr)
+			msg.Data = reqErr.Error()
+		} else {
+			msg.Data = string(data)
+		}
+
+		messages = append(messages, msg)
 	}
 
+	logf.Info("Uploading logs to appropriate slack thread")
 	if err := slackClient.UploadLogFiles(messages, newestCts.Name, newestCts.Status.CompletionTime.String(), string(platform)); err != nil {
 		return errors.Wrap(err, "while uploading files to slack thread")
 	}
