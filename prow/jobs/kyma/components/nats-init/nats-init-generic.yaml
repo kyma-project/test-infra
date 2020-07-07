@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.13|1\.12)-nats-init$
+    - ^release-(1\.14|1\.13|1\.12)-nats-init$
   run_if_changed: "^components/nats-init/|^common/makefiles/"
   spec:
     containers:

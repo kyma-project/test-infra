@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.13|1\.12|1\.11)-dex$
+    - ^release-(1\.14|1\.13|1\.12)-dex$
   run_if_changed: "^tests/integration/dex/|^common/makefiles/"
   spec:
     containers:

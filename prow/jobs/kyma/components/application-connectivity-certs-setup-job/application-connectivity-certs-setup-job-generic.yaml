@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.13|1\.12|1\.11)-application-connectivity-certs-setup-job$
+    - ^release-(1\.14|1\.13|1\.12)-application-connectivity-certs-setup-job$
   run_if_changed: "^components/application-connectivity-certs-setup-job/|^common/makefiles/"
   spec:
     containers:

@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.14)-metris$
   run_if_changed: "^components/metris/|^scripts/"
   spec:
     containers:

@@ -24,7 +24,7 @@ var components = []struct {
 }{
 	{path: "core-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "core", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -34,22 +34,22 @@ var components = []struct {
 	},
 	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.Since(releases.Release111),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "compass", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

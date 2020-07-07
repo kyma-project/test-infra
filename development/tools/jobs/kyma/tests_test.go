@@ -70,31 +70,10 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "end-to-end/kubeless-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.AllReleases(),
-			jobsuite.Until(releases.Release111),
-		},
-	},
-	{path: "event-bus", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.AllReleases(),
-			jobsuite.Until(releases.Release111),
-		},
-	},
 	{path: "integration/event-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.AllReleases(),
-		},
-	},
-	{path: "kubeless", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.AllReleases(),
-			jobsuite.Until(releases.Release111),
 		},
 	},
 	{path: "integration/apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -148,12 +127,6 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Optional(),
-		},
-	},
-	{path: "end-to-end/backup", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Until(releases.Release111),
 		},
 	},
 }

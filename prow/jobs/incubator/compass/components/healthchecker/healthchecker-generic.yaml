@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.13|1\.12|1\.11)-healthchecker$
+    - ^release-(1\.14|1\.13|1\.12)-healthchecker$
   run_if_changed: "^components/healthchecker/|^scripts/"
   spec:
     containers:

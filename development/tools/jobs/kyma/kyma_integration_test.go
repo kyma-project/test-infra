@@ -26,11 +26,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			if currentRelease.IsNotOlderThan(releases.Release111) {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
-			} else {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
-			}
+			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
 			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -54,40 +50,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
-			if currentRelease.IsNotOlderThan(releases.Release111) {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
-			} else {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
-			}
-			assert.Len(t, testContainer.Command, 1)
-			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-		})
-	}
-}
-
-func TestKymaGKEBackupJobsReleases(t *testing.T) {
-	for _, currentRelease := range releases.GetKymaReleasesUntil(releases.Release111) {
-		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-backup", currentRelease), currentRelease.Branch())
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.BuildRelease, preset.KymaBackupRestoreBucket, preset.KymaBackupCredentials, preset.GCProjectEnv,
-				preset.SaGKEKymaIntegration, "preset-weekly-github-integration")
-			assert.False(t, actualPresubmit.AlwaysRun)
-			assert.Len(t, actualPresubmit.Spec.Containers, 1)
-			testContainer := actualPresubmit.Spec.Containers[0]
-			if currentRelease == releases.Release112 {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
-			} else if currentRelease == releases.Release111 {
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
-			} else {
-				assert.Equal(t, tester.ImageKymaIntegrationK15, testContainer.Image)
-			}
+			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
