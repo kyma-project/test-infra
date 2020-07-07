@@ -70,6 +70,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel114-compass-gke-integration
+      optional: true
+      branches:
+        - release-1.14
+      always_run: false
+      <<: *gke_integration_job_template_k16
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.14
     - name: pre-rel113-compass-gke-integration
       optional: true
       branches:

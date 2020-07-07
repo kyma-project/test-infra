@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.14)-provisioner$
   run_if_changed: "^components/provisioner/|^scripts/"
   spec:
     containers:
