@@ -149,7 +149,7 @@ kyma provision gardener aws \
         --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
         --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
         --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-        --scaler-max 4 --scaler-min 3 \
+        --scaler-max 4 --scaler-min 2 \
         --kube-version=${GARDENER_CLUSTER_VERSION}
 )
 
