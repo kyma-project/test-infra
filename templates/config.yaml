@@ -995,3 +995,6 @@ templates:
             - name: kyma-gke-minio-az-gateway-migration
               since: "1.6"
               until: "1.8"
+  - from: templates/testgrid-default.yaml
+    render:
+      - to: ../prow/testgrid-default.yaml

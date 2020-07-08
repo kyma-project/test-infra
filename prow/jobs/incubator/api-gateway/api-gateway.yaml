@@ -41,6 +41,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/api-gateway:
   - name: post-master-kyma-incubator-api-gateway
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - ^master$
     <<: *job_template

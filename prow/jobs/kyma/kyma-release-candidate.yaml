@@ -45,9 +45,10 @@ postsubmits:
   kyma-project/kyma:
     - name: post-rel114-kyma-release-candidate
       annotations:
-        testgrid-dashboards: kyma-release
+        testgrid-dashboards: release-1.14
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
+        description: Release candidate job for Kyma 1.14.
       branches:
         - release-1.14
       <<: *job_template
@@ -60,9 +61,10 @@ postsubmits:
         <<: *job_labels_template
     - name: post-rel113-kyma-release-candidate
       annotations:
-        testgrid-dashboards: kyma-release
+        testgrid-dashboards: release-1.13
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
+        description: Release candidate job for Kyma 1.13.
       branches:
         - release-1.13
       <<: *job_template
@@ -75,9 +77,10 @@ postsubmits:
         <<: *job_labels_template
     - name: post-rel112-kyma-release-candidate
       annotations:
-        testgrid-dashboards: kyma-release
+        testgrid-dashboards: release-1.12
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
+        description: Release candidate job for Kyma 1.12.
       branches:
         - release-1.12
       <<: *job_template

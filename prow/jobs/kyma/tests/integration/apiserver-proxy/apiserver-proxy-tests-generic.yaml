@@ -44,4 +44,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tests-integration-apiserver-proxy
+      annotations:
+        testgrid-create-test-group: "false"
       <<: *job_template

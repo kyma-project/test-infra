@@ -38,6 +38,8 @@ presubmits: # runs on PRs
 postsubmits:    
   kyma-project/test-infra:
   - name: post-master-perf-test
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - master
     <<: *job_template

@@ -53,6 +53,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-development-artifacts
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
       - ^master$
     <<: *job_template

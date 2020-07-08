@@ -44,4 +44,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-event-service
+      annotations:
+        testgrid-create-test-group: "false"
       <<: *job_template

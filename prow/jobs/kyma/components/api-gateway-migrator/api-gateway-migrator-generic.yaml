@@ -43,6 +43,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-api-gateway-migrator
+      annotations:
+        testgrid-create-test-group: "false"
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'

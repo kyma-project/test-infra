@@ -44,4 +44,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/console:
     - name: post-console-add-ons
+      annotations:
+        testgrid-create-test-group: "false"
       <<: *job_template

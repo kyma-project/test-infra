@@ -39,6 +39,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/addons:
     - name: post-master-kyma-addons
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template
@@ -46,6 +48,8 @@ postsubmits:
         <<: *job_labels_template
         preset-build-master: "true"
     - name: post-rel-kyma-addons
+      annotations:
+        testgrid-create-test-group: "false"
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
         - '\d+\.\d+\.\d+$'

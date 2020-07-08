@@ -76,6 +76,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/helm-broker:
     - name: post-master-helm-broker
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template
@@ -85,6 +87,8 @@ postsubmits:
         preset-bot-github-token: "true"
       report: false
     - name: post-release-helm-broker
+      annotations:
+        testgrid-create-test-group: "false"
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
         - 'v\d+\.\d+\.\d+$'

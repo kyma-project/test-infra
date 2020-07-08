@@ -187,6 +187,8 @@ postsubmits:
   kyma-project/rafter:
     ## BUILDS
     - name: post-rafter
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *common_build_job_template
@@ -196,6 +198,8 @@ postsubmits:
         preset-rafter-build-master: "true"
 
     - name: release-rafter
+      annotations:
+        testgrid-create-test-group: "false"
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
@@ -207,6 +211,8 @@ postsubmits:
 
     ## INTEGRATION TEST
     - name: post-rafter-integration-test
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *common_integration_test_job_template
@@ -214,6 +220,8 @@ postsubmits:
         <<: *common_job_labels_template
 
     - name: release-rafter-integration-test
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
       <<: *common_integration_test_job_template
@@ -222,6 +230,8 @@ postsubmits:
 
     ## MINIO GATEWAY TEST
     - name: post-rafter-minio-gcs-gateway
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *common_minio_gateway_test_job_template
@@ -230,6 +240,8 @@ postsubmits:
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: release-rafter-minio-gcs-gateway
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
       <<: *common_minio_gateway_test_job_template
@@ -238,6 +250,8 @@ postsubmits:
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: post-rafter-minio-az-gateway
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *common_minio_gateway_test_job_template
@@ -247,6 +261,8 @@ postsubmits:
         preset-rafter-build-master: "true"
 
     - name: release-rafter-minio-az-gateway
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
       <<: *common_minio_gateway_test_job_template
@@ -257,6 +273,8 @@ postsubmits:
 
     ## MINIO GATEWAY MIGRATION TEST
     - name: post-rafter-minio-gcs-gateway-migration
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *common_minio_gateway_migration_test_job_template
@@ -265,6 +283,8 @@ postsubmits:
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: release-rafter-minio-gcs-gateway-migration
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
       <<: *common_minio_gateway_migration_test_job_template
@@ -273,6 +293,8 @@ postsubmits:
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: post-rafter-minio-az-gateway-migration
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *common_minio_gateway_migration_test_job_template
@@ -282,6 +304,8 @@ postsubmits:
         preset-rafter-build-master: "true"
 
     - name: release-rafter-minio-az-gateway-migration
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - 'v\d+\.\d+\.\d+(?:-.*)?$'
       <<: *common_minio_gateway_migration_test_job_template

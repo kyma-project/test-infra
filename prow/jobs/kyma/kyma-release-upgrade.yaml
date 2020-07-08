@@ -45,6 +45,8 @@ test_infra_ref: &test_infra_ref
 postsubmits: # runs on merges
   kyma-project/kyma:
     - name: post-kyma-release-upgrade
+      annotations:
+        testgrid-create-test-group: "false"
       <<: *gke_upgrade_job_template
       branches:
         - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags only

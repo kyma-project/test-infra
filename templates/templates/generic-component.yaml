@@ -77,6 +77,8 @@ presubmits: # runs on PRs
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      annotations:
+        testgrid-create-test-group: "false"
       {{- if or .Values.optional .Values.skipSlackReport }}
       reporter_config:
         slack:

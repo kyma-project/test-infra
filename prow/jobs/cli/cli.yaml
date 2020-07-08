@@ -36,6 +36,8 @@ presubmits: # runs on PRs
 postsubmits: # runs on merges
   kyma-project/cli:
   - name: post-kyma-cli
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - "^master$" # Master branch
     - "^release-\\d+\\.\\d+$" # Release branches
@@ -43,6 +45,8 @@ postsubmits: # runs on merges
     labels:
       preset-build-master: "true"
   - name: rel-kyma-cli
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # release tags
     <<: *job_template
@@ -51,6 +55,8 @@ postsubmits: # runs on merges
       preset-bot-github-token: "true"
       preset-dind-enabled: "true"
   - name: stable-kyma-cli
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - "^stable$" # stable tag
     <<: *job_template
