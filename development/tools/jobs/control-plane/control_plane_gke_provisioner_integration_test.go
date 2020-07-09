@@ -47,7 +47,7 @@ func TestKCPGKEProvisionerIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "-c", kcpCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh", kcpCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, kcpCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, kcpCont, "RUN_PROVISIONER_TEST", "true")
+	tester.AssertThatContainerHasEnv(t, kcpCont, "RUN_PROVISIONER_TESTS", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }
 
@@ -88,6 +88,6 @@ func TestKCPGKEProvisionerIntegrationPostsubmit(t *testing.T) {
 	assert.Equal(t, "-c", kcpCont.Args[0])
 	assert.Equal(t, "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/control-plane-gke-integration.sh", kcpCont.Args[1])
 	tester.AssertThatContainerHasEnv(t, kcpCont, "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-	tester.AssertThatContainerHasEnv(t, kcpCont, "RUN_PROVISIONER_TEST", "true")
+	tester.AssertThatContainerHasEnv(t, kcpCont, "RUN_PROVISIONER_TESTS", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, actualJob.JobBase)
 }

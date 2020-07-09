@@ -18,7 +18,7 @@ base_container_config: &base_container_config
   env:
     - name: CLOUDSDK_COMPUTE_ZONE
       value: "europe-west4-b"
-    - name: RUN_PROVISIONER_TEST
+    - name: RUN_PROVISIONER_TESTS
       value: "true"
   resources:
     requests:
