@@ -283,8 +283,8 @@ kubectl_job_template: &kubectl_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-prow_clonerefs_job_template: &prow_clonerefs_job_template
-  run_if_changed: "^prow/images/clonerefs/"
+probot_stale_job_template: &probot_stale_job_template
+  run_if_changed: "^prow/images/probot-stale/"
   <<: *common_job_template
   spec:
     containers:
@@ -294,7 +294,7 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
       args:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
       resources:
         requests:
           memory: 1.5Gi
@@ -316,6 +316,23 @@ prow_tools_job_template: &prow_tools_job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
+
+prow_clonerefs_job_template: &prow_clonerefs_job_template
+  run_if_changed: "^prow/images/clonerefs/"
+  <<: *common_job_template
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
@@ -409,6 +426,11 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+    - name: pre-test-infra-probot-stale
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      <<: *probot_stale_job_template
 
 
 postsubmits: # runs on master
@@ -539,3 +561,10 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+    - name: post-test-infra-probot-stale
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *probot_stale_job_template

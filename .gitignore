@@ -7,3 +7,6 @@ tmp/
 .vscode/
 *.iml
 **/*.swp
+
+/prow/images/probot-stale/package-lock.json
+/prow/images/probot-stale/node_modules
