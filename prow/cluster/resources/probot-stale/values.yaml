@@ -1,0 +1,35 @@
+nameOverride: ""
+fullnameOverride: ""
+
+deployment:
+  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20200710-85feae97
+  imagePullPolicy: IfNotPresent
+  config:
+    # https://probot.github.io/docs/configuration/
+    port: 8080
+    logLevel: info
+    webhookPath: /webhook
+    disableStats: true
+    githubHost: github.tools.sap
+    githubProtocol: https
+    appIDSecretName: probot-stale
+    privateKeySecretName: probot-stale
+    webhookSecretsSecretName: probot-stale
+  resources: {}
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: kyma-prow-stale
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/acme-http01-edit-in-place: "true"
+    kubernetes.io/ingress.allow-http: "false"
+  path: /*
+  host: stale.build.kyma-project.io
+  tls:
+    secretName: stale-tls
+
+service:
+  type: NodePort
+  port: 80
