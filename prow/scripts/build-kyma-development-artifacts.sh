@@ -85,8 +85,6 @@ gsutil cp  "${KYMA_PATH}/installation/resources/tiller.yaml" "${KYMA_DEVELOPMENT
 gsutil cp "${ARTIFACTS}/kyma-installer-cr.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr.yaml"
 gsutil cp "${ARTIFACTS}/installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer.yaml"
 gsutil cp "${ARTIFACTS}/installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer-cr-cluster.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster-compass.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer-cr-cluster-compass.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster-compass-dependencies.yaml " "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer-cr-cluster-compass-dependencies.yaml"
 gsutil cp "${ARTIFACTS}/installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer-cr-cluster-runtime.yaml"
 
 
@@ -101,8 +99,6 @@ if [[ "${BUILD_TYPE}" == "master" ]]; then
   gsutil cp "${ARTIFACTS}/kyma-installer-cr.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cr.yaml"
   gsutil cp "${ARTIFACTS}/installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer.yaml"
   gsutil cp "${ARTIFACTS}/installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer-cr-cluster.yaml"
-  gsutil cp "${ARTIFACTS}/installer-cr-cluster-compass.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer-cr-cluster-compass.yaml"
-  gsutil cp "${ARTIFACTS}/installer-cr-cluster-compass-dependencies.yaml " "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer-cr-cluster-compass-dependencies.yaml"
   gsutil cp "${ARTIFACTS}/installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer-cr-cluster-runtime.yaml"
 
 fi

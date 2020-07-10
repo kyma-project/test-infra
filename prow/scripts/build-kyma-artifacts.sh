@@ -43,8 +43,6 @@ gsutil cp "/home/prow/go/src/github.com/kyma-project/kyma/installation/resources
 gsutil cp "${ARTIFACTS}/kyma-installer-cr.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr.yaml"
 gsutil cp "${ARTIFACTS}/installer.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer.yaml"
 gsutil cp "${ARTIFACTS}/installer-cr-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer-cr-cluster.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster-compass.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer-cr-cluster-compass.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster-compass-dependencies.yaml " "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer-cr-cluster-compass-dependencies.yaml"
 gsutil cp "${ARTIFACTS}/installer-cr-cluster-runtime.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer-cr-cluster-runtime.yaml"
 
 
