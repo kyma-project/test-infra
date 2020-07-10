@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains the image with Probot Stale.
+This folder contains the image for `probot-stale`.
 
 ## Installation
 
