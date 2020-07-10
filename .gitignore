@@ -7,3 +7,4 @@ tmp/
 .vscode/
 *.iml
 **/*.swp
+node_modules
