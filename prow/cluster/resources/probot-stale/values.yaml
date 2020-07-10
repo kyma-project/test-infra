@@ -2,7 +2,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 deployment:
-  image: eu.gcr.io/kyma-project/test-infra/pr/probot-stale:PR-2570
+  image: eu.gcr.io/kyma-project/test-infra/probot-stale:v20200710-85feae97
   imagePullPolicy: IfNotPresent
   config:
     # https://probot.github.io/docs/configuration/

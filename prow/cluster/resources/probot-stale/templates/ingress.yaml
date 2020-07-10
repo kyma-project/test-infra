@@ -21,4 +21,4 @@ spec:
           - path: {{ .Values.ingress.path | quote }}
             backend:
               serviceName: {{ include "probot.fullname" . }}
-              servicePort: http
+              servicePort: 80
