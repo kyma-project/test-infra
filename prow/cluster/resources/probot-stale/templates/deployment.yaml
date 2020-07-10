@@ -27,12 +27,14 @@ spec:
             port: {{ .Values.deployment.config.port }}
           initialDelaySeconds: 5
           periodSeconds: 30
+          timeoutSeconds: 10
         livenessProbe:
           httpGet:
             path: /probot
             port: {{ .Values.deployment.config.port }}
           initialDelaySeconds: 5
           periodSeconds: 30
+          timeoutSeconds: 10
         ports:
         - name: http
           containerPort: {{ .Values.deployment.config.port }}
