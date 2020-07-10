@@ -21,6 +21,18 @@ spec:
       - name: {{ .Chart.Name }}
         image: {{ .Values.deployment.image | quote }}
         imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+        readinessProbe:
+          httpGet:
+            path: /probot
+            port: {{ .Values.deployment.config.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /probot
+            port: {{ .Values.deployment.config.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 30
         ports:
         - name: http
           containerPort: {{ .Values.deployment.config.port }}
@@ -28,6 +40,8 @@ spec:
         resources:
           {{- toYaml .Values.deployment.resources | nindent 12 }}
         env:
+        - name: WEBHOOK_PATH
+          value: /webhook
         - name: PORT
           value: {{ .Values.deployment.config.port | quote }}
         - name: LOG_LEVEL

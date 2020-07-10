@@ -6,8 +6,9 @@ deployment:
   imagePullPolicy: IfNotPresent
   config:
     # https://probot.github.io/docs/configuration/
-    port: 80
+    port: 8080
     logLevel: info
+    webhookPath: /webhook
     disableStats: true
     githubHost: github.tools.sap
     githubProtocol: https
