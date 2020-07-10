@@ -526,6 +526,8 @@ postsubmits: # runs on master
         <<: *job_labels_template
       <<: *prow_tools_job_template
     - name: post-test-infra-probot-stale
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
