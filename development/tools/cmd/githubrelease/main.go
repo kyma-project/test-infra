@@ -20,7 +20,7 @@ var (
 	kymaInstallerCluster   = flag.String("kymaInstallerCluster", "kyma-installer-cluster.yaml", "Filename for installer cluster artifact [Optional]")
 	kymaConfigLocal        = flag.String("kymaConfigLocal", "kyma-config-local.yaml", "Filename for local config artifact [Optional]")
 	kymaInstallerLocal     = flag.String("kymaInstallerLocal", "kyma-installer-local.yaml", "Filename for installer local artifact [Optional]")
-	components             = flag.String("components", "components.yaml", "Filename for list of componets kyma installer would install [Optional]")
+	kymaInstallerCR        = flag.String("kymaInstallerCR", "kyma-installer-cr.yaml", "Filename for list of componets kyma installer would install [Optional]")
 	kymaChangelog          = flag.String("kymaChangelog", "release-changelog.md", "Filename for release changelog [Optional]")
 	githubRepoOwner        = flag.String("githubRepoOwner", "", "Github repository owner [Required]")
 	githubRepoName         = flag.String("githubRepoName", "", "Github repository name [Required]")
@@ -78,7 +78,7 @@ func main() {
 	}
 
 	// Github release
-	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaInstallerLocal, *kymaInstallerCluster, *components)
+	err = c.CreateNewRelease(ctx, relOpts, *kymaConfigLocal, *kymaInstallerLocal, *kymaInstallerCluster, *kymaInstallerCR)
 	if err != nil {
 		log.Fatal(err)
 	}
