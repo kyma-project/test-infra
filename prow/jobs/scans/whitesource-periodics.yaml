@@ -7,8 +7,9 @@ test_infra_ref: &test_infra_ref
   base_ref: master
 
 periodics:
-
   - name: kyma-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -49,6 +50,8 @@ periodics:
               cpu: 400m
 
   - name: kyma-mod-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -89,6 +92,8 @@ periodics:
               cpu: 400m
 
   - name: console-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -129,6 +134,8 @@ periodics:
               cpu: 400m
 
   - name: cli-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -169,6 +176,8 @@ periodics:
               cpu: 400m
 
   - name: helm-broker-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -209,6 +218,8 @@ periodics:
               cpu: 400m
 
   - name: rafter-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -249,6 +260,8 @@ periodics:
               cpu: 400m
 
   - name: compass-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -289,6 +302,8 @@ periodics:
               cpu: 400m
 
   - name: knative-kafka-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -329,6 +344,8 @@ periodics:
               cpu: 400m
 
   - name: api-gateway-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
@@ -369,6 +386,8 @@ periodics:
               cpu: 400m
 
   - name: dex-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
     cluster: trusted-workload
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day

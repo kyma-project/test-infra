@@ -33,6 +33,8 @@ presubmits:
 postsubmits:
   kyma-project/console:
     - name: post-master-console-react-components
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

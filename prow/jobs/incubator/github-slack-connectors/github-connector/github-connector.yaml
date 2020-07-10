@@ -42,6 +42,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/github-slack-connectors:
     - name: post-master-github-connector
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *base_job_template

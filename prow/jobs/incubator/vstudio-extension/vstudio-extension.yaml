@@ -33,6 +33,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/vstudio-extension:
     - name: post-master-vstudio-extension
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

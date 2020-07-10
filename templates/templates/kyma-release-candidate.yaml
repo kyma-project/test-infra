@@ -44,9 +44,10 @@ postsubmits:
 {{- range .Global.releases }}
     - name: post-rel{{ . | replace "." "" }}-kyma-release-candidate
       annotations:
-        testgrid-dashboards: kyma-release
+        testgrid-dashboards: release-{{ . }}
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
+        description: Release candidate job for Kyma {{ . }}.
       branches:
         - release-{{ . }}
       <<: *job_template

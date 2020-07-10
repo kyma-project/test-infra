@@ -31,6 +31,9 @@ job_labels_template: &job_labels_template
 postsubmits: 
   kyma-project/kyma:
   - name: post-rel114-kyma-github-release
+    annotations:
+      testgrid-dashboards: release-1.14
+      description: GitHub Release job for Kyma 1.14.
     branches:
       - release-1.14
     <<: *job_template
@@ -42,6 +45,9 @@ postsubmits:
       preset-build-release: "true"
       preset-target-commit-1.14: "true"
   - name: post-rel113-kyma-github-release
+    annotations:
+      testgrid-dashboards: release-1.13
+      description: GitHub Release job for Kyma 1.13.
     branches:
       - release-1.13
     <<: *job_template
@@ -53,6 +59,9 @@ postsubmits:
       preset-build-release: "true"
       preset-target-commit-1.13: "true"
   - name: post-rel112-kyma-github-release
+    annotations:
+      testgrid-dashboards: release-1.12
+      description: GitHub Release job for Kyma 1.12.
     branches:
       - release-1.12
     <<: *job_template

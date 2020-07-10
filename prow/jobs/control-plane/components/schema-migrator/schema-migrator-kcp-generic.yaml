@@ -44,4 +44,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/control-plane:
     - name: post-control-plane-components-schema-migrator
+      annotations:
+        testgrid-create-test-group: "false"
       <<: *job_template

@@ -41,6 +41,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/examples:
     - name: post-master-examples-http-db-service
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

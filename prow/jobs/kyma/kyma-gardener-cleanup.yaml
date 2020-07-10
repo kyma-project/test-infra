@@ -3,6 +3,8 @@ base_image: &base_image
 
 periodics:
 - name: kyma-gardener-cleanup
+  annotations:
+    testgrid-create-test-group: "false"
   cron: "0 * * * *" # "At 0 minute every hour"
   decorate: true
   decoration_config:

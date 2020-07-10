@@ -108,9 +108,8 @@ postsubmits:
         - ^master$
       <<: *gke_integration_job_template_latest
       annotations:
-        testgrid-dashboards: kyma-cleaners
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
+        testgrid-dashboards: kyma-integration
+        description: Kyma GKE compass integration job.
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'
@@ -123,6 +122,9 @@ postsubmits:
 
 periodics:
   - name: kyma-gke-compass-integration-daily
+    annotations:
+      testgrid-dashboards: kyma-integration
+      description: Kyma GKE compass integration job which runs daily at 00:00.
     decorate: true
     cron: "00 00 * * *" # "At 00:00 each day"
     branches:

@@ -44,4 +44,6 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
     - name: post-compass-tests-director
+      annotations:
+        testgrid-create-test-group: "false"
       <<: *job_template

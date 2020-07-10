@@ -48,6 +48,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-common
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

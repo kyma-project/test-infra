@@ -54,6 +54,8 @@ gardener_azure_job_template: &gardener_azure_job_template
 
 periodics:
   - name: kyma-upgrade-gardener-azure
+    annotations:
+      testgrid-create-test-group: "false"
     <<: *gardener_azure_job_template
     decoration_config:
       timeout: 14400000000000 # 4h

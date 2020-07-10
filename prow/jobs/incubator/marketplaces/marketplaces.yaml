@@ -78,6 +78,8 @@ presubmits: # runs on PRs
 postsubmits: # runs on merges
   kyma-incubator/marketplaces:
   - name: post-marketplaces
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - "^master$" # Master branch
     - "^release-\\d+\\.\\d+$" # Release branches
@@ -87,6 +89,8 @@ postsubmits: # runs on merges
       preset-build-master: "true"
     report: false
   - name: rel-marketplaces
+    annotations:
+      testgrid-create-test-group: "false"
     <<: *job_template
     branches:
     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags
@@ -97,6 +101,8 @@ postsubmits: # runs on merges
 
 periodics:
 - name: marketplaces-governance-nightly
+  annotations:
+    testgrid-create-test-group: "false"
   decorate: true
   cron: "0 3 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
   labels:

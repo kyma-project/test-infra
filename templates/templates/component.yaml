@@ -119,6 +119,8 @@ presubmits: # runs on PRs
 postsubmits:
   {{ template "repoNoHost" .Values.repository }}:
     - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template
@@ -145,6 +147,8 @@ postsubmits:
         preset-{{ $.Values.presets.build }}-master: "true"
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template

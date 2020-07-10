@@ -65,6 +65,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/test-infra:
   - name: post-master-stability-checker
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - ^master$
     <<: *job_template

@@ -133,6 +133,9 @@ presubmits:
 
 periodics:
   - name: kyma-integration-gardener-gcp
+    annotations:
+      testgrid-dashboards: kyma-integration
+      description: Kyma GCP Gardener integration job.
     cluster: trusted-workload
     <<: *gardener_gcp_job_template
     decorate: true
@@ -149,6 +152,9 @@ periodics:
       <<: *gardener_gcp_job_labels_template
 
   - name: kyma-integration-gardener-aws
+    annotations:
+      testgrid-dashboards: kyma-integration
+      description: Kyma AWS Gardener integration job.
     cluster: trusted-workload
     <<: *gardener_aws_job_template
     decorate: true
@@ -165,6 +171,9 @@ periodics:
       <<: *gardener_aws_job_labels_template
 
   - name: kyma-integration-gardener-azure
+    annotations:
+      testgrid-dashboards: kyma-integration
+      description: Kyma Azure Gardener integration job.
     cluster: trusted-workload
     <<: *gardener_azure_job_template
     decorate: true

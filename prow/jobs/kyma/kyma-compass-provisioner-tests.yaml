@@ -75,9 +75,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-gke-compass-provisioner-tests
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     decorate: true
     path_alias: github.com/kyma-project/kyma
     skip_report: true

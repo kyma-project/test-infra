@@ -102,9 +102,8 @@ postsubmits:
         - ^master$
       <<: *gke_integration_job_template_latest
       annotations:
-        testgrid-dashboards: kyma-cleaners
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
+        testgrid-dashboards: compass
+        description: Compass GKE integration job.
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'
