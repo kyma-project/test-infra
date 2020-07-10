@@ -1,0 +1,34 @@
+nameOverride: ""
+fullnameOverride: ""
+
+deployment:
+  image: #place for image
+  imagePullPolicy: IfNotPresent
+  config:
+    # https://probot.github.io/docs/configuration/
+    port: 80
+    logLevel: info
+    disableStats: true
+    githubHost: github.tools.sap
+    githubProtocol: https
+    appIDSecretName: name
+    privateKeySecretName: name
+    webhookSecretsSecretName: name
+  resources: {}
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: kyma-prow-stale
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/acme-http01-edit-in-place: "true"
+    kubernetes.io/ingress.allow-http: "false"
+  path: /*
+  host: stale.build.kyma-project.io
+  tls:
+    secretName: stale-tls
+
+service:
+  type: ClusterIP
+  port: 80

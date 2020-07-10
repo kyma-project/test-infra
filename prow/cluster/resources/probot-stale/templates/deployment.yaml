@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "probot.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "probot.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "probot.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "probot.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.deployment.image | quote }}
+        imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.deployment.config.port }}
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.deployment.resources | nindent 12 }}
+        env:
+        - name: PORT
+          value: {{ .Values.deployment.config.port | quote }}
+        - name: LOG_LEVEL
+          value: {{ .Values.deployment.config.logLevel | quote }}
+        - name: DISABLE_STATS
+          value: {{ .Values.deployment.config.disableStats | quote }}
+        - name: GHE_HOST
+          value: {{ .Values.deployment.config.githubHost | quote }}
+        - name: GHE_PROTOCOL
+          value: {{ .Values.deployment.config.githubProtocol | quote }}
+        - name: APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.deployment.config.appIDSecretName }}
+              key: APP_ID
+        - name: WEBHOOK_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.deployment.config.webhookSecretsSecretName }}
+              key: WEBHOOK_SECRET
+        - name: PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.deployment.config.privateKeySecretName }}
+              key: PRIVATE_KEY
