@@ -2,7 +2,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 deployment:
-  image: #place for image
+  image: eu.gcr.io/kyma-project/test-infra/pr/probot-stale:PR-2570
   imagePullPolicy: IfNotPresent
   config:
     # https://probot.github.io/docs/configuration/
@@ -11,9 +11,9 @@ deployment:
     disableStats: true
     githubHost: github.tools.sap
     githubProtocol: https
-    appIDSecretName: name
-    privateKeySecretName: name
-    webhookSecretsSecretName: name
+    appIDSecretName: probot-stale
+    privateKeySecretName: probot-stale
+    webhookSecretsSecretName: probot-stale
   resources: {}
 
 ingress:

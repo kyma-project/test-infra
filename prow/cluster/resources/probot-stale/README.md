@@ -2,4 +2,4 @@
 
 ## Overview
 
-This chart contains the Probot Stale.
+This chart contains the `probot-stale` configuration.
