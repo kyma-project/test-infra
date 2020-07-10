@@ -30,5 +30,5 @@ ingress:
     secretName: stale-tls
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
