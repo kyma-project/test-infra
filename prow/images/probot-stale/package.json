@@ -2,7 +2,6 @@
     "name": "probot",
     "private": true,
     "dependencies": {
-        "probot-settings": "git+https://github.com/probot/settings",
         "probot-stale": "git+https://github.com/probot/stale"
     },
     "scripts": {
@@ -10,7 +9,6 @@
     },
     "probot": {
         "apps": [
-            "probot-settings",
             "probot-stale"
         ]
     }
