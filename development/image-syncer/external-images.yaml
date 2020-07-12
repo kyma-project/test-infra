@@ -2,7 +2,7 @@ targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 images:
 - source: "bitnami/keycloak-gatekeeper:10.0.0"
 - source: "busybox:1.31.1"
-- source: "grafana/grafana:7.0.3"
+- source: "grafana/grafana:7.0.6"
 - source: "grafana/loki:v1.3.0"
 - source: "istio/citadel:1.4.7-distroless"
 - source: "istio/galley:1.4.7-distroless"
