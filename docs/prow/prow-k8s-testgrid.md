@@ -1,73 +1,63 @@
 # TestGrid
 
-Kyma publishes Prow job results on the [**Kubernetes TestGrid**](https://testgrid.k8s.io/kyma-all) that the Kubernetes team runs. Prow job configuration for Kyma is stored in two separate projects, in Kyma and Kubernetes `test-infra` repositories.
+[TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating grid view from the tests.
+There is one dashboard group called `kyma` which groups dashboards from both of the organizations: *kyma-project* and *kyma-incubator*. The dashboards start with the prefix name which refers to one of the organizations: *kyma* and *kyma-incubator*.
+TestGrid configuration is stored inside [kubernetes/test-infra](https://github.com/kubernetes/test-infra/tree/master/config/testgrids/kyma) repository in the `/config/testgrids/kyma/` directory.
 
-## Kyma configuration
+TestGrid is being automatically updated by Prow using the tool called [transfigure.sh](https://github.com/kubernetes/test-infra/tree/master/testgrid/cmd/transfigure).
 
-One part of the configuration is based on job definitions in the form of annotations. See the example of the [`kind` job](https://github.com/kyma-project/test-infra/blob/60493dd61d77da363b8758b7e4c94f25d4b36501/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83) displayed on the *kyma-nightly* dashboard on TestGrid:
+## Adding new dashboard
 
+The dashboards' configuration is stored in the [testgrid-default.yaml](https://github.com/kyma-project/test-infra/tree/master/prow/testgrid-default.yaml) file.
+This file is being automatically generated from a [template testgrid-default.yaml](https://github.com/kyma-project/test-infra/tree/master/templates/testgrid-default.yaml) file.
 ```yaml
-  annotations:
-    testgrid-dashboards: kyma-nightly
-    # testgrid-alert-email: email-here@sap.com
-    testgrid-num-failures-to-alert: '1'
+dashboards:
+  # kyma
+  - name: kyma_integration
+  - name: kyma_control-plane
+
+  # kyma-incubator
+  - name: kyma-incubator_compass
+
+dashboard_groups:
+  - name: kyma
+    dashboard_names:
+      - kyma_integration
+      - kyma_control-plane
+      - kyma-incubator_compass
+```
+To add a new dashboard it's needed to do several steps:
+
+1. Add a new dashboard definition in the `dashboards` field according to the example file above inside a template file. **Dashboards need to have dashboard name as prefix**.
+2. Add the previously added dashboard to the corresponding `dashboard_name` inside the `dashboard_groups` field.
+3. Generate a new config file using [rendertemplates](https://github.com/kyma-project/test-infra/tree/master/development/tools/cmd/rendertemplates) tool and check if the config file generated correctly.
+
+## Adding ProwJob to the TestGrid
+
+After adding a desired dashboard in the `testgrid-default.yaml` file you need to add ProwJobs to the dashboard. It can be done by defining new `annotations` field to a ProwJob definition.
+Add the below line to the ProwJob and edit it to your needs.
+
+The only required field is `testgrid-dashboards`. It needs to have a name that is defined in the `testgrid-default.yaml` file. It is also good to define `description` field to add short description about the job.
+The rest of the fields is optional and can be omitted.
+```yaml
+annotations:
+  testgrid-dashboards: dashboard-name      # Required. a dashboard already defined in a config.yaml.
+  testgrid-tab-name: some-short-name       # optionally, a shorter name for the tab. If omitted, just uses the job name.
+  testgrid-alert-email: me@me.com          # optionally, an alert email that will be applied to the tab created in the
+                                           # first dashboard specified in testgrid-dashboards.
+  description: Words about your job.       # optionally, a description of your job. If omitted, just uses the job name.
+
+  testgrid-num-columns-recent: "10"        # optionally, the number of runs a row can be omitted from before it is
+                                           # considered stale. Currently defaults to 10.
+  testgrid-num-failures-to-alert: "3"      # optionally, the number of continuous failures before sending an email.
+                                           # Currently defaults to 3.
+  testgrid-alert-stale-results-hours: "12" # optionally, send an email if this many hours pass with no results at all.
 ```
 
-You can also specify an email address if you want to receive notifications after a predefined number of job failures.
+If the job does not have to be on a TestGrid use the annotation below to disable the generation of the TestGrid test group:
+```yaml
+annotations:
+  testgrid-create-test-group: "false"
+```
 
-## Kubernetes configuration
-
-The other part of the configuration is stored in the [Kubernetes repository](https://github.com/kubernetes/test-infra/tree/master/config/testgrids). The Kyma team [owns](https://github.com/kubernetes/test-infra/blob/master/config/testgrids/kyma/OWNERS) the `kyma` folder which holds the configuration related to Kyma Prow jobs.
-
-This configuration contains these important definitions:
-
-1. A dashboard group called **kyma** and a number of sub-dashboards:
-
-    ```yaml
-    dashboard_groups:
-    - name: kyma
-      dashboard_names:
-      - kyma-all
-      - kyma-release
-      - kyma-cleaners
-      - kyma-presubmit
-      - kyma-postsubmit
-      - kyma-nightly
-      - kyma-weekly
-      - kyma-incubator
-    ```
-
-2. Actual dashboard definitions. For example, a part of the configuration for the [nightly dashboard](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L355) looks as follows:
-
-    ```yaml
-    dashboards:
-    - name: kyma-nightly
-      dashboard_tab:
-      - name: Kyma kind integration
-        description: Tracks that Kyma is able to run on kind
-        test_group_name: kyma-kind-integration
-        # alert_options:
-        #   alert_mail_to_addresses: email-here@sap.com
-        code_search_url_template:
-        url: https://github.com/kyma-project/kyma/compare/<start-custom-0>...<end-custom-0>
-        open_bug_template:
-        url: https://github.com/kyma-project/kyma/issues/
-    ```
-    The list of dashboards also includes the **kyma-all** dashboard which repeats all dashboard definitions and contains an overview of all jobs.
-
-3. [**test_groups**](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml#L422) defined at the end of the `kyma.yaml` file. These groups are used on the **dashboard_tab** and need to be defined for a job to show up on the dashboard. In the `kind` job example, the integration test has the test group defined as `kyma-kind-integration`. You can see the same definition of this test group on the list:
-
-    ```yaml
-    - name: kyma-kind-integration
-      gcs_prefix: kyma-prow-logs/logs/kyma-kind-integration
-      num_failures_to_alert: 1
-    ```
-
-    This definition specifies the source of information for the dashboard and gives a link to the job details if needed.
-
-## Add a new job to the dashboard
-
-Follow these steps to add a newly created job to the TestGrid dashboard:
-
-1. Add the required annotations to the specific [Prow job](https://github.com/kyma-project/test-infra/tree/master/prow/jobs) in Kyma, specifying the dashboard on which the job results should appear. If you add a new dashboard, make sure to also add it to the `kyma.yaml` file in the [Kubernetes repository](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml).
-2. Add corresponding changes to the `kyma.yaml` file in the [Kubernetes repository](https://github.com/kubernetes/test-infra/blob/8737414459c84bdefdbb279caef5c8339033da69/config/testgrids/kyma/kyma.yaml). One of the [code owners](https://github.com/kubernetes/test-infra/blob/master/config/testgrids/kyma/OWNERS) of the `kyma` folder must approve your changes.
+This configuration generally applies for postsumbits and periodics. The presubmits jobs can be added to the TestGrid, however if there is no `annnotations` field defined the job will be omitted in config file generation.
