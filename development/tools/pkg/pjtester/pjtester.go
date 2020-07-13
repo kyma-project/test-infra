@@ -231,7 +231,7 @@ func newTestPJ() prowapi.ProwJob {
 	return pj
 }
 
-// SchedulPJ will generate prowjob for testing and schedule it on prow for execution.
+// SchedulePJ will generate prowjob for testing and schedule it on prow for execution.
 func SchedulePJ() {
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
