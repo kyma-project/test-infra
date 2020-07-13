@@ -19,7 +19,7 @@ dashboard_groups:
       - kyma_integration
       - kyma_control-plane
       {{- range .Global.releases }}
-      - release-{{ . }}
+      - kyma_release-{{ . }}
       {{- end }}
   - name: kyma-incubator
     dashboard_names:
