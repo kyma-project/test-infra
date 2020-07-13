@@ -10,7 +10,7 @@ job_template: &job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20200713-4d421ee1
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
         args:
