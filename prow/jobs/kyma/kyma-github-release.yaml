@@ -32,7 +32,7 @@ postsubmits:
   kyma-project/kyma:
   - name: post-rel114-kyma-github-release
     annotations:
-      testgrid-dashboards: kyma-release-1.14
+      testgrid-dashboards: kyma_release-1.14
       description: GitHub Release job for Kyma 1.14.
     branches:
       - release-1.14
@@ -46,7 +46,7 @@ postsubmits:
       preset-target-commit-1.14: "true"
   - name: post-rel113-kyma-github-release
     annotations:
-      testgrid-dashboards: kyma-release-1.13
+      testgrid-dashboards: kyma_release-1.13
       description: GitHub Release job for Kyma 1.13.
     branches:
       - release-1.13
@@ -60,7 +60,7 @@ postsubmits:
       preset-target-commit-1.13: "true"
   - name: post-rel112-kyma-github-release
     annotations:
-      testgrid-dashboards: kyma-release-1.12
+      testgrid-dashboards: kyma_release-1.12
       description: GitHub Release job for Kyma 1.12.
     branches:
       - release-1.12

@@ -31,7 +31,7 @@ postsubmits:
 {{- range .Global.releases }}
   - name: post-rel{{ . | replace "." "" }}-kyma-github-release
     annotations:
-      testgrid-dashboards: kyma-release-{{ . }}
+      testgrid-dashboards: kyma_release-{{ . }}
       description: GitHub Release job for Kyma {{ . }}.
     branches:
       - release-{{ . }}

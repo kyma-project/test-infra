@@ -51,7 +51,7 @@ postsubmits:
       preset-build-master: "true"
       <<: *vm_job_labels_template
     annotations:
-      testgrid-dashboards: kyma-incubator-compass
+      testgrid-dashboards: kyma-incubator_compass
       description: Compass integration job.
     extra_refs:
     - <<: *test_infra_ref
