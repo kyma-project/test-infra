@@ -4,7 +4,7 @@ TAG = $(DOCKER_TAG)
 
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG_NAME) -f Dockerfile ../../../.
+	docker build -t $(IMG_NAME) --build-arg image_commit=$(TAG) -f Dockerfile ../../../.
 
 .PHONY: push-image
 push-image:

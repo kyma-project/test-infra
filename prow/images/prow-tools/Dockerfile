@@ -1,3 +1,5 @@
+ARG commit
+
 FROM golang:1.14.2-alpine3.11 AS builder
 
 WORKDIR /go/src/github.com/kyma-project/test-infra
@@ -13,6 +15,7 @@ RUN cd development/checker && go get k8s.io/test-infra/prow/cmd/checkconfig@v0.0
 
 FROM alpine:latest
 
+ENV IMAGE_COMMIT=$commit
 RUN apk --update --no-cache add ca-certificates bash
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /prow-tools
 COPY --from=builder /prow-tools/* /prow-tools/

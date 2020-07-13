@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/kyma-project/test-infra/development/tools/pkg/pjtester"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -22,6 +23,9 @@ var (
 func main() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(logrus.InfoLevel)
+	if _, present := os.LookupEnv("IMAGE_COMMIT"); present {
+		fmt.Printf("IMAGE_COMMIT: %s\n", os.Getenv("IMAGE_COMMIT"))
+	}
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
