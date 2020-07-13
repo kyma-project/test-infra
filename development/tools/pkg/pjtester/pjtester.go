@@ -28,7 +28,7 @@ var (
 	log         = logrus.New()
 )
 
-type TestCfg struct {
+type testCfg struct {
 	PjName string `yaml:"pjName"`
 	PjPath string `yaml:"pjPath"`
 }
@@ -61,10 +61,10 @@ func checkEnvVars(varsList []string) error {
 		val, present := os.LookupEnv(evar)
 		if present {
 			if len(val) == 0 {
-				return errors.New(fmt.Sprintf("variable %s is empty", evar))
+				return fmt.Errorf("variable %s is empty", evar)
 			}
 		} else {
-			return errors.New(fmt.Sprintf("Variable %s is not set", evar))
+			return fmt.Errorf("Variable %s is not set", evar)
 		}
 	}
 	return nil
@@ -98,8 +98,8 @@ func (o *options) Validate() error {
 	return nil
 }
 
-func readTestCfg() *TestCfg {
-	var t *TestCfg
+func readTestCfg() *testCfg {
+	var t *testCfg
 	yamlFile, err := ioutil.ReadFile(testCfgFile)
 	if err != nil {
 		log.Fatal("Failed read test config file from virtual path KYMA_PROJECT_DIR/test-infra/vpath/pjtester.yaml")
@@ -111,7 +111,7 @@ func readTestCfg() *TestCfg {
 	return t
 }
 
-func gatherOptions(testCfg *TestCfg) options {
+func gatherOptions(testCfg *testCfg) options {
 	var o options
 	var err error
 	//fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
@@ -193,7 +193,7 @@ func splitRepoName(repo string) (string, string, error) {
 	return s[0], s[1], nil
 }
 
-func NewTestPJ() prowapi.ProwJob {
+func newTestPJ() prowapi.ProwJob {
 	if err := checkEnvVars(envVarsList); err != nil {
 		logrus.WithError(err).Fatalf("Required environment variable not set.")
 	}
@@ -231,10 +231,11 @@ func NewTestPJ() prowapi.ProwJob {
 	return pj
 }
 
+// SchedulPJ will generate prowjob for testing and schedule it on prow for execution.
 func SchedulePJ() {
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
-	pj := NewTestPJ()
+	pj := newTestPJ()
 	result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(&pj)
 	if err != nil {
 		log.WithError(err).Fatalf("Failed schedule test of prowjob")

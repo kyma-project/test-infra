@@ -1,0 +1,25 @@
+buildpack_golang_image: &prow-tools_image eu.gcr.io/kyma-project/test-infra/prow-tools:current
+
+job_labels_template: &job_labels_template
+  preset-pjtester-kubeconfig: "true"
+
+presubmits: # runs on PRs
+  kyma-project/test-infra:
+  - name: pre-master-test-infra-pjtester
+    run_if_changed: "^(vpath/pjtester.yaml)"
+    branches:
+    - ^master$
+    max_concurrency: 10
+    labels:
+      <<: *job_labels_template
+    decorate: true
+    #path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+      - image: *prow-tools_image
+        command:
+        - "pjtester"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
