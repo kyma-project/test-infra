@@ -1,4 +1,4 @@
-buildpack_golang_image: &prow-tools_image eu.gcr.io/kyma-project/test-infra/prow-tools:current
+prow-tools_image: &prow-tools_image eu.gcr.io/kyma-project/test-infra/prow-tools:current
 
 job_labels_template: &job_labels_template
   preset-pjtester-kubeconfig: "true"
