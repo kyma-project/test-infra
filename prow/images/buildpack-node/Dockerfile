@@ -28,3 +28,7 @@ RUN npm install -g eslint-config-react-app@^3.0.4 \
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200617-4d846c49 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools
