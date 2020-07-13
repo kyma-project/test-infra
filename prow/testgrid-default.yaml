@@ -19,9 +19,9 @@ dashboard_groups:
       - kyma_test-infra
       - kyma_integration
       - kyma_control-plane
-      - release-1.14
-      - release-1.13
-      - release-1.12
+      - kyma_release-1.14
+      - kyma_release-1.13
+      - kyma_release-1.12
   - name: kyma-incubator
     dashboard_names:
       - kyma-incubator_compass
