@@ -28,7 +28,7 @@ postsubmits:
       branches:
         - master
       annotations:
-        testgrid-dashboards: test-infra
+        testgrid-dashboards: kyma_test-infra
         description: TestGrid config update job.
       spec:
         containers:
