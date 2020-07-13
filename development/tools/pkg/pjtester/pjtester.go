@@ -3,10 +3,14 @@ package pjtester
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strconv"
+	"strings"
+
 	"github.com/go-yaml/yaml"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
-	"io/ioutil"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
@@ -16,9 +20,6 @@ import (
 	prowflagutil "k8s.io/test-infra/prow/flagutil"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pjutil"
-	"os"
-	"strconv"
-	"strings"
 )
 
 var (
