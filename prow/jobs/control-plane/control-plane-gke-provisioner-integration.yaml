@@ -77,7 +77,7 @@ postsubmits:
         - ^master$
       <<: *gke_integration_job_template_latest
       annotations:
-        testgrid-dashboards: kyma_control-plane
+        testgrid-dashboards: kyma-control-plane
         description: Kyma control-plane GKE provisioner integration job.
       reporter_config:
         slack:

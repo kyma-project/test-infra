@@ -102,7 +102,7 @@ postsubmits:
         - ^master$
       <<: *gke_integration_job_template_latest
       annotations:
-        testgrid-dashboards: kyma-incubator_compass
+        testgrid-dashboards: kyma-incubator-compass
         description: Compass GKE integration job.
       reporter_config:
         slack:

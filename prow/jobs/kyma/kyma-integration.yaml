@@ -421,7 +421,7 @@ postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-integration
       annotations:
-        testgrid-dashboards: kyma_integration
+        testgrid-dashboards: kyma-integration
         description: Kyma integration job.
       <<: *vm_job_template
       branches:
@@ -436,7 +436,7 @@ postsubmits:
     - name: post-master-kyma-gke-integration
       <<: *gke_job_template
       annotations:
-        testgrid-dashboards: kyma_integration
+        testgrid-dashboards: kyma-integration
         description: Kyma GKE integration job.
       branches:
         - ^master$
@@ -450,7 +450,7 @@ postsubmits:
     - name: post-master-kyma-gke-central-connector
       <<: *gke_central_job_template
       annotations:
-        testgrid-dashboards: kyma_integration
+        testgrid-dashboards: kyma-integration
         description: Kyma GKE central-connector job.
       branches:
         - ^master$
@@ -464,7 +464,7 @@ postsubmits:
     - name: post-master-kyma-gke-upgrade
       <<: *gke_upgrade_job_template
       annotations:
-        testgrid-dashboards: kyma_integration
+        testgrid-dashboards: kyma-integration
         description: Kyma GKE upgrade job.
       branches:
         - ^master$
@@ -722,7 +722,7 @@ periodics:
     cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma_integration
+      testgrid-dashboards: kyma-integration
       description: Kyma GKE nightly build.
     labels:
       preset-kyma-keyring: "true"
@@ -794,7 +794,7 @@ periodics:
     cluster: trusted-workload
     cron: "0 6 * * 1" # "At 06:00 on Monday."
     annotations:
-      testgrid-dashboards: kyma_integration
+      testgrid-dashboards: kyma-integration
       description: Kyma GKE weekly build.
     labels:
       preset-kyma-keyring: "true"
@@ -864,7 +864,7 @@ periodics:
     cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma_integration
+      testgrid-dashboards: kyma-integration
       description: Kyma AKS nightly build.
     labels:
       preset-kyma-keyring: "true"
