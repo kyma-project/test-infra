@@ -24,14 +24,20 @@ import (
 
 var (
 	testCfgFile = fmt.Sprintf("%s/test-infra/vpath/pjtester.yaml", os.Getenv("KYMA_PROJECT_DIR"))
-	prowCfgPath = fmt.Sprintf("%s/test-infra/prow/config.yaml", os.Getenv("KYMA_PROJECT_DIR"))
+	//prowCfgPath = fmt.Sprintf("%s/test-infra/prow/config.yaml", os.Getenv("KYMA_PROJECT_DIR"))
 	envVarsList = []string{"KUBECONFIG_PATH", "KYMA_PROJECT_DIR", "PULL_BASE_REF", "PULL_BASE_SHA", "PULL_NUMBER", "PULL_PULL_SHA", "JOB_SPEC"}
 	log         = logrus.New()
 )
 
+const (
+	defaultPjPath     = "test-infra/prow/jobs/"
+	defaultConfigPath = "test-infra/prow/config.yaml"
+)
+
 type testCfg struct {
-	PjName string `yaml:"pjName"`
-	PjPath string `yaml:"pjPath"`
+	PjName     string `yaml:"pjName"`
+	PjPath     string `yaml:"pjPath,omitempty"`
+	ConfigPath string `yaml:"configPath,omitempty"`
 }
 
 type options struct {
@@ -109,6 +115,12 @@ func readTestCfg() *testCfg {
 	if err != nil {
 		log.Fatal("Failed unmarshal test config yaml.")
 	}
+	if t.PjPath == "" {
+		t.PjPath = defaultPjPath
+	}
+	if t.ConfigPath == "" {
+		t.ConfigPath = defaultConfigPath
+	}
 	return t
 }
 
@@ -117,7 +129,7 @@ func gatherOptions(testCfg *testCfg) options {
 	var err error
 	//fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o.jobName = testCfg.PjName
-	o.configPath = prowCfgPath
+	o.configPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.ConfigPath)
 	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.PjPath)
 	o.baseRef = os.Getenv("PULL_BASE_REF") // Git base ref under test
 	o.baseSha = os.Getenv("PULL_BASE_SHA") // Git base SHA under test
