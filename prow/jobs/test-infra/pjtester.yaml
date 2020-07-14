@@ -6,7 +6,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: pre-master-test-infra-pjtester
-    run_if_changed: "^(vpath/pjtester.yaml)"
+    run_if_changed: "^vpath/pjtester.yaml"
     branches:
     - ^master$
     max_concurrency: 10
