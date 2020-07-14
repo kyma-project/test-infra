@@ -2,13 +2,6 @@
 
 FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 
-COPY ./license-puller.sh /license-puller.sh
-ENV LICENSE_PULLER_PATH=/license-puller.sh
-
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200617-4d846c49 /prow-tools /prow-tools
-# for better access to prow-tools
-ENV PATH=$PATH:/prow-tools
-
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
@@ -33,3 +26,5 @@ RUN npm install -g eslint-config-react-app@^3.0.4 \
     typescript@^3.1.3 \
     prettier@^1.14.3
 
+COPY ./license-puller.sh /license-puller.sh
+ENV LICENSE_PULLER_PATH=/license-puller.sh
