@@ -28,8 +28,9 @@ postsubmits:
       branches:
         - master
       annotations:
-        testgrid-dashboards: kyma_test-infra
-        description: TestGrid config update job.
+        testgrid-create-test-group: "false"
+#        testgrid-dashboards: kyma_test-infra
+#        description: TestGrid config update job.
       spec:
         containers:
           - image: gcr.io/k8s-prow/transfigure
