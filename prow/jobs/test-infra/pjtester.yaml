@@ -19,7 +19,10 @@ presubmits: # runs on PRs
       containers:
       - image: *prow-tools_image
         command:
-        - "pjtester"
+          - "pjtester"
+        env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
         resources:
           requests:
             memory: 1.5Gi
