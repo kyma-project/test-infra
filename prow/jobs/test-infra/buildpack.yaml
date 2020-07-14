@@ -305,7 +305,7 @@ prow_tools_job_template: &prow_tools_job_template
   <<: *common_job_template
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20200124-900eb728
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
         securityContext:
           privileged: true
         command:
