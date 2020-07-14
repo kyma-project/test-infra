@@ -195,9 +195,6 @@ func splitRepoName(repo string) (string, string, error) {
 }
 
 func newTestPJ() prowapi.ProwJob {
-	if err := checkEnvVars(envVarsList); err != nil {
-		logrus.WithError(err).Fatalf("Required environment variable not set.")
-	}
 	testCfg := readTestCfg()
 	o := gatherOptions(testCfg)
 	if err := o.Validate(); err != nil {
@@ -234,6 +231,11 @@ func newTestPJ() prowapi.ProwJob {
 
 // SchedulePJ will generate prowjob for testing and schedule it on prow for execution.
 func SchedulePJ() {
+	log.SetOutput(os.Stdout)
+	log.SetLevel(logrus.InfoLevel)
+	if err := checkEnvVars(envVarsList); err != nil {
+		logrus.WithError(err).Fatalf("Required environment variable not set.")
+	}
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
 	pj := newTestPJ()
