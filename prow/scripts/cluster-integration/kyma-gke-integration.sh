@@ -119,11 +119,6 @@ trap cleanup EXIT INT
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-elif [[ "${BUILD_TYPE}" == "release" ]]; then
-   shout "Execute Job Guard for Release jobs"
-   export TIMEOUT="75m"
-   export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$ | ^pre-rel\\d\\d\\d-kyma-installer$ | ^pre-rel\\d\\d\\d-kyma-artifacts$)"
-   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 # Enforce lowercase
