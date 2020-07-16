@@ -9,7 +9,7 @@ TestGrid is being automatically updated by Prow using the tool called [transfigu
 ## Adding new dashboard
 
 The dashboards' configuration is stored in the [testgrid-default.yaml](https://github.com/kyma-project/test-infra/tree/master/prow/testgrid-default.yaml) file.
-This file is being automatically generated from a [template testgrid-default.yaml](https://github.com/kyma-project/test-infra/tree/master/templates/testgrid-default.yaml) file.
+This file is being automatically generated from a [template testgrid-default.yaml](https://github.com/kyma-project/test-infra/blob/master/templates/templates/testgrid-default.yaml) file.
 ```yaml
 dashboards:
   # kyma
