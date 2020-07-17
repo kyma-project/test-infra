@@ -41,7 +41,7 @@ annotations:
   testgrid-tab-name: some-short-name       # [Optional] A shorter name for the tab. If omitted, just uses the job name.
   testgrid-alert-email: me@me.com          # [Optional] An alert email that will be applied to the tab created in the first dashboard specified in testgrid-dashboards.
   description: Words about your job.       # [Optional] A description of your job. If omitted, only the job name is used.
-  testgrid-num-columns-recent: "10"        # [Optional] [Optional] The number of runs in a row that can be omitted before the run is considered stale. The default value is 10.
+  testgrid-num-columns-recent: "10"        # [Optional] The number of runs in a row that can be omitted before the run is considered stale. The default value is 10.
   testgrid-num-failures-to-alert: "3"      # [Optional] The number of continuous failures before sending an email. The default value is 3.
   testgrid-alert-stale-results-hours: "12" # [Optional] The number of hours that pass with no results after which the email is sent. The default value is 12.
 ```
