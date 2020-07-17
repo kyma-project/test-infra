@@ -1,7 +1,6 @@
 base_image: &base_image
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200513-93bafa15-k8s1.16
 
-# upgrade when stable GKE 1.16 will be available
 cluster_version: &cluster_version
   name: CLUSTER_VERSION
   value: "1.16"

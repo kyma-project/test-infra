@@ -41,7 +41,6 @@ readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
 declare -a GCLOUD_PARAMS
 
 TTL_HOURS_PARAM="3"
-# upgrade when stable GKE 1.16 will be available
 CLUSTER_VERSION_PARAM="--cluster-version=1.16"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
