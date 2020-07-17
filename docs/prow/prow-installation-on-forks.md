@@ -167,8 +167,6 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#enable-some-plugins-by-modifying-pluginsyaml).
-
 ### The job configuration file
 
 You can define a test presubmit job for a component. However, remember to adjust its definition in the YAML file to point to your forked repository instead of the original repository.
