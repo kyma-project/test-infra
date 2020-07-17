@@ -1,8 +1,8 @@
 # TestGrid
 
-[TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating grid view from the tests.
+[TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating a grid view from the tests.
 There is one dashboard group called `kyma` which groups dashboards from both of the organizations: *kyma-project* and *kyma-incubator*. The dashboards start with the prefix name which refers to one of the organizations: *kyma* and *kyma-incubator*.
-TestGrid configuration is stored inside [kubernetes/test-infra](https://github.com/kubernetes/test-infra/tree/master/config/testgrids/kyma) repository in the `/config/testgrids/kyma/` directory.
+TestGrid configuration is stored inside the [kubernetes/test-infra](https://github.com/kubernetes/test-infra/tree/master/config/testgrids/kyma) repository in the `/config/testgrids/kyma/` directory.
 
 TestGrid is automatically updated by Prow using the tool called [transfigure.sh](https://github.com/kubernetes/test-infra/tree/master/testgrid/cmd/transfigure).
 
@@ -28,7 +28,7 @@ dashboard_groups:
 ```
 Follow these steps to add a new dashboard:
 
-1. Add a new dashboard definition in the `dashboards` field according to the example file above inside a template file. **Dashboards must have a dashboard group name as a prefix**.
+1. Add a new dashboard name in the `dashboards` field inside a template file. **Dashboards must have a dashboard group name as a prefix**.
 2. Add the previously added dashboard to the corresponding **dashboard_name** inside the **dashboard_groups** field.
 3. Generate a new config file using the [rendertemplates](https://github.com/kyma-project/test-infra/tree/master/development/tools/cmd/rendertemplates) tool and check if the config file generated correctly.
 
@@ -41,13 +41,13 @@ annotations:
   testgrid-tab-name: some-short-name       # [Optional] A shorter name for the tab. If omitted, just uses the job name.
   testgrid-alert-email: me@me.com          # [Optional] An alert email that will be applied to the tab created in the first dashboard specified in testgrid-dashboards.
   description: Words about your job.       # [Optional] A description of your job. If omitted, only the job name is used.
-  testgrid-num-columns-recent: "10"        # [Optional] The number of runs a row can be omitted from before it is considered stale. Currently defaults to 10.
+  testgrid-num-columns-recent: "10"        # [Optional] [Optional] The number of runs in a row that can be omitted before the run is considered stale. The default value is 10.
   testgrid-num-failures-to-alert: "3"      # [Optional] The number of continuous failures before sending an email. The default value is 3.
-  testgrid-alert-stale-results-hours: "12" # [Optional] The number of hours that pass with no results after which the email is sent.
+  testgrid-alert-stale-results-hours: "12" # [Optional] The number of hours that pass with no results after which the email is sent. The default value is 12.
 ```
 
 The only required field is **testgrid-dashboards**. It must correspond to the name defined in the `testgrid-default.yaml` file. It is also recommended to add a short description of the job in the **description** field.
-The rest of the fields is optional and can be omitted.
+The rest of the fields are optional and can be omitted.
 
 If you don't want to include a job on the TestGrid, use this annotation to disable the generation of the TestGrid test group:
 ```yaml
