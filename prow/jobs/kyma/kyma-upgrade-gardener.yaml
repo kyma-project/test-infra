@@ -26,7 +26,7 @@ gardener_azure_job_template: &gardener_azure_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_115
+      - <<: *base_image_116
         securityContext:
           privileged: true
         command:
