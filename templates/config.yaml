@@ -5,6 +5,9 @@ global:
     - "1.13"
     - "1.12"
   whitesource:
+    - name: "control-plane"
+      language: "golang-mod"
+      project: "kyma-project"
     - name: "kyma"
       language: "golang"
       project: "kyma-project"
