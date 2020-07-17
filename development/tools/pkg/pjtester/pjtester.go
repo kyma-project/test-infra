@@ -30,8 +30,9 @@ var (
 )
 
 const (
-	defaultPjPath     = "test-infra/prow/jobs/"
-	defaultConfigPath = "test-infra/prow/config.yaml"
+	defaultPjPath       = "test-infra/prow/jobs/"
+	defaultConfigPath   = "test-infra/prow/config.yaml"
+	defaultMasterBranch = "master"
 )
 
 type testCfg struct {
@@ -133,6 +134,8 @@ func gatherOptions(testCfg *testCfg) options {
 	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.PjPath)
 	o.baseRef = os.Getenv("PULL_BASE_REF") // Git base ref under test
 	o.baseSha = os.Getenv("PULL_BASE_SHA") // Git base SHA under test
+	o.org = os.Getenv("REPO_OWNER")
+	o.repo = os.Getenv("REPO_NAME")
 	o.pullNumber, err = strconv.Atoi(os.Getenv("PULL_NUMBER"))
 	if err != nil {
 		logrus.WithError(err).Fatalf("Could not get pull number from env var PULL_NUMBER.")
@@ -159,17 +162,18 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 		}
 		for _, p := range ps {
 			if p.Name == o.jobName {
-				return p.JobBase, pjutil.PresubmitSpec(p, prowapi.Refs{
-					Org:     org,
-					Repo:    repo,
-					BaseRef: o.baseRef,
-					BaseSHA: o.baseSha,
-					Pulls: []prowapi.Pull{{
-						Author: o.pullAuthor,
-						Number: o.pullNumber,
-						SHA:    o.pullSha,
-					}},
+				pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
+					Org:  org,
+					Repo: repo,
+					//BaseRef: o.baseRef,
+					//BaseSHA: o.baseSha,
+					//Pulls: []prowapi.Pull{{
+					//	Author: o.pullAuthor,
+					//	Number: o.pullNumber,
+					//	SHA:    o.pullSha,
+					//}},
 				})
+				return p.JobBase, presubmitPJRefs(pjs, *o)
 			}
 		}
 	}
@@ -182,10 +186,10 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 		for _, p := range ps {
 			if p.Name == o.jobName {
 				return p.JobBase, pjutil.PostsubmitSpec(p, prowapi.Refs{
-					Org:     org,
-					Repo:    repo,
-					BaseRef: o.baseRef,
-					BaseSHA: o.baseSha,
+					Org:  org,
+					Repo: repo,
+					//BaseRef: o.baseRef,
+					//BaseSHA: o.baseSha,
 				})
 			}
 		}
@@ -204,6 +208,37 @@ func splitRepoName(repo string) (string, string, error) {
 		return "", "", fmt.Errorf("repo %s cannot be split into org/repo", repo)
 	}
 	return s[0], s[1], nil
+}
+
+func presubmitPJRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
+	// If prowjob refs point to test infra repo, add refs details of this PR to prowjob refs because we are going to test code from this PR.
+	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
+		pjs.Refs.BaseSHA = opt.baseSha
+		pjs.Refs.BaseRef = opt.baseRef
+		pjs.Refs.Pulls = []prowapi.Pull{{
+			Author: opt.pullAuthor,
+			Number: opt.pullNumber,
+			SHA:    opt.pullSha,
+		}}
+	}
+	// If prowjob refs point to another repo, move refs to extra refs and set refs to details from this PR, because we are going to test code from this PR.
+	//extraRefs := pjs.ExtraRefs
+	refs := pjs.Refs
+	if refs.Org != opt.org || refs.Repo != opt.repo {
+		pjs.Refs.BaseRef = defaultMasterBranch
+		for index, ref := range pjs.ExtraRefs {
+			if ref.Org == opt.org && ref.Repo == opt.repo {
+				pjs.ExtraRefs[index].BaseRef = opt.baseRef
+				pjs.ExtraRefs[index].BaseSHA = opt.baseSha
+				pjs.ExtraRefs[index].Pulls = []prowapi.Pull{{
+					Author: opt.pullAuthor,
+					Number: opt.pullNumber,
+					SHA:    opt.pullSha,
+				}}
+			}
+		}
+	}
+	return pjs
 }
 
 func newTestPJ() prowapi.ProwJob {
@@ -233,8 +268,8 @@ func newTestPJ() prowapi.ProwJob {
 	if job.Name == "" {
 		logrus.Fatalf("Job %s not found.", o.jobName)
 	}
-	o.org = pjs.Refs.Org
-	o.repo = pjs.Refs.Repo
+	//o.org = pjs.Refs.Org
+	//o.repo = pjs.Refs.Repo
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
 	pj.Spec.Job = fmt.Sprintf("testing_of_prowjob_%s", pj.Spec.Job)
 	pj.Spec.Cluster = "untrusted-workload"
