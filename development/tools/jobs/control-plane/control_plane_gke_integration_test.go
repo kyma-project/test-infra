@@ -41,7 +41,7 @@ func TestKCPGKEIntegrationPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	kcpCont := actualJob.Spec.Containers[0]
-	assert.Equal(t, tester.ImageKymaIntegrationK15, kcpCont.Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, kcpCont.Image)
 	assert.Equal(t, []string{"bash"}, kcpCont.Command)
 	require.Len(t, kcpCont.Args, 2)
 	assert.Equal(t, "-c", kcpCont.Args[0])
@@ -81,7 +81,7 @@ func TestKCPGKEIntegrationPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
 	kcpCont := actualJob.Spec.Containers[0]
-	assert.Equal(t, tester.ImageKymaIntegrationK15, kcpCont.Image)
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, kcpCont.Image)
 	assert.Equal(t, []string{"bash"}, kcpCont.Command)
 	require.Len(t, kcpCont.Args, 2)
 	assert.Equal(t, "-c", kcpCont.Args[0])
