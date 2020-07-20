@@ -53,5 +53,4 @@ presubmits: # runs on PRs
         preset-kyma-encryption-key: "true"
         preset-kms-gc-project-env: "true"
         preset-gc-project-env: "true"
-        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
-        
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
