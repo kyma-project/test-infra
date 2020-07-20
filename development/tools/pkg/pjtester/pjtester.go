@@ -24,7 +24,6 @@ import (
 
 var (
 	testCfgFile = fmt.Sprintf("%s/test-infra/vpath/pjtester.yaml", os.Getenv("KYMA_PROJECT_DIR"))
-	//prowCfgPath = fmt.Sprintf("%s/test-infra/prow/config.yaml", os.Getenv("KYMA_PROJECT_DIR"))
 	envVarsList = []string{"KUBECONFIG_PATH", "KYMA_PROJECT_DIR", "PULL_BASE_REF", "PULL_BASE_SHA", "PULL_NUMBER", "PULL_PULL_SHA", "JOB_SPEC"}
 	log         = logrus.New()
 )
@@ -128,7 +127,6 @@ func readTestCfg() *testCfg {
 func gatherOptions(testCfg *testCfg) options {
 	var o options
 	var err error
-	//fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o.jobName = testCfg.PjName
 	o.configPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.ConfigPath)
 	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.PjPath)
@@ -143,13 +141,6 @@ func gatherOptions(testCfg *testCfg) options {
 	o.pullSha = os.Getenv("PULL_PULL_SHA")                                          // Git pull SHA under test
 	o.pullAuthor = gjson.Get(os.Getenv("JOB_SPEC"), "refs.pulls.0.author").String() // Git pull author under test")
 	o.github = *prowflagutil.NewGitHubOptions()
-	// TODO: remove after tests if not needed
-	//defaultGitHubTokenPath := ""
-	//if wantDefaultGitHubTokenPath {
-	//	defaultGitHubTokenPath = "/etc/github/oauth"
-	//}
-	//fs.StringVar(&o.TokenPath, "github-token-path", defaultGitHubTokenPath, "Path to the file containing the GitHub OAuth secret.")
-	//fs.StringVar(&o.deprecatedTokenFile, "github-token-file", "", "DEPRECATED: use -github-token-path instead.  -github-token-file may be removed anytime after 2019-01-01.")
 	return o
 }
 
@@ -165,15 +156,9 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 				pjs := pjutil.PresubmitSpec(p, prowapi.Refs{
 					Org:  org,
 					Repo: repo,
-					//BaseRef: o.baseRef,
-					//BaseSHA: o.baseSha,
-					//Pulls: []prowapi.Pull{{
-					//	Author: o.pullAuthor,
-					//	Number: o.pullNumber,
-					//	SHA:    o.pullSha,
-					//}},
 				})
-				return p.JobBase, presubmitPJRefs(pjs, *o)
+				pjs = presubmitPJRefs(pjs, *o)
+				return p.JobBase, pjs
 			}
 		}
 	}
@@ -185,18 +170,20 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 		}
 		for _, p := range ps {
 			if p.Name == o.jobName {
-				return p.JobBase, pjutil.PostsubmitSpec(p, prowapi.Refs{
+				pjs := pjutil.PostsubmitSpec(p, prowapi.Refs{
 					Org:  org,
 					Repo: repo,
-					//BaseRef: o.baseRef,
-					//BaseSHA: o.baseSha,
 				})
+				pjs = postsubmitPJRefs(pjs, *o)
+				return p.JobBase, pjs
 			}
 		}
 	}
 	for _, p := range conf.Periodics {
 		if p.Name == o.jobName {
-			return p.JobBase, pjutil.PeriodicSpec(p)
+			pjs := pjutil.PeriodicSpec(p)
+			pjs = periodicPJRefs(pjs, *o)
+			return p.JobBase, pjs
 		}
 	}
 	return config.JobBase{}, prowapi.ProwJobSpec{}
@@ -223,19 +210,87 @@ func presubmitPJRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 	}
 	// If prowjob refs point to another repo, move refs to extra refs and set refs to details from this PR, because we are going to test code from this PR.
 	//extraRefs := pjs.ExtraRefs
-	refs := pjs.Refs
-	if refs.Org != opt.org || refs.Repo != opt.repo {
-		pjs.Refs.BaseRef = defaultMasterBranch
+	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
+		refs := pjs.Refs
+		refs.BaseRef = defaultMasterBranch
 		for index, ref := range pjs.ExtraRefs {
 			if ref.Org == opt.org && ref.Repo == opt.repo {
-				pjs.ExtraRefs[index].BaseRef = opt.baseRef
-				pjs.ExtraRefs[index].BaseSHA = opt.baseSha
-				pjs.ExtraRefs[index].Pulls = []prowapi.Pull{{
+				pjs.Refs = &ref
+				pjs.Refs.BaseRef = opt.baseRef
+				pjs.Refs.BaseSHA = opt.baseSha
+				pjs.Refs.Pulls = []prowapi.Pull{{
 					Author: opt.pullAuthor,
 					Number: opt.pullNumber,
 					SHA:    opt.pullSha,
 				}}
+				pjs.ExtraRefs[index] = *refs
 			}
+		}
+	}
+	return pjs
+}
+
+func postsubmitPJRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
+	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
+		pjs.Refs.BaseSHA = opt.baseSha
+		pjs.Refs.BaseRef = opt.baseRef
+		pjs.Refs.Pulls = []prowapi.Pull{{
+			Author: opt.pullAuthor,
+			Number: opt.pullNumber,
+			SHA:    opt.pullSha,
+		}}
+	}
+	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
+		refs := pjs.Refs
+		refs.BaseRef = defaultMasterBranch
+		for index, ref := range pjs.ExtraRefs {
+			if ref.Org == opt.org && ref.Repo == opt.repo {
+				pjs.Refs = &ref
+				pjs.Refs.BaseRef = opt.baseRef
+				pjs.Refs.BaseSHA = opt.baseSha
+				pjs.Refs.Pulls = []prowapi.Pull{{
+					Author: opt.pullAuthor,
+					Number: opt.pullNumber,
+					SHA:    opt.pullSha,
+				}}
+				pjs.ExtraRefs[index] = *refs
+			}
+		}
+	}
+	return pjs
+}
+
+func periodicPJRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
+	for index, ref := range pjs.ExtraRefs {
+		if ref.Org == opt.org && ref.Repo == opt.repo {
+			ref.BaseRef = opt.baseRef
+			ref.BaseSHA = opt.baseSha
+			ref.Pulls = []prowapi.Pull{{
+				Author: opt.pullAuthor,
+				Number: opt.pullNumber,
+				SHA:    opt.pullSha,
+			}}
+			pjs.ExtraRefs[index] = ref
+		} else {
+			ref = prowapi.Refs{
+				Org:      opt.org,
+				Repo:     opt.repo,
+				RepoLink: "",
+				BaseRef:  opt.baseRef,
+				BaseSHA:  opt.pullSha,
+				BaseLink: "",
+				Pulls: []prowapi.Pull{{
+					Author: opt.pullAuthor,
+					Number: opt.pullNumber,
+					SHA:    opt.pullSha,
+				}},
+				PathAlias:      "",
+				WorkDir:        false,
+				CloneURI:       "",
+				SkipSubmodules: false,
+				CloneDepth:     0,
+			}
+			pjs.ExtraRefs = append(pjs.ExtraRefs, ref)
 		}
 	}
 	return pjs
@@ -268,10 +323,8 @@ func newTestPJ() prowapi.ProwJob {
 	if job.Name == "" {
 		logrus.Fatalf("Job %s not found.", o.jobName)
 	}
-	//o.org = pjs.Refs.Org
-	//o.repo = pjs.Refs.Repo
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
-	pj.Spec.Job = fmt.Sprintf("testing_of_prowjob_%s", pj.Spec.Job)
+	pj.Spec.Job = fmt.Sprintf("test_of_prowjob_%s", pj.Spec.Job)
 	pj.Spec.Cluster = "untrusted-workload"
 	return pj
 }
@@ -290,6 +343,6 @@ func SchedulePJ() {
 	if err != nil {
 		log.WithError(err).Fatalf("Failed schedule test of prowjob")
 	}
-	fmt.Printf("Test of prowjob %s is %s", pj.Spec.Job, result.Status.State)
+	fmt.Printf("Prowjob %s is %s", pj.Spec.Job, result.Status.State)
 
 }
