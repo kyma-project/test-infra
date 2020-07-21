@@ -127,7 +127,7 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#enable-some-plugins-by-modifying-pluginsyaml).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/tree/master/prow/plugins#plugins).
 
 ### The jobs directory
 
