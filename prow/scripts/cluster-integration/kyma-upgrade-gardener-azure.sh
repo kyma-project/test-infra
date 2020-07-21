@@ -72,7 +72,7 @@ export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
 export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_CONTAINER_NAME="tests"
-export KYMA_UPDATE_TIMEOUT="30m"
+export KYMA_UPDATE_TIMEOUT="40m"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -139,7 +139,7 @@ function provisionCluster() {
             --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
             --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
             --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-            --scaler-max 4 --scaler-min 2 \
+            --scaler-max 4 --scaler-min 3 \
             --kube-version=${GARDENER_CLUSTER_VERSION}
     )
 }
