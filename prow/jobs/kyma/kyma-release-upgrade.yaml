@@ -35,6 +35,7 @@ job_labels_template: &job_labels_template
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
   preset-dind-enabled: "true"
+  preset-docker-push-repository-kyma: "true"
 
 test_infra_ref: &test_infra_ref
   org: kyma-project
