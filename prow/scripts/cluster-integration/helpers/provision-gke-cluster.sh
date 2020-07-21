@@ -77,13 +77,13 @@ gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"
 kubectl -n kube-system patch cm kube-dns --type merge --patch \
   "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/kube-dns-stub-domains-patch.yaml)"
 
-# Wait until rkube-dns Configmap is available
+# Wait until kube-dns Configmap is available
 counter=0
 until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]; do
     sleep 15
     counter=$(( counter + 1 ))
     if (( counter == 3 )); then
-        echo -e "---\nkube-dns Configmap is not yet created.\n---"
+        echo -e "---\nkube-dns Configmap is not yet created. Sleeping for 15 sec.\n---"
         exit 1
     fi
 done
