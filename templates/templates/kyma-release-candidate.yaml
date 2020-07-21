@@ -37,6 +37,7 @@ job_labels_template: &job_labels_template
   preset-sa-gke-kyma-integration: "true"
   preset-gc-project-env: "true"
   preset-gke-kyma-developers-group: "true"
+  preset-docker-push-repository-kyma: "true"
 
 postsubmits:
   kyma-project/kyma:
