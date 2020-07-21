@@ -18,6 +18,7 @@ presubmits: # runs on PRs
     spec:
       containers:
       - image: *prow-tools_image
+        imagePullPolicy: Always
         command:
           - "pjtester"
         env:
