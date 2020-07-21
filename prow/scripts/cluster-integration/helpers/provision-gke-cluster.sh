@@ -79,7 +79,7 @@ kubectl -n kube-system patch cm kube-dns --type merge --patch \
 
 # Wait until rkube-dns Configmap is available
 counter=0
-until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) -e 0 ]]; do
+until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]; do
     sleep 15
     counter=$(( counter + 1 ))
     if (( counter == 3 )); then
