@@ -83,7 +83,7 @@ until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]
     sleep 15
     counter=$(( counter + 1 ))
     if (( counter == 3 )); then
-        echo -e "---\nkube-dns Configmap is not yet created. Sleeping for 15 sec.\n---"
+        echo -e "kube-dns configmap not available after more than 45 seconds, exiting"
         exit 1
     fi
 done
