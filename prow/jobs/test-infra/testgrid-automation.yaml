@@ -3,7 +3,6 @@ presubmits:
     - name: pre-test-infra-validate-testgrid-config
       run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
       decorate: true
-      optional: true
       branches:
         - master
       annotations:

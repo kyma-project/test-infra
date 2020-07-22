@@ -401,6 +401,7 @@ postsubmits:
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma integration job.
+        testgrid-days-of-results: "60"
       <<: *vm_job_template
       branches:
         - ^master$
@@ -416,6 +417,7 @@ postsubmits:
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma GKE integration job.
+        testgrid-days-of-results: "60"
       branches:
         - ^master$
       labels:
@@ -430,6 +432,7 @@ postsubmits:
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma GKE central-connector job.
+        testgrid-days-of-results: "60"
       branches:
         - ^master$
       labels:
@@ -444,6 +447,7 @@ postsubmits:
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma GKE upgrade job.
+        testgrid-days-of-results: "60"
       branches:
         - ^master$
       labels:
