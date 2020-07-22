@@ -53,6 +53,7 @@ postsubmits:
     annotations:
       testgrid-dashboards: kyma-incubator_compass
       description: Compass integration job.
+      testgrid-days-of-results: "60"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
