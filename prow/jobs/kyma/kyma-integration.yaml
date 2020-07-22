@@ -89,7 +89,7 @@ gke_upgrade_job_template_for_debug: &gke_upgrade_job_template_for_debug
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k15
+      - <<: *base_image_k16
         securityContext:
           privileged: true
         command:
