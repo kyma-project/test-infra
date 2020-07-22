@@ -5,7 +5,7 @@ There is one dashboard group called `kyma` which groups dashboards from both of 
 TestGrid configuration is stored inside the [kubernetes/test-infra](https://github.com/kubernetes/test-infra/tree/master/config/testgrids/kyma) repository in the `/config/testgrids/kyma/` directory.
 
 TestGrid is automatically updated by Prow using the tool called [transfigure.sh](https://github.com/kubernetes/test-infra/tree/master/testgrid/cmd/transfigure).
-It creates pull request each time the TestGrid configuration file in the kubernetes/test-infra gets changed. The changes will appear when the owner of the `/config/testgrids/kyma/` folder approves the changes. For more information see the `transfigure` *README.md* file.
+It creates a pull request each time the TestGrid configuration file in the `kubernetes/test-infra` is changed. The changes appear when the owner of the `/config/testgrids/kyma/` folder approves them. For more information, see the `transfigure` [README.md](https://github.com/kubernetes/test-infra/blob/master/testgrid/cmd/transfigure/README.md) file.
 The PRs created by the bot are visible [here](https://github.com/kubernetes/test-infra/pulls?q=is%3Apr+%22Update+TestGrid+for+kyma).
 
 ## Adding new dashboard
