@@ -32,6 +32,8 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: website-governance-nightly
+  annotations:
+    testgrid-create-test-group: "false"
   decorate: true
   cron: "0 6 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
   labels:

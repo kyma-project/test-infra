@@ -1,0 +1,22 @@
+# Define dashboards here otherwise the prow annotations will be invalid
+dashboards:
+  # kyma
+  - name: kyma_integration
+  - name: kyma_control-plane
+
+  {{- range .Global.releases }}
+  - name: kyma_release-{{ . }}
+  {{- end }}
+
+  # kyma-incubator
+  - name: kyma-incubator_compass
+
+dashboard_groups:
+  - name: kyma
+    dashboard_names:
+      - kyma_integration
+      - kyma_control-plane
+      {{- range .Global.releases }}
+      - kyma_release-{{ . }}
+      {{- end }}
+      - kyma-incubator_compass

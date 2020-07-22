@@ -41,6 +41,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/examples:
     - name: post-master-examples-monitoring-custom-metrics
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

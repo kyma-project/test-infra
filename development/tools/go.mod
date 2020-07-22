@@ -30,6 +30,7 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.5.1
+	github.com/tidwall/gjson v1.6.0
 	github.com/vrischmann/envconfig v1.2.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/tools v0.0.0-20200604183345-4d5ea46c79fe // indirect

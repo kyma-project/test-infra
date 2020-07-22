@@ -1,0 +1,15 @@
+{
+    "name": "probot",
+    "private": true,
+    "dependencies": {
+        "probot-stale": "git+https://github.com/probot/stale"
+    },
+    "scripts": {
+        "start": "probot run"
+    },
+    "probot": {
+        "apps": [
+            "probot-stale"
+        ]
+    }
+}

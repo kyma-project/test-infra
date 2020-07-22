@@ -5,6 +5,9 @@ global:
     - "1.13"
     - "1.12"
   whitesource:
+    - name: "control-plane"
+      language: "golang-mod"
+      project: "kyma-project"
     - name: "kyma"
       language: "golang"
       project: "kyma-project"
@@ -995,3 +998,6 @@ templates:
             - name: kyma-gke-minio-az-gateway-migration
               since: "1.6"
               until: "1.8"
+  - from: templates/testgrid-default.yaml
+    render:
+      - to: ../prow/testgrid-default.yaml

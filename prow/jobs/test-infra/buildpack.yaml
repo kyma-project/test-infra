@@ -283,6 +283,40 @@ kubectl_job_template: &kubectl_job_template
             memory: 1.5Gi
             cpu: 0.8
 
+probot_stale_job_template: &probot_stale_job_template
+  run_if_changed: "^prow/images/probot-stale/"
+  <<: *common_job_template
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
+
+prow_tools_job_template: &prow_tools_job_template
+  run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+  <<: *common_job_template
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
 prow_clonerefs_job_template: &prow_clonerefs_job_template
   run_if_changed: "^prow/images/clonerefs/"
   <<: *common_job_template
@@ -299,23 +333,6 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
         requests:
           memory: 1.5Gi
           cpu: 0.8
-
-prow_tools_job_template: &prow_tools_job_template
-  run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
@@ -409,97 +426,145 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+    - name: pre-test-infra-probot-stale
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      <<: *probot_stale_job_template
 
 
 postsubmits: # runs on master
   kyma-project/test-infra:
     - name: post-test-infra-bootstrap
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
     - name: post-test-infra-bootstrap-helm
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_helm_template
     - name: post-test-infra-kyma-cluster-infra
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
     - name: post-test-infra-kyma-integration
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_integration
     - name: post-test-infra-buildpack-golang
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
     - name: post-test-infra-buildpack-golang-toolbox
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_toolbox_job_template
     - name: post-test-infra-buildpack-golang-kubebuilder
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder_job_template
     - name: post-test-infra-buildpack-golang-kubebuilder2
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder2_job_template
     - name: post-test-infra-buildpack-node
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
     - name: post-test-infra-buildpack-node-chromium
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_chromium_job_template
     - name: post-test-infra-buildpack-java
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
     - name: post-test-infra-buildpack-java-node
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_node_job_template
     - name: post-test-infra-cleaner
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *cleaner_job_template
     - name: post-test-infra-vulnerability-scanner
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *vulnerability_scanner_job_template
     - name: post-test-infra-whitesource-scanner
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *whitesource_scanner_job_template
     - name: post-test-infra-kubectl
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
     - name: post-test-infra-prow-clonerefs
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_clonerefs_job_template
     - name: post-test-infra-prow-tools
+      annotations:
+        testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+    - name: post-test-infra-probot-stale
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-build-release: "true"
+        <<: *job_labels_template
+      <<: *probot_stale_job_template

@@ -34,9 +34,6 @@
 # The changelog-generator directory
 /changelog-generator/ @akucharska @michal-hudy @pkosiec @aerfio @tgorgol @magicmatatjahu
 
-# The `performance-tools` chart
-/performance-tools @joek @rakesh-garimella @nachtmaar @venturasr @lilitgh @k15r
-
 /templates/config.yaml @kyma-project/developers @kyma-project/prow
 
 /templates/templates @kyma-project/prow @sjanota

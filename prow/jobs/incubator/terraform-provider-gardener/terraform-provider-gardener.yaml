@@ -42,6 +42,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/terraform-provider-gardener:
     - name: post-master-terraform-provider-gardener
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

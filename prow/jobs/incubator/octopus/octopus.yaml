@@ -44,6 +44,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/octopus:
   - name: post-master-kyma-incubator-octopus
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
     - ^master$
     <<: *job_template

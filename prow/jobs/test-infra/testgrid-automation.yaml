@@ -1,0 +1,52 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pre-test-infra-validate-testgrid-config
+      run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
+      decorate: true
+      optional: true
+      branches:
+        - master
+      annotations:
+        testgrid-create-test-group: "false"
+      spec:
+        containers:
+          - image: gcr.io/k8s-prow/transfigure
+            command:
+              - /transfigure.sh
+            args:
+              - test
+              - prow/config.yaml
+              - prow/jobs
+              - prow/testgrid-default.yaml
+              - kyma
+
+postsubmits:
+  kyma-project/test-infra:
+    - name: post-test-infra-upload-testgrid-config
+      run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
+      decorate: true
+      branches:
+        - master
+      annotations:
+        testgrid-create-test-group: "false"
+#        testgrid-dashboards: kyma_test-infra
+#        description: TestGrid config update job.
+      spec:
+        containers:
+          - image: gcr.io/k8s-prow/transfigure
+            command:
+              - /transfigure.sh
+            args:
+              - /etc/github-token/token
+              - prow/config.yaml
+              - prow/jobs
+              - prow/testgrid-default.yaml
+              - kyma
+            volumeMounts:
+              - name: github-token
+                mountPath: /etc/github-token
+                readOnly: true
+        volumes:
+          - name: github-token
+            secret:
+              secretName: kyma-bot-github-token

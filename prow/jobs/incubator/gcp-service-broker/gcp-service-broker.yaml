@@ -41,6 +41,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/gcp-service-broker:
     - name: post-master-gcp-service-broker
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

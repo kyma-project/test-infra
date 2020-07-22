@@ -420,6 +420,9 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-integration
+      annotations:
+        testgrid-dashboards: kyma_integration
+        description: Kyma integration job.
       <<: *vm_job_template
       branches:
         - ^master$
@@ -433,9 +436,8 @@ postsubmits:
     - name: post-master-kyma-gke-integration
       <<: *gke_job_template
       annotations:
-        testgrid-dashboards: kyma-postsubmit
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
+        testgrid-dashboards: kyma_integration
+        description: Kyma GKE integration job.
       branches:
         - ^master$
       labels:
@@ -448,9 +450,8 @@ postsubmits:
     - name: post-master-kyma-gke-central-connector
       <<: *gke_central_job_template
       annotations:
-        testgrid-dashboards: kyma-postsubmit
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
+        testgrid-dashboards: kyma_integration
+        description: Kyma GKE central-connector job.
       branches:
         - ^master$
       labels:
@@ -463,9 +464,8 @@ postsubmits:
     - name: post-master-kyma-gke-upgrade
       <<: *gke_upgrade_job_template
       annotations:
-        testgrid-dashboards: kyma-postsubmit
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
+        testgrid-dashboards: kyma_integration
+        description: Kyma GKE upgrade job.
       branches:
         - ^master$
       labels:
@@ -483,9 +483,7 @@ periodics:
     cluster: trusted-workload
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-vm-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -500,9 +498,7 @@ periodics:
     cluster: trusted-workload
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-creds-aks-kyma-integration: "true"
     decorate: true
@@ -532,9 +528,7 @@ periodics:
     cluster: trusted-workload
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-prow-job-resource-cleaner: "true"
       preset-gc-project-env: "true"
@@ -558,9 +552,7 @@ periodics:
     cluster: trusted-workload
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -584,9 +576,7 @@ periodics:
     cluster: trusted-workload
     cron: "0 * * * *" # "At 0 minute every hour"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -610,9 +600,7 @@ periodics:
     cluster: trusted-workload
     cron: "0 * * * *" # "At minute 0 past every hour"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -636,9 +624,7 @@ periodics:
     cluster: trusted-workload
     cron: "15 * * * *" # "At 15 past every hour"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -662,9 +648,7 @@ periodics:
     cluster: trusted-workload
     cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -688,9 +672,7 @@ periodics:
     cluster: trusted-workload
     cron: "30 * * * *" # "At minute 30 past every hour"
     annotations:
-      testgrid-dashboards: kyma-cleaners
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-create-test-group: "false"
     labels:
       preset-sa-gke-kyma-integration: "true"
       preset-gc-project-env: "true"
@@ -716,6 +698,7 @@ periodics:
     cluster: trusted-workload
     cron: "0 6 * * *" # "At 6:00 every day"
     annotations:
+      testgrid-create-test-group: "false"
     labels:
       preset-bot-github-token: "true"
     decorate: true
@@ -739,9 +722,8 @@ periodics:
     cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma-nightly
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-dashboards: kyma_integration
+      description: Kyma GKE nightly build.
     labels:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
@@ -812,9 +794,8 @@ periodics:
     cluster: trusted-workload
     cron: "0 6 * * 1" # "At 06:00 on Monday."
     annotations:
-      testgrid-dashboards: kyma-weekly
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-dashboards: kyma_integration
+      description: Kyma GKE weekly build.
     labels:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"
@@ -883,9 +864,8 @@ periodics:
     cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     annotations:
-      testgrid-dashboards: kyma-nightly
-      # testgrid-alert-email: email-here@sap.com
-      testgrid-num-failures-to-alert: '1'
+      testgrid-dashboards: kyma_integration
+      description: Kyma AKS nightly build.
     labels:
       preset-kyma-keyring: "true"
       preset-kyma-encryption-key: "true"

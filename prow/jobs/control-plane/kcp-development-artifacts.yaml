@@ -53,6 +53,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/control-plane:
   - name: post-master-kcp-development-artifacts
+    annotations:
+      testgrid-create-test-group: "false"
     branches:
       - ^master$
     <<: *job_template

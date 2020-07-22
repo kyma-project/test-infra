@@ -42,6 +42,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/podpreset-crd:
     - name: post-master-podpreset-crd
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template

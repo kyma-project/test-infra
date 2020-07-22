@@ -49,7 +49,7 @@ export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_INSTALL_TIMEOUT="30m"
-export KYMA_UPDATE_TIMEOUT="25m"
+export KYMA_UPDATE_TIMEOUT="40m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
@@ -135,11 +135,6 @@ trap cleanup EXIT INT
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-elif [[ "${BUILD_TYPE}" == "release" ]]; then
-   shout "Execute Job Guard for Release jobs"
-   export TIMEOUT="75m"
-   export JOB_NAME_PATTERN="(^pre-rel\\d\\d\\d-kyma-integration$ | ^pre-rel\\d\\d\\d-kyma-installer$ | ^pre-rel\\d\\d\\d-kyma-artifacts$)"
-   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 function generateAndExportClusterName() {

@@ -41,6 +41,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/varkes:
     - name: post-master-varkes
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - ^master$
       <<: *job_template
@@ -49,6 +51,8 @@ postsubmits:
         preset-build-master: "true"
       report: false
     - name: post-release-varkes #publishes to npm
+      annotations:
+        testgrid-create-test-group: "false"
       branches:
         - release
       <<: *job_template

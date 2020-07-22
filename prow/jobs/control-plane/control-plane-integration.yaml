@@ -49,7 +49,7 @@ postsubmits:
       preset-build-master: "true"
       <<: *vm_job_labels_template
     annotations:
-      testgrid-dashboards: kyma-project
+      testgrid-dashboards: kyma_control-plane
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master

@@ -49,6 +49,8 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/knative-kafka:
     - name: post-master-knative-kafka
+      annotations:
+        testgrid-create-test-group: "false"
       always_run: true
       branches:
         - ^master$

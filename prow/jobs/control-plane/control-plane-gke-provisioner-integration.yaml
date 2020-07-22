@@ -18,7 +18,7 @@ base_container_config: &base_container_config
   env:
     - name: CLOUDSDK_COMPUTE_ZONE
       value: "europe-west4-b"
-    - name: RUN_PROVISIONER_TEST
+    - name: RUN_PROVISIONER_TESTS
       value: "true"
   resources:
     requests:
@@ -77,9 +77,8 @@ postsubmits:
         - ^master$
       <<: *gke_integration_job_template_latest
       annotations:
-        testgrid-dashboards: kyma-cleaners
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
+        testgrid-dashboards: kyma_control-plane
+        description: Kyma control-plane GKE provisioner integration job.
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'

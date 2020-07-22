@@ -1,24 +1,16 @@
 presets:
   - labels:
-      preset-wssagent-keys: "true"
+      preset-pjtester-kubeconfig: "true"
     env:
-      - name: WHITESOURCE_APIKEY
-        value: /etc/credentials/whitesource-apikey/apikey
-      - name: WHITESOURCE_USERKEY
-        value: /etc/credentials/whitesource-userkey/userkey
+      - name: KUBECONFIG_PATH
+        value: /etc/kubeconfig/pjtester/config
     volumes:
-      - name: whitesource-apikey
+      - name: pjtester-kubeconfig
         secret:
-          secretName: whitesource-apikey
-      - name: whitesource-userkey
-        secret:
-          secretName: whitesource-userkey
+          secretName: pjtester-kubeconfig
     volumeMounts:
-      - name: whitesource-apikey
-        mountPath: /etc/credentials/whitesource-apikey
-        readOnly: true
-      - name: whitesource-userkey
-        mountPath: /etc/credentials/whitesource-userkey
+      - name: pjtester-kubeconfig
+        mountPath: /etc/kubeconfig/pjtester
         readOnly: true
   - labels:
       preset-sa-prow-job-resource-cleaner: "true"
@@ -482,6 +474,27 @@ presets:
     - name: CLUSTER_USE_SSD
       value: "true"
   # whitesource labels
+  - labels:
+      preset-wssagent-keys: "true"
+    env:
+      - name: WHITESOURCE_APIKEY
+        value: /etc/credentials/whitesource-apikey/apikey
+      - name: WHITESOURCE_USERKEY
+        value: /etc/credentials/whitesource-userkey/userkey
+    volumes:
+      - name: whitesource-apikey
+        secret:
+          secretName: whitesource-apikey
+      - name: whitesource-userkey
+        secret:
+          secretName: whitesource-userkey
+    volumeMounts:
+      - name: whitesource-apikey
+        mountPath: /etc/credentials/whitesource-apikey
+        readOnly: true
+      - name: whitesource-userkey
+        mountPath: /etc/credentials/whitesource-userkey
+        readOnly: true
   - labels:
       preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
     env:
