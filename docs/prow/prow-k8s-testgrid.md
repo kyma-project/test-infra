@@ -43,7 +43,7 @@ annotations:
   description: Words about your job.       # [Optional] A description of your job. If omitted, only the job name is used.
   testgrid-num-columns-recent: "10"        # [Optional] The number of runs in a row that can be omitted before the run is considered stale. The default value is 10.
   testgrid-num-failures-to-alert: "3"      # [Optional] The number of continuous failures before sending an email. The default value is 3.
-  testgrid-days-of-results: "15"           # [Optional] The number of days to which the results are visible. The default value is 15.
+  testgrid-days-of-results: "15"           # [Optional] The number of days for which the results are visible. The default value is 15.
   testgrid-alert-stale-results-hours: "12" # [Optional] The number of hours that pass with no results after which the email is sent. The default value is 12.
 ```
 
