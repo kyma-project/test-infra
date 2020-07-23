@@ -508,11 +508,11 @@ installKyma
 
 createTestResources
 
+remove_addons_if_necessary
+
 testKyma
 
 upgradeKyma
-
-remove_addons_if_necessary
 
 testKyma
 
