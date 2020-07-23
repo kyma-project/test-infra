@@ -49,6 +49,7 @@ postsubmits:
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
         description: Release candidate job for Kyma 1.14.
+        testgrid-days-of-results: "60"
       branches:
         - release-1.14
       <<: *job_template
@@ -65,6 +66,7 @@ postsubmits:
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
         description: Release candidate job for Kyma 1.13.
+        testgrid-days-of-results: "60"
       branches:
         - release-1.13
       <<: *job_template
@@ -81,6 +83,7 @@ postsubmits:
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
         description: Release candidate job for Kyma 1.12.
+        testgrid-days-of-results: "60"
       branches:
         - release-1.12
       <<: *job_template

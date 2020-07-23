@@ -34,6 +34,7 @@ postsubmits:
     annotations:
       testgrid-dashboards: kyma_release-1.14
       description: GitHub Release job for Kyma 1.14.
+      testgrid-days-of-results: "60"
     branches:
       - release-1.14
     <<: *job_template
@@ -48,6 +49,7 @@ postsubmits:
     annotations:
       testgrid-dashboards: kyma_release-1.13
       description: GitHub Release job for Kyma 1.13.
+      testgrid-days-of-results: "60"
     branches:
       - release-1.13
     <<: *job_template
@@ -62,6 +64,7 @@ postsubmits:
     annotations:
       testgrid-dashboards: kyma_release-1.12
       description: GitHub Release job for Kyma 1.12.
+      testgrid-days-of-results: "60"
     branches:
       - release-1.12
     <<: *job_template

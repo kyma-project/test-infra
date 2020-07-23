@@ -48,6 +48,7 @@ postsubmits:
         # testgrid-alert-email: email-here@sap.com
         testgrid-num-failures-to-alert: '1'
         description: Release candidate job for Kyma {{ . }}.
+        testgrid-days-of-results: "60"
       branches:
         - release-{{ . }}
       <<: *job_template
