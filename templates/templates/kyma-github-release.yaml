@@ -33,7 +33,7 @@ postsubmits:
     annotations:
       testgrid-dashboards: kyma_release-{{ . }}
       description: GitHub Release job for Kyma {{ . }}.
-      testgrid-days-of-results: "60"
+      testgrid-days-of-results: "90"
     branches:
       - release-{{ . }}
     <<: *job_template
