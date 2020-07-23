@@ -119,6 +119,10 @@ gke_upgrade_job_template: &gke_upgrade_job_template
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
