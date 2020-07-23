@@ -83,6 +83,28 @@ gke_job_template: &gke_job_template
             memory: 200Mi
             cpu: 80m
 
+gke_upgrade_job_template_for_debug: &gke_upgrade_job_template_for_debug
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-for-debug.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
 gke_upgrade_job_template: &gke_upgrade_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -324,6 +346,20 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.12
+
+    - name: pre-master-kyma-gke-upgrade-for-debug
+      branches:
+        - ^master$
+      <<: *gke_upgrade_job_template_for_debug
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      optional: true
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 
     - name: pre-master-kyma-gke-upgrade
       branches:
