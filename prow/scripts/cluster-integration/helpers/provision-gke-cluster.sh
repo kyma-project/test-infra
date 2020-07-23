@@ -78,13 +78,13 @@ echo -e "\n---> Patching kube-dns"
 # Wait until kube-dns Configmap is available
 counter=0
 until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]; do
-    echo -e "Waiting for kube-dns to be available. Try $(( counter + 1 )) of 3"
-    sleep 15
-    counter=$(( counter + 1 ))
     if (( counter == 3 )); then
         echo -e "kube-dns configmap not available after more than 45 seconds, exiting"
         exit 1
     fi
+    echo -e "Waiting for kube-dns to be available. Try $(( counter + 1 )) of 3"
+    counter=$(( counter + 1 ))
+    sleep 15
 done
 
 kubectl -n kube-system patch cm kube-dns --type merge --patch \
