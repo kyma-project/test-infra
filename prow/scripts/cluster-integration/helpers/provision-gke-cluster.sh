@@ -74,9 +74,7 @@ echo "${GCLOUD_PARAMS[@]}"
 echo -e "\n---> Creating cluster"
 gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"
 
-kubectl -n kube-system patch cm kube-dns --type merge --patch \
-  "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/kube-dns-stub-domains-patch.yaml)"
-
+echo -e "\n---> Patching kube-dns"
 # Wait until kube-dns Configmap is available
 counter=0
 until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]; do
@@ -87,3 +85,6 @@ until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]
         exit 1
     fi
 done
+
+kubectl -n kube-system patch cm kube-dns --type merge --patch \
+  "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/kube-dns-stub-domains-patch.yaml)"
