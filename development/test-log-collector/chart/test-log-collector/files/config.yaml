@@ -1,10 +1,10 @@
-- channelName: "#default-notifications"
-  channelID: "C016DBKVDSR"
+- channelName: "#aerfio-test-default"
+  channelID: "C017LJNTA1Z"
   onlyReportFailure: false
   testCases:
     - default
-- channelName: "#wookiee-notifications"
-  channelID: "C016TBM2Z2M"
+- channelName: "#aerfio-test"
+  channelID: "C017SHF2RDJ"
   onlyReportFailure: false
   testCases:
     - serverless-long

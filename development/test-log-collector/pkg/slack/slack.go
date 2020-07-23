@@ -27,17 +27,17 @@ type Message struct {
 	PodName     string
 }
 
-type CLient struct {
+type Client struct {
 	client *slack.Client
 }
 
-func New(client *slack.Client) *CLient {
-	return &CLient{
+func New(client *slack.Client) *Client {
+	return &Client{
 		client: client,
 	}
 }
 
-func (s CLient) parentMessageTimestamp(hist slack.History, parentMsg string) (string, bool) {
+func (s Client) parentMessageTimestamp(hist slack.GetConversationHistoryResponse, parentMsg string) (string, bool) {
 	for _, msg := range hist.Messages {
 		if msg.Text == parentMsg {
 			return msg.Timestamp, true
@@ -46,10 +46,12 @@ func (s CLient) parentMessageTimestamp(hist slack.History, parentMsg string) (st
 	return "", false
 }
 
-func (s CLient) createParentMessage(channelID, parentMessage string) error {
-	hist, err := s.client.GetChannelHistory(channelID, slack.HistoryParameters{
-		Count: 100,
+func (s Client) createParentMessage(channelID, parentMessage string) error {
+	hist, err := s.client.GetConversationHistory(&slack.GetConversationHistoryParameters{
+		ChannelID: channelID,
+		Limit: 100, // should be more than enough
 	})
+
 	if err != nil {
 		return errors.Wrapf(err, "while getting channel historical messages by id: %s", channelID)
 	}
@@ -69,7 +71,7 @@ func (s CLient) createParentMessage(channelID, parentMessage string) error {
 	return nil
 }
 
-func (s CLient) UploadLogFiles(messages []Message, ctsName, completionTime, platform string) error {
+func (s Client) UploadLogFiles(messages []Message, ctsName, completionTime, platform string) error {
 	failedTestNames := getFailedTestNames(messages)
 
 	for channelID, messageSlice := range s.groupMessagesByChannelID(messages) {
@@ -81,8 +83,9 @@ func (s CLient) UploadLogFiles(messages []Message, ctsName, completionTime, plat
 		}
 
 		// get channel history has to be called here *again*, otherwise slack api acts crazy
-		hist, err := s.client.GetChannelHistory(channelID, slack.HistoryParameters{
-			Count: 100, // it should be more than enough
+		hist, err := s.client.GetConversationHistory(&slack.GetConversationHistoryParameters{
+			ChannelID: channelID,
+			Limit:     100, // should be more than enough
 		})
 		if err != nil {
 			return errors.Wrapf(err, "while getting %s channel historical messages", messageSlice[0].ChannelName)
@@ -112,7 +115,7 @@ func getFailedTestNames(messages []Message) []string {
 	return names
 }
 
-func (s CLient) groupMessagesByChannelID(messages []Message) map[string][]Message {
+func (s Client) groupMessagesByChannelID(messages []Message) map[string][]Message {
 	mp := make(map[string][]Message, 0)
 	for _, msg := range messages {
 		mp[msg.ChannelID] = append(mp[msg.ChannelID], msg)
@@ -120,7 +123,7 @@ func (s CLient) groupMessagesByChannelID(messages []Message) map[string][]Messag
 	return mp
 }
 
-func (s CLient) UploadLogFile(msg Message, parentMsgTimestamp string) error {
+func (s Client) UploadLogFile(msg Message, parentMsgTimestamp string) error {
 	logf.Info("uploading log file")
 	_, err := s.client.UploadFile(slack.FileUploadParameters{
 		Content:        msg.Data,

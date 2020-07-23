@@ -35,7 +35,7 @@ func TestCLient_groupMessagesByChannelID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := gomega.NewGomegaWithT(t)
-			s := CLient{}
+			s := Client{}
 			got := s.groupMessagesByChannelID(tt.args)
 			g.Expect(got).To(gomega.Equal(tt.want))
 		})
