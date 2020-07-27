@@ -32,25 +32,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gettext \
     && apt-get clean
 
-# Install gcloud
-
-ENV CLOUD_SDK_VERSION=299.0.0 \
-    PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
-    CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-    CLUSTER_VERSION=$K8S_VERSION
-
-RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
-    tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
-    rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
-    /google-cloud-sdk/install.sh \
-    --disable-installation-options \
-    --bash-completion=false \
-    --path-update=false \
-    --usage-reporting=false && \
-    gcloud components install alpha beta kubectl docker-credential-gcr && \
-    gcloud info | tee /workspace/gcloud-info.txt && \
-    mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
-
 # Docker-in-docker
 
 RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg \
@@ -140,3 +121,25 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200512-e400f399 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
+
+
+#################################################################
+######################## Install gcloud #########################
+#################################################################
+
+ENV CLOUD_SDK_VERSION=299.0.0 \
+    PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
+    CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
+    CLUSTER_VERSION=$K8S_VERSION
+
+RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+    tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
+    rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
+    /google-cloud-sdk/install.sh \
+    --disable-installation-options \
+    --bash-completion=false \
+    --path-update=false \
+    --usage-reporting=false && \
+    gcloud components install alpha beta kubectl docker-credential-gcr && \
+    gcloud info | tee /workspace/gcloud-info.txt && \
+    mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
