@@ -25,7 +25,7 @@ func TestBranchProtection(t *testing.T) {
 		approvals    int
 	}{
 		{"kyma-project", "kyma", "master", []string{"license/cla"}, 1},
-		{"kyma-project", "test-infra", "master", []string{"license/cla"}, 1},
+		{"kyma-project", "test-infra", "master", []string{"license/cla", "pre-master-test-infra-vpathguard"}, 1},
 		{"kyma-project", "website", "master", []string{"license/cla", "netlify/kyma-project/deploy-preview"}, 1},
 		{"kyma-project", "community", "master", []string{"license/cla"}, 1},
 		{"kyma-project", "console", "master", []string{"license/cla"}, 1},
