@@ -37,10 +37,10 @@ presubmits: # runs on PRs
     max_concurrency: 10
     decorate: true
     extra_refs:
-      org: kyma-project
-      repo: test-infra
-      path_alias: /home/prow/go/src/github.com/kyma-project/master_test-infra
-      base_ref: master
+      - org: kyma-project
+        repo: test-infra
+        path_alias: /home/prow/go/src/github.com/kyma-project/master_test-infra
+        base_ref: master
     spec:
       containers:
         - image: *kyma-integration_image
