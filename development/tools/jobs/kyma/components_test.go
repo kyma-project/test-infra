@@ -140,7 +140,7 @@ var components = []struct {
 	{path: "function-runtimes", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release113),
 			jobsuite.Optional(),
 		},
 	},
