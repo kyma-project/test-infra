@@ -15,10 +15,10 @@ push-image: tag-image
 
 .PHONY: tag-image
 tag-image:
-	docker tag $(IMG_NAME):$(TAG)-k8s1.16 $(IMG):current
-	docker tag $(IMG_NAME):$(TAG)-k8s1.16 $(IMG):-k8s1.16-current
-	docker tag $(IMG_NAME):$(TAG)-k8s1.15 $(IMG):-k8s1.15-current
-	docker tag $(IMG_NAME):$(TAG)-k8s1.14 $(IMG):-k8s1.14-current
+	docker tag $(IMG):$(TAG)-k8s1.16 $(IMG):current
+	docker tag $(IMG):$(TAG)-k8s1.16 $(IMG):-k8s1.16-current
+	docker tag $(IMG):$(TAG)-k8s1.15 $(IMG):-k8s1.15-current
+	docker tag $(IMG):$(TAG)-k8s1.14 $(IMG):-k8s1.14-current
 
 
 .PHONY: build-image
