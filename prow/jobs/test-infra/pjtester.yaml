@@ -30,27 +30,27 @@ presubmits: # runs on PRs
             memory: 1.5Gi
             cpu: 0.8
   - name: pre-master-test-infra-vpathguard
-      cluster: untrusted-workload
-      run_if_changed: "^(vpath/pjtester.yaml)"
-      branches:
-        - ^master$
-      max_concurrency: 10
-      decorate: true
-      extra_refs:
-        org: kyma-project
-        repo: test-infra
-        path_alias: /home/prow/go/src/github.com/kyma-project/master_test-infra
-        base_ref: master
-      spec:
-        containers:
-          - image: *kyma-integration_image
-            imagePullPolicy: Always
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/master_test-infra/prow/scripts/vpathguard.sh"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+    cluster: untrusted-workload
+    run_if_changed: "^(vpath/pjtester.yaml)"
+    branches:
+      - ^master$
+    max_concurrency: 10
+    decorate: true
+    extra_refs:
+      org: kyma-project
+      repo: test-infra
+      path_alias: /home/prow/go/src/github.com/kyma-project/master_test-infra
+      base_ref: master
+    spec:
+      containers:
+        - image: *kyma-integration_image
+          imagePullPolicy: Always
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/master_test-infra/prow/scripts/vpathguard.sh"
+          resources:
+            requests:
+              memory: 1.5Gi
+              cpu: 0.8

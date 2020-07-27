@@ -6,6 +6,9 @@ FROM debian:10
 ###################### Basic Bootstrap ##########################
 #################################################################
 ARG K8S_VERSION=1.16
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL IMAGE_COMMIT=$commit
 WORKDIR /workspace
 RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \

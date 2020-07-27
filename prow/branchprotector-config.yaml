@@ -47,6 +47,10 @@ branch-protection:
                   - pre-rel112-kyma-gke-central-connector
                   - pre-rel112-kyma-artifacts
                   - pre-rel112-kyma-installer
+        test-infra:
+          required_status_checks:
+            contexts:
+              - "pre-master-test-infra-vpathguard"
         website:
           required_status_checks:
             contexts:
