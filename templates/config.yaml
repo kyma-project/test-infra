@@ -511,6 +511,11 @@ templates:
           path: tests/function-controller
           since: "1.10"
           optional: true
+      - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: components/function-runtimes
+          since: "1.13"
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
         values:
           <<: *kyma_generic_component
