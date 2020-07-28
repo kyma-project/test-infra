@@ -45,6 +45,8 @@ go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
 go_buildpack_1_13: &go_buildpack_1_13 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
+go_buildpack_1_14: &go_buildpack_1_14 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
+
 kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
 kubebuilder2_buildpack_v20200124: &kubebuilder2_buildpack_v20200124 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
 bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
@@ -79,6 +81,10 @@ go_kyma_component_1_12: &go_kyma_component_1_12
 go_kyma_component_1_13: &go_kyma_component_1_13
   <<: *kyma_component
   buildpack: *go_buildpack_1_13
+
+go_kyma_component_1_14: &go_kyma_component_1_14
+  <<: *kyma_component
+  buildpack: *go_buildpack_1_14
 
 go_compass_component_1_11: &go_compass_component_1_11
   <<: *compass_component
@@ -809,7 +815,7 @@ templates:
           until: "1.5"
       - to: ../prow/jobs/kyma/common/common.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_14
           path: common
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml
         values:
