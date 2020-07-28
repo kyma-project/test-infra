@@ -77,7 +77,7 @@ gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"
 echo -e "\n---> Patching kube-dns"
 # Wait until kube-dns Configmap is available
 counter=0
-until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null ; echo $?) == 0 ]]; do
+until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null 2>&1; echo $?) == 0 ]]; do
     if (( counter == 3 )); then
         echo -e "kube-dns configmap not available after more than 45 seconds, exiting"
         exit 1
