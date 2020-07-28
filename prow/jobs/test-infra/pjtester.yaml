@@ -36,11 +36,6 @@ presubmits: # runs on PRs
         - ^master$
       max_concurrency: 10
       decorate: true
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/master_test-infra
-          base_ref: master
       spec:
         containers:
           - image: *kyma-integration_image
@@ -49,7 +44,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/master_test-infra/prow/scripts/vpathguard.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
             resources:
               requests:
                 memory: 1.5Gi
