@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # shellcheck disable=SC1091
-source /home/prow/go/src/github.com/kyma-project/master_test-infra/prow/scripts/log.sh
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/log.sh"
 
 # Print test-infra commit on which image was built.
 if [ -n "${IMAGE_COMMIT:+set}" ]; then
-  echo "$IMAGE_COMMIT"
+  echo "IMAGE_COMMIT: $IMAGE_COMMIT"
 fi
 
 if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then
