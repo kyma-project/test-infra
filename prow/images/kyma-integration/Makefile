@@ -23,9 +23,27 @@ tag-image:
 
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG):$(TAG)-k8s1.16 --build-arg K8S_VERSION=1.16 --build-arg commit=$(TAG) .
-	docker build -t $(IMG):$(TAG)-k8s1.15 --build-arg K8S_VERSION=1.15 --build-arg commit=$(TAG) .
-	docker build -t $(IMG):$(TAG)-k8s1.14 --build-arg K8S_VERSION=1.14 --build-arg commit=$(TAG) .
+	docker build \
+		--cache-from $(IMG):latest\
+		--build-arg K8S_VERSION=1.16 \
+		--build-arg commit=$(TAG) \
+		--tag $(IMG):$(TAG)-k8s1.16 \
+		--tag $(IMG):latest \
+		.
+	docker build \
+		--cache-from $(IMG):latest\
+		--build-arg K8S_VERSION=1.15 \
+		--build-arg commit=$(TAG) \
+		--tag $(IMG):$(TAG)-k8s1.15 \
+		--tag $(IMG):latest \
+		.
+	docker build \
+		--cache-from $(IMG):latest\
+		--build-arg K8S_VERSION=1.14 \
+		--build-arg commit=$(TAG) \
+		--tag $(IMG):$(TAG)-k8s1.14 \
+		--tag $(IMG):latest \
+		.
 
 
 .PHONY:push-image
