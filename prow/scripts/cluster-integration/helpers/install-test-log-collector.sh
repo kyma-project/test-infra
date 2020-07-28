@@ -20,18 +20,16 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function installTestLogColletor() {
+    # same as in insatll-stability-checker.sh
+    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
 	TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
-	helm install --name test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
+	helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
 	        "${TLC_DIR}/chart/test-log-collector" \
 	        --namespace=kyma-system \
-	        --wait ${HELM_ARGS} \
-	        --timeout=600 \
-            --tls
+	        --wait \
+	        --timeout=600s
 }
 
 installTestLogColletor
