@@ -26,6 +26,10 @@ branch-protection:
                   {{- end }}
                   {{- end }}
             {{- end }}
+        test-infra:
+          required_status_checks:
+            contexts:
+              - "pre-master-test-infra-vpathguard"
         website:
           required_status_checks:
             contexts:
