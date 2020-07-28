@@ -809,7 +809,7 @@ templates:
           until: "1.5"
       - to: ../prow/jobs/kyma/common/common.yaml
         values:
-          <<: *go_kyma_component_v20181119
+          <<: *go_kyma_component_1_13
           path: common
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml
         values:
