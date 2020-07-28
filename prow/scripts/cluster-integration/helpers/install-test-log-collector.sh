@@ -26,7 +26,7 @@ function installTestLogColletor() {
 	        "${TLC_DIR}/chart/test-log-collector" \
 	        --namespace=kyma-system \
 	        --wait \
-	        --timeout=600s
+	        --timeout=600
 }
 
 installTestLogColletor
