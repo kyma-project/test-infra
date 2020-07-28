@@ -22,11 +22,16 @@ fi
 function installTestLogColletor() {
 	TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
 
-	helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
+    if [  -f "$(helm home)/ca.pem" ]; then
+        local HELM_ARGS="--tls"
+    fi
+
+	helm install --name test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
 	        "${TLC_DIR}/chart/test-log-collector" \
 	        --namespace=kyma-system \
-	        --wait \
-	        --timeout=600
+	        --wait ${HELM_ARGS} \
+	        --timeout=600 \
+            --tls
 }
 
 installTestLogColletor
