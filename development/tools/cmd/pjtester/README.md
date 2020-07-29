@@ -18,23 +18,23 @@ pjPath: "test-infra/prow/custom_jobs.yaml"
 configPath: "test-infra/prow/custom_config.yaml"
 ```
 
-A data from pjtester.yaml and from prowjob environment variables are used to construct prowjob specification to test. PJtester will use environment variables created by Prow for every presubmit which identify pull request and it's commit hash. Generated prowjob to test will use test-infra code from pull request head, ensuring latest code is under test.
+A data from pjtester.yaml and from prowjob environment variables are used to construct prowjob specification to test. PJtester will use environment variables created by Prow for presubmit which identify pull request and it's commit hash. Generated prowjob to test will use test-infra code from pull request head, ensuring latest code is under test.
 
-Finally pjtester will create prowjob on production Prow instance. A prowjob name wich you triggered test for will be prefixed with _test_of_prowjob_.
+Finally pjtester will create prowjob on production Prow instance. A prowjob name for wich you triggered test will be prefixed with _test_of_prowjob__.
 
-Because file _vpath/pjtester.yaml_ is used only by pjtester to know which prowjob to test it should not exist outside PR. This is the reason pre-master-test-infra-vpathgurad required context was added. It's simple task is to fail whenever _vpath_ directory exist and prevent PR merge. As soon virtual path will disappear from PR, vpathguard will allow PR merge.
+Because file _vpath/pjtester.yaml_ is used only by pjtester to know prowjob name to test, it should not exist outside PR. This is the reason pre-master-test-infra-vpathgurad required context was added. Its simple task is to fail whenever _vpath_ directory exist and prevent PR merge. As soon virtual path will disappear from PR, vpathguard will allow PR merge.
 
 ## Exec of any code without review?
 
-Yes, this was the main requirement for this tool. However, we did place some security in place. Prowjob pre-master-test-infra-pjtester is running on **trusted-workload** cluster where it has everything needed for success execution. Every prowjob to test will be scheduled on **untrusted-workload** cluster where no sensitive data exist. As for any other PR from non Kyma org member, every test have to be triggered manually.
+This was the main requirement for this tool. However, we did place some security in place. Prowjob pre-master-test-infra-pjtester is running on **trusted-workload** cluster where it has everything needed for success execution. Every prowjob to test will be scheduled on **untrusted-workload** cluster where no sensitive data exist. As for any other PR from non Kyma org member, every test have to be triggered manually.
 
 ## How to use it
 
-This is the best feature of pjtester.
+This is a pjtester flow.
 1. Create your feature branch with changes in scripts and/or prowjobs.
 2. Create vpath/pjtester.yaml file with name of prowjob to test.
 3. Create PR with you changes.
-4. Watch result of prowjob _test_of_prowjob_<your prowjob>_.
+4. Watch result of prowjob _test_of_prowjob_<tested prowjob name>_.
 5. Push new commits to PR.
 6. Redo points 4 and 5 till you're happy with tests result.
 7. Remove vpath directory from PR.
