@@ -80,7 +80,7 @@ gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-dind-enabled: "true"                   # we need to be able to start docker
   preset-gc-compute-envs: "true"                # prrovides the GCP region
   preset-gc-project-env: "true"                 # required to be able to delete images
-  preset-sa-kyma-artifacts: "true"              # required for pushing images
+  preset-sa-test-gcr-push: "true"               # required for pushing images
 
 gardener_azure_job_template: &gardener_azure_job_template
   decorate: true
