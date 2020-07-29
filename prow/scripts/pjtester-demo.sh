@@ -6,5 +6,4 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/lib/log.sh"
 
-log::error "Failing for demo."
-exit 1
+echo "Succes for demo."
