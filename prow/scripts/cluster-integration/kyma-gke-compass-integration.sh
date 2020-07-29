@@ -244,6 +244,7 @@ function applyCompassOverrides() {
   fi
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
+    --data "global.agentPreconfiguration=true" \
     --data "global.istio.gateway.name=kyma-gateway" \
     --data "global.istio.gateway.namespace=kyma-system" \
     --data "global.connector.secrets.ca.name=connector-service-app-ca" \
