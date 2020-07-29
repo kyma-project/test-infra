@@ -304,7 +304,7 @@ presubmits: # runs on PRs
                 value: "europe-west4-b"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/pjtester-demo.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pjtester-demo.sh"
             resources:
               requests:
                 memory: 200Mi
