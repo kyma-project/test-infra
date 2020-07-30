@@ -49,7 +49,7 @@ func (s Client) parentMessageTimestamp(hist slack.GetConversationHistoryResponse
 func (s Client) createParentMessage(channelID, parentMessage string) error {
 	hist, err := s.client.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: channelID,
-		Limit: 100, // should be more than enough
+		Limit:     100, // should be more than enough
 	})
 
 	if err != nil {
@@ -76,7 +76,10 @@ func (s Client) UploadLogFiles(messages []Message, ctsName, completionTime, plat
 
 	for channelID, messageSlice := range s.groupMessagesByChannelID(messages) {
 
-		parentMsg := fmt.Sprintf("ClusterTestSuite `%s`; completionTime `%s`; platform `%s`; other failed test names: `%s`", ctsName, completionTime, platform, strings.Join(failedTestNames, ", "))
+		parentMsg := fmt.Sprintf("ClusterTestSuite `%s`; completionTime `%s`; platform `%s`", ctsName, completionTime, platform)
+		if len(failedTestNames) > 0 {
+			parentMsg = fmt.Sprintf("%s; failed test names: `%s`", parentMsg, strings.Join(failedTestNames, ", "))
+		}
 
 		if err := s.createParentMessage(channelID, parentMsg); err != nil {
 			return errors.Wrapf(err, "while creating parent slack message in channel %s", messageSlice[0].ChannelName)
