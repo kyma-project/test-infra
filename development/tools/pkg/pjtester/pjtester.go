@@ -34,10 +34,14 @@ const (
 	defaultMasterBranch = "master"
 )
 
+type pjCfg struct {
+	PjName string `yaml:"pjName"`
+	PjPath string `yaml:"pjPath,omitempty"`
+}
+
 type testCfg struct {
-	PjName     string `yaml:"pjName"`
-	PjPath     string `yaml:"pjPath,omitempty"`
-	ConfigPath string `yaml:"configPath,omitempty"`
+	PjNames    []pjCfg `yaml:"pjNames"`
+	ConfigPath string  `yaml:"configPath,omitempty"`
 }
 
 type options struct {
@@ -98,25 +102,27 @@ func (o *options) Validate() error {
 		return errors.New("jobPath to job to test is not set")
 	}
 
-	if err := o.github.Validate(false); err != nil {
-		return err
-	}
+	//if err := o.github.Validate(false); err != nil {
+	//	return err
+	//}
 
 	return nil
 }
 
-func readTestCfg() *testCfg {
-	var t *testCfg
+func readTestCfg(testCfgFile string) testCfg {
+	var t testCfg
 	yamlFile, err := ioutil.ReadFile(testCfgFile)
 	if err != nil {
 		log.Fatal("Failed read test config file from virtual path KYMA_PROJECT_DIR/test-infra/vpath/pjtester.yaml")
 	}
-	err = yaml.Unmarshal(yamlFile, &t)
+	err = yaml.Unmarshal(yamlFile, t)
 	if err != nil {
 		log.Fatal("Failed unmarshal test config yaml.")
 	}
-	if t.PjPath == "" {
-		t.PjPath = defaultPjPath
+	for index, pj := range t.PjNames {
+		if pj.PjPath == "" {
+			t.PjNames[index].PjPath = defaultPjPath
+		}
 	}
 	if t.ConfigPath == "" {
 		t.ConfigPath = defaultConfigPath
@@ -124,12 +130,12 @@ func readTestCfg() *testCfg {
 	return t
 }
 
-func gatherOptions(testCfg *testCfg) options {
+func gatherOptions(pjCfg pjCfg, configPath string) options {
 	var o options
 	var err error
-	o.jobName = testCfg.PjName
-	o.configPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.ConfigPath)
-	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), testCfg.PjPath)
+	o.jobName = pjCfg.PjName
+	o.configPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), configPath)
+	o.jobConfigPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), pjCfg.PjPath)
 	o.baseRef = os.Getenv("PULL_BASE_REF") // Git base ref under test
 	o.baseSha = os.Getenv("PULL_BASE_SHA") // Git base SHA under test
 	o.org = os.Getenv("REPO_OWNER")
@@ -140,7 +146,7 @@ func gatherOptions(testCfg *testCfg) options {
 	} // Git pull number under test
 	o.pullSha = os.Getenv("PULL_PULL_SHA")                                          // Git pull SHA under test
 	o.pullAuthor = gjson.Get(os.Getenv("JOB_SPEC"), "refs.pulls.0.author").String() // Git pull author under test")
-	o.github = *prowflagutil.NewGitHubOptions()
+	//o.github = *prowflagutil.NewGitHubOptions()
 	return o
 }
 
@@ -296,9 +302,9 @@ func periodicPJRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 	return pjs
 }
 
-func newTestPJ() prowapi.ProwJob {
-	testCfg := readTestCfg()
-	o := gatherOptions(testCfg)
+func newTestPJ(pjCfg pjCfg, configPath string) prowapi.ProwJob {
+	//testCfg := readTestCfg()
+	o := gatherOptions(pjCfg, configPath)
 	if err := o.Validate(); err != nil {
 		logrus.WithError(err).Fatalf("Missing required data.")
 	}
@@ -338,11 +344,14 @@ func SchedulePJ() {
 	}
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
-	pj := newTestPJ()
-	result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(&pj)
-	if err != nil {
-		log.WithError(err).Fatalf("Failed schedule test of prowjob")
+	testCfg := readTestCfg(testCfgFile)
+	for _, pjCfg := range testCfg.PjNames {
+		pj := newTestPJ(pjCfg, testCfg.ConfigPath)
+		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(&pj)
+		if err != nil {
+			log.WithError(err).Fatalf("Failed schedule test of prowjob")
+		}
+		fmt.Printf("Prowjob %s is %s", pj.Spec.Job, result.Status.State)
 	}
-	fmt.Printf("Prowjob %s is %s", pj.Spec.Job, result.Status.State)
 
 }
