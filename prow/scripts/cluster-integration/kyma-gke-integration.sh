@@ -222,10 +222,10 @@ CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
 
-# shout "Install Tiller"
-# date
+shout "Install Tiller"
+date
 kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-# "${KYMA_SCRIPTS_DIR}"/install-tiller.sh
+"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
 
 shout "Generate self-signed certificate"

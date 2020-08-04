@@ -74,7 +74,7 @@ func Mainerr() error {
 		return errors.Wrapf(err, "while listing ClusterTestSuites")
 	}
 
-	newestCts, err := getNewestClusterTestSuite(ctsList) // todo: write tests here
+	newestCts, err := getNewestClusterTestSuite(ctsList)
 	if err != nil {
 		return errors.Wrap(err, "while getting newest ClusterTestSuite")
 	}
