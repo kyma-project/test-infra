@@ -20,7 +20,7 @@ import (
 
 var (
 	testCfgFile = fmt.Sprintf("%s/test-infra/vpath/pjtester.yaml", os.Getenv("KYMA_PROJECT_DIR"))
-	envVarsList = []string{"KUBECONFIG_PATH", "KYMA_PROJECT_DIR", "PULL_BASE_REF", "PULL_BASE_SHA", "PULL_NUMBER", "PULL_PULL_SHA", "JOB_SPEC"}
+	envVarsList = []string{"KUBECONFIG_PATH", "KYMA_PROJECT_DIR", "PULL_BASE_REF", "PULL_BASE_SHA", "PULL_NUMBER", "PULL_PULL_SHA", "JOB_SPEC", "REPO_OWNER", "REPO_NAME"}
 	log         = logrus.New()
 )
 
@@ -94,7 +94,7 @@ func readTestCfg(testCfgFile string) testCfg {
 	if err != nil {
 		log.Fatal("Failed read test config file from virtual path KYMA_PROJECT_DIR/test-infra/vpath/pjtester.yaml")
 	}
-	err = yaml.Unmarshal(yamlFile, t)
+	err = yaml.Unmarshal(yamlFile, &t)
 	if err != nil {
 		log.Fatal("Failed unmarshal test config yaml.")
 	}
