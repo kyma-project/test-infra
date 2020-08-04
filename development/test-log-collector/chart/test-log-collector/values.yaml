@@ -1,7 +1,7 @@
 image:
-  repository: aerfio/joby
+  repository: aerfio/joby # will be updated after this PR is merged
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 serviceAccountName: ""
 

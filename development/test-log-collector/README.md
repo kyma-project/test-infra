@@ -7,7 +7,11 @@ It is intended to be run after the Octopus ClusterTestSuite, as it uses pods lab
 
 ## Requirements
 
-In order to send the message to any Slack channel you need to have [Slack app](https://api.slack.com/start) added to that channel, and you need to have its token. Slack app tokens typically have a `xoxb-` prefix.
+In order to send the message to any Slack channel you need to have [Slack app](https://api.slack.com/start) added to that channel, and you need to have its token. Slack app tokens typically have a `xoxb-` prefix. Slack app is required to have following bot token scopes:
+
+- channels:history
+- chat:write
+- files:write
 
 ## Usage
 

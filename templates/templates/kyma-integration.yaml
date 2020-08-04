@@ -251,7 +251,6 @@ gke_job_labels_template: &gke_job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-cluster-use-ssd: "true"
-  preset-log-collector-slack-token: "true"
 
 gke_backup_job_labels_template: &gke_backup_job_labels_template
   preset-weekly-github-integration: "true"
@@ -469,6 +468,7 @@ postsubmits:
         - ^master$
       labels:
         preset-build-master: "true"
+        preset-log-collector-slack-token: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -484,6 +484,7 @@ postsubmits:
         - ^master$
       labels:
         preset-build-master: "true"
+        preset-log-collector-slack-token: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -499,6 +500,7 @@ postsubmits:
         - ^master$
       labels:
         preset-build-master: "true"
+        preset-log-collector-slack-token: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
