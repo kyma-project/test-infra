@@ -3,7 +3,7 @@
 ## Overview
 
 The purpose of the Test Log Collector is to gather logs from the testing pods and to send them to the appropriate slack channels.
-It is intended to be run after the Octopus ClusterTestSuite, as it uses pods labels created by Octopus.
+It is intended to be run after the Octopus ClusterTestSuite, as it uses pods labels from Octopus. Test Log Collector will send logs only from the newest, finalised ClusterTestSuite.
 
 ## Requirements
 
