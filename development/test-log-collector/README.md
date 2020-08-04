@@ -2,12 +2,16 @@
 
 ## Overview
 
-The purpose of the Test Log Collector is to gather logs from testing pods and to send them to appropriate slack channels.
-It is intended to be run after Octopus ClusterTestSuite, as it uses pods labels created by Octopus.
+The purpose of the Test Log Collector is to gather logs from the testing pods and to send them to the appropriate slack channels.
+It is intended to be run after the Octopus ClusterTestSuite, as it uses pods labels created by Octopus.
+
+## Requirements
+
+In order to send the message to any Slack channel you need to have [Slack app](https://api.slack.com/start) added to that channel, and you need to have its token. Slack app tokens typically have a `xoxb-` prefix.
 
 ## Usage
 
-To use the test-log-collector, navigate to its chart directory and run it with appropriate parameters. See the example
+To use the test-log-collector, navigate to its chart directory and run it with appropriate parameters. See the example:
 
 ```bash
 helm install test-log-collector \
@@ -19,12 +23,7 @@ helm install test-log-collector \
 
 ## Configuration
 
-Test Log Collector dispatches logs to particular Slack channels based on configuration file, located [here](./chart/test-log-collector/files/config.yaml). It has a form of a list, where each element has to have such fields:
-
-- testCases
-- channelName
-- channelID
-- onlyReportFailure
+Test Log Collector dispatches logs to particular Slack channels based on configuration file, located [here](./chart/test-log-collector/files/config.yaml). This config file is a list, which uses following fields to configure the application:
 
 | Parameter             | Description                                                                                                                                                                            |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -35,7 +34,7 @@ Test Log Collector dispatches logs to particular Slack channels based on configu
 
 You can get available test cases by running `kyma test definitions`.
 
-`channelID` can be obtained by right clicking channel in Slack and choosing `Copy link` option. Channel ID is the last part of that link. If the channel link is https://example.slack.com/archives/CPBNQ4KNG, then the ID equals CPBNQ4KNG.
+`channelID` can be obtained by right clicking channel in Slack and choosing `Copy link` option. Channel ID is the last part of that link. If the channel link is `https://example.slack.com/archives/CPBNQ4KNG` then the ID equals `CPBNQ4KNG`.
 
 See example configuration:
 
