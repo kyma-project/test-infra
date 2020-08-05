@@ -438,6 +438,7 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
+          until: "1.14"
       - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
         values:
           <<: *kyma_generic_component

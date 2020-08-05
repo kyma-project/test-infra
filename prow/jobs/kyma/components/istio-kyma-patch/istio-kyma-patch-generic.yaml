@@ -18,7 +18,6 @@ job_template: &job_template
     - <<: *test_infra_ref
       base_ref: master
   branches:
-    - ^master$
     - ^release-(1\.14|1\.13|1\.12)-istio-kyma-patch$
   run_if_changed: "^components/istio-kyma-patch/|^common/makefiles/"
   spec:

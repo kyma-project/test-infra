@@ -101,6 +101,7 @@ var components = []struct {
 	{path: "istio-kyma-patch", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Until(releases.Release114),
 		},
 	},
 	{path: "istio-installer", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
