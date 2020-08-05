@@ -26,17 +26,17 @@
 /development/tools/jobs/testinfra/ @kyma-project/prow
 
 # Stability checker
-/stability-checker/ @aszecowka @PK85 @mszostok @piotrmiskiewicz @polskikiel @jasiu001 @adamwalach
+/stability-checker/ @PK85 @mszostok @piotrmiskiewicz @polskikiel @jasiu001 @adamwalach
 
 # The watch-pods directory
 /watch-pods/ @suleymanakbas91 @clebs @a-thaler @lilitgh
 
 # The changelog-generator directory
-/changelog-generator/ @akucharska @michal-hudy @pkosiec @aerfio @tgorgol @magicmatatjahu
+/changelog-generator/ @akucharska @aerfio @tgorgol @magicmatatjahu
 
 /templates/config.yaml @kyma-project/developers @kyma-project/prow
 
 /templates/templates @kyma-project/prow @sjanota
 
 # All .md files
-*.md @kazydek @klaudiagrz @tomekpapiernik @bszwarc @mmitoraj @majakurcius @alexandra-simeonova
+*.md @kazydek @klaudiagrz @bszwarc @mmitoraj @majakurcius @alexandra-simeonova
