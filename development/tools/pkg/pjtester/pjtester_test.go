@@ -2,12 +2,13 @@ package pjtester
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 	"os"
 	"path/filepath"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 )
 
 var (
