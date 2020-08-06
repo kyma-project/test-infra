@@ -2,12 +2,12 @@
 
 ## Overview
 
-The purpose of the Test Log Collector is to gather logs from the testing pods and to send them to the appropriate Slack channels.
+The purpose of the Test Log Collector is to gather logs from the testing Pods and to send them to the appropriate Slack channels.
 It is intended to be run after the Octopus ClusterTestSuite, as it uses Pods labels from Octopus. By design, the Test Log Collector sends logs only from the newest, finalized ClusterTestSuite.
 
 ## Prerequisites
 
-To send the message to any Slack channel, you need to add the [Slack app](https://api.slack.com/start) to that channel and have its token. Slack app tokens typically have the `xoxb-` prefix. The slack app is required to have the following bot token scopes:
+To send the message to any Slack channel, you need to add the [Slack app](https://api.slack.com/start) to that channel and have its token. Slack app tokens typically have the `xoxb-` prefix. The Slack app must have the following bot token scopes:
 
 - `channels:history`
 - `chat:write`
