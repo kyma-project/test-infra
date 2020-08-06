@@ -1,0 +1,8 @@
+pjNames:
+  # presubmit
+  - pjName: "presubmit-test-job"
+    pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
+  # periodic
+  - pjName: "orphaned-disks-cleaner"
+  # postsubmit
+  - pjName: "post-master-kyma-gke-integration"
