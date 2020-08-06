@@ -12,9 +12,10 @@ PJtester is called by presubmit job *pre-master-test-infra-pjtester*. This presu
 PJtester expect to find a file with name of prowjob to test in location _vpath/pjtester.yaml_. Apart from mandatory prowjob name, a file may contain path to prowjobs definitions and path to prow config. Both paths are optional and are relative from kyma-project directory. If not provided default locations for kyma-project/test-infra repository are used.
 
 Example pjtester.yaml file.
-```buildoutcfg
-pjName: "tested-prowjob"
-pjPath: "test-infra/prow/custom_jobs.yaml"
+```
+pjNames:
+  - pjName: "tested-prowjob"
+  - pjPath: "test-infra/prow/custom_jobs.yaml"
 configPath: "test-infra/prow/custom_config.yaml"
 ```
 
