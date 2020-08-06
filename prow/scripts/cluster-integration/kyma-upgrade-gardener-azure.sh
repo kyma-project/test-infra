@@ -73,12 +73,15 @@ export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_CONTAINER_NAME="tests"
 export KYMA_UPDATE_TIMEOUT="40m"
+export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
@@ -152,7 +155,9 @@ function getLastReleaseVersion() {
 }
 
 function installKyma() {
-    LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+    # LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+    # TODO: remove together with pjtester file
+    LAST_RELEASE_VERSION="nachtmaar/kyma-installer:786340ff3"
     mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         shout "Couldn't grab latest version from GitHub API, stopping."
@@ -180,6 +185,11 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
     cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
+    prepare_lgging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    if [[ "$?" -ne 0 ]]; then
+        return 1
+    fi
+
     (
     set -x
     kyma install \
@@ -187,6 +197,7 @@ function installKyma() {
         --source "${LAST_RELEASE_VERSION}" \
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
+        -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
         --timeout 90m
     )
 }
@@ -317,19 +328,9 @@ function upgradeKyma() {
 
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
-
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
 
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
-    
-    shout "Wait until tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
-    
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
     kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
@@ -378,8 +379,9 @@ install::kyma_cli
 provisionCluster
 
 installKyma
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
+if [[ "$?" -ne 0 ]]; then
+    return 1
+fi
 
 createTestResources
 

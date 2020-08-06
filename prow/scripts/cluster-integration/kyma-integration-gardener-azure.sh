@@ -48,7 +48,7 @@ VARIABLES=(
 
 if [[ "$JOB_TYPE" == "presubmit" ]]; then
     VARIABLES+=( DOCKER_PUSH_DIRECTORY )
-fi 
+fi
 
 for var in "${VARIABLES[@]}"; do
     if [ -z "${!var}" ] ; then
@@ -71,6 +71,7 @@ export RS_GROUP \
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
 
 TMP_DIR=$(mktemp -d)
 
@@ -80,6 +81,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 set -o
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
@@ -116,10 +119,10 @@ cleanup() {
     if [[ -n "${SUITE_NAME}" ]]; then
         testSummary
         SUITE_EXIT_STATUS=$?
-        if [[ ${EXIT_STATUS} -eq 0 ]]; then 
+        if [[ ${EXIT_STATUS} -eq 0 ]]; then
             EXIT_STATUS=$SUITE_EXIT_STATUS
         fi
-    fi 
+    fi
 
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
@@ -235,8 +238,15 @@ install_kyma() {
     shout "Installing Kyma"
     date
 
+    prepare_lgging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    if [[ "$?" -ne 0 ]]; then
+        return 1
+    fi
+
     INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
     set -x
+    # TODO: REMOVE together with pjtest
+    export KYMA_INSTALLER_IMAGE="nachtmaar/kyma-installer:786340ff3"
     kyma install \
         --ci \
         --source $KYMA_INSTALLER_IMAGE \
@@ -244,6 +254,7 @@ install_kyma() {
         -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
         -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
         -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+        -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
         --timeout 90m \
         --verbose
     set +x
@@ -285,9 +296,13 @@ generate_azure_overrides
 
 provision_cluster
 
-build_image
+# TODO: undo then pjtester is removed
+# build_image
 
 install_kyma
+if [[ "$?" -ne 0 ]]; then
+    return 1
+fi
 
 test_kyma
 
