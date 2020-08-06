@@ -255,6 +255,8 @@ function checkTestPodTerminated() {
 }
 
 function installTestChartOrFail() {
+  set -x
+  set +e
   local path=$1
   local name=$2
   local namespace=$3
@@ -279,6 +281,8 @@ function installTestChartOrFail() {
       echo "Helm install ${name} operation failed: ${prepareResult}"
       exit "${prepareResult}"
   fi
+  set +x
+  set -e
 }
 
 function waitForTestPodToFinish() {
@@ -382,6 +386,8 @@ installKyma
 if [[ "$?" -ne 0 ]]; then
     return 1
 fi
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 createTestResources
 
