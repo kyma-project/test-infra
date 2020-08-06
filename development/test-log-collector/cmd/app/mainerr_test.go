@@ -255,7 +255,7 @@ test`),
 			g := gomega.NewWithT(t)
 			testStr := testStruct{Data: tt.arg} // create readcloser
 
-			got, err := ConsumeRequest(testStr)
+			got, err := consumeRequest(testStr)
 
 			g.Expect(err != nil).To(gomega.Equal(tt.wantErr))
 			g.Expect(got).To(gomega.Equal(tt.want))

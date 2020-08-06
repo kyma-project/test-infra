@@ -146,7 +146,7 @@ func Mainerr() error {
 			},
 		}
 
-		data, err := ConsumeRequest(req)
+		data, err := consumeRequest(req)
 		if err != nil {
 			// one of the possible things in test is like a failed init container, in which case we send error as string
 			reqErr := errors.Wrapf(err, "while reading request from container %s in pod %s in namespace %s", container, pod.Name, pod.Namespace)
@@ -197,7 +197,7 @@ func getTestContainerName(pod corev1.Pod) (string, error) {
 	return names[0], nil
 }
 
-// ConsumeRequest reads the data from request and writes into
+// consumeRequest reads the data from request and writes into
 // the out writer. It buffers data from requests until the newline or io.EOF
 // occurs in the data, so it doesn't interleave logs sub-line
 // when running concurrently.
@@ -205,7 +205,7 @@ func getTestContainerName(pod corev1.Pod) (string, error) {
 // A successful read returns err == nil, not err == io.EOF.
 // Because the function is defined to read from request until io.EOF, it does
 // not treat an io.EOF as an error to be reported.
-func ConsumeRequest(request restclient.ResponseWrapper) ([]byte, error) {
+func consumeRequest(request restclient.ResponseWrapper) ([]byte, error) {
 	var b bytes.Buffer
 	readCloser, err := request.Stream()
 	if err != nil {
