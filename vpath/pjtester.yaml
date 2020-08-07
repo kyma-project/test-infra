@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-master-kyma-gke-integration"
+  - pjName: "pre-master-kyma-gke-upgrade"
+  - pjName: "pre-master-kyma-gke-upgrade-for-debug"
+  - pjName: "pre-master-kyma-gke-upgrade-for-debug"
+  - pjName: "kyma-upgrade-gardener-azure"
