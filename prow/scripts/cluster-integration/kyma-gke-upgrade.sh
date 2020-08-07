@@ -379,7 +379,7 @@ function waitForTestPodToFinish() {
   kubectl logs -n "${namespace}" $(kubectl get pod -n "${name}" -l "${label}=${TEST_RESOURCE_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
   if [[ "${prepareTestResult}" != 0 ]]; then
       echo "Exit status for prepare ${name}: ${prepareTestResult}"
-      exit "${prepareTestResult}"
+    #   exit "${prepareTestResult}"
   fi
 }
 
