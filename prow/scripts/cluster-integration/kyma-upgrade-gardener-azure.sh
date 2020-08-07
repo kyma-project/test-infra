@@ -253,6 +253,7 @@ function installTestChartOrFail() {
 
   helm install "${name}" \
       --namespace "${namespace}" \
+      --create-namespace \
       "${path}" \
       --timeout "${HELM_TIMEOUT_SEC}" \
       --set domain="${DOMAIN}" \

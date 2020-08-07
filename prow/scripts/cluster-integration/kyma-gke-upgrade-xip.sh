@@ -279,6 +279,7 @@ createTestResources() {
 
     helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --create-namespace \
         "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
         --wait \
