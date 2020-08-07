@@ -18,6 +18,7 @@
 # - MACHINE_TYPE (optional): GKE machine type
 # - CLUSTER_VERSION (optional): GKE cluster version
 # - KYMA_ARTIFACTS_BUCKET: GCP bucket
+# - LOG_COLLECTOR_SLACK_TOKEN: Slack token for test-log-collector
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Admin
@@ -293,13 +294,17 @@ date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 
-shout "Install test-log-collector"
-date
+if [[ "$BUILD_TYPE" == "master" ]]; then
+    shout "Install test-log-collector"
+    date
 
-(
-    export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-)
+    ( 
+        export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+    )    
+fi
+
+
 
 
 shout "Success"
