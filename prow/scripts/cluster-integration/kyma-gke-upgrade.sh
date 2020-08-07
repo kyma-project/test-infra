@@ -349,17 +349,12 @@ function installTestChartOrFail() {
   shout "Create ${name} resources"
   date
 
-  local HELM_ARGS
-  if [[ -f "$(helm home)/ca.pem" ]]; then
-      HELM_ARGS="--tls"
-  fi
-
   helm install "${path}" \
       --name "${name}" \
       --namespace "${namespace}" \
       --timeout "${HELM_TIMEOUT_SEC}" \
       --set domain="${DOMAIN}" \
-      --wait ${HELM_ARGS}
+      --wait
 
   prepareResult=$?
   if [[ "${prepareResult}" != 0 ]]; then

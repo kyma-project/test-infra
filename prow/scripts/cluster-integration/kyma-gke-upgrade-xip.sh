@@ -277,15 +277,11 @@ createTestResources() {
 
     DOMAIN=$(kubectl get cm net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.domainName}')
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
-    helm install "${UPGRADE_TEST_PATH}" \
-        --name "${UPGRADE_TEST_RELEASE_NAME}" \
+    helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS} \
+        --wait \
         --set global.domainName="${DOMAIN}"
 
     prepareResult=$?
