@@ -3,8 +3,8 @@
 set -o errexit
 
 VARIABLES=(
-   TEST_INFRA_SOURCES_DIR
-   LOG_COLLECTOR_SLACK_TOKEN
+    TEST_INFRA_SOURCES_DIR
+    LOG_COLLECTOR_SLACK_TOKEN
 )
 
 discoverUnsetVar=false
@@ -20,16 +20,16 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function installTestLogColletor() {
-    # same as in insatll-stability-checker.sh
+    # same as in install-stability-checker.sh
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-	TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
-
-	helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
-	        "${TLC_DIR}/chart/test-log-collector" \
-	        --namespace=kyma-system \
-	        --wait \
-	        --timeout=600s
+    
+    TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
+    
+    helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
+    "${TLC_DIR}/chart/test-log-collector" \
+    --namespace=kyma-system \
+    --wait \
+    --timeout=600s
 }
 
 installTestLogColletor
