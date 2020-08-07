@@ -354,9 +354,9 @@ function installTestChartOrFail() {
       HELM_ARGS="--tls"
   fi
 
-  helm install "${path}" \
-      --name "${name}" \
+  helm install "${name}" \
       --namespace "${namespace}" \
+      "${path}" \
       --timeout "${HELM_TIMEOUT_SEC}" \
       --set domain="${DOMAIN}" \
       --wait ${HELM_ARGS}
