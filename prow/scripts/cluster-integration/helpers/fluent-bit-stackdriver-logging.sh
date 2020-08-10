@@ -6,13 +6,30 @@
 function prepare_stackdriver_logging() {
     local filepath="${1}"
     if [[ -z "${filepath}" ]]; then
-        echo "Filepath for installation override not given"
+        shout "Filepath for installation override not given"
+        date
         return 1
+    fi
+    local kyma_system_namespace="kyma-system"
+
+    # the namespace kyma-system is required in order to create the following secret
+    # `kyma install` would also create it, however this is to late in the installation process
+    shout "creating kyma-system namespace"
+    date
+    if errorMessage=$(kubectl create namespace "${kyma_system_namespace}" 2>&1); then
+        shout "namespace kyma-system created"
+    else
+        if [[ ${?} == 1 && ${errorMessage} == *"AlreadyExists"* ]]; then
+            shout "namespace already exists"
+        else
+            shout "namespace kyma-system could not be created"
+            return 1
+        fi
     fi
 
     # create secret
-    echo "creating stackdriver secret"
-    kubectl create namespace kyma-system || true # in case the namespace already exists
+    shout "creating stackdriver secret"
+    date
     kubectl apply -f - << EOF
 apiVersion: v1
 kind: Secret
@@ -23,7 +40,8 @@ data:
   gcp-sa-stackdriver.json: $(base64 -w0 < "${SA_GARDENER_LOGS}")
 EOF
 
-    echo "creating stackdriver installation overrides"
+    shout "creating stackdriver installation overrides"
+    date
     cat << EOF > "${filepath}"
 apiVersion: v1
 kind: ConfigMap
