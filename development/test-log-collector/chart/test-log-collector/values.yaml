@@ -1,6 +1,6 @@
 image:
-  repository: aerfio/joby # will be updated after this PR is merged
-  tag: latest
+  repository: kyma-project test infra  # will be updated after this PR is merged
+  tag: will be generated
   pullPolicy: IfNotPresent
 
 serviceAccountName: ""
