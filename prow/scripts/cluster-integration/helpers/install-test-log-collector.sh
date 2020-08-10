@@ -20,9 +20,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 function installTestLogColletor() {
-    # same as in install-stability-checker.sh
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-    
     TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
     
     helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
