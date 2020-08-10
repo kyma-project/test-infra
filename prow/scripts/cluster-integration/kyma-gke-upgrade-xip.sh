@@ -52,7 +52,7 @@ export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="25m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
 # timeout in sec for helm operation install/test
-export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000s
 # timeout in sec for e2e upgrade test pods until they reach the terminating state
 export UPGRADE_TEST_TIMEOUT_SEC=600
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
@@ -277,15 +277,12 @@ createTestResources() {
 
     DOMAIN=$(kubectl get cm net-global-overrides -n kyma-installer -o jsonpath='{.data.global\.ingress\.domainName}')
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
-    helm install "${UPGRADE_TEST_PATH}" \
-        --name "${UPGRADE_TEST_RELEASE_NAME}" \
+    helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --create-namespace \
+        "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS} \
+        --wait \
         --set global.domainName="${DOMAIN}"
 
     prepareResult=$?

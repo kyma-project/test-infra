@@ -48,7 +48,7 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 export KYMA_INSTALL_TIMEOUT="30m"
 export KYMA_UPDATE_TIMEOUT="25m"
 export UPGRADE_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/upgrade/chart/upgrade"
-export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000 # timeout in sec for helm operation install/test
+export UPGRADE_TEST_HELM_TIMEOUT_SEC=10000s # timeout in sec for helm operation install/test
 export UPGRADE_TEST_TIMEOUT_SEC=600 # timeout in sec for e2e upgrade test pods until they reach the terminating state
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
@@ -354,9 +354,10 @@ createTestResources() {
         local HELM_ARGS="--tls"
     fi
 
-    helm install "${UPGRADE_TEST_PATH}" \
-        --name "${UPGRADE_TEST_RELEASE_NAME}" \
+    helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
+        --create-namespace \
+        "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
         --wait ${HELM_ARGS}
 
