@@ -1,5 +1,0 @@
-pjNames:
-  - pjName: "pre-master-kyma-gardener-azure-integration"
-    pjPath: "test-infra/prow/jobs/kyma/kyma-integration-gardener.yaml"
-  - pjName: "kyma-upgrade-gardener-azure"
-    pjPath: "test-infra/prow/jobs/kyma/kyma-upgrade-gardener.yaml"

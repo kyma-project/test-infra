@@ -155,9 +155,7 @@ function getLastReleaseVersion() {
 }
 
 function installKyma() {
-    # LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-    # TODO: remove together with pjtester file
-    LAST_RELEASE_VERSION="nachtmaar/kyma-installer:786340ff3"
+    LAST_RELEASE_VERSION=$(getLastReleaseVersion)
     mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         shout "Couldn't grab latest version from GitHub API, stopping."

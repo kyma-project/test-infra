@@ -245,8 +245,6 @@ install_kyma() {
 
     INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
     set -x
-    # TODO: REMOVE together with pjtest
-    export KYMA_INSTALLER_IMAGE="nachtmaar/kyma-installer:786340ff3"
     kyma install \
         --ci \
         --source $KYMA_INSTALLER_IMAGE \
@@ -296,8 +294,7 @@ generate_azure_overrides
 
 provision_cluster
 
-# TODO: undo then pjtester is removed
-# build_image
+build_image
 
 install_kyma
 if [[ "$?" -ne 0 ]]; then
