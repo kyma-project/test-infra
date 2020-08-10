@@ -43,6 +43,14 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        echo "ERROR: $LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
+
+
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -294,15 +302,15 @@ date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 
-# if [[ "$BUILD_TYPE" == "master" ]]; then
-#     shout "Install test-log-collector"
-#     date
+if [[ "$BUILD_TYPE" == "master" ]]; then
+    shout "Install test-log-collector"
+    date
 
-#     ( 
-#         export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
-#         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-#     )    
-# fi
+    ( 
+        export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+    )    
+fi
 
 
 
