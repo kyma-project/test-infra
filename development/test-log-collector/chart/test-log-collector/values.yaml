@@ -1,6 +1,6 @@
 image:
   repository: kyma-project test infra  # will be updated after this PR is merged
-  tag: will be generated
+  tag: will be generated2
   pullPolicy: IfNotPresent
 
 serviceAccountName: ""
