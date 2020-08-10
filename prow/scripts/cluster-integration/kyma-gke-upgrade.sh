@@ -19,7 +19,6 @@
 #  - CLUSTER_VERSION (optional): GKE cluster version
 #  - KYMA_ARTIFACTS_BUCKET: GCP bucket
 #  - BOT_GITHUB_TOKEN: Bot github token used for API queries
-#  - LOG_COLLECTOR_SLACK_TOKEN: Slack token for test-log-collector
 #
 # Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 #  - Compute Admin
@@ -34,7 +33,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS LOG_COLLECTOR_SLACK_TOKEN; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [[ -z "${!var}" ]] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
