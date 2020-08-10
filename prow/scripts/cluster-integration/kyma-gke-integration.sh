@@ -43,6 +43,14 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        echo "ERROR: $LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
+
+
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
