@@ -1,0 +1,11 @@
+image:
+  repository: aerfio/joby # will be updated after this PR is merged
+  tag: latest
+  pullPolicy: IfNotPresent
+
+serviceAccountName: ""
+
+slackToken: ""
+
+nameOverride: ""
+fullnameOverride: ""

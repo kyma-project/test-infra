@@ -468,6 +468,7 @@ postsubmits:
         - ^master$
       labels:
         preset-build-master: "true"
+        preset-log-collector-slack-token: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
