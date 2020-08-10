@@ -60,7 +60,7 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export EVENTHUB_SECRET_OVERRIDE_FILE="eventhubs-secret-overrides.yaml"
-export HELM_TIMEOUT_SEC=10000 # timeout in sec for helm install/test operation
+export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600   # timeout in sec for test pods until they reach the terminating state
 export UPGRADE_TEST_NAMESPACE="e2e-upgrade-test"
 export UPGRADE_TEST_RELEASE_NAME="${UPGRADE_TEST_NAMESPACE}"
@@ -264,17 +264,13 @@ function installTestChartOrFail() {
   shout "Create ${name} resources"
   date
 
-  local HELM_ARGS
-  if [[ -f "$(helm home)/ca.pem" ]]; then
-      HELM_ARGS="--tls"
-  fi
-
-  helm install "${path}" \
-      --name "${name}" \
+  helm install "${name}" \
       --namespace "${namespace}" \
+      --create-namespace \
+      "${path}" \
       --timeout "${HELM_TIMEOUT_SEC}" \
       --set domain="${DOMAIN}" \
-      --wait ${HELM_ARGS}
+      --wait
 
   prepareResult=$?
   if [[ "${prepareResult}" != 0 ]]; then
