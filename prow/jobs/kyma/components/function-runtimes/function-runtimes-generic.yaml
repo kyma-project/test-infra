@@ -38,7 +38,7 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-function-runtimes
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
@@ -46,7 +46,4 @@ postsubmits:
     - name: post-kyma-components-function-runtimes
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template

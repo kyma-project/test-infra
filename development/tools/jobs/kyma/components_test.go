@@ -141,7 +141,6 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release113),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "event-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

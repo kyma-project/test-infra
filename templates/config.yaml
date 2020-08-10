@@ -522,7 +522,6 @@ templates:
           <<: *kyma_generic_component
           path: components/function-runtimes
           since: "1.13"
-          optional: true
       - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
         values:
           <<: *kyma_generic_component
