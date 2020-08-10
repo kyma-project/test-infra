@@ -1,6 +1,6 @@
 image:
-  repository: aerfio/joby # will be updated after this PR is merged
-  tag: latest
+  repository: eu.gcr.io/kyma-project/pr/test-log-collector  # will be updated after this PR is merged
+  tag: PR-2668
   pullPolicy: IfNotPresent
 
 serviceAccountName: ""
