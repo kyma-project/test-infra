@@ -238,7 +238,7 @@ install_kyma() {
     shout "Installing Kyma"
     date
 
-    prepare_lgging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
     if [[ "$?" -ne 0 ]]; then
         return 1
     fi

@@ -185,7 +185,7 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
     cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
-    prepare_lgging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
     if [[ "$?" -ne 0 ]]; then
         return 1
     fi
@@ -332,8 +332,18 @@ function upgradeKyma() {
 
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
+        --output /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
+
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
+
+    shout "Install Tiller from version ${TARGET_VERSION}"
+    date
+    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
+
+    shout "Wait until tiller is correctly rolled out"
+    kubectl -n kube-system rollout status deployment/tiller-deploy
 
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date

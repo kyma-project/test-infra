@@ -3,7 +3,7 @@
 # prepare stackdriver logging integration
 # - creates secret which holds ServiceAccount with LogWritter permission (for Stackdriver access)
 # - creates installation override for fluent-fit
-function prepare_lgging() {
+function prepare_stackdriver_logging() {
     local filepath="${1}"
     if [[ -z "${filepath}" ]]; then
         echo "Filepath for installation override not given"
