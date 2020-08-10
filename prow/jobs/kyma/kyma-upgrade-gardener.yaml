@@ -18,7 +18,7 @@ gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-kyma-cli-stable: "true"
   preset-creds-aks-kyma-integration: "true"
   preset-kyma-guard-bot-github-token: "true"
-
+  preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
 
 gardener_azure_job_template: &gardener_azure_job_template
   decorate: true
@@ -54,6 +54,7 @@ gardener_azure_job_template: &gardener_azure_job_template
 
 periodics:
   - name: kyma-upgrade-gardener-azure
+    cluster: untrusted-workload
     annotations:
       testgrid-create-test-group: "false"
     <<: *gardener_azure_job_template
