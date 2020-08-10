@@ -33,7 +33,7 @@ set -o errexit
 
 discoverUnsetVar=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS LOG_COLLECTOR_SLACK_TOKEN; do
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -294,15 +294,15 @@ date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 
-if [[ "$BUILD_TYPE" == "master" ]]; then
-    shout "Install test-log-collector"
-    date
+# if [[ "$BUILD_TYPE" == "master" ]]; then
+#     shout "Install test-log-collector"
+#     date
 
-    ( 
-        export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-    )    
-fi
+#     ( 
+#         export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
+#         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+#     )    
+# fi
 
 
 
