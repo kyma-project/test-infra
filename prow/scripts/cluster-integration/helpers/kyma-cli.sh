@@ -16,7 +16,7 @@ install::kyma_cli() {
     curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
     kyma_version=$(kyma version --client)
-    log::info "Kyma version: ${kyma_version}"
+    log::info "Kyma CLI version: ${kyma_version}"
 
     log::success "OK"
 
