@@ -183,10 +183,11 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
     cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
+    # TODO(nachtmaar): ticket xxxx: uncomment as soon as Kyma 1.15 is out
+    # prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    # if [[ "$?" -ne 0 ]]; then
+    #     return 1
+    # fi
 
     (
     set -x
@@ -195,8 +196,9 @@ function installKyma() {
         --source "${LAST_RELEASE_VERSION}" \
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
-        -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
         --timeout 90m
+        # TODO(nachtmaar): ticket xxxx: uncomment as soon as Kyma 1.15 is out
+        # -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
     )
 }
 
@@ -311,6 +313,12 @@ createTestResources() {
 }
 
 function upgradeKyma() {
+    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    if [[ "$?" -ne 0 ]]; then
+        return 1
+    fi
+    kubectk apply -f "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+
     shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
@@ -327,13 +335,6 @@ function upgradeKyma() {
 
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
-
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
-
-    shout "Wait until tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
 
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
@@ -390,6 +391,9 @@ fi
 createTestResources
 
 upgradeKyma
+if [[ "$?" -ne 0 ]]; then
+    return 1
+fi
 
 remove_addons_if_necessary
 
