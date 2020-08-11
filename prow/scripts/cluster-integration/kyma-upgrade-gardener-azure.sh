@@ -183,12 +183,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
     cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
-    # TODO(nachtmaar): ticket xxxx: uncomment as soon as Kyma 1.15 is out
-    # prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    # if [[ "$?" -ne 0 ]]; then
-    #     return 1
-    # fi
-
     (
     set -x
     kyma install \
@@ -197,8 +191,6 @@ function installKyma() {
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
         --timeout 90m
-        # TODO(nachtmaar): ticket xxxx: uncomment as soon as Kyma 1.15 is out
-        # -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
     )
 }
 
@@ -313,7 +305,6 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    # TODO(nachtmaar): ticket xxxx: comment as soon as Kyma 1.15 is out
     prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
     if [[ "$?" -ne 0 ]]; then
         return 1
