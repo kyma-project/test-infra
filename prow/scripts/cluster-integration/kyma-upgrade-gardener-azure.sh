@@ -313,6 +313,7 @@ createTestResources() {
 }
 
 function upgradeKyma() {
+    # TODO(nachtmaar): ticket xxxx: comment as soon as Kyma 1.15 is out
     prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
     if [[ "$?" -ne 0 ]]; then
         return 1
