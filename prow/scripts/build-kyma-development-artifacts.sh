@@ -83,9 +83,9 @@ gsutil cp  "${KYMA_PATH}/installation/scripts/is-installed.sh" "${KYMA_DEVELOPME
 gsutil cp  "${KYMA_PATH}/installation/resources/tiller.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/tiller.yaml"
 
 gsutil cp "${ARTIFACTS}/kyma-installer-cr.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr.yaml"
-gsutil cp "${ARTIFACTS}/installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer-cr-cluster.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/installer-cr-cluster-runtime.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr-cluster.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr-cluster-runtime.yaml"
 
 
 
@@ -97,8 +97,8 @@ if [[ "${BUILD_TYPE}" == "master" ]]; then
   gsutil cp  "${KYMA_PATH}/installation/resources/tiller.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/tiller.yaml"
 
   gsutil cp "${ARTIFACTS}/kyma-installer-cr.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cr.yaml"
-  gsutil cp "${ARTIFACTS}/installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer.yaml"
-  gsutil cp "${ARTIFACTS}/installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer-cr-cluster.yaml"
-  gsutil cp "${ARTIFACTS}/installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/installer-cr-cluster-runtime.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cr-cluster.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cr-cluster-runtime.yaml"
 
 fi
