@@ -41,9 +41,9 @@ gsutil cp "${ARTIFACTS}/kyma-installer-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${D
 gsutil cp "/home/prow/go/src/github.com/kyma-project/kyma/installation/resources/tiller.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/tiller.yaml"
 
 gsutil cp "${ARTIFACTS}/kyma-installer-cr.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr.yaml"
-gsutil cp "${ARTIFACTS}/installer.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer-cr-cluster.yaml"
-gsutil cp "${ARTIFACTS}/installer-cr-cluster-runtime.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/installer-cr-cluster-runtime.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr-cluster.yaml"
+gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr-cluster-runtime.yaml"
 
 
 "${SCRIPT_DIR}"/changelog-generator.sh
