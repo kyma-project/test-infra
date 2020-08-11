@@ -19,7 +19,6 @@ var (
 	otherPrSHA    string
 	otherPrOrg    string
 	otherPrRepo   string
-	//fakeGitHubClient githubClient
 )
 
 func TestMain(m *testing.M) {

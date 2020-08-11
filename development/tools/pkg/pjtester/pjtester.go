@@ -42,11 +42,13 @@ type pjCfg struct {
 	Report bool   `yaml:"report,omitempty"`
 }
 
+// pjCfg holds number of PR to download and fetched details.
 type prCfg struct {
 	PrNumber    int `yaml:"prNumber"`
 	pullRequest github.PullRequest
 }
 
+// prOrg holds pr configs per repository.
 type prOrg map[string]prCfg
 
 // testCfg holds prow config to test path, prowjobs to test names and paths to it's definitions.
@@ -147,8 +149,6 @@ func readTestCfg(testCfgFile string) testCfg {
 				log.WithError(err).Fatalf("Pull request number for repo was not provided.")
 			}
 		}
-	} else {
-		log.WithError(err).Fatalf("Pull request number for repo was not provided.")
 	}
 	return t
 }
@@ -190,7 +190,7 @@ func gatherOptions(configPath string) options {
 	return o
 }
 
-// git
+// withGithubClientOptions will add default flags and values for github client.
 func (o options) withGithubClientOptions() options {
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o.github.AddFlagsWithoutDefaultGitHubTokenPath(fs)
@@ -201,6 +201,7 @@ func (o options) withGithubClientOptions() options {
 	return o
 }
 
+// getPullRequests will download pull requests details from github, for numbers provided in pjtester.yaml.
 func (o *options) getPullRequests(t testCfg) {
 	o.pullRequests = t.PrConfigs
 	for org, repos := range t.PrConfigs {
@@ -284,6 +285,7 @@ func setPrHeadSHA(refs *prowapi.Refs, o options) {
 	}}
 }
 
+// matchRefPR will add pull request details to ExtraRefs.
 func (o *options) matchRefPR(ref *prowapi.Refs) {
 	if pr, present := o.pullRequests[ref.Org][ref.Repo]; present {
 		ref.Pulls = []prowapi.Pull{{
