@@ -2,7 +2,12 @@ pjNames:
   # presubmit
   - pjName: "presubmit-test-job"
     pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
+    report: true
   # periodic
   - pjName: "orphaned-disks-cleaner"
   # postsubmit
   - pjName: "post-master-kyma-gke-integration"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 1212
