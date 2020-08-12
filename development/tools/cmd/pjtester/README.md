@@ -9,7 +9,7 @@ A workhorse for testing prowjobs is a tool written in Go called `pjtester`. It's
 PJtester is called by the presubmit job `pre-master-test-infra-pjtester`. This presubmit is triggered when something changes under the `test-infra` repository virtual path `vpath/pjtester.yaml`.
 `run_if_changed: "^(vpath/pjtester.yaml)"`
 
-PJtester expects to find the file with the name of the Prowjob to test in the location `vpath/pjtester.yaml`. Apart from the mandatory Prowjob name, the file may contain a path to the Prowjobs definitions and a path to the Prow configuration. Both paths are optional and are relative from the `kyma-project` directory. If not provided, default locations for the `kyma-project/test-infra` repository are used.
+PJtester expects to find the file with the name of the ProwJob to test in the location `vpath/pjtester.yaml`. Apart from the mandatory ProwJob name, the file may contain the path to the ProwJobs definitions and the path to the Prow configuration. Both paths are optional and are relative from the `kyma-project` directory. If not provided, default locations for the `kyma-project/test-infra` repository are used.
 
 An example `pjtester.yaml` file:
 
