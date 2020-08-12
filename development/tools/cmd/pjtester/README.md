@@ -28,7 +28,7 @@ Because the file `vpath/pjtester.yaml` is used by PJtester only to know the Prow
 
 ## Execution of any code without review?
 
-This was the main requirement for this tool. However, we did place some security in place. The `pre-master-test-infra-pjtester` Prowjob is running on the `trusted-workload` cluster, where it has everything it needs for succesful execution. Every Prowjob to test will be scheduled on the `untrusted-workload` cluster where no sensitive data exists. As for any other PR from a non-Kyma-org member, every test has to be triggered manually.
+This was the main requirement for this tool. However, we did put some security in place. The `pre-master-test-infra-pjtester` ProwJob is running on the `trusted-workload` cluster, where it has everything it needs for succesful execution. Every ProwJob to test will be scheduled on the `untrusted-workload` cluster where no sensitive data exists. As for any other PR from a non-Kyma-org member, every test has to be triggered manually.
 
 ## How to use it
 
