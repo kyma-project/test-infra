@@ -45,6 +45,6 @@ This is the PJtester flow:
 
 ## Things to remember
 
-If you need new Secrets on workload clusters, you need to ask the Neighbors team to create it for your tests.
+If you need new Secrets on workload clusters, ask the Neighbors team to create it for your tests.
 
 PJtester is not able to wait till your new images are build on a PR. That still requires an extra commit after the image is placed in the registry. We will think on how to solve that in [#2632](https://github.com/kyma-project/test-infra/issues/2632).
