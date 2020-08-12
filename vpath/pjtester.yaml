@@ -1,5 +1,6 @@
 pjNames:
   - pjName: "pre-master-kyma-gke-integration"
+    report: true
   #- pjName: "post-master-kyma-gke-integration"
   #  pjPath: "test-infra/prow/jobs/"
   #- pjName: "orphaned-az-storage-accounts-cleaner"
