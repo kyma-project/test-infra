@@ -77,7 +77,7 @@ gke_job_template: &gke_job_template
             value: "europe-west4-b"
         args:
           - "-l"
-          - "${KYMA_PROJECT_DIR}/kyma"
+          - "/home/prow/go/src/github.com/kyma-project/kyma"
         resources:
           requests:
             memory: 200Mi
