@@ -167,7 +167,7 @@ function installKyma() {
 
     shout "Downloading Kyma installer CR"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
-        --output installer-cr-gardener-azure.yaml.tpl
+        --output installer-cr-azure-eventhubs.yaml.tpl
 
     echo "Downlading production profile"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
@@ -181,15 +181,16 @@ function installKyma() {
     date
     # shellcheck disable=SC1090
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-    cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
 
     (
     set -x
     kyma install \
         --ci \
         --source "${LAST_RELEASE_VERSION}" \
+        -c installer-cr-azure-eventhubs.yaml.tpl \
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
+        -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         --timeout 90m
     )
 }

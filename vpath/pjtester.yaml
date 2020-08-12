@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-azure"
+    pjPath: "test-infra/prow/jobs/kyma/kyma-upgrade-gardener.yaml"
