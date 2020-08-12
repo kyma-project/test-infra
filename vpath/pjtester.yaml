@@ -1,0 +1,10 @@
+pjNames:
+  - pjName: "pre-master-kyma-gke-integration"
+  #- pjName: "post-master-kyma-gke-integration"
+  #  pjPath: "test-infra/prow/jobs/"
+  #- pjName: "orphaned-az-storage-accounts-cleaner"
+    #report: true
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 9228
