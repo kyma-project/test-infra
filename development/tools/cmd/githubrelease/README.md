@@ -5,7 +5,7 @@
 This command creates GitHub releases based on artifacts stored in a Google bucket. Each release requires the following set of artifacts:
 - `kyma-installer-cr-cluster.yaml`
 - `kyma-config-local.yaml`
-- `kyma-installer-cr.yaml`
+- `kyma-installer-cr-local.yaml`
 - `release-changelog.md`
 - `kyma-installer.yaml`
 
@@ -31,7 +31,7 @@ See the list of available flags:
 | **--bucketName**                 |    No    | The string value with the name of the Google bucket containing release artifacts. It defaults to `kyma-prow-artifacts`.
 | **--kymaInstallerCRCluster**     |    No    | The string value with the name of the file with list of components installed by the installer for cluster. It defaults to `kyma-installer-cr-cluster.yaml`.
 | **--kymaConfigLocal**            |    No    | The string value with the name of the Kyma local configuration file. It defaults to `kyma-config-local.yaml`.
-| **--kymaInstallerCRLocal**       |    No    | The string value with the name of the file with list of components installed by the installer for local. It defaults to `kyma-installer-cr.yaml`.
+| **--kymaInstallerCRLocal**       |    No    | The string value with the name of the file with list of components installed by the installer for local. It defaults to `kyma-installer-cr-local.yaml`.
 | **--kymaInstaller**              |    No    | The string value with the name of the file with list of CRDs and deployments required to be installed before the CR can be applied. It defaults to `kyma-installer.yaml`.
 | **--kymaChangelog**              |    No    | The string value with the name of the release changelog file. It defaults to `release-changelog.md`.
 | **--githubRepoOwner**            |   Yes    | The string value with the name of the GitHub repository owner.
