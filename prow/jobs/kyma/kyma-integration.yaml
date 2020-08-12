@@ -71,13 +71,13 @@ gke_job_template: &gke_job_template
         securityContext:
           privileged: true
         command:
-          - "bash"
+          - "ls"
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
         args:
-          - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+          - "-l"
+          - "${KYMA_PROJECT_DIR}/kyma"
         resources:
           requests:
             memory: 200Mi
