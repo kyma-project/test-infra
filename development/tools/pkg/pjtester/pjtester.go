@@ -360,7 +360,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
 	// Add prefix to prowjob to test name.
-	pj.Spec.Job = fmt.Sprintf("test_of_prowjob_%s", pj.Spec.Job)
+	pj.Spec.Job = fmt.Sprintf("%s_test_of_prowjob_%s", opt.pullAuthor, pj.Spec.Job)
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
