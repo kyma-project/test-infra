@@ -251,7 +251,6 @@ gke_job_labels_template: &gke_job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-cluster-use-ssd: "true"
-  preset-log-collector-slack-token: "true"
 
 gke_backup_job_labels_template: &gke_backup_job_labels_template
   preset-weekly-github-integration: "true"
@@ -468,6 +467,7 @@ postsubmits:
       branches:
         - ^master$
       labels:
+        preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_job_labels_template
       extra_refs:
