@@ -1,6 +1,6 @@
 # Prowjob tester
 
-Prowjob tester is a tool for testing changes to Prowjobs and scripts in the `test-infra` repository which are under development. It uses the production Prow instance to run chosen Prowjobs with code from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development is done within one PR.
+Prowjob tester is a tool for testing changes to ProwJobs and scripts in the `test-infra` repository which are under development. It uses the production Prow instance to run chosen ProwJobs with code from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development is done within one PR.
 
 ## How it works
 
