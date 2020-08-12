@@ -23,7 +23,9 @@ spec:
             - name: APP_CONFIG_LOCATION
               value: /config/config.yaml
             - name: APP_SLACK_TOKEN
-              value: {{ .Values.slackToken }}  
+              value: {{ .Values.slackToken }}
+            - name: APP_PROW_JOB_TYPE
+              value: {{ .Values.prowJobType }}    
           volumeMounts:
             - mountPath: /config
               name: config-volume

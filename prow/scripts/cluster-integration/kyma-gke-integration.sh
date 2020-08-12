@@ -127,9 +127,9 @@ runTestLogCollector(){
     if [[ "$BUILD_TYPE" == "master" ]]; then
         shout "Install test-log-collector"
         date
-
+        export PROW_JOB_TYPE="post-master-kyma-gke-integration"
         ( 
-            export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
+            export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN PROW_JOB_TYPE
             "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
         )    
     fi

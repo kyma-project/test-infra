@@ -36,6 +36,7 @@ import (
 type config struct {
 	SlackToken     string
 	ConfigLocation string
+	ProwJobType    string `envconfig:"default=not-specified"` // post-master-kyma-gke-integration etc
 }
 
 func Mainerr() error {
@@ -160,7 +161,7 @@ func Mainerr() error {
 	}
 
 	logf.Info("Uploading logs to appropriate slack thread")
-	if err := slackClient.UploadLogFiles(messages, newestCts.Name, newestCts.Status.CompletionTime.String(), string(platform)); err != nil {
+	if err := slackClient.UploadLogFiles(messages, conf.ProwJobType, newestCts.Name, newestCts.Status.CompletionTime.String(), string(platform)); err != nil {
 		return errors.Wrap(err, "while uploading files to slack thread")
 	}
 	return nil
