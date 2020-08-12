@@ -35,7 +35,7 @@ This was the main requirement for this tool. However, we did put some security i
 This is the PJtester flow:
 
 1. Create your feature branch with changes to scripts and/or Prowjobs.
-2. Create the `vpath/pjtester.yaml` file with the name of Prowjob to test.
+2. Create the `vpath/pjtester.yaml` file with the name of the ProwJob to test.
 3. Create a PR with your changes.
 4. Watch the result of the `test_of_prowjob_{TESTED_PROWJOB'S_NAME}` Prowjob.
 5. Push new commits to the PR.
