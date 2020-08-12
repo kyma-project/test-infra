@@ -1,0 +1,51 @@
+job_template: &job_template
+  skip_report: false
+  run_if_changed: "^orders-service/"
+  decorate: true
+  path_alias: github.com/kyma-project/examples
+  max_concurrency: 10
+  extra_refs:
+    - org: kyma-project
+      repo: test-infra
+      base_ref: master
+      path_alias: github.com/kyma-project/test-infra
+  spec:
+    containers:
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20200423-419b3021
+        securityContext:
+          privileged: true
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+        args:
+          - "/home/prow/go/src/github.com/kyma-project/examples/orders-service"
+        resources:
+          requests:
+            memory: 1.5Gi
+            cpu: 0.8
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-kyma: "true"
+
+presubmits: # runs on PRs
+  kyma-project/examples:
+    - name: pre-master-examples-orders-service
+      branches:
+        - ^master$
+      <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-pr: "true"
+
+postsubmits:
+  kyma-project/examples:
+    - name: post-master-examples-orders-service
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      <<: *job_template
+      labels:
+        <<: *job_labels_template
+        preset-build-master: "true"
