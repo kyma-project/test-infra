@@ -24,7 +24,7 @@ Data from `pjtester.yaml` and from the Prowjob environment variables is used to 
 
 Finally, PJtester will create the Prowjob on the production Prow instance. The Prowjob name for which you triggered the test will be prefixed with `test_of_prowjob_`.
 
-Because the file `vpath/pjtester.yaml` is used by PJtester only to know the prowjob name to test, it should not exist outside of the PR. This is why the `pre-master-test-infra-vpathgurad` required context was added. Its simple task is to fail whenever the `vpath` directory exists and prevent the PR merge. As soon as the virtual path disappears from the PR, vpathguard will allow for the PR merge.
+Because the file `vpath/pjtester.yaml` is used by PJtester only to know the ProwJob name to test, it should not exist outside of the PR. This is why the `pre-master-test-infra-vpathgurad` required context was added. Its simple task is to fail whenever the `vpath` directory exists and to prevent the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
 
 ## Execution of any code without review?
 
