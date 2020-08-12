@@ -165,9 +165,10 @@ func getPjCfg(pjCfg pjCfg, o options) options {
 
 // gatherOptions is building common options for all tests.
 // Options are build from PR env variables and prowjob config read from pjtester.yaml file.
-func gatherOptions(configPath string) options {
+func gatherOptions(configPath string, ghOptions prowflagutil.GitHubOptions) options {
 	var o options
 	var err error
+	o.github = ghOptions
 	// configPath is a location of prow config file to test. It was read from pjtester.yaml file or set to default.
 	o.configPath = fmt.Sprintf("%s/%s", os.Getenv("KYMA_PROJECT_DIR"), configPath)
 	// baseRef is a base branch name for github pull request under test.
@@ -359,7 +360,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
 	// Add prefix to prowjob to test name.
-	pj.Spec.Job = fmt.Sprintf("test_of_prowjob_%s", pj.Spec.Job)
+	pj.Spec.Job = fmt.Sprintf("%s_test_of_prowjob_%s", opt.pullAuthor, pj.Spec.Job)
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
@@ -371,7 +372,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 }
 
 // SchedulePJ will generate prowjob for testing and schedule it on prow for execution.
-func SchedulePJ() {
+func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(logrus.InfoLevel)
 	var err error
@@ -379,7 +380,7 @@ func SchedulePJ() {
 		logrus.WithError(err).Fatalf("Required environment variable not set.")
 	}
 	testCfg := readTestCfg(testCfgFile)
-	o := gatherOptions(testCfg.ConfigPath).withGithubClientOptions()
+	o := gatherOptions(testCfg.ConfigPath, ghOptions)
 	prowClient := newProwK8sClientset()
 	pjsClient := prowClient.ProwV1()
 	var secretAgent *secret.Agent

@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+	prowflagutil "k8s.io/test-infra/prow/flagutil"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/github/fakegithub"
 )
@@ -21,6 +22,7 @@ var (
 	otherPrSHA    string
 	otherPrOrg    string
 	otherPrRepo   string
+	ghOptions     *prowflagutil.GitHubOptions
 )
 
 func TestMain(m *testing.M) {
@@ -44,7 +46,7 @@ func TestMain(m *testing.M) {
 	os.Setenv("JOB_SPEC", fmt.Sprintf("{\"type\":\"presubmit\",\"job\":\"job-name\",\"buildid\":\"0\",\"prowjobid\":\"uuid\",\"refs\":{\"org\":\"org-name\",\"repo\":\"repo-name\",\"base_ref\":\"base-ref\",\"base_sha\":\"base-sha\",\"pulls\":[{\"number\":1,\"author\":\"%s\",\"sha\":\"pull-sha\"}]}}", prAuthor))
 	prNumber, _ = strconv.Atoi(os.Getenv("PULL_NUMBER"))
 	testCfgFile = fmt.Sprintf("%s/test-infra/development/tools/pkg/pjtester/test_artifacts/pjtester.yaml", os.Getenv("KYMA_PROJECT_DIR"))
-
+	ghOptions = prowflagutil.NewGitHubOptions()
 	os.Exit(m.Run())
 }
 
@@ -69,7 +71,7 @@ func TestReadTestCfg(t *testing.T) {
 
 func TestNewTestPJ(t *testing.T) {
 	testCfg := readTestCfg(testCfgFile)
-	o := gatherOptions(testCfg.ConfigPath)
+	o := gatherOptions(testCfg.ConfigPath, *ghOptions)
 	fakeGitHubClient := &fakegithub.FakeClient{}
 	fakeGitHubClient.PullRequests = map[int]*github.PullRequest{otherPrNumber: {
 		User: github.User{Login: otherPrAuthor},
@@ -84,7 +86,7 @@ func TestNewTestPJ(t *testing.T) {
 		fmt.Printf("Testing with values\n\tPjName: %s\n\tPjPath: %s\n", pjCfg.PjName, pjCfg.PjPath)
 		pj := newTestPJ(pjCfg, o)
 		assert.Equalf(t, "untrusted-workload", pj.Spec.Cluster, "Prowjob cluster name is not : trusted-workload")
-		assert.Regexpf(t, "^test_of_prowjob_.*", pj.Spec.Job, "Prowjob name doesn't start with : test_of_prowjob_")
+		assert.Regexpf(t, "^testAuthor_test_of_prowjob_.*", pj.Spec.Job, "Prowjob name doesn't start with : test_of_prowjob_")
 		if pj.Spec.Type == "periodic" {
 			assert.Containsf(t, pj.Spec.ExtraRefs, prowapi.Refs{
 				Org:     os.Getenv("REPO_OWNER"),
