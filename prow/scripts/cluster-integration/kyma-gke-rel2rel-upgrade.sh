@@ -344,7 +344,7 @@ createTestResources() {
         --create-namespace \
         "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS}
+        --wait "${HELM_ARGS}"
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
@@ -414,7 +414,7 @@ testKyma() {
     date
 
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" "${HELM_ARGS}"
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "

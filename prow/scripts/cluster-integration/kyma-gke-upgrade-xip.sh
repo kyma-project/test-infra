@@ -362,7 +362,7 @@ function testKyma() {
     date
 
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" "${HELM_ARGS}"
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "

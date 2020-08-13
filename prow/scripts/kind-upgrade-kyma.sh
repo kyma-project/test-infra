@@ -223,7 +223,7 @@ function create_test_resources {
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS}
+        --wait "${HELM_ARGS}"
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
