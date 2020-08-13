@@ -303,8 +303,8 @@ function applyControlPlaneOverrides() {
     --label "component=kcp"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 3h
-    export KYMA_TEST_TIMEOUT=3h
+    # Change timeout for kyma test to 5h
+    export KYMA_TEST_TIMEOUT=5h
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
