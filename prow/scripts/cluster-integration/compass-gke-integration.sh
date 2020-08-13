@@ -368,10 +368,15 @@ shout "Install Kyma"
 date
 installKyma
 
+# tiller is only needed for compass
+shout "Install tiller"
+date
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+"${COMPASS_SCRIPTS_DIR}"/install-tiller.sh
+
 shout "Install Compass"
 date
 installCompass
-
 
 shout "Test Kyma with Compass"
 date
