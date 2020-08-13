@@ -65,14 +65,6 @@ function kyma::update_hosts {
     echo "127.0.0.1 ${hosts}" | tee -a /etc/hosts > /dev/null
 }
 
-# kyma::install_tiller install Tiller in the cluster
-#
-# Arguments:
-#   $1 - Path to the Kyma sources
-function kyma::install_tiller {
-    "${1}/installation/scripts/install-tiller.sh"
-}
-
 # kyma::get_last_release_version returns latest Kyma release version
 #
 # Arguments:

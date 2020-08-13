@@ -249,11 +249,6 @@ createCluster() {
 installKyma() {
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 
-    shout "Install Tiller from version ${SOURCE_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/original-tiller.yaml
-    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
-
     shout "Apply Kyma config"
     date
     kubectl create namespace "kyma-installer"
@@ -383,13 +378,6 @@ upgradeKyma() {
 
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
-
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-    
-    shout "Wait untill tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
     
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
