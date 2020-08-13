@@ -214,19 +214,10 @@ function tune_inotify {
     sysctl -w fs.inotify.max_user_instances=512
 }
 
-function get_helm_certs {
-    log::info "Downloading Helm certificates from cluster"
-    "${SCRIPT_DIR}/cluster-integration/helpers/get-helm-certs.sh"
-}
-
 function create_test_resources {
     log::info "Create e2e upgrade test resources"
 
     injectTestingAddons
-
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
 
     helm install "${UPGRADE_TEST_PATH}" \
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
@@ -350,10 +341,6 @@ function main {
     else
         junit::test_skip
     fi
-
-    junit::test_start "Download_Helm_Certs"
-    get_helm_certs 2>&1 | junit::test_output
-    junit::test_pass
 
     junit::test_start "Create_Test_Resources"
     create_test_resources 2>&1 | junit::test_output

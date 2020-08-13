@@ -222,8 +222,6 @@ shout "Installation triggered"
 date
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
-
 shout "Test Kyma"
 date
 "${KYMA_SCRIPTS_DIR}"/testing.sh
