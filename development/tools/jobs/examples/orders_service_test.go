@@ -30,7 +30,7 @@ func TestOrdersServiceJobsPresubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildPr)
 	assert.Equal(t, "^orders-service/", actualPresubmit.RunIfChanged)
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20200423-419b3021", actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20200423-419b3021", actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/orders-service"}, actualPresubmit.Spec.Containers[0].Args)
 }
@@ -56,7 +56,7 @@ func TestOrdersServiceJobPostsubmit(t *testing.T) {
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
 	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoKyma, preset.GcrPush, preset.BuildMaster)
 	assert.Equal(t, "^orders-service/", actualPost.RunIfChanged)
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20200423-419b3021", actualPost.Spec.Containers[0].Image)
+	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20200423-419b3021", actualPost.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/examples/orders-service"}, actualPost.Spec.Containers[0].Args)
 }
