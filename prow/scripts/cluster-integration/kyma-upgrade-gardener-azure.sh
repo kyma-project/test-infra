@@ -27,9 +27,7 @@ VARIABLES=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    RS_GROUP
     REGION
-    EVENTHUB_NAMESPACE_NAME
     AZURE_SUBSCRIPTION_ID
     AZURE_SUBSCRIPTION_APP_ID
     AZURE_SUBSCRIPTION_SECRET
@@ -49,9 +47,7 @@ fi
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
-export RS_GROUP \
-    EVENTHUB_NAMESPACE_NAME \
-    REGION \
+export REGION \
     AZURE_SUBSCRIPTION_ID \
     AZURE_SUBSCRIPTION_APP_ID \
     AZURE_SUBSCRIPTION_SECRET \
@@ -83,6 +79,11 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+RS_GROUP="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
+EVENTHUB_NAMESPACE_NAME="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
+export RS_GROUP \
+    EVENTHUB_NAMESPACE_NAME
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
