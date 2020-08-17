@@ -132,6 +132,7 @@ runTestLogCollector(){
             date
             export PROW_JOB_TYPE="post-master-kyma-gke-integration"
             ( 
+                # shellcheck disable=SC2030
                 export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN PROW_JOB_TYPE
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
             )    
@@ -143,6 +144,7 @@ trap "runTestLogCollector; cleanup" EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
+    # shellcheck disable=SC2031
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
@@ -316,6 +318,7 @@ enableTestLogCollector=true
 
 shout "Test Kyma"
 date
+# shellcheck disable=SC2031
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 shout "Success"
