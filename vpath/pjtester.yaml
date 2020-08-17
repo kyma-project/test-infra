@@ -1,0 +1,10 @@
+pjNames:
+  # presubmit
+  - pjName: "pre-kyma-tests-integration-istio-injection"
+    report: true
+  # postsubmit
+  - pjName: "post-kyma-tests-integration-istio-injection"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 6785

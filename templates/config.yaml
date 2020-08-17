@@ -485,6 +485,11 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/api-gateway
           since: "1.7"
+      - to: ../prow/jobs/kyma/tests/integration/istio-injection/istio-injection-tests-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tests/integration/istio-injection
+          since: "1.15"
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *kyma_generic_component
