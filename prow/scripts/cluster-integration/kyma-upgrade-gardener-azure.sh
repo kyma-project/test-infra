@@ -180,6 +180,10 @@ function installKyma() {
 
     shout "Generate Azure Event Hubs overrides"
     date
+
+    # create-azure-event-hubs-secret.sh creates an override secret file, eventhubs-secret-overrides.yaml for Azure EventHub in current working directory.
+    # The override is later used in the Kyma installation to configure the kafka-knative channel.
+
     # shellcheck disable=SC1090
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 
