@@ -22,7 +22,7 @@ global:
       language: "golang-mod"
       project: "kyma-project"
     - name: "helm-broker"
-      language: "golang"
+      language: "golang-mod"
       project: "kyma-project"
     - name: "rafter"
       language: "golang-mod"
