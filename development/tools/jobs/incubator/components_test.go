@@ -4,7 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -95,7 +94,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release112),
+			jobsuite.AllReleases(),
 		},
 	},
 }

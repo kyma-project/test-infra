@@ -274,6 +274,16 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-integration
+      branches:
+        - release-1.15
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.15
     - name: pre-rel114-kyma-integration
       branches:
         - release-1.14
@@ -294,16 +304,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-integration
-      branches:
-        - release-1.12
-      always_run: false
-      <<: *vm_job_template
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
     - name: pre-master-kyma-gke-integration
       branches:
@@ -317,6 +317,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-integration
+      branches:
+        - release-1.15
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.15
     - name: pre-rel114-kyma-gke-integration
       branches:
         - release-1.14
@@ -343,19 +356,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-integration
-      branches:
-        - release-1.12
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.12
 
     - name: pre-master-kyma-gke-upgrade-for-debug
       branches:
@@ -383,6 +383,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-upgrade
+      branches:
+        - release-1.15
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.15
     - name: pre-rel114-kyma-gke-upgrade
       branches:
         - release-1.14
@@ -405,17 +416,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-upgrade
-      branches:
-        - release-1.12
-      <<: *gke_upgrade_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
     - name: pre-master-kyma-gke-central-connector
       branches:
@@ -429,6 +429,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-central-connector
+      branches:
+        - release-1.15
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.15
     - name: pre-rel114-kyma-gke-central-connector
       branches:
         - release-1.14
@@ -451,17 +462,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-central-connector
-      branches:
-        - release-1.12
-      <<: *gke_central_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
 postsubmits:
   kyma-project/kyma:
