@@ -130,10 +130,8 @@ runTestLogCollector(){
         if [[ "$BUILD_TYPE" == "master" ]]; then
             shout "Install test-log-collector"
             date
-            export PROW_JOB_TYPE="post-master-kyma-gke-integration"
+            export PROW_JOB_NAME="post-master-kyma-gke-integration"
             ( 
-                # shellcheck disable=SC2030
-                export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN PROW_JOB_TYPE
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
             )    
         fi    
@@ -314,7 +312,7 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
-enableTestLogCollector=true
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 shout "Test Kyma"
 date

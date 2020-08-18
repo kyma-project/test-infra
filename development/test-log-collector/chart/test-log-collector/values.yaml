@@ -6,7 +6,7 @@ image:
 serviceAccountName: ""
 
 slackToken: ""
-prowJobType: ""
+prowJobName: ""
 
 nameOverride: ""
 fullnameOverride: ""

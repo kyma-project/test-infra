@@ -5,7 +5,7 @@ set -o errexit
 VARIABLES=(
     TEST_INFRA_SOURCES_DIR
     LOG_COLLECTOR_SLACK_TOKEN
-    PROW_JOB_TYPE
+    PROW_JOB_NAME
 )
 
 discoverUnsetVar=false
@@ -26,7 +26,7 @@ function installTestLogColletor() {
     # technically `go run` would suffice here, maybe it would be quicker
 
     helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
-    --set prowJobType="${PROW_JOB_TYPE}" \
+    --set prowJobName="${PROW_JOB_NAME}" \
     "${TLC_DIR}/chart/test-log-collector" \
     --namespace=kyma-system \
     --wait \
