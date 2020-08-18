@@ -349,7 +349,7 @@ function installKyma() {
   kubectl create namespace "kyma-installer"
   applyCommonOverrides "kyma-installer"
   applyKymaOverrides
-  
+
   TMP_DIR="/tmp/kcp-gke-integration"
 
   gsutil cp "${KCP_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
@@ -437,11 +437,6 @@ shout "Create new cluster"
 date
 createCluster
 
-shout "Install tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KCP_SCRIPTS_DIR}"/install-tiller.sh
-
 shout "Generate self-signed certificate"
 date
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
@@ -452,10 +447,15 @@ shout "Install Kyma"
 date
 installKyma
 
+# tiller is only needed for compass
+shout "Install tiller"
+date
+kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+"${KCP_SCRIPTS_DIR}"/install-tiller.sh
+
 shout "Install Compass"
 date
 installCompass
-
 
 shout "Install Control Plane"
 date

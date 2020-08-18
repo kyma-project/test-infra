@@ -328,9 +328,6 @@ function upgradeKyma() {
 
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
-
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
 

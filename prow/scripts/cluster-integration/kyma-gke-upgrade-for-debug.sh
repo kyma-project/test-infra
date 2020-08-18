@@ -249,11 +249,6 @@ function installKyma() {
         exit 1
     fi
 
-    shout "Install Tiller from version ${LAST_RELEASE_VERSION}"
-    date
-    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/tiller.yaml"
-    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
-
     shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
     date
     kubectl create namespace "kyma-installer"
@@ -412,13 +407,6 @@ function upgradeKyma() {
     if [[ "$BUILD_TYPE" == "release" ]]; then
         echo "Use released artifacts"
         gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/tiller.yaml" /tmp/kyma-gke-upgradeability/new-tiller.yaml
-
-        shout "Update tiller"
-        kubectl apply -f /tmp/kyma-gke-upgradeability/new-tiller.yaml
-        
-        shout "Wait untill tiller is correctly rolled out"
-        kubectl -n kube-system rollout status deployment/tiller-deploy
 
         shout "Update kyma installer"
         kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
@@ -434,12 +422,6 @@ function upgradeKyma() {
         KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
         INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
         INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
-        shout "Update tiller"
-        kubectl apply -f "${KYMA_RESOURCES_DIR}/tiller.yaml"
-
-        shout "Wait untill tiller is correctly rolled out"
-        kubectl -n kube-system rollout status deployment/tiller-deploy
 
         shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
         "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
@@ -499,8 +481,6 @@ createNetwork
 createCluster
 
 installKyma
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 createTestResources
 

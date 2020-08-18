@@ -214,25 +214,16 @@ function tune_inotify {
     sysctl -w fs.inotify.max_user_instances=512
 }
 
-function get_helm_certs {
-    log::info "Downloading Helm certificates from cluster"
-    "${SCRIPT_DIR}/cluster-integration/helpers/get-helm-certs.sh"
-}
-
 function create_test_resources {
     log::info "Create e2e upgrade test resources"
 
     injectTestingAddons
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
     helm install "${UPGRADE_TEST_PATH}" \
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS}
+        --wait "${HELM_ARGS}"
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
@@ -327,12 +318,6 @@ function main {
     log::info "Latest Kyma release is ${latest_release}" 2>&1 | junit::test_output
     junit::test_pass
 
-    junit::test_start "Install_Tiller_From_Release"
-    log::info "Installing Tiller from version ${latest_release}" 2>&1 | junit::test_output
-    kubectl apply -f "https://raw.githubusercontent.com/kyma-project/kyma/${latest_release}/installation/resources/tiller.yaml" 2>&1 | junit::test_output
-    kubernetes::is_pod_ready "${KYMA_SOURCES}" kube-system name tiller 2>&1 | junit::test_output
-    junit::test_pass
-
     junit::test_start "Load_Kyma_Configuration_From_Release"
     log::info "Downloading Kyma Configuration from version ${latest_release}" 2>&1 | junit::test_output
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${latest_release}/installation/resources/installer-config-kind.yaml.tpl" --output "${TMP_DIR}/installer-config-kind.yaml.tpl" 2>&1 | junit::test_output
@@ -357,10 +342,6 @@ function main {
         junit::test_skip
     fi
 
-    junit::test_start "Download_Helm_Certs"
-    get_helm_certs 2>&1 | junit::test_output
-    junit::test_pass
-
     junit::test_start "Create_Test_Resources"
     create_test_resources 2>&1 | junit::test_output
     junit::test_pass
@@ -381,11 +362,6 @@ function main {
     junit::test_start "Load_Kyma_Installer"
     log::info "Loading Kyma Installer to cluster" 2>&1 | junit::test_output
     kind::load_image "${CLUSTER_NAME}" "${KYMA_INSTALLER_NAME}" 2>&1 | junit::test_output
-    junit::test_pass
-
-    junit::test_start "Update_Tiller"
-    log::info "Updating Tiller" 2>&1 | junit::test_output
-    kubectl apply -f "${KYMA_SOURCES}/installation/resources/tiller.yaml" 2>&1 | junit::test_output
     junit::test_pass
 
     junit::test_start "Load_Kyma_Configuration"
