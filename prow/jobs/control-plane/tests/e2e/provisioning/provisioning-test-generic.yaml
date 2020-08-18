@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.14)-provisioning$
+    - ^release-(1\.15|1\.14)-provisioning$
   run_if_changed: "^tests/e2e/provisioning/|^scripts/"
   spec:
     containers:

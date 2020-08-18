@@ -57,6 +57,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-external-registry
+      branches:
+        - release-1.15
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.15
 
 # postsubmits:
 #   kyma-project/kyma:
