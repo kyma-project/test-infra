@@ -22,8 +22,6 @@ fi
 
 function installTestLogColletor() {
     TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
-    
-    # technically `go run` would suffice here, maybe it would be quicker
 
     helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
     --set prowJobName="${PROW_JOB_NAME}" \
