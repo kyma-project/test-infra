@@ -940,6 +940,9 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         values:
+          cluster:
+            presubmit: untrusted-workload
+            postsubmit: trusted-workload
           repository: github.com/kyma-project/test-infra
           path: watch-pods
           presets:
