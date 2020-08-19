@@ -48,11 +48,11 @@ const (
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaIntegrationK14 represents kyma integration image with kubectl 1.14
-	ImageKymaIntegrationK14 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.14"
+	ImageKymaIntegrationK14 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.14"
 	// ImageKymaIntegrationK15 represents kyma integration image with kubectl 1.15
-	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.15"
+	ImageKymaIntegrationK15 = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.15"
 	// ImageKymaIntegrationLatest represents kyma integration image with kubectl 1.16
-	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.16"
+	ImageKymaIntegrationLatest = "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.16"
 	// ImageBootstrapHelm20181121 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20181121 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap-helm:v20181121-f2f12bc"
 	// ImageBootstrapHelm20191227 represents verion of bootstrap-helm image
