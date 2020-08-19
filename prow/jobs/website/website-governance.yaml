@@ -1,6 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-master-website-governance
+      cluster: untrusted-workload
       decorate: true
       max_concurrency: 10
       branches:
@@ -8,7 +9,6 @@ presubmits: # runs on PRs
       labels:
         preset-dind-enabled: "true"
         preset-build-pr: "true"
-      cluster: untrusted-workload
       run_if_changed: "milv.config.yaml|.md$"
       path_alias: github.com/kyma-project/website
       extra_refs:
@@ -33,13 +33,13 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: website-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true
   cron: "0 6 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
   labels:
     preset-dind-enabled: "true"
-  cluster: untrusted-workload
   extra_refs:
     - org: kyma-project
       repo: test-infra

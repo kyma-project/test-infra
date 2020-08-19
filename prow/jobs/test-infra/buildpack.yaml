@@ -28,15 +28,6 @@ bootstrap_job_template: &bootstrap_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-bootstrap_job_template_trusted: &bootstrap_job_template_trusted
-  <<: *bootstrap_job_template
-  cluster: trusted-workload
-  
-
-bootstrap_job_template_untrusted: &bootstrap_job_template_untrusted
-  <<: *bootstrap_job_template
-  cluster: untrusted-workload
-
 bootstrap_helm_template: &bootstrap_helm_template
   run_if_changed: "^prow/images/bootstrap-helm/"
   <<: *common_job_template
@@ -53,14 +44,6 @@ bootstrap_helm_template: &bootstrap_helm_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-bootstrap_helm_template_trusted: &bootstrap_helm_template_trusted
-  <<: *bootstrap_helm_template
-  cluster: trusted-workload
-
-bootstrap_helm_template_untrusted: &bootstrap_helm_template_untrusted
-  <<: *bootstrap_helm_template
-  cluster: untrusted-workload
 
 kyma_cluster_infra: &kyma_cluster_infra
   run_if_changed: "^prow/images/kyma-cluster-infra/"
@@ -79,14 +62,6 @@ kyma_cluster_infra: &kyma_cluster_infra
           memory: 1.5Gi
           cpu: 0.8
 
-kyma_cluster_infra_trusted: &kyma_cluster_infra_trusted
-  <<: *kyma_cluster_infra
-  cluster: trusted-workload
-
-kyma_cluster_infra_untrusted: &kyma_cluster_infra_untrusted
-  <<: *kyma_cluster_infra
-  cluster: untrusted-workload
-
 kyma_integration: &kyma_integration
   run_if_changed: "^prow/images/kyma-integration/"
   <<: *common_job_template
@@ -103,14 +78,6 @@ kyma_integration: &kyma_integration
         requests:
           memory: 1.5Gi
           cpu: 0.8
-
-kyma_integration_trusted: &kyma_integration_trusted
-  <<: *kyma_integration
-  cluster: trusted-workload
-
-kyma_integration_untrusted: &kyma_integration_untrusted
-  <<: *kyma_integration
-  cluster: untrusted-workload
 
 buildpack_golang_job_template: &buildpack_golang_job_template
   run_if_changed: "^prow/images/buildpack-golang/"
@@ -129,14 +96,6 @@ buildpack_golang_job_template: &buildpack_golang_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-buildpack_golang_job_template_trusted: &buildpack_golang_job_template_trusted
-  <<: *buildpack_golang_job_template
-  cluster: trusted-workload
-
-buildpack_golang_job_template_untrusted: &buildpack_golang_job_template_untrusted
-  <<: *buildpack_golang_job_template
-  cluster: untrusted-workload
-
 buildpack_golang_toolbox_job_template: &buildpack_golang_toolbox_job_template
   run_if_changed: "^prow/images/buildpack-golang-toolbox/"
   <<: *common_job_template
@@ -153,14 +112,6 @@ buildpack_golang_toolbox_job_template: &buildpack_golang_toolbox_job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-buildpack_golang_toolbox_job_template_trusted: &buildpack_golang_toolbox_job_template_trusted
-  <<: *buildpack_golang_toolbox_job_template
-  cluster: trusted-workload
-
-buildpack_golang_toolbox_job_template_untrusted: &buildpack_golang_toolbox_job_template_untrusted
-  <<: *buildpack_golang_toolbox_job_template
-  cluster: untrusted-workload
 
 buildpack_golang_kubebuilder_job_template: &buildpack_golang_kubebuilder_job_template
   run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
@@ -179,14 +130,6 @@ buildpack_golang_kubebuilder_job_template: &buildpack_golang_kubebuilder_job_tem
             memory: 1.5Gi
             cpu: 0.8
 
-buildpack_golang_kubebuilder_job_template_trusted: &buildpack_golang_kubebuilder_job_template_trusted
-  <<: *buildpack_golang_kubebuilder_job_template
-  cluster: trusted-workload
-
-buildpack_golang_kubebuilder_job_template_untrusted: &buildpack_golang_kubebuilder_job_template_untrusted
-  <<: *buildpack_golang_kubebuilder_job_template
-  cluster: untrusted-workload
-
 buildpack_golang_kubebuilder2_job_template: &buildpack_golang_kubebuilder2_job_template
   run_if_changed: "^prow/images/buildpack-golang-kubebuilder2/"
   <<: *common_job_template
@@ -203,14 +146,6 @@ buildpack_golang_kubebuilder2_job_template: &buildpack_golang_kubebuilder2_job_t
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-buildpack_golang_kubebuilder2_job_template_trusted: &buildpack_golang_kubebuilder2_job_template_trusted
-  <<: *buildpack_golang_kubebuilder2_job_template
-  cluster: trusted-workload
-
-buildpack_golang_kubebuilder2_job_template_untrusted: &buildpack_golang_kubebuilder2_job_template_untrusted
-  <<: *buildpack_golang_kubebuilder2_job_template
-  cluster: untrusted-workload
 
 buildpack_node_job_template: &buildpack_node_job_template
   run_if_changed: "^prow/images/buildpack-node/"
@@ -229,14 +164,6 @@ buildpack_node_job_template: &buildpack_node_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-buildpack_node_job_template_trusted: &buildpack_node_job_template_trusted
-  <<: *buildpack_node_job_template
-  cluster: trusted-workload
-
-buildpack_node_job_template_untrusted: &buildpack_node_job_template_untrusted
-  <<: *buildpack_node_job_template
-  cluster: untrusted-workload
-
 buildpack_node_chromium_job_template: &buildpack_node_chromium_job_template
   run_if_changed: "^prow/images/buildpack-node-chromium/"
   <<: *common_job_template
@@ -253,14 +180,6 @@ buildpack_node_chromium_job_template: &buildpack_node_chromium_job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-buildpack_node_chromium_job_template_trusted: &buildpack_node_chromium_job_template_trusted
-  <<: *buildpack_node_chromium_job_template
-  cluster: trusted-workload
-
-buildpack_node_chromium_job_template_untrusted: &buildpack_node_chromium_job_template_untrusted
-  <<: *buildpack_node_chromium_job_template
-  cluster: untrusted-workload
 
 buildpack_java_job_template: &buildpack_java_job_template
   run_if_changed: "^prow/images/buildpack-java/"
@@ -279,14 +198,6 @@ buildpack_java_job_template: &buildpack_java_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-buildpack_java_job_template_trusted: &buildpack_java_job_template_trusted
-  <<: *buildpack_java_job_template
-  cluster: trusted-workload
-
-buildpack_java_job_template_untrusted: &buildpack_java_job_template_untrusted
-  <<: *buildpack_java_job_template
-  cluster: untrusted-workload
-
 buildpack_java_node_job_template: &buildpack_java_node_job_template
   run_if_changed: "^prow/images/buildpack-java-node/"
   <<: *common_job_template
@@ -303,14 +214,6 @@ buildpack_java_node_job_template: &buildpack_java_node_job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-buildpack_java_node_job_template_trusted: &buildpack_java_node_job_template_trusted
-  <<: *buildpack_java_node_job_template
-  cluster: trusted-workload
-
-buildpack_java_node_job_template_untrusted: &buildpack_java_node_job_template_untrusted
-  <<: *buildpack_java_node_job_template
-  cluster: untrusted-workload
 
 cleaner_job_template: &cleaner_job_template
   run_if_changed: "^prow/images/cleaner/"
@@ -329,14 +232,6 @@ cleaner_job_template: &cleaner_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-cleaner_job_template_trusted: &cleaner_job_template_trusted
-  <<: *cleaner_job_template
-  cluster: trusted-workload
-
-cleaner_job_template_untrusted: &cleaner_job_template_untrusted
-  <<: *cleaner_job_template
-  cluster: untrusted-workload
-
 vulnerability_scanner_job_template: &vulnerability_scanner_job_template
   run_if_changed: "^prow/images/vulnerability-scanner/"
   <<: *common_job_template
@@ -353,14 +248,6 @@ vulnerability_scanner_job_template: &vulnerability_scanner_job_template
         requests:
           memory: 1.5Gi
           cpu: 0.8
-
-vulnerability_scanner_job_template_trusted: &vulnerability_scanner_job_template_trusted
-  <<: *vulnerability_scanner_job_template
-  cluster: trusted-workload
-
-vulnerability_scanner_job_template_untrusted: &vulnerability_scanner_job_template_untrusted
-  <<: *vulnerability_scanner_job_template
-  cluster: untrusted-workload
 
 whitesource_scanner_job_template: &whitesource_scanner_job_template
   run_if_changed: "^prow/images/whitesource-scanner/"
@@ -379,14 +266,6 @@ whitesource_scanner_job_template: &whitesource_scanner_job_template
             memory: 1.5Gi
             cpu: 0.8
 
-whitesource_scanner_job_template_trusted: &whitesource_scanner_job_template_trusted
-  <<: *whitesource_scanner_job_template
-  cluster: trusted-workload
-
-whitesource_scanner_job_template_untrusted: &whitesource_scanner_job_template_untrusted
-  <<: *whitesource_scanner_job_template
-  cluster: untrusted-workload
-
 kubectl_job_template: &kubectl_job_template
   run_if_changed: "^prow/images/alpine-kubectl/"
   <<: *common_job_template
@@ -403,14 +282,6 @@ kubectl_job_template: &kubectl_job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-kubectl_job_template_trusted: &kubectl_job_template_trusted
-  <<: *kubectl_job_template
-  cluster: trusted-workload
-
-kubectl_job_template_untrusted: &kubectl_job_template_untrusted
-  <<: *kubectl_job_template
-  cluster: untrusted-workload
 
 probot_stale_job_template: &probot_stale_job_template
   run_if_changed: "^prow/images/probot-stale/"
@@ -429,14 +300,6 @@ probot_stale_job_template: &probot_stale_job_template
           memory: 1.5Gi
           cpu: 0.8
 
-probot_stale_job_template_trusted: &probot_stale_job_template_trusted
-  <<: *probot_stale_job_template
-  cluster: trusted-workload
-
-probot_stale_job_template_untrusted: &probot_stale_job_template_untrusted
-  <<: *probot_stale_job_template
-  cluster: untrusted-workload
-
 prow_tools_job_template: &prow_tools_job_template
   run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
   <<: *common_job_template
@@ -453,14 +316,6 @@ prow_tools_job_template: &prow_tools_job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
-
-prow_tools_job_template_trusted: &prow_tools_job_template_trusted
-  <<: *prow_tools_job_template
-  cluster: trusted-workload
-
-prow_tools_job_template_untrusted: &prow_tools_job_template_untrusted
-  <<: *prow_tools_job_template
-  cluster: untrusted-workload
 
 prow_clonerefs_job_template: &prow_clonerefs_job_template
   run_if_changed: "^prow/images/clonerefs/"
@@ -479,14 +334,6 @@ prow_clonerefs_job_template: &prow_clonerefs_job_template
           memory: 1.5Gi
           cpu: 0.8
 
-prow_clonerefs_job_template_trusted: &prow_clonerefs_job_template_trusted
-  <<: *prow_clonerefs_job_template
-  cluster: trusted-workload
-
-prow_clonerefs_job_template_untrusted: &prow_clonerefs_job_template_untrusted
-  <<: *prow_clonerefs_job_template
-  cluster: untrusted-workload
-
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-bootstrap
@@ -494,96 +341,115 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-bootstrap-helm
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_helm_template
+      cluster: untrusted-workload
     - name: pre-test-infra-kyma-cluster-infra
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
+      cluster: untrusted-workload
     - name: pre-test-infra-kyma-integration
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kyma_integration
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang-toolbox
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_toolbox_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang-kubebuilder
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang-kubebuilder2
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder2_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-node-chromium
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_node_chromium_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-java
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-java-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_java_node_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-cleaner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *cleaner_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-vulnerability-scanner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *vulnerability_scanner_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-whitesource-scanner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *whitesource_scanner_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-kubectl
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-prow-clonerefs
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *prow_clonerefs_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-prow-tools
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-probot-stale
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *probot_stale_job_template
+      cluster: untrusted-workload
 
 
 postsubmits: # runs on master
@@ -595,6 +461,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
+      cluster: trusted-workload
     - name: post-test-infra-bootstrap-helm
       annotations:
         testgrid-create-test-group: "false"
@@ -602,6 +469,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_helm_template
+      cluster: trusted-workload
     - name: post-test-infra-kyma-cluster-infra
       annotations:
         testgrid-create-test-group: "false"
@@ -609,6 +477,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
+      cluster: trusted-workload
     - name: post-test-infra-kyma-integration
       annotations:
         testgrid-create-test-group: "false"
@@ -616,6 +485,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_integration
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang
       annotations:
         testgrid-create-test-group: "false"
@@ -623,6 +493,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang-toolbox
       annotations:
         testgrid-create-test-group: "false"
@@ -630,6 +501,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_toolbox_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang-kubebuilder
       annotations:
         testgrid-create-test-group: "false"
@@ -637,6 +509,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang-kubebuilder2
       annotations:
         testgrid-create-test-group: "false"
@@ -644,6 +517,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder2_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-node
       annotations:
         testgrid-create-test-group: "false"
@@ -651,6 +525,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-node-chromium
       annotations:
         testgrid-create-test-group: "false"
@@ -658,6 +533,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_chromium_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-java
       annotations:
         testgrid-create-test-group: "false"
@@ -665,6 +541,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-java-node
       annotations:
         testgrid-create-test-group: "false"
@@ -672,6 +549,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_node_job_template
+      cluster: trusted-workload
     - name: post-test-infra-cleaner
       annotations:
         testgrid-create-test-group: "false"
@@ -679,6 +557,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *cleaner_job_template
+      cluster: trusted-workload
     - name: post-test-infra-vulnerability-scanner
       annotations:
         testgrid-create-test-group: "false"
@@ -686,6 +565,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *vulnerability_scanner_job_template
+      cluster: trusted-workload
     - name: post-test-infra-whitesource-scanner
       annotations:
         testgrid-create-test-group: "false"
@@ -693,6 +573,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *whitesource_scanner_job_template
+      cluster: trusted-workload
     - name: post-test-infra-kubectl
       annotations:
         testgrid-create-test-group: "false"
@@ -700,6 +581,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
+      cluster: trusted-workload
     - name: post-test-infra-prow-clonerefs
       annotations:
         testgrid-create-test-group: "false"
@@ -707,6 +589,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_clonerefs_job_template
+      cluster: trusted-workload
     - name: post-test-infra-prow-tools
       annotations:
         testgrid-create-test-group: "false"
@@ -714,6 +597,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+      cluster: trusted-workload
     - name: post-test-infra-probot-stale
       annotations:
         testgrid-create-test-group: "false"
@@ -721,3 +605,4 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *probot_stale_job_template
+      cluster: trusted-workload
