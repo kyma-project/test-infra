@@ -11,7 +11,7 @@ kyma_ref: &kyma_ref
   path_alias: github.com/kyma-project/kyma
 
 base_image_116: &base_image_116
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.16
 
 gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-gardener-azure-kyma-integration: "true"
@@ -35,12 +35,8 @@ gardener_azure_job_template: &gardener_azure_job_template
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-azure.sh"
         env:
-          - name: RS_GROUP
-            value: "kyma-gardener-upgrade-azure"
           - name: REGION
             value: "northeurope"
-          - name: EVENTHUB_NAMESPACE_NAME
-            value: "kyma-gardener-upgrade-azure"
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION

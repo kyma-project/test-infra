@@ -184,12 +184,6 @@ fi
 CLEANUP_CLUSTER=""
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
-
-shout "Install Tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
-
 shout "Apply Kyma config"
 date
 
@@ -227,8 +221,6 @@ fi
 shout "Installation triggered"
 date
 "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 shout "Test Kyma"
 date

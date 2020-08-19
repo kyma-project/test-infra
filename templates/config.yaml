@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.15"
+  nextRelease: "1.16"
   releases:
+    - "1.15"
     - "1.14"
     - "1.13"
-    - "1.12"
   whitesource:
     - name: "control-plane"
       language: "golang-mod"
@@ -22,7 +22,7 @@ global:
       language: "golang-mod"
       project: "kyma-project"
     - name: "helm-broker"
-      language: "golang"
+      language: "golang-mod"
       project: "kyma-project"
     - name: "rafter"
       language: "golang-mod"
@@ -168,13 +168,6 @@ go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
 templates:
   - from: templates/generic-component.yaml
     render:
-      - to: ../prow/jobs/kyma/components/api-gateway-migrator/api-gateway-migrator-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/api-gateway-migrator
-          since: "1.12"
-          until: "1.12"
-          optional: true
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -214,11 +207,6 @@ templates:
         values:
           <<: *kyma_generic_component
           path: components/connection-token-handler
-          since: "1.7"
-      - to: ../prow/jobs/kyma/components/connectivity-certs-controller/connectivity-certs-controller-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: components/connectivity-certs-controller
           since: "1.7"
       - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
         values:
@@ -453,12 +441,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/integration/apiserver-proxy
           since: "1.7"
-      - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/integration/cluster-users
-          since: "1.7"
-          until: "1.12"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging-generic.yaml
         values:
           <<: *kyma_generic_component
@@ -693,11 +675,6 @@ templates:
         values:
           <<: *go_kyma_component_v20181119
           path: components/connection-token-handler
-          until: "1.6"
-      - to: ../prow/jobs/kyma/components/connectivity-certs-controller/connectivity-certs-controller.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: components/connectivity-certs-controller
           until: "1.6"
       - to: ../prow/jobs/kyma/components/connector-service/connector-service.yaml
         values:

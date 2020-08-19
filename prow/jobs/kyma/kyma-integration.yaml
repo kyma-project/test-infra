@@ -12,11 +12,11 @@ kyma_ref: &kyma_ref
 
 # Kubectl 1.14 and CLUSTER_VERSION=1.14
 base_image_k14: &base_image_k14
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.14
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.14
 
 # Kubectl 1.15 and CLUSTER_VERSION=1.15
 base_image_k15: &base_image_k15
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.15
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.15
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
@@ -24,7 +24,7 @@ prow_tools_image: &prow_tools_image
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200703-d5c97fa6-k8s1.16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.16
 
 vm_job_template: &vm_job_template
   decorate: true
@@ -78,32 +78,6 @@ gke_job_template: &gke_job_template
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
-        resources:
-          requests:
-            memory: 200Mi
-            cpu: 80m
-
-gke_upgrade_job_template_for_debug: &gke_upgrade_job_template_for_debug
-  decorate: true
-  path_alias: github.com/kyma-project/kyma
-  max_concurrency: 10
-  spec:
-    containers:
-      - <<: *base_image_k16
-        securityContext:
-          privileged: true
-        command:
-          - "bash"
-        env:
-          - name: CLOUDSDK_COMPUTE_ZONE
-            value: "europe-west4-a"
-          - name: PROVISION_REGIONAL_CLUSTER
-            value: "true"
-          - name: NODES_PER_ZONE
-            value: "1"
-        args:
-          - "-c"
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade-for-debug.sh"
         resources:
           requests:
             memory: 200Mi
@@ -253,7 +227,6 @@ gke_job_labels_template: &gke_job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-cluster-use-ssd: "true"
-  preset-log-collector-slack-token: "true"
 
 gke_backup_job_labels_template: &gke_backup_job_labels_template
   preset-weekly-github-integration: "true"
@@ -275,6 +248,16 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-integration
+      branches:
+        - release-1.15
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.15
     - name: pre-rel114-kyma-integration
       branches:
         - release-1.14
@@ -295,16 +278,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-integration
-      branches:
-        - release-1.12
-      always_run: false
-      <<: *vm_job_template
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
     - name: pre-master-kyma-gke-integration
       branches:
@@ -318,6 +291,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-integration
+      branches:
+        - release-1.15
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.15
     - name: pre-rel114-kyma-gke-integration
       branches:
         - release-1.14
@@ -344,33 +330,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-integration
-      branches:
-        - release-1.12
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.12
-
-    - name: pre-master-kyma-gke-upgrade-for-debug
-      branches:
-        - ^master$
-      <<: *gke_upgrade_job_template_for_debug
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      optional: true
-      labels:
-        preset-build-pr: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
 
     - name: pre-master-kyma-gke-upgrade
       branches:
@@ -384,6 +343,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-upgrade
+      branches:
+        - release-1.15
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.15
     - name: pre-rel114-kyma-gke-upgrade
       branches:
         - release-1.14
@@ -406,17 +376,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-upgrade
-      branches:
-        - release-1.12
-      <<: *gke_upgrade_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
     - name: pre-master-kyma-gke-central-connector
       branches:
@@ -430,6 +389,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel115-kyma-gke-central-connector
+      branches:
+        - release-1.15
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.15
     - name: pre-rel114-kyma-gke-central-connector
       branches:
         - release-1.14
@@ -452,17 +422,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.13
-    - name: pre-rel112-kyma-gke-central-connector
-      branches:
-        - release-1.12
-      <<: *gke_central_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.12
 
 postsubmits:
   kyma-project/kyma:
@@ -490,6 +449,7 @@ postsubmits:
       branches:
         - ^master$
       labels:
+        preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_job_labels_template
       extra_refs:

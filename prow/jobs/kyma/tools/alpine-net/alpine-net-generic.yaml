@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.14|1\.13|1\.12)-alpine-net$
+    - ^release-(1\.15|1\.14|1\.13)-alpine-net$
   run_if_changed: "^tools/alpine-net/|^common/makefiles/"
   spec:
     containers:

@@ -43,6 +43,14 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        echo "ERROR: $LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
+
+
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -222,13 +230,6 @@ fi
 CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
-
-shout "Install Tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
-
-
 shout "Generate self-signed certificate"
 date
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -294,15 +295,15 @@ date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 
-# if [[ "$BUILD_TYPE" == "master" ]]; then
-#     shout "Install test-log-collector"
-#     date
+if [[ "$BUILD_TYPE" == "master" ]]; then
+    shout "Install test-log-collector"
+    date
 
-#     ( 
-#         export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
-#         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-#     )    
-# fi
+    ( 
+        export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+    )    
+fi
 
 
 

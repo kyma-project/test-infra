@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.14|1\.13|1\.12)-xip-patch$
+    - ^release-(1\.15|1\.14|1\.13)-xip-patch$
   run_if_changed: "^components/xip-patch/|^common/makefiles/"
   spec:
     containers:

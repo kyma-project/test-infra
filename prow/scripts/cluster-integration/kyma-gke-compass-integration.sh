@@ -251,7 +251,7 @@ function applyCompassOverrides() {
     --data "global.connector.secrets.ca.namespace=kyma-integration" \
     --data "gateway.gateway.enabled=false" \
     --label "component=compass"
-  
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
     --data "global.externalServicesMock.enabled=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
@@ -374,11 +374,6 @@ fi
 shout "Create new cluster"
 date
 createCluster
-
-shout "Install tiller"
-date
-kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-"${KYMA_SCRIPTS_DIR}"/install-tiller.sh
 
 shout "Install Kyma components"
 date

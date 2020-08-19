@@ -22,6 +22,9 @@ presubmits: # runs on PRs
           imagePullPolicy: Always
           command:
             - "pjtester"
+          args:
+            - "--github-endpoint=http://ghproxy"
+            - "--github-endpoint=https://api.github.com"
           env:
             - name: KYMA_PROJECT_DIR
               value: "/home/prow/go/src/github.com/kyma-project"

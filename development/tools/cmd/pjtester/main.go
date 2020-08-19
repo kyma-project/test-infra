@@ -1,24 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
 	"github.com/kyma-project/test-infra/development/tools/pkg/pjtester"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
+	prowflagutil "k8s.io/test-infra/prow/flagutil"
 )
 
 var (
-	log     = logrus.New()
-	rootCmd = &cobra.Command{
-		Use:   "pjtester",
-		Short: "pjtester generate new prowjob spec and schedule it",
-		Long:  "pjtester  generate new prowjob spec from provided path. It reuse PR refs.",
-		Run: func(cmd *cobra.Command, args []string) {
-			pjtester.SchedulePJ()
-		},
-	}
+	log       = logrus.New()
+	ghOptions prowflagutil.GitHubOptions
 )
 
 func main() {
@@ -27,7 +21,11 @@ func main() {
 	if _, present := os.LookupEnv("IMAGE_COMMIT"); present {
 		fmt.Printf("IMAGE_COMMIT: %s\n", os.Getenv("IMAGE_COMMIT"))
 	}
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	ghOptions.AddFlagsWithoutDefaultGitHubTokenPath(fs)
+	_ = fs.Parse(os.Args[1:])
+	if err := ghOptions.Validate(false); err != nil {
+		logrus.WithError(err).Fatalf("github options validation failed")
 	}
+	pjtester.SchedulePJ(ghOptions)
 }

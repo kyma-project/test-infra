@@ -153,14 +153,8 @@ downloadAssets() {
         exit 1
     fi
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${SOURCE_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/original-tiller.yaml
-
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
-
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
 
     curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
@@ -255,11 +249,6 @@ createCluster() {
 installKyma() {
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 
-    shout "Install Tiller from version ${SOURCE_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/original-tiller.yaml
-    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
-
     shout "Apply Kyma config"
     date
     kubectl create namespace "kyma-installer"
@@ -350,16 +339,12 @@ createTestResources() {
 
     injectTestingAddons
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
     helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --create-namespace \
         "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS}
+        --wait "${HELM_ARGS}"
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
@@ -389,13 +374,6 @@ upgradeKyma() {
 
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
-
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-    
-    shout "Wait untill tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
     
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
@@ -435,12 +413,8 @@ testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" "${HELM_ARGS}"
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "
@@ -473,8 +447,6 @@ createNetwork
 createCluster
 
 installKyma
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/get-helm-certs.sh"
 
 createTestResources
 

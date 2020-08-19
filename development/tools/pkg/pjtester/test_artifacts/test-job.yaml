@@ -28,3 +28,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          base_ref: master

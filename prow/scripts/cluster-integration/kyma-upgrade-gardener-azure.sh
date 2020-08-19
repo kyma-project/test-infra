@@ -27,9 +27,7 @@ VARIABLES=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    RS_GROUP
     REGION
-    EVENTHUB_NAMESPACE_NAME
     AZURE_SUBSCRIPTION_ID
     AZURE_SUBSCRIPTION_APP_ID
     AZURE_SUBSCRIPTION_SECRET
@@ -49,9 +47,7 @@ fi
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
-export RS_GROUP \
-    EVENTHUB_NAMESPACE_NAME \
-    REGION \
+export REGION \
     AZURE_SUBSCRIPTION_ID \
     AZURE_SUBSCRIPTION_APP_ID \
     AZURE_SUBSCRIPTION_SECRET \
@@ -83,6 +79,11 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
+RS_GROUP="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
+EVENTHUB_NAMESPACE_NAME="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
+export RS_GROUP \
+    EVENTHUB_NAMESPACE_NAME
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -167,7 +168,7 @@ function installKyma() {
 
     shout "Downloading Kyma installer CR"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
-        --output installer-cr-gardener-azure.yaml.tpl
+        --output installer-cr-azure-eventhubs.yaml.tpl
 
     echo "Downlading production profile"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
@@ -179,23 +180,22 @@ function installKyma() {
 
     shout "Generate Azure Event Hubs overrides"
     date
+
+    # create-azure-event-hubs-secret.sh creates an override secret file, eventhubs-secret-overrides.yaml for Azure EventHub in current working directory.
+    # The override is later used in the Kyma installation to configure the kafka-knative channel.
+
     # shellcheck disable=SC1090
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-    cat "${EVENTHUB_SECRET_OVERRIDE_FILE}" >> installer-config-azure-eventhubs.yaml.tpl
-
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
 
     (
     set -x
     kyma install \
         --ci \
         --source "${LAST_RELEASE_VERSION}" \
+        -c installer-cr-azure-eventhubs.yaml.tpl \
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
-        -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
+        -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         --timeout 90m
     )
 }
@@ -311,6 +311,12 @@ createTestResources() {
 }
 
 function upgradeKyma() {
+    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    if [[ "$?" -ne 0 ]]; then
+        return 1
+    fi
+    kubectk apply -f "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+
     shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
@@ -322,18 +328,8 @@ function upgradeKyma() {
 
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
-
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
-
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-tiller.yaml
-
-    shout "Wait until tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
 
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
@@ -390,6 +386,9 @@ fi
 createTestResources
 
 upgradeKyma
+if [[ "$?" -ne 0 ]]; then
+    return 1
+fi
 
 remove_addons_if_necessary
 
