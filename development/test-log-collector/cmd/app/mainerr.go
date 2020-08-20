@@ -27,8 +27,6 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	restclient "k8s.io/client-go/rest"
 
-	"github.com/kyma-project/test-infra/development/test-log-collector/pkg/hyperscaler"
-
 	"github.com/kyma-project/test-infra/development/test-log-collector/pkg/resources/clustertestsuite"
 	octopusTypes "github.com/kyma-project/test-infra/development/test-log-collector/pkg/resources/clustertestsuite/types"
 )
@@ -36,6 +34,7 @@ import (
 type config struct {
 	SlackToken     string
 	ConfigLocation string
+	ProwJobName    string `envconfig:"default=not-specified"` // for example post-master-kyma-gke-integration
 }
 
 func Mainerr() error {
@@ -95,11 +94,6 @@ func Mainerr() error {
 		return errors.Wrapf(err, "while listing pods by %s selector", selector)
 	}
 
-	platform, err := hyperscaler.GetHyperScalerPlatform(clientset)
-	if err != nil {
-		return errors.Wrap(err, "while getting runtime's hyperscaler platform")
-	}
-
 	var messages []pkgSlack.Message
 
 	for _, pod := range pods.Items {
@@ -142,7 +136,6 @@ func Mainerr() error {
 				Status:           string(status),
 				ClusterTestSuite: newestCts.Name,
 				CompletionTime:   newestCts.Status.CompletionTime.String(),
-				Platform:         string(platform),
 			},
 		}
 
@@ -160,7 +153,7 @@ func Mainerr() error {
 	}
 
 	logf.Info("Uploading logs to appropriate slack thread")
-	if err := slackClient.UploadLogFiles(messages, newestCts.Name, newestCts.Status.CompletionTime.String(), string(platform)); err != nil {
+	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, newestCts.Name, newestCts.Status.CompletionTime.String()); err != nil {
 		return errors.Wrap(err, "while uploading files to slack thread")
 	}
 	return nil

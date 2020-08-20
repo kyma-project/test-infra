@@ -1,11 +1,12 @@
 image:
   repository: eu.gcr.io/kyma-project/pr/test-log-collector  # will be updated after this PR is merged
-  tag: PR-2668
+  tag: PR-2683
   pullPolicy: IfNotPresent
 
 serviceAccountName: ""
 
 slackToken: ""
+prowJobName: ""
 
 nameOverride: ""
 fullnameOverride: ""

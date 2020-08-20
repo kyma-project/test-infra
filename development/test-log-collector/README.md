@@ -21,6 +21,7 @@ To use the Test Log Collector, navigate to its chart directory, and run it with 
 helm install test-log-collector \
 --namespace kyma-system ./chart/test-log-collector \
 --set slackToken=${slack_token} \
+--set prowJobName=${prowJobName} \
 --wait \
 --timeout 600s
 ```
