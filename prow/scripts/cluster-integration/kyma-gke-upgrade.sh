@@ -143,7 +143,7 @@ runTestLogCollector(){
         if [[ "$BUILD_TYPE" == "master" ]]; then
             shout "Install test-log-collector"
             date
-            export PROW_JOB_NAME="post-master-kyma-gke-integration"
+            export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
             ( 
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
             )    
