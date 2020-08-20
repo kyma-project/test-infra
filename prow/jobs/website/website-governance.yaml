@@ -1,6 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-master-website-governance
+      cluster: untrusted-workload
       decorate: true
       max_concurrency: 10
       branches:
@@ -32,6 +33,7 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: website-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true

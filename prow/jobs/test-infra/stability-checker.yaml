@@ -44,6 +44,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: pre-master-stability-checker
+    cluster: untrusted-workload
     branches:
     - ^master$
     <<: *job_template
@@ -65,6 +66,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/test-infra:
   - name: post-master-stability-checker
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:
