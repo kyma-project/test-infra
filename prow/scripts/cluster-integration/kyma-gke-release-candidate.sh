@@ -264,7 +264,9 @@ IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{ran
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.csv"
 
 # also generate image list in json
-IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '[.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { owner_ref: $owner, image: .image, image_id: .imageID }] | unique' )
+## this is false-positive as we need to use single-quotes for jq
+# shellcheck disable=SC2016
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.json"
 
 shout "Success"
