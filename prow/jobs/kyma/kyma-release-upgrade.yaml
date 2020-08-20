@@ -46,7 +46,10 @@ postsubmits: # runs on merges
   kyma-project/kyma:
     - name: post-kyma-release-upgrade
       annotations:
-        testgrid-create-test-group: "false"
+        testgrid-dashboards: kyma_integration
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+        testgrid-days-of-results: "90"
       <<: *gke_upgrade_job_template
       branches:
         - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags only
