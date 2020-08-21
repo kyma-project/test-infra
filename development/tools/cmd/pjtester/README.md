@@ -80,4 +80,4 @@ Pjtester is not able to wait till your new images are build on a PR. That still 
 Source code of pjtester and its tests are located in `test-infra/development/tools/pkg/pjtester`.
 Main function used in binary is located in `test-infra/development/tools/cmd/pjtester`.
 
-You can use pjtester to test changes to itself.
+You can't use pjtester to test changes to itself.
