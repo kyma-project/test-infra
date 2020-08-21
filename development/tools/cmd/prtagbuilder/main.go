@@ -27,5 +27,5 @@ func main() {
 	if err := ghOptions.Validate(false); err != nil {
 		logrus.WithError(err).Fatalf("github options validation failed")
 	}
-	(ghOptions)
+	prtagbuilder.BuildPrTag(ghOptions)
 }
