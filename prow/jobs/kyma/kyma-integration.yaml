@@ -480,6 +480,7 @@ postsubmits:
       branches:
         - ^master$
       labels:
+        preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_job_labels_template
       extra_refs:
