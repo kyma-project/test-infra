@@ -27,7 +27,6 @@ base_container_config: &base_container_config
 
 gke_integration_job_template: &gke_integration_job_template
   decorate: true
-  optional: true # TODO: Remove after testing
   path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
 

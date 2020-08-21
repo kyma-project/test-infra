@@ -19,7 +19,7 @@ func TestCompassGKEIntegrationPresubmit(t *testing.T) {
 	require.NotNil(t, actualJob)
 
 	// then
-	assert.True(t, actualJob.Optional)
+	assert.False(t, actualJob.Optional)
 	assert.True(t, actualJob.Decorate)
 	assert.Equal(t, "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))", actualJob.RunIfChanged)
 	assert.Equal(t, "github.com/kyma-incubator/compass", actualJob.PathAlias)
