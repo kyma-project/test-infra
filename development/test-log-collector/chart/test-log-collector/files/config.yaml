@@ -1,11 +1,11 @@
 - channelName: "#aerfio-test-default"
   channelID: "C017LJNTA1Z"
-  onlyReportFailure: false
+  onlyReportFailure: true
   testCases:
     - default
 - channelName: "#aerfio-test"
   channelID: "C017SHF2RDJ"
-  onlyReportFailure: false
+  onlyReportFailure: true
   testCases:
     - serverless-long
     - serverless
