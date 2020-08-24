@@ -153,17 +153,19 @@ downloadAssets() {
         exit 1
     fi
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${SOURCE_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/original-tiller.yaml
+    if [[ "$SOURCE_VERSION" == "1.14.0" ]]; then
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
+            --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
 
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
+    else
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/original-kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/original-kyma-installer-cr-cluster.yaml
 
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/tiller.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
+    fi
 }
 
 generateAndExportClusterName() {
@@ -255,11 +257,6 @@ createCluster() {
 installKyma() {
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 
-    shout "Install Tiller from version ${SOURCE_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/original-tiller.yaml
-    "${KYMA_SCRIPTS_DIR}"/is-ready.sh kube-system name tiller
-
     shout "Apply Kyma config"
     date
     kubectl create namespace "kyma-installer"
@@ -284,9 +281,16 @@ installKyma() {
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
 
-    shout "Use release artifacts from version ${SOURCE_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+    if [[ "$SOURCE_VERSION" == "1.14.0" ]]; then
+        shout "Use release artifacts from version ${SOURCE_VERSION}"
+        date
+        kubectl apply -f /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+    else
+        shout "Use release artifacts from version ${SOURCE_VERSION}"
+        date
+        kubectl apply -f /tmp/kyma-gke-upgradeability/original-kyma-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/original-kyma-installer-cr-cluster.yaml
+    fi
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
@@ -350,10 +354,7 @@ createTestResources() {
 
     injectTestingAddons
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
+    # shellcheck disable=SC2086
     helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --create-namespace \
@@ -390,16 +391,11 @@ upgradeKyma() {
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
 
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-    
-    shout "Wait untill tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
     
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
 
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
@@ -435,12 +431,9 @@ testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    # shellcheck disable=SC2086
+    helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "

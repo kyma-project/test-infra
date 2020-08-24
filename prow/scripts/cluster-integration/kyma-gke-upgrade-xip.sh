@@ -212,8 +212,16 @@ function installKyma() {
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    if [[ "$LAST_RELEASE_VERSION" == "1.14.0" ]]; then
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    else
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
+
+        kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
+    fi
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
@@ -379,12 +387,9 @@ function testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+    # shellcheck disable=SC2086
+    helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "
