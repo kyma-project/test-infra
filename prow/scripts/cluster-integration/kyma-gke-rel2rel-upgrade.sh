@@ -434,10 +434,6 @@ testKyma() {
     shout "Test Kyma end-to-end upgrade scenarios"
     date
 
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
     set +o errexit
     helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
     testEndToEndResult=$?
