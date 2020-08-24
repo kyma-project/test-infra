@@ -228,8 +228,8 @@ kubectl create namespace "kyma-installer"
     --label "component=istio"
 
 echo "Use released artifacts"
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-release-candidate/kyma-installer.yaml
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-release-candidate/kyma-installer-cr-cluster.yaml
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-installer.yaml
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-installer-cr-cluster.yaml
 
 \
 # There is possibility of a race condition when applying kyma-installer-cluster.yaml
@@ -237,7 +237,7 @@ echo "Use released artifacts"
 n=0
 until [ $n -ge 2 ]
 do
-    kubectl apply -f /tmp/kyma-gke-release-candidate/kyma-installer.yaml && break
+    kubectl apply -f /tmp/kyma-installer.yaml && break
     echo "Failed to apply kyma-installer.yaml"
     n=$((n+1))
     if [ 2 -gt "$n" ]
@@ -252,7 +252,7 @@ done
 n=0
 until [ $n -ge 2 ]
 do
-    kubectl apply -f /tmp/kyma-gke-release-candidate/kyma-installer-cr-cluster.yaml && break
+    kubectl apply -f /tmp/kyma-installer-cr-cluster.yaml && break
     echo "Failed to apply kyma-installer-cr-cluster.yaml"
     n=$((n+1))
     if [ 2 -gt "$n" ]
