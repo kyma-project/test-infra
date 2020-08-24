@@ -353,11 +353,7 @@ createTestResources() {
     date
 
     injectTestingAddons
-
-    if [  -f "$(helm home)/ca.pem" ]; then
-        local HELM_ARGS="--tls"
-    fi
-
+ 
     helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --create-namespace \
@@ -435,6 +431,7 @@ testKyma() {
     date
 
     set +o errexit
+    # shellcheck disable=SC2086
     helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
     testEndToEndResult=$?
 
