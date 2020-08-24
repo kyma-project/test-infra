@@ -394,12 +394,6 @@ upgradeKyma() {
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
 
-    shout "Install Tiller from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-tiller.yaml
-    
-    shout "Wait untill tiller is correctly rolled out"
-    kubectl -n kube-system rollout status deployment/tiller-deploy
     
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
