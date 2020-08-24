@@ -353,7 +353,8 @@ createTestResources() {
     date
 
     injectTestingAddons
- 
+
+    # shellcheck disable=SC2086
     helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --create-namespace \
