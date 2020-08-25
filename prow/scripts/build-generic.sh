@@ -7,6 +7,8 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/library.sh"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/lib/log.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component"

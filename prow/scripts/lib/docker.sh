@@ -39,8 +39,6 @@ function docker::print_processes {
 
 # docker::build_post_pr_tag builds pr tag on postsubmit jobs
 function docker::build_post_pr_tag {
-  # shellcheck source=/dev/null
-  source "$( dirname "${BASH_SOURCE[0]}/*" )"
   log::info "Checking if prtagbuilder binary is present"
   ls /prow-tools/prtagbuilder &> /dev/null
   prTagBuilderPresent=$?
