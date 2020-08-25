@@ -68,7 +68,7 @@ function docker::build_post_pr_tag {
     if [ -a "${BUILDER_DIR}/main.go" ]; then
       log::info "Prtagbuilder source file found. Building PR tag. "
       cd "${BUILDER_DIR}" || exit
-      DOCKER_POST_PR_TAG=$(go run main.go)
+      DOCKER_POST_PR_TAG=$(GO111MODULE=on go run main.go)
       prTagBuilt=$?
       if [[ $prTagBuilt -eq 0 ]]; then
         readonly DOCKER_POST_PR_TAG
