@@ -41,9 +41,7 @@ function docker::print_processes {
 function docker::build_post_pr_tag {
   set -e
   log::info "Checking if prtagbuilder binary is present"
-  ls /prow-tools/prtagbuilder
-  prTagBuilderPresent=$?
-  if [[ $prTagBuilderPresent -eq 0 ]]; then
+  if [ -x /prow-tools/prtagbuilder ]; then
     log::info "Binary prtagbuilder found. Building PR tag."
     DOCKER_POST_PR_TAG=$(/prow-tools/prtagbuilder)
     prTagBuilt=$?
@@ -68,9 +66,7 @@ function docker::build_post_pr_tag {
     log::info "go installed"
     log::info "Checking if prtagbuilder source file is present"
     BUILDER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}/../../development/tools/cmd/prtagbuilder" )" && pwd )"
-    ls "${BUILDER_DIR}/main.go" &> /dev/null
-    sourceFilePresent=$?
-    if [[ $sourceFilePresent -eq 0 ]]; then
+    if [ -a "${BUILDER_DIR}/main.go" ]; then
       log::info "Prtagbuilder source file found. Building PR tag. "
       cd "${BUILDER_DIR}" || exit
       DOCKER_POST_PR_TAG=$(go run main.go)
