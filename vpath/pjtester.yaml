@@ -1,5 +1,5 @@
 pjNames:
-  pjName: post-kyma-components-application-broker
+  - pjName: post-kyma-components-application-broker
 prConfigs:
   kyma-project:
     kyma:
