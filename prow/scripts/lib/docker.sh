@@ -64,7 +64,7 @@ function docker::build_post_pr_tag {
   if [[ $goPresent -eq 0 ]]; then
     log::info "go installed"
     log::info "Checking if prtagbuilder source file is present"
-    BUILDER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}/../../../development/tools/cmd/prtagbuilder" )" && pwd )"
+    BUILDER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/../../../development/tools/cmd/prtagbuilder" && pwd )"
     if [ -a "${BUILDER_DIR}/main.go" ]; then
       log::info "Prtagbuilder source file found. Building PR tag. "
       cd "${BUILDER_DIR}" || exit
