@@ -39,6 +39,7 @@ function docker::print_processes {
 
 # docker::build_post_pr_tag builds pr tag on postsubmit jobs
 function docker::build_post_pr_tag {
+  set -x
   set -e
   log::info "Checking if prtagbuilder binary is present"
   ls /prow-tools/prtagbuilder &> /dev/null
