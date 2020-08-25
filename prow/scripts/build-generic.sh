@@ -5,6 +5,8 @@ set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/lib/docker.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component"
@@ -40,6 +42,8 @@ elif [[ "${PULL_BASE_REF}" =~ release-.* ]]; then
 else
   echo "Building as usual"
   DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
+  # Building PR tag on postsubmit jobs.
+  docker::build_post_pr_tag
 fi
 
 readonly DOCKER_TAG

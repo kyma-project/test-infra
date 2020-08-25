@@ -41,6 +41,7 @@ func verifyPR(pr *github.PullRequest, commitSHA string) bool {
 	return true
 }
 
+// BuildPrTag will extract PR number from commit message, search PR, validate if correct PR was found and print pr tag.
 func BuildPrTag() {
 	// check if prtagbuilder was called on presubmit, fail if true
 	if _, present := os.LookupEnv("PULL_NUMBER"); present {
