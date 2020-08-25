@@ -26,7 +26,7 @@ func findPRNumber(commit *github.RepositoryCommit) string {
 	re := regexp.MustCompile(`^.*\(#(?P<prNumber>\d*)\)\s*$`)
 	matches := re.FindStringSubmatch(*commit.Commit.Message)
 	if len(matches) != 2 {
-		logrus.Fatalf("failed find PR number in commit message, found %s matched strings", len(matches))
+		logrus.Fatalf("failed find PR number in commit message, found %d matched strings", len(matches))
 	}
 	return matches[1]
 }
@@ -76,7 +76,7 @@ func BuildPrTag() {
 	// get pull request details for extracted pr
 	pr, _, err := client.PullRequests.Get(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, prNumber)
 	if err != nil {
-		logrus.WithError(err).Fatalf("failed get Pull Request number %s", prNumber)
+		logrus.WithError(err).Fatalf("failed get Pull Request number %d", prNumber)
 	}
 	// check if correct pr was found
 	if verifyPR(pr, jobSpec.Refs.BaseSHA) {
