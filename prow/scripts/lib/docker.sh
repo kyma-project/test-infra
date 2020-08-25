@@ -39,7 +39,6 @@ function docker::print_processes {
 
 # docker::build_post_pr_tag builds pr tag on postsubmit jobs
 function docker::build_post_pr_tag {
-  set -e
   log::info "Checking if prtagbuilder binary is present"
   if [ -x /prow-tools/prtagbuilder ]; then
     log::info "Binary prtagbuilder found. Building PR tag."
@@ -49,19 +48,19 @@ function docker::build_post_pr_tag {
       readonly DOCKER_POST_PR_TAG
       export DOCKER_POST_PR_TAG
       log::success "PR tag exported as DOCKER_POST_PR_TAG variable."
-      set +e
       return 0
     else
       log:error "Failed building PR tag."
-      set +e
       return 1
     fi
   else
     log::info "Binary prtagbuilder not found. Trying run prtagbuilder from source."
   fi
   log::info "Checking if go is installed."
+  set +e
   command -v go &> /dev/nul
   goPresent=$?
+  set -e
   if [[ $goPresent -eq 0 ]]; then
     log::info "go installed"
     log::info "Checking if prtagbuilder source file is present"
@@ -75,21 +74,17 @@ function docker::build_post_pr_tag {
         readonly DOCKER_POST_PR_TAG
         export DOCKER_POST_PR_TAG
         log::success "PR tag exported as DOCKER_POST_PR_TAG variable."
-        set +e
         return 0
       else
         log:error "Failed building PR tag."
-        set +e
         return 1
       fi
     else
       log::error "Prtagbuilder source file not found. Can't run prtagbuilder from source."
-      set +e
       return 1
     fi
   else
     log::error "go not installed. Can't run prtagbuilder from source."
-    set +e
     return 1
   fi
 }
