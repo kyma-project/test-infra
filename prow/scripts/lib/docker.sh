@@ -51,7 +51,7 @@ function docker::build_post_pr_tag {
       return 0
     else
       log:error "Failed building PR tag."
-      return 1
+      return 0
     fi
   else
     log::info "Binary prtagbuilder not found. Trying run prtagbuilder from source."
@@ -77,14 +77,14 @@ function docker::build_post_pr_tag {
         return 0
       else
         log:error "Failed building PR tag."
-        return 1
+        return 0
       fi
     else
-      log::error "Prtagbuilder source file not found. Can't run prtagbuilder from source."
-      return 1
+      log::warn "Prtagbuilder source file not found. Can't run prtagbuilder from source."
+      return 0
     fi
   else
-    log::error "go not installed. Can't run prtagbuilder from source."
-    return 1
+    log::warn "go not installed. Can't run prtagbuilder from source."
+    return 0
   fi
 }

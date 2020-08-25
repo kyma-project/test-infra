@@ -23,7 +23,7 @@ job_template: &job_template
   run_if_changed: "^components/application-broker/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      - image: eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:go1.14
         securityContext:
           privileged: true
         command:
