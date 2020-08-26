@@ -57,7 +57,7 @@ function docker::build_post_pr_tag {
   fi
   log::info "Checking if go is installed."
   goVersion=$(go version || echo "go_not_found")
-  if [ "$goVersion" != "go_not_found" ] && [[ "$goVersion" =~ ^\s*go\sversion\sgo[1-9]\.[1-9][1-9].*$ ]]; then
+  if [ "$goVersion" != "go_not_found" ] && [[ "$goVersion" =~ ^[[:space:]]*go[[:space:]]version[[:space:]]go[1-9]\.[1-9][1-9].*$ ]]; then
     log::info "go installed"
     log::info "Checking if prtagbuilder source file is present"
     BUILDER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/../../../development/tools/cmd/prtagbuilder" && pwd )"
