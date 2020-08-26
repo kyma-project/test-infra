@@ -46,27 +46,28 @@ gardener_azure_job_template: &gardener_azure_job_template
             memory: 1Gi
             cpu: 400m
 presubmits:
-  - name: pre-master-kyma-upgrade-gardener-azure
-    cluster: untrusted-workload
-    annotations:
-      testgrid-create-test-group: "false"
-    <<: *gardener_azure_job_template
-    decoration_config:
-      timeout: 14400000000000 # 4h
-      grace_period: 600000000000 # 10min
-    optional: {{ .Values.optional }}
-    branches:
-      - ^master$
-    # following regexp won't start build if only Markdown files were changed
-    run_if_changed: {{  .Values.resource_changes_triggering_kafka_tests | join "|" | printf "^(((%s)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" | quote }}
-    labels:
-      preset-build-pr: "true"
-      <<: *gardener_azure_job_labels_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-      - <<: *kyma_ref
-        base_ref: master
+  kyma-project/kyma:
+    - name: pre-master-kyma-upgrade-gardener-azure
+      cluster: untrusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *gardener_azure_job_template
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: {{ .Values.optional }}
+      branches:
+        - ^master$
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: {{ .Values.resource_changes_triggering_kafka_tests | join "|" | printf "^(((%s)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))" | quote }}
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+        - <<: *kyma_ref
+          base_ref: master
 
 periodics:
   - name: kyma-upgrade-gardener-azure
