@@ -46,7 +46,7 @@ function docker::build_post_pr_tag {
     if [ "$DOCKER_POST_PR_TAG" != "build_failed" ]; then
       readonly DOCKER_POST_PR_TAG
       export DOCKER_POST_PR_TAG
-      log::success "PR tag exported as DOCKER_POST_PR_TAG variable."
+      log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
       return 0
     else
       log:error "Failed building PR tag."
@@ -68,7 +68,7 @@ function docker::build_post_pr_tag {
       if [ "$DOCKER_POST_PR_TAG" != "build_failed" ]; then
         readonly DOCKER_POST_PR_TAG
         export DOCKER_POST_PR_TAG
-        log::success "PR tag exported as DOCKER_POST_PR_TAG variable."
+        log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
         return 0
       else
         log:error "Failed building PR tag."
