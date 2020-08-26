@@ -42,9 +42,8 @@ function docker::build_post_pr_tag {
   log::info "Checking if prtagbuilder binary is present"
   if [ -x /prow-tools/prtagbuilder ]; then
     log::info "Binary prtagbuilder found. Building PR tag."
-    DOCKER_POST_PR_TAG=$(/prow-tools/prtagbuilder)
-    prTagBuilt=$?
-    if [[ $prTagBuilt -eq 0 ]]; then
+    DOCKER_POST_PR_TAG=$(/prow-tools/prtagbuilder || echo "build_failed")
+    if [ "$DOCKER_POST_PR_TAG" != "build_failed" ]; then
       readonly DOCKER_POST_PR_TAG
       export DOCKER_POST_PR_TAG
       log::success "PR tag exported as DOCKER_POST_PR_TAG variable."
@@ -57,21 +56,16 @@ function docker::build_post_pr_tag {
     log::info "Binary prtagbuilder not found. Trying run prtagbuilder from source."
   fi
   log::info "Checking if go is installed."
-  set +e
-  command -v go &> /dev/nul
-  goPresent=$?
-  set -e
-  if [[ $goPresent -eq 0 ]]; then
-    go version
+  goVersion=$(go version || echo "go_not_found")
+  if [ "$goVersion" != "go_not_found" ] && [[ "$goVersion" =~ ^\s*go\sversion\sgo[1-9]\.[1-9][1-9].*$ ]]; then
     log::info "go installed"
     log::info "Checking if prtagbuilder source file is present"
     BUILDER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/../../../development/tools/cmd/prtagbuilder" && pwd )"
     if [ -a "${BUILDER_DIR}/main.go" ]; then
       log::info "Prtagbuilder source file found. Building PR tag. "
       cd "${BUILDER_DIR}" || exit
-      DOCKER_POST_PR_TAG=$(GO111MODULE=on go run main.go)
-      prTagBuilt=$?
-      if [[ $prTagBuilt -eq 0 ]]; then
+      DOCKER_POST_PR_TAG=$(GO111MODULE=on go run main.go || echo "build_failed")
+      if [ "$DOCKER_POST_PR_TAG" != "build_failed" ]; then
         readonly DOCKER_POST_PR_TAG
         export DOCKER_POST_PR_TAG
         log::success "PR tag exported as DOCKER_POST_PR_TAG variable."
@@ -85,7 +79,8 @@ function docker::build_post_pr_tag {
       return 0
     fi
   else
-    log::warn "go not installed. Can't run prtagbuilder from source."
+    echo "$goVersion"
+    log::warn "go not installed or version do not support go modules. Can't run prtagbuilder from source."
     return 0
   fi
 }
