@@ -165,6 +165,7 @@ go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
   <<: *knative_kafka_component
   buildpack: *go_buildpack_1_12
 
+# Definition of workload clusters for component jobs
 cluster_component: &cluster_component
   cluster:
     presubmit: untrusted-workload
