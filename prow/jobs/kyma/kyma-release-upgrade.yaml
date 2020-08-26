@@ -20,6 +20,12 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           - <<: *cluster_version
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
+          - name: MACHINE_TYPE
+            value: "n1-highcpu-16"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-rel2rel-upgrade.sh"
