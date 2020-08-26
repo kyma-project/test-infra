@@ -68,8 +68,6 @@ presubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-        - <<: *kyma_ref
-          base_ref: master
 
 periodics:
   - name: kyma-upgrade-gardener-azure
