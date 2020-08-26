@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-master-control-plane-bom-integration"
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 157

@@ -90,13 +90,13 @@ export KUBECONFIG=${GARDENER_APPLICATION_CREDENTIALS}
 KCP_PROVISIONER_DIR="${KCP_SOURCES_DIR}/components/provisioner"
 
 # Generate yamls
-go run ${KCP_PROVISIONER_DIR}/cmd/template render \ # TODO oidc flags with vals
- --shoot ${CLUSTER_NAME} --project ${GARDENER_PROJECT_NAME} --secret ${GARDENER_AZURE_SECRET_NAME} \
- --gardener-domain "canary.k8s.ondemand.com" --oidc-issuer-url ${OIDC_ISSUER_URL} \
- --oidc-client-id ${OIDC_CLIENT_ID} --oidc-client-secret ${OIDC_CLIENT_SECRET}
+go run "${KCP_PROVISIONER_DIR}/cmd/template" render \ # TODO oidc flags with vals
+ --shoot "${CLUSTER_NAME}" --project "${GARDENER_PROJECT_NAME}" --secret "${GARDENER_AZURE_SECRET_NAME}" \
+ --gardener-domain "canary.k8s.ondemand.com" --oidc-issuer-url "${OIDC_ISSUER_URL}" \
+ --oidc-client-id "${OIDC_CLIENT_ID}" --oidc-client-secret "${OIDC_CLIENT_SECRET}"
 
-kubectl apply -f ${KCP_PROVISIONER_DIR}/templates-rendered/shoot.yaml
-kubectl apply -f ${KCP_PROVISIONER_DIR}/templates-rendered/cluster-bom.yaml
+kubectl apply -f "${KCP_PROVISIONER_DIR}/templates-rendered/shoot.yaml"
+kubectl apply -f "${KCP_PROVISIONER_DIR}/templates-rendered/cluster-bom.yaml"
 
 # Wait 1 min for Gardener to start provisioning before checking state
 sleep 60
@@ -110,7 +110,7 @@ tries=0
 while [ $state != 'Succeeded' ] && [ $tries -lt $maxTries ]
 do
     echo "waiting for Shoot to be provisioned..."
-    state=$(kubectl get shoot ${CLUSTER_NAME} -o jsonpath='{.status.lastOperation.state}')
+    state="$(kubectl get shoot ${CLUSTER_NAME} -o jsonpath='{.status.lastOperation.state}')"
     tries=$((tries+1))
     sleep 20
 done
