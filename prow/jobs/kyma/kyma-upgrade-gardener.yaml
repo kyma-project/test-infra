@@ -48,7 +48,7 @@ gardener_azure_job_template: &gardener_azure_job_template
             memory: 1Gi
             cpu: 400m
 presubmits:
-  - name: kyma-upgrade-gardener-azure
+  - name: pre-master-kyma-upgrade-gardener-azure
     cluster: untrusted-workload
     annotations:
       testgrid-create-test-group: "false"

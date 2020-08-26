@@ -1,0 +1,5 @@
+pjNames:
+  - pjName: "pre-master-kyma-upgrade-gardener-azure"
+    report: false
+  - pjName: "pre-master-kyma-integration-gardener-azure"
+    report: false
