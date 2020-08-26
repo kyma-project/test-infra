@@ -110,7 +110,7 @@ tries=0
 while [ $state != 'Succeeded' ] && [ $tries -lt $maxTries ]
 do
     echo "waiting for Shoot to be provisioned..."
-    state="$(kubectl get shoot ${CLUSTER_NAME} -o jsonpath='{.status.lastOperation.state}')"
+    state=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.lastOperation.state}')
     tries=$((tries+1))
     sleep 20
 done
