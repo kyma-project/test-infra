@@ -21,7 +21,6 @@ function export_variables() {
     if [[ "${BUILD_TYPE}" == "pr" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
-        # Building PR tag on postsubmit jobs.
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
         # TODO: Improve this part
