@@ -1,0 +1,72 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+
+kyma_ref: &kyma_ref
+  org: kyma-project
+  repo: control-plane
+  path_alias: github.com/kyma-project/control-plane
+
+# Kubectl 1.16 and CLUSTER_VERSION=1.16
+base_image_k16: &base_image_k16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.16
+
+gardener_azure_job_labels_template: &gardener_azure_job_labels_template
+  preset-gardener-azure-kyma-integration: "true"
+  preset-docker-push-repository-gke-integration: "true"
+  preset-kyma-cli-stable: "true"
+  preset-creds-aks-kyma-integration: "true"
+  preset-dind-enabled: "true"                   # we need to be able to start docker
+  preset-gc-compute-envs: "true"                # prrovides the GCP region
+  preset-gc-project-env: "true"                 # required to be able to delete images
+  preset-sa-test-gcr-push: "true"               # required for pushing images
+  preset-sa-gardener-logs: "true"               # required for writing logs to Stackdriver
+
+gardener_azure_job_template: &gardener_azure_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/control-plane-gardener-bom-integration.sh"
+        env:
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "westeurope"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
+presubmits:
+  kyma-project/kyma:
+    - name: pre-master-control-plane-bom-integration
+      cluster: untrusted-workload
+      <<: *gardener_azure_job_template
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: true
+      branches:
+        - ^master$
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^(((components/provisioner/templates)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+         - <<: *test_infra_ref
+           base_ref: master
