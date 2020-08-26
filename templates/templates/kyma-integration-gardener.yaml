@@ -115,7 +115,7 @@ gardener_azure_job_template: &gardener_azure_job_template
 
 presubmits:
   kyma-project/kyma:
-    - name: pre-master-kyma-gardener-azure-integration
+    - name: pre-master-kyma-integration-gardener-azure
       cluster: untrusted-workload
       <<: *gardener_azure_job_template
       decoration_config:

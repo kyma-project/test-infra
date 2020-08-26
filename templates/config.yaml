@@ -582,6 +582,17 @@ templates:
             - resources/knative-eventing-kafka
             - resources/knative-serving
             - resources/application-connector
+  - from: templates/kyma-upgrade-gardener.yaml
+    render:
+      - to: ../prow/jobs/kyma/kyma-upgrade-gardener.yaml
+        values:
+          optional: true
+          resource_changes_triggering_kafka_tests:
+            - resources/knative-eventing
+            - resources/event-sources
+            - resources/knative-eventing-kafka
+            - resources/knative-serving
+            - resources/application-connector
   - from: templates/releases.go.tmpl
     render:
       - to: ../development/tools/jobs/releases/releases.go
