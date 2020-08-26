@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: post-kyma-components-application-broker
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 9299

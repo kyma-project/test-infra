@@ -5,8 +5,6 @@ set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/lib/docker.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/component"
@@ -25,7 +23,6 @@ function export_variables() {
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
         # Building PR tag on postsubmit jobs.
         DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
-        docker::build_post_pr_tag
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
         # TODO: Improve this part
         if [[ ( "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ) || "${REPO_OWNER}" == "kyma-incubator" && "${REPO_NAME}" == "compass" ]]; then
