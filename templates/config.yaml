@@ -457,6 +457,11 @@ templates:
           path: tools/event-subscriber
           since: "1.12"
           optional: true
+      - to: ../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
+        values:
+          <<: *kyma_generic_component
+          path: tools/gitserver
+          since: "1.15"
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net-generic.yaml
         values:
           <<: *kyma_generic_component
