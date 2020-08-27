@@ -2,7 +2,7 @@ IMG_NAME = bootstrap
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 TAG = $(DOCKER_TAG)
 
-# biuld and push on PR, tag with PR number
+# build and push on PR, tag with PR number
 .PHONY: ci-pr
 ci-pr: build-image push-image
 push-image: build-image
@@ -12,7 +12,6 @@ push-image: build-image
 .PHONY: ci-release
 ci-release: build-image tag-image push-image
 tag-image: build-image
-#push-image: tag-image
 
 
 # tag image with current tag
