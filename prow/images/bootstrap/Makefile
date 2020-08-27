@@ -12,7 +12,7 @@ push-image: build-image
 .PHONY: ci-release
 ci-release: build-image tag-image push-image
 tag-image: build-image
-push-image: tag-image
+#push-image: tag-image
 
 
 # tag image with current tag
