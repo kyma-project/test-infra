@@ -2,12 +2,6 @@
 
 FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
 
-# Commit details
-
-ARG commit
-ENV IMAGE_COMMIT=$commit
-LABEL io.kyma-project.test-infra.commit=$commit
-
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_VERSION 70.0.3538.110-1~deb9u1
@@ -55,9 +49,3 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     chromium=${CHROMIUM_VERSION} \
     && apt-get clean
-
-# Prow Tools
-
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
-# for better access to prow-tools
-ENV PATH=$PATH:/prow-tools

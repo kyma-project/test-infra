@@ -28,7 +28,7 @@ tag-image:
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG_NAME):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) -f Dockerfile ../../../.
+	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) -f Dockerfile ../../../.
 
 
 # push image with all tags
