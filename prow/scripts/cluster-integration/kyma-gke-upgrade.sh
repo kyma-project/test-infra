@@ -71,6 +71,8 @@ export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600   # timeout in sec for test pods until they reach the terminating state
 export TEST_CONTAINER_NAME="tests"
 
+TMP_DIR=$(mktemp -d)
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -138,6 +140,11 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+function installCli() {
+    export INSTALL_DIR=${TMP_DIR}
+    install::kyma_cli
 }
 
 runTestLogCollector(){
@@ -481,6 +488,14 @@ function testKyma() {
 
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
+
+installCli
+
+shout "check if cli is installed"
+(
+set -x
+kyma
+)
 
 generateAndExportClusterName
 
