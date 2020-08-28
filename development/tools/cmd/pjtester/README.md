@@ -14,7 +14,7 @@ Pjtester is called by the presubmit job `pre-master-test-infra-pjtester`. This p
 
 Pjtester expects to find the file with the configuration of ProwJobs tests in the location `vpath/pjtester.yaml`.
 
-A list `pjNames` contains configuration of ProwJobs to test. Each element of a list must contain `pjName` key with name of ProwJob to test. It may contain `pjPath` key with path to the ProwJob definition and `report: true` which enables reporting of ProwJob status. Only `pjName` key is mandatory. The path to the ProwJob configuration should be relative from the `kyma-project` directory. If not provided, default location for the `kyma-project/test-infra` repository is used.
+A list `pjNames` contains configuration of ProwJobs to test. Each element of a list must contain `pjName` key with name of ProwJob to test. It may contain `pjPath` key with path to the ProwJob definition and `report: true` which enables reporting of Prow job status. Only `pjName` key is mandatory. The path to the ProwJob configuration should be relative from the `kyma-project` directory. If not provided, default location for the `kyma-project/test-infra` repository is used.
 
 A dictionary `prConfigs` contains numbers of pull request on repositories other than test-infra. Pjtester will use code from these PRs to test ProwJobs. It's optional.
 
@@ -36,11 +36,11 @@ prConfigs:
 configPath: "test-infra/prow/custom_config.yaml"
 ```
 
-By default, pjtester will disable all reporting for a ProwJob. That means no slack messages and no status report on Github will be provided. To check test result please consult [ProwStatus](https://status.build.kyma-project.io/) dashboard.
+By default, pjtester will disable all reporting for a Prow job. That means no slack messages and no status report on Github will be provided. To check test result please consult [ProwStatus](https://status.build.kyma-project.io/) dashboard.
 
-Details from `pjtester.yaml` and from the ProwJob environment variables are used to construct the ProwJob specification to test. Pjtester will use the environment variables created by Prow for the presubmit which identify the pull request and its commit hash on `test-infra` repository. The generated ProwJob to test will use the `test-infra` code from the pull request's head, ensuring that the latest code is under test.
+Details from `pjtester.yaml` and from the Prow job environment variables are used to construct the ProwJob specification to test. Pjtester will use the environment variables created by Prow for the presubmit which identify the pull request and its commit hash on `test-infra` repository. The generated ProwJob to test will use the `test-infra` code from the pull request's head, ensuring that the latest code is under test.
 
-Finally, pjtester will create the ProwJob on the production Prow instance. The ProwJob name for which you triggered the test will be prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
+Finally, pjtester will create the ProwJob on the production Prow instance. The Prow job name for which you triggered the test will be prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
 
 Because the file `vpath/pjtester.yaml` is used by pjtester only to know the ProwJob name to test, it should not exist outside of the PR. This is why the `pre-master-test-infra-vpathgurad` required context was added. Its simple task is to fail whenever the `vpath` directory exists and to prevent the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
 
@@ -54,12 +54,12 @@ To make pjtester work for you, you need to compile it and build image with its b
 
 ## Usage
 
-This is the ProwJob tester flow:
+This is the Prow job tester flow:
 
 1. Create your feature branch with changes to scripts and/or ProwJobs.
 2. Create the `vpath/pjtester.yaml` file with the config of ProwJob to test.
 3. Create a PR with your changes.
-4. Watch the result of the `{YOUR_GITHUB_USER}_test_of_prowjob_{TESTED_PROWJOB'S_NAME}` Prowjob.
+4. Watch the result of the `{YOUR_GITHUB_USER}_test_of_prowjob_{TESTED_PROWJOB'S_NAME}` Prow job.
 5. Push new commits to the PR.
 6. Redo steps 4 and 5 until you're happy with the test results.
 7. Remove the vpath directory from the PR.
