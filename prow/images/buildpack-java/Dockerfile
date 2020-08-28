@@ -2,6 +2,12 @@
 
 FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 ENV JAVA_VERSION 8u212-b04
 ENV JAVA_BASE_URL https://github.com/AdoptOpenJDK/openjdk8-upstream-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jre_
 ENV JAVA_URL_VERSION 8u212b04
@@ -29,3 +35,9 @@ RUN mkdir -p "$JAVA_HOME"; \
 	rm openjdk.tgz* \
 	; \
     java -version
+
+    # Prow Tools
+
+    COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
+    # for better access to prow-tools
+    ENV PATH=$PATH:/prow-tools

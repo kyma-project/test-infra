@@ -1,4 +1,11 @@
 FROM node:12-alpine
+
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 WORKDIR /app
 
 RUN apk update && \

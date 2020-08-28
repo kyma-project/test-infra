@@ -1,6 +1,10 @@
+# Environment variables expected by this makefile
+# DOCKER_TAG - dynamic tag for image
+# DOCKER_PUSH_REPOSITORY - URL set by prow preset
+# DOCKER_PUSH_DIRECTORY
+
 IMG_NAME = buildpack-golang
 IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
-TAG = $(DOCKER_TAG)
 
 # build and push on PR, tag with PR number
 .PHONY: ci-pr
@@ -17,17 +21,17 @@ tag-image: build-image
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
-	docker tag $(IMG):$(TAG) $(IMG):current
-	docker tag $(IMG):$(TAG) $(IMG):go1.14
+	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
+	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.14
 
 
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG):$(TAG) --build-arg commit=$(TAG) .
+	docker build -t $(IMG):$(DOCKER_TAG) --build-arg commit=$(DOCKER_TAG) .
 
 
 # push image with all tags
 .PHONY: push-image
 push-image:
-	docker push $(IMG))
+	docker push $(IMG)

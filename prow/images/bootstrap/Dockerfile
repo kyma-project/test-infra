@@ -2,13 +2,11 @@
 
 FROM debian:stretch
 
-#################################################################
-#################### Add commit details #########################
-#################################################################
+# Add commit details
+
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
-#################################################################
 
 
 WORKDIR /workspace
@@ -74,9 +72,7 @@ RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
     tee --append /etc/default/docker
 RUN mkdir /docker-graph
 
-#################################################################
-########################## Prow Tools ###########################
-#################################################################
+# Prow Tools
 
 COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
 # for better access to prow-tools

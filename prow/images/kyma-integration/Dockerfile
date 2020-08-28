@@ -2,6 +2,12 @@
 
 FROM debian:10
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
