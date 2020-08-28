@@ -75,6 +75,8 @@ export TEST_CONTAINER_NAME="tests"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
 cleanup() {
     ## Save status of failed script execution
