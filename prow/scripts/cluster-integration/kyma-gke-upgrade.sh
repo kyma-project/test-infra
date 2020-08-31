@@ -447,7 +447,7 @@ function upgradeKyma() {
             --timeout "${KYMA_UPDATE_TIMEOUT}"
         )
     else
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
         (
         set -x
         kyma upgrade \
