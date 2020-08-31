@@ -493,12 +493,6 @@ ERROR_LOGGING_GUARD="true"
 
 installCli
 
-shout "check if cli is installed"
-(
-set -x
-kyma
-)
-
 generateAndExportClusterName
 
 reserveIPsAndCreateDNSRecords
