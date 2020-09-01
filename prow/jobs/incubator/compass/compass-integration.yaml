@@ -30,6 +30,7 @@ vm_job_labels_template: &vm_job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
   - name: pre-master-compass-integration
+    cluster: untrusted-workload
     branches:
     - ^master$
     <<: *vm_job_template
@@ -44,6 +45,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration
+    cluster: trusted-workload
     <<: *vm_job_template
     branches:
     - ^master$

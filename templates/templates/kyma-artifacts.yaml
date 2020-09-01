@@ -29,8 +29,12 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
+{{- $cluster := .Values.cluster.presubmit}}}}
 {{ range .Global.releases }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       branches:
         - release-{{ . }}
       <<: *job_template

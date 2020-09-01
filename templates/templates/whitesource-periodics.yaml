@@ -5,11 +5,14 @@ test_infra_ref: &test_infra_ref
   base_ref: master
 
 periodics:
+{{- $cluster := .Values.cluster.periodic}}
 {{- range .Global.whitesource }}
   - name: {{ default .name .custom_projectname }}-whitesource-scan
     annotations:
       testgrid-create-test-group: "false"
-    cluster: trusted-workload
+    {{- with $cluster }}
+    cluster: {{$cluster}}
+    {{- end }}
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:

@@ -26,10 +26,24 @@ job_labels_template: &job_labels_template
   preset-sa-kyma-artifacts: "true"
   preset-bot-github-token: "true"
 
-postsubmits: 
+presets:
+  {{- range .Global.releases }}
+- labels:
+    preset-target-commit-{{ . }}: "true"
+  env:
+    - name: RELEASE_TARGET_COMMIT
+      value: release-{{ . }}
+  {{- end }}
+  
+  
+postsubmits:
+  {{- $cluster := .Values.cluster.postsubmit}}
   kyma-project/kyma:
 {{- range .Global.releases }}
   - name: post-rel{{ . | replace "." "" }}-kyma-github-release
+    {{- with $cluster }}
+    cluster: {{$cluster}}
+    {{- end }}
     annotations:
       testgrid-dashboards: kyma_release-{{ . }}
       description: GitHub Release job for Kyma {{ . }}.
@@ -46,11 +60,3 @@ postsubmits:
       preset-target-commit-{{ . }}: "true"
 {{- end }}
 
-presets:
-{{- range .Global.releases }}
-  - labels:
-      preset-target-commit-{{ . }}: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-{{ . }}
-{{- end }}

@@ -41,9 +41,13 @@ container_template: &container_template
   {{- end }}
 
 presubmits: # runs on PRs
+  {{- $cluster := .Values.cluster.presubmit}}
   {{ template "repoNoHost" .Values.repository }}:
 {{- if not .Values.until }}
     - name: pre-master-{{ $repositoryName }}
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       always_run: true
       branches:
         - ^master$
@@ -72,6 +76,9 @@ presubmits: # runs on PRs
 {{- if $releasable -}}
 {{- range (matchingReleases $releases nil "1.5") }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       branches:
         - release-{{ . }}
       <<: *job_template
@@ -95,6 +102,9 @@ presubmits: # runs on PRs
 {{- end -}}
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       branches:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
@@ -117,8 +127,12 @@ presubmits: # runs on PRs
 
 {{ if not .Values.until -}}
 postsubmits:
+  {{- $cluster := .Values.cluster.postsubmit}}
   {{ template "repoNoHost" .Values.repository }}:
     - name: post-master-{{ $repositoryName }}
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       annotations:
         testgrid-create-test-group: "false"
       always_run: true
@@ -148,6 +162,9 @@ postsubmits:
         preset-{{ $.Values.presets.build }}-master: "true"
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       annotations:
         testgrid-create-test-group: "false"
       branches:

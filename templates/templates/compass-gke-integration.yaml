@@ -54,8 +54,12 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-development-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
+  {{- $cluster := .Values.cluster.presubmit}}
   kyma-incubator/compass:
     - name: pre-master-compass-gke-integration
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -70,6 +74,9 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-compass-gke-integration
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       optional: true
       branches:
         - release-{{ . }}
@@ -84,8 +91,12 @@ presubmits: # runs on PRs
 {{- end }}
 
 postsubmits:
+  {{- $cluster := .Values.cluster.postsubmit}}
   kyma-incubator/compass:
     - name: post-master-compass-gke-integration
+      {{- with $cluster }}
+      cluster: {{$cluster}}
+      {{- end }}
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest

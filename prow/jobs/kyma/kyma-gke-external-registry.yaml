@@ -46,6 +46,7 @@ gke_job_labels_template: &gke_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-external-registry
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *gke_job_template
@@ -58,6 +59,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-rel115-kyma-gke-external-registry
+      cluster: untrusted-workload
       branches:
         - release-1.15
       <<: *gke_job_template
