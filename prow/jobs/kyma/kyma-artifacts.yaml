@@ -30,7 +30,7 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository: "true"
 
 presubmits: # runs on PRs
-  kyma-project/kyma:}}
+  kyma-project/kyma:
 
     - name: pre-rel115-kyma-artifacts
       cluster: untrusted-workload
