@@ -2,6 +2,12 @@
 
 FROM debian:10
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
@@ -118,7 +124,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 ########################## Prow Tools ###########################
 #################################################################
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200813-1.14.0-rc1-74-g408bb225 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 

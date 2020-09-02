@@ -1,6 +1,6 @@
 FROM golang:1.14-alpine as builder
 
-ENV BASE_APP_DIR=/go/src/github.com/aerfio/joblogs \
+ENV BASE_APP_DIR=/go/src/github.com/kyma-project/test-infra/development/test-log-collector \
     GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \

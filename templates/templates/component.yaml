@@ -44,6 +44,9 @@ presubmits: # runs on PRs
   {{ template "repoNoHost" .Values.repository }}:
 {{- if not .Values.until }}
     - name: pre-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+{{- with $cluster := .Values.cluster.presubmit }}
+      cluster: {{$cluster}}
+{{- end }}
       branches:
         - ^master$
       <<: *job_template
@@ -119,6 +122,9 @@ presubmits: # runs on PRs
 postsubmits:
   {{ template "repoNoHost" .Values.repository }}:
     - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+{{- with $cluster := .Values.cluster.postsubmit }}
+      cluster: {{$cluster}}
+{{- end }}
       annotations:
         testgrid-create-test-group: "false"
       branches:

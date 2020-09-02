@@ -1,5 +1,11 @@
 FROM alpine:3.12.0
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 LABEL source=git@github.com:kyma-project/test-infra.git
 
 ENV HELM_2_VERSION="v2.16.1"
@@ -16,3 +22,9 @@ RUN apk update &&\
 	chmod +x /usr/local/bin/helm3
 
 ENTRYPOINT ["/bin/bash"]
+
+# Prow Tools
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools

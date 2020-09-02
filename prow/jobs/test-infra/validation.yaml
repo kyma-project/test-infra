@@ -4,6 +4,7 @@ prow_tools_image: &prow_tools_image eu.gcr.io/kyma-project/test-infra/prow-tools
 presubmits:
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
+      cluster: untrusted-workload
       run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
       decorate: true
       spec:
@@ -16,6 +17,7 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-test-infra-validate-configs
+      cluster: untrusted-workload
       run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
       decorate: true
       spec:
@@ -32,6 +34,7 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-tools
+      cluster: untrusted-workload
       run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
       branches:
         - ^master$
@@ -54,6 +57,7 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-jobs
+      cluster: untrusted-workload
       run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
       branches:
         - ^master$
@@ -76,6 +80,7 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-generated-files
+      cluster: untrusted-workload
       decorate: true
       max_concurrency: 10
       branches:
@@ -97,6 +102,7 @@ presubmits:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-master-test-infra-validate-prow-installer-files
+      cluster: untrusted-workload
       decorate: true
       max_concurrency: 10
       branches:

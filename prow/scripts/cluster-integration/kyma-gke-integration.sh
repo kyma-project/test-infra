@@ -32,6 +32,8 @@
 set -o errexit
 
 discoverUnsetVar=false
+enableTestLogCollector=false
+
 
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
@@ -123,10 +125,24 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
+runTestLogCollector(){
+    if [ "${enableTestLogCollector}" = true ] ; then
+        if [[ "$BUILD_TYPE" == "master" ]]; then
+            shout "Install test-log-collector"
+            date
+            export PROW_JOB_NAME="post-master-kyma-gke-integration"
+            ( 
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+            )    
+        fi    
+    fi
+}
+
 trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
+    # shellcheck disable=SC2031
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
@@ -289,24 +305,12 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 shout "Test Kyma"
 date
+# shellcheck disable=SC2031
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
-
-
-if [[ "$BUILD_TYPE" == "master" ]]; then
-    shout "Install test-log-collector"
-    date
-
-    ( 
-        export TEST_INFRA_SOURCES_DIR LOG_COLLECTOR_SLACK_TOKEN # LOG_COLLECTOR_SLACK_TOKEN needs to be added here
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-    )    
-fi
-
-
-
 
 shout "Success"
 

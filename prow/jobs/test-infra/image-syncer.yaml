@@ -7,6 +7,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: pre-master-test-infra-image-syncer-validate
+    cluster: untrusted-workload
     run_if_changed: "^(development/image-syncer)"
     branches:
     - ^master$
@@ -30,6 +31,7 @@ presubmits: # runs on PRs
             cpu: 0.8
 
   - name: pre-master-test-infra-image-syncer-dry-run
+    cluster: untrusted-workload
     run_if_changed: "^(development/image-syncer/external-images.yaml)"
     branches:
     - ^master$
@@ -56,6 +58,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/test-infra:
   - name: post-master-test-infra-image-syncer-run
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     run_if_changed: "^(development/image-syncer/external-images.yaml)"

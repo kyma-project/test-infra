@@ -219,11 +219,12 @@ function create_test_resources {
 
     injectTestingAddons
 
+    # shellcheck disable=SC2086
     helm install "${UPGRADE_TEST_PATH}" \
         --name "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait "${HELM_ARGS}"
+        --wait ${HELM_ARGS}
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then

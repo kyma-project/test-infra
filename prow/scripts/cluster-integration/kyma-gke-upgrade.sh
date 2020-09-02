@@ -32,6 +32,7 @@
 set -o errexit
 
 discoverUnsetVar=false
+enableTestLogCollector=false
 
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [[ -z "${!var}" ]] ; then
@@ -41,6 +42,13 @@ for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK
 done
 if [[ "${discoverUnsetVar}" = true ]] ; then
     exit 1
+fi
+
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        echo "ERROR: LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
 fi
 
 #Exported variables
@@ -128,6 +136,19 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+runTestLogCollector(){
+    if [ "${enableTestLogCollector}" = true ] ; then
+        if [[ "$BUILD_TYPE" == "master" ]]; then
+            shout "Install test-log-collector"
+            date
+            export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
+            ( 
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+            )    
+        fi    
+    fi
 }
 
 trap cleanup EXIT INT
@@ -276,8 +297,17 @@ function installKyma() {
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    if [[ "$LAST_RELEASE_VERSION" == "1.14.0" ]]; then
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    else
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
+
+        kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
+    fi
+
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
@@ -487,6 +517,8 @@ createTestResources
 upgradeKyma
 
 remove_addons_if_necessary
+
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 testKyma
 

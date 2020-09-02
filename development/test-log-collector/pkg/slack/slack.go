@@ -16,7 +16,6 @@ type Attributes struct {
 	Status           string
 	ClusterTestSuite string
 	CompletionTime   string
-	Platform         string
 }
 
 type Message struct {
@@ -71,12 +70,12 @@ func (s Client) createParentMessage(channelID, parentMessage string) error {
 	return nil
 }
 
-func (s Client) UploadLogFiles(messages []Message, ctsName, completionTime, platform string) error {
+func (s Client) UploadLogFiles(messages []Message, prowJobName, ctsName, completionTime string) error {
 	failedTestNames := getFailedTestNames(messages)
 
 	for channelID, messageSlice := range s.groupMessagesByChannelID(messages) {
 
-		parentMsg := fmt.Sprintf("ClusterTestSuite `%s`; completionTime `%s`; platform `%s`", ctsName, completionTime, platform)
+		parentMsg := fmt.Sprintf("Prow Job name: `%s`; ClusterTestSuite `%s`; completion time `%s`", prowJobName, ctsName, completionTime)
 		if len(failedTestNames) > 0 {
 			parentMsg = fmt.Sprintf("%s; failed test names: `%s`", parentMsg, strings.Join(failedTestNames, ", "))
 		}

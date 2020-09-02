@@ -153,11 +153,19 @@ downloadAssets() {
         exit 1
     fi
 
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+    if [[ "$SOURCE_VERSION" == "1.14.0" ]]; then
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cluster.yaml" \
+            --output /tmp/kyma-gke-upgradeability/original-release-installer.yaml
 
-    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
+    else
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/original-kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${SOURCE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/original-kyma-installer-cr-cluster.yaml
+
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
+        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${TARGET_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
+    fi
 }
 
 generateAndExportClusterName() {
@@ -273,9 +281,16 @@ installKyma() {
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
 
-    shout "Use release artifacts from version ${SOURCE_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+    if [[ "$SOURCE_VERSION" == "1.14.0" ]]; then
+        shout "Use release artifacts from version ${SOURCE_VERSION}"
+        date
+        kubectl apply -f /tmp/kyma-gke-upgradeability/original-release-installer.yaml
+    else
+        shout "Use release artifacts from version ${SOURCE_VERSION}"
+        date
+        kubectl apply -f /tmp/kyma-gke-upgradeability/original-kyma-installer.yaml
+        kubectl apply -f /tmp/kyma-gke-upgradeability/original-kyma-installer-cr-cluster.yaml
+    fi
 
     shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     date
@@ -339,12 +354,13 @@ createTestResources() {
 
     injectTestingAddons
 
+    # shellcheck disable=SC2086
     helm install "${UPGRADE_TEST_RELEASE_NAME}" \
         --namespace "${UPGRADE_TEST_NAMESPACE}" \
         --create-namespace \
         "${UPGRADE_TEST_PATH}" \
         --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait "${HELM_ARGS}"
+        --wait ${HELM_ARGS}
 
     prepareResult=$?
     if [ "${prepareResult}" != 0 ]; then
@@ -377,7 +393,8 @@ upgradeKyma() {
     
     shout "Use release artifacts from version ${TARGET_VERSION}"
     date
-    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
 
     shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
@@ -414,7 +431,8 @@ testKyma() {
     date
 
     set +o errexit
-    helm test "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" "${HELM_ARGS}"
+    # shellcheck disable=SC2086
+    helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
     testEndToEndResult=$?
 
     echo "Test e2e upgrade logs: "

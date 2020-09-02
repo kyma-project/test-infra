@@ -15,6 +15,7 @@ Read the documents to learn how to:
 - [Create, modify, and remove component jobs using templates](./manage-component-jobs-with-templates.md) for the Prow pipeline.
 - [Update](./prow-cluster-update.md) a Prow cluster.
 - [Run kind jobs manually](./kind-jobs.md) in a local environment.
+- [Test scripts and ProwJobs](../../development/tools/cmd/pjtester/README.md).
 
 Find out more about:
 

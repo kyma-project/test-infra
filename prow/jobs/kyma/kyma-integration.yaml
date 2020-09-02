@@ -480,6 +480,7 @@ postsubmits:
       branches:
         - ^master$
       labels:
+        preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_job_labels_template
       extra_refs:
@@ -578,7 +579,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release'"
+            - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-upgrade|gke-gkekcpint'"
           resources:
             requests:
               memory: 100Mi

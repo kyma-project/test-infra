@@ -222,15 +222,32 @@ kubectl create namespace "kyma-installer"
     --label "component=istio"
 
 echo "Use released artifacts"
-wget "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cluster.yaml"
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-installer.yaml
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-installer-cr-cluster.yaml
 
+\
 # There is possibility of a race condition when applying kyma-installer-cluster.yaml
 # Retry should prevent job from failing
 n=0
 until [ $n -ge 2 ]
 do
-    kubectl apply -f kyma-installer-cluster.yaml && break
-    echo "Failed to apply kyma-installer-cluster.yaml"
+    kubectl apply -f /tmp/kyma-installer.yaml && break
+    echo "Failed to apply kyma-installer.yaml"
+    n=$((n+1))
+    if [ 2 -gt "$n" ]
+    then
+        echo "Retrying in 5 seconds"
+        sleep 5
+    else
+        exit 1
+    fi
+done
+
+n=0
+until [ $n -ge 2 ]
+do
+    kubectl apply -f /tmp/kyma-installer-cr-cluster.yaml && break
+    echo "Failed to apply kyma-installer-cr-cluster.yaml"
     n=$((n+1))
     if [ 2 -gt "$n" ]
     then
@@ -262,6 +279,12 @@ fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.csv"
+
+# also generate image list in json
+## this is false-positive as we need to use single-quotes for jq
+# shellcheck disable=SC2016
+IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
+echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-release-${RELEASE_VERSION}.json"
 
 shout "Success"
 

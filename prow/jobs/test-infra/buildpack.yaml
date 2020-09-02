@@ -341,96 +341,115 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-bootstrap-helm
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *bootstrap_helm_template
+      cluster: untrusted-workload
     - name: pre-test-infra-kyma-cluster-infra
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
+      cluster: untrusted-workload
     - name: pre-test-infra-kyma-integration
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kyma_integration
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang-toolbox
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_toolbox_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang-kubebuilder
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-golang-kubebuilder2
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder2_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-node-chromium
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_node_chromium_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-java
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-buildpack-java-node
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *buildpack_java_node_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-cleaner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *cleaner_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-vulnerability-scanner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *vulnerability_scanner_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-whitesource-scanner
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *whitesource_scanner_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-kubectl
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-prow-clonerefs
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *prow_clonerefs_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-prow-tools
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+      cluster: untrusted-workload
     - name: pre-test-infra-probot-stale
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
       <<: *probot_stale_job_template
+      cluster: untrusted-workload
 
 
 postsubmits: # runs on master
@@ -442,6 +461,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_job_template
+      cluster: trusted-workload
     - name: post-test-infra-bootstrap-helm
       annotations:
         testgrid-create-test-group: "false"
@@ -449,6 +469,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *bootstrap_helm_template
+      cluster: trusted-workload
     - name: post-test-infra-kyma-cluster-infra
       annotations:
         testgrid-create-test-group: "false"
@@ -456,6 +477,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_cluster_infra
+      cluster: trusted-workload
     - name: post-test-infra-kyma-integration
       annotations:
         testgrid-create-test-group: "false"
@@ -463,6 +485,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kyma_integration
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang
       annotations:
         testgrid-create-test-group: "false"
@@ -470,6 +493,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang-toolbox
       annotations:
         testgrid-create-test-group: "false"
@@ -477,6 +501,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_toolbox_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang-kubebuilder
       annotations:
         testgrid-create-test-group: "false"
@@ -484,6 +509,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-golang-kubebuilder2
       annotations:
         testgrid-create-test-group: "false"
@@ -491,6 +517,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_golang_kubebuilder2_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-node
       annotations:
         testgrid-create-test-group: "false"
@@ -498,6 +525,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-node-chromium
       annotations:
         testgrid-create-test-group: "false"
@@ -505,6 +533,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_node_chromium_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-java
       annotations:
         testgrid-create-test-group: "false"
@@ -512,6 +541,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_job_template
+      cluster: trusted-workload
     - name: post-test-infra-buildpack-java-node
       annotations:
         testgrid-create-test-group: "false"
@@ -519,6 +549,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *buildpack_java_node_job_template
+      cluster: trusted-workload
     - name: post-test-infra-cleaner
       annotations:
         testgrid-create-test-group: "false"
@@ -526,6 +557,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *cleaner_job_template
+      cluster: trusted-workload
     - name: post-test-infra-vulnerability-scanner
       annotations:
         testgrid-create-test-group: "false"
@@ -533,6 +565,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *vulnerability_scanner_job_template
+      cluster: trusted-workload
     - name: post-test-infra-whitesource-scanner
       annotations:
         testgrid-create-test-group: "false"
@@ -540,6 +573,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *whitesource_scanner_job_template
+      cluster: trusted-workload
     - name: post-test-infra-kubectl
       annotations:
         testgrid-create-test-group: "false"
@@ -547,6 +581,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *kubectl_job_template
+      cluster: trusted-workload
     - name: post-test-infra-prow-clonerefs
       annotations:
         testgrid-create-test-group: "false"
@@ -554,6 +589,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_clonerefs_job_template
+      cluster: trusted-workload
     - name: post-test-infra-prow-tools
       annotations:
         testgrid-create-test-group: "false"
@@ -561,6 +597,7 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *prow_tools_job_template
+      cluster: trusted-workload
     - name: post-test-infra-probot-stale
       annotations:
         testgrid-create-test-group: "false"
@@ -568,3 +605,4 @@ postsubmits: # runs on master
         preset-build-release: "true"
         <<: *job_labels_template
       <<: *probot_stale_job_template
+      cluster: trusted-workload

@@ -20,6 +20,12 @@ gke_upgrade_job_template: &gke_upgrade_job_template
           - <<: *cluster_version
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-a"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
+          - name: MACHINE_TYPE
+            value: "n1-highcpu-16"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-rel2rel-upgrade.sh"
@@ -46,7 +52,10 @@ postsubmits: # runs on merges
   kyma-project/kyma:
     - name: post-kyma-release-upgrade
       annotations:
-        testgrid-create-test-group: "false"
+        testgrid-dashboards: kyma_integration
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+        testgrid-days-of-results: "90"
       <<: *gke_upgrade_job_template
       branches:
         - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Tags only
