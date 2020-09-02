@@ -3,6 +3,7 @@
 set -e
 
 driver="none"
+testsuite_name="testsuite-all"
 
 installKymaCLI() {
     local settings
@@ -67,4 +68,12 @@ echo "--> Run kyma tests"
 echo "  List test definitions"
 kyma test definitions --ci
 echo "  Run tests"
-kyma test run --ci --watch --max-retries=3 --non-interactive
+kyma test run \
+          --ci \
+          --watch \
+          --max-retries=1 \
+          --non-interactive \
+          --name="${testsuite-all}"
+
+kyma test status "${SUITE_NAME}" -owide
+echo "--> Success"

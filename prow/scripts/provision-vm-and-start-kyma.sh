@@ -106,4 +106,4 @@ done;
 
 shout "Triggering the installation"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" < ./cluster-integration/kyma-minikube-integration.sh
+gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-minikube-integration.sh"
