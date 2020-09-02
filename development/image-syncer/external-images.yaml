@@ -19,7 +19,7 @@ images:
 - source: "nats-streaming:0.11.0"
 - source: "oryd/hydra-maester:v0.0.15"
 - source: "oryd/hydra:v1.4.6"
-- source: "oryd/oathkeeper-maester:v0.0.9"
+- source: "oryd/oathkeeper-maester:v0.1.0"
 - source: "oryd/oathkeeper:v0.38.2-beta.1-alpine"
 - source: "postgres:11.7-alpine"
 - source: "quay.io/coreos/configmap-reload:v0.0.1"
