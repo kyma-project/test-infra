@@ -138,7 +138,7 @@ runTestLogCollector(){
     fi
 }
 
-trap "runTestLogCollector; cleanup" EXIT INT
+trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"

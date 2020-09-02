@@ -2,6 +2,12 @@
 
 FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 # Install additional tools
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,3 +24,9 @@ RUN go get golang.org/x/tools/cmd/goimports  \
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
+
+# Prow Tools
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools

@@ -27,6 +27,7 @@ container_template: &container_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-components-k8s-dashboard-proxy
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *job_template
@@ -48,6 +49,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-components-k8s-dashboard-proxy
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:

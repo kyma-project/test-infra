@@ -19,8 +19,8 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-application-connectivity-validator$
-  run_if_changed: "^components/application-connectivity-validator/|^common/makefiles/"
+    - ^release-(1\.15)-gitserver$
+  run_if_changed: "^tools/gitserver/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +29,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-connectivity-validator"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/tools/gitserver"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,15 +37,13 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-components-application-connectivity-validator
-      cluster: untrusted-workload
+    - name: pre-kyma-tools-gitserver
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-components-application-connectivity-validator
-      cluster: trusted-workload
+    - name: post-kyma-tools-gitserver
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template
