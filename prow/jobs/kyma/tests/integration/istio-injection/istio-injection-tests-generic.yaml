@@ -19,7 +19,6 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15)-istio-injection$
   run_if_changed: "^tests/integration/istio-injection/|^common/makefiles/"
   spec:
     containers:
@@ -38,7 +37,7 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-integration-istio-injection
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
@@ -46,4 +45,7 @@ postsubmits:
     - name: post-kyma-tests-integration-istio-injection
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

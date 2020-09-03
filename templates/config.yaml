@@ -538,7 +538,8 @@ templates:
         values:
           <<: *kyma_generic_component
           path: tests/integration/istio-injection
-          since: "1.15"
+          since: "1.16"
+          optional: true
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
           <<: *cluster_component
