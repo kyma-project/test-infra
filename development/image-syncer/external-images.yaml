@@ -16,8 +16,6 @@ images:
 - source: "istio/proxyv2:1.4.7-distroless"
 - source: "istio/sidecar_injector:1.4.7-distroless"
 - source: "jaegertracing/all-in-one:1.18.1"
-- source: "jettech/kube-webhook-certgen:v1.0.0"
-- source: "k8s.gcr.io/hyperkube:v1.12.1"
 - source: "nats-streaming:0.11.0"
 - source: "oryd/hydra-maester:v0.0.15"
 - source: "oryd/hydra:v1.4.6"
@@ -34,4 +32,3 @@ images:
 - source: "quay.io/prometheus/alertmanager:v0.21.0"
 - source: "quay.io/prometheus/prometheus:v2.17.1"
 - source: "quay.io/service-manager/sb-proxy-k8s:v0.8.4"
-- source: "squareup/ghostunnel:v1.5.2"
