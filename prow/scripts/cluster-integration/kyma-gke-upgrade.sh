@@ -34,8 +34,6 @@ set -o errexit
 discoverUnsetVar=false
 enableTestLogCollector=false
 
-echo "KYMA_ARTIFACTS_BUCKET: ${KYMA_ARTIFACTS_BUCKET}"
-
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [[ -z "${!var}" ]] ; then
         echo "ERROR: $var is not set"
@@ -442,24 +440,15 @@ createTestResources() {
 function upgradeKyma() {
     shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
     date
-    if [[ "$BUILD_TYPE" == "release" ]]; then
-        (
-        set -x
-        kyma upgrade \
-            --ci \
-            --source "${RELEASE_VERSION}" \
-            --timeout "${KYMA_UPDATE_TIMEOUT}"
-        )
-    else
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
-        (
-        set -x
-        kyma upgrade \
-            --ci \
-            --source "${COMMIT_ID}" \
-            --timeout "${KYMA_UPDATE_TIMEOUT}"
-        )
-    fi
+
+    COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
+    (
+    set -x
+    kyma upgrade \
+        --ci \
+        --source "${COMMIT_ID}" \
+        --timeout "${KYMA_UPDATE_TIMEOUT}"
+    )
 
     if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
         shout "Create DNS Record for Apiserver proxy IP"
