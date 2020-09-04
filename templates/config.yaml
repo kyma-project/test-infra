@@ -528,6 +528,7 @@ templates:
           optional: true
       - to: ../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tools/gitserver
           since: "1.15"
