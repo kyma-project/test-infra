@@ -27,13 +27,10 @@ job_labels_template: &job_labels_template
   preset-docker-push-repository-kyma: "true"
 
 presubmits: # runs on PRs
-  {{- $cluster := .Values.cluster.presubmit}}
   kyma-project/kyma:
 {{ range .Global.releases }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-installer
-      {{- with $cluster }}
-      cluster: {{$cluster}}
-      {{- end }}
+      cluster: {{$.Values.cluster.presubmit}}
       branches:
         - release-{{ . }}
       <<: *job_template

@@ -26,12 +26,9 @@ vm_job_labels_template: &vm_job_labels_template
   preset-gc-project-env: "true"
 
 presubmits: # runs on PRs
-  {{- $cluster := .Values.cluster.presubmit}}
   kyma-incubator/compass:
   - name: pre-master-compass-integration
-    {{- with $cluster }}
-    cluster: {{$cluster}}
-    {{- end }}
+    cluster: {{.Values.cluster.presubmit}}
     branches:
     - ^master$
     <<: *vm_job_template
@@ -45,11 +42,8 @@ presubmits: # runs on PRs
   
 postsubmits:
   kyma-incubator/compass:
-  {{- $cluster := .Values.cluster.postsubmit}}
   - name: post-master-compass-integration
-    {{- with $cluster }}
-    cluster: {{$cluster}}
-    {{- end }}
+    cluster: {{$.Values.cluster.postsubmit}}
     <<: *vm_job_template
     branches:
     - ^master$

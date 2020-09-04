@@ -43,11 +43,8 @@ gke_job_labels_template: &gke_job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-{{- $cluster := .Values.cluster.presubmit}}
     - name: pre-master-kyma-gke-external-registry
-      {{- with $cluster }}
-      cluster: {{$cluster}}
-      {{- end }}
+      cluster: {{$.Values.cluster.presubmit}}
       branches:
         - ^master$
       <<: *gke_job_template
@@ -62,9 +59,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.15" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-external-registry
-      {{- with $cluster }}
-      cluster: {{$cluster}}
-      {{- end }}
+      cluster: {{$.Values.cluster.presubmit}}
       branches:
         - release-{{ . }}
       <<: *gke_job_template

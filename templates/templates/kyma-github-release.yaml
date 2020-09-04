@@ -37,13 +37,10 @@ presets:
   
   
 postsubmits:
-  {{- $cluster := .Values.cluster.postsubmit}}
   kyma-project/kyma:
 {{- range .Global.releases }}
   - name: post-rel{{ . | replace "." "" }}-kyma-github-release
-    {{- with $cluster }}
-    cluster: {{$cluster}}
-    {{- end }}
+    cluster: {{$.Values.cluster.postsubmit}}
     annotations:
       testgrid-dashboards: kyma_release-{{ . }}
       description: GitHub Release job for Kyma {{ . }}.
