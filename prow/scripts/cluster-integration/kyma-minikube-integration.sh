@@ -3,18 +3,17 @@
 set -e
 
 driver="none"
-testsuite_name="testsuite-all"
+testsuiteName="testsuite-all"
 
-installKymaCLI() {
+install::kyma_cli() {
     local settings
     local kyma_version
-    mkdir -p "$HOME/bin"
-    export PATH="$HOME/bin:${PATH}"
+    mkdir -p "/usr/local/bin"
     os=$(host::os)
 
-    pushd "$HOME/bin" || exit
+    pushd "/usr/local/bin" || exit
 
-    echo "Install kyma CLI ${os} locally to $HOME/bin..."
+    echo "Install kyma CLI ${os} locally to /usr/local/bin..."
 
     curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
@@ -48,7 +47,7 @@ host::os() {
 echo "--> Installing Kyma CLI"
 if ! [[ -x "$(command -v kyma)" ]]; then
   echo "Kyma CLI not found"
-  installKymaCLI
+  install::kyma_cli
 else
   echo "Kyma CLI is already installed"
   kyma_version=$(kyma version --client)
@@ -57,11 +56,16 @@ fi
 echo "--> Done"
 
 echo "--> Provision Kyma cluster on minikube using VM driver ${driver}"
-kyma provision minikube --ci --vm-driver="${driver}" --non-interactive
+kyma provision minikube \
+               --ci \
+               --vm-driver="${driver}"
 echo "--> Done"
 
 echo "--> Installing Kyma on minikube cluster"
-kyma install --ci --source="local" --src-path=./kyma --non-interactive
+kyma install \
+     --ci \
+     --source="local" \
+     --src-path=./kyma
 echo "--> Done"
 
 echo "--> Run kyma tests"
@@ -72,8 +76,21 @@ kyma test run \
           --ci \
           --watch \
           --max-retries=1 \
-          --non-interactive \
-          --name="${testsuite-all}"
+          --name="${testsuiteName}"
 
-kyma test status "${SUITE_NAME}" -owide
+echo "  Test summary"
+kyma test status "${testsuiteName}" -owide
+statusSucceeded=$(kubectl get cts "${testsuiteName}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
+if [[ "${statusSucceeded}" != *"True"* ]]; then
+  echo "- Fetching logs from testing pods in Failed status..."
+  kyma test logs "${testsuiteName}" --test-status Failed
+
+  echo "- Fetching logs from testing pods in Unknown status..."
+  kyma test logs "${testsuiteName}" --test-status Unknown
+
+  echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
+  kyma test logs "${testsuiteName}" --test-status Running
+fi
+echo "  Generate junit results"
+kyma test status "${testsuiteName}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > junit_kyma_octopus-test-suite.xml
 echo "--> Success"
