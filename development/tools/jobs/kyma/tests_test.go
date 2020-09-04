@@ -105,12 +105,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.AllReleases(),
-		},
-	},
 	{path: "contract/knative-channel-kafka", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
