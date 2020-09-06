@@ -1136,3 +1136,14 @@ templates:
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
+  - from: templates/buildpack.yaml
+    render:
+      - to: ../prow/jobs/test-infra/buildpack_test.yaml
+        values:
+          repos:
+          - name: github.com/kyma-project/test-infra
+            jobs:
+            - type:
+              - presubmit
+              - postsubmit
+              name: pre-test-infra-bootstrap
