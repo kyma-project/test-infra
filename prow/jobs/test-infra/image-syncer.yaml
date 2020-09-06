@@ -7,7 +7,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/test-infra:
   - name: pre-master-test-infra-image-syncer-validate
-    cluster: <no value>
+    cluster: untrusted-workload
     run_if_changed: "^(development/image-syncer)"
     branches:
     - ^master$
