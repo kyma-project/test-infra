@@ -438,17 +438,38 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
-    date
+    if [[ "$BUILD_TYPE" == "release" ]]; then
+        shout "Delete the kyma-installation CR and kyma-installer deployment"
+        # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
+        # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
+        kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+        kubectl delete Installation -n default kyma-installation
 
-    COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
-    (
-    set -x
-    kyma upgrade \
-        --ci \
-        --source "${COMMIT_ID}" \
-        --timeout "${KYMA_UPDATE_TIMEOUT}"
-    )
+        # Remove the current installer to prevent it performing any action.
+        kubectl delete deployment -n kyma-installer kyma-installer
+
+        echo "Use released artifacts"
+        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+
+        shout "Update kyma installer"
+        kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+
+        shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
+        date
+        "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+    else
+        shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
+        date
+
+        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
+        (
+        set -x
+        kyma upgrade \
+            --ci \
+            --source "${COMMIT_ID}" \
+            --timeout "${KYMA_UPDATE_TIMEOUT}"
+        )
+    fi
 
     if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
         shout "Create DNS Record for Apiserver proxy IP"
