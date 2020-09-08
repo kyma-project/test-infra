@@ -2,8 +2,8 @@
 
 set -e
 
-driver="none"
-testsuiteName="testsuite-all"
+readonly driver="none"
+readonly testsuiteName="testsuite-all"
 
 install::kyma_cli() {
     local settings
