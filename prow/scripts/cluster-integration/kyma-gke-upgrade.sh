@@ -438,7 +438,7 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    if [[ "$BUILD_TYPE" == "release" || "${BUILD_TYPE}" == "pr" ]]; then
+    if [[ "$BUILD_TYPE" == "release" ]] || [[ "${BUILD_TYPE}" == "pr" ]]; then
         shout "Delete the kyma-installation CR and kyma-installer deployment"
         # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
         # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
@@ -473,13 +473,13 @@ function upgradeKyma() {
             | sed -e "s/__VERSION__/0.0.1/g" \	
             | sed -e "s/__.*__//g" \	
             | kubectl apply -f-	
-        fi	
+        fi
 
         shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"	
         date	
         "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
     # remaining case is when BUILD_TYPE is "master"
-    else 
+    else
         shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
         date
 
