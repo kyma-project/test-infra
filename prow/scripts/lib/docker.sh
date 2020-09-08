@@ -28,8 +28,27 @@ function docker::start {
     done
     printf '=%.0s' {1..80}; echo
 
-    docker-credential-gcr configure-docker
+    if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+      docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+    elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+      docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    else
+      echo "Skipping docker authnetication in registry. No credentials provided."
+    fi
     echo "Done starting up docker."
+}
+
+# docker::authenticate sets the docker user based on the provided credentials
+# the script accepts one argument which should be proper auth key
+function docker::authenticate() {
+  authKey=$1
+    if [[ -n "${authKey}" ]]; then
+      client_email=$(jq -r '.client_email' < "${authKey}")
+      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
+      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${authKey}" || exit 1
+    else
+      echo "could not authenticate to Docker Registry: authKey is empty" >&2
+    fi
 }
 
 # docker::print_processes prints running docker containers
