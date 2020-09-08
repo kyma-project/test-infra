@@ -29,6 +29,11 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
+	{path: "application-gateway-legacy-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+		},
+	},
 	{path: "application-operator-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
