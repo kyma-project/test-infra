@@ -72,7 +72,8 @@ gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 echo -e "\n---> Creating cluster with following parameters."
 echo "${GCLOUD_PARAMS[@]}"
 echo -e "\n---> Creating cluster"
-gcloud beta container clusters create "${GCLOUD_PARAMS[@]}"
+# --release-channel rapid
+gcloud beta container clusters create --release-channel rapid --no-enable-autoupgrade "${GCLOUD_PARAMS[@]}"
 
 echo -e "\n---> Patching kube-dns"
 # Wait until kube-dns Configmap is available

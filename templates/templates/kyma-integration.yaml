@@ -73,6 +73,9 @@ gke_job_template: &gke_job_template
         env:
           - name: CLOUDSDK_COMPUTE_ZONE
             value: "europe-west4-b"
+          - name: CLUSTER_VERSION
+            value: "1.18.6-gke.3503"
+            #value: "1.17.9-gke.1503"
         args:
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
@@ -101,6 +104,9 @@ gke_upgrade_job_template: &gke_upgrade_job_template
             value: "1"
           - name: MACHINE_TYPE
             value: "n1-highcpu-16"
+          - name: CLUSTER_VERSION
+            value: "1.18.6-gke.3503"
+            #value: "1.17.9-gke.1503"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
