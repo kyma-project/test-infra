@@ -124,6 +124,12 @@ var tests = []struct {
 			jobsuite.Optional(),
 		},
 	},
+	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Until(releases.Release115),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {
