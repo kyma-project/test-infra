@@ -438,7 +438,7 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    if [[ "$BUILD_TYPE" == "release" ]]; then
+    if [[ "$BUILD_TYPE" == "release" || "${BUILD_TYPE}" == "pr" ]]; then
         shout "Delete the kyma-installation CR and kyma-installer deployment"
         # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
         # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
@@ -448,24 +448,47 @@ function upgradeKyma() {
         # Remove the current installer to prevent it performing any action.
         kubectl delete deployment -n kyma-installer kyma-installer
 
-        echo "Use released artifacts"
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        if [[ "$BUILD_TYPE" == "release" ]]; then
+            echo "Use released artifacts"
+            gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
 
-        shout "Update kyma installer"
-        kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+            shout "Update kyma installer"
+            kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        else
+            shout "Build Kyma Installer Docker image"
+            date
+            COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)	
+            KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"	
+            export KYMA_INSTALLER_IMAGE	
+            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"	
+            CLEANUP_DOCKER_IMAGE="true"	
 
-        shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
-        date
+            KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"	
+            INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"	
+            INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"	
+
+            shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"	
+            "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \	
+            | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \	
+            | sed -e "s/__VERSION__/0.0.1/g" \	
+            | sed -e "s/__.*__//g" \	
+            | kubectl apply -f-	
+        fi	
+
+        shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"	
+        date	
         "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
-    else
+    # remaining case is when BUILD_TYPE is "master"
+    else 
         shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
         date
 
+        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
         (
         set -x
         kyma upgrade \
             --ci \
-            --source "${PULL_PULL_SHA}" \
+            --source "${COMMIT_ID}" \
             --timeout "${KYMA_UPDATE_TIMEOUT}"
         )
     fi
