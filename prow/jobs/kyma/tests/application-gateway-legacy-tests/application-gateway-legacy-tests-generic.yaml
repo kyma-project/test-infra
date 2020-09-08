@@ -19,7 +19,6 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15)-application-gateway-legacy-tests$
   run_if_changed: "^tests/application-gateway-legacy-tests/|^common/makefiles/"
   spec:
     containers:
