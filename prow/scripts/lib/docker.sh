@@ -32,6 +32,8 @@ function docker::start {
       docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    else
+      echo "Skipping docker authnetication in registry. No credentials provided."
     fi
     echo "Done starting up docker."
 }
@@ -45,7 +47,7 @@ function docker::authenticate() {
       echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
       docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${authKey}" || exit 1
     else
-      echo "Skipping docker authnetication in registry. No credentials provided."
+      echo "could not authenticate to Docker Registry: authKey is empty" >&2
     fi
 }
 
