@@ -25,6 +25,7 @@ var tools = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.AllReleases(),
+			jobsuite.Until(releases.Release115),
 		},
 	},
 	{path: "gitserver", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

@@ -528,6 +528,7 @@ templates:
           <<: *kyma_generic_component
           path: tools/alpine-net
           since: "1.7"
+          until: "1.15"
       - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
         values:
           <<: *cluster_component
@@ -1086,12 +1087,6 @@ templates:
             build: build
             pushRepository: kyma
           buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
-      - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net.yaml
-        values:
-          postsubmit: trusted-workload
-          <<: *go_kyma_component_v20181119
-          path: tools/alpine-net
-          until: "1.6"
   - from: templates/whitesource-periodics.yaml
     render:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
