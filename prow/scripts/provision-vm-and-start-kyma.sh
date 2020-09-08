@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# This script is designed to provision a new vm and start kyma.It takes an optional positionail parameter using --image flag
+# This script is designed to provision a new vm and start kyma.It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
 set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly TMP_DIR=$(mktemp -d)
+readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_kyma_octopus-test-suite.xml"
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
@@ -106,4 +108,9 @@ done;
 
 shout "Triggering the installation"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-minikube-integration.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
+
+shout "Fetch JUnit test results and store them in job artifacts"
+gcloud compute scp --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
+
+shout "all done"
