@@ -169,7 +169,6 @@ trap cleanup EXIT INT
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-    echo "COMMIT ID: ${PULL_PULL_SHA}"
 fi
 
 function generateAndExportClusterName() {
@@ -462,12 +461,11 @@ function upgradeKyma() {
         shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
         date
 
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
         (
         set -x
         kyma upgrade \
             --ci \
-            --source "${COMMIT_ID}" \
+            --source "${PULL_PULL_SHA}" \
             --timeout "${KYMA_UPDATE_TIMEOUT}"
         )
     fi
