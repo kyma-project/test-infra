@@ -1,10 +1,20 @@
+# global defaults"
+# Add function to print global defaults
+
+# file defaults
+{{- $privileged := ""}}
+{{if .Values.privileged}}{{$privileged = .Values.privileged}}# privileged: {{$privileged}}{{end}}
+#cluster
+#common_job template
+#job_labels template
+
 
 presubmits: # runs on PRs
   {{- range .Values.repos }}
   {{ replace "github.com/" "" .name -}}:
   {{- range .jobs -}}
   {{- if (has "presubmit" .type) }}
-    - name: {{ .name }}
+    - name: pre-{{ .name }}
       labels:
         preset-build-pr: "true"
         preset-dind-enabled: "true"
@@ -19,18 +29,22 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+          - image: {{GetImage $ .}}
             securityContext:
-              privileged: true
+              privileged: {{if .privileged}}{{.privileged}}{{else if $privileged}}{{$privileged}}{{else}}true{{end}}
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - {{ if .command}}{{.command}}{{else if .Values.command}}{{.Values.command}}{{else}}{{fail "Command not provided"}}{{end}}
+            {{- with .args}}
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+              {{- range . }}
+              - {{ . }}
+              {{- end}}
+            {{- end}}
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-      cluster: untrusted-workload
+      cluster: {{if .cluster.presubmit}}{{.cluster.presubmit}}{{else if .cluster}}{{.cluster}}{{else}}{{fail "Cluster for presubmit not defained"}}{{end}}
   {{end}}
   {{end}}
   {{end}}
@@ -65,4 +79,3 @@ postsubmits: # runs on master
                 memory: 1.5Gi
                 cpu: 0.8
       cluster: trusted-workload
-      

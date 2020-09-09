@@ -1,4 +1,6 @@
 global:
+  images:
+    bootstrap: global_image
   nextRelease: "1.16"
   releases:
     - "1.15"
@@ -1140,6 +1142,9 @@ templates:
     render:
       - to: ../prow/jobs/test-infra/buildpack_test.yaml
         values:
+          privileged: "false"
+          images:
+            bootstrap: values_bootstrap
           repos:
           - name: github.com/kyma-project/test-infra
             jobs:
@@ -1147,3 +1152,12 @@ templates:
               - presubmit
               - postsubmit
               name: pre-test-infra-bootstrap
+              image: values.images.bootstrap
+              cluster:
+                presubmit: trusted
+                postsubmit: untrusted
+              command: "/test/command"
+              args:
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+                - "test_arg"
+              

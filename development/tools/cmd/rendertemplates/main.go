@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"text/template"
 
 	"github.com/Masterminds/semver"
@@ -26,11 +27,13 @@ var (
 	additionalFuncs = map[string]interface{}{
 		"matchingReleases": matchingReleases,
 		"releaseMatches":   releaseMatches,
+		"GetImage":         GetImage,
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),
 		"#":  sets.NewString(".yaml", ".yml"),
 	}
+	imageRegex = regexp.MustCompile(`(?i)^.*(global|values)\.images\.(?P<imageName>.*$)`)
 )
 
 // Config represents configuration of all templates to render along with global values
@@ -49,6 +52,21 @@ type TemplateConfig struct {
 type RenderConfig struct {
 	To     string
 	Values map[string]interface{}
+}
+
+func GetImage(vars map[string]interface{}, dot map[interface{}]interface{}) string {
+	if imageRegex.MatchString(dot["image"].(string)) {
+		imageName := imageRegex.FindStringSubmatch(dot["image"].(string))[2]
+		varGroup := imageRegex.FindStringSubmatch(dot["image"].(string))[1]
+		if varGroup == "values" && vars["Values"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName] != nil {
+			return vars["Values"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName].(string)
+		} else if varGroup == "global" && vars["Global"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName] != nil {
+			return vars["Global"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName].(string)
+		} else {
+			log.Fatalf("image not found")
+		}
+	}
+	return dot["image"].(string)
 }
 
 func main() {
