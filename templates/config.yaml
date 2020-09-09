@@ -276,6 +276,13 @@ templates:
           <<: *kyma_generic_component
           path: tests/application-gateway-tests
           since: "1.7"
+      - to: ../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
+        values:
+          <<: *cluster_component
+          <<: *kyma_generic_component
+          path: tests/application-gateway-legacy-tests
+          since: "1.16"
+          optional: true
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
         values:
           <<: *cluster_component
