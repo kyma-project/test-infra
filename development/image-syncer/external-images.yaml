@@ -3,7 +3,7 @@ images:
 - source: "alpine:3.12.0"
 - source: "bitnami/keycloak-gatekeeper:10.0.0"
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
-- source: "busybox@sha256:2ed8bd58e1966fc775f4ba7e97a56ceb1fdd96706779ae8bcb59bc8dbae21be8" # busybox:1.32.0
+#- source: "busybox:1.32.0"
 - source: "curlimages/curl:7.70.0"
 - source: "grafana/grafana:7.0.6"
 - source: "grafana/loki:1.5.0"
