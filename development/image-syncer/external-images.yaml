@@ -32,3 +32,4 @@ images:
 - source: "quay.io/prometheus/alertmanager:v0.21.0"
 - source: "quay.io/prometheus/prometheus:v2.17.1"
 - source: "quay.io/service-manager/sb-proxy-k8s:v0.8.4"
+- source: "hudymi/mockice:0.1.3"
