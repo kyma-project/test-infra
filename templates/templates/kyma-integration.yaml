@@ -42,7 +42,6 @@ vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
   preset-gc-project-env: "true"
-  preset-kyma-artifacts-bucket: "true"
 
 presets:
   - labels:

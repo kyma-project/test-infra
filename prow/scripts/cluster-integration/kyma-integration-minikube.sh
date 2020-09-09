@@ -52,6 +52,7 @@ else
   echo "Kyma CLI is already installed"
   kyma_version=$(kyma version --client)
   echo "Kyma CLI version: ${kyma_version}"
+  minikube version
 fi
 echo "--> Done"
 
@@ -62,7 +63,7 @@ kyma provision minikube \
 echo "--> Done"
 
 echo "--> Installing Kyma on minikube cluster"
-kyma install \
+yes | kyma install \
      --ci \
      --source="local" \
      --src-path=./kyma
