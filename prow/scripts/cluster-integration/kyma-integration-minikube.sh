@@ -57,19 +57,26 @@ fi
 echo "--> Done"
 
 echo "--> Provision Kyma cluster on minikube using VM driver ${driver}"
+STARTTIME=$(date +%s)
 kyma provision minikube \
                --ci \
                --vm-driver="${driver}"
+ENDTIME=$(date +%s)
+echo "  Execution time: $((ENDTIME - STARTTIME)) seconds."
 echo "--> Done"
 
 echo "--> Installing Kyma on minikube cluster"
+STARTTIME=$(date +%s)
 yes | kyma install \
      --ci \
      --source="local" \
      --src-path=./kyma
+ENDTIME=$(date +%s)
+echo "  Install time: $((ENDTIME - STARTTIME)) seconds."
 echo "--> Done"
 
 echo "--> Run kyma tests"
+STARTTIME=$(date +%s)
 echo "  List test definitions"
 kyma test definitions --ci
 echo "  Run tests"
@@ -78,6 +85,9 @@ kyma test run \
           --watch \
           --max-retries=1 \
           --name="${testsuiteName}"
+
+ENDTIME=$(date +%s)
+echo "  Test time: $((ENDTIME - STARTTIME)) seconds."
 
 echo "  Test summary"
 kyma test status "${testsuiteName}" -owide
@@ -91,6 +101,7 @@ if [[ "${statusSucceeded}" != *"True"* ]]; then
 
   echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
   kyma test logs "${testsuiteName}" --test-status Running
+  exit 1
 fi
 echo "  Generate junit results"
 kyma test status "${testsuiteName}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > junit_kyma_octopus-test-suite.xml
