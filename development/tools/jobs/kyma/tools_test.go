@@ -24,7 +24,6 @@ var tools = []struct {
 	{path: "alpine-net", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.AllReleases(),
 			jobsuite.Until(releases.Release115),
 		},
 	},
