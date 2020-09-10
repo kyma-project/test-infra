@@ -2,11 +2,12 @@
 CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
+
 readonly TMP_DIR=$(mktemp -d)
-readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite.xml"
+readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite-$(date +%s).xml"
 readonly CONCURRENCY=5
 # Should be fixed name, it is displayed in TestGrid
-readonly SUITE_NAME="testsuite-all"
+SUITE_NAME="testsuite-all"
 
 # shellcheck disable=SC1090
 source "${CURRENT_PATH}/lib/testing-helpers.sh"
@@ -18,6 +19,29 @@ cleanup() {
 }
 
 trap cleanup EXIT
+
+function printUsage() {
+  echo "
+  Usage:
+  -l <label expression> (optional, specify multiple times): Specify a label expression to limit execution testdefinitions by labels
+  "
+}
+
+while getopts "l:n:" opt; do
+    case $opt in
+        l)
+          KYMA_OPTIONS+=("-l")
+          KYMA_OPTIONS+=("$OPTARG")
+          ;;
+        n)
+          SUITE_NAME="$OPTARG"
+          ;;
+        *)
+          printUsage
+          exit 1
+          ;;
+    esac
+done
 
 host::os() {
   local host_os
@@ -100,6 +124,7 @@ function main() {
   # match all tests
   # shellcheck disable=SC2086
   kyma test run ${KYMA_TESTS} \
+                "${KYMA_OPTIONS[@]}" \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
