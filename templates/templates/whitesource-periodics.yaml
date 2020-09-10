@@ -9,7 +9,7 @@ periodics:
   - name: {{ default .name .custom_projectname }}-whitesource-scan
     annotations:
       testgrid-create-test-group: "false"
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:

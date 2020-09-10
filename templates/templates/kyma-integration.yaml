@@ -235,9 +235,7 @@ gke_backup_job_labels_template: &gke_backup_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-integration
-{{- with $cluster := .Values.cluster.presubmit }}
-      cluster: {{$cluster}}
-{{- end }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *vm_job_template
@@ -252,7 +250,7 @@ presubmits: # runs on PRs
   
   {{- range (matchingReleases .Global.releases "1.11" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-integration
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       always_run: false
@@ -265,7 +263,7 @@ presubmits: # runs on PRs
 {{- end }}
 
     - name: pre-master-kyma-gke-integration
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_job_template
@@ -280,7 +278,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.11" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-integration
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *gke_job_template
@@ -296,7 +294,7 @@ presubmits: # runs on PRs
 {{- end }}
 
     - name: pre-master-kyma-gke-upgrade
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_upgrade_job_template
@@ -311,7 +309,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.11" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *gke_upgrade_job_template
@@ -326,7 +324,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.8" "1.10") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *gke_upgrade_job_template_k14
@@ -340,7 +338,7 @@ presubmits: # runs on PRs
 {{- end }}
 
     - name: pre-master-kyma-gke-central-connector
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_central_job_template
@@ -355,7 +353,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.11" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *gke_central_job_template
@@ -370,7 +368,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.8" "1.10") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *gke_central_job_template_k14
@@ -385,7 +383,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.11" "1.11") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       optional: true
       branches:
         - release-{{ . }}
@@ -401,7 +399,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.8" "1.10") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       optional: true
       branches:
         - release-{{ . }}
@@ -418,7 +416,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-integration
-      cluster: {{$.Values.cluster.postsubmit}}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma integration job.
@@ -434,7 +432,7 @@ postsubmits:
           base_ref: master
 
     - name: post-master-kyma-gke-integration
-      cluster: {{$.Values.cluster.postsubmit}}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_job_template
       annotations:
         testgrid-dashboards: kyma_integration
@@ -451,7 +449,7 @@ postsubmits:
           base_ref: master
 
     - name: post-master-kyma-gke-central-connector
-      cluster: {{$.Values.cluster.postsubmit}}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_central_job_template
       annotations:
         testgrid-dashboards: kyma_integration
@@ -467,7 +465,7 @@ postsubmits:
           base_ref: master
 
     - name: post-master-kyma-gke-upgrade
-      cluster: {{$.Values.cluster.postsubmit}}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_upgrade_job_template
       annotations:
         testgrid-dashboards: kyma_integration
@@ -488,7 +486,7 @@ periodics:
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
 
   - name: utilities-kyma-integration-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
       testgrid-create-test-group: "false"
@@ -503,7 +501,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-az-storage-accounts-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
       testgrid-create-test-group: "false"
@@ -533,7 +531,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-assetstore-gcp-bucket-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "00 00 * * *" # "At 00:00 each day"
     annotations:
       testgrid-create-test-group: "false"
@@ -557,7 +555,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-disks-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "30 * * * *" # "At 30 minutes past every hour"
     annotations:
       testgrid-create-test-group: "false"
@@ -581,7 +579,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-clusters-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "0 * * * *" # "At 0 minute every hour"
     annotations:
       testgrid-create-test-group: "false"
@@ -605,7 +603,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-vms-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "0 * * * *" # "At minute 0 past every hour"
     annotations:
       testgrid-create-test-group: "false"
@@ -629,7 +627,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-loadbalancer-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "15 * * * *" # "At 15 past every hour"
     annotations:
       testgrid-create-test-group: "false"
@@ -653,7 +651,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: firewall-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
     annotations:
       testgrid-create-test-group: "false"
@@ -677,7 +675,7 @@ periodics:
               memory: 100Mi
               cpu: 50m
   - name: orphaned-dns-cleaner
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "30 * * * *" # "At minute 30 past every hour"
     annotations:
       testgrid-create-test-group: "false"
@@ -703,7 +701,7 @@ periodics:
               cpu: 50m
 
   - name: github-stats
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "0 6 * * *" # "At 6:00 every day"
     annotations:
       testgrid-create-test-group: "false"
@@ -727,7 +725,7 @@ periodics:
               cpu: 50m
 
   - name: kyma-gke-nightly
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "0 4 * * 1-5" # "At 04:00 on every weekday Monday through Friday"
     annotations:
       testgrid-dashboards: kyma_integration
@@ -799,7 +797,7 @@ periodics:
               cpu: 80m
 
   - name: kyma-gke-weekly
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "0 6 * * 1" # "At 06:00 on Monday."
     annotations:
       testgrid-dashboards: kyma_integration
@@ -869,7 +867,7 @@ periodics:
               cpu: 80m
 
   - name: kyma-aks-nightly
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     annotations:
       testgrid-dashboards: kyma_integration

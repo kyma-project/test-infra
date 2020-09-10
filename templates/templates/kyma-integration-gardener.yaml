@@ -116,7 +116,7 @@ gardener_azure_job_template: &gardener_azure_job_template
 presubmits:
   kyma-project/kyma:
     - name: pre-master-kyma-gardener-azure-integration
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gardener_azure_job_template
       decoration_config:
         timeout: 14400000000000 # 4h
@@ -138,7 +138,7 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma GCP Gardener integration job.
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     <<: *gardener_gcp_job_template
     decorate: true
     decoration_config:
@@ -157,7 +157,7 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma AWS Gardener integration job.
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     <<: *gardener_aws_job_template
     decorate: true
     decoration_config:
@@ -176,7 +176,7 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma Azure Gardener integration job.
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     <<: *gardener_azure_job_template
     decorate: true
     decoration_config:

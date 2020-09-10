@@ -61,7 +61,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-compass-integration
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -76,7 +76,7 @@ presubmits: # runs on PRs
   
 {{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-compass-integration
-      cluster: {{$.Values.cluster.presubmit}}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       always_run: false
@@ -92,7 +92,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-gke-compass-integration
-      cluster: {{$.Values.cluster.postsubmit}}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest
@@ -111,7 +111,7 @@ postsubmits:
 
 periodics:
   - name: kyma-gke-compass-integration-daily
-    cluster: {{$.Values.cluster.periodic}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma GKE compass integration job which runs daily at 00:00.
