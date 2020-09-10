@@ -83,7 +83,7 @@ if [[ -z "$IMAGE" ]]; then
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
-
+STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
     shout "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
     gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
@@ -95,6 +95,8 @@ for ZONE in ${EU_ZONES}; do
     shout "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     shout "Could not create machine in zone ${ZONE}"
 done || exit 1
+ENDTIME=$(date +%s)
+echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
