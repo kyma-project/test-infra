@@ -58,6 +58,16 @@ function kyma::build_installer {
     docker build -t "${2}" -f "${1}/tools/kyma-installer/kyma.Dockerfile" "${1}"
 }
 
+# kyma::build_and_push_installer builds Kyma Installer Docker image
+#
+# Arguments:
+#   $1 - Path to the Kyma sources
+#   $2 - Installer Docker image name
+function kyma::build_and_push_installer {
+    docker build -t "${2}" -f "${1}/tools/kyma-installer/kyma.Dockerfile" "${1}"
+    docker push "${2}"
+}
+
 # kyma::update_hosts appends hosts file with Kyma DNS records
 function kyma::update_hosts {
     # TODO(michal-hudy):  Switch to local DNS server if possible

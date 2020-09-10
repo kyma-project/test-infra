@@ -2,12 +2,12 @@
 
 # docker::start starts the Docker Daemon if not already started
 function docker::start {
+    log::banner "Starting Docker..."
     if docker info > /dev/null 2>&1 ; then
-        echo "Docker already started"
+        log::info "Docker already started"
         return 0
     fi
 
-    echo "Initializing Docker..."
     printf '=%.0s' {1..80}; echo
     # If we have opted in to docker in docker, start the docker daemon,
     service docker start
@@ -19,10 +19,10 @@ function docker::start {
         docker ps -q > /dev/null 2>&1 && break
         if [[ ${WAIT_N} -lt ${MAX_WAIT} ]]; then
             WAIT_N=$((WAIT_N+1))
-            echo "Waiting for docker to be ready, sleeping for ${WAIT_N} seconds."
+            log::info "Waiting for docker to be ready, sleeping for ${WAIT_N} seconds."
             sleep ${WAIT_N}
         else
-            echo "Reached maximum attempts, not waiting any longer..."
+            log::error "Reached maximum attempts, not waiting any longer..."
             return 1
         fi
     done
