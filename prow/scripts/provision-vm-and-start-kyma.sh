@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# This script is designed to provision a new vm and start kyma.It takes an optional positionail parameter using --image flag
+# This script is designed to provision a new vm and start kyma.It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
 set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly TMP_DIR=$(mktemp -d)
+readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_kyma_octopus-test-suite.xml"
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
@@ -104,6 +106,28 @@ for i in $(seq 1 5); do
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
-shout "Triggering the installation"
+# FIXME (@Ressetkk): Remove this part when the kyma CLI 1.16.0 is released.
+shout "WORKAROUND: Compile kyma-cli from source and push it to the VM"
+git clone https://github.com/kyma-project/cli.git &> /dev/null
+pushd "./cli"
+echo " Compiling Kyma CLI"
+make build-linux &> /dev/null
+code=$?
+if [[ $code != 0 ]]; then
+  echo "X An error occured during build."
+  exit 1
+fi
+echo " SCP binary file to a VM"
+gcloud compute scp --quiet --recurse --zone="${ZONE}" ./bin/kyma-linux "kyma-integration-test-${RANDOM_ID}":~/kyma-linux
+gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- "sudo mv ./kyma-linux /usr/local/bin/kyma && sudo chmod +x /usr/local/bin/kyma"
+popd
+echo " Done"
+#----
 
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
+shout "Triggering the installation"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
+
+shout "Fetch JUnit test results and store them in job artifacts"
+gcloud compute scp --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
+
+shout "all done"

@@ -58,6 +58,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-master-compass-gke-integration
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -70,6 +71,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-rel115-compass-gke-integration
+      cluster: untrusted-workload
       optional: true
       branches:
         - release-1.15
@@ -82,6 +84,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.15
     - name: pre-rel114-compass-gke-integration
+      cluster: untrusted-workload
       optional: true
       branches:
         - release-1.14
@@ -94,6 +97,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.14
     - name: pre-rel113-compass-gke-integration
+      cluster: untrusted-workload
       optional: true
       branches:
         - release-1.13
@@ -109,6 +113,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
     - name: post-master-compass-gke-integration
+      cluster: trusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest

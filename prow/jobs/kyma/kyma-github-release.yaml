@@ -28,9 +28,28 @@ job_labels_template: &job_labels_template
   preset-sa-kyma-artifacts: "true"
   preset-bot-github-token: "true"
 
-postsubmits: 
+presets:
+- labels:
+    preset-target-commit-1.15: "true"
+  env:
+    - name: RELEASE_TARGET_COMMIT
+      value: release-1.15
+- labels:
+    preset-target-commit-1.14: "true"
+  env:
+    - name: RELEASE_TARGET_COMMIT
+      value: release-1.14
+- labels:
+    preset-target-commit-1.13: "true"
+  env:
+    - name: RELEASE_TARGET_COMMIT
+      value: release-1.13
+  
+  
+postsubmits:
   kyma-project/kyma:
   - name: post-rel115-kyma-github-release
+    cluster: trusted-workload
     annotations:
       testgrid-dashboards: kyma_release-1.15
       description: GitHub Release job for Kyma 1.15.
@@ -46,6 +65,7 @@ postsubmits:
       preset-build-release: "true"
       preset-target-commit-1.15: "true"
   - name: post-rel114-kyma-github-release
+    cluster: trusted-workload
     annotations:
       testgrid-dashboards: kyma_release-1.14
       description: GitHub Release job for Kyma 1.14.
@@ -61,6 +81,7 @@ postsubmits:
       preset-build-release: "true"
       preset-target-commit-1.14: "true"
   - name: post-rel113-kyma-github-release
+    cluster: trusted-workload
     annotations:
       testgrid-dashboards: kyma_release-1.13
       description: GitHub Release job for Kyma 1.13.
@@ -76,19 +97,3 @@ postsubmits:
       preset-build-release: "true"
       preset-target-commit-1.13: "true"
 
-presets:
-  - labels:
-      preset-target-commit-1.15: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.15
-  - labels:
-      preset-target-commit-1.14: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.14
-  - labels:
-      preset-target-commit-1.13: "true"
-    env:
-      - name: RELEASE_TARGET_COMMIT
-        value: release-1.13

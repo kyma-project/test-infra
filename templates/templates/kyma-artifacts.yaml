@@ -31,6 +31,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
 {{ range .Global.releases }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *job_template

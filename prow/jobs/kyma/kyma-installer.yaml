@@ -32,6 +32,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
 
     - name: pre-rel115-kyma-installer
+      cluster: untrusted-workload
       branches:
         - release-1.15
       <<: *job_template
@@ -44,6 +45,7 @@ presubmits: # runs on PRs
         preset-build-release: "true"
 
     - name: pre-rel114-kyma-installer
+      cluster: untrusted-workload
       branches:
         - release-1.14
       <<: *job_template
@@ -56,6 +58,7 @@ presubmits: # runs on PRs
         preset-build-release: "true"
 
     - name: pre-rel113-kyma-installer
+      cluster: untrusted-workload
       branches:
         - release-1.13
       <<: *job_template

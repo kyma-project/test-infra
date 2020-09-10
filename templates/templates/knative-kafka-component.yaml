@@ -44,6 +44,7 @@ presubmits: # runs on PRs
   {{ template "repoNoHost" .Values.repository }}:
 {{- if not .Values.until }}
     - name: pre-master-{{ $repositoryName }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       always_run: true
       branches:
         - ^master$
@@ -72,6 +73,7 @@ presubmits: # runs on PRs
 {{- if $releasable -}}
 {{- range (matchingReleases $releases nil "1.5") }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *job_template
@@ -95,6 +97,7 @@ presubmits: # runs on PRs
 {{- end -}}
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
@@ -119,6 +122,7 @@ presubmits: # runs on PRs
 postsubmits:
   {{ template "repoNoHost" .Values.repository }}:
     - name: post-master-{{ $repositoryName }}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
       always_run: true
@@ -148,6 +152,7 @@ postsubmits:
         preset-{{ $.Values.presets.build }}-master: "true"
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
       branches:

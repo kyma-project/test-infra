@@ -33,6 +33,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
 
     - name: pre-rel115-kyma-artifacts
+      cluster: untrusted-workload
       branches:
         - release-1.15
       <<: *job_template
@@ -44,6 +45,7 @@ presubmits: # runs on PRs
         <<: *job_labels_template
 
     - name: pre-rel114-kyma-artifacts
+      cluster: untrusted-workload
       branches:
         - release-1.14
       <<: *job_template
@@ -55,6 +57,7 @@ presubmits: # runs on PRs
         <<: *job_labels_template
 
     - name: pre-rel113-kyma-artifacts
+      cluster: untrusted-workload
       branches:
         - release-1.13
       <<: *job_template
