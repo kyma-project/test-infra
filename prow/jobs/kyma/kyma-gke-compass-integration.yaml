@@ -63,6 +63,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-compass-integration
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -75,6 +76,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-rel115-kyma-gke-compass-integration
+      cluster: untrusted-workload
       branches:
         - release-1.15
       always_run: false
@@ -86,6 +88,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.15
     - name: pre-rel114-kyma-gke-compass-integration
+      cluster: untrusted-workload
       branches:
         - release-1.14
       always_run: false
@@ -97,6 +100,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.14
     - name: pre-rel113-kyma-gke-compass-integration
+      cluster: untrusted-workload
       branches:
         - release-1.13
       always_run: false
@@ -111,6 +115,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-gke-compass-integration
+      cluster: trusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest
@@ -129,6 +134,7 @@ postsubmits:
 
 periodics:
   - name: kyma-gke-compass-integration-daily
+    cluster: trusted-workload
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma GKE compass integration job which runs daily at 00:00.

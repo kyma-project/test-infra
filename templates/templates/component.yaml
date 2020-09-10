@@ -5,7 +5,6 @@
 {{- $watch := .Values.watch | default (print "^" .Values.path "/") }}
 {{- define "repoNoHost" -}}{{ replace "github.com/" "" . }}{{- end -}}
 {{- $isNotTestInfra := ne .Values.repository "github.com/kyma-project/test-infra"}}
-
 {{- if or $releasable (not .Values.until) -}}
 {{- if $isNotTestInfra -}}
 test_infra_ref: &test_infra_ref
@@ -44,9 +43,7 @@ presubmits: # runs on PRs
   {{ template "repoNoHost" .Values.repository }}:
 {{- if not .Values.until }}
     - name: pre-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
-{{- with $cluster := .Values.cluster.presubmit }}
-      cluster: {{$cluster}}
-{{- end }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *job_template
@@ -74,6 +71,7 @@ presubmits: # runs on PRs
 {{- if $releasable -}}
 {{- range (matchingReleases $releases nil "1.5") }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *job_template
@@ -97,6 +95,7 @@ presubmits: # runs on PRs
 {{- end -}}
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^release-{{ . | replace "." "\\." }}-{{ $componentName }}$
       <<: *job_template
@@ -122,9 +121,7 @@ presubmits: # runs on PRs
 postsubmits:
   {{ template "repoNoHost" .Values.repository }}:
     - name: post-master-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
-{{- with $cluster := .Values.cluster.postsubmit }}
-      cluster: {{$cluster}}
-{{- end }}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
       branches:
@@ -153,6 +150,7 @@ postsubmits:
         preset-{{ $.Values.presets.build }}-master: "true"
 {{- range (matchingReleases .Values.patchReleases "1.6" nil) }}
     - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
       branches:
