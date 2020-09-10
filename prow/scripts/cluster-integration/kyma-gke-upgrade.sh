@@ -34,21 +34,32 @@ set -o errexit
 discoverUnsetVar=false
 enableTestLogCollector=false
 
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET BOT_GITHUB_TOKEN GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
-    if [[ -z "${!var}" ]] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
+for var in REPO_OWNER \
+  REPO_NAME \
+  DOCKER_PUSH_REPOSITORY \
+  KYMA_PROJECT_DIR \
+  CLOUDSDK_CORE_PROJECT \
+  CLOUDSDK_COMPUTE_REGION \
+  CLOUDSDK_DNS_ZONE_NAME \
+  GOOGLE_APPLICATION_CREDENTIALS \
+  KYMA_ARTIFACTS_BUCKET \
+  BOT_GITHUB_TOKEN \
+  DOCKER_IN_DOCKER_ENABLED \
+  GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
+  if [[ -z "${!var}" ]]; then
+    echo "ERROR: $var is not set"
+    discoverUnsetVar=true
+  fi
 done
-if [[ "${discoverUnsetVar}" = true ]] ; then
-    exit 1
+if [[ "${discoverUnsetVar}" = true ]]; then
+  exit 1
 fi
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        echo "ERROR: LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
+  if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ]; then
+    echo "ERROR: LOG_COLLECTOR_SLACK_TOKEN is not set"
+    exit 1
+  fi
 fi
 
 #Exported variables
@@ -68,318 +79,265 @@ export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_RESOURCE_LABEL_VALUE_PREPARE="prepareData"
 export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
-export TEST_TIMEOUT_SEC=600   # timeout in sec for test pods until they reach the terminating state
+export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
 export TEST_CONTAINER_NAME="tests"
 
 TMP_DIR=$(mktemp -d)
+KYMA_LABEL_PREFIX="kyma-project.io"
+KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
+POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-# shellcheck disable=SC1090
-source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+
+# shellcheck source=prow/scripts/lib/testing-helpers.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+
+# shellcheck source=prow/scripts/cluster-integration/helpers/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
 cleanup() {
-    ## Save status of failed script execution
-    EXIT_STATUS=$?
+  ## Save status of failed script execution
+  EXIT_STATUS=$?
 
-    if [[ "${ERROR_LOGGING_GUARD}" = "true" ]]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
+  if [[ "${ERROR_LOGGING_GUARD}" = "true" ]]; then
+    log::error "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
 
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
-    set +e
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
 
-    # collect logs from failed tests before deprovisioning
-    runTestLogCollector
+  log::banner "CLEANUP"
 
-    if [[ -n "${CLEANUP_CLUSTER}" ]]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
+  # collect logs from failed tests before deprovisioning
+  runTestLogCollector
 
-        #save disk names while the cluster still exists to remove them later
-        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        export DISKS
+  if [[ -n "${CLEANUP_CLUSTER}" ]]; then
+    log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
 
-        #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+    #save disk names while the cluster still exists to remove them later
+    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+    export DISKS
 
-        #Delete orphaned disks
-        shout "Delete orphaned PVC disks..."
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-    fi
+    #Delete cluster
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
 
-    if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
-        shout "Delete Gateway DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-    fi
+    #Delete orphaned disks
+    log::info "Delete orphaned PVC disks..."
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+  fi
 
-    if [[ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]]; then
-        shout "Release Gateway IP Address"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-    fi
+  if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
+    log::info "Delete Gateway DNS Record"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+  fi
 
-    if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-    fi
+  if [[ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]]; then
+    log::info "Release Gateway IP Address"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+  fi
 
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        shout "Delete Apiserver proxy DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    fi
+  if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
+    log::info "Delete temporary Kyma-Installer Docker image"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+  fi
 
-    rm -rf "${TMP_DIR}"
+  if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+    log::info "Delete Apiserver proxy DNS Record"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+  fi
 
-    MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
-    set -e
+  rm -rf "${TMP_DIR}"
 
-    exit "${EXIT_STATUS}"
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
 }
 
 function installCli() {
-    export INSTALL_DIR=${TMP_DIR}
-    install::kyma_cli
+  export INSTALL_DIR=${TMP_DIR}
+  install::kyma_cli
 }
 
-runTestLogCollector(){
-    if [ "${enableTestLogCollector}" = true ] ; then
-        if [[ "$BUILD_TYPE" == "master" ]]; then
-            shout "Install test-log-collector"
-            date
-            export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
-            ( 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-            )    
-        fi    
+runTestLogCollector() {
+  if [ "${enableTestLogCollector}" = true ]; then
+    if [[ "$BUILD_TYPE" == "master" ]]; then
+      shout "Install test-log-collector"
+      date
+      export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
+      (
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+      )
     fi
+  fi
 }
 
 trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+  log::info "Execute Job Guard"
+  "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 function generateAndExportClusterName() {
-    readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
-    readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
-    readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+  readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+  readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+  readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c10)
 
-    if [[ "$BUILD_TYPE" == "pr" ]]; then
-        readonly COMMON_NAME_PREFIX="gke-upgrade-pr"
-        # In case of PR, operate on PR number
-        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    elif [[ "$BUILD_TYPE" == "release" ]]; then
-        readonly COMMON_NAME_PREFIX="gke-upgrade-rel"
-        readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-        readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-        shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
-        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    else
-        # Otherwise (master), operate on triggering commit id
-        readonly COMMON_NAME_PREFIX="gke-upgrade-commit"
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    fi
+  if [[ "$BUILD_TYPE" == "pr" ]]; then
+    readonly COMMON_NAME_PREFIX="gke-upgrade-pr"
+    # In case of PR, operate on PR number
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+  elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly COMMON_NAME_PREFIX="gke-upgrade-rel"
+    readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+  else
+    # Otherwise (master), operate on triggering commit id
+    readonly COMMON_NAME_PREFIX="gke-upgrade-commit"
+    COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+  fi
 
-    ### Cluster name must be less than 40 characters!
-    export CLUSTER_NAME="${COMMON_NAME}"
+  ### Cluster name must be less than 40 characters!
+  export CLUSTER_NAME="${COMMON_NAME}"
 
-    export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
-    export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
+  export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
+  export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 }
 
 function reserveIPsAndCreateDNSRecords() {
-    DNS_SUBDOMAIN="${COMMON_NAME}"
-    shout "Authenticate with GCP"
-    date
-    init
+  DNS_SUBDOMAIN="${COMMON_NAME}"
+  log::info "Authenticate with GCP"
 
-    DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+  # requires "${GOOGLE_APPLICATION_CREDENTIALS}"
+  gcloud::authenticate
 
-    shout "Reserve IP Address for Ingressgateway"
-    date
-    GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-    GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-    CLEANUP_GATEWAY_IP_ADDRESS="true"
-    echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+  # requires "$DOCKER_IN_DOCKER_ENABLED" (via preset), needed for building the new installer image
+  docker::start
 
-    shout "Create DNS Record for Ingressgateway IP"
-    date
-    GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-    CLEANUP_GATEWAY_DNS_RECORD="true"
-    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+  DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-    DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-    export DOMAIN
+  log::info "Reserve IP Address for Ingressgateway"
+  GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
+  GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+  CLEANUP_GATEWAY_IP_ADDRESS="true"
+  log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+
+  log::info "Create DNS Record for Ingressgateway IP"
+  GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+  CLEANUP_GATEWAY_DNS_RECORD="true"
+  IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+
+  DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+  export DOMAIN
 }
 
 function generateAndExportCerts() {
-    shout "Generate self-signed certificate"
-    date
-    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+  log::info "Generate self-signed certificate"
+  CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
 
-    TLS_CERT=$(echo "${CERT_KEY}" | head -1)
-    export TLS_CERT
-    TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
-    export TLS_KEY
+  TLS_CERT=$(echo "${CERT_KEY}" | head -1)
+  export TLS_CERT
+  TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
+  export TLS_KEY
 }
 
 function createNetwork() {
-    export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-    NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-    if [ "$NETWORK_EXISTS" -gt 0 ]; then
-        shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-    else
-        shout "Network ${GCLOUD_NETWORK_NAME} exists"
-    fi
+  export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+  NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
+  if [ "$NETWORK_EXISTS" -gt 0 ]; then
+    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
+  else
+    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
+  fi
 }
 
 function createCluster() {
-    shout "Provision cluster: \"${CLUSTER_NAME}\""
-    date
-    ### For provision-gke-cluster.sh
-    export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
-    export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-    export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
-    if [[ -z "${MACHINE_TYPE}" ]]; then
-        export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-    fi
-    if [[ -z "${CLUSTER_VERSION}" ]]; then
-        export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-    fi
+  log::banner "Provision cluster: \"${CLUSTER_NAME}\""
+  ### For provision-gke-cluster.sh
+  export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
+  export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
+  export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
+  if [[ -z "${MACHINE_TYPE}" ]]; then
+    export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
+  fi
+  if [[ -z "${CLUSTER_VERSION}" ]]; then
+    export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
+  fi
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
-    CLEANUP_CLUSTER="true"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
+  CLEANUP_CLUSTER="true"
 }
 
 function getLastReleaseVersion() {
-    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" \
-     | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
 
-    echo "${version}"
+  echo "${version}"
 }
 
 function installKyma() {
-    kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
-    mkdir -p /tmp/kyma-gke-upgradeability
-    LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+  kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
+  mkdir -p /tmp/kyma-gke-upgradeability
+  LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
-    if [ -z "$LAST_RELEASE_VERSION" ]; then
-        shoutFail "Couldn't grab latest version from GitHub API, stopping."
-        exit 1
-    fi
+  if [ -z "$LAST_RELEASE_VERSION" ]; then
+    log::error "Couldn't grab latest version from GitHub API, stopping."
+    exit 1
+  fi
 
-    shout "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
-    date
-    kubectl create namespace "kyma-installer"
+  log::banner "Apply Kyma config from version ${LAST_RELEASE_VERSION}"
+  kubectl create namespace "kyma-installer"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-        --data "global.domainName=${DOMAIN}" \
-        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-        --data "test.acceptance.ui.logging.enabled=true" \
-        --label "component=core"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-        --data "application-registry.deployment.args.detailedErrorResponse=true" \
-        --label "component=application-connector"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+    --data "application-registry.deployment.args.detailedErrorResponse=true" \
+    --label "component=application-connector"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-        --data "global.tlsCrt=${TLS_CERT}" \
-        --data "global.tlsKey=${TLS_KEY}"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --label "component=istio"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
 
-    shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
-    date
+  log::info "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
-    if [[ "$LAST_RELEASE_VERSION" == "1.14.0" ]]; then
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-        kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
-    else
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer.yaml
-        curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
+  if [[ "$LAST_RELEASE_VERSION" == "1.14.0" ]]; then
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cluster.yaml" --output /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/last-release-installer.yaml
+  else
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer.yaml
+    curl -L --silent --fail --show-error "https://github.com/kyma-project/kyma/releases/download/${LAST_RELEASE_VERSION}/kyma-installer-cr-cluster.yaml" --output /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
 
-        kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml
-        kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
-    fi
+    kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-upgradeability/kyma-installer-cr-cluster.yaml
+  fi
 
-
-    shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
-    date
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
-}
-
-function checkTestPodTerminated() {
-    local namespace=$1
-    local retry=0
-    local runningPods=0
-    local succeededPods=0
-    local failedPods=0
-
-    while [[ "${retry}" -lt "${TEST_TIMEOUT_SEC}" ]]; do
-        # check status phase for each testing pods
-        for podName in $(kubectl get pods -n "${namespace}" -o json | jq -sr '.[]|.items[].metadata.name')
-        do
-            runningPods=$((runningPods + 1))
-            phase=$(kubectl get pod "${podName}" -n "${namespace}" -o json | jq '.status.phase')
-            echo "Test pod '${podName}' has phase: ${phase}"
-
-            if [[ "${phase}" == *"Succeeded"* ]]
-            then
-                succeededPods=$((succeededPods + 1))
-            fi
-
-            if [[ "${phase}" == *"Failed"* ]]; then
-                failedPods=$((failedPods + 1))
-            fi
-        done
-
-        # exit permanently if one of cluster has failed status
-        if [[ "${failedPods}" -gt 0 ]]
-        then
-            echo "${failedPods} pod(s) has failed status"
-            return 1
-        fi
-
-        # exit from function if each pod has succeeded status
-        if [[ "${runningPods}" == "${succeededPods}" ]]
-        then
-            echo "All pods in ${namespace} namespace have succeeded phase"
-            return 0
-        fi
-
-        # reset all counters and rerun checking
-        delta=$((runningPods-succeededPods))
-        echo "${delta} pod(s) in ${namespace} namespace have not terminated phase. Retry checking."
-        runningPods=0
-        succeededPods=0
-        retry=$((retry + 1))
-        sleep 5
-    done
-
-    echo "The maximum number of attempts: ${retry} has been reached"
-    return 1
+  log::banner "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
+  "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
 function installTestChartOrFail() {
@@ -387,144 +345,133 @@ function installTestChartOrFail() {
   local name=$2
   local namespace=$3
 
-  shout "Create ${name} resources"
-  date
+  log::info "Create ${name} resources"
 
   helm install "${name}" \
-      --namespace "${namespace}" \
-      --create-namespace \
-      "${path}" \
-      --timeout "${HELM_TIMEOUT_SEC}" \
-      --set domain="${DOMAIN}" \
-      --wait
+    --namespace "${namespace}" \
+    --create-namespace \
+    "${path}" \
+    --timeout "${HELM_TIMEOUT_SEC}" \
+    --set domain="${DOMAIN}" \
+    --wait
 
   prepareResult=$?
   if [[ "${prepareResult}" != 0 ]]; then
-      echo "Helm install ${name} operation failed: ${prepareResult}"
-      exit "${prepareResult}"
+    echo "Helm install ${name} operation failed: ${prepareResult}"
+    exit "${prepareResult}"
   fi
 }
 
-function waitForTestPodToFinish() {
-  local name=$1
-  local namespace=$2
-  local label=$3
+function createTestResources() {
+  log::banner "Install additional charts"
+  # install upgrade test
+  installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
 
-  set +o errexit
-  checkTestPodTerminated "${namespace}"
-  prepareTestResult=$?
-  set -o errexit
-
-  echo "Logs for prepare data operation to ${name}: "
-  # shellcheck disable=SC2046
-  kubectl logs -n "${namespace}" $(kubectl get pod -n "${name}" -l "${label}=${TEST_RESOURCE_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
-  if [[ "${prepareTestResult}" != 0 ]]; then
-      echo "Exit status for prepare ${name}: ${prepareTestResult}"
-      exit "${prepareTestResult}"
-  fi
+  # install external-solution test
+  installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 }
 
-createTestResources() {
-    injectTestingAddons
+function upgradeKymaToRelease() {
+  log::banner "Updating Kyma ${KYMA_UPDATE_TIMEOUT} to Version ${RELEASE_VERSION}"
+  log::info "Delete the kyma-installation CR and kyma-installer deployment"
+  # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
+  # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
+  kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+  kubectl delete Installation -n default kyma-installation
 
-    # install upgrade test
-    installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
+  # Remove the current installer to prevent it performing any action.
+  kubectl delete deployment -n kyma-installer kyma-installer
 
-    # install external-solution test
-    installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
+  echo "Use released artifacts"
+  gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
 
-    # wait for upgrade test to finish
-    waitForTestPodToFinish "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
+  log::info "Update kyma installer"
+  kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
 
-    # wait for external-solution test to finish
-    waitForTestPodToFinish "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
+  log::info "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
+  "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+}
+
+function upgradeKymaToCheckedoutVersion() {
+  log::banner "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT} from local sources"
+
+  local KYMA_COMMIT_ID
+  KYMA_COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+
+  local TEST_INFRA_COMMIT_ID
+  TEST_INFRA_COMMIT_ID=$(cd "$TEST_INFRA_SOURCES_DIR" && git rev-parse --short HEAD)
+
+  local IMAGE_REPO_NAME="$REPO_NAME"
+  if [[ "$IMAGE_REPO_NAME" == "test-infra" ]]; then
+    IMAGE_REPO_NAME="kyma"
+  fi
+
+  KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${IMAGE_REPO_NAME}:KYMA-${KYMA_COMMIT_ID:-unknown}-TI-${TEST_INFRA_COMMIT_ID:-unknown}"
+
+  (
+    set -x
+    kyma upgrade \
+      --ci \
+      --source local \
+      --src-path "${KYMA_SOURCES_DIR}" \
+      --custom-image "${KYMA_INSTALLER_IMAGE}" \
+      --components "${KYMA_SOURCES_DIR}/installation/resources/installer-cr-cluster.yaml.tpl" \
+      --timeout "${KYMA_UPDATE_TIMEOUT}"
+  )
+}
+
+function upgradeKymaToCommit() {
+  COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
+  log::banner "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT} to Kyma commit: ${COMMIT_ID}"
+  (
+    set -x
+    kyma upgrade \
+      --ci \
+      --source "${COMMIT_ID}" \
+      --timeout "${KYMA_UPDATE_TIMEOUT}"
+  )
 }
 
 function upgradeKyma() {
-    if [[ "$BUILD_TYPE" == "release" || "$BUILD_TYPE" == "pr" ]]; then
-        shout "Delete the kyma-installation CR and kyma-installer deployment"
-        # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
-        # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
-        kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-        kubectl delete Installation -n default kyma-installation
-
-        # Remove the current installer to prevent it performing any action.
-        kubectl delete deployment -n kyma-installer kyma-installer
-
-        if [[ "$BUILD_TYPE" == "release" ]]; then
-            echo "Use released artifacts"
-            gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-
-            shout "Update kyma installer"
-            kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-        else
-            shout "Build Kyma Installer Docker image"
-            date
-            COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-            KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
-            export KYMA_INSTALLER_IMAGE
-            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-            CLEANUP_DOCKER_IMAGE="true"
-
-            KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-            INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-            INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
-            shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
-            "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-            | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-            | sed -e "s/__VERSION__/0.0.1/g" \
-            | sed -e "s/__.*__//g" \
-            | kubectl apply -f-
-        fi
-
-        shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
-        date
-        "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
-    # remaining case is when BUILD_TYPE is "master"
-    else
-        shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
-        date
-
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
-        (
-        set -x
-        kyma upgrade \
-            --ci \
-            --source "${COMMIT_ID}" \
-            --timeout "${KYMA_UPDATE_TIMEOUT}"
-        )
-    fi
-
-    if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-        shout "Create DNS Record for Apiserver proxy IP"
-        date
-        APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-        CLEANUP_APISERVER_DNS_RECORD="true"
-        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-    fi
-}
-
-remove_addons_if_necessary() {
-  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
-
-  if [ -z "$tdWithAddon" ]
-  then
-      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
-      removeTestingAddons
-      if [[ $? -eq 1 ]]; then
-        exit 1
-      fi
+  if [[ "$BUILD_TYPE" == "release" ]]; then
+    upgradeKymaToRelease
+  elif [[ "$BUILD_TYPE" == "pr" ]]; then
+    upgradeKymaToCheckedoutVersion
   else
-      echo "- Skipping removing ClusterAddonsConfiguration"
+    upgradeKymaToCommit
+  fi
+
+  if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+    log::info "Create DNS Record for Apiserver proxy IP"
+    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    CLEANUP_APISERVER_DNS_RECORD="true"
+    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
   fi
 }
 
+# testKyma executes the kyma-testing.sh. labelqueries can be passed as arguments and will be passed to the kyma cli
 function testKyma() {
-    shout "Test Kyma"
-    date
-    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+  testing::inject_addons_if_necessary
+
+  local labelquery=${1}
+  local suitename=${2}
+  local test_args=()
+
+  if [[ -n ${labelquery} ]]; then
+    test_args+=("-l")
+    test_args+=("${labelquery}")
+  fi
+
+  if [[ -n ${suitename} ]]; then
+    test_args+=("-n")
+    test_args+=("${suitename}")
+  fi
+
+  log::banner "Test Kyma " "${test_args[@]}"
+  "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
+
+  testing::remove_addons_if_necessary
 }
 
 # Used to detect errors for logging purposes
@@ -546,15 +493,15 @@ installKyma
 
 createTestResources
 
-upgradeKyma
-
-remove_addons_if_necessary
-
 enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
-testKyma
+testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
 
-shout "Job finished with success"
+upgradeKyma
+
+testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+
+log::success "Job finished with success"
 
 # Mark execution as successfully
 ERROR_LOGGING_GUARD="false"
