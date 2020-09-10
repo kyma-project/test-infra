@@ -44,7 +44,6 @@ function start_docker() {
 function authenticate() {
     echo "Authenticating"
     gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
-
 }
 
 function authenticateSaGcr() {
@@ -106,7 +105,7 @@ function configure_git() {
 function init() {
     echo "Initializing"
 
-    if [[ ! -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+    if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
         authenticate
     fi
 
@@ -114,7 +113,7 @@ function init() {
         start_docker
     fi
 
-    if [[ ! -z "${BOT_GITHUB_SSH_PATH}" ]] || [[ ! -z "${BOT_GITHUB_EMAIL}" ]] || [[ ! -z "${BOT_GITHUB_NAME}" ]]; then
+    if [[ -n "${BOT_GITHUB_SSH_PATH}" ]] || [[ -n "${BOT_GITHUB_EMAIL}" ]] || [[ -n "${BOT_GITHUB_NAME}" ]]; then
         configure_git
     fi
 }
