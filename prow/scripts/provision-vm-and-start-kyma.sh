@@ -127,8 +127,7 @@ echo " Done"
 #----
 
 shout "Triggering the installation"
-gcloud compute scp --quiet --recurse --zone="${ZONE}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh" "kyma-integration-test-${RANDOM_ID}":~/kyma-integration-minikube.sh
-gcloud compute ssh --quiet --zone="${ZONE}" --ssh-flag="-ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" -- "sudo ./kyma-integration-minikube.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
 
 shout "Fetch JUnit test results and store them in job artifacts"
 gcloud compute scp --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
