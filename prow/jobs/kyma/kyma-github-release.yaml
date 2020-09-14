@@ -30,6 +30,11 @@ job_labels_template: &job_labels_template
 
 presets:
 - labels:
+    preset-target-commit-1.16: "true"
+  env:
+    - name: RELEASE_TARGET_COMMIT
+      value: release-1.16
+- labels:
     preset-target-commit-1.15: "true"
   env:
     - name: RELEASE_TARGET_COMMIT
@@ -48,6 +53,22 @@ presets:
   
 postsubmits:
   kyma-project/kyma:
+  - name: post-rel116-kyma-github-release
+    cluster: trusted-workload
+    annotations:
+      testgrid-dashboards: kyma_release-1.16
+      description: GitHub Release job for Kyma 1.16.
+      testgrid-days-of-results: "90"
+    branches:
+      - release-1.16
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.16
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.16: "true"
   - name: post-rel115-kyma-github-release
     cluster: trusted-workload
     annotations:
