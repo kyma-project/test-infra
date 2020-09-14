@@ -477,6 +477,8 @@ templates:
           <<: *kyma_generic_component
           path: components/xip-patch
           since: "1.7"
+          until: "1.16"
+          optional: true
       - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer-generic.yaml
         values:
           <<: *cluster_default
