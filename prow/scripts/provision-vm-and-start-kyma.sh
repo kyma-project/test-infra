@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# This script is designed to provision a new vm and start kyma.It takes an optional positionail parameter using --image flag
+# This script is designed to provision a new vm and start kyma.It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
 set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly TMP_DIR=$(mktemp -d)
+readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_kyma_octopus-test-suite.xml"
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
@@ -81,7 +83,7 @@ if [[ -z "$IMAGE" ]]; then
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
-
+STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
     shout "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
     gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
@@ -93,6 +95,8 @@ for ZONE in ${EU_ZONES}; do
     shout "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
     shout "Could not create machine in zone ${ZONE}"
 done || exit 1
+ENDTIME=$(date +%s)
+echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
@@ -105,5 +109,9 @@ for i in $(seq 1 5); do
 done;
 
 shout "Triggering the installation"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
 
-gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
+shout "Fetch JUnit test results and store them in job artifacts"
+gcloud compute scp --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
+
+shout "all done"
