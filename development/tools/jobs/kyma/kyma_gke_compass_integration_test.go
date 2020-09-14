@@ -51,7 +51,7 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 
 func TestKymaGKECompassIntegrationJobsReleases(t *testing.T) {
 	for _, currentRelease := range releases.GetAllKymaReleases() {
-		if currentRelease.IsNotOlderThan(releases.Release113) {
+		if currentRelease.IsNotOlderThan(releases.Release114) {
 			t.Run(currentRelease.String(), func(t *testing.T) {
 				jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-gke-compass-integration.yaml")
 				// THEN
