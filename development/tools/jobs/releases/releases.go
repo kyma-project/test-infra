@@ -8,7 +8,6 @@ var (
 	Release116 = mustParse("1.16")
 	Release115 = mustParse("1.15")
 	Release114 = mustParse("1.14")
-	Release113 = mustParse("1.13")
 )
 
 // GetAllKymaReleases returns all supported kyma release branches
@@ -17,7 +16,6 @@ func GetAllKymaReleases() []*SupportedRelease {
 		Release116,
 		Release115,
 		Release114,
-		Release113,
 	}
 }
 

@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14|1\.13)-monitoring$
+    - ^release-(1\.16|1\.15|1\.14)-monitoring$
   run_if_changed: "^tests/integration/monitoring/|^common/makefiles/"
   spec:
     containers:
