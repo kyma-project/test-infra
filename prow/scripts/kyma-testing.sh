@@ -24,6 +24,7 @@ function printUsage() {
   echo "
   Usage:
   -l <label expression> (optional, specify multiple times): Specify a label expression to limit execution testdefinitions by labels
+  -n <cluster-test-suite-name> (optional): Specify the name of the cluster test suite used for executing the set of testdefinitions
   "
 }
 
