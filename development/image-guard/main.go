@@ -6,9 +6,15 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
+	"k8s.io/api/admission/v1beta1"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
 	stdlog "log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	admissioncontrol "github.com/elithrar/admission-control"
@@ -63,34 +69,12 @@ func main() {
 	// Default health-check endpoint
 	r.HandleFunc("/healthz", healthCheckHandler).Methods(http.MethodGet)
 
-	// Example admission handler endpoints
+	// Admission control endpoints
 	admissions := r.PathPrefix("/admission-control").Subrouter()
-	admissions.Handle("/log-pod-images", &admissioncontrol.AdmissionHandler{
-		AdmitFunc: admissioncontrol.DenyIngresses(nil),
+	admissions.Handle("/enforce-image-registry", &admissioncontrol.AdmissionHandler{
+		AdmitFunc: enforceImageRegistries(),
 		Logger:    logger,
-	}).Methods(http.MethodPost)
-	admissions.Handle("/deny-undefined-docker-registries", &admissioncontrol.AdmissionHandler{
-		// nil = don't whitelist any namespace.
-		AdmitFunc: admissioncontrol.DenyPublicLoadBalancers(nil, admissioncontrol.GCP),
-		Logger:    logger,
-	}).Methods(http.MethodPost)
-	admissions.Handle("/deny-public-services/azure", &admissioncontrol.AdmissionHandler{
-		AdmitFunc: admissioncontrol.DenyPublicLoadBalancers(nil, admissioncontrol.Azure),
-		Logger:    logger,
-	}).Methods(http.MethodPost)
-	admissions.Handle("/deny-public-services/aws", &admissioncontrol.AdmissionHandler{
-		AdmitFunc: admissioncontrol.DenyPublicLoadBalancers(nil, admissioncontrol.AWS),
-		Logger:    logger,
-	}).Methods(http.MethodPost)
-	admissions.Handle("/enforce-pod-annotations", &admissioncontrol.AdmissionHandler{
-		AdmitFunc: admissioncontrol.EnforcePodAnnotations(
-			[]string{"kube-system"},
-			map[string]func(string) bool{
-				"k8s.questionable.services/hostname": func(string) bool { return true },
-			}),
-		Logger: logger,
-	}).Methods(http.MethodPost)
-
+	})
 	// HTTP server
 	timeout := time.Second * 15
 	srv := &http.Server{
@@ -163,4 +147,50 @@ func printAvailableRoutes(router *mux.Router, logger log.Logger, msg string) htt
 	}
 
 	return http.HandlerFunc(fn)
+}
+
+func enforceImageRegistries(registries ...string) admissioncontrol.AdmitFunc {
+	return func(reviewRequest *v1beta1.AdmissionReview) (*v1beta1.AdmissionResponse, error) {
+		kind := reviewRequest.Request.Kind.Kind
+		resp := &v1beta1.AdmissionResponse{Allowed: false, Result: &metav1.Status{}}
+		if kind != "Pod" {
+			resp.Allowed = true
+			resp.Result.Message = fmt.Sprintf("Got non-Pod type (%s)", kind)
+			return resp, nil
+		}
+		pod := v1.Pod{}
+		deserializer := serializer.NewCodecFactory(runtime.NewScheme()).UniversalDeserializer()
+		if _, _, err := deserializer.Decode(reviewRequest.Request.Object.Raw, nil, &pod); err != nil {
+			return nil, err
+		}
+		for _, c := range pod.Spec.Containers {
+			for _, r := range registries {
+				if strings.HasPrefix(c.Image, r) {
+					resp.Allowed = true
+					resp.Result.Message = fmt.Sprintf("trusted registry validated for image (%s)", c.Image)
+					return resp, nil
+				}
+			}
+		}
+		return resp, fmt.Errorf("non-trusted registry was defined for one of the containers. available registries: %s", registries)
+	}
+}
+
+// TODO (@Ressetkk): still WIP - figuring out the best approach
+func logUsedImages() admissioncontrol.AdmitFunc {
+	return func(reviewRequest *v1beta1.AdmissionReview) (*v1beta1.AdmissionResponse, error) {
+		kind := reviewRequest.Request.Kind.Kind
+		resp := &v1beta1.AdmissionResponse{Allowed: true, Result: &metav1.Status{}}
+		if kind == "Pod" {
+			pod := v1.Pod{}
+			deserializer := serializer.NewCodecFactory(runtime.NewScheme()).UniversalDeserializer()
+			if _, _, err := deserializer.Decode(reviewRequest.Request.Object.Raw, nil, &pod); err != nil {
+				return nil, err
+			}
+			for _, c := range pod.Spec.Containers {
+				fmt.Println(c.Image)
+			}
+		}
+		return resp, nil
+	}
 }
