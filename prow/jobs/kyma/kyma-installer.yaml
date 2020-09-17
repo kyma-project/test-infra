@@ -31,6 +31,19 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
 
+    - name: pre-rel116-kyma-installer
+      cluster: untrusted-workload
+      branches:
+        - release-1.16
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
+      labels:
+        <<: *job_labels_template
+        preset-build-release: "true"
+
     - name: pre-rel115-kyma-installer
       cluster: untrusted-workload
       branches:
@@ -53,19 +66,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-      labels:
-        <<: *job_labels_template
-        preset-build-release: "true"
-
-    - name: pre-rel113-kyma-installer
-      cluster: untrusted-workload
-      branches:
-        - release-1.13
-      <<: *job_template
-      always_run: false
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.13
       labels:
         <<: *job_labels_template
         preset-build-release: "true"
