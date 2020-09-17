@@ -83,6 +83,28 @@ gke_job_template: &gke_job_template
             memory: 200Mi
             cpu: 80m
 
+gke_for_testing_job_template: &gke_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-for-testing.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
 gke_upgrade_job_template: &gke_upgrade_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
