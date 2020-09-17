@@ -296,6 +296,21 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+
+    - name: pre-master-kyma-gke-integration-for-testing
+      cluster: untrusted-workload
+      optional: true
+      branches:
+        - ^master$
+      <<: *gke_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
     - name: pre-rel115-kyma-gke-integration
       cluster: untrusted-workload
       branches:
