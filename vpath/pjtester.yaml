@@ -4,4 +4,3 @@ prConfigs:
   kyma-project:
     kyma:
       prNumber: 9473
-configPath: "test-infra/prow/custom_config.yaml"
