@@ -81,7 +81,7 @@ gke_job_template: &gke_job_template
             memory: 200Mi
             cpu: 80m
 
-gke_for_testing_job_template: &gke_job_template
+gke_for_testing_job_template: &gke_for_testing_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -303,7 +303,7 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - ^master$
-      <<: *gke_job_template
+      <<: *gke_for_testing_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
