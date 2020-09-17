@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-function-controller$
+    - ^release-(1\.16|1\.15|1\.14)-function-controller$
   run_if_changed: "^tests/function-controller/|^common/makefiles/"
   spec:
     containers:
