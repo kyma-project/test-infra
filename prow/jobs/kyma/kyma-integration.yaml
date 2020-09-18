@@ -77,7 +77,7 @@ gke_job_template: &gke_job_template
             value: "europe-west4-b"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-for-testing.sh"
         resources:
           requests:
             memory: 200Mi
