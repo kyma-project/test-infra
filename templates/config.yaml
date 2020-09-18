@@ -562,6 +562,13 @@ templates:
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/event-publisher-proxy
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
@@ -883,13 +890,6 @@ templates:
           <<: *go_kyma_component_v20181119
           path: components/xip-patch
           until: "1.6"
-      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy.yaml
-        values:
-          <<: *cluster_default
-          <<: *go_kyma_component_1_14
-          path: components/event-publisher-proxy
-          since: "1.16"
-          optional: true
       - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
         values:
           <<: *cluster_default
