@@ -569,6 +569,13 @@ templates:
           path: components/event-publisher-proxy
           since: "1.17"
           optional: true
+      - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/eventing-controller
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
