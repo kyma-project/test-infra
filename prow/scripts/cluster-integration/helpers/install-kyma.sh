@@ -66,7 +66,7 @@ function installKyma() {
         # shellcheck disable=SC1090
         source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
 
-        cat << EOF > $PWD/istio-overrides
+        cat << EOF > "$PWD/istio-overrides"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:

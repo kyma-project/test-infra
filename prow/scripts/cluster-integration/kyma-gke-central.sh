@@ -237,7 +237,7 @@ kubectl create namespace "kyma-installer"
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
-cat << EOF > $PWD/istio-overrides
+cat << EOF > "$PWD/istio-overrides"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:

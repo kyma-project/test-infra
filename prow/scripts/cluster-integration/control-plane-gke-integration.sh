@@ -213,7 +213,7 @@ function applyKymaOverrides() {
     --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
-  cat << EOF > $PWD/istio-overrides
+  cat << EOF > "$PWD/istio-overrides"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:
