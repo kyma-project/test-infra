@@ -58,6 +58,15 @@ presets:
         value: kyma-minio-gateway
       - name: AZURE_REGION
         value: westeurope
+  {{- range .Values.gkeVersions }}
+  - labels:
+      preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+    env:
+      - name: GKE_K8S_VERSION
+        value: {{ .version }}
+      - name: GKE_RELEASE_CHANNEL
+        value: {{ .channel }}
+  {{- end }}
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -293,6 +302,21 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
+{{- range .Values.gkeVersions }}
+    - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-integration
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+      <<: *gke_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        <<: *gke_job_labels_template
+        preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+{{- end }}
+
     - name: pre-master-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -337,6 +361,23 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
+{{- range .Values.gkeVersions }}
+    - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-upgrade
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+      <<: *gke_upgrade_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+{{- end }}
+
     - name: pre-master-kyma-gke-central-connector
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -379,6 +420,23 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-{{ . }}
+{{- end }}
+
+{{- range .Values.gkeVersions }}
+    - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-central-connector
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+      <<: *gke_central_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_job_labels_template
+        preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 {{- end }}
 
 {{- range (matchingReleases .Global.releases "1.11" "1.11") }}
