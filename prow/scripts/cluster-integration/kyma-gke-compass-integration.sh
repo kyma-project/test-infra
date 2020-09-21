@@ -233,7 +233,7 @@ spec:
             type: LoadBalancer
 EOF
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
     --label "component=istio" \
     --file "$PWD/istio-overrides"
 }
