@@ -63,9 +63,9 @@ presets:
   - labels:
       preset-gke-ver1_17_9: "true"
     env:
-      - name: GKE_K8S_VERSION
+      - name: CLUSTER_VERSION
         value: 1.17.9-gke.1504
-      - name: GKE_RELEASE_CHANNEL
+      - name: RELEASE_CHANNEL
         value: rapid
 
 gke_job_template: &gke_job_template
