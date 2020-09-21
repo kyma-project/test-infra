@@ -101,10 +101,15 @@ function main() {
   ${kc} scale --replicas=0 deployment/console-backend
   echo " CBS stopped for testing purposes"
 
+  KYMA_TESTS_WITHOUT_CBS=${KYMA_TESTS/"console-backend"/""}
+  KYMA_TESTS_WITHOUT_CONSOLE=${KYMA_TESTS_WITHOUT_CBS/"console-web"/""}
+  echo "${KYMA_TESTS}"
+  echo "${KYMA_TESTS_WITHOUT_CONSOLE}"
+
   log::info "- Running Kyma tests"
-  # match all tests
+  # match all tests besides console chart
   # shellcheck disable=SC2086
-  kyma test run serverless \
+  kyma test run ${KYMA_TESTS_WITHOUT_CONSOLE} \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
@@ -136,7 +141,7 @@ function main() {
   ${kc} scale --replicas=1 deployment/console-backend
   echo " CBS started for testing console domain"
 
-  log::info "- Running Console tests"
+  log::info "- Running Kyma Console tests"
   kyma test run console-web console-backend \
                 --name "${CONSOLE_SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
