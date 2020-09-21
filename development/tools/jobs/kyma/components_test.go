@@ -89,6 +89,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Optional(),
+			jobsuite.Until(releases.Release116),
 		},
 	},
 	{path: "istio-installer", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
