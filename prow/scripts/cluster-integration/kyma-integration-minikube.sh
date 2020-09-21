@@ -4,6 +4,7 @@ set -e
 
 readonly driver="none"
 readonly testsuiteName="testsuite-all"
+KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
 install::kyma_cli() {
     local settings
@@ -58,7 +59,7 @@ echo "--> Done"
 
 echo "--> Provision Kyma cluster on minikube using VM driver ${driver}"
 STARTTIME=$(date +%s)
-kyma provision minikube \
+yes | kyma provision minikube \
                --ci \
                --vm-driver="${driver}"
 ENDTIME=$(date +%s)
@@ -84,7 +85,8 @@ kyma test run \
           --ci \
           --watch \
           --max-retries=1 \
-          --name="${testsuiteName}"
+          --name="${testsuiteName}" \
+          --timeout="${KYMA_TEST_TIMEOUT}"
 
 ENDTIME=$(date +%s)
 echo "  Test time: $((ENDTIME - STARTTIME)) seconds."

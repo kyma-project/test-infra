@@ -23,7 +23,7 @@ images:
 - source: "oryd/hydra:v1.4.6"
 - source: "oryd/oathkeeper-maester:v0.1.0"
 - source: "oryd/oathkeeper:v0.38.2-beta.1-alpine"
-- source: "postgres:11.7-alpine"
+- source: "postgres:11.9-alpine"
 - source: "prom/pushgateway:v1.2.0"
 - source: "quay.io/coreos/configmap-reload:v0.0.1"
 - source: "quay.io/coreos/etcd:v3.3.18"

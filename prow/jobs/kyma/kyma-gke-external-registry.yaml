@@ -51,13 +51,27 @@ presubmits: # runs on PRs
         - ^master$
       <<: *gke_job_template
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\\\serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel116-kyma-gke-external-registry
+      cluster: untrusted-workload
+      branches:
+        - release-1.16
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.16
     - name: pre-rel115-kyma-gke-external-registry
       cluster: untrusted-workload
       branches:

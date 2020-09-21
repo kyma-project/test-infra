@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.16"
+  nextRelease: "1.17"
   releases:
+    - "1.16"
     - "1.15"
     - "1.14"
-    - "1.13"
   whitesource:
     - name: "control-plane"
       language: "golang-mod"
@@ -284,7 +284,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/application-gateway-legacy-tests
           since: "1.16"
-          optional: true
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
         values:
           <<: *cluster_default
@@ -563,6 +562,13 @@ templates:
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/event-publisher-proxy
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default

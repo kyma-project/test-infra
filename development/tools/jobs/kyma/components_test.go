@@ -128,7 +128,7 @@ var components = []struct {
 	{path: "function-runtimes", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release113),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "event-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -154,6 +154,13 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.AllReleases(),
+		},
+	},
+	{path: "event-publisher-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release117),
+			jobsuite.Optional(),
 		},
 	},
 }

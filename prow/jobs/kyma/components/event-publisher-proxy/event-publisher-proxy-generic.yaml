@@ -19,8 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-external-solution-integration$
-  run_if_changed: "^tests/end-to-end/external-solution-integration/|^common/makefiles/"
+  run_if_changed: "^components/event-publisher-proxy/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +28,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/external-solution-integration"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/event-publisher-proxy"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,15 +36,18 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-end-to-end-external-solution-integration
+    - name: pre-kyma-components-event-publisher-proxy
       cluster: untrusted-workload
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tests-end-to-end-external-solution-integration
+    - name: post-kyma-components-event-publisher-proxy
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

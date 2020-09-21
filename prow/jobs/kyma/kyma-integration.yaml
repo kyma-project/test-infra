@@ -249,6 +249,17 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel116-kyma-integration
+      cluster: untrusted-workload
+      branches:
+        - release-1.16
+      always_run: false
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
     - name: pre-rel115-kyma-integration
       cluster: untrusted-workload
       branches:
@@ -271,17 +282,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-rel113-kyma-integration
-      cluster: untrusted-workload
-      branches:
-        - release-1.13
-      always_run: false
-      <<: *vm_job_template
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.13
 
     - name: pre-master-kyma-gke-integration
       cluster: untrusted-workload
@@ -296,6 +296,20 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel116-kyma-gke-integration
+      cluster: untrusted-workload
+      branches:
+        - release-1.16
+      <<: *gke_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.16
     - name: pre-rel115-kyma-gke-integration
       cluster: untrusted-workload
       branches:
@@ -324,20 +338,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.14
-    - name: pre-rel113-kyma-gke-integration
-      cluster: untrusted-workload
-      branches:
-        - release-1.13
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.13
 
     - name: pre-master-kyma-gke-upgrade
       cluster: untrusted-workload
@@ -352,6 +352,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel116-kyma-gke-upgrade
+      cluster: untrusted-workload
+      branches:
+        - release-1.16
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
     - name: pre-rel115-kyma-gke-upgrade
       cluster: untrusted-workload
       branches:
@@ -376,18 +388,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-rel113-kyma-gke-upgrade
-      cluster: untrusted-workload
-      branches:
-        - release-1.13
-      <<: *gke_upgrade_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.13
 
     - name: pre-master-kyma-gke-central-connector
       cluster: untrusted-workload
@@ -402,6 +402,18 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel116-kyma-gke-central-connector
+      cluster: untrusted-workload
+      branches:
+        - release-1.16
+      <<: *gke_central_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
     - name: pre-rel115-kyma-gke-central-connector
       cluster: untrusted-workload
       branches:
@@ -426,18 +438,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-rel113-kyma-gke-central-connector
-      cluster: untrusted-workload
-      branches:
-        - release-1.13
-      <<: *gke_central_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.13
 
 postsubmits:
   kyma-project/kyma:
