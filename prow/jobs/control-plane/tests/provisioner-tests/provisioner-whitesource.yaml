@@ -17,7 +17,7 @@ whitesource_job_template: &whitesource_job_template
       path_alias: github.com/kyma-project/test-infra
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200513-7e0fade2
+      - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
         securityContext:
           privileged: true
         command:
