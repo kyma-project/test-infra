@@ -213,9 +213,22 @@ function applyKymaOverrides() {
     --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
+  cat << EOF > $PWD/istio-overrides
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --label "component=istio"
+    --label "component=istio" \
+    --file "$PWD/istio-overrides"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "api-gateway-overrides" \
     --data "tests.env.gatewayName=compass-istio-gateway" \

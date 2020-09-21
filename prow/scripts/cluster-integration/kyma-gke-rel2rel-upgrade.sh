@@ -277,9 +277,22 @@ installKyma() {
         --data "global.tlsCrt=${TLS_CERT}" \
         --data "global.tlsKey=${TLS_KEY}"
 
+      cat << EOF > $PWD/istio-overrides
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
+
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --label "component=istio"
+        --label "component=istio" \
+        --file "$PWD/istio-overrides"
 
     if [[ "$SOURCE_VERSION" == "1.14.0" ]]; then
         shout "Use release artifacts from version ${SOURCE_VERSION}"
