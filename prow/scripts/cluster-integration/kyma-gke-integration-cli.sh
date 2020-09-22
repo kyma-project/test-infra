@@ -82,6 +82,12 @@ cleanup() {
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
     fi
 
+    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+        shout "Release Gateway IP Address"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+    fi
+
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         shout "Delete Apiserver proxy DNS Record"
         date
@@ -125,6 +131,21 @@ init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 
+shout "Reserve IP Address for Ingressgateway"
+date
+GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
+GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+CLEANUP_GATEWAY_IP_ADDRESS="true"
+echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+
+
+shout "Create DNS Record for Ingressgateway IP"
+date
+GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+CLEANUP_GATEWAY_DNS_RECORD="true"
+IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+
+
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 if [ "$NETWORK_EXISTS" -gt 0 ]; then
     shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
@@ -165,24 +186,49 @@ mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
 export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
 
+COMPONENT_OVERRIDES_FILE="component-overrides.yaml"
+COMPONENT_OVERRIDES=$(cat << EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "installation-config-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+data:
+  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "istio-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: istio
+data:
+  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+EOF
+)
+
+echo "${COMPONENT_OVERRIDES}" > "${COMPONENT_OVERRIDES_FILE}"
+
 shout "Installing Kyma"
 date
-kyma install --ci --source latest --domain "${DOMAIN}" --tlsCert "${TLS_CERT}" --tlsKey "${TLS_KEY}"
-
+kyma install \
+    --ci \
+    --source latest-published \
+    -o "${COMPONENT_OVERRIDES_FILE}" \
+    --domain "${DOMAIN}" \
+    --tlsCert "${TLS_CERT}" \
+    --tlsKey "${TLS_KEY}"
 
 shout "Checking the versions"
 date
 kyma version
 
-
-if [ -n "$(kubectl get service -n istio-system istio-ingressgateway --ignore-not-found)" ]; then
-    shout "Create DNS Record for Ingressgateway IP"
-    date
-    GATEWAY_IP_ADDRESS=$(kubectl get service -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-    CLEANUP_GATEWAY_DNS_RECORD="true"
-    IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-fi
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     shout "Create DNS Record for Apiserver proxy IP"
@@ -198,12 +244,12 @@ shout "Running Kyma tests"
 date
 
 kyma test run \
-                --name "${SUITE_NAME}" \
-                --concurrency "${CONCURRENCY}" \
-                --max-retries 1 \
-                --timeout "1h" \
-                --watch \
-                --non-interactive
+    --name "${SUITE_NAME}" \
+    --concurrency "${CONCURRENCY}" \
+    --max-retries 1 \
+    --timeout "1h" \
+    --watch \
+    --non-interactive
 
 
 echo "Test Summary"
