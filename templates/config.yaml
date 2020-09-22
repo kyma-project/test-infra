@@ -562,6 +562,12 @@ templates:
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/event-publisher-proxy
+          since: "1.17"
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
