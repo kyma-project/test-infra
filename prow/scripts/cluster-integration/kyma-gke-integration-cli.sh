@@ -186,8 +186,8 @@ mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
 export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
 
-componentOverridesFile="component-overrides.yaml"
-componentOverrides=$(cat << EOF
+COMPONENT_OVERRIDES_FILE="component-overrides.yaml"
+COMPONENT_OVERRIDES=$(cat << EOF
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -213,14 +213,14 @@ data:
 EOF
 )
 
-echo "${componentOverrides}" > "${componentOverridesFile}"
+echo "${COMPONENT_OVERRIDES}" > "${COMPONENT_OVERRIDES_FILE}"
 
 shout "Installing Kyma"
 date
 kyma install \
     --ci \
     --source latest-published \
-    -o "${componentOverridesFile}" \
+    -o "${COMPONENT_OVERRIDES_FILE}" \
     --domain "${DOMAIN}" \
     --tlsCert "${TLS_CERT}" \
     --tlsKey "${TLS_KEY}"
