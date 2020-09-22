@@ -101,8 +101,8 @@ function main() {
   ${kc} scale --replicas=0 deployment/console-backend
   echo " CBS stopped for testing purposes"
 
-  KYMA_TESTS_WITHOUT_CBS=${KYMA_TESTS/"console-backend"/""}
-  KYMA_TESTS_WITHOUT_CONSOLE=${KYMA_TESTS_WITHOUT_CBS/"console-web"/""}
+  KYMA_TESTS_WITHOUT_CBS=${KYMA_TESTS/console-backend/}
+  KYMA_TESTS_WITHOUT_CONSOLE=${KYMA_TESTS_WITHOUT_CBS/console-web/}
   echo "${KYMA_TESTS}"
   echo "${KYMA_TESTS_WITHOUT_CONSOLE}"
 
