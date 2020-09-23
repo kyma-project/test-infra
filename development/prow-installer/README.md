@@ -23,7 +23,7 @@ Additionally, the `--remove true` parameter will delete all resources created by
 
 ## Config
 
-For an example of a configuration please see [prow-installer-config.yaml](https://github.com/kyma-project/test-infra/blob/master/development/prow-installer/config/prow-installer-config.yaml)
+For an example of a configuration please see [prow-installer-config.yaml](https://github.com/kyma-project/test-infra/blob/master/development/prow-installer/config/prow-installer-config.yaml).
 
 ## About
 
