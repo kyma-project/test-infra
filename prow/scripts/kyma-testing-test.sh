@@ -98,13 +98,17 @@ function main() {
   inject_addons_if_necessary
 
 
+  echo "Stopping CBS for testing purposes.."
   ${kc} scale --replicas=0 deployment/console-backend -n kyma-system
-  echo " CBS stopped for testing purposes"
 
-  KYMA_TESTS_WITHOUT_CBS=${KYMA_TESTS/console-backend/}
-  KYMA_TESTS_WITHOUT_CONSOLE=${KYMA_TESTS_WITHOUT_CBS/console-web/}
-  echo "${KYMA_TESTS}"
-  echo "${KYMA_TESTS_WITHOUT_CONSOLE}"
+  echo "KYMA_TESTS: ${KYMA_TESTS}"
+  TESTS = $(kyma test definitions --ci | tr '\r\n' ' ')
+
+  KYMA_TESTS_WITHOUT_CBS=$(echo ${TESTS} | sed 's/console-backend//g')
+  KYMA_TESTS_WITHOUT_CONSOLE=$(echo ${KYMA_TESTS_WITHOUT_CBS}| sed 's/console-web//g')
+  
+  echo "TESTS: ${TESTS}"
+  echo "KYMA_TESTS_WITHOUT_CONSOLE: ${KYMA_TESTS_WITHOUT_CONSOLE}"
 
   log::info "- Running Kyma tests"
   # match all tests besides console chart
@@ -139,7 +143,7 @@ function main() {
 
 
   ${kc} scale --replicas=1 deployment/console-backend -n kyma-system
-  echo " CBS started for testing console domain"
+  echo "Starting CBS for testing console domain"
 
   log::info "- Running Kyma Console tests"
   kyma test run console-web console-backend \
