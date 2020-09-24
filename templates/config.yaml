@@ -444,6 +444,13 @@ templates:
           path: components/kubeconfig-service
           since: "1.14"
           optional: false
+      - to: ../prow/jobs/control-plane/components/subscription-cleanup-job/subscription-cleanup-job-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *control_plane_generic_component
+          path: components/subscription-cleanup-job
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *cluster_default
