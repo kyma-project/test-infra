@@ -98,7 +98,7 @@ function main() {
   inject_addons_if_necessary
 
 
-  ${kc} scale --replicas=0 deployment/console-backend
+  ${kc} scale --replicas=0 deployment/console-backend -n kyma-system
   echo " CBS stopped for testing purposes"
 
   KYMA_TESTS_WITHOUT_CBS=${KYMA_TESTS/console-backend/}
@@ -138,7 +138,7 @@ function main() {
   fi
 
 
-  ${kc} scale --replicas=1 deployment/console-backend
+  ${kc} scale --replicas=1 deployment/console-backend -n kyma-system
   echo " CBS started for testing console domain"
 
   log::info "- Running Kyma Console tests"
