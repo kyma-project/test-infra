@@ -14,7 +14,7 @@ function log::date {
 # log::banner prints message with INFO level in banner form for easier spotting in log files
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::banner {
   local logdate
   logdate=$(log::date)
@@ -26,7 +26,7 @@ function log::banner {
 # log::info prints message with info level
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::info {
     echo -e "${INVERTED}$(log::date) [INFO] $* ${NC}"
 }
@@ -34,7 +34,7 @@ function log::info {
 # log::info prints a message with info level in green
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::success {
     echo -e "${GREEN}$(log::date) [INFO] $* ${NC}"
 }
@@ -42,7 +42,7 @@ function log::success {
 # log::info prints a message with warning level in yellow
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::warn {
     echo -e "${YELLOW}$(log::date) [WARN] $* ${NC}"
 }
@@ -50,7 +50,7 @@ function log::warn {
 # log::info prints a message with error level in red
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::error {
     >&2 echo -e "${RED}$(log::date) [ERRO] $* ${NC}"
 }
