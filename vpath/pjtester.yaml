@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-master-kyma-gke-integration-for-testing"
+  - pjName: "pre-master-kyma-gke-int-test"
 prConfigs:
   kyma-project:
     kyma:
