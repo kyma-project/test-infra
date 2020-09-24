@@ -62,7 +62,7 @@ function printImagesWithLatestTag() {
         tr -s "[:space:]" "\n" |\
         grep ":latest")
 
-        # TODO(michal-hudy): it shoudn"t be done that way, grep returns 1 when no lines match, same bug in kyma repository....
+        # TODO(michal-hudy): it shoudn't be done that way, grep returns 1 when no lines match, same bug in kyma repository....
         if [[ $? -lt 2 ]]; then
             break
         fi
@@ -126,7 +126,7 @@ function main() {
 
   # TODO(mszostok): decide if this should be supported by `kyma test status`,
   #  right now we do not have the exit code
-  statusSucceeded=$(${kc} get cts "${SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=="Succeeded")]}")
+  statusSucceeded=$(${kc} get cts "${SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
   if [[ "${statusSucceeded}" != *"True"* ]]; then
     log::info "- Fetching logs due to test suite failure"
     testExitCode=1
@@ -157,7 +157,7 @@ function main() {
   log::info "- Test summary"
   kyma test status "${CONSOLE_SUITE_NAME}" -owide
 
-  statusSucceeded=$(${kc} get cts "${CONSOLE_SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=="Succeeded")]}")
+  statusSucceeded=$(${kc} get cts "${CONSOLE_SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
   if [[ "${statusSucceeded}" != *"True"* ]]; then
     log::info "- Fetching logs due to test suite failure"
     consoleTestExitCode=1
@@ -174,8 +174,8 @@ function main() {
 
 
   log::info "- Generate JUnit test summary"
-  kyma test status "${SUITE_NAME}" -ojunit | sed "s/ (executions: [0-9]*)"/"/g" > "${JUNIT_REPORT_PATH}"
-  kyma test status "${SUITE_NAME}" -ojunit | sed "s/ (executions: [0-9]*)"/"/g" > "${JUNIT_REPORT_PATH}"
+  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
+  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
 
   log::info "All test pods should be terminated. Checking..."
   waitForTestPodsTermination "${SUITE_NAME}"
@@ -187,7 +187,7 @@ function main() {
   ${kc} get cts "${SUITE_NAME}" -oyaml
   ${kc} get cts "${CONSOLE_SUITE_NAME}" -oyaml
 
-  # TODO (mhudy): cts shouldn"t be deleted because all test pods are deleted too and kind export will not store them
+  # TODO (mhudy): cts shouldn't be deleted because all test pods are deleted too and kind export will not store them
   # cts::delete
 
   log::info "Images with tag latest are not allowed. Checking..."
