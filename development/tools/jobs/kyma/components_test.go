@@ -160,7 +160,6 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release117),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "eventing-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
