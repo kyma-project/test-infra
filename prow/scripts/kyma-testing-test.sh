@@ -101,19 +101,15 @@ function main() {
   echo "Stopping CBS for testing purposes.."
   ${kc} scale --replicas=0 deployment/console-backend -n kyma-system
 
-  echo "KYMA_TESTS: ${KYMA_TESTS}"
   TESTS=$(kyma test definitions --ci | tr "\r\n" " ")
 
-  KYMA_TESTS_WITHOUT_CBS=${TESTS//"console-backend"/}
-  KYMA_TESTS_WITHOUT_CONSOLE=${KYMA_TESTS_WITHOUT_CBS//"console-web"/}
-  
-  echo "TESTS: ${TESTS}"
-  echo "KYMA_TESTS_WITHOUT_CONSOLE: ${KYMA_TESTS_WITHOUT_CONSOLE}"
+  TESTS_WITHOUT_CBS=${TESTS//"console-backend"/}
+  TESTS_WITHOUT_CONSOLE=${TESTS_WITHOUT_CBS//"console-web"/}
 
   log::info "- Running Kyma tests"
   # match all tests besides console chart
   # shellcheck disable=SC2086
-  kyma test run ${KYMA_TESTS_WITHOUT_CONSOLE} \
+  kyma test run ${TESTS_WITHOUT_CONSOLE} \
                 --name "${SUITE_NAME}" \
                 --concurrency "${CONCURRENCY}" \
                 --max-retries 1 \
@@ -174,8 +170,10 @@ function main() {
 
 
   log::info "- Generate JUnit test summary"
+  echo "all tests: $(kyma test status "${SUITE_NAME}" -ojunit)"
+  echo "console tests: $(kyma test status "${CONSOLE_SUITE_NAME}" -ojunit)"
   kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
-  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
+  kyma test status "${CONSOLE_SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
 
   log::info "All test pods should be terminated. Checking..."
   waitForTestPodsTermination "${SUITE_NAME}"
