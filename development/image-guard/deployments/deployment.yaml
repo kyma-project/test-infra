@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-guard
+  labels:
+    app: image-guard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-guard
+  template:
+    metadata:
+      labels:
+        app: image-guard
+    spec:
+      containers:
+        - name: controller
+          image: eu.gcr.io/sap-kyma-neighbors-dev/image-guard
+          command: ["/image-guardd"]
+          env:
+            - name: HOST_NAME
+              value: image-guard-svc.default.svc
+          args:
+            - "-host"
+            - "image-guard-svc.default.svc"
+            - "-cert-path"
+            - "/certs/cert.crt"
+            - "-key-path"
+            - "/certs/key.pem"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8443
+              name: server-tls-port
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128M"
+            limits:
+              cpu: "250m"
+              memory: "256M"
+          volumeMounts:
+            - name: certs
+              mountPath: "/certs"
+              readOnly: true
+      volumes:
+        - name: certs
+          secret:
+            secretName: image-guard-certs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-guard-svc
+spec:
+  selector:
+    app: image-guard
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: server-tls-port

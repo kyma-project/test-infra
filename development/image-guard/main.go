@@ -35,7 +35,7 @@ func main() {
 	// Get config
 	conf := &conf{}
 	flag.StringVar(&conf.TLSCertPath, "cert-path", "./cert.crt", "The path to the PEM-encoded TLS certificate")
-	flag.StringVar(&conf.TLSKeyPath, "key-path", "./key.key", "The path to the unencrypted TLS key")
+	flag.StringVar(&conf.TLSKeyPath, "key-path", "./key.pem", "The path to the unencrypted TLS key")
 	flag.BoolVar(&conf.HTTPOnly, "http-only", false, "Only listen on unencrypted HTTP (e.g. for proxied environments)")
 	flag.StringVar(&conf.Port, "port", "8443", "The port to listen on (HTTPS).")
 	flag.StringVar(&conf.Host, "host", "admissiond.questionable.services", "The hostname for the service")
@@ -72,7 +72,7 @@ func main() {
 	// Admission control endpoints
 	admissions := r.PathPrefix("/admission-control").Subrouter()
 	admissions.Handle("/enforce-image-registry", &admissioncontrol.AdmissionHandler{
-		AdmitFunc: enforceImageRegistries(),
+		AdmitFunc: enforceImageRegistries("gcr.io/kyma-project", "eu.gcr.io/kyma-project"),
 		Logger:    logger,
 	})
 	// HTTP server
