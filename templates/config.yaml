@@ -450,7 +450,7 @@ templates:
           <<: *control_plane_generic_component
           path: components/subscription-cleanup-job
           since: "1.17"
-          optional: true
+          optional: false
       - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *cluster_default

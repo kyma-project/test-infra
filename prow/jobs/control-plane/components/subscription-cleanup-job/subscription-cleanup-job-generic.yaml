@@ -38,7 +38,7 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-components-subscription-cleanup-job
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
@@ -47,7 +47,4 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
