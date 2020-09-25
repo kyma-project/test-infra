@@ -162,6 +162,13 @@ var components = []struct {
 			jobsuite.Since(releases.Release117),
 		},
 	},
+	{path: "eventing-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release117),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {
