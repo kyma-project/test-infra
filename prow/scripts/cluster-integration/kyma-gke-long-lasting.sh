@@ -228,7 +228,16 @@ EOF
 
   # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
   echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
-  sed -i "/k8s:/a\            service:\n              loadBalancerIP: ${GATEWAY_IP_ADDRESS}\n              type: LoadBalancer" "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
+  yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+cat << EOF > istio-ingressgateway-patch-yq.yaml
+- command: update
+  path: spec.components.ingressGateways[0].k8s.service
+  values:
+    loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+    type: LoadBalancer
+EOF
+  yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
 
 	kyma install \
 			--ci \
