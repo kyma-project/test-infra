@@ -345,7 +345,7 @@ EOF
 cat << EOF > istio-ingressgateway-patch-yq.yaml
 - command: update
   path: spec.components.ingressGateways[0].k8s.service
-  values:
+  value:
     loadBalancerIP: ${GATEWAY_IP_ADDRESS}
     type: LoadBalancer
 EOF
