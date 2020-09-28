@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: controller
-          image: eu.gcr.io/sap-kyma-neighbors-dev/image-guard
+          image: eu.gcr.io/kyma-project/test-infra/image-guard
           command: ["/image-guardd"]
           env:
             - name: HOST_NAME

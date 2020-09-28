@@ -75,6 +75,11 @@ func main() {
 		AdmitFunc: enforceImageRegistries("gcr.io/kyma-project", "eu.gcr.io/kyma-project"),
 		Logger:    logger,
 	})
+	admissions.Handle("/collect-used-images", &admissioncontrol.AdmissionHandler{
+		AdmitFunc: collectUsedImages(),
+		Logger: logger,
+	})
+
 	// HTTP server
 	timeout := time.Second * 15
 	srv := &http.Server{
@@ -172,12 +177,13 @@ func enforceImageRegistries(registries ...string) admissioncontrol.AdmitFunc {
 				}
 			}
 		}
-		return resp, fmt.Errorf("non-trusted registry was defined for one of the containers. available registries: %s", registries)
+		resp.Result.Message = fmt.Sprintf("non-trusted registry was defined for one of the containers. available registries: %s", registries)
+		return resp, nil
 	}
 }
 
 // TODO (@Ressetkk): still WIP - figuring out the best approach
-func logUsedImages() admissioncontrol.AdmitFunc {
+func collectUsedImages() admissioncontrol.AdmitFunc {
 	return func(reviewRequest *v1beta1.AdmissionReview) (*v1beta1.AdmissionResponse, error) {
 		kind := reviewRequest.Request.Kind.Kind
 		resp := &v1beta1.AdmissionResponse{Allowed: true, Result: &metav1.Status{}}

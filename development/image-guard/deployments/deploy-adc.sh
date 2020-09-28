@@ -31,7 +31,7 @@ EOF
 
 echo "  Approving Certificate Signing Request"
 kubectl certificate approve image-guard-svc.default &> /dev/null
-echo "  Gettinc cert and CA cert"
+echo "  Getting cert and CA cert"
 CERT=$(kubectl get csr image-guard-svc.default -ojsonpath='{.status.certificate}' | base64 --decode)
 CA_CERT=$(kubectl config view --raw --minify --flatten -o jsonpath='{.clusters[].cluster.certificate-authority-data}')
 echo "--> Certificate created successfully"
@@ -55,10 +55,10 @@ echo "--> Done"
 
 echo "--> Configure server webhooks"
 cat << EOF | kubectl apply -f -
-apiVersion: admissionregistration.k8s.io/v1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: enforce-image-registry
+  name: image-guard-webhooks
 webhooks:
   - name: enforce-image-registry.image-guard.admission
     admissionReviewVersions: ["v1", "v1beta1"]
@@ -73,5 +73,19 @@ webhooks:
         name: image-guard-svc
         namespace: default
         path: /admission-control/enforce-image-registry
+      caBundle: ${CA_CERT}
+  - name: collect-used-images.image-guard.admission
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+    rules:
+      - apiVersions: ["*"]
+        apiGroups: ["*"]
+        operations: ["CREATE"]
+        resources: ["pods"]
+    clientConfig:
+      service:
+        name: image-guard-svc
+        namespace: default
+        path: /admission-control/collect-used-images
       caBundle: ${CA_CERT}
 EOF
