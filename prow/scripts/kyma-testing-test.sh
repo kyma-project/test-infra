@@ -3,6 +3,8 @@ CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
 readonly TMP_DIR=$(mktemp -d)
+readonly JUNIT_REPORT_PATH_ALL="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite-all.xml"
+readonly JUNIT_REPORT_PATH_CONSOLE="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite-console.xml"
 readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite.xml"
 readonly CONCURRENCY=5
 # Should be fixed name, it is displayed in TestGrid
@@ -172,8 +174,12 @@ function main() {
   log::info "- Generate JUnit test summary"
   echo "all tests: $(kyma test status "${SUITE_NAME}" -ojunit)"
   echo "console tests: $(kyma test status "${CONSOLE_SUITE_NAME}" -ojunit)"
-  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
-  kyma test status "${CONSOLE_SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH}"
+
+  kyma test status "${SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH_ALL}"
+  kyma test status "${CONSOLE_SUITE_NAME}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > "${JUNIT_REPORT_PATH_CONSOLE}"
+
+  xml_grep --pretty_print indented --wrap "testsuites" --descr '' --cond "testsuite" "${JUNIT_REPORT_PATH_ALL}" "${JUNIT_REPORT_PATH_CONSOLE}" > "${JUNIT_REPORT_PATH}"
+
 
   log::info "All test pods should be terminated. Checking..."
   waitForTestPodsTermination "${SUITE_NAME}"
