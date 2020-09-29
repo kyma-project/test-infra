@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: pre-master-kyma-gke1_18_6-integration
-  - pjName: pre-master-kyma-gke1_17_9-integration
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 9400
