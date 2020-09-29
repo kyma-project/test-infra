@@ -60,20 +60,6 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: image-guard-webhooks
 webhooks:
-  - name: enforce-image-registry.image-guard.admission
-    admissionReviewVersions: ["v1", "v1beta1"]
-    sideEffects: None
-    rules:
-      - apiVersions: ["*"]
-        apiGroups: ["*"]
-        operations: ["CREATE"]
-        resources: ["pods"]
-    clientConfig:
-      service:
-        name: image-guard-svc
-        namespace: default
-        path: /admission-control/enforce-image-registry
-      caBundle: ${CA_CERT}
   - name: collect-used-images.image-guard.admission
     admissionReviewVersions: ["v1", "v1beta1"]
     sideEffects: None

@@ -71,13 +71,13 @@ func main() {
 
 	// Admission control endpoints
 	admissions := r.PathPrefix("/admission-control").Subrouter()
-	admissions.Handle("/enforce-image-registry", &admissioncontrol.AdmissionHandler{
-		AdmitFunc: enforceImageRegistries("gcr.io/kyma-project", "eu.gcr.io/kyma-project"),
-		Logger:    logger,
-	})
+	//admissions.Handle("/enforce-image-registry", &admissioncontrol.AdmissionHandler{
+	//	AdmitFunc: enforceImageRegistries("gcr.io/kyma-project", "eu.gcr.io/kyma-project"),
+	//	Logger:    logger,
+	//})
 	admissions.Handle("/collect-used-images", &admissioncontrol.AdmissionHandler{
 		AdmitFunc: collectUsedImages(),
-		Logger: logger,
+		Logger:    logger,
 	})
 
 	// HTTP server
@@ -182,7 +182,6 @@ func enforceImageRegistries(registries ...string) admissioncontrol.AdmitFunc {
 	}
 }
 
-// TODO (@Ressetkk): still WIP - figuring out the best approach
 func collectUsedImages() admissioncontrol.AdmitFunc {
 	return func(reviewRequest *v1beta1.AdmissionReview) (*v1beta1.AdmissionResponse, error) {
 		kind := reviewRequest.Request.Kind.Kind
@@ -194,7 +193,7 @@ func collectUsedImages() admissioncontrol.AdmitFunc {
 				return nil, err
 			}
 			for _, c := range pod.Spec.Containers {
-				fmt.Println(c.Image)
+				fmt.Printf("image: %s\n", c.Image)
 			}
 		}
 		return resp, nil
