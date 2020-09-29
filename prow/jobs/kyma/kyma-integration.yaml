@@ -71,7 +71,7 @@ presets:
       preset-gke-ver1_18_6: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.18.6-gke.3504
+        value: 1.18.6-gke.4801
       - name: RELEASE_CHANNEL
         value: rapid
 
@@ -353,6 +353,7 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.14
     - name: pre-master-kyma-gke1_17_9-integration
+      optional: true
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -365,6 +366,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-master-kyma-gke1_18_6-integration
+      optional: true
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -427,6 +429,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.14
     - name: pre-master-kyma-gke1_17_9-upgrade
+      optional: true
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -441,6 +444,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-master-kyma-gke1_18_6-upgrade
+      optional: true
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -505,6 +509,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.14
     - name: pre-master-kyma-gke1_17_9-central-connector
+      optional: true
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -519,6 +524,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
     - name: pre-master-kyma-gke1_18_6-central-connector
+      optional: true
       cluster: untrusted-workload
       branches:
         - ^master$

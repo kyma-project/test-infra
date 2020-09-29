@@ -304,6 +304,7 @@ presubmits: # runs on PRs
 
 {{- range .Values.gkeVersions }}
     - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-integration
+      optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
@@ -363,6 +364,7 @@ presubmits: # runs on PRs
 
 {{- range .Values.gkeVersions }}
     - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-upgrade
+      optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
@@ -424,6 +426,7 @@ presubmits: # runs on PRs
 
 {{- range .Values.gkeVersions }}
     - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-central-connector
+      optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
