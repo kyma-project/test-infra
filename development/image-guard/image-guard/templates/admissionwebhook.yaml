@@ -1,0 +1,34 @@
+{{- $svcHost := printf "%s.%s.svc" .Release.Name .Release.Namespace -}}
+{{- $svcHostFull := printf "%s.cluster.local" $svcHost -}}
+{{- $ca := genCA "image-guard-ca" 365 -}}
+{{- $cert := genSignedCert $svcHost nil (list $svcHostFull) 365 $ca -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-certs
+  namespace: {{ .Release.Namespace }}
+data:
+  cert.crt: {{ b64enc $cert.Cert }}
+  key.pem: {{ b64enc $cert.Key }}
+type: Opaque
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ .Release.Name }}-admission-webhooks
+  namespace: {{ .Release.Namespace }}
+webhooks:
+  - name: collect-used-images.{{ .Release.Name }}.{{ .Release.Namespace }}
+    admissionReviewVersions: [ "v1", "v1beta1" ]
+    sideEffects: None
+    rules:
+      - apiVersions: [ "*" ]
+        apiGroups: [ "*" ]
+        operations: [ "CREATE" ]
+        resources: [ "pods" ]
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /admission-control/collect-used-images
+      caBundle: {{ b64enc $ca.Cert }}

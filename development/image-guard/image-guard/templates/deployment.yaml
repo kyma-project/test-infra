@@ -1,34 +1,36 @@
+{{- $svcHost := printf "%s.%s.svc" .Release.Name .Release.Namespace -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: image-guard
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: image-guard
+    app: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: image-guard
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: image-guard
+        app: {{ .Release.Name }}
     spec:
       containers:
         - name: controller
-          image: eu.gcr.io/sap-kyma-neighbors-dev/image-guard
+          image: {{ .Values.deployment.image }}
           command: ["/image-guardd"]
           env:
             - name: HOST_NAME
-              value: image-guard-svc.default.svc
+              value: {{ $svcHost }}
           args:
             - "-host"
-            - "image-guard-svc.default.svc"
+            - {{ $svcHost | quote }}
             - "-cert-path"
             - "/certs/cert.crt"
             - "-key-path"
             - "/certs/key.pem"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           ports:
             - containerPort: 8443
               name: server-tls-port
@@ -46,16 +48,4 @@ spec:
       volumes:
         - name: certs
           secret:
-            secretName: image-guard-certs
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: image-guard-svc
-spec:
-  selector:
-    app: image-guard
-  ports:
-    - port: 443
-      protocol: TCP
-      targetPort: server-tls-port
+            secretName: {{ .Release.Name }}-certs

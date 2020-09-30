@@ -1,0 +1,7 @@
+service:
+  port: 443
+
+deployment:
+  image: eu.gcr.io/kyma-prow/test-infra/image-guard
+  replicas: 1
+  imagePullPolicy: Always
