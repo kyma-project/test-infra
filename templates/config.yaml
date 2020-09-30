@@ -601,7 +601,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/function-controller
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         values:
           <<: *cluster_default
