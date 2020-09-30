@@ -1,6 +1,0 @@
-pjNames:
-  - pjName: "pre-master-kyma-gke-int-test"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 9473
