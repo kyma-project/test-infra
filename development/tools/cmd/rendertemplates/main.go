@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -13,6 +14,8 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/Masterminds/sprig"
+	"github.com/forestgiant/sliceutil"
+	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
@@ -27,7 +30,6 @@ var (
 	additionalFuncs = map[string]interface{}{
 		"matchingReleases": matchingReleases,
 		"releaseMatches":   releaseMatches,
-		"GetImage":         GetImage,
 	}
 	commentSignByFileExt = map[string]sets.String{
 		"//": sets.NewString(".go"),
@@ -40,6 +42,8 @@ var (
 type Config struct {
 	Templates []TemplateConfig
 	Global    map[string]interface{}
+	//GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
+	GlobalSets ConfigSets `yaml:"globalSets,omitempty"`
 }
 
 // TemplateConfig specifies template to use and files to render
@@ -52,21 +56,37 @@ type TemplateConfig struct {
 type RenderConfig struct {
 	To     string
 	Values map[string]interface{}
+	//LocalSets map[string]ConfigSet `yaml:"localSets,omitempty"`
+	LocalSets  ConfigSets `yaml:"localSets,omitempty"`
+	JobConfigs []Repo     `yaml:"jobConfigs,omitempty"`
 }
 
-func GetImage(vars map[string]interface{}, dot map[interface{}]interface{}) string {
-	if imageRegex.MatchString(dot["image"].(string)) {
-		imageName := imageRegex.FindStringSubmatch(dot["image"].(string))[2]
-		varGroup := imageRegex.FindStringSubmatch(dot["image"].(string))[1]
-		if varGroup == "values" && vars["Values"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName] != nil {
-			return vars["Values"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName].(string)
-		} else if varGroup == "global" && vars["Global"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName] != nil {
-			return vars["Global"].(map[string]interface{})["images"].(map[interface{}]interface{})[imageName].(string)
-		} else {
-			log.Fatalf("image not found")
-		}
-	}
-	return dot["image"].(string)
+type ConfigSets map[string]map[string]interface{}
+
+type ConfigSet map[string]interface{}
+
+type Repo struct {
+	RepoName string `yaml:"repoName,omitempty"`
+	Jobs     []Job  `yaml:"jobs,omitempty"`
+}
+
+type InheritedConfigs struct {
+	Global []string `yaml:"global,omitempty"`
+	Local  []string `yaml:"local,omitempty"`
+}
+type Job struct {
+	InheritedConfigs InheritedConfigs `yaml:"inheritedConfigs,omitempty"`
+	//JobConfig	ConfigSet `yaml:"jobConfig,omitempty"`
+	JobConfig map[string]interface{} `yaml:"jobConfig,omitempty"`
+	labels    map[string]interface{}
+	envs      []map[string]interface{}
+}
+
+type JobConfig map[string]interface{}
+
+type ConfigMergeOpts struct {
+	OverrideLabels bool
+	OverrideEnvs   bool
 }
 
 func main() {
@@ -95,13 +115,89 @@ func main() {
 	}
 }
 
+//func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
+func (r *RenderConfig) mergeConfigs(globalConfigSets ConfigSets) {
+	if present := len(r.JobConfigs); present > 0 {
+		r.Values = make(map[string]interface{})
+		for repoIndex, repo := range r.JobConfigs {
+			for jobIndex, job := range repo.Jobs {
+				//jobConfig := ConfigSet{}
+				jobConfig := make(map[string]interface{})
+				//if sliceutil.Contains(job.InheritedConfigs.Global, "default") {
+				//if err := jobConfig.mergeConfigSet(globalConfigSets["default"]); err != nil {
+				//	if err := mergeConfigSet(&jobConfig, globalConfigSets["default"]); err != nil {
+				//		log.Fatalf("Failed merge Global default configSet: %s", err)
+				//	}
+
+				//}
+				if sliceutil.Contains(job.InheritedConfigs.Local, "default") {
+					//if err := jobConfig.mergeConfigSet(r.LocalSets["default"]); err != nil {
+					if err := mergeConfigSet(&jobConfig, r.LocalSets["default"]); err != nil {
+						log.Fatalf("Failed merge Local default configSet: %s", err)
+					}
+				}
+				//for _, v := range job.InheritedConfigs.Global {
+				//	if v != "default" {
+				//		//if err := jobConfig.mergeConfigSet(globalConfigSets[v]); err != nil {
+				//		if err := mergeConfigSet(&jobConfig, globalConfigSets[v]); err != nil {
+				//			log.Fatalf("Failed merge global %s named configset: %s", v, err)
+				//		}
+				//	}
+				//}
+				//for _, v := range job.InheritedConfigs.Local {
+				//	if v != "default" {
+				//		//if err := jobConfig.mergeConfigSet(r.LocalSets[v]); err != nil {
+				//		if err := mergeConfigSet(&jobConfig, r.LocalSets[v]); err != nil {
+				//			log.Fatalf("Failed merge local %s named configset: %s", v, err)
+				//		}
+				//	}
+				//}
+				//if err := jobConfig.mergeConfigSet(job.JobConfig); err != nil {
+				if err := mergeConfigSet(&jobConfig, job.JobConfig); err != nil {
+					log.Fatalf("Failed merge job configset %s", err)
+				}
+				r.JobConfigs[repoIndex].Jobs[jobIndex].JobConfig = jobConfig
+			}
+		}
+		r.Values["JobConfigs"] = r.JobConfigs
+	}
+}
+
+//func (j *ConfigSet) mergeConfigSet(configSet ConfigSet) error {
+func mergeConfigSet(dst *map[string]interface{}, configSet map[string]interface{}) error {
+	if len(configSet) == 0 {
+		return errors.New("configSet not found")
+	}
+	if err := mergo.Merge(dst, configSet, mergo.WithOverride); err != nil {
+		return err
+	}
+	return nil
+}
+
+//func (j *Job) mergeLabels(configSet ConfigSet, opts ...func(*ConfigMergeOpts)) error {
+//	configMergeOpts := &ConfigMergeOpts{}
+//	for _, opt := range opts {
+//		opt(configMergeOpts)
+//	}
+//	if value, present := configSet["labels"]; present {
+//		if err := mergo.Merge(j.labels, value); err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}
+
+//func mergeEnvs {
+
+//}
+
 func renderTemplate(basePath string, templateConfig TemplateConfig, config *Config) error {
 	templateInstance, err := loadTemplate(basePath, templateConfig.From)
 	if err != nil {
 		return err
 	}
-
 	for _, render := range templateConfig.Render {
+		render.mergeConfigs(config.GlobalSets)
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
 			return err

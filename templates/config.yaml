@@ -1,6 +1,4 @@
 global:
-  images:
-    bootstrap: global_image
   nextRelease: "1.16"
   releases:
     - "1.15"
@@ -42,7 +40,13 @@ global:
       language: "golang-mod"
       project: "kyma-incubator"
       base_ref: "kyma-master"
-
+      
+globalSets:
+  default:
+    image: "global/defaults/image:test"
+  named-1:
+    image: "global/named-1/image:test"
+    
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
 go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
@@ -361,7 +365,6 @@ templates:
           path: components/pairing-adapter
           since: "1.11"
           optional: false
-
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
           <<: *cluster_component
@@ -922,7 +925,7 @@ templates:
           <<: *go_kyma_component_1_11
           path: tests/event-bus
           until: "1.8"
-      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
+      - to: ../prow/jobs/kyma/tests/knative-serving    /knative-serving.yaml
         values:
           <<: *cluster_component
           <<: *go_kyma_component_1_11
@@ -1141,23 +1144,51 @@ templates:
   - from: templates/buildpack.yaml
     render:
       - to: ../prow/jobs/test-infra/buildpack_test.yaml
-        values:
-          privileged: "false"
-          images:
-            bootstrap: values_bootstrap
-          repos:
-          - name: github.com/kyma-project/test-infra
+        localSets:
+          default:
+            skip_report: "true"
+            max_concurrency: "10"
+            decorate: "true"
+            path_alias: "github.com/kyma-project/test-infra"
+            branches:
+            - "^master$"
+            privileged: "true"
+            command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            request_memory: "1.5Gi"
+            request_cpu: "0.8"
+            cluster_presubmit: "untrusted-workload"
+            cluster_postsubmit: "trusted-workload"
+            type_presubmit: "true"
+            type_postsubmit: "true"
+            labels:
+              preset_1: "true"
+              preset_2: "true"
+        jobConfigs:
+          - repoName: github.com/kyma-project/test-infra
             jobs:
-            - type:
-              - presubmit
-              - postsubmit
-              name: pre-test-infra-bootstrap
-              image: values.images.bootstrap
-              cluster:
-                presubmit: trusted
-                postsubmit: untrusted
-              command: "/test/command"
-              args:
+            - inheritedConfigs:
+                local:
+                - "default"
+              jobConfig:
+                run_if_changed: "^prow/images/bootstrap-helm/"
+                name: "test-infra-bootstrap"
+                command:
+                - "/test/command"
+                args:
                 - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
                 - "test_arg"
-              
+                labels:
+                  preset_3: "true"
+                  preset_4: "true"
+                  preset_2: "false"
+            - inheritedConfigs:
+                local:
+                  - "default"
+              jobConfig:
+                run_if_changed: "^prow/images/bootstrap-second-job/"
+                name: "test-infra-second-job"
+                command:
+                  - "/test/command/second-job"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"

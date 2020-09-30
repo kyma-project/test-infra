@@ -1,40 +1,35 @@
-# global defaults"
-# Add function to print global defaults
 
-# file defaults
-{{- $privileged := ""}}
-{{if .Values.privileged}}{{$privileged = .Values.privileged}}# privileged: {{$privileged}}{{end}}
-#cluster
-#common_job template
-#job_labels template
-
+{{- define "checkValue" -}}
+  {{- if .value}}{{.value}}{{else}}{{cat .error "not defined" | fail}}{{end -}}
+{{- end -}}
 
 presubmits: # runs on PRs
-  {{- range .Values.repos }}
-  {{ replace "github.com/" "" .name -}}:
-  {{- range .jobs -}}
-  {{- if (has "presubmit" .type) }}
-    - name: pre-{{ .name }}
+  {{- range .Values.JobConfigs }}
+  {{ replace "github.com/" "" .RepoName -}}:
+  {{- range .Jobs -}}
+  {{- if .JobConfig.type_presubmit }}
+    - name: pre-{{ .JobConfig.name }}
+      {{- if .JobConfig.labels}}
       labels:
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository-test-infra: "true"
-      run_if_changed: "^prow/images/bootstrap/"
-      skip_report: false
-      max_concurrency: 10
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
+        {{- range $key, $value := .JobConfig.labels}}
+        {{$key}}: "{{$value}}"
+        {{- end}}
+      {{- end}}
+      run_if_changed: "{{template "checkValue" dict "value" .JobConfig.run_if_changed "error" "run_if_changed"}}"
+      skip_report: {{ if .JobConfig.skip_report}}{{.JobConfig.skip_report}}{{else}}{{fail "skip_report not defined"}}{{end}}
+      max_concurrency: {{ if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail "max_concurrency not defined"}}{{end}}
+      decorate: {{ if .JobConfig.decorate}}{{.JobConfig.decorate}}{{else}}{{fail "decorate not defined"}}{{end}}
+      path_alias: {{ if .JobConfig.path_alias}}{{.JobConfig.path_alias}}{{else}}{{fail "path_alias not defined"}}{{end}}
       branches:
         - ^master$
       spec:
         containers:
-          - image: {{GetImage $ .}}
+          - image: {{if .JobConfig.name}}{{ .JobConfig.image }}{{else}}{{fail "image not defined"}}{{end}}
             securityContext:
-              privileged: {{if .privileged}}{{.privileged}}{{else if $privileged}}{{$privileged}}{{else}}true{{end}}
+              privileged: {{if .JobConfig.privileged}}{{.JobConfig.privileged}}{{else}}true{{end}}
             command:
-              - {{ if .command}}{{.command}}{{else if .Values.command}}{{.Values.command}}{{else}}{{fail "Command not provided"}}{{end}}
-            {{- with .args}}
+              - {{ if .JobConfig.command}}{{.JobConfig.command}}{{else}}{{fail "Command not provided"}}{{end}}
+            {{- with .JobConfig.args}}
             args:
               {{- range . }}
               - {{ . }}
@@ -42,11 +37,11 @@ presubmits: # runs on PRs
             {{- end}}
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-      cluster: {{if .cluster.presubmit}}{{.cluster.presubmit}}{{else if .cluster}}{{.cluster}}{{else}}{{fail "Cluster for presubmit not defained"}}{{end}}
-  {{end}}
-  {{end}}
+                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
+                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
+      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
+  {{- end}}
+  {{- end}}
   {{end}}
 postsubmits: # runs on master
   kyma-project/test-infra:
