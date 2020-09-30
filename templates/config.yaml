@@ -672,8 +672,6 @@ templates:
           <<: *cluster_default
           gkeVersions:
             - channel: rapid
-              version: 1.17.9-gke.1504
-            - channel: rapid
               version: 1.18.6-gke.4801
   - from: templates/kyma-integration-gardener.yaml
     render:
