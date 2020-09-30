@@ -351,6 +351,13 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/system-broker
+          since: "1.15"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
           <<: *cluster_default
