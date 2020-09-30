@@ -1,6 +1,7 @@
 package incubator
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"path"
 	"testing"
 
@@ -105,7 +106,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Optional(),
-			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release116),
 		},
 	},
 }
