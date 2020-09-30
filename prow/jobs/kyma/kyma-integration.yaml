@@ -61,13 +61,6 @@ presets:
       - name: AZURE_REGION
         value: westeurope
   - labels:
-      preset-gke-ver1_17_9: "true"
-    env:
-      - name: CLUSTER_VERSION
-        value: 1.17.9-gke.1504
-      - name: RELEASE_CHANNEL
-        value: rapid
-  - labels:
       preset-gke-ver1_18_6: "true"
     env:
       - name: CLUSTER_VERSION
@@ -352,19 +345,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.14
-    - name: pre-master-kyma-gke1_17_9-integration
-      optional: true
-      cluster: untrusted-workload
-      branches:
-        - ^master$
-      <<: *gke_job_template
-      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      labels:
-        <<: *gke_job_labels_template
-        preset-gke-ver1_17_9: "true"
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
     - name: pre-master-kyma-gke1_18_6-integration
       optional: true
       cluster: untrusted-workload
@@ -428,21 +408,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-master-kyma-gke1_17_9-upgrade
-      optional: true
-      cluster: untrusted-workload
-      branches:
-        - ^master$
-      <<: *gke_upgrade_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      labels:
-        preset-build-pr: "true"
-        preset-gke-ver1_17_9: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
     - name: pre-master-kyma-gke1_18_6-upgrade
       optional: true
       cluster: untrusted-workload
@@ -508,21 +473,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-master-kyma-gke1_17_9-central-connector
-      optional: true
-      cluster: untrusted-workload
-      branches:
-        - ^master$
-      <<: *gke_central_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      labels:
-        preset-build-pr: "true"
-        <<: *gke_job_labels_template
-        preset-gke-ver1_17_9: "true"
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
     - name: pre-master-kyma-gke1_18_6-central-connector
       optional: true
       cluster: untrusted-workload
