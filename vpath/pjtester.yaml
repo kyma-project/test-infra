@@ -3,3 +3,7 @@ pjNames:
     report: false
   - pjName: "pre-master-kyma-integration-gardener-azure"
     report: false
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 9605
