@@ -167,15 +167,15 @@ function installKyma() {
     date
 
     shout "Downloading Kyma installer CR"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
         --output installer-cr-azure-eventhubs.yaml.tpl
 
     echo "Downlading production profile"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-production.yaml.tpl" \
         --output installer-config-production.yaml.tpl
 
     shout "Downloading Azure EventHubs config"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
         --output installer-config-azure-eventhubs.yaml.tpl
 
     shout "Generate Azure Event Hubs overrides"
@@ -186,16 +186,15 @@ function installKyma() {
 
     # shellcheck disable=SC1090
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
-    INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
 
     (
     set -x
     kyma install \
         --ci \
         --source "${LAST_RELEASE_VERSION}" \
-        -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
+        -c installer-cr-azure-eventhubs.yaml.tpl \
+        -o installer-config-production.yaml.tpl \
+        -o installer-config-azure-eventhubs.yaml.tpl \
         -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         --timeout 90m
     )
