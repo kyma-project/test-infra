@@ -61,10 +61,8 @@ presets:
       - name: AZURE_REGION
         value: westeurope
   - labels:
-      preset-gke-ver1_18_6: "true"
+      preset-gke-ver_rapid_default: "true"
     env:
-      - name: CLUSTER_VERSION
-        value: 1.18.6-gke.4801
       - name: RELEASE_CHANNEL
         value: rapid
 
@@ -345,7 +343,7 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.14
-    - name: pre-master-kyma-gke1_18_6-integration
+    - name: pre-master-kyma-gke_rapid_default-integration
       optional: true
       cluster: untrusted-workload
       branches:
@@ -354,7 +352,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         <<: *gke_job_labels_template
-        preset-gke-ver1_18_6: "true"
+        preset-gke-ver_rapid_default: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -408,7 +406,7 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-master-kyma-gke1_18_6-upgrade
+    - name: pre-master-kyma-gke_rapid_default-upgrade
       optional: true
       cluster: untrusted-workload
       branches:
@@ -418,7 +416,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
-        preset-gke-ver1_18_6: "true"
+        preset-gke-ver_rapid_default: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -473,7 +471,7 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-master-kyma-gke1_18_6-central-connector
+    - name: pre-master-kyma-gke_rapid_default-central-connector
       optional: true
       cluster: untrusted-workload
       branches:
@@ -484,7 +482,7 @@ presubmits: # runs on PRs
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
-        preset-gke-ver1_18_6: "true"
+        preset-gke-ver_rapid_default: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master

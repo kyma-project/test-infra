@@ -60,10 +60,15 @@ presets:
         value: westeurope
   {{- range .Values.gkeVersions }}
   - labels:
-      preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+      {{- $ch := printf "_%v_default" .channel }}
+      {{- $ver := default  $ch .version }}
+      {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+      preset-gke-ver{{ $preset }}: "true"
     env:
+      {{- if .version }}
       - name: CLUSTER_VERSION
         value: {{ .version }}
+      {{- end }}
       - name: RELEASE_CHANNEL
         value: {{ .channel }}
   {{- end }}
@@ -303,7 +308,11 @@ presubmits: # runs on PRs
 {{- end }}
 
 {{- range .Values.gkeVersions }}
-    - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-integration
+  {{- if has "presubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: pre-master-kyma-gke{{ $preset }}-integration
       optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -312,10 +321,11 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         <<: *gke_job_labels_template
-        preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+        preset-gke-ver{{ $preset }}: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+  {{- end }}
 {{- end }}
 
     - name: pre-master-kyma-gke-upgrade
@@ -363,7 +373,11 @@ presubmits: # runs on PRs
 {{- end }}
 
 {{- range .Values.gkeVersions }}
-    - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-upgrade
+  {{- if has "presubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: pre-master-kyma-gke{{ $preset }}-upgrade
       optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -373,11 +387,12 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
-        preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+        preset-gke-ver{{ $preset }}: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+  {{- end }}
 {{- end }}
 
     - name: pre-master-kyma-gke-central-connector
@@ -425,7 +440,11 @@ presubmits: # runs on PRs
 {{- end }}
 
 {{- range .Values.gkeVersions }}
-    - name: pre-master-kyma-gke{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}-central-connector
+  {{- if has "presubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: pre-master-kyma-gke{{ $preset }}-central-connector
       optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -436,10 +455,11 @@ presubmits: # runs on PRs
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
-        preset-gke-ver{{ regexReplaceAllLiteral "-.*" .version "" | replace "." "_"}}: "true"
+        preset-gke-ver{{ $preset }}: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+  {{- end }}
 {{- end }}
 
 {{- range (matchingReleases .Global.releases "1.11" "1.11") }}
