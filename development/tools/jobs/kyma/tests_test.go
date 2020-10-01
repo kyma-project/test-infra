@@ -4,6 +4,7 @@ import (
 	"path"
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -27,6 +28,12 @@ var tests = []struct {
 	{path: "application-gateway-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
+		},
+	},
+	{path: "application-gateway-legacy-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release116),
 		},
 	},
 	{path: "application-operator-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
@@ -105,12 +112,6 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.AllReleases(),
-		},
-	},
 	{path: "contract/knative-channel-kafka", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -119,7 +120,12 @@ var tests = []struct {
 	{path: "function-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Optional(),
+		},
+	},
+	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.Until(releases.Release115),
 		},
 	},
 }

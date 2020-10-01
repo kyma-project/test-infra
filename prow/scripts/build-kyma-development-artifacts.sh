@@ -85,7 +85,7 @@ gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKE
 gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr-cluster.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cr-local.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr-local.yaml"
 gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr-cluster-runtime.yaml"
-
+gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-config-local.yaml"
 
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
@@ -98,5 +98,5 @@ if [[ "${BUILD_TYPE}" == "master" ]]; then
   gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cr-cluster.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cr-local.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cr-local.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cr-cluster-runtime.yaml"
-
+  gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-config-local.yaml"
 fi

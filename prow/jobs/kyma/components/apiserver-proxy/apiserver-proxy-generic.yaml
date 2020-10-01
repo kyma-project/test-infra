@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-apiserver-proxy$
+    - ^release-(1\.16|1\.15|1\.14)-apiserver-proxy$
   run_if_changed: "^components/apiserver-proxy/|^common/makefiles/"
   spec:
     containers:
@@ -38,12 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-apiserver-proxy
+      cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-apiserver-proxy
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template

@@ -1,5 +1,11 @@
 FROM golang:1.14.2-alpine3.11 AS builder
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 WORKDIR /go/src/github.com/kyma-project/test-infra
 COPY . .
 

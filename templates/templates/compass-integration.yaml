@@ -28,6 +28,7 @@ vm_job_labels_template: &vm_job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
   - name: pre-master-compass-integration
+    cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     branches:
     - ^master$
     <<: *vm_job_template
@@ -42,6 +43,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-integration
+    cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     <<: *vm_job_template
     branches:
     - ^master$

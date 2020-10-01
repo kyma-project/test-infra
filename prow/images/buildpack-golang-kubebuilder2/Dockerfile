@@ -2,6 +2,12 @@
 
 FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20200423-1d9d6590
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 # Buildpack variables
 
 ARG BUILDPACK_VERSION=latest
@@ -9,8 +15,8 @@ ENV BUILDPACK_VERSION ${BUILDPACK_VERSION}
 
 # Versions
 
-ENV KUBEBUILDER_VERSION 2.0.0
-ENV KUSTOMIZE_VERSION 3.1.0
+ENV KUBEBUILDER_VERSION 2.3.1
+ENV KUSTOMIZE_VERSION 3.8.4
 ENV ARCH amd64
 
 # Install kubebuilder
@@ -30,3 +36,9 @@ RUN curl -L -o kustomize "https://github.com/kubernetes-sigs/kustomize/releases/
 ENV PATH /usr/local/kubebuilder/bin:$PATH
 # Path used by decorator
 ENV PATH /home/prow/go/bin:$PATH
+
+# Prow Tools
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools

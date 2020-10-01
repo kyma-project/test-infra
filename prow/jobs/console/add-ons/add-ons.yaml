@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-add-ons$
+    - ^release-(1\.16|1\.15|1\.14)-add-ons$
   run_if_changed: "^add-ons/|^components/|^shared/|^package.json"
   spec:
     containers:
@@ -38,12 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/console:
     - name: pre-console-add-ons
+      cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/console:
     - name: post-console-add-ons
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template

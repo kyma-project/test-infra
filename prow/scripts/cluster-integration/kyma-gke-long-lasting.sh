@@ -180,18 +180,18 @@ metadata:
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
   global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "istio-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: istio
-data:
-  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: "istio-overrides"
+#  namespace: "kyma-installer"
+#  labels:
+#    installer: overrides
+#    kyma-project.io/installation: ""
+#    component: istio
+#data:
+#  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -225,6 +225,19 @@ EOF
 	date
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+  # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
+  echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
+  yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+cat << EOF > istio-ingressgateway-patch-yq.yaml
+- command: update
+  path: spec.components.ingressGateways[0].k8s.service
+  value:
+    loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+    type: LoadBalancer
+EOF
+  yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
 
 	kyma install \
 			--ci \

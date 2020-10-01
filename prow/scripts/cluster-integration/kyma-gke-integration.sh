@@ -74,6 +74,9 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
+
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
@@ -138,7 +141,7 @@ runTestLogCollector(){
     fi
 }
 
-trap "runTestLogCollector; cleanup" EXIT INT
+trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"

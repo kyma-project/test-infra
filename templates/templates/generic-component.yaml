@@ -71,12 +71,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       optional: {{ .Values.optional | default false }}
       <<: *job_template
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
     - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
       {{- if or .Values.optional .Values.skipSlackReport }}

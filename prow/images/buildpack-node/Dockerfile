@@ -2,6 +2,12 @@
 
 FROM eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
@@ -28,3 +34,9 @@ RUN npm install -g eslint-config-react-app@^3.0.4 \
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
+
+# Prow Tools
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools

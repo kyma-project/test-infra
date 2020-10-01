@@ -28,11 +28,78 @@ function docker::start {
     done
     printf '=%.0s' {1..80}; echo
 
-    docker-credential-gcr configure-docker
+    if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+      docker::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+    elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
+      docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    else
+      echo "Skipping docker authnetication in registry. No credentials provided."
+    fi
     echo "Done starting up docker."
+}
+
+# docker::authenticate sets the docker user based on the provided credentials
+# the script accepts one argument which should be proper auth key
+function docker::authenticate() {
+  authKey=$1
+    if [[ -n "${authKey}" ]]; then
+      client_email=$(jq -r '.client_email' < "${authKey}")
+      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
+      docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${authKey}" || exit 1
+    else
+      echo "could not authenticate to Docker Registry: authKey is empty" >&2
+    fi
 }
 
 # docker::print_processes prints running docker containers
 function docker::print_processes {
     docker ps -a
+}
+
+# docker::build_post_pr_tag builds pr tag on postsubmit jobs
+function docker::build_post_pr_tag {
+  log::info "Checking if prtagbuilder binary is present"
+  if [ -x /prow-tools/prtagbuilder ]; then
+    log::info "Binary prtagbuilder found. Building PR tag."
+    DOCKER_POST_PR_TAG=$(/prow-tools/prtagbuilder || echo "build_failed")
+    if [ "$DOCKER_POST_PR_TAG" != "build_failed" ]; then
+      readonly DOCKER_POST_PR_TAG
+      export DOCKER_POST_PR_TAG
+      log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
+      return 0
+    else
+      log:error "Failed building PR tag."
+      return 0
+    fi
+  else
+    log::info "Binary prtagbuilder not found. Trying run prtagbuilder from source."
+  fi
+  log::info "Checking if go is installed."
+  goVersion=$(go version || echo "go_not_found")
+  if [ "$goVersion" != "go_not_found" ] && [[ "$goVersion" =~ ^[[:space:]]*go[[:space:]]version[[:space:]]go[1-9]\.[1-9][1-9].*$ ]]; then
+    log::info "go installed"
+    log::info "Checking if prtagbuilder source file is present"
+    BUILDER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}")/../../../development/tools/cmd/prtagbuilder" && pwd )"
+    if [ -a "${BUILDER_DIR}/main.go" ]; then
+      log::info "Prtagbuilder source file found. Building PR tag. "
+      cd "${BUILDER_DIR}" || exit
+      DOCKER_POST_PR_TAG=$(GO111MODULE=on go run main.go || echo "build_failed")
+      if [ "$DOCKER_POST_PR_TAG" != "build_failed" ]; then
+        readonly DOCKER_POST_PR_TAG
+        export DOCKER_POST_PR_TAG
+        log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
+        return 0
+      else
+        log:error "Failed building PR tag."
+        return 0
+      fi
+    else
+      log::warn "Prtagbuilder source file not found. Can't run prtagbuilder from source."
+      return 0
+    fi
+  else
+    echo "$goVersion"
+    log::warn "go not installed or version do not support go modules. Can't run prtagbuilder from source."
+    return 0
+  fi
 }

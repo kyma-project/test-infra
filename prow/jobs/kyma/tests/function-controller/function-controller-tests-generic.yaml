@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-function-controller$
+    - ^release-(1\.16|1\.15|1\.14)-function-controller$
   run_if_changed: "^tests/function-controller/|^common/makefiles/"
   spec:
     containers:
@@ -38,15 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-function-controller
-      optional: true
+      cluster: untrusted-workload
+      optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tests-function-controller
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template

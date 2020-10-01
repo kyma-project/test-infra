@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-nats-init$
+    - ^release-(1\.16|1\.15|1\.14)-nats-init$
   run_if_changed: "^components/nats-init/|^common/makefiles/"
   spec:
     containers:
@@ -38,12 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-nats-init
+      cluster: untrusted-workload
       optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-components-nats-init
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       reporter_config:

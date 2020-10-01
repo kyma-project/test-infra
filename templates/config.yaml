@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.16"
+  nextRelease: "1.17"
   releases:
+    - "1.16"
     - "1.15"
     - "1.14"
-    - "1.13"
   whitesource:
     - name: "control-plane"
       language: "golang-mod"
@@ -33,6 +33,7 @@ global:
     - name: "knative-kafka"
       language: "golang"
       project: "kyma-incubator"
+      base_ref: "release-0.12"
     - name: "api-gateway"
       language: "golang-mod"
       project: "kyma-incubator"
@@ -165,160 +166,204 @@ go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
   <<: *knative_kafka_component
   buildpack: *go_buildpack_1_12
 
+
+# Default definition of workload clusters
+cluster_default: &cluster_default
+  cluster:
+    presubmit: untrusted-workload
+    postsubmit: trusted-workload
+    periodic: trusted-workload
+    
 templates:
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-broker
           since: "1.7"
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-connectivity-certs-setup-job
           since: "1.7"
       - to: ../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-connectivity-validator
           since: "1.7"
       - to: ../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-gateway
           since: "1.7"
       - to: ../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-operator
           since: "1.7"
       - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-registry
           since: "1.7"
       - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/compass-runtime-agent
           since: "1.7"
       - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/connection-token-handler
           since: "1.7"
       - to: ../prow/jobs/kyma/components/connector-service/connector-service-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/connector-service
           since: "1.7"
       - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/console-backend-service
           since: "1.6"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/kyma-operator
           since: "1.7"
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/service-binding-usage-controller
           since: "1.7"
       - to: ../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/uaa-activator
           since: "1.9"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/console-backend-service
           since: "1.6"
       - to: ../prow/jobs/kyma/tests/service-catalog/service-catalog-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/service-catalog
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/application-connector-tests
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/application-gateway-tests
           since: "1.7"
+      - to: ../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: tests/application-gateway-legacy-tests
+          since: "1.16"
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/application-operator-tests
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/application-registry-tests
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/compass-runtime-agent
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/connection-token-handler-tests
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/connector-service-tests
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/console-backend-service
           since: "1.6"
       - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/end-to-end/upgrade
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/end-to-end/external-solution-integration
           since: "1.10"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/connector
           since: "1.7"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/director/director-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/director
           since: "1.7"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/external-services-mock
           since: "1.12"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/connectivity-adapter
           since: "1.10"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/pairing-adapter
           since: "1.11"
@@ -326,235 +371,306 @@ templates:
 
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/gateway
           since: "1.7"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/healthchecker
           since: "1.7"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: components/schema-migrator
           since: "1.7"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: tests/connector-tests
           since: "1.7"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/director/director-generic-approach.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: tests/director
           since: "1.10"
       - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *compass_generic_component
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: components/provisioner
           since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: components/kyma-environment-broker
           since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: components/schema-migrator
           since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/components/metris/metris-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: components/metris
           since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: components/kubeconfig-service
           since: "1.14"
           optional: false
+      - to: ../prow/jobs/control-plane/components/subscription-cleanup-job/subscription-cleanup-job-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *control_plane_generic_component
+          path: components/subscription-cleanup-job
+          since: "1.17"
+          optional: false
       - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: tests/provisioner-tests
           since: "1.14"
           optional: false
       - to: ../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
         values:
+          <<: *cluster_default
           <<: *control_plane_generic_component
           path: tests/e2e/provisioning
           since: "1.14"
           optional: false
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/apiserver-proxy
           since: "1.7"
       - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/iam-kubeconfig-service
           since: "1.7"
       - to: ../prow/jobs/kyma/components/xip-patch/xip-patch-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/xip-patch
           since: "1.7"
       - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/dex-static-user-configurer
           since: "1.7"
       - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
       - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/istio-installer
           since: "1.10"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/dex
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/apiserver-proxy
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/logging
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/monitoring/monitoring-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/monitoring
           since: "1.7"
       - to: ../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tools/event-subscriber
           since: "1.12"
           optional: true
+      - to: ../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: tools/gitserver
+          since: "1.15"
       - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tools/alpine-net
           since: "1.7"
+          until: "1.15"
       - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/api-gateway
           since: "1.7"
       - to: ../prow/jobs/kyma/components/event-service/event-service-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/event-service
           since: "1.7"
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/integration/event-service
           since: "1.7"
       - to: ../prow/jobs/kyma/components/event-sources/event-sources-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/event-sources
           since: "1.9"
+      - to: ../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/event-publisher-proxy
+          since: "1.17"
+      - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/eventing-controller
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/nats-init
           since: "1.12"
           optional: true
       - to: ../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/function-controller
           since: "1.9"
       - to: ../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/function-controller
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/function-runtimes
           since: "1.13"
-      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
-        values:
-          <<: *kyma_generic_component
-          path: tests/knative-serving
-          since: "1.9"
       - to: ../prow/jobs/kyma/tests/contract/knative-channel-kafka/knative-channel-kafka-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/contract/knative-channel-kafka
           since: "1.10"
+      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: tests/knative-serving
+          since: "1.9"
+          until: "1.15"
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: tests/rafter
       - to: ../prow/jobs/kyma/components/permission-controller/permission-controller-generic.yaml
         values:
+          <<: *cluster_default
           <<: *kyma_generic_component
           path: components/permission-controller
           since: "1.10"
       - to: ../prow/jobs/console/core-ui/core-ui.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: core-ui
           since: "1.11"
       - to: ../prow/jobs/console/add-ons/add-ons.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: add-ons
           since: "1.11"
       - to: ../prow/jobs/console/service-catalog-ui/service-catalog-ui.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: service-catalog-ui
           since: "1.11"
       - to: ../prow/jobs/console/logging/console-logging.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: logging
           since: "1.11"
       - to: ../prow/jobs/console/tests/tests.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: tests
           since: "1.11"
       - to: ../prow/jobs/console/compass/compass.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: compass
           since: "1.12"
       - to: ../prow/jobs/console/core/core.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: core
           since: "1.12"
@@ -562,6 +678,7 @@ templates:
             - ^package.json
       - to: ../prow/jobs/console/content/content.yaml
         values:
+          <<: *cluster_default
           <<: *console_generic_component
           path: content
           since: "1.12"
@@ -571,16 +688,18 @@ templates:
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
+        values:
+          <<: *cluster_default
   - from: templates/kyma-integration-gardener.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
         values:
+          <<: *cluster_default
           optional: true
           resource_changes_triggering_kafka_tests:
             - resources/knative-eventing
             - resources/event-sources
             - resources/knative-eventing-kafka
-            - resources/knative-serving
             - resources/application-connector
   - from: templates/kyma-upgrade-gardener.yaml
     render:
@@ -599,281 +718,339 @@ templates:
   - from: templates/kyma-artifacts.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-artifacts.yaml
+        values:
+          <<: *cluster_default
   - from: templates/kyma-installer.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-installer.yaml
+        values:
+          <<: *cluster_default
   - from: templates/kyma-github-release.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-github-release.yaml
+        values:
+          <<: *cluster_default
   - from: templates/kyma-gke-compass-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-gke-compass-integration.yaml
         values:
+          <<: *cluster_default
           since: "1.13"
   - from: templates/kyma-gke-external-registry.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-gke-external-registry.yaml
         values:
+          <<: *cluster_default
           since: "1.15"
   - from: templates/compass-gke-integration.yaml
     render:
       - to: ../prow/jobs/incubator/compass/compass-gke-integration.yaml
         values:
+          <<: *cluster_default
           since: "1.13"
   - from: templates/kyma-release-candidate.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
+        values:
+          <<: *cluster_default
   - from: templates/compass-integration.yaml
     render:
       - to: ../prow/jobs/incubator/compass/compass-integration.yaml
+        values:
+          <<: *cluster_default
   - from: templates/prow-config.yaml
     render:
       - to: ../prow/config.yaml
+        values:
+          <<: *cluster_default
   - from: templates/component.yaml
     render:
       - to: ../prow/jobs/kyma/components/apiserver-proxy/apiserver-proxy.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_12
           path: components/apiserver-proxy
           until: "1.6"
       - to: ../prow/jobs/kyma/components/application-broker/application-broker.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/application-broker
           until: "1.6"
       - to: ../prow/jobs/kyma/components/application-operator/application-operator.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/application-operator
           until: "1.6"
       - to: ../prow/jobs/kyma/components/application-connectivity-certs-setup-job/application-connectivity-certs-setup-job.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/application-connectivity-certs-setup-job
           until: "1.6"
       - to: ../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/application-connectivity-validator
           until: "1.6"
       - to: ../prow/jobs/kyma/components/application-gateway/application-gateway.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/application-gateway
           until: "1.6"
       - to: ../prow/jobs/kyma/components/application-registry/application-registry.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/application-registry
           until: "1.6"
       - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-deprecated.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/compass-runtime-agent
           until: "1.5"
       - to: ../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent.yaml
         values:
+          <<: *cluster_default
           <<: *kubebuilder2_kyma_component
           path: components/compass-runtime-agent
           since: "1.6"
           until: "1.6"
       - to: ../prow/jobs/kyma/components/connection-token-handler/connection-token-handler.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/connection-token-handler
           until: "1.6"
       - to: ../prow/jobs/kyma/components/connector-service/connector-service.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/connector-service
           until: "1.6"
       - to: ../prow/jobs/kyma/components/console-backend-service/console-backend-service.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/console-backend-service
           until: "1.5"
       - to: ../prow/jobs/kyma/components/dex-static-user-configurer/dex-static-user-configurer.yaml
         values:
+          <<: *cluster_default
           <<: *bootstrap_kyma_component
           path: components/dex-static-user-configurer
           until: "1.6"
       - to: ../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/etcd-tls-setup-job
       - to: ../prow/jobs/kyma/components/event-bus/event-bus.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/event-bus
           until: "1.8"
       - to: ../prow/jobs/kyma/components/event-service/event-service.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/event-service
           until: "1.8"
       - to: ../prow/jobs/kyma/components/helm-broker/helm-broker-deprecated.yaml
         values:
+          <<: *cluster_default
           <<: *kubebuilder_kyma_component
           path: components/helm-broker
           until: "1.4"
       - to: ../prow/jobs/kyma/components/iam-kubeconfig-service/iam-kubeconfig-service.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_12
           path: components/iam-kubeconfig-service
           until: "1.6"
       - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch.yaml
         values:
+          <<: *cluster_default
           <<: *bootstrap_kyma_component
           path: components/istio-kyma-patch
           until: "1.6"
       - to: ../prow/jobs/kyma/components/k8s-dashboard-proxy/k8s-dashboard-proxy.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/k8s-dashboard-proxy
       - to: ../prow/jobs/kyma/components/function-controller/function-controller.yaml
         values:
+          <<: *cluster_default
           <<: *kubebuilder_kyma_component
           path: components/function-controller
           until: "1.8"
       - to: ../prow/jobs/kyma/components/kubeless-images/nodejs/nodejs.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: components/kubeless-images/nodejs
           until: "1.8"
       - to: ../prow/jobs/kyma/components/kyma-operator/kyma-operator.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_12
           until: "1.6"
           path: components/kyma-operator
       - to: ../prow/jobs/kyma/components/service-binding-usage-controller/service-binding-usage-controller.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           until: "1.6"
           path: components/service-binding-usage-controller
       - to: ../prow/jobs/kyma/components/xip-patch/xip-patch.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: components/xip-patch
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/acceptance/acceptance.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           until: "1.6"
           path: tests/acceptance
       - to: ../prow/jobs/kyma/tests/application-connector-tests/application-connector-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/application-connector-tests
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/application-gateway-tests
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/application-operator-tests/application-operator-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/application-operator-tests
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/application-registry-tests/application-registry-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/application-registry-tests
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/compass-runtime-agent/compass-runtime-agent-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/compass-runtime-agent
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/connection-token-handler-tests/connection-token-handler-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/connection-token-handler-tests
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/connector-service-tests/connector-service-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/connector-service-tests
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/console-backend-service/console-backend-service-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/console-backend-service
           until: "1.5"
       - to: ../prow/jobs/kyma/common/common.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_14
           path: common
       - to: ../prow/jobs/kyma/tests/event-bus/event-bus-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/event-bus
           until: "1.8"
-      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
-        values:
-          <<: *go_kyma_component_1_11
-          path: tests/knative-serving
-          until: "1.8"
       - to: ../prow/jobs/kyma/tests/kubeless/kubeless.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/kubeless
           until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/apiserver-proxy/apiserver-proxy-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_12
           path: tests/integration/apiserver-proxy
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/end-to-end/upgrade/upgrade.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/upgrade
           until: "1.6"
           watch: "^tests/end-to-end/upgrade/[^chart]"
       - to: ../prow/jobs/kyma/tests/end-to-end/kubeless-integration/kubeless-integration.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/kubeless-integration
           until: "1.8"
       - to: ../prow/jobs/kyma/tests/end-to-end/external-solution-integration/external-solution-integration.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/end-to-end/external-solution-integration
           until: "1.9"
       - to: ../prow/jobs/kyma/tests/integration/dex/dex-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_12
           path: tests/integration/dex
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/integration/event-service/event-service-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_1_11
           path: tests/integration/event-service
           until: "1.8"
       - to: ../prow/jobs/kyma/tests/integration/logging/logging.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/integration/logging
           since: "1.4"
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/logging/logging-deprecated.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/logging
           until: "1.3"
       - to: ../prow/jobs/kyma/tests/integration/monitoring/monitoring.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/integration/monitoring
           since: "1.4"
           until: "1.6"
       - to: ../prow/jobs/kyma/tests/monitoring/monitoring-deprecated.yaml
         values:
+          <<: *cluster_default
           <<: *go_kyma_component_v20181119
           path: tests/monitoring
           until: "1.3"
       - to: ../prow/jobs/kyma/tests/integration/cluster-users/cluster-users-tests.yaml
         values:
+          <<: *cluster_default
           <<: *bootstrap_kyma_component
           path: tests/integration/cluster-users
           until: "1.6"
@@ -882,11 +1059,13 @@ templates:
             memory: 256Mi
       - to: ../prow/jobs/kyma/components/xip-patch/xip-patch.yaml
         values:
+          <<: *cluster_default
           <<: *bootstrap_kyma_component
           path: components/xip-patch
           until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/connector/connector-old-releases.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: components/connector
           skipSlackReport: true
@@ -894,6 +1073,7 @@ templates:
           until: "1.4"
       - to: ../prow/jobs/incubator/compass/components/connector/connector.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: components/connector
           noRelease: yes
@@ -901,6 +1081,7 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/incubator/compass/tests/connector/connector-tests.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: tests/connector-tests
           noRelease: yes
@@ -908,6 +1089,7 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway-old-releases.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: components/gateway
           skipSlackReport: true
@@ -915,6 +1097,7 @@ templates:
           until: "1.4"
       - to: ../prow/jobs/incubator/compass/components/gateway/gateway.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: components/gateway
           noRelease: yes
@@ -923,6 +1106,7 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-old-releases.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: components/healthchecker
           skipSlackReport: true
@@ -930,6 +1114,7 @@ templates:
           until: "1.4"
       - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker.yaml
         values:
+          <<: *cluster_default
           <<: *go_compass_component_1_11
           path: components/healthchecker
           noRelease: yes
@@ -937,6 +1122,7 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-old-releases.yaml
         values:
+          <<: *cluster_default
           <<: *bootstrap_compass_component
           path: components/schema-migrator
           skipSlackReport: true
@@ -944,6 +1130,7 @@ templates:
           until: "1.4"
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator.yaml
         values:
+          <<: *cluster_default
           <<: *bootstrap_compass_component
           path: components/schema-migrator
           noRelease: yes
@@ -951,27 +1138,23 @@ templates:
           until: "1.6"
       - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         values:
-          cluster:
-            presubmit: untrusted-workload
-            postsubmit: trusted-workload
+          <<: *cluster_default
           repository: github.com/kyma-project/test-infra
           path: watch-pods
           presets:
             build: build
             pushRepository: kyma
           buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
-      - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net.yaml
-        values:
-          <<: *go_kyma_component_v20181119
-          path: tools/alpine-net
-          until: "1.6"
   - from: templates/whitesource-periodics.yaml
     render:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
+        values:
+          <<: *cluster_default
   - from: templates/knative-kafka-component.yaml
     render:
       - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
         values:
+          <<: *cluster_default
           <<: *go_knative_kafka_component_1_12
           path: .
           optional: false

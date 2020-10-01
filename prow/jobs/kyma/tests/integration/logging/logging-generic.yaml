@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-logging$
+    - ^release-(1\.16|1\.15|1\.14)-logging$
   run_if_changed: "^tests/integration/logging/|^common/makefiles/"
   spec:
     containers:
@@ -38,12 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-integration-logging
+      cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tests-integration-logging
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template

@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-connection-token-handler-tests$
+    - ^release-(1\.16|1\.15|1\.14)-connection-token-handler-tests$
   run_if_changed: "^tests/connection-token-handler-tests/|^common/makefiles/"
   spec:
     containers:
@@ -38,12 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-connection-token-handler-tests
+      cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
     - name: post-kyma-tests-connection-token-handler-tests
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template

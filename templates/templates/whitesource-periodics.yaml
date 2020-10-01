@@ -9,7 +9,7 @@ periodics:
   - name: {{ default .name .custom_projectname }}-whitesource-scan
     annotations:
       testgrid-create-test-group: "false"
-    cluster: trusted-workload
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     decorate: true
     cron: "0 4 * * *" # At 04:00 am every day
     labels:
@@ -28,7 +28,7 @@ periodics:
           base_ref: {{ default "master" .base_ref }}
     spec:
         containers:
-        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200513-7e0fade2
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
           command:
             - "bash"
           args:

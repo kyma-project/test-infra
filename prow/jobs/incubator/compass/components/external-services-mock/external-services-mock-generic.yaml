@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.15|1\.14|1\.13)-external-services-mock$
+    - ^release-(1\.16|1\.15|1\.14)-external-services-mock$
   run_if_changed: "^components/external-services-mock/|^scripts/"
   spec:
     containers:
@@ -38,12 +38,14 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-components-external-services-mock
+      cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
     - name: post-compass-components-external-services-mock
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template

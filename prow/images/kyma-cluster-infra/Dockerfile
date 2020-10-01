@@ -1,5 +1,11 @@
 FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20200124-deef6b8c
 
+# Commit details
+
+ARG commit
+ENV IMAGE_COMMIT=$commit
+LABEL io.kyma-project.test-infra.commit=$commit
+
 # Install packages required by az
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
@@ -23,3 +29,9 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(ls
     curl -sL "https://packages.microsoft.com/keys/microsoft.asc" | apt-key add - && \
     apt-get update && \
     apt-get install -y azure-cli=${AZURE_CLI_VERSION}
+
+# Prow Tools
+
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20200827-b59d2d67 /prow-tools /prow-tools
+# for better access to prow-tools
+ENV PATH=$PATH:/prow-tools

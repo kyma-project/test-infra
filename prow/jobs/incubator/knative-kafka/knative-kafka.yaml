@@ -27,6 +27,7 @@ container_template: &container_template
 presubmits: # runs on PRs
   kyma-incubator/knative-kafka:
     - name: pre-master-knative-kafka
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -49,6 +50,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/knative-kafka:
     - name: post-master-knative-kafka
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       always_run: true
