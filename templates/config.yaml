@@ -33,6 +33,7 @@ global:
     - name: "knative-kafka"
       language: "golang"
       project: "kyma-incubator"
+      base_ref: "release-0.12"
     - name: "api-gateway"
       language: "golang-mod"
       project: "kyma-incubator"
