@@ -91,7 +91,7 @@ func TestKymaGardenerAzureIntegrationPresubmit(t *testing.T) {
 
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
 
-	jobName := "pre-master-kyma-gardener-azure-integration"
+	jobName := "pre-master-kyma-integration-gardener-azure"
 	job := tester.FindPresubmitJobByName(presubmits, jobName)
 	require.NotNil(t, job)
 	assert.Equal(t, jobName, job.Name)
