@@ -186,15 +186,16 @@ function installKyma() {
 
     # shellcheck disable=SC1090
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
+    INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
 
     (
     set -x
     kyma install \
         --ci \
         --source "${LAST_RELEASE_VERSION}" \
-        -c installer-cr-azure-eventhubs.yaml.tpl \
-        -o installer-config-production.yaml.tpl \
-        -o installer-config-azure-eventhubs.yaml.tpl \
+        -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
         -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         --timeout 90m
     )
