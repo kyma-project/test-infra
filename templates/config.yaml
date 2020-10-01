@@ -705,6 +705,7 @@ templates:
     render:
       - to: ../prow/jobs/kyma/kyma-upgrade-gardener.yaml
         values:
+          <<: *cluster_default
           optional: true
           resource_changes_triggering_kafka_tests:
             - resources/knative-eventing

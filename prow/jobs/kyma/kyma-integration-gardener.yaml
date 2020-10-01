@@ -117,7 +117,7 @@ gardener_azure_job_template: &gardener_azure_job_template
 
 presubmits:
   kyma-project/kyma:
-    - name: pre-master-kyma-integration-gardener-azure
+    - name: pre-master-kyma-gardener-azure-integration
       cluster: untrusted-workload
       <<: *gardener_azure_job_template
       decoration_config:
@@ -140,7 +140,7 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma GCP Gardener integration job.
-    cluster: trusted-workload
+    cluster: untrusted-workload
     <<: *gardener_gcp_job_template
     decorate: true
     decoration_config:
@@ -159,7 +159,7 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma AWS Gardener integration job.
-    cluster: trusted-workload
+    cluster: untrusted-workload
     <<: *gardener_aws_job_template
     decorate: true
     decoration_config:
@@ -178,7 +178,7 @@ periodics:
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma Azure Gardener integration job.
-    cluster: trusted-workload
+    cluster: untrusted-workload
     <<: *gardener_azure_job_template
     decorate: true
     decoration_config:
