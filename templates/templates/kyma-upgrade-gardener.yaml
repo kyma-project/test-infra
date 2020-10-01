@@ -48,7 +48,7 @@ gardener_azure_job_template: &gardener_azure_job_template
 presubmits:
   kyma-project/kyma:
     - name: pre-master-kyma-upgrade-gardener-azure
-      cluster: untrusted-workload
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
       <<: *gardener_azure_job_template
@@ -69,7 +69,7 @@ presubmits:
 
 periodics:
   - name: kyma-upgrade-gardener-azure
-    cluster: untrusted-workload
+    cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     annotations:
       testgrid-create-test-group: "false"
     <<: *gardener_azure_job_template
