@@ -561,6 +561,59 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+  {{- range .Values.gkeVersions }}
+  {{- if has "postsubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: post-master-kyma-gke-ver{{ $preset }}-integration
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver{{ $preset }}: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver{{ $preset }}-central-connector
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gke_central_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-gke-ver{{ $preset }}: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver{{ $preset }}-upgrade
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver{{ $preset }}: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+  {{- end }}
+  {{- end }}
 
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.

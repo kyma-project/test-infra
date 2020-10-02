@@ -65,6 +65,13 @@ presets:
     env:
       - name: RELEASE_CHANNEL
         value: rapid
+  - labels:
+      preset-gke-ver1_17_9: "true"
+    env:
+      - name: CLUSTER_VERSION
+        value: 1.17.9-gke.1504
+      - name: RELEASE_CHANNEL
+        value: regular
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -343,7 +350,7 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.14
-    - name: pre-master-kyma-gke_rapid_default-integration
+    - name: pre-master-kyma-gke1_17_9-integration
       optional: true
       cluster: untrusted-workload
       branches:
@@ -352,7 +359,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         <<: *gke_job_labels_template
-        preset-gke-ver_rapid_default: "true"
+        preset-gke-ver1_17_9: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -406,7 +413,7 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-master-kyma-gke_rapid_default-upgrade
+    - name: pre-master-kyma-gke1_17_9-upgrade
       optional: true
       cluster: untrusted-workload
       branches:
@@ -416,7 +423,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
-        preset-gke-ver_rapid_default: "true"
+        preset-gke-ver1_17_9: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -471,7 +478,7 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-master-kyma-gke_rapid_default-central-connector
+    - name: pre-master-kyma-gke1_17_9-central-connector
       optional: true
       cluster: untrusted-workload
       branches:
@@ -482,7 +489,7 @@ presubmits: # runs on PRs
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
-        preset-gke-ver_rapid_default: "true"
+        preset-gke-ver1_17_9: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -550,6 +557,98 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+    - name: post-master-kyma-gke-ver_rapid_default-integration
+      cluster: trusted-workload
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver_rapid_default: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver_rapid_default-central-connector
+      cluster: trusted-workload
+      <<: *gke_central_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-gke-ver_rapid_default: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver_rapid_default-upgrade
+      cluster: trusted-workload
+      <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver_rapid_default: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+    - name: post-master-kyma-gke-ver1_17_9-integration
+      cluster: trusted-workload
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver1_17_9-central-connector
+      cluster: trusted-workload
+      <<: *gke_central_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver1_17_9-upgrade
+      cluster: trusted-workload
+      <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
