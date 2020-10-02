@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
-#Description: Kyma CLI Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on real GKE cluster.
+#Description: Kyma Integration plan on GKE. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma on real GKE cluster.
 #
 #
 #Expected vars:
 #
+# - REPO_OWNER - Set up by prow, repository owner/organization
+# - REPO_NAME - Set up by prow, repository name
+# - BUILD_TYPE - Set up by prow, pr/master/release
+# - DOCKER_PUSH_REPOSITORY - Docker repository hostname
+# - DOCKER_PUSH_DIRECTORY - Docker "top-level" directory (with leading "/")
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - CLOUDSDK_CORE_PROJECT - GCP project for all GCP resources used during execution (Service Account, IP Address, DNS Zone, image registry etc.)
 # - CLOUDSDK_COMPUTE_REGION - GCP compute region
@@ -12,6 +17,8 @@
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - MACHINE_TYPE (optional): GKE machine type
 # - CLUSTER_VERSION (optional): GKE cluster version
+# - KYMA_ARTIFACTS_BUCKET: GCP bucket
+# - LOG_COLLECTOR_SLACK_TOKEN: Slack token for test-log-collector
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Admin
@@ -25,8 +32,10 @@
 set -o errexit
 
 discoverUnsetVar=false
+enableTestLogCollector=false
 
-for var in KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS; do
+
+for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
@@ -36,15 +45,21 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-readonly CONCURRENCY=5
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        echo "ERROR: $LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
+
+
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
@@ -58,6 +73,9 @@ cleanup() {
 
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
+
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
@@ -88,6 +106,13 @@ cleanup() {
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
     fi
 
+
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+    fi
+
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         shout "Delete Apiserver proxy DNS Record"
         date
@@ -103,11 +128,56 @@ cleanup() {
     exit "${EXIT_STATUS}"
 }
 
+runTestLogCollector(){
+    if [ "${enableTestLogCollector}" = true ] ; then
+        if [[ "$BUILD_TYPE" == "master" ]]; then
+            shout "Install test-log-collector"
+            date
+            export PROW_JOB_NAME="post-master-kyma-gke-integration"
+            ( 
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+            )    
+        fi    
+    fi
+}
+
 trap cleanup EXIT INT
 
-RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
-readonly COMMON_NAME_PREFIX="cli-integration-test-gke"
-COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    shout "Execute Job Guard"
+    # shellcheck disable=SC2031
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+fi
+
+# Enforce lowercase
+readonly REPO_OWNER=$(echo "${REPO_OWNER}" | tr '[:upper:]' '[:lower:]')
+export REPO_OWNER
+readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
+export REPO_NAME
+
+RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c3)
+
+if [[ "$BUILD_TYPE" == "pr" ]]; then
+    # In case of PR, operate on PR number
+    readonly COMMON_NAME_PREFIX="test-pr"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
+    export KYMA_INSTALLER_IMAGE
+elif [[ "$BUILD_TYPE" == "release" ]]; then
+    readonly COMMON_NAME_PREFIX="test-rel"
+    readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+    shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+else
+    # Otherwise (master), operate on triggering commit id
+    readonly COMMON_NAME_PREFIX="test-commit"
+    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
+    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    export KYMA_INSTALLER_IMAGE
+fi
+
 
 ### Cluster name must be less than 40 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
@@ -121,6 +191,11 @@ export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
+KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -130,6 +205,12 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
+if [[ "$BUILD_TYPE" != "release" ]]; then
+    shout "Build Kyma-Installer Docker image"
+    date
+    CLEANUP_DOCKER_IMAGE="true"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+fi
 
 shout "Reserve IP Address for Ingressgateway"
 date
@@ -168,7 +249,6 @@ fi
 CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
-
 shout "Generate self-signed certificate"
 date
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -177,58 +257,47 @@ CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
-
-shout "Building Kyma CLI"
+shout "Apply Kyma config"
 date
-cd "${KYMA_PROJECT_DIR}/cli"
-make build-linux
-mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
-export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
+kubectl create namespace "kyma-installer"
 
-COMPONENT_OVERRIDES_FILE="component-overrides.yaml"
-COMPONENT_OVERRIDES=$(cat << EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "installation-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "istio-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: istio
-data:
-  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
-EOF
-)
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+    --data "global.domainName=${DOMAIN}" \
+    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-echo "${COMPONENT_OVERRIDES}" > "${COMPONENT_OVERRIDES_FILE}"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
+    --data "test.acceptance.ui.logging.enabled=true" \
+    --label "component=core"
 
-shout "Installing Kyma"
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
+    --data "application-registry.deployment.args.detailedErrorResponse=true" \
+    --label "component=application-connector"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+    --data "global.tlsCrt=${TLS_CERT}" \
+    --data "global.tlsKey=${TLS_KEY}"
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
+    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
+    --label "component=istio"
+
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    echo "Use released artifacts"
+    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
+    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
+else
+    echo "Manual concatenating yamls"
+    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+    | sed -e "s/__VERSION__/0.0.1/g" \
+    | sed -e "s/__.*__//g" \
+    | kubectl apply -f-
+fi
+
+shout "Installation triggered"
 date
-kyma install \
-    --ci \
-    --source latest-published \
-    -o "${COMPONENT_OVERRIDES_FILE}" \
-    --domain "${DOMAIN}" \
-    --tlsCert "${TLS_CERT}" \
-    --tlsKey "${TLS_KEY}"
-
-shout "Checking the versions"
-date
-kyma version
-
+"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     shout "Create DNS Record for Apiserver proxy IP"
@@ -239,44 +308,12 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
-shout "Running Kyma tests"
+shout "Test Kyma"
 date
-
-kyma test run \
-    --name "${SUITE_NAME}" \
-    --concurrency "${CONCURRENCY}" \
-    --max-retries 1 \
-    --timeout "1h" \
-    --watch \
-    --non-interactive
-
-
-echo "Test Summary"
-kyma test status "${SUITE_NAME}" -owide
-
-statusSucceeded=$(kubectl get cts "${SUITE_NAME}"  -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
-if [[ "${statusSucceeded}" != *"True"* ]]; then
-    echo "- Fetching logs due to test suite failure"
-
-    echo "- Fetching logs from testing pods in Failed status..."
-    kyma test logs "${SUITE_NAME}" --test-status Failed
-
-    echo "- Fetching logs from testing pods in Unknown status..."
-    kyma test logs "${SUITE_NAME}" --test-status Unknown
-
-    echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
-    kyma test logs "${SUITE_NAME}" --test-status Running
-
-    echo "ClusterTestSuite details"
-    kubectl get cts "${SUITE_NAME}" -oyaml
-
-    exit 1
-fi
-
-echo "ClusterTestSuite details"
-kubectl get cts "${SUITE_NAME}" -oyaml
-
+# shellcheck disable=SC2031
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing-test.sh
 
 shout "Success"
 

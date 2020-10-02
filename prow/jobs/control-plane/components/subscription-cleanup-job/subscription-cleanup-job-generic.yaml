@@ -8,19 +8,18 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   decorate: true
-  path_alias: github.com/kyma-project/kyma
+  path_alias: github.com/kyma-project/control-plane
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
-    preset-docker-push-repository-kyma: "true"
+    preset-docker-push-repository-control-plane: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-function-controller$
-  run_if_changed: "^tests/function-controller/|^common/makefiles/"
+  run_if_changed: "^components/subscription-cleanup-job/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,22 +28,22 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/function-controller"
+          - "/home/prow/go/src/github.com/kyma-project/control-plane/components/subscription-cleanup-job"
         resources:
           requests:
             memory: 1.5Gi
             cpu: 0.8
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pre-kyma-tests-function-controller
+  kyma-project/control-plane:
+    - name: pre-control-plane-components-subscription-cleanup-job
       cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
-  kyma-project/kyma:
-    - name: post-kyma-tests-function-controller
+  kyma-project/control-plane:
+    - name: post-control-plane-components-subscription-cleanup-job
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"

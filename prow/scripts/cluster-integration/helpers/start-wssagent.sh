@@ -41,6 +41,7 @@ case "${SCAN_LANGUAGE}" in
     golang-mod)
         echo "SCAN: golang-mod"
         CONFIG_PATH=$GO_CONFIG_PATH
+        export GO111MODULE=on
         sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
         ;;
         

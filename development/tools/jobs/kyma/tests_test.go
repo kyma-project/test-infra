@@ -120,7 +120,6 @@ var tests = []struct {
 	{path: "function-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
-			jobsuite.Optional(),
 		},
 	},
 	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,

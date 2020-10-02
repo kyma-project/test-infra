@@ -362,7 +362,7 @@ periodics:
         - org: kyma-incubator
           repo: knative-kafka
           path_alias: github.com/kyma-incubator/knative-kafka
-          base_ref: master
+          base_ref: release-0.12
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
