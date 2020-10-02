@@ -3,186 +3,90 @@
   {{- if .value}}{{.value}}{{else}}{{cat .error "not defined" | fail}}{{end -}}
 {{- end -}}
 
+{{- define "commonProwJob" }}
+      {{- if .JobConfig.annotations}}
+      annotations:
+        {{- range $key, $value := .JobConfig.annotations}}
+        {{$key}}: "{{$value}}"
+        {{- end}}
+      {{- end}}
+      {{- if .JobConfig.labels}}
+      labels:
+        {{- range $key, $value := .JobConfig.labels}}
+        {{$key}}: "{{$value}}"
+        {{- end}}
+      {{- end}}
+      skip_report: {{template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
+      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
+      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
+      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
+      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
+      {{- if .JobConfig.branches}}
+      branches:
+        {{- range .JobConfig.branches}}
+        - {{ . }}
+        {{- end}}
+      {{- else}}{{fail "branches not defined"}}{{- end}}
+      spec:
+        containers:
+          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
+            {{- if .JobConfig.privileged}}
+            securityContext:
+              privileged: {{.JobConfig.privileged}}
+            {{- end}}
+            command:
+              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
+            {{- with .JobConfig.args}}
+            args:
+              {{- range . }}
+              - {{ . }}
+              {{- end}}
+            {{- end}}
+            {{- with .JobConfig.env}}
+            env:
+              {{- range $key, $value := . }}
+              - name: "{{$key}}"
+                value: "{{$value}}"
+              {{- end}}
+            {{- end}}
+            resources:
+              requests:
+                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
+                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
+      
+{{- end -}}
+
 presubmits: # runs on PRs
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
   {{- range .Jobs -}}
   {{- if .JobConfig.type_presubmit }}
     - name: pre-{{ .JobConfig.name }}
-      {{- if .JobConfig.annotations}}
-      annotations:
-        {{- range $key, $value := .JobConfig.annotations}}
-        {{$key}}: "{{$value}}"
-        {{- end}}
-      {{- end}}
-      {{- if .JobConfig.labels}}
-      labels:
-        {{- range $key, $value := .JobConfig.labels}}
-        {{$key}}: "{{$value}}"
-        {{- end}}
-      {{- end}}
       run_if_changed: "{{template "checkValue" dict "value" .JobConfig.run_if_changed "error" "run_if_changed"}}"
-      skip_report: {{template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
-      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
-      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
-      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
-      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
-      {{- if .JobConfig.branches}}
-      branches:
-        {{- range .JobConfig.branches}}
-        - {{ . }}
-        {{- end}}
-      {{- else}}{{fail "branches not defined"}}{{- end}}
-      spec:
-        containers:
-          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
-            {{- if .JobConfig.privileged}}
-            securityContext:
-              privileged: {{.JobConfig.privileged}}
-            {{- end}}
-            command:
-              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
-            {{- with .JobConfig.args}}
-            args:
-              {{- range . }}
-              - {{ . }}
-              {{- end}}
-            {{- end}}
-            {{- with .JobConfig.env}}
-            env:
-              {{- range $key, $value := . }}
-              - name: "{{$key}}"
-                value: "{{$value}}"
-              {{- end}}
-            {{- end}}
-            resources:
-              requests:
-                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
-                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
+  {{- template "commonProwJob" . }}
   {{- end}}
   {{- end}}
   {{end}}
 postsubmits: # runs on master
   {{- range .Values.JobConfigs }}
-    {{ replace "github.com/" "" .RepoName -}}:
-    {{- range .Jobs -}}
-    {{- if .JobConfig.type_postsubmit }}
-    - name: pre-{{ .JobConfig.name }}
-      {{- if .JobConfig.annotations}}
-      annotations:
-        {{- range $key, $value := .JobConfig.annotations}}
-          {{$key}}: "{{$value}}"
-          {{- end}}
-      {{- end}}
-      {{- if .JobConfig.labels}}
-      labels:
-        {{- range $key, $value := .JobConfig.labels}}
-          {{$key}}: "{{$value}}"
-          {{- end}}
-      {{- end}}
+  {{ replace "github.com/" "" .RepoName -}}:
+  {{- range .Jobs -}}
+  {{- if .JobConfig.type_postsubmit }}
+    - name: post-{{ .JobConfig.name }}
       run_if_changed: "{{template "checkValue" dict "value" .JobConfig.run_if_changed "error" "run_if_changed"}}"
-      skip_report: {{template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
-      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
-      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
-      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
-      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_postsubmit "error" "cluster_postsubmit"}}
-      {{- if .JobConfig.branches}}
-      branches:
-        {{- range .JobConfig.branches}}
-        - {{ . }}
-        {{- end}}
-      {{- else}}{{fail "branches not defined"}}{{- end}}
-      spec:
-        containers:
-          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
-            {{- if .JobConfig.privileged}}
-            securityContext:
-              privileged: {{.JobConfig.privileged}}
-            {{- end}}
-            command:
-              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
-            {{- with .JobConfig.args}}
-            args:
-              {{- range . }}
-              - {{ . }}
-              {{- end}}
-            {{- end}}
-            {{- with .JobConfig.env}}
-            env:
-              {{- range $key, $value := . }}
-              - name: "{{$key}}"
-                value: "{{$value}}"
-              {{- end}}
-            {{- end}}
-            resources:
-              requests:
-                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
-                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
-    {{- end}}
-    {{- end}}
-    {{end}}
+  {{- template "commonProwJob" . }}
+  {{- end}}
+  {{- end}}
+  {{end}}
 periodics: # runs on schedule
   {{- range .Values.JobConfigs }}
-    {{ replace "github.com/" "" .RepoName -}}:
-    {{- range .Jobs -}}
-    {{- if .JobConfig.type_periodic }}
-    - name: pre-{{ .JobConfig.name }}
+  {{ replace "github.com/" "" .RepoName -}}:
+  {{- range .Jobs -}}
+  {{- if .JobConfig.type_periodic }}
+    - name: {{ .JobConfig.name }}
       cron: {{template "checkValue" dict "value" .JobConfig.cron "error" "cron"}}
-      {{- if .JobConfig.annotations}}
-      annotations:
-        {{- range $key, $value := .JobConfig.annotations}}
-          {{$key}}: "{{$value}}"
-          {{- end}}
-      {{- end}}
-      {{- if .JobConfig.labels}}
-      labels:
-        {{- range $key, $value := .JobConfig.labels}}
-          {{$key}}: "{{$value}}"
-          {{- end}}
-      {{- end}}
-      {{- if .JobConfig.extra_refs}}
-      extra_refs:
-        {{- range .JobConfig.extra_refs}}
-        - {{ range $key, $value := . }}{{ $key}}: "{{$value}}"
-          {{end}}
-      {{end}}{{else}}{{fail "extra_refs not defined"}}{{end -}}
-      skip_report: {{ template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
-      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
-      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
-      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
-      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
-      {{- if .JobConfig.branches}}
-      branches:
-        {{- range .JobConfig.branches}}
-        - {{ . }}
-        {{- end}}
-      {{- else}}{{fail "branches not defined"}}{{- end}}
-      spec:
-        containers:
-          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
-            {{- if .JobConfig.privileged}}
-            securityContext:
-              privileged: {{.JobConfig.privileged}}
-            {{- end}}
-            command:
-              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
-            {{- with .JobConfig.args}}
-            args:
-              {{- range . }}
-              - {{ . }}
-              {{- end}}
-            {{- end}}
-            {{- with .JobConfig.env}}
-            env:
-              {{- range $key, $value := . }}
-              - name: "{{$key}}"
-                value: "{{$value}}"
-              {{- end}}
-            {{- end}}
-            resources:
-              requests:
-                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
-                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
-    {{- end}}
-    {{- end}}
-    {{end}}
+  {{- template "commonProwJob" . }}
+  {{- end}}
+  {{- end}}
+  {{end}}
+  

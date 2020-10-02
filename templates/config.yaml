@@ -42,10 +42,8 @@ global:
       base_ref: "kyma-master"
       
 globalSets:
-  default:
-    image: "global/defaults/image:test"
-  named-1:
-    image: "global/named-1/image:test"
+  image_bootstrap:
+    image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
     
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
@@ -1159,55 +1157,230 @@ templates:
             cluster_presubmit: "untrusted-workload"
             cluster_postsubmit: "trusted-workload"
             labels:
-              preset_1: "true"
-              preset_2: "true"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-a"
-              PROVISION_REGIONAL_CLUSTER: "true"
-              NODES_PER_ZONE: "1"
-              MACHINE_TYPE: "n1-highcpu-16"
+              preset-dind-enabled: "true"
+              preset-sa-gcr-push: "true"
+              preset-docker-push-repository-test-infra: "true"
         jobConfigs:
           - repoName: github.com/kyma-project/test-infra
             jobs:
             - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
                 local:
-                - "default"
+                  - "default"
               jobConfig:
-                type_presubmit: "true"
-                type_postsubmit: "true"
+                run_if_changed: "^prow/images/bootstrap/"
+                name: "bootstrap_job_template"
+                args:
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
                 run_if_changed: "^prow/images/bootstrap-helm/"
-                name: "test-infra-bootstrap"
-                command: "/test/command"
+                name: "bootstrap_helm_template"
                 args:
-                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-                - "test_arg"
-                labels:
-                  preset_3: "true"
-                  preset_4: "true"
-                  preset_2: "false"
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
             - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
                 local:
                 - "default"
               jobConfig:
-                type_presubmit: "true"
-                type_postsubmit: "true"
-                run_if_changed: "^prow/images/bootstrap-second-job/"
-                name: "test-infra-second-job"
-                command: "/test/command/second-job"
+                run_if_changed: "^prow/images/kyma-cluster-infra/"
+                name: "kyma_cluster_infra"
                 args:
-                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-                env:
-                  CLOUDSDK_COMPUTE_ZONE: "value-from-jobconfig"
-                  PROVISION_REGIONAL_CLUSTER: "value-from-jobconfig"
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"
             - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
                 local:
-                - "default"
+                  - "default"
               jobConfig:
-                type_periodic: "true"
-                name: "periodic-job"
-                cron: "0 4 * * 1-5"
-                extra_refs:
-                - base_ref: "master"
-                  org: "kyma-project"
-                  repo: "test-infra"
-                  path_alias: "github.com/kyma-project/test-infra"
+                run_if_changed: "^prow/images/kyma-integration/"
+                name: "kyma_integration"
+                args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
+                run_if_changed: "^prow/images/buildpack-golang/"
+                name: "buildpack_golang_job_template"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
+                run_if_changed: "^prow/images/buildpack-golang-toolbox/"
+                name: "buildpack_golang_toolbox_job_template"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
+                run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
+                name: "buildpack_golang_kubebuilder_job_template"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
+                name: "buildpack_golang_kubebuilder2_job_template"
+                run_if_changed: "^prow/images/buildpack-golang-kubebuilder2/"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
+                name: "buildpack_node_job_template"
+                run_if_changed: "^prow/images/buildpack-node/"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+              jobConfig:
+                name: "buildpack_node_chromium_job_template"
+                run_if_changed: "^prow/images/buildpack-node-chromium/"
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                jobConfig:
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  name: "kyma_integration"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            
