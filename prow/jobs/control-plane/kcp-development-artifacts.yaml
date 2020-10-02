@@ -13,7 +13,7 @@ job_template: &job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20200831-e46c648b
       securityContext:
         privileged: true
       command:
@@ -40,7 +40,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/control-plane:
   - name: pre-master-kcp-development-artifacts
-    run_if_changed: "^installation|^resources|^tools/kcp-installer"
+    run_if_changed: "^installation|^resources|^tools/kcp-installer|^components/kyma-environment-broker/cmd/cli"
     branches:
     - ^master$
     <<: *job_template

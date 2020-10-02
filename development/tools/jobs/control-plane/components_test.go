@@ -77,7 +77,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
 			jobsuite.Since(releases.Release117),
-			jobsuite.Optional(),
 		},
 	},
 }

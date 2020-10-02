@@ -7,7 +7,7 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/library.sh"
 
 readonly ARGS=("$@")
-readonly MILV_IMAGE="magicmatatjahu/milv:0.0.7-beta"
+readonly MILV_IMAGE="eu.gcr.io/kyma-project/external/magicmatatjahu/milv:0.0.7-beta"
 VOLUME_DIR=""
 OUTPUT=0
 

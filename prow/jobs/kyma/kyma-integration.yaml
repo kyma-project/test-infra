@@ -83,6 +83,28 @@ gke_job_template: &gke_job_template
             memory: 200Mi
             cpu: 80m
 
+gke_test_job_template: &gke_test_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-b"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-for-testing.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
 gke_upgrade_job_template: &gke_upgrade_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -288,6 +310,21 @@ presubmits: # runs on PRs
       branches:
         - ^master$
       <<: *gke_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: pre-master-kyma-gke-int-test
+      cluster: untrusted-workload
+      optional: true
+      branches:
+        - ^master$
+      <<: *gke_test_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:

@@ -33,6 +33,7 @@ global:
     - name: "knative-kafka"
       language: "golang"
       project: "kyma-incubator"
+      base_ref: "release-0.12"
     - name: "api-gateway"
       language: "golang-mod"
       project: "kyma-incubator"
@@ -450,7 +451,7 @@ templates:
           <<: *control_plane_generic_component
           path: components/subscription-cleanup-job
           since: "1.17"
-          optional: true
+          optional: false
       - to: ../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         values:
           <<: *cluster_default
@@ -575,6 +576,13 @@ templates:
           <<: *kyma_generic_component
           path: components/event-publisher-proxy
           since: "1.17"
+      - to: ../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *kyma_generic_component
+          path: components/eventing-controller
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
@@ -594,7 +602,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/function-controller
           since: "1.10"
-          optional: true
       - to: ../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         values:
           <<: *cluster_default

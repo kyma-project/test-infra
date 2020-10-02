@@ -19,8 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-function-controller$
-  run_if_changed: "^tests/function-controller/|^common/makefiles/"
+  run_if_changed: "^components/eventing-controller/|^common/makefiles/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
@@ -29,7 +28,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/function-controller"
+          - "/home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,15 +36,18 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-kyma-tests-function-controller
+    - name: pre-kyma-components-eventing-controller
       cluster: untrusted-workload
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
   kyma-project/kyma:
-    - name: post-kyma-tests-function-controller
+    - name: post-kyma-components-eventing-controller
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template
