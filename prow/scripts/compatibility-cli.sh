@@ -50,12 +50,12 @@ RELEASES=(${RELEASES})
 # Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
 
 # remove patch
-CURRENT=$(echo ${RELEASES[0]} | awk -F'.' '{print $1"."$2}')
-for r in ${RELEASES[@]}; do
+CURRENT=$(echo "${RELEASES[0]}" | awk -F'.' '{print $1"."$2}')
+for r in "${RELEASES[@]}"; do
     # remove patch from candidate
-    WANT=$(echo ${r} | awk -F'.' '{print $1"."$2}')
+    WANT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
 
-    if [[ $WANT != $CURRENT ]]; then
+    if [[ "$WANT" != "$CURRENT" ]]; then
         # check if we need to backtrack more
         if [[ $COMPAT_BACKTRACK == 1 ]]; then
             # Found the target release
@@ -63,8 +63,8 @@ for r in ${RELEASES[@]}; do
             break
         else
             # Still need to backtrack further
-            COMPAT_BACKTRACK=$(($COMPAT_BACKTRACK - 1))
-            CURRENT=$(echo ${r} | awk -F'.' '{print $1"."$2}')
+            COMPAT_BACKTRACK=$((COMPAT_BACKTRACK - 1))
+            CURRENT=$(echo "${r}" | awk -F'.' '{print $1"."$2}')
         fi
     fi
 done
