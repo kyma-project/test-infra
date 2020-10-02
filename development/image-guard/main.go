@@ -183,6 +183,7 @@ func enforceImageRegistries(registries ...string) admissioncontrol.AdmitFunc {
 }
 
 func collectUsedImages() admissioncontrol.AdmitFunc {
+	jsonLog := log.NewJSONLogger(log.NewSyncWriter(os.Stdout))
 	return func(reviewRequest *v1beta1.AdmissionReview) (*v1beta1.AdmissionResponse, error) {
 		kind := reviewRequest.Request.Kind.Kind
 		resp := &v1beta1.AdmissionResponse{Allowed: true, Result: &metav1.Status{}}
@@ -193,7 +194,7 @@ func collectUsedImages() admissioncontrol.AdmitFunc {
 				return nil, err
 			}
 			for _, c := range pod.Spec.Containers {
-				fmt.Printf("image: %s\n", c.Image)
+				jsonLog.Log("image", c.Image, "owner", pod.ObjectMeta.OwnerReferences[0].Name)
 			}
 		}
 		return resp, nil
