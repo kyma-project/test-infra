@@ -925,7 +925,7 @@ templates:
           <<: *go_kyma_component_1_11
           path: tests/event-bus
           until: "1.8"
-      - to: ../prow/jobs/kyma/tests/knative-serving    /knative-serving.yaml
+      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving.yaml
         values:
           <<: *cluster_component
           <<: *go_kyma_component_1_11
