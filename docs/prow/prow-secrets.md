@@ -35,7 +35,6 @@ This document lists all types of Secrets used in the `kyma-prow` and `workload-k
 | **kyma-alerts-slack-api-url** | Token for publishing messages to the SAP CX workspace.  It is used by nightly and weekly ProwJobs.|
 | **neighbors-alerts-slack-api-url** | Publishes alerts to the private `neighbors` Slack channel.|
 | **kyma-azure-credential-*** | Azure subscription and service principal credentials. |
-| **kyma-snyk-token** | Token that allows authentication to Snyk CLI. It is used by the `vulnerability-scanner` ProwJob. |
 | **kyma-website-bot-*** | Personal access token of the `kyma-website-bot` GitHub account. It is responsible for publishing the `kyma-project.io` website. |
 | **slack-webhook-kyma-ci-force** | Slack webhook that points to the #kyma-ci-force channel. It is used by [alertmanager](https://github.com/kyma-project/test-infra/blob/master/docs/prow/prow-monitoring.md).|
 | **slack-webhook-kyma-prow-alerts** | Slack webhook that points to the #kyma-prow-alerts channel. It is used by [alertmanager](https://github.com/kyma-project/test-infra/blob/master/docs/prow/prow-monitoring.md).|
