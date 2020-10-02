@@ -1153,17 +1153,19 @@ templates:
             branches:
             - "^master$"
             privileged: "true"
-            command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
             request_memory: "1.5Gi"
             request_cpu: "0.8"
             cluster_presubmit: "untrusted-workload"
             cluster_postsubmit: "trusted-workload"
-            type_presubmit: "true"
-            type_postsubmit: "true"
             labels:
               preset_1: "true"
               preset_2: "true"
+            env:
+              CLOUDSDK_COMPUTE_ZONE: "europe-west4-a"
+              PROVISION_REGIONAL_CLUSTER: "true"
+              NODES_PER_ZONE: "1"
+              MACHINE_TYPE: "n1-highcpu-16"
         jobConfigs:
           - repoName: github.com/kyma-project/test-infra
             jobs:
@@ -1171,10 +1173,11 @@ templates:
                 local:
                 - "default"
               jobConfig:
+                type_presubmit: "true"
+                type_postsubmit: "true"
                 run_if_changed: "^prow/images/bootstrap-helm/"
                 name: "test-infra-bootstrap"
-                command:
-                - "/test/command"
+                command: "/test/command"
                 args:
                 - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
                 - "test_arg"
@@ -1184,11 +1187,27 @@ templates:
                   preset_2: "false"
             - inheritedConfigs:
                 local:
-                  - "default"
+                - "default"
               jobConfig:
+                type_presubmit: "true"
+                type_postsubmit: "true"
                 run_if_changed: "^prow/images/bootstrap-second-job/"
                 name: "test-infra-second-job"
-                command:
-                  - "/test/command/second-job"
+                command: "/test/command/second-job"
                 args:
-                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+                env:
+                  CLOUDSDK_COMPUTE_ZONE: "value-from-jobconfig"
+                  PROVISION_REGIONAL_CLUSTER: "value-from-jobconfig"
+            - inheritedConfigs:
+                local:
+                - "default"
+              jobConfig:
+                type_periodic: "true"
+                name: "periodic-job"
+                cron: "0 4 * * 1-5"
+                extra_refs:
+                - base_ref: "master"
+                  org: "kyma-project"
+                  repo: "test-infra"
+                  path_alias: "github.com/kyma-project/test-infra"

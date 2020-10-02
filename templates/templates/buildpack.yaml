@@ -9,6 +9,12 @@ presubmits: # runs on PRs
   {{- range .Jobs -}}
   {{- if .JobConfig.type_presubmit }}
     - name: pre-{{ .JobConfig.name }}
+      {{- if .JobConfig.annotations}}
+      annotations:
+        {{- range $key, $value := .JobConfig.annotations}}
+        {{$key}}: "{{$value}}"
+        {{- end}}
+      {{- end}}
       {{- if .JobConfig.labels}}
       labels:
         {{- range $key, $value := .JobConfig.labels}}
@@ -16,61 +22,167 @@ presubmits: # runs on PRs
         {{- end}}
       {{- end}}
       run_if_changed: "{{template "checkValue" dict "value" .JobConfig.run_if_changed "error" "run_if_changed"}}"
-      skip_report: {{ if .JobConfig.skip_report}}{{.JobConfig.skip_report}}{{else}}{{fail "skip_report not defined"}}{{end}}
-      max_concurrency: {{ if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail "max_concurrency not defined"}}{{end}}
-      decorate: {{ if .JobConfig.decorate}}{{.JobConfig.decorate}}{{else}}{{fail "decorate not defined"}}{{end}}
-      path_alias: {{ if .JobConfig.path_alias}}{{.JobConfig.path_alias}}{{else}}{{fail "path_alias not defined"}}{{end}}
+      skip_report: {{template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
+      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
+      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
+      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
+      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
+      {{- if .JobConfig.branches}}
       branches:
-        - ^master$
+        {{- range .JobConfig.branches}}
+        - {{ . }}
+        {{- end}}
+      {{- else}}{{fail "branches not defined"}}{{- end}}
       spec:
         containers:
-          - image: {{if .JobConfig.name}}{{ .JobConfig.image }}{{else}}{{fail "image not defined"}}{{end}}
+          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
+            {{- if .JobConfig.privileged}}
             securityContext:
-              privileged: {{if .JobConfig.privileged}}{{.JobConfig.privileged}}{{else}}true{{end}}
+              privileged: {{.JobConfig.privileged}}
+            {{- end}}
             command:
-              - {{ if .JobConfig.command}}{{.JobConfig.command}}{{else}}{{fail "Command not provided"}}{{end}}
+              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
             {{- with .JobConfig.args}}
             args:
               {{- range . }}
               - {{ . }}
               {{- end}}
             {{- end}}
+            {{- with .JobConfig.env}}
+            env:
+              {{- range $key, $value := . }}
+              - name: "{{$key}}"
+                value: "{{$value}}"
+              {{- end}}
+            {{- end}}
             resources:
               requests:
                 memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
                 cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
-      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
   {{- end}}
   {{- end}}
   {{end}}
 postsubmits: # runs on master
-  kyma-project/test-infra:
-    - name: post-test-infra-bootstrap
+  {{- range .Values.JobConfigs }}
+    {{ replace "github.com/" "" .RepoName -}}:
+    {{- range .Jobs -}}
+    {{- if .JobConfig.type_postsubmit }}
+    - name: pre-{{ .JobConfig.name }}
+      {{- if .JobConfig.annotations}}
       annotations:
-        testgrid-create-test-group: "false"
+        {{- range $key, $value := .JobConfig.annotations}}
+          {{$key}}: "{{$value}}"
+          {{- end}}
+      {{- end}}
+      {{- if .JobConfig.labels}}
       labels:
-        preset-build-release: "true"
-        preset-dind-enabled: "true"
-        preset-sa-gcr-push: "true"
-        preset-docker-push-repository-test-infra: "true"
-      run_if_changed: "^prow/images/bootstrap/"
-      skip_report: false
-      max_concurrency: 10
-      decorate: true
-      path_alias: github.com/kyma-project/test-infra
+        {{- range $key, $value := .JobConfig.labels}}
+          {{$key}}: "{{$value}}"
+          {{- end}}
+      {{- end}}
+      run_if_changed: "{{template "checkValue" dict "value" .JobConfig.run_if_changed "error" "run_if_changed"}}"
+      skip_report: {{template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
+      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
+      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
+      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
+      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_postsubmit "error" "cluster_postsubmit"}}
+      {{- if .JobConfig.branches}}
       branches:
-        - ^master$
+        {{- range .JobConfig.branches}}
+        - {{ . }}
+        {{- end}}
+      {{- else}}{{fail "branches not defined"}}{{- end}}
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
+          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
+            {{- if .JobConfig.privileged}}
             securityContext:
-              privileged: true
+              privileged: {{.JobConfig.privileged}}
+            {{- end}}
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
+            {{- with .JobConfig.args}}
             args:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+              {{- range . }}
+              - {{ . }}
+              {{- end}}
+            {{- end}}
+            {{- with .JobConfig.env}}
+            env:
+              {{- range $key, $value := . }}
+              - name: "{{$key}}"
+                value: "{{$value}}"
+              {{- end}}
+            {{- end}}
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 0.8
-      cluster: trusted-workload
+                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
+                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
+    {{- end}}
+    {{- end}}
+    {{end}}
+periodics: # runs on schedule
+  {{- range .Values.JobConfigs }}
+    {{ replace "github.com/" "" .RepoName -}}:
+    {{- range .Jobs -}}
+    {{- if .JobConfig.type_periodic }}
+    - name: pre-{{ .JobConfig.name }}
+      cron: {{template "checkValue" dict "value" .JobConfig.cron "error" "cron"}}
+      {{- if .JobConfig.annotations}}
+      annotations:
+        {{- range $key, $value := .JobConfig.annotations}}
+          {{$key}}: "{{$value}}"
+          {{- end}}
+      {{- end}}
+      {{- if .JobConfig.labels}}
+      labels:
+        {{- range $key, $value := .JobConfig.labels}}
+          {{$key}}: "{{$value}}"
+          {{- end}}
+      {{- end}}
+      {{- if .JobConfig.extra_refs}}
+      extra_refs:
+        {{- range .JobConfig.extra_refs}}
+        - {{ range $key, $value := . }}{{ $key}}: "{{$value}}"
+          {{end}}
+      {{end}}{{else}}{{fail "extra_refs not defined"}}{{end -}}
+      skip_report: {{ template "checkValue" dict "value" .JobConfig.skip_report "error" "skip_report"}}
+      max_concurrency: {{template "checkValue" dict "value" .JobConfig.max_concurrency "error" "max_concurrency"}}
+      decorate: {{template "checkValue" dict "value" .JobConfig.decorate "error" "decorate"}}
+      path_alias: {{template "checkValue"dict "value" .JobConfig.path_alias "error" "path_alias"}}
+      cluster: {{template "checkValue" dict "value" .JobConfig.cluster_presubmit "error" "cluster_presubmit"}}
+      {{- if .JobConfig.branches}}
+      branches:
+        {{- range .JobConfig.branches}}
+        - {{ . }}
+        {{- end}}
+      {{- else}}{{fail "branches not defined"}}{{- end}}
+      spec:
+        containers:
+          - image: {{template "checkValue" dict "value" .JobConfig.name "error" "image"}}
+            {{- if .JobConfig.privileged}}
+            securityContext:
+              privileged: {{.JobConfig.privileged}}
+            {{- end}}
+            command:
+              - {{template "checkValue" dict "value" .JobConfig.command "error" "command"}}
+            {{- with .JobConfig.args}}
+            args:
+              {{- range . }}
+              - {{ . }}
+              {{- end}}
+            {{- end}}
+            {{- with .JobConfig.env}}
+            env:
+              {{- range $key, $value := . }}
+              - name: "{{$key}}"
+                value: "{{$value}}"
+              {{- end}}
+            {{- end}}
+            resources:
+              requests:
+                memory: {{template "checkValue" dict "value" .JobConfig.request_memory "error" "request_memory"}}
+                cpu: {{template "checkValue" dict "value" .JobConfig.request_cpu "error" "request_cpu"}}
+    {{- end}}
+    {{- end}}
+    {{end}}
