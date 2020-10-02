@@ -60,6 +60,18 @@ presets:
         value: kyma-minio-gateway
       - name: AZURE_REGION
         value: westeurope
+  - labels:
+      preset-gke-ver_rapid_default: "true"
+    env:
+      - name: RELEASE_CHANNEL
+        value: rapid
+  - labels:
+      preset-gke-ver1_17_9: "true"
+    env:
+      - name: CLUSTER_VERSION
+        value: 1.17.9-gke.1504
+      - name: RELEASE_CHANNEL
+        value: regular
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -314,6 +326,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -329,6 +342,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -341,6 +355,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - org: kyma-project
@@ -355,6 +370,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - org: kyma-project
@@ -369,12 +385,26 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.14
+    - name: pre-master-kyma-gke1_17_9-integration
+      optional: true
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+      <<: *gke_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        <<: *gke_job_labels_template
+        preset-gke-ver1_17_9: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 
     - name: pre-master-kyma-gke-upgrade
       cluster: untrusted-workload
@@ -385,6 +415,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -397,6 +428,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -409,6 +441,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -421,10 +454,26 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
+    - name: pre-master-kyma-gke1_17_9-upgrade
+      optional: true
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+      <<: *gke_upgrade_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        preset-gke-ver1_17_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 
     - name: pre-master-kyma-gke-central-connector
       cluster: untrusted-workload
@@ -435,6 +484,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -447,6 +497,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -459,6 +510,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -471,10 +523,26 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
+    - name: pre-master-kyma-gke1_17_9-central-connector
+      optional: true
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+      <<: *gke_central_job_template
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gke_job_labels_template
+        preset-gke-ver1_17_9: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 
 postsubmits:
   kyma-project/kyma:
@@ -506,6 +574,7 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -522,6 +591,7 @@ postsubmits:
         - ^master$
       labels:
         preset-build-master: "true"
+        preset-gke-ver-stable: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -539,6 +609,99 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
+        preset-gke-ver-stable: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+    - name: post-master-kyma-gke-ver_rapid_default-integration
+      cluster: trusted-workload
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver_rapid_default: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver_rapid_default-central-connector
+      cluster: trusted-workload
+      <<: *gke_central_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-gke-ver_rapid_default: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver_rapid_default-upgrade
+      cluster: trusted-workload
+      <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver_rapid_default: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+    - name: post-master-kyma-gke-ver1_17_9-integration
+      cluster: trusted-workload
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver1_17_9-central-connector
+      cluster: trusted-workload
+      <<: *gke_central_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+
+    - name: post-master-kyma-gke-ver1_17_9-upgrade
+      cluster: trusted-workload
+      <<: *gke_upgrade_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -801,6 +964,7 @@ periodics:
       preset-nightly-github-integration: "true"
       preset-kms-gc-project-env: "true"
       preset-certificates-bucket: "true"
+      preset-gke-ver-stable: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
@@ -873,6 +1037,7 @@ periodics:
       preset-weekly-github-integration: "true"
       preset-kms-gc-project-env: "true"
       preset-certificates-bucket: "true"
+      preset-gke-ver-stable: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:

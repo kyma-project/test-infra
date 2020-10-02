@@ -42,6 +42,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-cluster-use-ssd: "true"
+  preset-gke-ver-stable: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
