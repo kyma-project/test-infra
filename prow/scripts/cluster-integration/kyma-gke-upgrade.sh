@@ -306,9 +306,11 @@ function installKyma() {
         --data "global.tlsCrt=${TLS_CERT}" \
         --data "global.tlsKey=${TLS_KEY}"
 
-cat << EOF > "$PWD/istio-overrides"
+cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
+metadata:
+  namespace: istio-system
 spec:
   components:
     ingressGateways:
@@ -321,7 +323,7 @@ EOF
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
         --label "component=istio" \
-        --file "$PWD/istio-overrides"
+        --file "$PWD/kyma_istio_operator"
 
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
