@@ -4,7 +4,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-bootstrap
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -31,7 +31,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-bootstrap-helm
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -58,7 +58,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-kyma-cluster-infra
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -85,7 +85,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-kyma-integration
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -112,7 +112,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-golang
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -139,7 +139,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-golang-toolbox
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -166,7 +166,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-golang-kubebuilder
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -193,7 +193,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-golang-kubebuilder2
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -220,7 +220,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-node
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -247,7 +247,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-node-chromium
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -274,7 +274,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-java
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -301,7 +301,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-buildpack-java-node
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -328,7 +328,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-cleaner
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -355,7 +355,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-vulnerability-scanner
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -382,7 +382,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-whitesource-scanner
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -409,7 +409,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-kubectl
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -436,7 +436,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-probot-stale
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -463,7 +463,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-prow-tools
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
@@ -490,7 +490,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-test-infra-prow-clonerefs
       labels:
-        preset-build_pr: "true"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
