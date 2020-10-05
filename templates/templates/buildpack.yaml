@@ -80,13 +80,3 @@ postsubmits: # runs on master
   {{- end}}
   {{- end}}
   {{end}}
-periodics: # runs on schedule
-  {{- range .Values.JobConfigs }}
-  {{ replace "github.com/" "" .RepoName -}}:
-  {{- range .Jobs -}}
-  {{- if .JobConfig.type_periodic }}
-  {{- template "commonProwJob" . }}
-  {{- end}}
-  {{- end}}
-  {{end}}
-  

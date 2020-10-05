@@ -1070,7 +1070,3 @@ postsubmits: # runs on master
                 memory: 1.5Gi
                 cpu: 0.8
   
-periodics: # runs on schedule
-  kyma-project/test-infra:
-  
-  
