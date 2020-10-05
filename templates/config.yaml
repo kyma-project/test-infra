@@ -1209,7 +1209,7 @@ templates:
             type_presubmit: "true"
             cluster: "untrusted-workload"
             labels:
-              preset-build_pr: "true"
+              preset-build-pr: "true"
           postsubmit:
             type_postsubmit: "true"
             cluster: "trusted-workload"
