@@ -279,7 +279,7 @@ func TestKymaClusterInfraPresubmit(t *testing.T) {
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/kyma-cluster-infra/Dockerfile"))
 	assert.Len(t, actualPresubmit.Spec.Containers, 1)
 	actualContainer := actualPresubmit.Spec.Containers[0]
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be", actualContainer.Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualContainer.Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualContainer.Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"}, actualContainer.Args)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
@@ -299,7 +299,7 @@ func TestKymaClusterInfraPostsubmit(t *testing.T) {
 	assert.True(t, tester.IfPostsubmitShouldRunAgainstChanges(*actualPostsubmit, "prow/images/kyma-cluster-infra/Dockerfile"))
 	assert.Len(t, actualPostsubmit.Spec.Containers, 1)
 	actualContainer := actualPostsubmit.Spec.Containers[0]
-	assert.Equal(t, "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be", actualContainer.Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualContainer.Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualContainer.Command)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"}, actualContainer.Args)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPostsubmit.JobBase)
