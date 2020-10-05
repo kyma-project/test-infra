@@ -13,9 +13,9 @@ import (
 var (
 	log     = logrus.New()
 	rootCmd = &cobra.Command{
-		Use:   "prowjob-parser",
-		Short: "prowjob-parser parse all prowjobs definitions from provided path and print complete definition",
-		Long:  "prowjob-parser parse all prowjobs definitions from provided path and print complete definition. It support multiple filters to narrow down results.",
+		Use:   "prowjobparser",
+		Short: "prowjobparser print filtered list of prowjob names",
+		Long:  "prowjobparser parse all prowjobs definitions from provided path and prints filtered results.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := findProwjobs(); err != nil {
 				log.Fatal(err)
@@ -34,6 +34,7 @@ type RunConfig struct {
 	jobPath       string
 	includePreset []string
 	excludePreset []string
+	cluster       string
 }
 
 func matchLabels(jobBase config.JobBase) {
@@ -62,21 +63,27 @@ func matchLabels(jobBase config.JobBase) {
 	}
 }
 
-func findPresubmits(presubmits []config.Presubmit) {
+func matchCluster(jobBase config.JobBase) {
+	if jobBase.Cluster == runCfg.cluster {
+		fmt.Printf("%s\n", jobBase.Name)
+	}
+}
+
+func findPresubmits(presubmits []config.Presubmit, filter func(base config.JobBase)) {
 	for _, job := range presubmits {
-		matchLabels(job.JobBase)
+		filter(job.JobBase)
 	}
 }
 
-func findPostsubmits(postsubmits []config.Postsubmit) {
+func findPostsubmits(postsubmits []config.Postsubmit, filter func(base config.JobBase)) {
 	for _, job := range postsubmits {
-		matchLabels(job.JobBase)
+		filter(job.JobBase)
 	}
 }
 
-func findPeriodics(periodics []config.Periodic) {
+func findPeriodics(periodics []config.Periodic, filter func(base config.JobBase)) {
 	for _, job := range periodics {
-		matchLabels(job.JobBase)
+		filter(job.JobBase)
 	}
 }
 
@@ -85,9 +92,16 @@ func findProwjobs() error {
 	if prowCfg, err = parseProwjobs(); err != nil {
 		return err
 	}
-	findPresubmits(prowCfg.JobConfig.AllStaticPresubmits([]string{}))
-	findPostsubmits(prowCfg.JobConfig.AllStaticPostsubmits([]string{}))
-	findPeriodics(prowCfg.JobConfig.AllPeriodics())
+	if len(runCfg.includePreset) > 0 || len(runCfg.excludePreset) > 0 {
+		findPresubmits(prowCfg.JobConfig.AllStaticPresubmits([]string{}), matchLabels)
+		findPostsubmits(prowCfg.JobConfig.AllStaticPostsubmits([]string{}), matchLabels)
+		findPeriodics(prowCfg.JobConfig.AllPeriodics(), matchLabels)
+	}
+	if runCfg.cluster != "" {
+		findPresubmits(prowCfg.JobConfig.AllStaticPresubmits([]string{}), matchCluster)
+		findPostsubmits(prowCfg.JobConfig.AllStaticPostsubmits([]string{}), matchCluster)
+		findPeriodics(prowCfg.JobConfig.AllPeriodics(), matchCluster)
+	}
 
 	return nil
 }
@@ -97,6 +111,7 @@ func parseProwjobs() (*config.Config, error) {
 	log.Info(fmt.Sprintf("Path to jobs directory: %s", runCfg.jobPath))
 	log.Info(fmt.Sprintf("Included presets: %v", runCfg.includePreset))
 	log.Info(fmt.Sprintf("Excluded presets: %v", runCfg.excludePreset))
+	log.Info(fmt.Sprintf("Cluster: %s", runCfg.cluster))
 	var err error
 	if prowCfg, err = config.Load(runCfg.configPath, runCfg.jobPath); err != nil {
 		return nil, err
@@ -112,6 +127,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&runCfg.jobPath, "jobpath", "j", "", "Path to directory containing yaml files with prowjobs definitions.")
 	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.includePreset, "includepreset", "i", []string{}, "Prowjobs must contain this preset to be included in output.")
 	rootCmd.PersistentFlags().StringArrayVarP(&runCfg.excludePreset, "excludepreset", "e", []string{}, "Prowjobs with this preset added will be excluded from output.")
+	rootCmd.PersistentFlags().StringVarP(&runCfg.cluster, "cluster", "C", "", "Print prowjobs with cluster set to the flag value.")
 
 	rootCmd.MarkPersistentFlagRequired("configpath")
 	rootCmd.MarkPersistentFlagRequired("jobpath")
