@@ -135,8 +135,7 @@ ENV PATH=$PATH:/prow-tools
 
 ENV CLOUD_SDK_VERSION=299.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
-    CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-    CLUSTER_VERSION=$K8S_VERSION
+    CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
 RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
     tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
@@ -148,4 +147,4 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
     gcloud info | tee /workspace/gcloud-info.txt && \
-    mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
+    mv /google-cloud-sdk/bin/kubectl.${K8S_VERSION} /google-cloud-sdk/bin/kubectl
