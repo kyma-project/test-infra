@@ -257,6 +257,9 @@ function installTestChartOrFail() {
   local name=$2
   local namespace=$3
 
+  # get server IP for HTTPS protocol and split away wildcard ".*" from it using sed
+  local domain=$(kubectl get gateways.networking.istio.io --namespace kyma-system kyma-gateway -o jsonpath='{.spec.servers[?(@.port.protocol=="HTTPS")].hosts[0]}' | sed s/\*\.//g)
+
   shout "Create ${name} resources"
   date
 
@@ -265,7 +268,7 @@ function installTestChartOrFail() {
       --create-namespace \
       "${path}" \
       --timeout "${HELM_TIMEOUT_SEC}" \
-      --set domain="${DOMAIN}" \
+      --set domain="${domain}" \
       --wait
 
   prepareResult=$?
