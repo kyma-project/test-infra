@@ -28,11 +28,12 @@ if [ "${discoverUnsetVar}" = true ] ; then
 fi
 
 #Exported variables
+export KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts"
+export TEST_INFRA_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts"
 
 # shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+source "${TEST_INFRA_SCRIPTS}/library.sh"
 
 echo "--------------------------------------------------------------------------------"
 echo "Kyma CLI compatibility checker"
@@ -73,4 +74,4 @@ shout "Checking Kyma CLI compatibility with Kyma ${TARGET}"
 date
 
 # Call CLI integration script with the target release
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-vm-cli.sh --kyma-version "${TARGET}"
+"${TEST_INFRA_SCRIPTS}"/provision-vm-cli.sh --kyma-version "${TARGET}"
