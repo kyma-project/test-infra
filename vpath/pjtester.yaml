@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pre-master-kyma-gke-upgrade"
-    report: true
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 9284
