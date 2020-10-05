@@ -32,6 +32,7 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: community-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true

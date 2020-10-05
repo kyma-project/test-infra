@@ -33,6 +33,7 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: console-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true
