@@ -40,8 +40,7 @@ echo "Kyma CLI compatibility checker"
 echo "--------------------------------------------------------------------------------"
 
 # Get all non RC release tags
-echo "$(curl -s https://api.github.com/repos/kyma-project/kyma/releases)"
-RELEASES=$(curl -s https://api.github.com/repos/kyma-project/kyma/releases | grep -E '(tag_name": ")(\d+\.\d+\.\d+\",?$)' | awk '{print $2}')
+RELEASES=$(curl -s https://api.github.com/repos/kyma-project/kyma/releases | grep -P '(tag_name": ")(\d+\.\d+\.\d+\",?$)' | awk '{print $2}')
 
 # Clean up spaces and quotes
 RELEASES=${RELEASES//[,\"]/ }
