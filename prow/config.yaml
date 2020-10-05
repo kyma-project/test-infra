@@ -374,14 +374,6 @@ presets:
       - name: BOT_GITHUB_USER
         value: "kyma-guard-bot"
   - labels:
-      preset-kyma-snyk-token: "true"
-    env:
-    - name: SNYK_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: kyma-snyk-token
-          key: secret
-  - labels:
       preset-sap-slack-bot-token: "true"
     env:
     - name: SAP_SLACK_BOT_TOKEN
@@ -475,6 +467,14 @@ presets:
     env:
       - name: PRODUCTNAME
         value: "OOSS - KYMA"
+  # stable release version of gke
+  - labels:
+      preset-gke-ver-stable: "true"
+    env:
+      - name: CLUSTER_VERSION
+        value: "1.16"
+      - name: RELEASE_CHANNEL
+        value: regular
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"

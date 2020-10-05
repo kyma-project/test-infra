@@ -69,6 +69,16 @@ var components = []struct {
 			jobsuite.Since(releases.Release114),
 		},
 	},
+	{
+		name:  "subscription-cleanup-job",
+		image: tester.ImageBootstrap20181204,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.ControlPlaneRepo(),
+			jobsuite.Since(releases.Release117),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

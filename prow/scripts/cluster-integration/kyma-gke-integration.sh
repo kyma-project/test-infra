@@ -74,6 +74,9 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
+
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
         date
@@ -275,9 +278,24 @@ kubectl create namespace "kyma-installer"
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --label "component=istio"
+cat << EOF > "$PWD/kyma_istio_operator"
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
+
+"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+    --label "component=istio" \
+    --file "$PWD/kyma_istio_operator"
 
 if [[ "$BUILD_TYPE" == "release" ]]; then
     echo "Use released artifacts"

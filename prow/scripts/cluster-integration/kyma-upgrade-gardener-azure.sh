@@ -167,15 +167,15 @@ function installKyma() {
     date
 
     shout "Downloading Kyma installer CR"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
         --output installer-cr-azure-eventhubs.yaml.tpl
 
     echo "Downlading production profile"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-production.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-production.yaml.tpl" \
         --output installer-config-production.yaml.tpl
 
     shout "Downloading Azure EventHubs config"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/master/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
         --output installer-config-azure-eventhubs.yaml.tpl
 
     shout "Generate Azure Event Hubs overrides"

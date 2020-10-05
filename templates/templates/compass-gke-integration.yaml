@@ -52,10 +52,12 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-artifacts-bucket: "true"
   preset-gardener-azure-kyma-integration: "true"
   preset-kyma-development-artifacts-bucket: "true"
+  preset-gke-ver-stable: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-master-compass-gke-integration
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -70,6 +72,7 @@ presubmits: # runs on PRs
 
 {{- range (matchingReleases .Global.releases "1.13" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-compass-gke-integration
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       optional: true
       branches:
         - release-{{ . }}
@@ -86,6 +89,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
     - name: post-master-compass-gke-integration
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest

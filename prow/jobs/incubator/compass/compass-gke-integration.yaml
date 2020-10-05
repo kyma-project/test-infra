@@ -54,10 +54,12 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-artifacts-bucket: "true"
   preset-gardener-azure-kyma-integration: "true"
   preset-kyma-development-artifacts-bucket: "true"
+  preset-gke-ver-stable: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-master-compass-gke-integration
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -69,7 +71,21 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel116-compass-gke-integration
+      cluster: untrusted-workload
+      optional: true
+      branches:
+        - release-1.16
+      always_run: false
+      <<: *gke_integration_job_template_k16
+      labels:
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
     - name: pre-rel115-compass-gke-integration
+      cluster: untrusted-workload
       optional: true
       branches:
         - release-1.15
@@ -82,6 +98,7 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: release-1.15
     - name: pre-rel114-compass-gke-integration
+      cluster: untrusted-workload
       optional: true
       branches:
         - release-1.14
@@ -93,22 +110,11 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.14
-    - name: pre-rel113-compass-gke-integration
-      optional: true
-      branches:
-        - release-1.13
-      always_run: false
-      <<: *gke_integration_job_template_k16
-      labels:
-        preset-build-release: "true"
-        <<: *gke_integration_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.13
 
 postsubmits:
   kyma-incubator/compass:
     - name: post-master-compass-gke-integration
+      cluster: trusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest

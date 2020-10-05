@@ -71,10 +71,16 @@ export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600   # timeout in sec for test pods until they reach the terminating state
 export TEST_CONTAINER_NAME="tests"
 
+TMP_DIR=$(mktemp -d)
+
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
 cleanup() {
     ## Save status of failed script execution
@@ -87,6 +93,9 @@ cleanup() {
 
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
+
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
 
     if [[ -n "${CLEANUP_CLUSTER}" ]]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
@@ -129,6 +138,8 @@ cleanup() {
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
     fi
 
+    rm -rf "${TMP_DIR}"
+
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     shout "Job is finished ${MSG}"
@@ -136,6 +147,11 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+function installCli() {
+    export INSTALL_DIR=${TMP_DIR}
+    install::kyma_cli
 }
 
 runTestLogCollector(){
@@ -294,6 +310,25 @@ function installKyma() {
         --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
         --label "component=istio"
 
+# cat << EOF > "$PWD/kyma_istio_operator"
+# apiVersion: install.istio.io/v1alpha1
+# kind: IstioOperator
+# metadata:
+#   namespace: istio-system
+# spec:
+#   components:
+#     ingressGateways:
+#       - name: istio-ingressgateway
+#         k8s:
+#           service:
+#             loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+#             type: LoadBalancer
+# EOF
+
+#     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+#         --label "component=istio" \
+#         --file "$PWD/kyma_istio_operator"
+
     shout "Use released artifacts from version ${LAST_RELEASE_VERSION}"
     date
 
@@ -425,46 +460,60 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    shout "Delete the kyma-installation CR and kyma-installer deployment"
-    # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
-    # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
-    kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-    kubectl delete Installation -n default kyma-installation
+    if [[ "$BUILD_TYPE" == "release" || "$BUILD_TYPE" == "pr" ]]; then
+        shout "Delete the kyma-installation CR and kyma-installer deployment"
+        # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
+        # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
+        kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
+        kubectl delete Installation -n default kyma-installation
 
-    # Remove the current installer to prevent it performing any action.
-    kubectl delete deployment -n kyma-installer kyma-installer
+        # Remove the current installer to prevent it performing any action.
+        kubectl delete deployment -n kyma-installer kyma-installer
 
-    if [[ "$BUILD_TYPE" == "release" ]]; then
-        echo "Use released artifacts"
-        gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        if [[ "$BUILD_TYPE" == "release" ]]; then
+            echo "Use released artifacts"
+            gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
 
-        shout "Update kyma installer"
-        kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
-    else
-        shout "Build Kyma Installer Docker image"
+            shout "Update kyma installer"
+            kubectl apply -f /tmp/kyma-gke-upgradeability/new-release-kyma-installer.yaml
+        else
+            shout "Build Kyma Installer Docker image"
+            date
+            COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+            KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+            export KYMA_INSTALLER_IMAGE
+            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
+            CLEANUP_DOCKER_IMAGE="true"
+
+            KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+            INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
+            INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
+
+            shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
+            "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
+            | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
+            | sed -e "s/__VERSION__/0.0.1/g" \
+            | sed -e "s/__.*__//g" \
+            | kubectl apply -f-
+        fi
+
+        shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
         date
-        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
-        KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-upgradeability/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
-        export KYMA_INSTALLER_IMAGE
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-        CLEANUP_DOCKER_IMAGE="true"
+        "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+    # remaining case is when BUILD_TYPE is "master"
+    else
+        shout "Updating Kyma with timeout ${KYMA_UPDATE_TIMEOUT}"
+        date
 
-        KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-        INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-        INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
-
-        shout "Manual concatenating and applying installer.yaml and installer-cr-cluster.yaml YAMLs"
-        "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-        | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-        | sed -e "s/__VERSION__/0.0.1/g" \
-        | sed -e "s/__.*__//g" \
-        | kubectl apply -f-
+        COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse HEAD)
+        (
+        set -x
+        kyma upgrade \
+            --ci \
+            --source "${COMMIT_ID}" \
+            --timeout "${KYMA_UPDATE_TIMEOUT}"
+        )
     fi
-
-    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
-    date
-    "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
-
 
     if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
         shout "Create DNS Record for Apiserver proxy IP"
@@ -499,6 +548,8 @@ function testKyma() {
 
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
+
+installCli
 
 generateAndExportClusterName
 

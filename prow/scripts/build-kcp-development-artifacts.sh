@@ -34,19 +34,23 @@ function export_variables() {
    if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
+        CLI_VERSION="PR-${PULL_NUMBER}-${COMMIT_ID}"
     else
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
+        CLI_VERSION="master-${COMMIT_ID}"
     fi
 
    readonly DOCKER_TAG
    readonly KCP_INSTALLER_PUSH_DIR
    readonly BUCKET_DIR
    readonly KCP_INSTALLER_VERSION
+   readonly CLI_VERSION
 
    export DOCKER_TAG
    export KCP_INSTALLER_PUSH_DIR
    export BUCKET_DIR
+   export CLI_VERSION
 }
 
 init
@@ -61,6 +65,9 @@ buildTarget="release"
 
 shout "Build kcp-installer with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
+
+shout "Build SKR CLI with target ${buildTarget}"
+make -C "${KCP_PATH}/components/kyma-environment-broker" -f Makefile.cli ${buildTarget}
 
 shout "Create development artifacts"
 # INPUTS:
@@ -88,14 +95,22 @@ gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCK
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
 gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-compass-installed.sh"
 
+gsutil cp "${ARTIFACTS}/skr.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/skr.exe"
+gsutil cp "${ARTIFACTS}/skr-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/skr-linux"
+gsutil cp "${ARTIFACTS}/skr-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/skr-darwin"
+
 if [[ "${BUILD_TYPE}" == "master" ]]; then
   shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-installer.yaml"
   gsutil cp  "${KCP_PATH}/installation/scripts/is-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
-  
+
   gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer.yaml"
   gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-kyma-installed.sh"
 
   gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
   gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-compass-installed.sh"
+
+  gsutil cp "${ARTIFACTS}/skr.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/skr.exe"
+  gsutil cp "${ARTIFACTS}/skr-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/skr-linux"
+  gsutil cp "${ARTIFACTS}/skr-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/skr-darwin"
 fi
