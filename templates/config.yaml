@@ -44,7 +44,7 @@ global:
       
 globalSets:
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
     
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
@@ -1209,7 +1209,7 @@ templates:
             type_presubmit: "true"
             cluster: "untrusted-workload"
             labels:
-              build_pr: "true"
+              preset-build_pr: "true"
           postsubmit:
             type_postsubmit: "true"
             cluster: "trusted-workload"
