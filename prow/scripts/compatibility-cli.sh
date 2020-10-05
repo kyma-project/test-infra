@@ -47,6 +47,7 @@ RELEASES=${RELEASES//[,\"]/ }
 
 # Split into array
 RELEASES=(${RELEASES})
+echo "Releases is: ${RELEASES[@]}"
 
 # Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
 

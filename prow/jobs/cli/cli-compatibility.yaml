@@ -2,6 +2,12 @@ test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
+  base_ref: master
+kyma_cli_ref: &kyma_cli_ref
+  org: kyma-project
+  repo: cli
+  path_alias: github.com/kyma-project/cli
+  base_ref: master
 
 job_template: &job_template
   annotations:
@@ -17,7 +23,7 @@ job_template: &job_template
   max_concurrency: 10
   extra_refs:
     - <<: *test_infra_ref
-      base_ref: master
+    - <<: *kyma_cli_ref
 
 periodics:
   - name: kyma-cli-compatibility-1
