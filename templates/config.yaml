@@ -1186,7 +1186,7 @@ templates:
       - to: ../prow/testgrid-default.yaml
   - from: templates/buildpack.yaml
     render:
-      - to: ../prow/jobs/test-infra/buildpack_test.yaml
+      - to: ../prow/jobs/test-infra/buildpack.yaml
         localSets:
           default:
             skip_report: "true"

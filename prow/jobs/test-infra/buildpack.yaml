@@ -1,457 +1,521 @@
-common_job_template: &common_job_template
-  skip_report: false
-  max_concurrency: 10
-  decorate: true
-  path_alias: github.com/kyma-project/test-infra
-  branches:
-    - ^master$
-
-job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
-  preset-sa-gcr-push: "true"
-  preset-docker-push-repository-test-infra: "true"
-
-bootstrap_job_template: &bootstrap_job_template
-  run_if_changed: "^prow/images/bootstrap/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-bootstrap_helm_template: &bootstrap_helm_template
-  run_if_changed: "^prow/images/bootstrap-helm/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-kyma_cluster_infra: &kyma_cluster_infra
-  run_if_changed: "^prow/images/kyma-cluster-infra/"
-  <<: *common_job_template
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-      args:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
-
-kyma_integration: &kyma_integration
-  run_if_changed: "^prow/images/kyma-integration/"
-  <<: *common_job_template
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-      args:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
-
-buildpack_golang_job_template: &buildpack_golang_job_template
-  run_if_changed: "^prow/images/buildpack-golang/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_golang_toolbox_job_template: &buildpack_golang_toolbox_job_template
-  run_if_changed: "^prow/images/buildpack-golang-toolbox/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_golang_kubebuilder_job_template: &buildpack_golang_kubebuilder_job_template
-  run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_golang_kubebuilder2_job_template: &buildpack_golang_kubebuilder2_job_template
-  run_if_changed: "^prow/images/buildpack-golang-kubebuilder2/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_node_job_template: &buildpack_node_job_template
-  run_if_changed: "^prow/images/buildpack-node/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_node_chromium_job_template: &buildpack_node_chromium_job_template
-  run_if_changed: "^prow/images/buildpack-node-chromium/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_java_job_template: &buildpack_java_job_template
-  run_if_changed: "^prow/images/buildpack-java/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-buildpack_java_node_job_template: &buildpack_java_node_job_template
-  run_if_changed: "^prow/images/buildpack-java-node/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-cleaner_job_template: &cleaner_job_template
-  run_if_changed: "^prow/images/cleaner/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-vulnerability_scanner_job_template: &vulnerability_scanner_job_template
-  run_if_changed: "^prow/images/vulnerability-scanner/"
-  <<: *common_job_template
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-      args:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
-
-whitesource_scanner_job_template: &whitesource_scanner_job_template
-  run_if_changed: "^prow/images/whitesource-scanner/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-kubectl_job_template: &kubectl_job_template
-  run_if_changed: "^prow/images/alpine-kubectl/"
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-probot_stale_job_template: &probot_stale_job_template
-  run_if_changed: "^prow/images/probot-stale/"
-  <<: *common_job_template
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-      args:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
-
-prow_tools_job_template: &prow_tools_job_template
-  run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
-  <<: *common_job_template
-  spec:
-    containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
-        securityContext:
-          privileged: true
-        command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-        args:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
-        resources:
-          requests:
-            memory: 1.5Gi
-            cpu: 0.8
-
-prow_clonerefs_job_template: &prow_clonerefs_job_template
-  run_if_changed: "^prow/images/clonerefs/"
-  <<: *common_job_template
-  spec:
-    containers:
-    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-      securityContext:
-        privileged: true
-      command:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
-      args:
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
-      resources:
-        requests:
-          memory: 1.5Gi
-          cpu: 0.8
+# Code generated by rendertemplates. DO NOT EDIT.
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-bootstrap
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *bootstrap_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/bootstrap/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-bootstrap-helm
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *bootstrap_helm_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/bootstrap-helm/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-kyma-cluster-infra
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *kyma_cluster_infra
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/kyma-cluster-infra/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-kyma-integration
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *kyma_integration
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/kyma-integration/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-golang
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-golang-toolbox
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_toolbox_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang-toolbox/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-golang-kubebuilder
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_kubebuilder_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang-kubebuilder/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-golang-kubebuilder2
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_kubebuilder2_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang-kubebuilder2/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-node
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_node_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-node/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-node-chromium
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_node_chromium_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-node-chromium/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-java
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_java_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-java/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-buildpack-java-node
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *buildpack_java_node_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-java-node/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-cleaner
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *cleaner_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/cleaner/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-vulnerability-scanner
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *vulnerability_scanner_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/vulnerability-scanner/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-whitesource-scanner
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *whitesource_scanner_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/whitesource-scanner/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-kubectl
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *kubectl_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/alpine-kubectl/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
-    - name: pre-test-infra-prow-clonerefs
-      labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *prow_clonerefs_job_template
-      cluster: untrusted-workload
-    - name: pre-test-infra-prow-tools
-      labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *prow_tools_job_template
-      cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: pre-test-infra-probot-stale
       labels:
-        preset-build-pr: "true"
-        <<: *job_labels_template
-      <<: *probot_stale_job_template
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/probot-stale/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
-
-
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: pre-test-infra-prow-tools
+      labels:
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "//home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: pre-test-infra-prow-clonerefs
+      labels:
+        build_pr: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/clonerefs/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+  
 postsubmits: # runs on master
   kyma-project/test-infra:
     - name: post-test-infra-bootstrap
@@ -459,150 +523,554 @@ postsubmits: # runs on master
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *bootstrap_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/bootstrap/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-bootstrap-helm
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *bootstrap_helm_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/bootstrap-helm/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-kyma-cluster-infra
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *kyma_cluster_infra
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/kyma-cluster-infra/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-cluster-infra"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-kyma-integration
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *kyma_integration
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/kyma-integration/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/kyma-integration"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-golang
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-golang-toolbox
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_toolbox_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang-toolbox/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-toolbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-golang-kubebuilder
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_kubebuilder_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang-kubebuilder/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-golang-kubebuilder2
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_golang_kubebuilder2_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-golang-kubebuilder2/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder2"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-node
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_node_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-node/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-node-chromium
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_node_chromium_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-node-chromium/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-node-chromium"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-java
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_java_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-java/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-buildpack-java-node
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *buildpack_java_node_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/buildpack-java-node/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-java-node"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-cleaner
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *cleaner_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/cleaner/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/cleaner"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-vulnerability-scanner
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *vulnerability_scanner_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/vulnerability-scanner/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/vulnerability-scanner"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-whitesource-scanner
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *whitesource_scanner_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/whitesource-scanner/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-kubectl
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *kubectl_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/alpine-kubectl/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
-    - name: post-test-infra-prow-clonerefs
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *prow_clonerefs_job_template
-      cluster: trusted-workload
-    - name: post-test-infra-prow-tools
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *prow_tools_job_template
-      cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/alpine-kubectl"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
     - name: post-test-infra-probot-stale
       annotations:
         testgrid-create-test-group: "false"
       labels:
         preset-build-release: "true"
-        <<: *job_labels_template
-      <<: *probot_stale_job_template
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/probot-stale/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
       cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/probot-stale"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: post-test-infra-prow-tools
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-build-release: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "//home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+    - name: post-test-infra-prow-clonerefs
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        preset-build-release: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-test-infra: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^prow/images/clonerefs/'
+      skip_report: true
+      max_concurrency: 10
+      decorate: true
+      path_alias: github.com/kyma-project/test-infra
+      cluster: trusted-workload
+      branches:
+        - ^master$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+  
+periodics: # runs on schedule
+  kyma-project/test-infra:
+  
+  
