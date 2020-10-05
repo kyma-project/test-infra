@@ -40,7 +40,7 @@ const (
 	// ImageNodeChromiumBuildpackLatest means Node.js + Chromium buildpack image
 	ImageNodeChromiumBuildpackLatest = "eu.gcr.io/kyma-project/prow/test-infra/buildpack-node-chromium:v20181207-d46c013"
 	// ImageBootstrapLatest means Bootstrap image
-	ImageBootstrapLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20181121-f3ea5ce"
+	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 	// ImageBootstraTestInfra means it's used in test-infra prowjob defs.
 	ImageBootstrapTestInfraLatest  = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
 	ImageBootstrapTestInfraCurrent = "eu.gcr.io/kyma-project/test-infra/bootstrap:current"
