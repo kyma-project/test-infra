@@ -65,7 +65,7 @@ func Map(m map[string]interface{}) (map[string]interface{}, error) {
 type Config struct {
 	Templates  []TemplateConfig
 	Global     map[string]interface{}
-	GlobalSets ConfigSets `yaml:"globalSets,omitempty"`
+	GlobalSets map[string]ConfigSet `yaml:"globalSets,omitempty"`
 }
 
 // TemplateConfig specifies template to use and files to render
@@ -82,31 +82,25 @@ type RenderConfig struct {
 	JobConfigs []Repo               `yaml:"jobConfigs,omitempty"`
 }
 
-type ConfigSets map[string]map[string]interface{}
-
+// ConfigSet hold set of data for generating prowjob from template
 type ConfigSet map[string]interface{}
 
+// Repo represent github repository with associated prowjobs data
 type Repo struct {
 	RepoName string `yaml:"repoName,omitempty"`
 	Jobs     []Job  `yaml:"jobs,omitempty"`
 }
 
+// InheritedConfigs specify named configs to use for generating prowjob from template
 type InheritedConfigs struct {
 	Global []string `yaml:"global,omitempty"`
 	Local  []string `yaml:"local,omitempty"`
 }
+
+// Job holds data for generating prowjob from template
 type Job struct {
 	InheritedConfigs InheritedConfigs `yaml:"inheritedConfigs,omitempty"`
 	JobConfig        ConfigSet        `yaml:"jobConfig,omitempty"`
-	labels           map[string]interface{}
-	envs             []map[string]interface{}
-}
-
-type JobConfig map[string]interface{}
-
-type ConfigMergeOpts struct {
-	OverrideLabels bool
-	OverrideEnvs   bool
 }
 
 func main() {
@@ -135,7 +129,7 @@ func main() {
 	}
 }
 
-func (r *RenderConfig) mergeConfigs(globalConfigSets ConfigSets) {
+func (r *RenderConfig) mergeConfigs(globalConfigSets map[string]ConfigSet) {
 	if present := len(r.JobConfigs); present > 0 {
 		r.Values = make(map[string]interface{})
 		for repoIndex, repo := range r.JobConfigs {
