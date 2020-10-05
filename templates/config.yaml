@@ -1312,7 +1312,7 @@ templates:
                   - "image_bootstrap"
                 local:
                   - "default"
-                  - "postsubmit"
+                  - "presubmit"
               jobConfig:
                 name: "pre-test-infra-buildpack-golang-kubebuilder"
                 run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
