@@ -9,7 +9,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/bootstrap/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -36,7 +36,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/bootstrap-helm/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -63,7 +63,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/kyma-cluster-infra/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -90,7 +90,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/kyma-integration/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -117,7 +117,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -144,7 +144,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang-toolbox/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -171,7 +171,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang-kubebuilder/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -198,7 +198,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang-kubebuilder2/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -225,7 +225,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-node/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -252,7 +252,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-node-chromium/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -279,7 +279,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-java/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -306,7 +306,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-java-node/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -333,7 +333,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/cleaner/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -360,7 +360,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/vulnerability-scanner/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -387,7 +387,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/whitesource-scanner/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -414,7 +414,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/alpine-kubectl/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -441,7 +441,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/probot-stale/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -468,7 +468,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -495,7 +495,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/clonerefs/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -527,7 +527,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/bootstrap/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -556,7 +556,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/bootstrap-helm/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -585,7 +585,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/kyma-cluster-infra/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -614,7 +614,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/kyma-integration/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -643,7 +643,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -672,7 +672,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang-toolbox/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -701,7 +701,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang-kubebuilder/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -730,7 +730,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-golang-kubebuilder2/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -759,7 +759,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-node/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -788,7 +788,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-node-chromium/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -817,7 +817,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-java/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -846,7 +846,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/buildpack-java-node/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -875,7 +875,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/cleaner/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -904,7 +904,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/vulnerability-scanner/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -933,7 +933,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/whitesource-scanner/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -962,7 +962,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/alpine-kubectl/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -991,7 +991,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/probot-stale/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -1020,7 +1020,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra
@@ -1049,7 +1049,7 @@ postsubmits: # runs on master
         preset-docker-push-repository-test-infra: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^prow/images/clonerefs/'
-      skip_report: true
+      skip_report: false
       max_concurrency: 10
       decorate: true
       path_alias: github.com/kyma-project/test-infra

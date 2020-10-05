@@ -1189,7 +1189,7 @@ templates:
       - to: ../prow/jobs/test-infra/buildpack.yaml
         localSets:
           default:
-            skip_report: "true"
+            skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
             path_alias: "github.com/kyma-project/test-infra"
