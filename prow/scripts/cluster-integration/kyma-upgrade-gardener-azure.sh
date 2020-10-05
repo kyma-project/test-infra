@@ -330,6 +330,7 @@ function upgradeKyma() {
     kubectl delete deployment -n kyma-installer kyma-installer
 
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    shout "Upgrading to Kyma version ${TARGET_VERSION}"
 
     curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
         --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
