@@ -66,6 +66,7 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: documentation-component-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true

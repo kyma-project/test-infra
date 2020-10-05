@@ -101,6 +101,7 @@ postsubmits: # runs on merges
 
 periodics:
 - name: marketplaces-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true

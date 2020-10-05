@@ -3,6 +3,7 @@ base_image: &base_image
 
 periodics:
 - name: kyma-gardener-cleanup
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   cron: "0 * * * *" # "At 0 minute every hour"
