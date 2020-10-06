@@ -20,7 +20,8 @@ RUN go get golang.org/x/tools/cmd/goimports  \
     github.com/vektra/mockery \
     github.com/ericchiang/pup\
     github.com/kisielk/errcheck && \
-    GO111MODULE="on" go get sigs.k8s.io/kind@v0.5.1
+    GO111MODULE="on" go get sigs.k8s.io/kind@v0.5.1 && \
+    GO111MODULE="off" go get -u github.com/maxbrunsfeld/counterfeiter
 
 COPY ./license-puller.sh /license-puller.sh
 ENV LICENSE_PULLER_PATH=/license-puller.sh
