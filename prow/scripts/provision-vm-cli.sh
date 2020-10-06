@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# This script is designed to provision a new vm and start kyma with cli. It takes an optional positional parameter using --image flag
-# Use this flag to specify the custom image for provisioning vms. If no flag is provided, the latest custom image is used.
+# This script is designed to provision a new vm and start kyma with cli. It takes the following optional positional parameters:
+# custom VM image --image flag: Use this flag to specify the custom image for provisioning vms. If no flag is provided, the latest custom image is used.
+# Kyma version to install --kyma-version flag: Use this flag to indicate which Kyma version the CLI should install (default: same as the CLI)
 
 set -o errexit
 
@@ -49,8 +50,11 @@ do
         --image)
             IMAGE="$2"
             testCustomImage "${IMAGE}"
-            shift
-            shift
+            shift 2
+            ;;
+        --kyma-version)
+            SOURCE="--source $2"
+            shift 2
             ;;
         --*)
             echo "Unknown flag ${1}"
@@ -115,7 +119,7 @@ gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" 
 
 shout "Installing Kyma"
 date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive"
+gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 
 shout "Checking the versions"
 date
