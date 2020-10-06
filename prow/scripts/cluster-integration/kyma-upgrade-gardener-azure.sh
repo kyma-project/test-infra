@@ -390,6 +390,10 @@ fi
 createTestResources
 
 upgradeKyma
+if [[ "$?" -ne 0 ]]; then
+    return 1
+fi
+
 remove_addons_if_necessary
 
 testKyma
