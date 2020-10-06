@@ -187,6 +187,11 @@ function installKyma() {
     # shellcheck disable=SC1090
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 
+    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
+    if [[ "$?" -ne 0 ]]; then
+        return 1
+    fi
+
     (
     set -x
     kyma install \
@@ -196,6 +201,7 @@ function installKyma() {
         -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
         -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+        -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
         --timeout 90m
     )
 }
@@ -315,12 +321,6 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
-    kubectk apply -f "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-
     shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
