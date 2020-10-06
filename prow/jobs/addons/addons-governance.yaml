@@ -1,6 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/addons:
     - name: pre-master-addons-governance
+      cluster: untrusted-workload
       decorate: true
       max_concurrency: 10
       branches:

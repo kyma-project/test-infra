@@ -20,6 +20,7 @@ test_infra_ref: &test_infra_ref
 presubmits:
   kyma-project/kyma:
   - name: pre-master-kyma-kind-lite-integration
+    cluster: untrusted-workload
     branches:
     - ^master$
     # Temporarly
@@ -72,6 +73,7 @@ presubmits:
       - <<: *job_tolerations_template
 
   - name: pre-master-kyma-kind-integration
+    cluster: untrusted-workload
     branches:
     - ^master$
     # Temporarly
@@ -124,6 +126,7 @@ presubmits:
       - <<: *job_tolerations_template
 
   - name: pre-master-kyma-kind-upgrade
+    cluster: untrusted-workload
     branches:
     - ^master$
     # Temporarly

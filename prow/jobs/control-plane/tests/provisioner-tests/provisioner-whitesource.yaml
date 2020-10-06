@@ -40,6 +40,7 @@ whitesource_job_template: &whitesource_job_template
 presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-master-provisioner-whitesource-scan
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *whitesource_job_template

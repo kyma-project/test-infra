@@ -53,6 +53,7 @@ postsubmits:
         preset-build-master: "true"
       report: false
     - name: post-release-varkes #publishes to npm
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:

@@ -1,6 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-governance
+      cluster: untrusted-workload
       skip_report: false
       decorate: true
       max_concurrency: 10

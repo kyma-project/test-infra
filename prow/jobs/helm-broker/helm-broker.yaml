@@ -31,6 +31,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/helm-broker:
     - name: pre-master-helm-broker
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -39,6 +40,7 @@ presubmits: # runs on PRs
         <<: *job_labels_template
         preset-build-pr: "true"
     - name: pre-master-helm-broker-chart-test
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -76,6 +78,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/helm-broker:
     - name: post-master-helm-broker
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:
@@ -87,6 +90,7 @@ postsubmits:
         preset-bot-github-token: "true"
       report: false
     - name: post-release-helm-broker
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.
