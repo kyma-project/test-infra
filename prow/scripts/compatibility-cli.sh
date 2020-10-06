@@ -39,14 +39,18 @@ echo "--------------------------------------------------------------------------
 echo "Kyma CLI compatibility checker"
 echo "--------------------------------------------------------------------------------"
 
-# Get all non RC release tags
-RELEASES=$(curl -s https://api.github.com/repos/kyma-project/kyma/releases | grep -P '(tag_name": ")(\d+\.\d+\.\d+\",?$)' | awk '{print $2}')
+# Get all release tags (RC included)
+RELEASES=$(curl -s https://api.github.com/repos/kyma-project/kyma/releases | grep -P '(tag_name": ")(\d+\.\d+\.\d+.*\",?$)' | awk '{print $2}')
 
-# Clean up spaces and quotes
-RELEASES=${RELEASES//[,\"]/ }
+# Clean up spaces, quotes and RC suffix
+RELEASES=${RELEASES//[,\"]}
+RELEASES=${RELEASES//\-rc[0-9]}
 
 # Split into array
 RELEASES=(${RELEASES})
+
+# Remove duplicates
+RELEASES=($(printf "%s\n" "${RELEASES[@]}" | uniq))
 
 # Go through releases ignoring patch versions in descending order until we skip the desired number of minor releases
 
