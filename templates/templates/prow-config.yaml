@@ -471,6 +471,8 @@ presets:
     env:
       - name: CLUSTER_VERSION
         value: "1.16"
+      - name: RELEASE_CHANNEL
+        value: regular
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
