@@ -59,6 +59,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-master-control-plane-gke-provisioner-integration
+      cluster: untrusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
@@ -73,6 +74,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/control-plane:
     - name: post-master-control-plane-gke-provisioner-integration
+      cluster: trusted-workload
       branches:
         - ^master$
       <<: *gke_integration_job_template_latest

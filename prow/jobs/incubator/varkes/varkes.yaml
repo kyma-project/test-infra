@@ -31,6 +31,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/varkes:
     - name: pre-varkes
+      cluster: untrusted-workload
       branches:
         - ^master$
         - release
@@ -41,6 +42,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/varkes:
     - name: post-master-varkes
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:

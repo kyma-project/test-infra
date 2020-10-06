@@ -23,6 +23,7 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-incubator/vstudio-extension:
     - name: pre-master-vstudio-extension
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -33,6 +34,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/vstudio-extension:
     - name: post-master-vstudio-extension
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:
