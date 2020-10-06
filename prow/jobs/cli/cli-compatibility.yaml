@@ -1,0 +1,62 @@
+test_infra_ref: &test_infra_ref
+  org: kyma-project
+  repo: test-infra
+  path_alias: github.com/kyma-project/test-infra
+  base_ref: master
+kyma_cli_ref: &kyma_cli_ref
+  org: kyma-project
+  repo: cli
+  path_alias: github.com/kyma-project/cli
+  base_ref: master
+
+job_template: &job_template
+  annotations:
+    testgrid-create-test-group: "false"
+  labels:
+    preset-sa-vm-kyma-integration: "true"
+    preset-gc-project-env: "true"
+  optional: false
+  always_run: true
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-project/cli
+  max_concurrency: 10
+  extra_refs:
+    - <<: *test_infra_ref
+    - <<: *kyma_cli_ref
+
+periodics:
+  - name: kyma-cli-compatibility-1
+    cron: "00 00 * * *" # "At 00:00 daily"
+    <<: *job_template
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/compatibility-cli.sh"
+          resources:
+            requests:
+              memory: 1.5Gi
+              cpu: 0.8
+          env:
+            - name: GO111MODULE
+              value: "on"
+            - name: COMPAT_BACKTRACK
+              value: "1"
+  - name: kyma-cli-compatibility-2
+    cron: "00 03 * * *" # "At 03:00 daily"
+    <<: *job_template
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/compatibility-cli.sh"
+          resources:
+            requests:
+              memory: 1.5Gi
+              cpu: 0.8
+          env:
+            - name: GO111MODULE
+              value: "on"
+            - name: COMPAT_BACKTRACK
+              value: "2"
