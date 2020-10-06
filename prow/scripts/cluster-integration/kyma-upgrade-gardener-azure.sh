@@ -321,12 +321,6 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
-    kubectk apply -f "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-
     shout "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
