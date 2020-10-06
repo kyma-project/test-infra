@@ -14,12 +14,14 @@ require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v31 v31.0.0
 	github.com/google/go-querystring v1.0.0
 	github.com/huandu/xstrings v1.3.1 // indirect
+	github.com/imdario/mergo v0.3.11
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/kyma-project/test-infra/development/gcp v0.0.0-20200507124533-9b586ac404eb
 	github.com/mitchellh/copystructure v1.0.0 // indirect
@@ -36,7 +38,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/tools v0.0.0-20200913032122-97363e29fc9b // indirect
 	google.golang.org/api v0.22.0
-	gopkg.in/yaml.v2 v2.2.8
+	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.17.3
 	k8s.io/apimachinery v0.17.3
 	k8s.io/client-go v9.0.0+incompatible
