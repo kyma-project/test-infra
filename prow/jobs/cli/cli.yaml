@@ -28,6 +28,7 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/cli:
   - name: pre-kyma-cli
+    cluster: untrusted-workload
     always_run: true
     <<: *job_template
     labels:
@@ -36,6 +37,7 @@ presubmits: # runs on PRs
 postsubmits: # runs on merges
   kyma-project/cli:
   - name: post-kyma-cli
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:
@@ -45,6 +47,7 @@ postsubmits: # runs on merges
     labels:
       preset-build-master: "true"
   - name: rel-kyma-cli
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:
@@ -55,6 +58,7 @@ postsubmits: # runs on merges
       preset-bot-github-token: "true"
       preset-dind-enabled: "true"
   - name: stable-kyma-cli
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:

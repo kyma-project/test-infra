@@ -34,6 +34,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-gke-compass-provisioner-tests
+    cluster: untrusted-workload
     optional: true
     decorate: true
     path_alias: github.com/kyma-project/kyma
@@ -73,6 +74,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-gke-compass-provisioner-tests
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     decorate: true

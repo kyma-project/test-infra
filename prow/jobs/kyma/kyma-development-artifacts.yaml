@@ -37,6 +37,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-development-artifacts
+    cluster: untrusted-workload
     run_if_changed: "^installation|^resources|^components/kyma-operator|^tools/kyma-installer"
     branches:
     - ^master$
@@ -50,6 +51,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/kyma:
   - name: post-master-kyma-development-artifacts
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:

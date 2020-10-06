@@ -51,6 +51,7 @@ test_infra_ref: &test_infra_ref
 postsubmits: # runs on merges
   kyma-project/kyma:
     - name: post-kyma-release-upgrade
+      cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_integration
         # testgrid-alert-email: email-here@sap.com

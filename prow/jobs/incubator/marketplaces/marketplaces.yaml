@@ -40,11 +40,13 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-incubator/marketplaces:
   - name: pre-marketplaces
+    cluster: untrusted-workload
     <<: *job_template
     labels:
       <<: *job_labels_template
       preset-build-pr: "true"
   - name: pre-marketplaces-governance
+    cluster: untrusted-workload
     skip_report: false
     decorate: true
     max_concurrency: 10
@@ -78,6 +80,7 @@ presubmits: # runs on PRs
 postsubmits: # runs on merges
   kyma-incubator/marketplaces:
   - name: post-marketplaces
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:
@@ -89,6 +92,7 @@ postsubmits: # runs on merges
       preset-build-master: "true"
     report: false
   - name: rel-marketplaces
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     <<: *job_template

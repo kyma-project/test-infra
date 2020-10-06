@@ -30,6 +30,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/service-catalog-tester:
     - name: pre-master-service-catalog-tester
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -41,6 +42,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/service-catalog-tester:
     - name: post-master-service-catalog-tester
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:

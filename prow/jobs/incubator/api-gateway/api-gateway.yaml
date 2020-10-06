@@ -31,6 +31,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/api-gateway:
   - name: pre-master-kyma-incubator-api-gateway
+    cluster: untrusted-workload
     branches:
     - ^master$
     <<: *job_template
@@ -41,6 +42,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/api-gateway:
   - name: post-master-kyma-incubator-api-gateway
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:

@@ -34,6 +34,7 @@ job_template: &job_template
 presubmits: # runs on PRs
   kyma-project/cli:
   - name: pre-kyma-cli-integration
+    cluster: untrusted-workload
     <<: *job_template
     labels:
       preset-build-pr: "true"
@@ -43,6 +44,7 @@ presubmits: # runs on PRs
 postsubmits: # runs on merge
   kyma-project/cli:
   - name: post-kyma-cli-integration
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:
