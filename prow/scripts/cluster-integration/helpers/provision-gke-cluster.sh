@@ -41,6 +41,7 @@ readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
 declare -a GCLOUD_PARAMS
 
 TTL_HOURS_PARAM="3"
+CLUSTER_VERSION_PARAM="--cluster-version=1.16"
 MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
 NUM_NODES_PARAM="--num-nodes=3"
 NETWORK_PARAM="--network=default"
@@ -48,8 +49,7 @@ if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi
 CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},created-at-readable=${CURRENT_TIMESTAMP_READABLE_PARAM},ttl=${TTL_HOURS_PARAM}"
 
 GCLOUD_PARAMS+=("${CLUSTER_NAME}")
-if [ "${CLUSTER_VERSION}" ]; then GCLOUD_PARAMS+=("--cluster-version=${CLUSTER_VERSION}"); fi
-if [ "${RELEASE_CHANNEL}" ]; then GCLOUD_PARAMS+=("--release-channel=${RELEASE_CHANNEL}"); fi
+if [ "${CLUSTER_VERSION}" ]; then GCLOUD_PARAMS+=("--cluster-version=${CLUSTER_VERSION}"); else GCLOUD_PARAMS+=("${CLUSTER_VERSION_PARAM}"); fi
 if [ "${MACHINE_TYPE}" ]; then GCLOUD_PARAMS+=("--machine-type=${MACHINE_TYPE}"); else GCLOUD_PARAMS+=("${MACHINE_TYPE_PARAM}"); fi
 if [ "${NUM_NODES}" ]; then GCLOUD_PARAMS+=("--num-nodes=${NUM_NODES}"); else GCLOUD_PARAMS+=("${NUM_NODES_PARAM}"); fi
 if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then GCLOUD_PARAMS+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else GCLOUD_PARAMS+=("${NETWORK_PARAM}"); fi

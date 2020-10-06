@@ -64,7 +64,6 @@ periodics:
       preset-gc-compute-envs: "true"
       preset-gc-project-env: "true"
       preset-cluster-use-ssd: "true"
-      preset-gke-ver-stable: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
