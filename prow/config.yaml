@@ -467,14 +467,6 @@ presets:
     env:
       - name: PRODUCTNAME
         value: "OOSS - KYMA"
-  # stable release version of gke
-  - labels:
-      preset-gke-ver-stable: "true"
-    env:
-      - name: CLUSTER_VERSION
-        value: "1.16"
-      - name: RELEASE_CHANNEL
-        value: regular
   # volume mounts for kind
   - labels:
       preset-kind-volume-mounts: "true"
