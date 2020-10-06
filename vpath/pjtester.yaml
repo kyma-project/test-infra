@@ -1,5 +1,0 @@
-pjNames:
-  - pjName: "kyma-cli-compatibility-1"
-    report: true
-  - pjName: "kyma-cli-compatibility-2"
-    report: true
