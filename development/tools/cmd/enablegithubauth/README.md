@@ -20,4 +20,4 @@ These are the available environment variables:
 | **GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS**     |    Yes   | Comma-separated list of Github teams in `kyma-project` that are bound to the `kymaAdmin` role |
 
 ## More
-Dex docs for GitHub connector: https://github.com/dexidp/dex/blob/master/Documentation/connectors/github.md
+Dex docs for GitHub connector: https://dexidp.io/docs/connectors/github/

@@ -10,8 +10,10 @@ LABEL io.kyma-project.test-infra.commit=$commit
 
 # Versions
 
-ENV GO_VERSION 1.14.2
-ENV DEP_RELEASE_TAG v0.5.4
+ARG goVersion
+ARG depReleaseTag
+ENV GO_VERSION=$goVersion
+ENV DEP_RELEASE_TAG=$depReleaseTag
 
 # Install Go
 
