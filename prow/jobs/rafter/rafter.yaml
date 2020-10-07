@@ -173,7 +173,7 @@ presubmits: # runs on PRs
 
     ## MINIO GATEWAY MIGRATION TEST
     - name: pre-rafter-minio-gcs-gateway-migration
-      cluster: trusted-workload
+      cluster: untrusted-workload
       <<: *additional_presubmit_job_config_template
       <<: *common_minio_gateway_migration_test_job_template
       labels:
@@ -181,7 +181,7 @@ presubmits: # runs on PRs
         <<: *common_job_labels_minio_gcs_gateway_template
 
     - name: pre-rafter-minio-az-gateway-migration
-      cluster: trusted-workload
+      cluster: untrusted-workload
       <<: *additional_presubmit_job_config_template
       <<: *common_minio_gateway_migration_test_job_template
       labels:

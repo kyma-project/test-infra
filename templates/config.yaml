@@ -176,7 +176,7 @@ cluster_default: &cluster_default
   cluster:
     presubmit: untrusted-workload
     postsubmit: trusted-workload
-    periodic: trusted-workload
+    periodic: untrusted-workload
     
 templates:
   - from: templates/generic-component.yaml
