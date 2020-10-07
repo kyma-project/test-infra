@@ -38,7 +38,7 @@ case "${SCAN_LANGUAGE}" in
         sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
         sed -i.bak '/^excludes=/d' $CONFIG_PATH
         # exclude gomod based folders
-        filterFolders go.mod $KYMA_SRC >> $CONFIG_PATH
+        filterFolders go.mod "${KYMA_SRC}" >> ${CONFIG_PATH}
         ;;
 
     golang-mod)
@@ -48,7 +48,7 @@ case "${SCAN_LANGUAGE}" in
         sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
         sed -i.bak '/^excludes=/d' $CONFIG_PATH
         # exclude godep based folders
-        filterFolders gopkg.toml $KYMA_SRC >> $CONFIG_PATH
+        filterFolders gopkg.toml "${KYMA_SRC}" >> ${CONFIG_PATH}
         ;;
         
     javascript)
@@ -81,9 +81,9 @@ function filterFolders() {
         local FOLDER_TO_SCAN
         FOLDER_TO_SCAN=$2
         local EXCLUDES
-        EXCLUDES=$( { cd $FOLDER_TO_SCAN && find . -iname go.mod ; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " - )
+        EXCLUDES=$( { cd "${FOLDER_TO_SCAN}" && find . -iname ${DEPENDENCY_FILE_TO_EXCLUDE} ; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " - )
         EXCLUDES="excludes=**/tests/** ${EXCLUDES}"
-        echo $EXCLUDES
+        echo "$EXCLUDES"
 }
 
 
