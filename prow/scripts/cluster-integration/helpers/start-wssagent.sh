@@ -36,6 +36,9 @@ case "${SCAN_LANGUAGE}" in
         echo "SCAN: golang (dep)"
         CONFIG_PATH=$GO_CONFIG_PATH
         sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
+        sed -i.bak '/^excludes=/d' $CONFIG_PATH
+        # exclude gomod based folders
+        filterFolders go.mod $KYMA_SRC >> $CONFIG_PATH
         ;;
 
     golang-mod)
@@ -43,6 +46,9 @@ case "${SCAN_LANGUAGE}" in
         CONFIG_PATH=$GO_CONFIG_PATH
         export GO111MODULE=on
         sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
+        sed -i.bak '/^excludes=/d' $CONFIG_PATH
+        # exclude godep based folders
+        filterFolders gopkg.toml $KYMA_SRC >> $CONFIG_PATH
         ;;
         
     javascript)
@@ -66,6 +72,20 @@ KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 #    cd "$KYMA_SRC"
 #    make resolve
 #fi    
+
+
+#exclude components based on dependency management
+function filterFolders() {
+        local DEPENDENCY_FILE_TO_EXCLUDE
+        DEPENDENCY_FILE_TO_EXCLUDE=$1
+        local FOLDER_TO_SCAN
+        FOLDER_TO_SCAN=$2
+        local EXCLUDES
+        EXCLUDES=$({cd $FOLDER_TO_SCAN && find . -iname go.mod }| grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " -)
+        EXCLUDES="excludes=**/tests/** $EXCLUDES"
+        echo $EXCLUDES
+}
+
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
     if [[ $1 == "" ]]; then
