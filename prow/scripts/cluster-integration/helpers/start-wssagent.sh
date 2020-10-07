@@ -81,8 +81,8 @@ function filterFolders() {
         local FOLDER_TO_SCAN
         FOLDER_TO_SCAN=$2
         local EXCLUDES
-        EXCLUDES=$({cd $FOLDER_TO_SCAN && find . -iname go.mod }| grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " -)
-        EXCLUDES="excludes=**/tests/** $EXCLUDES"
+        EXCLUDES=$( { cd $FOLDER_TO_SCAN && find . -iname go.mod ; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " - )
+        EXCLUDES="excludes=**/tests/** ${EXCLUDES}"
         echo $EXCLUDES
 }
 
