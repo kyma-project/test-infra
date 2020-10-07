@@ -42,6 +42,7 @@ function filterFolders() {
         echo "$EXCLUDES"
 }
 
+KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 case "${SCAN_LANGUAGE}" in
     golang)
@@ -77,7 +78,6 @@ echo "***********************************"
 echo "***********Starting Scan***********"
 echo "***********************************"
 
-KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 # resolve deps for console repository
 #if [ "${PROJECTNAME}" == "console" ]; then
