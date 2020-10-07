@@ -700,7 +700,7 @@ templates:
           cluster:
             presubmit: untrusted-workload
             postsubmit: trusted-workload
-            periodic: trusted-workload
+            periodic: untrusted-workload
           optional: true
           resource_changes_triggering_kafka_tests:
             - resources/knative-eventing
