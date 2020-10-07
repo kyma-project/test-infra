@@ -358,6 +358,7 @@ templates:
           path: components/system-broker
           since: "1.16"
           optional: true
+          additionalRunIfChanged: # necessary so that it overrides the additionalRunIfChanged property from compass_generic_component and thus does not include the /scripts folder
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
           <<: *cluster_default

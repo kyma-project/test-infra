@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^release-(1\.16)-system-broker$
-  run_if_changed: "^components/system-broker/|^scripts/"
+  run_if_changed: "^components/system-broker/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
