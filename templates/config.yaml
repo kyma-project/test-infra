@@ -176,7 +176,7 @@ cluster_default: &cluster_default
   cluster:
     presubmit: untrusted-workload
     postsubmit: trusted-workload
-    periodic: untrusted-workload
+    periodic: trusted-workload
     
 templates:
   - from: templates/generic-component.yaml
@@ -697,7 +697,10 @@ templates:
     render:
       - to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
         values:
-          <<: *cluster_default
+          cluster:
+            presubmit: untrusted-workload
+            postsubmit: trusted-workload
+            periodic: trusted-workload
           optional: true
           resource_changes_triggering_kafka_tests:
             - resources/knative-eventing
@@ -726,7 +729,10 @@ templates:
     render:
       - to: ../prow/jobs/kyma/kyma-gke-compass-integration.yaml
         values:
-          <<: *cluster_default
+          cluster:
+            presubmit: untrusted-workload
+            postsubmit: trusted-workload
+            periodic: untrusted-workload
           since: "1.13"
   - from: templates/kyma-gke-external-registry.yaml
     render:
