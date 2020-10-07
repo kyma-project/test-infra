@@ -134,7 +134,7 @@ postsubmits:
 
 periodics:
   - name: kyma-gke-compass-integration-daily
-    cluster: trusted-workload
+    cluster: untrusted-workload
     annotations:
       testgrid-dashboards: kyma_integration
       description: Kyma GKE compass integration job which runs daily at 00:00.

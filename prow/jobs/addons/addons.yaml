@@ -28,6 +28,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/addons:
     - name: pre-master-kyma-addons
+      cluster: untrusted-workload
       branches:
         - ^master$
       always_run: true
@@ -39,6 +40,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/addons:
     - name: post-master-kyma-addons
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:
@@ -48,6 +50,7 @@ postsubmits:
         <<: *job_labels_template
         preset-build-master: "true"
     - name: post-rel-kyma-addons
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       # Prow resolves git tags as branches, so that regexp triggers build after tagging the repository.

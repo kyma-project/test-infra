@@ -1,6 +1,7 @@
 presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-master-examples-governance
+      cluster: untrusted-workload
       skip_report: false
       decorate: true
       max_concurrency: 10
@@ -33,6 +34,7 @@ presubmits: # runs on PRs
 
 periodics: # runs periodic on master
 - name: examples-governance-nightly
+  cluster: untrusted-workload
   annotations:
     testgrid-create-test-group: "false"
   decorate: true

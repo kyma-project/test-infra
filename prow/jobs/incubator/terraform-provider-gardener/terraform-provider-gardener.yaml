@@ -31,6 +31,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/terraform-provider-gardener:
     - name: pre-master-terraform-provider-gardener
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -42,6 +43,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/terraform-provider-gardener:
     - name: post-master-terraform-provider-gardener
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:

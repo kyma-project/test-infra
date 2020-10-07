@@ -27,6 +27,7 @@ job_template: &job_template
 
 periodics:
   - name: kyma-cli-compatibility-1
+    cluster: untrusted-workload
     cron: "00 00 * * *" # "At 00:00 daily"
     <<: *job_template
     spec:
@@ -44,6 +45,7 @@ periodics:
             - name: COMPAT_BACKTRACK
               value: "1"
   - name: kyma-cli-compatibility-2
+    cluster: untrusted-workload
     cron: "00 03 * * *" # "At 03:00 daily"
     <<: *job_template
     spec:

@@ -31,6 +31,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/podpreset-crd:
     - name: pre-master-podpreset-crd
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -42,6 +43,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/podpreset-crd:
     - name: post-master-podpreset-crd
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:

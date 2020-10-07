@@ -33,6 +33,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/dex:
   - name: pre-master-kyma-incubator-dex
+    cluster: untrusted-workload
     <<: *job_template
     labels:
       <<: *job_labels_template
@@ -41,6 +42,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/dex:
   - name: post-master-kyma-incubator-dex
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     <<: *job_template

@@ -28,6 +28,7 @@ vm_job_labels_template: &vm_job_labels_template
 presubmits: # runs on PRs
   kyma-project/control-plane:
   - name: pre-master-control-plane-integration
+    cluster: untrusted-workload
     branches:
     - ^master$
     <<: *vm_job_template
@@ -42,6 +43,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-project/control-plane:
   - name: post-master-control-plane-integration
+    cluster: trusted-workload
     <<: *vm_job_template
     branches:
     - ^master$

@@ -53,6 +53,7 @@ presubmits: # runs on PRs
       <<: *job_labels_template
       preset-build-pr: "true"
   - name: pre-rel08-kyma-tools-stability-checker
+    cluster: untrusted-workload
     branches:
     - release-0.8
     <<: *old_job_template

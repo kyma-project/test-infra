@@ -40,6 +40,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/compass:
   - name: pre-master-compass-development-artifacts
+    cluster: untrusted-workload
     run_if_changed: "^installation|^chart|^tools/compass-installer"
     branches:
     - ^master$
@@ -53,6 +54,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/compass:
   - name: post-master-compass-development-artifacts
+    cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"
     branches:

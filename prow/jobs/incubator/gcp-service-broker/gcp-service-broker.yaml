@@ -30,6 +30,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-incubator/gcp-service-broker:
     - name: pre-master-gcp-service-broker
+      cluster: untrusted-workload
       always_run: true
       branches:
         - ^master$
@@ -41,6 +42,7 @@ presubmits: # runs on PRs
 postsubmits:
   kyma-incubator/gcp-service-broker:
     - name: post-master-gcp-service-broker
+      cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
       branches:
