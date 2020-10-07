@@ -30,6 +30,18 @@ USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 
 APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
+#exclude components based on dependency management
+function filterFolders() {
+        local DEPENDENCY_FILE_TO_EXCLUDE
+        DEPENDENCY_FILE_TO_EXCLUDE=$1
+        local FOLDER_TO_SCAN
+        FOLDER_TO_SCAN=$2
+        local EXCLUDES
+        EXCLUDES=$( { cd "${FOLDER_TO_SCAN}" && find . -iname "${DEPENDENCY_FILE_TO_EXCLUDE}" ; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " - )
+        EXCLUDES="excludes=**/tests/** ${EXCLUDES}"
+        echo "$EXCLUDES"
+}
+
 
 case "${SCAN_LANGUAGE}" in
     golang)
@@ -74,17 +86,6 @@ KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 #fi    
 
 
-#exclude components based on dependency management
-function filterFolders() {
-        local DEPENDENCY_FILE_TO_EXCLUDE
-        DEPENDENCY_FILE_TO_EXCLUDE=$1
-        local FOLDER_TO_SCAN
-        FOLDER_TO_SCAN=$2
-        local EXCLUDES
-        EXCLUDES=$( { cd "${FOLDER_TO_SCAN}" && find . -iname "${DEPENDENCY_FILE_TO_EXCLUDE}" ; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " - )
-        EXCLUDES="excludes=**/tests/** ${EXCLUDES}"
-        echo "$EXCLUDES"
-}
 
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
