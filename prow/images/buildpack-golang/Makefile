@@ -23,6 +23,9 @@ tag-image: build-image
 tag-image:
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.14
+ifdef DOCKER_POST_PR_TAG
+	docker tag $(IMG):$(DOCKER_TAG) $(IMG):$(DOCKER_POST_PR_TAG)
+endif
 
 
 # build image and tag it with commit ID or PR number
