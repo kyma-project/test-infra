@@ -128,6 +128,13 @@ var tests = []struct {
 			jobsuite.Until(releases.Release115),
 		},
 	},
+	{path: "k3s-application-operator-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.Since(releases.Release116),
+			jobsuite.Optional(),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {
