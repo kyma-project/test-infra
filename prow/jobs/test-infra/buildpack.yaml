@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -45,7 +45,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -72,7 +72,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -99,7 +99,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -126,7 +126,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -153,7 +153,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -180,7 +180,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -207,7 +207,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -234,7 +234,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -261,7 +261,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -288,7 +288,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -315,7 +315,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -342,7 +342,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -369,7 +369,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -396,7 +396,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -423,7 +423,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -450,7 +450,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -477,7 +477,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -504,7 +504,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -536,7 +536,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -565,7 +565,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -594,7 +594,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -623,7 +623,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -652,7 +652,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -681,7 +681,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -710,7 +710,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -739,7 +739,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -768,7 +768,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -797,7 +797,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -826,7 +826,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -855,7 +855,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -884,7 +884,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -913,7 +913,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -942,7 +942,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -971,7 +971,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -1000,7 +1000,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -1029,7 +1029,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
@@ -1058,7 +1058,7 @@ postsubmits: # runs on master
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201008-d29ea347"
             securityContext:
               privileged: true
             command:
