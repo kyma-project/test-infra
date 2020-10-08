@@ -65,7 +65,6 @@ golang)
   CONFIG_PATH=$GO_CONFIG_PATH
   sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
-  echo "log.level=debug" >> $CONFIG_PATH
   echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude gomod based folders
   filterFolders go.mod "${KYMA_SRC}" >>${CONFIG_PATH}
