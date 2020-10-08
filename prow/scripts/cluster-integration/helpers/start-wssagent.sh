@@ -50,6 +50,7 @@ case "${SCAN_LANGUAGE}" in
         CONFIG_PATH=$GO_CONFIG_PATH
         sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
         sed -i.bak '/^excludes=/d' $CONFIG_PATH
+        echo "log.level=debug" >> $CONFIG_PATH
         # exclude gomod based folders
         filterFolders go.mod "${KYMA_SRC}" >> ${CONFIG_PATH}
         ;;
