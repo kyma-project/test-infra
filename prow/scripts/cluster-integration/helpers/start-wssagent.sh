@@ -65,7 +65,8 @@ golang)
   CONFIG_PATH=$GO_CONFIG_PATH
   sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
-  echo "log.level=debug" >>$CONFIG_PATH
+  echo "log.level=debug" >> $CONFIG_PATH
+  echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude gomod based folders
   filterFolders go.mod "${KYMA_SRC}" >>${CONFIG_PATH}
   prepareDependencies gopkg.toml "${KYMA_SRC}"
@@ -78,6 +79,7 @@ golang-mod)
   sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
   sed -i.bak "s|go.collectDependenciesAtRuntime=true|go.collectDependenciesAtRuntime=false|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
+  echo "scanComment=$(date)" >> $CONFIG_PATH
   # exclude godep based folders
   filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
   prepareDependencies go.mod "${KYMA_SRC}"
@@ -86,6 +88,7 @@ golang-mod)
 javascript)
   echo "SCAN: javascript"
   CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
+  echo "scanComment=$(date)" >> $CONFIG_PATH
   ;;
 
 *)
