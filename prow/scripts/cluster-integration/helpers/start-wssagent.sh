@@ -47,22 +47,14 @@ function prepareDependencies() {
   local FOLDER_TO_SCAN
   FOLDER_TO_SCAN=$2
 
-  if [[ ${DEPENDENCY_FILE,,} == "gopkg.toml" ]]; then
-    for COMPFOLDER in $({ find "${FOLDER_TO_SCAN}" -iname "${DEPENDENCY_FILE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname); do
-      {
-        echo "$COMPFOLDER"
-        cd "$COMPFOLDER"
-        mkdir -p vendor
-      }
-    done
-  elif [[ ${DEPENDENCY_FILE,,} == "go.mod" ]]; then
-    for COMPFOLDER in $({ find "${FOLDER_TO_SCAN}" -iname "${DEPENDENCY_FILE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname); do
-      {
-        cd "$COMPFOLDER"
-        go mod download
-      }
-    done
-  fi
+  for COMPFOLDER in $({ find "${FOLDER_TO_SCAN}" -iname "${DEPENDENCY_FILE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname); do
+    {
+      echo "$COMPFOLDER"
+      cd "$COMPFOLDER"
+      # a little trick to enforce `dep ensure` over `dep init`
+      mkdir -p vendor
+    }
+  done
 }
 
 KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
@@ -84,6 +76,7 @@ golang-mod)
   CONFIG_PATH=$GO_CONFIG_PATH
   export GO111MODULE=on
   sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
+  sed -i.bak "s|go.collectDependenciesAtRuntime=true|go.collectDependenciesAtRuntime=false|g" $CONFIG_PATH
   sed -i.bak '/^excludes=/d' $CONFIG_PATH
   # exclude godep based folders
   filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
@@ -110,7 +103,6 @@ echo "***********************************"
 #    cd "$KYMA_SRC"
 #    make resolve
 #fi
-
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
   if [[ $1 == "" ]]; then
