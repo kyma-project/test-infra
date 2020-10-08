@@ -29,11 +29,11 @@ webhooks:
         resources: [ "pods" ]
     clientConfig:
       service:
-        name: { { .Release.Name } }
-        namespace: { { .Release.Namespace } }
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
         path: /admission-control/collect-used-images
-      caBundle: { { b64enc $ca.Cert } }
-  { { - if .Values.enforcedRegistry.enabled } }
+      caBundle: {{ b64enc $ca.Cert }}
+  {{- if .Values.enforcedRegistry.enabled }}
   - name: enforce-image-registry.{{ .Release.Name }}.{{ .Release.Namespace }}
     admissionReviewVersions: [ "v1", "v1beta1" ]
     sideEffects: None
@@ -44,8 +44,8 @@ webhooks:
         resources: [ "pods" ]
     clientConfig:
       service:
-        name: { { .Release.Name } }
-        namespace: { { .Release.Namespace } }
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
         path: /admission-control/enforce-image-registry
-      caBundle: { { b64enc $ca.Cert } }
-  { { - end } }
+      caBundle: {{ b64enc $ca.Cert }}
+  {{- end }}
