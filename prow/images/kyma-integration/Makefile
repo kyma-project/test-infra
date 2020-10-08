@@ -29,12 +29,6 @@ ifdef DOCKER_POST_PR_TAG
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-$(DOCKER_POST_PR_TAG)
 endif
 
-.PHONY: post-pr-tag-image
-post-pr-tag-image:
-ifdef DOCKER_POST_PR_TAG
-	docker tag $(IMG) $(IMG_NAME):$(DOCKER_POST_PR_TAG)
-endif
-
 
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
