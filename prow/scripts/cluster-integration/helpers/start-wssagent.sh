@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-
-#Description: runs wss-unified-agent 
+#Description: runs wss-unified-agent
 #The purpose is to run the wss-unified-agent
 
-#Expected vars: 
+#Expected vars:
 # - APIKEY- Key provided by SAP Whitesource Team
 # - PRODUCTNAME - Product inside whitesource
 # - USERKEY - Users specified key(should be a service account)
@@ -30,83 +29,122 @@ USERKEY=$(cat "${WHITESOURCE_USERKEY}")
 
 APIKEY=$(cat "${WHITESOURCE_APIKEY}")
 
+#exclude components based on dependency management
+function filterFolders() {
+  local DEPENDENCY_FILE_TO_EXCLUDE
+  DEPENDENCY_FILE_TO_EXCLUDE=$1
+  local FOLDER_TO_SCAN
+  FOLDER_TO_SCAN=$2
+  local EXCLUDES
+  EXCLUDES=$({ cd "${FOLDER_TO_SCAN}" && find . -iname "${DEPENDENCY_FILE_TO_EXCLUDE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname | sed 's/$/\/**/' | sed 's/^.\//**\//' | paste -s -d" " -)
+  EXCLUDES="excludes=**/tests/** ${EXCLUDES}"
+  echo "$EXCLUDES"
+}
+
+function prepareDependencies() {
+  local DEPENDENCY_FILE
+  DEPENDENCY_FILE=$1
+  local FOLDER_TO_SCAN
+  FOLDER_TO_SCAN=$2
+
+  for COMPFOLDER in $({ find "${FOLDER_TO_SCAN}" -iname "${DEPENDENCY_FILE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname); do
+    {
+      echo "$COMPFOLDER"
+      cd "$COMPFOLDER"
+      # a little trick to enforce `dep ensure` over `dep init`
+      mkdir -p vendor
+    }
+  done
+}
+
+KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
 
 case "${SCAN_LANGUAGE}" in
-    golang)
-        echo "SCAN: golang (dep)"
-        CONFIG_PATH=$GO_CONFIG_PATH
-        sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
-        ;;
+golang)
+  echo "SCAN: golang (dep)"
+  CONFIG_PATH=$GO_CONFIG_PATH
+  sed -i.bak "s|go.dependencyManager=|go.dependencyManager=dep|g" $CONFIG_PATH
+  sed -i.bak '/^excludes=/d' $CONFIG_PATH
+  echo "scanComment=$(date)" >> $CONFIG_PATH
+  # exclude gomod based folders
+  filterFolders go.mod "${KYMA_SRC}" >>${CONFIG_PATH}
+  prepareDependencies gopkg.toml "${KYMA_SRC}"
+  ;;
 
-    golang-mod)
-        echo "SCAN: golang-mod"
-        CONFIG_PATH=$GO_CONFIG_PATH
-        export GO111MODULE=on
-        sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
-        ;;
-        
-    javascript)
-        echo "SCAN: javascript"
-        CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
-        ;;
-        
-    *)
-        echo "can only be golang or javascript"
-        exit 1
+golang-mod)
+  echo "SCAN: golang-mod"
+  CONFIG_PATH=$GO_CONFIG_PATH
+  export GO111MODULE=on
+  sed -i.bak "s|go.dependencyManager=|go.dependencyManager=modules|g" $CONFIG_PATH
+  sed -i.bak "s|go.collectDependenciesAtRuntime=true|go.collectDependenciesAtRuntime=false|g" $CONFIG_PATH
+  sed -i.bak '/^excludes=/d' $CONFIG_PATH
+  echo "scanComment=$(date)" >> $CONFIG_PATH
+  # exclude godep based folders
+  filterFolders gopkg.toml "${KYMA_SRC}" >>${CONFIG_PATH}
+  prepareDependencies go.mod "${KYMA_SRC}"
+  ;;
+
+javascript)
+  echo "SCAN: javascript"
+  CONFIG_PATH=$JAVASCRIPT_CONFIG_PATH
+  echo "scanComment=$(date)" >> $CONFIG_PATH
+  ;;
+
+*)
+  echo "can only be golang or javascript"
+  exit 1
+  ;;
 esac
 
 echo "***********************************"
 echo "***********Starting Scan***********"
 echo "***********************************"
 
-KYMA_SRC="${GITHUB_ORG_DIR}/${PROJECTNAME}"
-
 # resolve deps for console repository
 #if [ "${PROJECTNAME}" == "console" ]; then
 #    cd "$KYMA_SRC"
 #    make resolve
-#fi    
+#fi
 
 function scanFolder() { # expects to get the fqdn of folder passed to scan
-    if [[ $1 == "" ]]; then
-        echo "path cannot be empty"
-        exit 1
-    fi
-    FOLDER=$1
-    if [[ $2 == "" ]]; then
-        echo "component name cannot be empty"
-        exit 1
-    fi
-    cd "${FOLDER}" # change to passed parameter
-    PROJNAME=$2
+  if [[ $1 == "" ]]; then
+    echo "path cannot be empty"
+    exit 1
+  fi
+  FOLDER=$1
+  if [[ $2 == "" ]]; then
+    echo "component name cannot be empty"
+    exit 1
+  fi
+  cd "${FOLDER}" # change to passed parameter
+  PROJNAME=$2
 
-    if [[ $CUSTOM_PROJECTNAME == "" ]]; then 
+  if [[ $CUSTOM_PROJECTNAME == "" ]]; then
     # use custom projectname for kyma-mod scans in order not to override kyma (dep) scan results
-        sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" $CONFIG_PATH
+    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${PROJNAME}|g" $CONFIG_PATH
+  else
+    sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" $CONFIG_PATH
+  fi
+
+  echo "Product name - $PRODUCTNAME"
+  echo "Project name - $PROJNAME"
+  echo "Java Options - '$JAVA_OPTS'"
+
+  if [ "${DRYRUN}" = false ]; then
+    echo "***********************************"
+    echo "******** Scanning $FOLDER ***"
+    echo "***********************************"
+    if [ -z "$JAVA_OPTS" ]; then
+      echo "no additional java_opts set"
+      java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
     else
-        sed -i.bak "s|apiKey=|apiKey=${APIKEY}|g; s|productName=|productName=${PRODUCTNAME}|g; s|userKey=|userKey=${USERKEY}|g; s|projectName=|projectName=${CUSTOM_PROJECTNAME}|g" $CONFIG_PATH
+      java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
     fi
-
-    echo "Product name - $PRODUCTNAME"
-    echo "Project name - $PROJNAME"
-    echo "Java Options - '$JAVA_OPTS'"
-
-
-    if [ "${DRYRUN}" = false ];then
-        echo "***********************************"
-        echo "******** Scanning $FOLDER ***"
-        echo "***********************************"
-        if [ -z "$JAVA_OPTS" ]; then
-            echo "no additional java_opts set"
-            java -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
-        else
-            java "${JAVA_OPTS}" -jar /wss/wss-unified-agent.jar -c $CONFIG_PATH
-        fi
-    else 
-        echo "***********************************"
-        echo "******** DRYRUN Successful for $FOLDER ***"  
-        echo "***********************************"
-    fi
+  else
+    echo "***********************************"
+    echo "******** DRYRUN Successful for $FOLDER ***"
+    echo "***********************************"
+  fi
 }
 
 scanFolder "${KYMA_SRC}" "${PROJECTNAME}"
