@@ -11,34 +11,46 @@ function log::date {
     date +"%Y/%m/%d %T %Z"
 }
 
+# log::banner prints message with INFO level in banner form for easier spotting in log files
+#
+# Arguments:
+#   $* - Message
+function log::banner {
+  local logdate
+  logdate=$(log::date)
+  echo -e "${INVERTED}${logdate} [INFO] *************************************************************************************${NC}"
+  echo -e "${INVERTED}${logdate} [INFO] * $* ${NC}"
+  echo -e "${INVERTED}${logdate} [INFO] *************************************************************************************${NC}"
+}
+
 # log::info prints message with info level
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::info {
-    echo -e "${INVERTED}$(log::date) [INFO] ${1}${NC}"
+    echo -e "${INVERTED}$(log::date) [INFO] $* ${NC}"
 }
 
 # log::info prints a message with info level in green
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::success {
-    echo -e "${GREEN}$(log::date) [INFO] ${1}${NC}"
+    echo -e "${GREEN}$(log::date) [INFO] $* ${NC}"
 }
 
 # log::info prints a message with warning level in yellow
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::warn {
-    echo -e "${YELLOW}$(log::date) [WARN] ${1}${NC}"
+    echo -e "${YELLOW}$(log::date) [WARN] $* ${NC}"
 }
 
 # log::info prints a message with error level in red
 #
 # Arguments:
-#   $1 - Message
+#   $* - Message
 function log::error {
-    >&2 echo -e "${RED}$(log::date) [ERRO] ${1}${NC}"
+    >&2 echo -e "${RED}$(log::date) [ERRO] $* ${NC}"
 }

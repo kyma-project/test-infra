@@ -19,8 +19,7 @@ function executeKubectlWithRetries() {
     local result=""
 
     while [[ ${retry} -lt 10 ]]; do
-        result=$(${command})
-        if [[ $? -eq 0 ]]; then
+        if result=$(${command}); then
             echo "${result}"
             return 0
         else
@@ -146,12 +145,16 @@ inject_addons_if_necessary() {
   fi
 }
 
+function testing::inject_addons_if_necessary() {
+  inject_addons_if_necessary
+}
+
 TESTING_ADDONS_CFG_NAME="testing-addons"
 
 function injectTestingAddons() {
     retry=10
     while true; do
-        cat <<EOF | kubectl apply -f -
+        kubectl apply -f - <<EOF
 apiVersion: addons.kyma-project.io/v1alpha1
 kind: ClusterAddonsConfiguration
 metadata:
@@ -162,6 +165,7 @@ spec:
   repositories:
   - url: "https://github.com/kyma-project/addons/releases/download/0.8.0/index-testing.yaml"
 EOF
+        # shellcheck disable=SC2181
         if [[ $? -eq 0 ]]; then
             break
         fi
@@ -192,6 +196,10 @@ EOF
     return 1
 }
 
+function testing::inject_testing_addons() {
+  inject_testing_addons
+}
+
 function removeTestingAddons() {
     result=$(executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
     echo "${result}"
@@ -199,4 +207,25 @@ function removeTestingAddons() {
         return 1
     fi
     log::success "Testing addons removed"
+}
+
+function testing::remove_testing_addons() {
+  removeTestingAddons
+}
+
+
+function testing::remove_addons_if_necessary() {
+  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
+
+  if [ -n "$tdWithAddon" ]
+  then
+      log::info "- Removing ClusterAddonsConfiguration which provides the testing addons"
+      testing::remove_testing_addons
+      if [[ $? -eq 1 ]]; then
+        log::error "Failed to remove testing addons"
+        exit 1
+      fi
+  else
+      log::info "- Skipping removing ClusterAddonsConfiguration"
+  fi
 }
