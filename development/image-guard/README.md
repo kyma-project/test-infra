@@ -3,7 +3,7 @@ This directory contains source code for the Image-guard admission controller.
 
 After installing the chart Image-guard performs the following tasks:
 * Monitor and log used docker images in the pods
-* Check and allow usage only for whitelisted registries
+* Optionally check and allow usage only for whitelisted registries
 
 ## Requirements
 To deploy the application you need the following:
@@ -15,6 +15,7 @@ To install image-guard use the following command using your k8s cluster context:
 ```shell script
 $ helm install image-guard ./image-guard
 ```
+If you want to enable enforcing image registries use helm flag `--set enforcedRegistry.enabled=true` and define the registries.
 
 ## Flags
 ```

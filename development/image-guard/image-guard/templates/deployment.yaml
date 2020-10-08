@@ -25,15 +25,17 @@ spec:
               value: {{ $svcHost }}
           args:
             - "--host"
-            - {{ $svcHost | quote }}
+            - { { $svcHost | quote } }
             - "--cert-path"
             - "/certs/cert.crt"
             - "--key-path"
             - "/certs/key.pem"
-            {{- range .Values.allowed_registries }}
+            { { - with .Values.enforcedRegistry } }
+            { { - if .enabled } }
+            { { - range .allowedRegistries } }
             - "--allowed-registry"
-            - {{ . | quote }}
-            {{- end }}
+            - { { . | quote } }
+            { { - end } }{ { end } }{ { end } }
           imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           ports:
             - containerPort: 8443

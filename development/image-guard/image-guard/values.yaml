@@ -6,6 +6,8 @@ deployment:
   replicas: 1
   imagePullPolicy: Always
 
-allowed_registries:
-  - "eu.gcr.io/kyma-project"
-  - "gcr.io/kyma-project"
+enforcedRegistry:
+  enabled: false
+  allowedRegistries:
+    - "eu.gcr.io/kyma-project"
+    - "gcr.io/kyma-project"
