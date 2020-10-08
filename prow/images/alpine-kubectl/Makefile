@@ -22,8 +22,10 @@ tag-image: build-image
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
+@echo "Tagging with current"
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
 ifdef DOCKER_POST_PR_TAG
+@echo "Tagging with pr number"
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):$(DOCKER_POST_PR_TAG)
 endif
 
@@ -37,4 +39,5 @@ build-image:
 # push image with all tags
 .PHONY: push-image
 push-image:
+@echo "Pushing image with all tags"
 	docker push $(IMG)
