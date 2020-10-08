@@ -23,7 +23,7 @@ job_template: &job_template
   run_if_changed: "^tools/event-subscriber/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20200831-e46c648b
         securityContext:
           privileged: true
         command:
