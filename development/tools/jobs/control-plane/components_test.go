@@ -21,7 +21,7 @@ var components = []struct {
 }{
 	{
 		name:  "provisioner",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -31,7 +31,7 @@ var components = []struct {
 	},
 	{
 		name:  "kyma-environment-broker",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -41,7 +41,7 @@ var components = []struct {
 	},
 	{
 		name:  "schema-migrator",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("kcp-generic"),
@@ -51,7 +51,7 @@ var components = []struct {
 	},
 	{
 		name:  "metris",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -61,7 +61,7 @@ var components = []struct {
 	},
 	{
 		name:  "kubeconfig-service",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -71,7 +71,7 @@ var components = []struct {
 	},
 	{
 		name:  "subscription-cleanup-job",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
