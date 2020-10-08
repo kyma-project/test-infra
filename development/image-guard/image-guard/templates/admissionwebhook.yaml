@@ -1,7 +1,8 @@
-{{- $svcHost := printf "%s.%s.svc" .Release.Name .Release.Namespace -}}
+{{- $host := printf "%s.%s" .Release.Name .Release.Namespace -}}
+{{- $svcHost := printf "%s.svc" $host -}}
 {{- $svcHostFull := printf "%s.cluster.local" $svcHost -}}
 {{- $ca := genCA "image-guard-ca" 365 -}}
-{{- $cert := genSignedCert $svcHost nil (list $svcHostFull) 365 $ca -}}
+{{- $cert := genSignedCert $host nil (list $svcHost $svcHostFull) 365 $ca -}}
 apiVersion: v1
 kind: Secret
 metadata:

@@ -24,12 +24,16 @@ spec:
             - name: HOST_NAME
               value: {{ $svcHost }}
           args:
-            - "-host"
+            - "--host"
             - {{ $svcHost | quote }}
-            - "-cert-path"
+            - "--cert-path"
             - "/certs/cert.crt"
-            - "-key-path"
+            - "--key-path"
             - "/certs/key.pem"
+            {{- range .Values.allowed_registries }}
+            - "--allowed-registry"
+            - {{ . | quote }}
+            {{- end }}
           imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
           ports:
             - containerPort: 8443

@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
+	flag "github.com/spf13/pflag"
 	"k8s.io/api/admission/v1beta1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -37,8 +37,9 @@ func main() {
 	flag.StringVar(&conf.TLSCertPath, "cert-path", "./cert.crt", "The path to the PEM-encoded TLS certificate")
 	flag.StringVar(&conf.TLSKeyPath, "key-path", "./key.pem", "The path to the unencrypted TLS key")
 	flag.BoolVar(&conf.HTTPOnly, "http-only", false, "Only listen on unencrypted HTTP (e.g. for proxied environments)")
-	flag.StringVar(&conf.Port, "port", "8443", "The port to listen on (HTTPS).")
-	flag.StringVar(&conf.Host, "host", "admissiond.questionable.services", "The hostname for the service")
+	flag.StringVarP(&conf.Port, "port", "p", "8443", "The port to listen on (HTTPS).")
+	flag.StringVarP(&conf.Host, "host", "h", "admissiond.questionable.services", "The hostname for the service")
+	registries := flag.StringSliceP("allowed-registry", "r", nil, "Name of allowed registry")
 	flag.Parse()
 
 	// Set up logging
@@ -71,10 +72,10 @@ func main() {
 
 	// Admission control endpoints
 	admissions := r.PathPrefix("/admission-control").Subrouter()
-	//admissions.Handle("/enforce-image-registry", &admissioncontrol.AdmissionHandler{
-	//	AdmitFunc: enforceImageRegistries("gcr.io/kyma-project", "eu.gcr.io/kyma-project"),
-	//	Logger:    logger,
-	//})
+	admissions.Handle("/enforce-image-registries", &admissioncontrol.AdmissionHandler{
+		AdmitFunc: enforceImageRegistries(*registries...),
+		Logger:    logger,
+	})
 	admissions.Handle("/collect-used-images", &admissioncontrol.AdmissionHandler{
 		AdmitFunc: collectUsedImages(),
 		Logger:    logger,
@@ -163,6 +164,12 @@ func enforceImageRegistries(registries ...string) admissioncontrol.AdmitFunc {
 			resp.Result.Message = fmt.Sprintf("Got non-Pod type (%s)", kind)
 			return resp, nil
 		}
+		if len(registries) == 0 {
+			resp.Allowed = true
+			resp.Result.Message = "No registries provided. Allowing by default."
+			return resp, nil
+		}
+
 		pod := v1.Pod{}
 		deserializer := serializer.NewCodecFactory(runtime.NewScheme()).UniversalDeserializer()
 		if _, _, err := deserializer.Decode(reviewRequest.Request.Object.Raw, nil, &pod); err != nil {

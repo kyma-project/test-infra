@@ -8,4 +8,5 @@ require (
 	github.com/gorilla/mux v1.8.0
 	k8s.io/api v0.18.8
 	k8s.io/apimachinery v0.18.8
+	github.com/spf13/pflag v1.0.5
 )

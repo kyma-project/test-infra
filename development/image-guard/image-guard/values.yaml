@@ -5,3 +5,7 @@ deployment:
   image: eu.gcr.io/kyma-prow/test-infra/image-guard
   replicas: 1
   imagePullPolicy: Always
+
+allowed_registries:
+  - "eu.gcr.io/kyma-project"
+  - "gcr.io/kyma-project"
