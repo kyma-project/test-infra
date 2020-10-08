@@ -70,13 +70,6 @@ Finally, pjtester will create the ProwJob on the production Prow instance. The P
 
 Because the file `vpath/pjtester.yaml` is used by pjtester only to know the ProwJob name to test, it should not exist outside of the PR. This is why the `pre-master-test-infra-vpathgurad` required context was added. Its simple task is to fail whenever the `vpath` directory exists and to prevent the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
 
-## Prerequisites
-
-ProwJob tester is a tool running on Prow. You need working Prow instance to use it.
-
-## Installation
-
-To make pjtester work for you, you need to compile it and build image with its binary included. This is done by ProwJob `post-test-infra-prow-tools`. It will build and push `prow-tools` image. Next you need to add presubmit job to trigger pjtester execution. This is done by `pre-master-test-infra-pjtester` ProwJob.
 
 ## Usage
 
