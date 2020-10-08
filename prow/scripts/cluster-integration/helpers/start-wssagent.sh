@@ -50,8 +50,9 @@ function prepareDependencies() {
   if [[ ${DEPENDENCY_FILE,,} == "gopkg.toml" ]]; then
     for COMPFOLDER in $({ find "${FOLDER_TO_SCAN}" -iname "${DEPENDENCY_FILE}"; } | grep -v vendor | grep -v tests | xargs -n 1 dirname); do
       {
+        echo "$COMPFOLDER"
         cd "$COMPFOLDER"
-        dep ensure -vendor-only
+        mkdir -p vendor
       }
     done
   elif [[ ${DEPENDENCY_FILE,,} == "go.mod" ]]; then
