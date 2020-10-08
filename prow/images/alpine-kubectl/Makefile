@@ -39,5 +39,5 @@ build-image:
 # push image with all tags
 .PHONY: push-image
 push-image:
-@echo "Pushing image with all tags"
+	echo "Pushing image with all tags"
 	docker push $(IMG)
