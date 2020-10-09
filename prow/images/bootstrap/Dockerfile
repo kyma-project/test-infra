@@ -74,6 +74,6 @@ RUN mkdir /docker-graph
 
 # Prow Tools
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201008-a2fd337c /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201009-edd00147 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
