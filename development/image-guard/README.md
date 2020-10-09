@@ -1,28 +1,28 @@
-# Image-guard
-This directory contains source code for the Image-guard admission controller.
+# image-guard
+This directory contains source code for the image-guard admission controller.
 
-After installing the chart Image-guard performs the following tasks:
-* Monitor and log used docker images in the pods
-* Optionally check and allow usage only for whitelisted registries
+Image-guard performs the following tasks:
+* Monitor and log used Docker images in the Pods.
+* Optionally check and allow usage only for the whitelisted registries.
 
-## Requirements
-To deploy the application you need the following:
-* helm 3
-* K8s cluster version at least 1.16
+## Prerequisites
+To deploy the application, you need the following:
+* Helm 3
+* Kubernetes cluster (at least 1.16 version)
 
 ## Installation
-To install image-guard use the following command using your k8s cluster context:
+To install image-guard use the following command using your Kubernetes cluster context:
 ```shell script
 $ helm install image-guard ./image-guard
 ```
-If you want to enable enforcing image registries use helm flag `--set enforcedRegistry.enabled=true` and define the registries.
+If you want to enable enforcing image registries, use the `--set enforcedRegistry.enabled=true` Helm flag and define the registries.
 
 ## Flags
 ```
 --host -h [host]                The hostname for the service
---port -p [port]                The port to listen on (HTTPS).
---http-only                     Only listen on unencrypted HTTP (e.g. for proxied environments)
+--port -p [port]                The HTTPS port to listen on.
+--http-only                     The flag that enables listening on unencrypted HTTP only (for example: for proxied environments)
 --key-path [path-to-file]       The path to the unencrypted TLS key
 --cert-path [path-to-file]      The path to the PEM-encoded TLS certificate
---allowed-registry -r [string]  Name of allowed registry
+--allowed-registry -r [string]  The name of the of allowed registry
 ```
