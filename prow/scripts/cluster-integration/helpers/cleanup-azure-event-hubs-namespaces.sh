@@ -61,9 +61,6 @@ function ensure_vars_or_die() {
   if [ "${discoverUnsetVar}" = true ]; then
     exit 1
   fi
-
-  # TODO remove when removing the PJTester config
-  TTL_HOURS=890
 }
 
 #########################################################################################################
