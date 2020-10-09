@@ -25,10 +25,6 @@ tag-image:
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.14
 	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
-ifdef DOCKER_POST_PR_TAG
-	@echo "___ Tagging with pr number ___"
-	docker tag $(IMG):$(DOCKER_TAG) $(IMG):$(DOCKER_POST_PR_TAG)
-endif
 
 
 # build image and tag it with commit ID or PR number

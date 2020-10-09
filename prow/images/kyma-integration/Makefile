@@ -24,12 +24,6 @@ tag-image:
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-current
-ifdef DOCKER_POST_PR_TAG
-	@echo "___ Tagging with pr number ___"
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-$(DOCKER_POST_PR_TAG)
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-$(DOCKER_POST_PR_TAG)
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-$(DOCKER_POST_PR_TAG)
-endif
 
 
 # build image and tag it with commit ID or PR number
