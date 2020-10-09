@@ -40,13 +40,15 @@ spec:
           ports:
             - containerPort: 8443
               name: server-tls-port
+          {{- with .Values.deployment.resources }}
           resources:
             requests:
-              cpu: "100m"
-              memory: "128M"
+              cpu: {{ .requests.cpu | quote }}
+              memory: {{ .requests.memory | quote }}
             limits:
-              cpu: "250m"
-              memory: "256M"
+              cpu: {{ .limits.cpu | quote }}
+              memory: {{ .limits.memory | quote }}
+          {{- end }}
           volumeMounts:
             - name: certs
               mountPath: "/certs"

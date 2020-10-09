@@ -5,7 +5,13 @@ deployment:
   image: eu.gcr.io/kyma-prow/test-infra/image-guard
   replicas: 1
   imagePullPolicy: Always
-
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128M"
+    limits:
+      cpu: "250m"
+      memory: "256M"
 enforcedRegistry:
   enabled: false
   allowedRegistries:
