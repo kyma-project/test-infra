@@ -19,20 +19,16 @@ ci-release: build-image tag-image push-image
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
+	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-current
 ifdef DOCKER_POST_PR_TAG
+	@echo "___ Tagging with pr number ___"
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-$(DOCKER_POST_PR_TAG)
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-$(DOCKER_POST_PR_TAG)
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-$(DOCKER_POST_PR_TAG)
-endif
-
-.PHONY: post-pr-tag-image
-post-pr-tag-image:
-ifdef DOCKER_POST_PR_TAG
-	docker tag $(IMG) $(IMG_NAME):$(DOCKER_POST_PR_TAG)
 endif
 
 
@@ -47,4 +43,5 @@ build-image:
 # push image with all tags
 .PHONY:push-image
 push-image:
+	@echo "___ Pushing image with all tags ___"
 	docker push $(IMG)
