@@ -61,6 +61,9 @@ function ensure_vars_or_die() {
   if [ "${discoverUnsetVar}" = true ]; then
     exit 1
   fi
+
+  # TODO remove when removing the PJTester config
+  TTL_HOURS=890
 }
 
 #########################################################################################################
@@ -97,7 +100,7 @@ function authenticate_to_azure() {
 #   SECONDS_PER_HOUR
 # ARGUMENTS:
 #   A JSON String that represents a single Azure Eventhubs Namespace.
-#   It should look like '{"createdAt":"some-datetime", "name":"some-name"}'.
+#   It should look like '{"createdAt":"any", "name":"any", "resourceGroup":"any"}'.
 # OUTPUTS:
 #   Print the result of deleting the Azure Eventhubs Namespace.
 # RETURN:
@@ -110,19 +113,14 @@ function cleanup_eventhubs_namespace() {
 
   name=$(echo "${1}" | jq -r ".name")
   created_at=$(date -d "$(echo "${1}" | jq -r ".createdAt")" +%s)
+  resourceGroup=$(echo "${1}" | jq -r ".resourceGroup")
   elapsed_hours=$(((NOW - created_at) / SECONDS_PER_HOUR))
-
-  echo "Name:       ${name}"
-  echo "CreatedAt:  ${created_at}"
-  echo "Elapsed:    ${elapsed_hours}"
 
   # delete Eventhubs Namespace if it is older than the TTL in hours
   if [[ ${elapsed_hours} -ge ${TTL_HOURS} ]]; then
-    echo "Delete:     ${name} (${elapsed_hours}h old)"
-    # TODO perform an API call to delete the Namespace
+    echo "Delete Namespace [${name}] in ResourceGroup [${resourceGroup}] (${elapsed_hours}h old)"
+    az eventhubs namespace delete -n "${name}" -g "${resourceGroup}"
   fi
-
-  echo "---"
 }
 
 #########################################################################################################
@@ -141,7 +139,7 @@ function cleanup() {
   echo "#################################################################################################"
   date;echo
 
-  for ns in $(az eventhubs namespace list --subscription "${AZURE_SUBSCRIPTION_NAME}" --query '[].{createdAt:createdAt, name:name}' --output json | jq -c '.[]'); do
+  for ns in $(az eventhubs namespace list --subscription "${AZURE_SUBSCRIPTION_NAME}" --query '[].{createdAt:createdAt, name:name, resourceGroup:resourceGroup}' --output json | jq -c '.[]'); do
     cleanup_eventhubs_namespace "${ns}"
   done
 }
