@@ -22,6 +22,9 @@ function export_variables() {
         DOCKER_TAG="PR-${PULL_NUMBER}"
     else
         DOCKER_TAG="$(date +v%Y%m%d)-$(git describe --tags --always --dirty)"
+        DOCKER_POST_PR_TAG="$(/prow-tools/prtagbuilder)"
+        readonly DOCKER_POST_PR_TAG
+        export DOCKER_POST_PR_TAG
     fi
     readonly DOCKER_TAG
     export DOCKER_TAG
