@@ -13,6 +13,7 @@
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): AKS machine type
 # - BOT_GITHUB_TOKEN: Bot github token used for API queries
+# - RS_GROUP - azure resource group
 #
 #Permissions: In order to run this script you need to use an AKS service account with the contributor role
 
@@ -33,6 +34,7 @@ VARIABLES=(
     AZURE_SUBSCRIPTION_SECRET
     AZURE_SUBSCRIPTION_TENANT
     BOT_GITHUB_TOKEN
+    RS_GROUP
 )
 
 for var in "${VARIABLES[@]}"; do
@@ -47,7 +49,8 @@ fi
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
-export REGION \
+export RS_GROUP \
+    REGION \
     AZURE_SUBSCRIPTION_ID \
     AZURE_SUBSCRIPTION_APP_ID \
     AZURE_SUBSCRIPTION_SECRET \
@@ -80,10 +83,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
-RS_GROUP="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
 EVENTHUB_NAMESPACE_NAME="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
-export RS_GROUP \
-    EVENTHUB_NAMESPACE_NAME
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -112,10 +112,6 @@ cleanup() {
         shout "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
         # Delete the Azure Event Hubs namespace which was created
         az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
-
-        shout "Deleting Azure Resource Group: \"${RS_GROUP}\""
-        # Delete the Azure Resource Group
-        az group delete -n "${RS_GROUP}" -y
     fi
 
     rm -rf "${TMP_DIR}"
