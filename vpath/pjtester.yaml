@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "kyma-upgrade-gardener-azure"
+  - pjName: "kyma-integration-gardener-azure"
+  - pjName: "kyma-integration-gardener-gcp"
+  - pjName: "post-master-kyma-gke-integration"
+  - pjName: "post-master-kyma-gke-upgrade"
