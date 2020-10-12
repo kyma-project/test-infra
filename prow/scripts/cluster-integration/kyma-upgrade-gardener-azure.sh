@@ -84,6 +84,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluen
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 EVENTHUB_NAMESPACE_NAME="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
+export EVENTHUB_NAMESPACE_NAME
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
