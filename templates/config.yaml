@@ -210,13 +210,13 @@ templates:
           <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-operator
-          since: "1.16"
+          since: "1.7"
       - to: ../prow/jobs/kyma/components/application-operator/k3s-application-operator-generic.yaml
         values:
           <<: *cluster_default
           <<: *kyma_generic_component
           path: components/application-operator
-          since: "1.7"
+          since: "1.16"
       - to: ../prow/jobs/kyma/components/application-registry/application-registry-generic.yaml
         values:
           <<: *cluster_default
