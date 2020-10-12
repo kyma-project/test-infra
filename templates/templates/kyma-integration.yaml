@@ -38,6 +38,20 @@ vm_job_template: &vm_job_template
             memory: 100Mi
             cpu: 50m
 
+vm_job_template_k3d: &vm_job_template_k3d
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
+
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
@@ -269,7 +283,20 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-  
+    - name: pre-master-kyma-integration-k3d
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+      - ^master$
+      <<: *vm_job_template_k3d
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+
   {{- range (matchingReleases .Global.releases "1.11" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
