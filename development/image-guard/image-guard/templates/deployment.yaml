@@ -1,0 +1,59 @@
+{{- $svcHost := printf "%s.%s.svc" .Release.Name .Release.Namespace -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: controller
+          image: {{ .Values.deployment.image }}
+          command: ["/image-guardd"]
+          env:
+            - name: HOST_NAME
+              value: {{ $svcHost }}
+          args:
+            - "--host"
+            - {{ $svcHost | quote }}
+            - "--cert-path"
+            - "/certs/cert.crt"
+            - "--key-path"
+            - "/certs/key.pem"
+            {{- with .Values.enforcedRegistry }}
+            {{- if .enabled }}
+            {{- range .allowedRegistries }}
+            - "--allowed-registry"
+            - {{ . | quote }}
+            {{- end }}{{ end }}{{ end }}
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+          ports:
+            - containerPort: 8443
+              name: server-tls-port
+          {{- with .Values.deployment.resources }}
+          resources:
+            requests:
+              cpu: {{ .requests.cpu | quote }}
+              memory: {{ .requests.memory | quote }}
+            limits:
+              cpu: {{ .limits.cpu | quote }}
+              memory: {{ .limits.memory | quote }}
+          {{- end }}
+          volumeMounts:
+            - name: certs
+              mountPath: "/certs"
+              readOnly: true
+      volumes:
+        - name: certs
+          secret:
+            secretName: {{ .Release.Name }}-certs

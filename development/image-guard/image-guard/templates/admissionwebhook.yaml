@@ -1,0 +1,51 @@
+{{- $host := printf "%s.%s" .Release.Name .Release.Namespace -}}
+{{- $svcHost := printf "%s.svc" $host -}}
+{{- $svcHostFull := printf "%s.cluster.local" $svcHost -}}
+{{- $ca := genCA "image-guard-ca" 365 -}}
+{{- $cert := genSignedCert $host nil (list $svcHost $svcHostFull) 365 $ca -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-certs
+  namespace: {{ .Release.Namespace }}
+data:
+  cert.crt: {{ b64enc $cert.Cert }}
+  key.pem: {{ b64enc $cert.Key }}
+type: Opaque
+---
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ .Release.Name }}-admission-webhooks
+  namespace: {{ .Release.Namespace }}
+webhooks:
+  - name: collect-used-images.{{ .Release.Name }}.{{ .Release.Namespace }}
+    admissionReviewVersions: [ "v1", "v1beta1" ]
+    sideEffects: None
+    rules:
+      - apiVersions: [ "*" ]
+        apiGroups: [ "*" ]
+        operations: [ "CREATE" ]
+        resources: [ "pods" ]
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /admission-control/collect-used-images
+      caBundle: {{ b64enc $ca.Cert }}
+  {{- if .Values.enforcedRegistry.enabled }}
+  - name: enforce-image-registry.{{ .Release.Name }}.{{ .Release.Namespace }}
+    admissionReviewVersions: [ "v1", "v1beta1" ]
+    sideEffects: None
+    rules:
+      - apiVersions: [ "*" ]
+        apiGroups: [ "*" ]
+        operations: [ "CREATE" ]
+        resources: [ "pods" ]
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /admission-control/enforce-image-registry
+      caBundle: {{ b64enc $ca.Cert }}
+  {{- end }}

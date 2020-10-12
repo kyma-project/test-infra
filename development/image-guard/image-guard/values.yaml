@@ -1,0 +1,19 @@
+service:
+  port: 443
+
+deployment:
+  image: eu.gcr.io/kyma-prow/test-infra/image-guard
+  replicas: 1
+  imagePullPolicy: Always
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128M"
+    limits:
+      cpu: "250m"
+      memory: "256M"
+enforcedRegistry:
+  enabled: false
+  allowedRegistries:
+    - "eu.gcr.io/kyma-project"
+    - "gcr.io/kyma-project"
