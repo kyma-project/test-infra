@@ -25,15 +25,21 @@ function log::info {
     echo -e "$(log::date) [INFO] $*"
 }
 
-# log::info prints a message with info level
+# log::success prints a message with info level
 #
 # Arguments:
 #   $* - Message
 function log::success {
-    echo -e "$(log::date) [INFO] SUCCESS: $*"
+  local logdate
+  logdate=$(log::date)
+  echo -e "${logdate} [INFO] ====================================================================================="
+  echo -e "${logdate} [INFO] = SUCCESS                                                                           ="
+  echo -e "${logdate} [INFO] ====================================================================================="
+  echo -e "${logdate} [INFO] = $*"
+  echo -e "${logdate} [INFO] ====================================================================================="
 }
 
-# log::info prints a message with warning level
+# log::warn prints a message with warning level
 #
 # Arguments:
 #   $* - Message
@@ -41,7 +47,7 @@ function log::warn {
     echo -e "$(log::date) [WARN] $*"
 }
 
-# log::info prints a message with error level
+# log::error prints a message with error level
 #
 # Arguments:
 #   $* - Message
