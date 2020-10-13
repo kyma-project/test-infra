@@ -137,11 +137,6 @@ cleanup() {
         shout "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
         # Delete the Azure Event Hubs namespace which was created
         az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
-
-        # TODO(k15r): think about one resource group per test run
-        #shout "Deleting Azure Resource Group: \"${RS_GROUP}\""
-        ## Delete the Azure Resource Group
-        #az group delete -n "${RS_GROUP}" -y
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
