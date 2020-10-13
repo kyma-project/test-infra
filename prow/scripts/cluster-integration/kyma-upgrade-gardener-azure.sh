@@ -373,7 +373,7 @@ testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
 
 upgradeKyma
 
-testKyma "${AFTER_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
 
 log::success "Job finished with success"
 
