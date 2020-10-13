@@ -255,7 +255,7 @@ date
 
 cat << EOF > "$PWD/kyma-installer-overrides.yaml"
 apiVersion: v1
-kind ConfigMap
+kind: ConfigMap
 metadata:
   name: "installation-config-overrides"
   namespace: "kyma-installer"
