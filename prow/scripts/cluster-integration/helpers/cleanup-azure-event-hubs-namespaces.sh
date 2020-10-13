@@ -15,6 +15,9 @@
 set -o errexit
 set -o pipefail
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 #########################################################################################################
 # Global Variables
 #########################################################################################################
@@ -31,7 +34,7 @@ VARIABLES=(
 # Constants
 #########################################################################################################
 readonly NOW="$(date +%s)"     # The current timestamp when the script runs.
-readonly SECONDS_PER_HOUR=3600 # The amount of seconds per minute.
+readonly SECONDS_PER_HOUR=3600 # The amount of seconds per hour.
 
 #########################################################################################################
 # Ensure that all expected vars are set before running the script.
@@ -46,10 +49,8 @@ readonly SECONDS_PER_HOUR=3600 # The amount of seconds per minute.
 #   0 if success, non-zero on error.
 #########################################################################################################
 function ensure_vars_or_die() {
-  echo "#################################################################################################"
-  echo "# Ensure Env Vars"
-  echo "#################################################################################################"
-  date;echo
+  shout "Ensure Env Vars"
+  date
 
   for var in "${VARIABLES[@]}"; do
     if [ -z "${!var}" ]; then
@@ -79,13 +80,11 @@ function ensure_vars_or_die() {
 #   0 if success, non-zero on error.
 #########################################################################################################
 function authenticate_to_azure() {
-  echo "#################################################################################################"
-  echo "# Authenticate to Azure"
-  echo "#################################################################################################"
+  shout "Authenticate to Azure"
   date
 
   az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-  az account set --subscription "${AZURE_SUBSCRIPTION_ID}";echo
+  az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
 #########################################################################################################
@@ -132,10 +131,8 @@ function cleanup_eventhubs_namespace() {
 #   0 if success, non-zero on error.
 #########################################################################################################
 function cleanup() {
-  echo "#################################################################################################"
-  echo "# Cleanup Azure Eventhubs Namespaces older than ${TTL_HOURS}h"
-  echo "#################################################################################################"
-  date;echo
+  shout "Cleanup Azure Eventhubs Namespaces older than ${TTL_HOURS}h"
+  date
 
   for ns in $(az eventhubs namespace list --subscription "${AZURE_SUBSCRIPTION_NAME}" --query '[].{createdAt:createdAt, name:name, resourceGroup:resourceGroup}' --output json | jq -c '.[]'); do
     cleanup_eventhubs_namespace "${ns}"
@@ -156,6 +153,8 @@ function main() {
   ensure_vars_or_die
   authenticate_to_azure
   cleanup
+  shout "Cleanup Azure Eventhubs Namespaces finished successfully"
+  date
 }
 
 main
