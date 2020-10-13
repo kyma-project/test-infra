@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-azure-event-hubs-namespaces-cleanup"
+    report: true

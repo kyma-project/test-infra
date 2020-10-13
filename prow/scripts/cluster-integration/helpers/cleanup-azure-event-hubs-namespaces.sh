@@ -116,7 +116,8 @@ function cleanup_eventhubs_namespace() {
   # delete Eventhubs Namespace if it is older than the TTL in hours
   if [[ ${elapsed_hours} -ge ${TTL_HOURS} ]]; then
     echo "Delete Namespace [${name}] in ResourceGroup [${resourceGroup}] (${elapsed_hours}h old)"
-    az eventhubs namespace delete -n "${name}" -g "${resourceGroup}"
+    # TODO uncomment when removing the PJTester config
+    #    az eventhubs namespace delete -n "${name}" -g "${resourceGroup}"
   fi
 }
 
