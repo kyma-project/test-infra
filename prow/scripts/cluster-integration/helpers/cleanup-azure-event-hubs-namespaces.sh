@@ -38,7 +38,7 @@ readonly TEST_INFRA_PROJECT_DIR=/home/prow/go/src/github.com/kyma-project/test-i
 # Source common library
 #########################################################################################################
 # shellcheck disable=SC1090
-source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/library.sh"
+source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/log.sh"
 
 #########################################################################################################
 # Ensure that all expected vars are set before running the script.
@@ -53,12 +53,11 @@ source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/library.sh"
 #   0 if success, non-zero on error.
 #########################################################################################################
 function ensure_vars_or_die() {
-  shout "Ensure Env Vars"
-  date
+  log::banner "Ensure Env Vars"
 
   for var in "${VARIABLES[@]}"; do
     if [ -z "${!var}" ]; then
-      echo "ERROR: $var is not set"
+      log::error "ERROR: $var is not set"
       discoverUnsetVar=true
     fi
   done
@@ -84,8 +83,7 @@ function ensure_vars_or_die() {
 #   0 if success, non-zero on error.
 #########################################################################################################
 function authenticate_to_azure() {
-  shout "Authenticate to Azure"
-  date
+  log::banner "Authenticate to Azure"
 
   az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
   az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
@@ -118,7 +116,7 @@ function cleanup_eventhubs_namespace() {
 
   # delete Eventhubs Namespace if it is older than the TTL in hours
   if [[ ${elapsed_hours} -ge ${TTL_HOURS} ]]; then
-    echo "Delete Namespace [${name}] in ResourceGroup [${resourceGroup}] (${elapsed_hours}h old)"
+    log::info "Delete Namespace [${name}] in ResourceGroup [${resourceGroup}] (${elapsed_hours}h old)"
     # TODO uncomment when removing the PJTester config
     #    az eventhubs namespace delete -n "${name}" -g "${resourceGroup}"
   fi
@@ -135,8 +133,7 @@ function cleanup_eventhubs_namespace() {
 #   0 if success, non-zero on error.
 #########################################################################################################
 function cleanup() {
-  shout "Cleanup Azure Eventhubs Namespaces older than ${TTL_HOURS}h"
-  date
+  log::banner "Cleanup Azure Eventhubs Namespaces older than ${TTL_HOURS}h"
 
   for ns in $(az eventhubs namespace list --subscription "${AZURE_SUBSCRIPTION_NAME}" --query '[].{createdAt:createdAt, name:name, resourceGroup:resourceGroup}' --output json | jq -c '.[]'); do
     cleanup_eventhubs_namespace "${ns}"
@@ -157,8 +154,7 @@ function main() {
   ensure_vars_or_die
   authenticate_to_azure
   cleanup
-  shout "Cleanup Azure Eventhubs Namespaces finished successfully"
-  date
+  log::success "Cleanup Azure Eventhubs Namespaces finished successfully"
 }
 
 main
