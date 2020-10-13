@@ -263,8 +263,8 @@ metadata:
     installer: overrides
     kyma-project.io/installation: ""
 data:
-  global.domainName: ${DOMAIN}
-  global.loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+  global.domainName: "${DOMAIN}"
+  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -274,10 +274,9 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-    labels:
-      component: core
+    component: core
 data:
-  test.acceptance.ui.logging.enabled: true
+  test.acceptance.ui.logging.enabled: "true"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -287,10 +286,9 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-    labels:
-      component: application-connector
+    component: application-connector
 data:
-  application-registry.deployment.args.detailedErrorResponse: true
+  application-registry.deployment.args.detailedErrorResponse: "true"
 ---
 apiVersion: v1
 kind: ConfigMap
