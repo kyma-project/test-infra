@@ -15,9 +15,6 @@
 set -o errexit
 set -o pipefail
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
 #########################################################################################################
 # Global Variables
 #########################################################################################################
@@ -33,8 +30,15 @@ VARIABLES=(
 #########################################################################################################
 # Constants
 #########################################################################################################
-readonly NOW="$(date +%s)"     # The current timestamp when the script runs.
-readonly SECONDS_PER_HOUR=3600 # The amount of seconds per hour.
+readonly NOW="$(date +%s)"
+readonly SECONDS_PER_HOUR=3600
+readonly TEST_INFRA_PROJECT_DIR=/home/prow/go/src/github.com/kyma-project/test-infra
+
+#########################################################################################################
+# Source common library
+#########################################################################################################
+# shellcheck disable=SC1090
+source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/library.sh"
 
 #########################################################################################################
 # Ensure that all expected vars are set before running the script.
