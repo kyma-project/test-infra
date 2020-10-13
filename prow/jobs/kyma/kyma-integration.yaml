@@ -40,6 +40,20 @@ vm_job_template: &vm_job_template
             memory: 100Mi
             cpu: 50m
 
+vm_job_template_k3d: &vm_job_template_k3d
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        command:
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-k3s-and-start-kyma.sh"
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 50m
+
 vm_job_labels_template: &vm_job_labels_template
   preset-kyma-guard-bot-github-token: "true"
   preset-sa-vm-kyma-integration: "true"
@@ -333,6 +347,20 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+
+    - name: pre-master-kyma-integration-k3d
+        cluster: untrusted-workload
+        branches:
+          - ^master$
+        <<: *vm_job_template_k3d
+        # following regexp won't start build if only Markdown files were changed
+        run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+        labels:
+          preset-build-pr: "true"
+          <<: *vm_job_labels_template
+        extra_refs:
+          - <<: *test_infra_ref
+            base_ref: master`
     - name: pre-rel116-kyma-gke-integration
       cluster: untrusted-workload
       branches:
