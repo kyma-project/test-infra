@@ -42,7 +42,7 @@ const (
 	// ImageBootstrapLatest means Bootstrap image
 	ImageBootstrapLatest = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce"
 	// ImageBootstrapTestInfraLatest means it's used in test-infra prowjob defs.
-	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-5d8104e0"
+	ImageBootstrapTestInfraLatest = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352"
 	// ImageBootstrapTestInfraCurrent means it's used in test-infra prowjob defs.
 	ImageBootstrapTestInfraCurrent = "eu.gcr.io/kyma-project/test-infra/bootstrap:current"
 	// ImageBootstrap20181204 represents boostrap image published on 2018.12.04
