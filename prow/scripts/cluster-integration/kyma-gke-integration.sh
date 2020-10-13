@@ -57,9 +57,12 @@ fi
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+
+# TODO (@Ressetkk): use lib directory instead of library.sh
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
@@ -161,20 +164,20 @@ if [[ "$BUILD_TYPE" == "pr" ]]; then
     # In case of PR, operate on PR number
     readonly COMMON_NAME_PREFIX="gkeint-pr"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${PULL_NUMBER}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:PR-${PULL_NUMBER}"
-    export KYMA_INSTALLER_IMAGE
+    KYMA_SOURCE="PR-${PULL_NUMBER}"
 elif [[ "$BUILD_TYPE" == "release" ]]; then
     readonly COMMON_NAME_PREFIX="gkeint-rel"
     readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
     shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+    KYMA_SOURCE="${RELEASE_VERSION}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gkeint-commit"
     readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/gke-integration/${REPO_OWNER}/${REPO_NAME}:COMMIT-${COMMIT_ID}"
+    KYMA_SOURCE="master-${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
 
@@ -191,11 +194,6 @@ export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
 #Local variables
 DNS_SUBDOMAIN="${COMMON_NAME}"
-KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-
-INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
-INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -203,14 +201,9 @@ ERROR_LOGGING_GUARD="true"
 shout "Authenticate"
 date
 init
-DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
+install::kyma_cli
 
-if [[ "$BUILD_TYPE" != "release" ]]; then
-    shout "Build Kyma-Installer Docker image"
-    date
-    CLEANUP_DOCKER_IMAGE="true"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
-fi
+DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 shout "Reserve IP Address for Ingressgateway"
 date
@@ -260,59 +253,81 @@ TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 shout "Apply Kyma config"
 date
 
-kubectl create namespace "kyma-installer"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-    --data "global.domainName=${DOMAIN}" \
-    --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
-    --data "test.acceptance.ui.logging.enabled=true" \
-    --label "component=core"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-registry-overrides" \
-    --data "application-registry.deployment.args.detailedErrorResponse=true" \
-    --label "component=application-connector"
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-    --data "global.tlsCrt=${TLS_CERT}" \
-    --data "global.tlsKey=${TLS_KEY}"
-
-cat << EOF > "$PWD/kyma_istio_operator"
-apiVersion: install.istio.io/v1alpha1
-kind: IstioOperator
+cat << EOF > "$PWD/kyma-installer-overrides.yaml"
+apiVersion: v1
+kind ConfigMap
 metadata:
-  namespace: istio-system
-spec:
-  components:
-    ingressGateways:
-      - name: istio-ingressgateway
-        k8s:
-          service:
-            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-            type: LoadBalancer
+  name: "installation-config-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+data:
+  global.domainName: ${DOMAIN}
+  global.loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "core-test-ui-acceptance-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    labels:
+      component: core
+data:
+  test.acceptance.ui.logging.enabled: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "application-registry-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    labels:
+      component: application-connector
+data:
+  application-registry.deployment.args.detailedErrorResponse: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "istio-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: istio
+data:
+  kyma_istio_operator: |
+    apiVersion: install.istio.io/v1alpha1
+    kind: IstioOperator
+    metadata:
+      namespace: istio-system
+    spec:
+      components:
+        ingressGateways:
+          - name: istio-ingressgateway
+            k8s:
+              service:
+                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+                type: LoadBalancer
 EOF
-
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-    --label "component=istio" \
-    --file "$PWD/kyma_istio_operator"
-
-if [[ "$BUILD_TYPE" == "release" ]]; then
-    echo "Use released artifacts"
-    gsutil cp "${KYMA_ARTIFACTS_BUCKET}/${RELEASE_VERSION}/kyma-installer-cluster.yaml" /tmp/kyma-gke-integration/downloaded-installer.yaml
-    kubectl apply -f /tmp/kyma-gke-integration/downloaded-installer.yaml
-else
-    echo "Manual concatenating yamls"
-    "${KYMA_SCRIPTS_DIR}"/concat-yamls.sh "${INSTALLER_YAML}" "${INSTALLER_CR}" \
-    | sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" \
-    | sed -e "s/__VERSION__/0.0.1/g" \
-    | sed -e "s/__.*__//g" \
-    | kubectl apply -f-
-fi
 
 shout "Installation triggered"
 date
-"${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
+
+yes | kyma install \
+  --ci \
+  -s "${KYMA_SOURCE}" \
+  -o "$PWD/kyma-installer-overrides.yaml" \
+  --domain "${DOMAIN}" \
+  --tlsCert="${TLS_CERT}" \
+  --tlsKey="${TLS_KEY}" \
+  --timeout 60m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     shout "Create DNS Record for Apiserver proxy IP"
