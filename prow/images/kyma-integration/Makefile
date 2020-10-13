@@ -9,22 +9,27 @@ IMG = $(DOCKER_PUSH_REPOSITORY)$(DOCKER_PUSH_DIRECTORY)/$(IMG_NAME)
 # build and push on PR, tag with PR number
 .PHONY: ci-pr
 ci-pr: build-image push-image
-push-image : build-image
 
 
 # build and push on postsubmit, tag with commit ID and current
 .PHONY: ci-release
 ci-release: build-image tag-image push-image
-tag-image: build-image
 
 
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
+	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-current
+ifdef DOCKER_POST_PR_TAG
+	@echo "___ Tagging with pr number ___"
+	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-$(DOCKER_POST_PR_TAG)
+	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-$(DOCKER_POST_PR_TAG)
+	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-$(DOCKER_POST_PR_TAG)
+endif
 
 
 # build image and tag it with commit ID or PR number
@@ -38,4 +43,5 @@ build-image:
 # push image with all tags
 .PHONY:push-image
 push-image:
+	@echo "___ Pushing image with all tags ___"
 	docker push $(IMG)

@@ -1,19 +1,17 @@
 package prtagbuilder
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/google/go-github/v31/github"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
-)
-
-const (
-	ghProxyURL = "http://ghproxy/"
 )
 
 var (
@@ -23,10 +21,13 @@ var (
 
 // findPRNumber match commit message with regex to extract pull request number. By default github add pr number to the commit message.
 func findPRNumber(commit *github.RepositoryCommit) string {
-	re := regexp.MustCompile(`^.*\(#(?P<prNumber>\d*)\)\s*$`)
-	matches := re.FindStringSubmatch(*commit.Commit.Message)
+	re := regexp.MustCompile(`(?s)^.*\(#(?P<prNumber>\d*)?\)\s*.*$`)
+	messageReader := strings.NewReader(commit.Commit.GetMessage())
+	scanner := bufio.NewScanner(messageReader)
+	scanner.Scan()
+	matches := re.FindStringSubmatch(scanner.Text())
 	if len(matches) != 2 {
-		logrus.Fatalf("failed find PR number in commit message, found %d matched strings", len(matches))
+		logrus.Fatalf("failed find PR number in first line of commit message: %s, found %d matched strings", scanner.Text(), len(matches))
 	}
 	return matches[1]
 }
@@ -52,18 +53,9 @@ func BuildPrTag() {
 	if err != nil {
 		logrus.WithError(err).Fatalf("failed to read JOB_SPEC prowjob env")
 	}
-	// create github client with ghproxy URL
-	client, err = github.NewEnterpriseClient(ghProxyURL, ghProxyURL, nil)
-	if err != nil {
-		logrus.WithError(err).Fatalf("failed get new github client")
-	}
-	// get api meta data through ghproxy
-	_, _, err = client.APIMeta(ctx)
-	if err != nil {
-		logrus.WithError(err).Warnf("failed connecting to ghproxy")
-		// fallback to create github client with default public github URL because ghproxy didn't respond
-		client = github.NewClient(nil)
-	}
+	// create github client
+	client = github.NewClient(nil)
+
 	// get commit details for base sha
 	commit, _, err := client.Repositories.GetCommit(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseSHA)
 	if err != nil {

@@ -17,7 +17,7 @@ job_template: &job_template
     preset-gc-project-env: "true"
   optional: false
   always_run: true
-  skip_report: false
+  report: false # Temporarily do not report to ci-force, until compatibility is stable.
   decorate: true
   path_alias: github.com/kyma-project/cli
   max_concurrency: 10

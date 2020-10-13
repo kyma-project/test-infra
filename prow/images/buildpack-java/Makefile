@@ -22,7 +22,12 @@ tag-image: build-image
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
+	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
+ifdef DOCKER_POST_PR_TAG
+	@echo "___ Tagging with pr number ___"
+	docker tag $(IMG):$(DOCKER_TAG) $(IMG):$(DOCKER_POST_PR_TAG)
+endif
 
 
 # build image and tag it with commit ID or PR number
@@ -34,4 +39,5 @@ build-image:
 # push image with all tags
 .PHONY: push-image
 push-image:
+	@echo "___ Pushing image with all tags ___"
 	docker push $(IMG)
