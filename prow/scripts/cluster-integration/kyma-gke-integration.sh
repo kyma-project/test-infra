@@ -175,9 +175,9 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
 else
     # Otherwise (master), operate on triggering commit id
     readonly COMMON_NAME_PREFIX="gkeint-commit"
-    readonly COMMIT_ID=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
+    readonly COMMIT_ID="${PULL_BASE_SHA::8}"
     COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${COMMIT_ID}-${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
-    KYMA_SOURCE="master-${COMMIT_ID}"
+    KYMA_SOURCE="${COMMIT_ID}"
     export KYMA_INSTALLER_IMAGE
 fi
 
