@@ -11,17 +11,14 @@ install::kyma_cli() {
 
     pushd "${INSTALL_DIR}/bin" || exit
 
-    log::info "- Install kyma CLI ${os} locally to a tempdir..."
+    echo "--> Install kyma CLI ${os} locally to ${INSTALL_DIR}/bin"
 
     curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
     kyma_version=$(kyma version --client)
-    log::info "Kyma CLI version: ${kyma_version}"
-
-    log::success "OK"
-
+    echo "--> Kyma CLI version: ${kyma_version}"
+    echo "OK"
     popd || exit
-
     eval "${settings}"
 }
 
@@ -35,7 +32,7 @@ host::os() {
       host_os=linux
       ;;
     *)
-      log::error "Unsupported host OS. Must be Linux or Mac OS X."
+      echo "Unsupported host OS. Must be Linux or Mac OS X."
       exit 1
       ;;
   esac
