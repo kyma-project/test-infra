@@ -50,4 +50,4 @@ periodics:
       - <<: *test_infra_ref
         base_ref: master
     labels:
-      preset-gardener-azure-kyma-integration: "true"
+      preset-creds-aks-kyma-integration: "true"
