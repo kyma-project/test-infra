@@ -62,6 +62,8 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/common.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interruption.
 # TODO (@Ressetkk): I think we can safely source this method from external file to use it with other GKE scripts.
