@@ -1156,6 +1156,12 @@ templates:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
         values:
           <<: *cluster_default
+  - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
+    render:
+      - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
+        values:
+          <<: *cluster_default
+          optional: true
   - from: templates/knative-kafka-component.yaml
     render:
       - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
