@@ -9,11 +9,17 @@
 
 set -e
 
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/lib/common.sh"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/lib/log.sh"
+
 discoverUnsetVar=false
 
 for var in DOCKER_PUSH_REPOSITORY KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
     if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
+        log::error "$var is not set"
         discoverUnsetVar=true
     fi
 done
@@ -21,16 +27,10 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
-
 function export_variables() {
-    COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
-    KYMA_INSTALLER_PUSH_DIR=""
+    COMMIT_ID="${PULL_BASE_SHA::8}"
    if [[ -n "${PULL_NUMBER}" ]]; then
-        DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
+        DOCKER_TAG="PR-${PULL_NUMBER}" # store only latest PR image
         BUCKET_DIR="PR-${PULL_NUMBER}"
     else
         DOCKER_TAG="master-${COMMIT_ID}"
@@ -38,29 +38,26 @@ function export_variables() {
     fi
 
    readonly DOCKER_TAG
-   readonly KYMA_INSTALLER_PUSH_DIR
    readonly BUCKET_DIR
    readonly KYMA_INSTALLER_VERSION
 
    export DOCKER_TAG
-   export KYMA_INSTALLER_PUSH_DIR
    export BUCKET_DIR
 }
 
-init
+common::init
 export_variables
 
 # installer ci-pr, ci-master, kyma-installer ci-pr, ci-master
 #   DOCKER_TAG - calculated in export_variables
-#   DOCKER_PUSH_DIRECTORY, preset-build-master, preset-build-pr
 #   DOCKER_PUSH_REPOSITORY - preset-docker-push-repository
 export KYMA_PATH="/home/prow/go/src/github.com/kyma-project/kyma"
 buildTarget="release"
 
-shout "Build kyma-installer with target ${buildTarget}"
+log::info "Build kyma-installer with target ${buildTarget}"
 make -C "${KYMA_PATH}/tools/kyma-installer" ${buildTarget}
 
-shout "Create development artifacts"
+log::info "Create development artifacts"
 # INPUTS:
 # - KYMA_INSTALLER_PUSH_DIR
 # - KYMA_INSTALLER_VERSION
@@ -68,15 +65,15 @@ shout "Create development artifacts"
 # - ARTIFACTS_DIR - path to directory where artifacts will be stored
 env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_PATH}/installation/scripts/release-generate-kyma-installer-artifacts.sh"
 
-shout "Content of the local artifacts directory"
+log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-shout "Switch to a different service account to push to GCS bucket"
+log::info "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-authenticate
+gcloud::authenticate # sourced by common.sh
 
-shout "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
+log::info "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster.yaml"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster-runtime.yaml"
 gsutil cp  "${KYMA_PATH}/installation/scripts/is-installed.sh" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
@@ -89,7 +86,7 @@ gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BU
 
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-  shout "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  log::info "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster.yaml"
   gsutil cp "${ARTIFACTS}/kyma-installer-cluster-runtime.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer-cluster-runtime.yaml"
   gsutil cp  "${KYMA_PATH}/installation/scripts/is-installed.sh" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
