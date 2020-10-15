@@ -163,7 +163,7 @@ function installKyma() {
         exit 1
     fi
 
-    log::info "Installing Kyma"
+    log::info "Installing Kyma ${LAST_RELEASE_VERSION}"
 
     log::info "Downloading Kyma installer CR"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
