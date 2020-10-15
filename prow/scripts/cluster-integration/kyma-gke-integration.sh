@@ -212,7 +212,7 @@ date
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
 CLEANUP_GATEWAY_IP_ADDRESS="true"
-log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
 log::info "Create DNS Record for Ingressgateway IP"
