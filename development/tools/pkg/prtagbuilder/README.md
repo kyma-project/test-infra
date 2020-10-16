@@ -22,4 +22,4 @@ The tool doesn't work on presubmit jobs.
 
 ## Development
 
-Changes in the `prtagbuilder` source code trigger Prow pre-submit and postsubmit jobs. Jobs run tests and build the **prow-tools** image. The version of the **prow-tools** image should be updated in `test-infra` Dockerfile images by replacing the image tag to match the new version. This rebuilds the images copied from the **prow-tools** image.
+Changes in the `prtagbuilder` source code trigger Prow presubmit and postsubmit jobs. Jobs run tests and build the **prow-tools** image. The version of the **prow-tools** image should be updated in `test-infra` Dockerfile images by replacing the image tag to match the new version. This rebuilds the images copied from the **prow-tools** image.
