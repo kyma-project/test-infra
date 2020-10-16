@@ -59,9 +59,9 @@ jobConfigs:
         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
 ```
 
-ConfigSets defined in **jobConfig** set data for one job. It should keep values specific for this job only.
+ConfigSets defined in **jobConfig** set data for one job. Use such ConfigSets to keep values specific for one job only.
 
-Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the default ConfigSet from **globalSets**, it's merged first and all the other ConfigSets from **globalSets** are merged after. Then, ConfigSets from **localSets** are merged. Again, if the job inherits the default ConfigSet from **localSets**, it's merged first and then all other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
+Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the default ConfigSet from **globalSets**, it's merged first and all the other ConfigSets from **globalSets** are merged after. Then, ConfigSets from **localSets** are merged. Again, if the job inherits the default ConfigSet from **localSets**, it's merged first and then all the other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during the **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
 
 Every job under the **inheritedConfigs** key specifies which ConfigSets are inherited. This key holds a list of ConfigSets names from **globalSets** and **localSets**.
 
