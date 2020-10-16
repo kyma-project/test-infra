@@ -14,7 +14,7 @@ The tool is a part of the `test-infra` **prow-tools** image. It is copied from t
 
 ## Usage
 
-The tool doesn't accept any flags and arguments. All data required for the tool to work is retrieved from the  **JOB_SPEC** environment variable. This environment variable is set by Prow for postsubmit jobs.`
+The tool doesn't accept any flags and arguments. All data required for the tool to work is retrieved from the  **JOB_SPEC** environment variable. This environment variable is set by Prow for postsubmit jobs.
 
 The tool fails on any error that prevents it from finding a valid PR number for a commit.
 
