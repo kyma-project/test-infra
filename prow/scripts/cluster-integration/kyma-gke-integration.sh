@@ -58,11 +58,15 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-# shellcheck disable=SC1090
+KYMA_LABEL_PREFIX="kyma-project.io"
+KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
+
+# shellcheck source=prow/scripts/lib/common.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/common.sh"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interruption.
@@ -71,9 +75,10 @@ cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
+    log::banner "CLEANUP"
+
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
     fi
 
     #Turn off exit-on-error so that next step is executed even if previous one fails.
@@ -84,7 +89,6 @@ cleanup() {
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
 
         #save disk names while the cluster still exists to remove them later
         DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
@@ -95,39 +99,33 @@ cleanup() {
 
         #Delete orphaned disks
         log::info "Delete orphaned PVC disks..."
-        date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         log::info "Delete Gateway DNS Record"
-        date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         log::info "Release Gateway IP Address"
-        date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
     fi
 
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         log::info "Delete temporary Kyma-Installer Docker image"
-        date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         log::info "Delete Apiserver proxy DNS Record"
-        date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
     fi
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     log::info "Job is finished ${MSG}"
-    date
     set -e
 
     exit "${EXIT_STATUS}"
@@ -137,7 +135,6 @@ runTestLogCollector(){
     if [ "${enableTestLogCollector}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]]; then
             log::info "Install test-log-collector"
-            date
             export PROW_JOB_NAME="post-master-kyma-gke-integration"
             ( 
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
@@ -208,7 +205,6 @@ INSTALL_DIR=$(mktemp -d) install::kyma_cli
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 log::info "Reserve IP Address for Ingressgateway"
-date
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
 CLEANUP_GATEWAY_IP_ADDRESS="true"
@@ -216,7 +212,6 @@ log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
 log::info "Create DNS Record for Ingressgateway IP"
-date
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 CLEANUP_GATEWAY_DNS_RECORD="true"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
@@ -225,7 +220,6 @@ IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 if [ "$NETWORK_EXISTS" -gt 0 ]; then
     log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    date
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
 else
     log::warn "Network ${GCLOUD_NETWORK_NAME} exists"
@@ -233,7 +227,6 @@ fi
 
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
-date
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
@@ -245,7 +238,6 @@ CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
 log::info "Generate self-signed certificate"
-date
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
@@ -253,7 +245,6 @@ TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 log::info "Create Kyma CLI overrides"
-date
 
 cat << EOF > "$PWD/kyma-installer-overrides.yaml"
 apiVersion: v1
@@ -319,7 +310,6 @@ EOF
 cat "$PWD/kyma-installer-overrides.yaml"
 
 log::info "Installation triggered"
-date
 
 yes | kyma install \
   --ci \
@@ -332,7 +322,6 @@ yes | kyma install \
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
-    date
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_APISERVER_DNS_RECORD="true"
@@ -342,11 +331,10 @@ fi
 enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 log::info "Test Kyma"
-date
 # shellcheck disable=SC2031
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${INTEGRATION_TEST_LABEL_QUERY}"
 
-log::info "Success"
+log::success "Integration Test successful"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
