@@ -46,7 +46,7 @@ render:
 
    ConfigSets defined in **localSets** have a scope limited to the generated file in which they are defined. Use **localSets** to hold data that is common within the generated file.
 
-Last place where configset can be defined is a **`jobConfig`** key.
+- **One-job ConfigSets** defined in the **jobConfig** key:
 
 ```yaml
 jobConfigs:
@@ -59,7 +59,7 @@ jobConfigs:
         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap"
 ```
 
-Configset defined in `jobConfig` sets data for one job only and should keep values specific for the job.
+ConfigSets defined in **jobConfig** set data for one job. It should keep values specific for this job only.
 
 Render Templates builds the **Values** variable by merging ConfigSets from **globalSets** first. If the job inherits the default ConfigSet from **globalSets**, it's merged first and all the other ConfigSets from **globalSets** are merged after. Then, ConfigSets from **localSets** are merged. Again, if the job inherits the default ConfigSet from **localSets**, it's merged first and then all other ConfigSets from **localSets** are merged. ConfigSets other than default are merged in any order during **globalSets** and **localSets** phases. ConfigSets from **jobConfig** are merged as the last ones. Existing keys in the **Values** variable are overwritten by values from the merged ConfigSets.
 
