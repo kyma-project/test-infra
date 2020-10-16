@@ -1,4 +1,4 @@
-FROM alpine:3.12.0
+FROM alpine:edge
 
 # Commit details
 
@@ -8,8 +8,8 @@ LABEL io.kyma-project.test-infra.commit=$commit
 
 LABEL source=git@github.com:kyma-project/test-infra.git
 
-ENV HELM_2_VERSION="v2.16.1"
-ENV HELM_3_VERSION="v3.2.1"
+ENV HELM_2_VERSION="v2.16.12"
+ENV HELM_3_VERSION="v3.3.4"
 ENV KUBECTL_VERSION="v1.17.3"
 
 RUN apk --no-cache upgrade &&\
