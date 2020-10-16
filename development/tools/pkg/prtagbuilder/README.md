@@ -6,7 +6,7 @@ PR Tag Builder is a tool that finds a pull request number for a commit.
 
 ## Prerequisites
 
-Tool is called on postsubmit Prow jobs. You need Prow instance to use it.
+The tool is called on postsubmit Prow jobs. You need a Prow instance to use it.
 
 ## Installation
 
@@ -14,12 +14,12 @@ The tool is a part of the `test-infra` **prow-tools** image. It is copied from t
 
 ## Usage
 
-Tool doesn't accept any flags and arguments. All data required for the tool to work, is retrived from environment variable **`JOB_SPEC`**. This environment variable is set by Prow for postsubmit jobs.`
+The tool doesn't accept any flags and arguments. All data required for the tool to work is retrieved from the  **JOB_SPEC** environment variable. This environment variable is set by Prow for postsubmit jobs.`
 
 The tool fails on any error that prevents it from finding a valid PR number for a commit.
 
-Tool will not work on presubmit jobs.
+The tool doesn't work on presubmit jobs.
 
 ## Development
 
-Changes in `prtagbuilder` source code will trigger Prow presubmit and postsubmit jobs. Jobs will run tests and build **prow-tools** image. Version of **prow-tools** image should be updated in test-infra images dockerfiles, by replacing image tag to match new version. This will trigger rebuild of images which copy from **prow-tools** image.
+Changes in the `prtagbuilder` source code trigger Prow pre-submit and postsubmit jobs. Jobs run tests and build the **prow-tools** image. The version of the **prow-tools** image should be updated in `test-infra` Dockerfile images by replacing the image tag to match the new version. This rebuilds the images copied from the **prow-tools** image.
