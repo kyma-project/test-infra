@@ -35,6 +35,8 @@ gardener_azure_job_template: &gardener_azure_job_template
           - "-c"
           - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-azure.sh"
         env:
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
           - name: REGION
             value: "northeurope"
           - name: KYMA_PROJECT_DIR

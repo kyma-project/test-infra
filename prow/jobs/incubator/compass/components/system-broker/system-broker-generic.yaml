@@ -8,19 +8,19 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   decorate: true
-  path_alias: github.com/kyma-project/kyma
+  path_alias: github.com/kyma-incubator/compass
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
-    preset-docker-push-repository-kyma: "true"
+    preset-docker-push-repository-incubator: "true"
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-upgrade$
-  run_if_changed: "^tests/end-to-end/upgrade/|^common/makefiles/"
+    - ^release-(1\.16)-system-broker$
+  run_if_changed: "^components/system-broker/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
@@ -29,23 +29,26 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-project/kyma/tests/end-to-end/upgrade"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/system-broker"
         resources:
           requests:
             memory: 1.5Gi
             cpu: 0.8
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pre-kyma-tests-end-to-end-upgrade
+  kyma-incubator/compass:
+    - name: pre-compass-components-system-broker
       cluster: untrusted-workload
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
-  kyma-project/kyma:
-    - name: post-kyma-tests-end-to-end-upgrade
+  kyma-incubator/compass:
+    - name: post-compass-components-system-broker
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

@@ -4,6 +4,8 @@ import (
 	"path"
 	"testing"
 
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
+
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -20,7 +22,7 @@ var components = []struct {
 }{
 	{
 		name:  "connector",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -30,7 +32,7 @@ var components = []struct {
 	},
 	{
 		name:  "director",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -40,7 +42,7 @@ var components = []struct {
 	},
 	{
 		name:  "gateway",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -50,7 +52,7 @@ var components = []struct {
 	},
 	{
 		name:  "healthchecker",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -60,7 +62,7 @@ var components = []struct {
 	},
 	{
 		name:  "schema-migrator",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -70,7 +72,7 @@ var components = []struct {
 	},
 	{
 		name:  "connectivity-adapter",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -79,7 +81,7 @@ var components = []struct {
 	},
 	{
 		name:  "pairing-adapter",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -89,12 +91,23 @@ var components = []struct {
 	},
 	{
 		name:  "external-services-mock",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
+		},
+	},
+	{
+		name:  "system-broker",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Optional(),
+			jobsuite.Since(releases.Release116),
 		},
 	},
 }
