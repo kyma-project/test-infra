@@ -86,7 +86,7 @@ kyma test run \
           --watch \
           --max-retries=1 \
           --name="${testsuiteName}" \
-          --timeout="${KYMA_TEST_TIMEOUT}"
+          --timeout="${KYMA_TEST_TIMEOUT}" \
           --selector kyma-project.io/test.integration=true
 
 ENDTIME=$(date +%s)
