@@ -51,11 +51,6 @@ var components = []struct {
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "compass", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.AllReleases(),
-		},
-	},
 	{path: "content", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
