@@ -139,6 +139,8 @@ gke_upgrade_job_template: &gke_upgrade_job_template
             value: "1"
           - name: MACHINE_TYPE
             value: "n1-highcpu-16"
+          - name: SCENARIO_TYPE
+            value: "pre"
         args:
           - "-c"
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"

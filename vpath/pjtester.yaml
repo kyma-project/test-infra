@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "pre-master-kyma-gke-upgrade"
+  - pjName: "post-master-kyma-gke-upgrade"
