@@ -110,6 +110,17 @@ var components = []struct {
 			jobsuite.Since(releases.Release116),
 		},
 	},
+	{
+		name:  "console-ui",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Optional(),
+			jobsuite.Since(releases.Release116),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

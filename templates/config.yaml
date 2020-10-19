@@ -359,6 +359,12 @@ templates:
           since: "1.16"
           optional: true
           additionalRunIfChanged: # necessary so that it overrides the additionalRunIfChanged property from compass_generic_component and thus does not include the /scripts folder
+      - to: ../prow/jobs/incubator/compass/components/console/console.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/console
+          since: "1.16"
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
           <<: *cluster_default
@@ -673,12 +679,6 @@ templates:
           <<: *console_generic_component
           path: tests
           since: "1.11"
-      - to: ../prow/jobs/console/compass/compass.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: compass
-          since: "1.12"
       - to: ../prow/jobs/console/core/core.yaml
         values:
           <<: *cluster_default
