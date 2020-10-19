@@ -60,6 +60,20 @@ presets:
         value: kyma-minio-gateway
       - name: AZURE_REGION
         value: westeurope
+  - labels:
+        preset-gke-ver1_18_9: "true"
+    env:
+      - name: CLUSTER_VERSION
+        value: 1.18.9-gke.801
+      - name: RELEASE_CHANNEL
+        value: rapid
+  - labels:
+        preset-gke-ver1_17_9: "true"
+    env:
+      - name: CLUSTER_VERSION
+        value: 1.17.9-gke.1504
+      - name: RELEASE_CHANNEL
+        value: regular
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -318,6 +332,19 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-master-kyma-gke1_17_9-integration
+      optional: true
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+      <<: *gke_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        <<: *gke_job_labels_template
+        preset-gke-ver1_17_9: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 
     - name: pre-master-kyma-gke-int-test
       cluster: untrusted-workload
@@ -543,7 +570,36 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-
+    - name: post-master-kyma-gke-ver1_18_9-integration
+      cluster: trusted-workload
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver1_18_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+    - name: post-master-kyma-gke-ver1_17_9-integration
+      cluster: trusted-workload
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver1_17_9: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests

@@ -58,6 +58,20 @@ presets:
         value: kyma-minio-gateway
       - name: AZURE_REGION
         value: westeurope
+  {{- range .Values.gkeVersions }}
+  - labels:
+      {{- $ch := printf "_%v_default" .channel }}
+      {{- $ver := default  $ch .version }}
+      {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+        preset-gke-ver{{ $preset }}: "true"
+    env:
+      {{- if .version }}
+      - name: CLUSTER_VERSION
+        value: {{ .version }}
+      {{- end }}
+      - name: RELEASE_CHANNEL
+        value: {{ .channel }}
+  {{- end }}
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -297,6 +311,28 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+  {{- range .Values.gkeVersions }}
+  {{- if has "presubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: pre-master-kyma-gke{{ $preset }}-integration
+  {{- if .optional }}
+      optional: true
+  {{- end }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+      <<: *gke_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        <<: *gke_job_labels_template
+        preset-gke-ver{{ $preset }}: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+  {{- end }}
+  {{- end }}
 
     - name: pre-master-kyma-gke-int-test
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -517,7 +553,28 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-
+  {{- range .Values.gkeVersions }}
+  {{- if has "postsubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: post-master-kyma-gke-ver{{ $preset }}-integration
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver{{ $preset }}: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+  {{- end }}
+  {{- end }}
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
