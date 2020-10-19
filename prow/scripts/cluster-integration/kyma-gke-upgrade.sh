@@ -5,6 +5,7 @@
 #
 # Expected vars:
 #
+#  - SCENARIO_TYPE - Set up by prow, upgrade test scenario
 #  - REPO_OWNER - Set up by prow, repository owner/organization
 #  - REPO_NAME - Set up by prow, repository name
 #  - BUILD_TYPE - Set up by prow, pr/master/release
@@ -461,7 +462,9 @@ function upgradeKyma() {
   else
     upgradeKymaToCommit
   fi
+}
 
+function createDNSRecord() {
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -495,6 +498,19 @@ function testKyma() {
   testing::remove_addons_if_necessary
 }
 
+function applyScenario() {
+  if [ "$SCENARIO_TYPE" == "pre" ]; then
+    upgradeKyma
+    createDNSRecord
+    upgradeKyma
+  elif [ "$SCENARIO_TYPE" == "post" ]; then
+    testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
+    upgradeKyma
+    createDNSRecord
+    testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+  fi
+}
+
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -516,11 +532,7 @@ createTestResources
 
 enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
-testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
-
-upgradeKyma
-
-testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+applyScenario
 
 log::success "Job finished with success"
 

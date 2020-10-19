@@ -119,7 +119,67 @@ gke_test_job_template: &gke_test_job_template
             memory: 200Mi
             cpu: 80m
 
-gke_upgrade_job_template: &gke_upgrade_job_template
+gke_upgrade_post_job_template: &gke_upgrade_post_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
+          - name: MACHINE_TYPE
+            value: "n1-highcpu-16"
+          - name: SCENARIO_TYPE
+            value: "post"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_upgrade_pre_job_template: &gke_upgrade_pre_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
+          - name: MACHINE_TYPE
+            value: "n1-highcpu-16"
+          - name: SCENARIO_TYPE
+            value: "pre"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
+gke_upgrade_job_template_old: &gke_upgrade_job_template_old
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -407,7 +467,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_pre_job_template
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
@@ -420,7 +480,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.16
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_job_template_old
       always_run: false
       labels:
         preset-build-release: "true"
@@ -432,7 +492,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.15
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_job_template_old
       always_run: false
       labels:
         preset-build-release: "true"
@@ -444,7 +504,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.14
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_job_template_old
       always_run: false
       labels:
         preset-build-release: "true"
@@ -556,7 +616,7 @@ postsubmits:
 
     - name: post-master-kyma-gke-upgrade
       cluster: trusted-workload
-      <<: *gke_upgrade_job_template
+      <<: *gke_upgrade_post_job_template
       annotations:
         testgrid-dashboards: kyma_integration
         description: Kyma GKE upgrade job.
