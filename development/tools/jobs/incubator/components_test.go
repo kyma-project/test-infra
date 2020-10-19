@@ -116,7 +116,6 @@ var components = []struct {
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.CompassRepo(),
-			jobsuite.Optional(),
 			jobsuite.Since(releases.Release116),
 		},
 	},
