@@ -24,7 +24,7 @@ images:
 # - source: "postgres:11.9-alpine"
 - source: "prom/pushgateway:v1.2.0"
 - source: "quay.io/coreos/configmap-reload:v0.0.1"
-- source: "quay.io/coreos/etcd:v3.4.13"
+- source: "quay.io/coreos/etcd:v3.3.25"
 - source: "quay.io/coreos/kube-state-metrics:v1.9.5"
 - source: "quay.io/coreos/prometheus-config-reloader:v0.38.0"
 - source: "quay.io/coreos/prometheus-operator:v0.38.0"
