@@ -69,6 +69,10 @@ make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
 shout "Build SKR CLI with target ${buildTarget}"
 make -C "${KCP_PATH}/components/kyma-environment-broker" -f Makefile.cli ${buildTarget}
 
+shout "Switch to a different service account to push to GCS bucket"
+export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
+authenticate
+
 shout "Create development artifacts"
 # INPUTS:
 # - KCP_INSTALLER_PUSH_DIR
@@ -79,11 +83,6 @@ env KCP_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KCP_PA
 
 shout "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
-
-shout "Switch to a different service account to push to GCS bucket"
-
-export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-authenticate
 
 shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-installer.yaml"
