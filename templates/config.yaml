@@ -359,7 +359,7 @@ templates:
           since: "1.16"
           optional: true
           additionalRunIfChanged: # necessary so that it overrides the additionalRunIfChanged property from compass_generic_component and thus does not include the /scripts folder
-      - to: ../prow/jobs/incubator/compass/components/console/console.yaml
+      - to: ../prow/jobs/incubator/compass/components/console/compass/compass-ui.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
