@@ -289,11 +289,18 @@ function getLastReleaseVersion() {
   echo "${version}"
 }
 
+function getLastRCVersion() {
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
+  
+  echo "${version}"
+}
+
 function installKyma() {
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
   mkdir -p /tmp/kyma-gke-upgradeability
-  LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-
+  # LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+  LAST_RELEASE_VERSION=$(getLastRCVersion)
   if [ -z "$LAST_RELEASE_VERSION" ]; then
     log::error "Couldn't grab latest version from GitHub API, stopping."
     exit 1
@@ -318,28 +325,24 @@ function installKyma() {
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --label "component=istio"
+cat << EOF > "$PWD/kyma_istio_operator"
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
 
-# cat << EOF > "$PWD/kyma_istio_operator"
-# apiVersion: install.istio.io/v1alpha1
-# kind: IstioOperator
-# metadata:
-#   namespace: istio-system
-# spec:
-#   components:
-#     ingressGateways:
-#       - name: istio-ingressgateway
-#         k8s:
-#           service:
-#             loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-#             type: LoadBalancer
-# EOF
-
-#     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-#         --label "component=istio" \
-#         --file "$PWD/kyma_istio_operator"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+        --label "component=istio" \
+        --file "$PWD/kyma_istio_operator"
 
   log::info "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
