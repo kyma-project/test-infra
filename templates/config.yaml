@@ -363,7 +363,7 @@ templates:
         values:
           <<: *cluster_default
           <<: *compass_generic_component
-          path: components/console
+          path: components/console/compass
           since: "1.16"
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
