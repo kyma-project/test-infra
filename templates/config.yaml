@@ -41,7 +41,20 @@ global:
       language: "golang-mod"
       project: "kyma-incubator"
       base_ref: "kyma-master"
-      
+  whitesource_release:
+    - name: "kyma"
+      language: "golang"
+      project: "kyma-project"
+      custom_projectname: "release-kyma"
+    - name: "kyma"
+      language: "golang-mod"
+      project: "kyma-project"
+      custom_projectname: "release-kyma-mod"
+    - name: "cli"
+      language: "golang-mod"
+      project: "kyma-project"
+      custom_projectname: "release-cli"
+
 globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352"
