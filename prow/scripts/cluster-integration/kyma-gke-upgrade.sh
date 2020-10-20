@@ -325,28 +325,24 @@ function installKyma() {
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --label "component=istio"
+cat << EOF > "$PWD/kyma_istio_operator"
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
 
-# cat << EOF > "$PWD/kyma_istio_operator"
-# apiVersion: install.istio.io/v1alpha1
-# kind: IstioOperator
-# metadata:
-#   namespace: istio-system
-# spec:
-#   components:
-#     ingressGateways:
-#       - name: istio-ingressgateway
-#         k8s:
-#           service:
-#             loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-#             type: LoadBalancer
-# EOF
-
-#     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-#         --label "component=istio" \
-#         --file "$PWD/kyma_istio_operator"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+        --label "component=istio" \
+        --file "$PWD/kyma_istio_operator"
 
   log::info "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
