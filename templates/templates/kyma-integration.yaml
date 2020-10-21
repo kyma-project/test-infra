@@ -116,6 +116,7 @@ gke_test_job_template: &gke_test_job_template
           requests:
             memory: 200Mi
             cpu: 80m
+
 gke_upgrade_post_job_template: &gke_upgrade_post_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma

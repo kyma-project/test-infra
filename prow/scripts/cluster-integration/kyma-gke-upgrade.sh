@@ -496,20 +496,18 @@ function testKyma() {
   testing::remove_addons_if_necessary
 }
 
-function preMasterScenario() {
-  upgradeKyma
-
-  upgradeKyma
+function applyScenario() {
+  if [ "$SCENARIO_TYPE" == "pre" ]; 
+  then
+    upgradeKyma
+    upgradeKyma
+  elif [ "$SCENARIO_TYPE" == "post" ]; 
+  then
+    testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
+    upgradeKyma
+    testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+  fi
 }
-
-function postMasterScenario() {
-  testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
-
-  upgradeKyma
-
-  testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
-}
-
 
 
 # Used to detect errors for logging purposes
@@ -533,11 +531,7 @@ createTestResources
 
 enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
-if [ "$SCENARIO_TYPE" == "pre" ]; then
-  preMasterScenario
-elif [ "$SCENARIO_TYPE" == "post" ]; then
-  postMasterScenario
-fi
+applyScenario
 
 log::success "Job finished with success"
 
