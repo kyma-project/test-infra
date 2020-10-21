@@ -111,10 +111,14 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "console",
+		name:  "compass",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
+			func(suite *jobsuite.Config) {
+				suite.Path = "compass/components/console/compass"
+			},
+			jobsuite.JobFileSuffix("ui"),
 			jobsuite.CompassRepo(),
 			jobsuite.Since(releases.Release116),
 		},

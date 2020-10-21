@@ -19,8 +19,8 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16)-console$
-  run_if_changed: "^components/console/|^scripts/"
+    - ^release-(1\.16)-compass$
+  run_if_changed: "^components/console/compass/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
@@ -29,7 +29,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/console"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/console/compass"
         resources:
           requests:
             memory: 1.5Gi
@@ -37,14 +37,14 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-compass-components-console
+    - name: pre-compass-components-console-compass
       cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-compass-components-console
+    - name: post-compass-components-console-compass
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
