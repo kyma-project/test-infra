@@ -177,6 +177,34 @@ gke_upgrade_pre_job_template: &gke_upgrade_pre_job_template
             memory: 200Mi
             cpu: 80m
 
+gke_upgrade_job_template_old: &gke_upgrade_job_template_old
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        env:
+          - name: CLOUDSDK_COMPUTE_ZONE
+            value: "europe-west4-a"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
+          - name: MACHINE_TYPE
+            value: "n1-highcpu-16"
+        args:
+          - "-c"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
+        resources:
+          requests:
+            memory: 200Mi
+            cpu: 80m
+
 gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -412,12 +440,27 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range (matchingReleases .Global.releases "1.11" nil) }}
+{{- range (matchingReleases .Global.releases "1.17" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
       <<: *gke_upgrade_pre_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+
+{{- range (matchingReleases .Global.releases "1.11" "1.16") }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - release-{{ . }}
+      <<: *gke_upgrade_job_template_old
       always_run: false
       labels:
         preset-build-release: "true"

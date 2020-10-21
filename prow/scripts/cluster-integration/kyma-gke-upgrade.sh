@@ -499,20 +499,17 @@ function testKyma() {
 }
 
 function applyScenario() {
-  if [ "$SCENARIO_TYPE" == "pre" ]; 
-  then
+  if [ "$SCENARIO_TYPE" == "pre" ]; then
     upgradeKyma
     createDNSRecord
     upgradeKyma
-  elif [ "$SCENARIO_TYPE" == "post" ]; 
-  then
+  elif [ "$SCENARIO_TYPE" == "post" ]; then
     testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
     upgradeKyma
     createDNSRecord
     testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
   fi
 }
-
 
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
