@@ -462,7 +462,9 @@ function upgradeKyma() {
   else
     upgradeKymaToCommit
   fi
+}
 
+function createDNSRecord() {
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -500,11 +502,13 @@ function applyScenario() {
   if [ "$SCENARIO_TYPE" == "pre" ]; 
   then
     upgradeKyma
+    createDNSRecord
     upgradeKyma
   elif [ "$SCENARIO_TYPE" == "post" ]; 
   then
     testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
     upgradeKyma
+    createDNSRecord
     testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
   fi
 }
