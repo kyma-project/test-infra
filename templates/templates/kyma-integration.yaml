@@ -78,6 +78,11 @@ presets:
         - name: SCENARIO_TYPE
           value: pre
   - labels:
+      preset-gke-upgrade-pre-release-job: "true"
+      env:
+        - name: SCENARIO_TYPE
+          value: release
+  - labels:
       preset-gke-upgrade-post-job: "true"
       env:
         - name: SCENARIO_TYPE
@@ -400,7 +405,7 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
-        preset-gke-upgrade-pre-job: "true"
+        preset-gke-upgrade-pre-release-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref

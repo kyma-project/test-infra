@@ -80,6 +80,11 @@ presets:
         - name: SCENARIO_TYPE
           value: pre
   - labels:
+      preset-gke-upgrade-pre-release-job: "true"
+      env:
+        - name: SCENARIO_TYPE
+          value: release
+  - labels:
       preset-gke-upgrade-post-job: "true"
       env:
         - name: SCENARIO_TYPE
