@@ -76,14 +76,19 @@ presets:
         value: regular
   - labels:
       preset-gke-upgrade-pre-job: "true"
-      env:
-        - name: SCENARIO_TYPE
-          value: pre
+    env:
+      - name: SCENARIO_TYPE
+        value: pre
+  - labels:
+      preset-gke-upgrade-pre-release-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: release
   - labels:
       preset-gke-upgrade-post-job: "true"
-      env:
-        - name: SCENARIO_TYPE
-          value: post
+    env:
+      - name: SCENARIO_TYPE
+        value: post
 
 gke_job_template: &gke_job_template
   decorate: true
