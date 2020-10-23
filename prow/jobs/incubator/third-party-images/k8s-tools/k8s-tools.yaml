@@ -1,0 +1,52 @@
+job_template: &job_template
+  run_if_changed: "^k8s-tools/"
+  skip_report: false
+  decorate: true
+  path_alias: github.com/kyma-incubator/third-party-images
+  max_concurrency: 10
+  extra_refs:
+  - org: kyma-project
+    repo: test-infra
+    base_ref: master
+    path_alias: github.com/kyma-project/test-infra
+  branches:
+  - ^master$
+  spec:
+    containers:
+    - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      securityContext:
+        privileged: true
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+      args:
+      - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/k8s-tools"
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 0.8
+
+job_labels_template: &job_labels_template
+  preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
+  preset-docker-push-repository-incubator: "true"
+
+presubmits: # runs on PRs
+  kyma-incubator/third-party-images:
+  - name: pre-master-tpi-k8s-tools
+    cluster: untrusted-workload
+    <<: *job_template
+    labels:
+      <<: *job_labels_template
+      preset-build-pr: "true"
+
+postsubmits:
+  kyma-incubator/third-party-images:
+  - name: post-master-tpi-k8s-tools
+    cluster: trusted-workload
+    annotations:
+      testgrid-create-test-group: "false"
+    <<: *job_template
+    labels:
+      <<: *job_labels_template
+      preset-build-master: "true"
+    report: false
