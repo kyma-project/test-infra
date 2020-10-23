@@ -1,9 +1,0 @@
-pjNames:
-  - pjName: "pre-master-kyma-gke-upgrade"
-  - pjName: "post-master-kyma-gke-upgrade"
-  - pjName: "pre-rel116-kyma-gke-upgrade"
-  - pjName: "pre-rel117-kyma-gke-upgrade"
-prConfigs:
- kyma-project:
-   kyma:
-     prNumber: 9721
