@@ -72,6 +72,21 @@ presets:
       - name: RELEASE_CHANNEL
         value: {{ .channel }}
   {{- end }}
+  - labels:
+      preset-gke-upgrade-pre-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: pre
+  - labels:
+      preset-gke-upgrade-pre-release-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: release
+  - labels:
+      preset-gke-upgrade-post-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: post
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -375,12 +390,29 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
+        preset-gke-upgrade-pre-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range (matchingReleases .Global.releases "1.11" nil) }}
+{{- range (matchingReleases .Global.releases "1.17" nil) }}
+    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - release-{{ . }}
+      <<: *gke_upgrade_job_template
+      always_run: false
+      labels:
+        preset-build-release: "true"
+        preset-gke-upgrade-pre-release-job: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+{{- end }}
+
+{{- range (matchingReleases .Global.releases "1.11" "1.16") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -547,6 +579,7 @@ postsubmits:
       branches:
         - ^master$
       labels:
+        preset-gke-upgrade-post-job: "true"
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_job_labels_template
