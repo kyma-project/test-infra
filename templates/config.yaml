@@ -1639,7 +1639,7 @@ templates:
                 name: "pre-test-infra-prow-tools"
                 run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                 args:
-                  - "//home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
             - inheritedConfigs:
                 global:
                   - "image_bootstrap"
@@ -1650,7 +1650,7 @@ templates:
                 name: "post-test-infra-prow-tools"
                 run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                 args:
-                  - "//home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
             - inheritedConfigs:
                 global:
                   - "image_bootstrap"
@@ -1673,3 +1673,25 @@ templates:
                 run_if_changed: "^prow/images/clonerefs/"
                 args:
                   - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                  - "presubmit"
+              jobConfig:
+                name: "pre-test-infra-image-guard"
+                run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                  - "postsubmit"
+              jobConfig:
+                name: "post-test-infra-image-guard"
+                run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
