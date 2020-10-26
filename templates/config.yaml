@@ -716,7 +716,7 @@ templates:
           <<: *cluster_default
           gkeVersions:
             - channel: rapid
-              version: 1.18.9-gke.801
+              version: 1.18.9-gke.2501
               jobs: [ "postsubmit" ]
             - channel: regular
               version: 1.17.12-gke.1504
