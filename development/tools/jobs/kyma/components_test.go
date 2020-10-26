@@ -80,12 +80,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "etcd-tls-setup-job", image: tester.ImageGolangBuildpack1_11},
-	{path: "iam-kubeconfig-service", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-		},
-	},
 	{path: "istio-kyma-patch", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),

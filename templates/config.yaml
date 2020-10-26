@@ -871,11 +871,6 @@ templates:
           <<: *bootstrap_kyma_component
           path: components/dex-static-user-configurer
           until: "1.6"
-      - to: ../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml
-        values:
-          <<: *cluster_default
-          <<: *go_kyma_component_1_11
-          path: components/etcd-tls-setup-job
       - to: ../prow/jobs/kyma/components/event-bus/event-bus.yaml
         values:
           <<: *cluster_default
