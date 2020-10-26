@@ -427,21 +427,6 @@ presubmits: # runs on PRs
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases "1.8" "1.10") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      branches:
-        - release-{{ . }}
-      <<: *gke_upgrade_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
     - name: pre-master-kyma-gke-central-connector
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -466,53 +451,6 @@ presubmits: # runs on PRs
       labels:
         preset-build-release: "true"
         <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
-{{- range (matchingReleases .Global.releases "1.8" "1.10") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      branches:
-        - release-{{ . }}
-      <<: *gke_central_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
-{{- range (matchingReleases .Global.releases "1.11" "1.11") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: true
-      branches:
-        - release-{{ . }}
-      <<: *gke_backup_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
-{{- range (matchingReleases .Global.releases "1.8" "1.10") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: true
-      branches:
-        - release-{{ . }}
-      <<: *gke_backup_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-{{ . }}
