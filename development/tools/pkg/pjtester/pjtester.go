@@ -346,6 +346,21 @@ func periodicRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 	return pjs
 }
 
+func formatPjName(pullAuthor, pjName string) string {
+	n := fmt.Sprintf("%s_test_of_prowjob_%s", pullAuthor, pjName)
+	formated := n
+	chars := 0
+	for i := range n {
+		if chars >= 63 {
+			formated = n[:i]
+			break
+		}
+		chars++
+	}
+	formated = strings.ToLower(formated)
+	return formated
+}
+
 // newTestPJ is building a prowjob definition for test
 func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	o := getPjCfg(pjCfg, opt)
@@ -360,7 +375,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
 	// Add prefix to prowjob to test name.
-	pj.Spec.Job = fmt.Sprintf("%s_test_of_prowjob_%s", opt.pullAuthor, pj.Spec.Job)
+	pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
