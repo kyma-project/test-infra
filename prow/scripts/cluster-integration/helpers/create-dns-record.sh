@@ -32,7 +32,7 @@ function createDNSWithRetries() {
 
     for ((i=1; i<=attempts; i++)); do
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
         if [[ $? -eq 0 ]]; then
