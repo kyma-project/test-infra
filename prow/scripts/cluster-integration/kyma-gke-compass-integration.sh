@@ -354,7 +354,9 @@ installCompass() {
   echo "Use master Compass artifacts"
   readonly COMPASS_MASTER_ARTIFACTS="${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   readonly COMPASS_TMP_DIR="/tmp/compass-gke-integration"
+  mkdir -p ${COMPASS_TMP_DIR}
   gsutil cp "${COMPASS_MASTER_ARTIFACTS}/compass-installer.yaml" ${COMPASS_TMP_DIR}/compass-installer.yaml
+  #wget -O ${COMPASS_TMP_DIR}/compass-installer.yaml https://storage.googleapis.com/kyma-prow-logs/logs/post-master-compass-development-artifacts/1319693857759170560/artifacts/compass-installer.yaml
   gsutil cp "${COMPASS_MASTER_ARTIFACTS}/is-installed.sh" ${COMPASS_TMP_DIR}/is-installed.sh
   chmod +x ${COMPASS_TMP_DIR}/is-installed.sh
   kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
@@ -364,7 +366,7 @@ installCompass() {
   "${COMPASS_TMP_DIR}"/is-installed.sh --timeout 30m
 }
 
-trap cleanup EXIT INT
+#trap cleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
