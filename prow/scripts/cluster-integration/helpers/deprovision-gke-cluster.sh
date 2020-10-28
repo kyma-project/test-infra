@@ -36,8 +36,8 @@ gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 # Check if removing regionl cluster.
 if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
   #Pass gke region name to delete command.
-  gcloud container clusters delete "${CLUSTER_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --quiet
+  gcloud container clusters delete "${CLUSTER_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --quiet --async
 else
-  gcloud container clusters delete "${CLUSTER_NAME}" --quiet
+  gcloud container clusters delete "${CLUSTER_NAME}" --quiet --async
 fi
 
