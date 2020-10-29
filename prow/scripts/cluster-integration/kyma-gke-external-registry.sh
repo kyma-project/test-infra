@@ -46,75 +46,10 @@ fi
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-
-#!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
-cleanup() {
-    #!!! Must be at the beginning of this function !!!
-    EXIT_STATUS=$?
-
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
-
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
-    set +e
-
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
-
-        #save disk names while the cluster still exists to remove them later
-        #DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        #export DISKS
-
-        #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-
-        #Delete orphaned disks
-        #shout "Delete orphaned PVC disks..."
-        #date
-        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-        #shout "Delete Gateway DNS Record"
-        date
-        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        shout "Release Gateway IP Address"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-    fi
-
-
-    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-    fi
-
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        #shout "Delete Apiserver proxy DNS Record"
-        date
-        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    fi
-
-    MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
-    set -e
-
-    exit "${EXIT_STATUS}"
-}
-
-trap cleanup EXIT INT
+trap gkeCleanup EXIT INT
 
 verify_internal_registry() {
     local pods
