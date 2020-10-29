@@ -1,6 +1,7 @@
 package pjtester
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -112,8 +113,8 @@ func newProwK8sClientset() *prowclient.Clientset {
 	return clientset
 }
 
-// readTestCfg read and validate data to test from pjtester.yaml file.
-// It will set default location for prowjobs and config files location if not provided in a file.
+// readTestCfg read and validate data from pjtester.yaml file.
+// It will set default path for prowjobs and config files if not provided in a file.
 func readTestCfg(testCfgFile string) testCfg {
 	var t testCfg
 	yamlFile, err := ioutil.ReadFile(testCfgFile)
@@ -288,46 +289,72 @@ func setPrHeadSHA(refs *prowapi.Refs, o options) {
 }
 
 // matchRefPR will add pull request details to ExtraRefs.
-func (o *options) matchRefPR(ref *prowapi.Refs) {
+func (o *options) matchRefPR(ref *prowapi.Refs) bool {
 	if pr, present := o.pullRequests[ref.Org][ref.Repo]; present {
 		ref.Pulls = []prowapi.Pull{{
 			Author: pr.pullRequest.User.Login,
 			Number: pr.PrNumber,
 			SHA:    pr.pullRequest.Head.SHA,
 		}}
+		ref.BaseSHA = pr.pullRequest.Base.SHA
+		ref.BaseRef = pr.pullRequest.Base.Ref
+		return true
 	}
+	return false
 }
 
 // submitRefs set test-infra refs as prowjob refs.
 // If refs points to other repo than test-infra it, will be moved to prowjob extra refs.
 // Pull request head SHA is added to test-infra refs.
 func submitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
-	// If prowjob refs point to test infra repo, add PR to test head SHA to refs because we are going to test code from this PR.
+	// If prowjob refs point to test infra repo, add test-infra PR head SHA to refs because we are going to test code from this PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		setPrHeadSHA(pjs.Refs, opt)
+		//Add PR details to ExtraRefs if PR was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
 			opt.matchRefPR(&ref)
 			pjs.ExtraRefs[index] = ref
 		}
 		return pjs
 	}
-	// If prowjob refs point to another repo, move refs to extra refs and set refs to test-infra PR to test head SHA, because we are going to test code from this PR.
-	// Because pjtester test changes in test-infra repository, it must be present in extra refs.
+	// If prowjob refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
-		refs := pjs.Refs
-		refs.BaseRef = defaultMasterBranch
-		opt.matchRefPR(refs)
+		//Check if PR for pjs.Refs.repo was provided in pjtester.yaml.
+		matched := opt.matchRefPR(pjs.Refs)
+		if !matched {
+			pjs.Refs.BaseRef = defaultMasterBranch
+		}
 		for index, ref := range pjs.ExtraRefs {
 			if ref.Org == opt.org && ref.Repo == opt.repo {
 				setPrHeadSHA(&ref, opt)
-				pjs.Refs = &ref
-				pjs.ExtraRefs[index] = *refs
-			} else {
-				opt.matchRefPR(&ref)
 				pjs.ExtraRefs[index] = ref
+			} else {
+				matched = opt.matchRefPR(&ref)
+				if matched {
+					pjs.ExtraRefs[index] = ref
+				}
 			}
 		}
 	}
+	// If prowjob refs point to another repo and PR for another repo was provided in pjtester.yaml
+
+	// If prowjob refs point to another repo and PR for another repo was not provided in pjtester.yaml, move refs to extra refs and set refs to test-infra PR to test head SHA, because we are going to test code from this PR.
+	// Because pjtester test changes in test-infra repository, it must be present in extra refs.
+	//if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
+	//	refs := pjs.Refs
+	//	refs.BaseRef = defaultMasterBranch
+	//	opt.matchRefPR(refs)
+	//	for index, ref := range pjs.ExtraRefs {
+	//		if ref.Org == opt.org && ref.Repo == opt.repo {
+	//			setPrHeadSHA(&ref, opt)
+	//			pjs.Refs = &ref
+	//			pjs.ExtraRefs[index] = *refs
+	//		} else {
+	//			opt.matchRefPR(&ref)
+	//			pjs.ExtraRefs[index] = ref
+	//		}
+	//	}
+	//}
 	return pjs
 }
 
@@ -347,17 +374,16 @@ func periodicRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 }
 
 func formatPjName(pullAuthor, pjName string) string {
-	n := fmt.Sprintf("%s_test_of_prowjob_%s", pullAuthor, pjName)
-	formated := n
-	chars := 0
-	for i := range n {
-		if chars >= 63 {
-			formated = n[:i]
-			break
+	fullName := fmt.Sprintf("%s_test_of_prowjob_%s", pullAuthor, pjName)
+	formated := strings.ToLower(fullName)
+	if len(formated) > 63 {
+		runes := bytes.Runes([]byte(formated))
+		for i := len(runes); i > 2; i-- {
+			if len(string(runes[:i])) <= 63 {
+				return string(runes[:i])
+			}
 		}
-		chars++
 	}
-	formated = strings.ToLower(formated)
 	return formated
 }
 
