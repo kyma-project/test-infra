@@ -312,8 +312,8 @@ func submitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 		setPrHeadSHA(pjs.Refs, opt)
 		//Add PR details to ExtraRefs if PR was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
-			opt.matchRefPR(&ref)
-			pjs.ExtraRefs[index] = ref
+			matched = opt.matchRefPR(&ref)
+			if matched { pjs.ExtraRefs[index] = ref }
 		}
 		return pjs
 	}
@@ -327,7 +327,12 @@ func submitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 		for index, ref := range pjs.ExtraRefs {
 			if ref.Org == opt.org && ref.Repo == opt.repo {
 				setPrHeadSHA(&ref, opt)
-				pjs.ExtraRefs[index] = ref
+				if matched {
+					pjs.ExtraRefs[index] = ref
+				} else {
+					pjs.Refs = &ref
+					pjs.ExtraRefs[index] = *refs
+				}
 			} else {
 				matched = opt.matchRefPR(&ref)
 				if matched {
