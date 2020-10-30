@@ -41,6 +41,7 @@ else
   echo "Building as usual"
   DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
   set +e
+  echo "${PULL_REFS}"
   DOCKER_POST_PR_TAG="PR-$(git -C "${SOURCES_DIR}" log --format=%B -n 1 "${PULL_BASE_SHA}" | grep -o '(#[[:digit:]]\+)$' | grep -o '[[:digit:]]\+')"
   set -e
 fi
