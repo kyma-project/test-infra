@@ -7,14 +7,16 @@ presets:
     env:
       - name: DOCKER_HUB_USER
         valueFrom:
-          name: docker-hub-credentials
-          key: username
-          optional: true
+          secretKeyRef:
+            name: docker-hub-credentials
+            key: username
+            optional: true
       - name: DOCKER_HUB_PASS
         valueFrom:
-          name: docker-hub-pass
-          key: password
-          optional: true
+          secretKeyRef:
+            name: docker-hub-pass
+            key: password
+            optional: true
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
