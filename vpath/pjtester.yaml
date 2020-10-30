@@ -1,2 +1,6 @@
 pjNames:
   - pjName: "post-kyma-components-eventing-controller"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 9819
