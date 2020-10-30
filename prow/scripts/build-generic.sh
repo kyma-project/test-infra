@@ -20,7 +20,7 @@ fi
 init
 
 if [[ -n "${DOCKER_HUB_USER}" ]]; then
-  docker login -u "${DOCKER_HUB_USER}" --password "${DOCKER_HUB_PASS}"
+  echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
 fi
 
 sleep 1800
