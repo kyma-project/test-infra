@@ -40,10 +40,19 @@ elif [[ "${PULL_BASE_REF}" =~ release-.* ]]; then
 else
   echo "Building as usual"
   DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
+  set +e
+  DOCKER_POST_PR_TAG="PR-$(git -C "${SOURCES_DIR}" log --format=%B -n 1 "${PULL_BASE_SHA}" | grep -o '(#[[:digit:]]\+)$' | grep -o '[[:digit:]]\+')"
+  set -e
 fi
 
 readonly DOCKER_TAG
 export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
+
+if [ -n "${DOCKER_POST_PR_TAG}"]
+    readonly DOCKER_POST_PR_TAG
+    export DOCKER_POST_PR_TAG
+    echo DOCKER_POST_PR_TAG "${DOCKER_TAG}"
+fi
 
 make -C "${SOURCES_DIR}" release
