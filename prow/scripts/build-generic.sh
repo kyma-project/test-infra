@@ -49,7 +49,7 @@ readonly DOCKER_TAG
 export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
 
-if [ -n "${DOCKER_POST_PR_TAG}"]
+if [ -n "${DOCKER_POST_PR_TAG}" ]
     readonly DOCKER_POST_PR_TAG
     export DOCKER_POST_PR_TAG
     echo DOCKER_POST_PR_TAG "${DOCKER_TAG}"
