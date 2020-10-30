@@ -3,7 +3,7 @@
 presets:
   # docker hub
   - labels:
-      preset-docker-hub-credentials
+      preset-docker-hub-credentials: "true"
     env:
       - name: DOCKER_HUB_USER
         valueFrom:
