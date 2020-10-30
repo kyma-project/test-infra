@@ -41,6 +41,7 @@ else
   echo "Building as usual"
   DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
   set +e
+  echo debug
   git -C "${SOURCES_DIR}" log --format=%B -n 1
   ORIG_PR="$(git -C "${SOURCES_DIR}" log --format=%B -n 1 | grep -o '(#[[:digit:]]\+)$' | grep -o '[[:digit:]]\+')"
   if [ -n "${ORIG_PR}" ]; then
