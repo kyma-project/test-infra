@@ -17,12 +17,13 @@ if [[ -z "${SOURCES_DIR}" ]]; then
     usage
 fi
 
+init
+
 if [[ -n "${DOCKER_HUB_USER}" ]]; then
   docker login -u "${DOCKER_HUB_USER}" --password "${DOCKER_HUB_PASS}"
 fi
 
 sleep 1800
-init
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
