@@ -1,0 +1,7 @@
+pjNames:
+        #- pjName: "pre-master-kyma-gke-integration"
+        - pjName: "pre-kyma-components-service-binding-usage-controller"
+    #prConfigs:
+    #kyma-project:
+    #kyma:
+    #  prNumber: 9794

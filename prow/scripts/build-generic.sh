@@ -17,6 +17,11 @@ if [[ -z "${SOURCES_DIR}" ]]; then
     usage
 fi
 
+if [[ -n "${DOCKER_HUB_USER}" ]]; then
+  docker login -u "${DOCKER_HUB_USER}" --password "${DOCKER_HUB_PASS}"
+fi
+
+sleep 1800
 init
 
 if [ -n "${PULL_NUMBER}" ]; then
