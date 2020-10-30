@@ -52,7 +52,7 @@ echo DOCKER_TAG "${DOCKER_TAG}"
 if [ -n "${DOCKER_POST_PR_TAG}" ]; then
     readonly DOCKER_POST_PR_TAG
     export DOCKER_POST_PR_TAG
-    echo DOCKER_POST_PR_TAG "${DOCKER_TAG}"
+    echo DOCKER_POST_PR_TAG "${DOCKER_POST_PR_TAG}"
 fi
 
 make -C "${SOURCES_DIR}" release
