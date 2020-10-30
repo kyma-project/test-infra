@@ -24,7 +24,7 @@ if [[ -n "${DOCKER_HUB_USER}" ]]; then
 fi
 
 TOKEN=$(curl --user "${DOCKER_HUB_USER}:${DOCKER_HUB_PASS}" "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
-curl -v -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
+curl -v -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest | grep RateLimit
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
@@ -54,4 +54,4 @@ export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
 
 make -C "${SOURCES_DIR}" release
-curl -v -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
+curl -v -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest | grep RateLimit
