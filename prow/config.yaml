@@ -14,7 +14,7 @@ presets:
       - name: DOCKER_HUB_PASS
         valueFrom:
           secretKeyRef:
-            name: docker-hub-pass
+            name: docker-hub-credentials
             key: password
             optional: true
   # test clusters log collector
