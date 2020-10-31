@@ -19,10 +19,6 @@ fi
 
 init
 
-if [[ -n "${DOCKER_HUB_USER}" ]]; then
-  echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
-fi
-sleep 1800
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
   DOCKER_TAG="PR-${PULL_NUMBER}"

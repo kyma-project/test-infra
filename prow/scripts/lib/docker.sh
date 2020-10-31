@@ -35,6 +35,12 @@ function docker::start {
     else
       echo "Skipping docker authnetication in registry. No credentials provided."
     fi
+
+    if [[ -n "${DOCKER_HUB_USER}" ]]; then
+      echo "Authenticating in docker hub."
+      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
+    fi
+
     echo "Done starting up docker."
 }
 

@@ -36,8 +36,14 @@ function start_docker() {
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       authenticateDocker "${GOOGLE_APPLICATION_CREDENTIALS}"
     else
-      echo "Skipping docker authnetication in registry. No credentials provided."
+      echo "Skipping docker authentication in GCR. Credentials not provided."
     fi
+
+    if [[ -n "${DOCKER_HUB_USER}" ]]; then
+      echo "Authenticating in docker hub."
+      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
+    fi
+
     echo "Done setting up docker in docker."
 }
 
@@ -51,7 +57,7 @@ function authenticateSaGcr() {
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
       gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
     else
-      echo "No GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
+      echo "Environment variable GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS not present. Credentials not provided. Skipping authentication."
     fi
 
 }
