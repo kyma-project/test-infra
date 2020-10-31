@@ -14,7 +14,8 @@ set -o errexit
 
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 #shellcheck source=lib/log.sh
-source "${SCRIPTS_PATH}"/lib/log.sh
+#shellcheck disable=SC1090
+source "${SCRIPTS_PATH}/lib/log.sh"
 
 discoverUnsetVar=false
 
