@@ -33,7 +33,7 @@ function docker::start {
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       docker::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
     else
-      echo "Skipping docker authnetication in registry. No credentials provided."
+      echo "Skipping docker authentication in GCR. No credentials provided."
     fi
 
     if [[ -n "${DOCKER_HUB_USER}" ]]; then
