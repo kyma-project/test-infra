@@ -41,7 +41,7 @@ function start_docker() {
 
     if [[ -n "${DOCKER_HUB_USER}" ]]; then
       echo "Authenticating in docker hub."
-      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
+      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin || exit 1
     fi
 
     echo "Done setting up docker in docker."
