@@ -236,7 +236,7 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 					Org:  org,
 					Repo: repo,
 				})
-				pjs = submitRefs(pjs, *o)
+				pjs = presubmitRefs(pjs, *o)
 				return p.JobBase, pjs
 			}
 		}
@@ -253,7 +253,7 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 					Org:  org,
 					Repo: repo,
 				})
-				pjs = submitRefs(pjs, *o)
+				pjs = postsubmitRefs(pjs, *o)
 				return p.JobBase, pjs
 			}
 		}
@@ -307,7 +307,7 @@ func (o *options) matchRefPR(ref *prowapi.Refs) bool {
 // It ensure, refs for presubmit and postsubmit contain valid PR head SHA.
 // If pjtester.yaml doesn't specify PR from other repo, test-infra refs from tested PR are used as prowjob refs.
 // It adds PR refs to ExtraRefs for PR provided in pjtester.yaml.
-func submitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
+func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		setPrHeadSHA(pjs.Refs, opt)
@@ -342,8 +342,47 @@ func submitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 					pjs.ExtraRefs[index] = *refs
 				}
 			} else {
-				matched = opt.matchRefPR(&ref)
-				if matched {
+				matchedExtraRef := opt.matchRefPR(&ref)
+				if matchedExtraRef {
+					pjs.ExtraRefs[index] = ref
+				}
+			}
+		}
+	}
+	return pjs
+}
+
+func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
+	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
+	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
+		setPrHeadSHA(pjs.Refs, opt)
+		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
+		for index, ref := range pjs.ExtraRefs {
+			matched := opt.matchRefPR(&ref)
+			if matched {
+				pjs.ExtraRefs[index] = ref
+			}
+		}
+		return pjs
+	}
+	// If prowjob specification refs point to another repo.
+	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
+		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		matched := opt.matchRefPR(pjs.Refs)
+		if !matched {
+			// If PR number not provided set BaseRef to master
+			pjs.Refs.BaseRef = defaultMasterBranch
+		}
+		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
+		for index, ref := range pjs.ExtraRefs {
+			// If ExtraRefs ref points to test-infra, use refs from tested PR.
+			if ref.Org == opt.org && ref.Repo == opt.repo {
+				setPrHeadSHA(&ref, opt)
+				// If for prowjob specification refs was provided PR number in pjtester.yaml, keep test-infra refs in ExtraRefs. Otherwise swap with current prowjob refs.
+				pjs.ExtraRefs[index] = ref
+			} else {
+				matchedExtraRef := opt.matchRefPR(&ref)
+				if matchedExtraRef {
 					pjs.ExtraRefs[index] = ref
 				}
 			}

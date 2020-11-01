@@ -69,6 +69,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
+env | grep REPO
+
 #!Put cleanup code in this function! Function is executed at exit from the script and on interruption.
 # TODO (@Ressetkk): I think we can safely source this method from external file to use it with other GKE scripts.
 cleanup() {
