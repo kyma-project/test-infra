@@ -240,7 +240,7 @@ function gkeCleanup() {
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        shout "Docker image clenup"
+        shout "Docker image cleanup"
 
         if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
             shout "Delete temporary Compass-Installer Docker image"
