@@ -1,0 +1,4 @@
+pjNames:
+  - pjName: "pre-master-kyma-gke-integration"
+  - pjName: "post-master-kyma-gke-integration"
+    #- pjName: "orphaned-dns-cleaner"
