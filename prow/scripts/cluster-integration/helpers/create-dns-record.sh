@@ -77,17 +77,17 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 
     log::banner "Debugging DNS issues"
     log::date
-    log::info "trace DNS response for ${DNS_FULL_NAME}"
-    dig +trace "${DNS_FULL_NAME}"
-    log::info "query authoritative servers directly"
-    log::info "ns-cloud-b1.googledomains.com."
-    dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
-    log::info "ns-cloud-b2.googledomains.com."
-    dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
-    log::info "ns-cloud-b3.googledomains.com."
-    dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
-    log::info "ns-cloud-b4.googledomains.com."
-    dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
+    log::info "trace DNS response for ${DNS_FULL_NAME}" >> "${ARTIFACTS}/dns-debug.txt"
+    dig +trace "${DNS_FULL_NAME}" >> "${ARTIFACTS}/dns-debug.txt"
+    log::info "query authoritative servers directly" >> "${ARTIFACTS}/dns-debug.txt"
+    log::info "ns-cloud-b1.googledomains.com." >> "${ARTIFACTS}/dns-debug.txt"
+    dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com. >> "${ARTIFACTS}/dns-debug.txt"
+    log::info "ns-cloud-b2.googledomains.com." >> "${ARTIFACTS}/dns-debug.txt"
+    dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com. >> "${ARTIFACTS}/dns-debug.txt"
+    log::info "ns-cloud-b3.googledomains.com." >> "${ARTIFACTS}/dns-debug.txt"
+    dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com. >> "${ARTIFACTS}/dns-debug.txt"
+    log::info "ns-cloud-b4.googledomains.com." >> "${ARTIFACTS}/dns-debug.txt"
+    dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com. >> "${ARTIFACTS}/dns-debug.txt"
 
 
 done
