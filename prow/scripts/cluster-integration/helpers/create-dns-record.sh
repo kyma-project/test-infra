@@ -12,6 +12,10 @@
 
 set -o errexit
 
+SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+#shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPTS_PATH}/lib/log.sh"
+
 discoverUnsetVar=false
 
 for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_FULL_NAME IP_ADDRESS; do
@@ -69,6 +73,22 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         echo "Successfully resolved ${DNS_FULL_NAME} to ${RESOLVED_IP_ADDRESS}"
         exit 0
     fi
+
+
+    log::banner "Debugging DNS issues"
+    log::date
+    log::info "trace DNS response for ${DNS_FULL_NAME}"
+    dig +trace "${DNS_FULL_NAME}"
+    log::info "query authoritative servers directly"
+    log::info "ns-cloud-b1.googledomains.com."
+    dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
+    log::info "ns-cloud-b2.googledomains.com."
+    dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
+    log::info "ns-cloud-b3.googledomains.com."
+    dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
+    log::info "ns-cloud-b4.googledomains.com."
+    dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
+
 
 done
 
