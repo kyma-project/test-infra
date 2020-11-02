@@ -37,3 +37,4 @@ images:
 - source: "jmedrek/connectivity-validator-alpine:1.14"
 - source: "jmedrek/connectivity-validator-alpine:1.15"
 - source: "magicmatatjahu/milv:0.0.7-beta"
+- source: "kennethreitz/httpbin:latest"
