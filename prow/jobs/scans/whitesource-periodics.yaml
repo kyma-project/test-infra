@@ -473,7 +473,7 @@ periodics:
 #-------------Release-----------------------------
 
 
-  - name: release-kyma-1.16-whitesource-scan
+  - name: release-kyma-1.17-whitesource-scan
     annotations:
       testgrid-create-test-group: "false"
     cluster: trusted-workload
@@ -492,7 +492,7 @@ periodics:
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-1.16
+          base_ref: release-1.17
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
@@ -515,7 +515,7 @@ periodics:
               memory: 1Gi
               cpu: 400m
 
-  - name: release-kyma-mod-1.16-whitesource-scan
+  - name: release-kyma-mod-1.17-whitesource-scan
     annotations:
       testgrid-create-test-group: "false"
     cluster: trusted-workload
@@ -534,7 +534,7 @@ periodics:
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-1.16
+          base_ref: release-1.17
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
@@ -557,7 +557,7 @@ periodics:
               memory: 1Gi
               cpu: 400m
 
-  - name: release-cli-1.16-whitesource-scan
+  - name: release-cli-1.17-whitesource-scan
     annotations:
       testgrid-create-test-group: "false"
     cluster: trusted-workload
@@ -576,7 +576,7 @@ periodics:
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: release-1.16
+          base_ref: release-1.17
     spec:
         containers:
         - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400

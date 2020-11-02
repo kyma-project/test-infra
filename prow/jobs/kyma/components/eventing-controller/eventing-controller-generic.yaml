@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^release-(1\.17)-eventing-controller$
   run_if_changed: "^components/eventing-controller/|^common/makefiles/"
   spec:
     containers:

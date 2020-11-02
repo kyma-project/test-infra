@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-logging$
+    - ^release-(1\.17|1\.16|1\.15)-logging$
   run_if_changed: "^logging/|^components/|^shared/|^package.json"
   spec:
     containers:

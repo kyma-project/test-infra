@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-dex-static-user-configurer$
+    - ^release-(1\.17|1\.16|1\.15)-dex-static-user-configurer$
   run_if_changed: "^components/dex-static-user-configurer/|^common/makefiles/"
   spec:
     containers:

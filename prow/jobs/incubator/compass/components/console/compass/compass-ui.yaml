@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16)-compass$
+    - ^release-(1\.17|1\.16)-compass$
   run_if_changed: "^components/console/compass/|^scripts/"
   spec:
     containers:
