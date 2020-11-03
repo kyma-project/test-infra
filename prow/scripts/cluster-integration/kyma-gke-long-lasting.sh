@@ -316,6 +316,7 @@ export DOMAIN
 shout "Cleanup"
 date
 export SKIP_IMAGE_REMOVAL=true
+export DISABLE_ASYNC_DEPROVISION=true
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
 shout "Create new cluster"
