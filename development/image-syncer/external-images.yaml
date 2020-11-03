@@ -16,6 +16,7 @@ images:
 - source: "istio/pilot:1.7.4-distroless"
 - source: "istio/proxyv2:1.7.4-distroless"
 - source: "jaegertracing/all-in-one:1.18.1"
+- source: "kennethreitz/httpbin:latest"
 - source: "nats-streaming:0.11.0"
 - source: "oryd/hydra-maester:v0.0.15"
 - source: "oryd/hydra:v1.4.6"
