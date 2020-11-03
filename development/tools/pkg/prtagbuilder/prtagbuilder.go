@@ -22,7 +22,7 @@ var (
 
 // findPRNumber match commit message with regex to extract pull request number. By default github add pr number to the commit message.
 func findPRNumber(commit *github.RepositoryCommit) string {
-	re := regexp.MustCompile(`(?s)^.*\(#(?P<prNumber>\d*)?\)\s*.*$`)
+	re := regexp.MustCompile(`(?s)^.*\(#(?P<prNumber>\d*)?\)\s*$`)
 	messageReader := strings.NewReader(commit.Commit.GetMessage())
 	scanner := bufio.NewScanner(messageReader)
 	scanner.Scan()
@@ -44,15 +44,17 @@ func verifyPR(pr *github.PullRequest, commitSHA string) bool {
 }
 
 // BuildPrTag will extract PR number from commit message, search PR, validate if correct PR was found and print pr tag.
-func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool) {
+func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool) {
 	// create github client
 	client = github.NewClient(nil)
 	if fromFlags {
+		// get commit for a branch
 		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef)
 		if err != nil {
 			logrus.WithError(err).Fatalf("failed get branch %s", jobSpec.Refs.BaseRef)
 		}
 		commit = branch.GetCommit()
+		jobSpec.Refs.BaseSHA = *commit.SHA
 	} else {
 		// get git base reference from postsubmit environment variables
 		jobSpec, err = downwardapi.ResolveSpecFromEnv()
@@ -77,7 +79,11 @@ func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool) {
 	}
 	// check if correct pr was found
 	if verifyPR(pr, jobSpec.Refs.BaseSHA) {
-		// print PR image tag
-		fmt.Printf("PR-%d", prNumber)
+		if numberOnly {
+			fmt.Printf("%d", prNumber)
+		} else {
+			// print PR image tag
+			fmt.Printf("PR-%d", prNumber)
+		}
 	}
 }

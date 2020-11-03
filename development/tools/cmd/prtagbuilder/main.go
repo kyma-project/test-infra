@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/jamiealquiza/envy"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -19,12 +18,41 @@ var (
 		Short: "short description",
 		Long:  "long description",
 		Run: func(cmd *cobra.Command, args []string) {
-			prtagbuilder.BuildPrTag(jobSpec, fromFlags)
+			if cmd.Flags().NFlag() == 1 {
+				if !cmd.Flags().Changed("numberOnly") {
+					err := checkFlags(cmd.Flags())
+					if err != nil {
+						logrus.WithError(err).Fatalf("Required flag is empty")
+					}
+				}
+			} else if cmd.Flags().NFlag() > 2 {
+				err := checkFlags(cmd.Flags())
+				if err != nil {
+					logrus.WithError(err).Fatalf("Required flag is empty")
+				}
+				// set prtagbuilder to use data from flags
+				fromFlags = true
+			}
+			prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly)
 		},
 	}
-	jobSpec   *downwardapi.JobSpec
-	fromFlags bool = false
+	jobSpec    *downwardapi.JobSpec
+	fromFlags  = false
+	numberOnly bool
 )
+
+// checkFlags checks if flags required to be set together are not empty
+func checkFlags(cmdFlags *pflag.FlagSet) error {
+	// flags names required to be set together
+	flagNames := []string{"org", "repo", "baseref"}
+	for index, val := range flagNames {
+		flagValue, _ := cmdFlags.GetString(val)
+		if flagValue == "" {
+			return fmt.Errorf("flag %s is empty", flagNames[index])
+		}
+	}
+	return nil
+}
 
 func main() {
 	log.SetOutput(os.Stdout)
@@ -33,15 +61,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.Org, "org", "o", "", "Github organisation which owns repo.")
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.Repo, "repo", "r", "", "Github repository.")
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.BaseRef, "baseref", "b", "", "Base branch name.")
-	rootCmd.MarkPersistentFlagRequired("org")
-	rootCmd.MarkPersistentFlagRequired("repo")
-	rootCmd.MarkPersistentFlagRequired("baseref")
-	envy.ParseCobra(rootCmd, envy.CobraConfig{Prefix: "TAGBUILDER", Persistent: true, Recursive: false})
-	fmt.Println(pflag.NFlag())
-	if pflag.NFlag() > 0 {
-		fromFlags = true
-	}
-	fmt.Printf("%v", jobSpec)
+	rootCmd.PersistentFlags().BoolVarP(&numberOnly, "numberOnly", "O", false, "Return only PR number.")
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
