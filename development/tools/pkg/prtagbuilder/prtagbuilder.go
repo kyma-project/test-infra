@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,6 +16,8 @@ import (
 var (
 	client *github.Client
 	ctx    = context.Background()
+	commit *github.RepositoryCommit
+	err    error
 )
 
 // findPRNumber match commit message with regex to extract pull request number. By default github add pr number to the commit message.
@@ -43,23 +44,26 @@ func verifyPR(pr *github.PullRequest, commitSHA string) bool {
 }
 
 // BuildPrTag will extract PR number from commit message, search PR, validate if correct PR was found and print pr tag.
-func BuildPrTag() {
-	// check if prtagbuilder was called on presubmit, fail if true
-	if _, present := os.LookupEnv("PULL_NUMBER"); present {
-		logrus.Fatalf("prtagbuilder was called on presubmit, failing")
-	}
-	// get git base reference from postsubmit environment variables
-	jobSpec, err := downwardapi.ResolveSpecFromEnv()
-	if err != nil {
-		logrus.WithError(err).Fatalf("failed to read JOB_SPEC prowjob env")
-	}
+func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool) {
 	// create github client
 	client = github.NewClient(nil)
-
-	// get commit details for base sha
-	commit, _, err := client.Repositories.GetCommit(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseSHA)
-	if err != nil {
-		logrus.WithError(err).Fatalf("failed get commit %s", jobSpec.Refs.BaseSHA)
+	if fromFlags {
+		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef)
+		if err != nil {
+			logrus.WithError(err).Fatalf("failed get branch %s", jobSpec.Refs.BaseRef)
+		}
+		commit = branch.GetCommit()
+	} else {
+		// get git base reference from postsubmit environment variables
+		jobSpec, err = downwardapi.ResolveSpecFromEnv()
+		if err != nil {
+			logrus.WithError(err).Fatalf("failed to read JOB_SPEC prowjob env")
+		}
+		// get commit details for base sha
+		commit, _, err = client.Repositories.GetCommit(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseSHA)
+		if err != nil {
+			logrus.WithError(err).Fatalf("failed get commit %s", jobSpec.Refs.BaseSHA)
+		}
 	}
 	// extract pull request number from commit message
 	prNumber, err := strconv.Atoi(findPRNumber(commit))
