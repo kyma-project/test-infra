@@ -33,9 +33,9 @@ var (
 				// set prtagbuilder to use data from flags
 				fromFlags = true
 			}
-			err, prNumber := prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly)
+			prNumber, err := prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly)
 			if err != nil {
-				return fmt.Errorf("failed build prtag, got error %w:", err)
+				return fmt.Errorf("failed build prtag, got error: %w", err)
 			}
 			fmt.Printf(prNumber)
 			return nil
