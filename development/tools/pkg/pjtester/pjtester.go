@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 	"os"
 	"strconv"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"k8s.io/test-infra/prow/config/secret"
 
 	"github.com/go-yaml/yaml"
+	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -323,10 +325,16 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 	// If prowjob specification refs point to another repo.
 	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
 		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
-		matched := opt.matchRefPR(pjs.Refs)
-		if !matched {
+		if !opt.matchRefPR(pjs.Refs) {
 			// If PR number not provided set BaseRef to master
 			pjs.Refs.BaseRef = defaultMasterBranch
+			// get latest PR number for BaseRef branch
+			jobSpec := downwardapi.JobSpec{Refs: pjs.Refs}
+			branchPR := prtagbuilder.BuildPrTag(jobSpec, false, true)
+			opt.getPullRequests(testCfg{PrConfigs: map[string]prOrg{pjs.Refs.Org: {pjs.Refs.Repo: prCfg{PrNumber: branchPR}}}})
+			if !opt.matchRefPR(pjs.Refs) {
+
+			}
 		}
 		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
 		for index, ref := range pjs.ExtraRefs {
@@ -334,13 +342,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 			if ref.Org == opt.org && ref.Repo == opt.repo {
 				setPrHeadSHA(&ref, opt)
 				// If for prowjob specification refs was provided PR number in pjtester.yaml, keep test-infra refs in ExtraRefs. Otherwise swap with current prowjob refs.
-				if matched {
-					pjs.ExtraRefs[index] = ref
-				} else {
-					refs := pjs.Refs
-					pjs.Refs = &ref
-					pjs.ExtraRefs[index] = *refs
-				}
+				pjs.ExtraRefs[index] = ref
 			} else {
 				matchedExtraRef := opt.matchRefPR(&ref)
 				if matchedExtraRef {
@@ -358,8 +360,7 @@ func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
 		setPrHeadSHA(pjs.Refs, opt)
 		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
-			matched := opt.matchRefPR(&ref)
-			if matched {
+			if opt.matchRefPR(&ref) {
 				pjs.ExtraRefs[index] = ref
 			}
 		}
