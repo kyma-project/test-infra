@@ -70,18 +70,18 @@ func Mainerr() error {
 		return errors.Wrapf(err, "while listing ClusterTestSuites")
 	}
 
-	newestCts, err := getClusterTestSuite(ctsList)
+	cts, err := getClusterTestSuite(ctsList)
 	if err != nil {
 		return errors.Wrap(err, "while getting newest ClusterTestSuite")
 	}
 
-	logf.Infof("Newest ClusterTestSuite name: %s", newestCts.Name)
+	logf.Infof("Newest ClusterTestSuite name: %s", cts.Name)
 
 	logf.Info("Listing test pods")
 
 	selector := labels.SelectorFromSet(map[string]string{
 		octopusTypes.LabelKeyCreatedByOctopus: "true",
-		octopusTypes.LabelKeySuiteName:        newestCts.Name,
+		octopusTypes.LabelKeySuiteName:        cts.Name,
 	})
 
 	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{
@@ -92,6 +92,11 @@ func Mainerr() error {
 	}
 
 	var messages []pkgSlack.Message
+
+	completionTime := "Not yet completed"
+	if cts.Status.CompletionTime != nil {
+		completionTime = cts.Status.CompletionTime.String()
+	}
 
 	for _, pod := range pods.Items {
 		testName, ok := pod.Labels[octopusTypes.LabelKeyTestDefName]
@@ -104,7 +109,7 @@ func Mainerr() error {
 			return errors.Wrapf(err, "while getting dispatching config for %s test suite", testName)
 		}
 
-		status, err := extractTestStatus(testName, newestCts)
+		status, err := extractTestStatus(testName, cts)
 		if err != nil {
 			return errors.Wrapf(err, "while extracting test status from ClusterTestSuite for label %s", testName)
 		}
@@ -131,8 +136,8 @@ func Mainerr() error {
 			Attributes: pkgSlack.Attributes{
 				Name:             testName,
 				Status:           string(status),
-				ClusterTestSuite: newestCts.Name,
-				CompletionTime:   newestCts.Status.CompletionTime.String(),
+				ClusterTestSuite: cts.Name,
+				CompletionTime:   completionTime,
 			},
 		}
 
@@ -150,7 +155,7 @@ func Mainerr() error {
 	}
 
 	logf.Info("Uploading logs to appropriate slack thread")
-	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, newestCts.Name, newestCts.Status.CompletionTime.String()); err != nil {
+	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, cts.Name, completionTime); err != nil {
 		return errors.Wrap(err, "while uploading files to slack thread")
 	}
 	return nil

@@ -10,8 +10,8 @@ require (
 	github.com/slack-go/slack v0.6.5
 	github.com/vrischmann/envconfig v1.2.0
 	gopkg.in/yaml.v2 v2.3.0
-	k8s.io/api v0.17.7
-	k8s.io/apimachinery v0.17.7
-	k8s.io/client-go v0.17.7
-	sigs.k8s.io/controller-runtime v0.5.7
+	k8s.io/api v0.17.13
+	k8s.io/apimachinery v0.17.13
+	k8s.io/client-go v0.17.13
+	sigs.k8s.io/controller-runtime v0.5.11
 )

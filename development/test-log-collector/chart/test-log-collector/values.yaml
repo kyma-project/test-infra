@@ -1,6 +1,6 @@
 image:
   repository: eu.gcr.io/kyma-project/pr/test-log-collector
-  tag: PR-2679
+  tag: PR-2916
   pullPolicy: IfNotPresent
 
 serviceAccountName: ""
