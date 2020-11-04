@@ -93,6 +93,11 @@ func Mainerr() error {
 
 	var messages []pkgSlack.Message
 
+	completionTime := "Not yet ended"
+	if cts.Status.CompletionTime != nil {
+		completionTime = cts.Status.CompletionTime.String()
+	}
+
 	for _, pod := range pods.Items {
 		testName, ok := pod.Labels[octopusTypes.LabelKeyTestDefName]
 		if !ok {
@@ -123,11 +128,6 @@ func Mainerr() error {
 			Container: container,
 		})
 
-		completionTime := "Not yet ended"
-		if cts.Status.CompletionTime != nil {
-			completionTime = cts.Status.CompletionTime.String()
-		}
-
 		msg := pkgSlack.Message{
 			Data:        "",
 			PodName:     pod.Name,
@@ -155,7 +155,7 @@ func Mainerr() error {
 	}
 
 	logf.Info("Uploading logs to appropriate slack thread")
-	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, cts.Name, cts.Status.CompletionTime.String()); err != nil {
+	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, cts.Name, completionTime); err != nil {
 		return errors.Wrap(err, "while uploading files to slack thread")
 	}
 	return nil

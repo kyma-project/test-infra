@@ -1,6 +1,6 @@
 - channelName: "#kyma-default-notifications"
   channelID: "C01DWQK3W5B"
-  onlyReportFailure: true
+  onlyReportFailure: false
   testCases:
     - default
 - channelName: "#wookiee-notifications"
