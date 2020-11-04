@@ -15,10 +15,9 @@ import (
 var (
 	log     = logrus.New()
 	rootCmd = &cobra.Command{
-		Use:   "prtagbuilder",
-		Short: "short description",
-		Long:  "long description",
-		Run: func(cmd *cobra.Command, args []string) {
+		Use:   "prtagbuilder [-o, --org string], [-r, --repo string], [-b --baseref string], [-O --numberOnly]",
+		Short: "prtagbuilder will find pull request number for commit or branch head.",
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if cmd.Flags().NFlag() == 1 {
 				if !cmd.Flags().Changed("numberOnly") {
 					err := checkFlags(cmd.Flags())
@@ -34,7 +33,12 @@ var (
 				// set prtagbuilder to use data from flags
 				fromFlags = true
 			}
-			prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly)
+			err, prNumber := prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly)
+			if err != nil {
+				return fmt.Errorf("failed build prtag, got error %w:", err)
+			}
+			fmt.Printf(prNumber)
+			return nil
 		},
 	}
 	jobSpec    *downwardapi.JobSpec
@@ -64,6 +68,6 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.BaseRef, "baseref", "b", "", "Base branch name.")
 	rootCmd.PersistentFlags().BoolVarP(&numberOnly, "numberOnly", "O", false, "Return only PR number.")
 	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
+		logrus.WithError(err).Fatalf("prtagbuilder execution failed")
 	}
 }

@@ -9,48 +9,46 @@ import (
 	"strings"
 
 	"github.com/google/go-github/v31/github"
-	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 )
 
-var (
-	client *github.Client
-	ctx    = context.Background()
-	commit *github.RepositoryCommit
-)
-
 // findPRNumber match commit message with regex to extract pull request number. By default github add pr number to the commit message.
-func findPRNumber(commit *github.RepositoryCommit) string {
+func findPRNumber(commit *github.RepositoryCommit) (error, string) {
 	re := regexp.MustCompile(`(?s)^.*\(#(?P<prNumber>\d*)?\)\s*$`)
 	messageReader := strings.NewReader(commit.Commit.GetMessage())
 	scanner := bufio.NewScanner(messageReader)
 	scanner.Scan()
 	matches := re.FindStringSubmatch(scanner.Text())
 	if len(matches) != 2 {
-		logrus.Fatalf("failed find PR number in first line of commit message: %s, found %d matched strings", scanner.Text(), len(matches))
+		return fmt.Errorf("failed find PR number in first line of commit message: %s, found %d matched strings", scanner.Text(), len(matches)), ""
 	}
-	return matches[1]
+	return nil, matches[1]
 }
 
 // verifyPR checks if pull request merge commit match provided commit SHA.
-func verifyPR(pr *github.PullRequest, commitSHA string) bool {
+func verifyPR(pr *github.PullRequest, commitSHA string) error {
 	if *pr.Merged {
 		if *pr.MergeCommitSHA != commitSHA {
-			logrus.Fatalf("commit SHA and matched PR merge commit SHA doesn't match")
+			return fmt.Errorf("commit SHA %s and matched PR merge commit SHA %s, doesn't match", commitSHA, *pr.MergeCommitSHA)
 		}
 	}
-	return true
+	return nil
 }
 
 // BuildPrTag will extract PR number from commit message, search PR, validate if correct PR was found and print pr tag.
-func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool) {
+func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool) (error, string) {
+	var (
+		ctx    = context.Background()
+		commit *github.RepositoryCommit
+	)
+
 	// create github client
-	client = github.NewClient(nil)
+	client := github.NewClient(nil)
 	if fromFlags {
 		// get commit for a branch
 		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef)
 		if err != nil {
-			logrus.WithError(err).Fatalf("failed get branch %s", jobSpec.Refs.BaseRef)
+			return fmt.Errorf("failed get branch %s, got error: %w", jobSpec.Refs.BaseRef, err), ""
 		}
 		commit = branch.GetCommit()
 		jobSpec.Refs.BaseSHA = *commit.SHA
@@ -59,31 +57,36 @@ func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool) {
 		// get git base reference from postsubmit environment variables
 		jobSpec, err = downwardapi.ResolveSpecFromEnv()
 		if err != nil {
-			logrus.WithError(err).Fatalf("failed to read JOB_SPEC prowjob env")
+			return fmt.Errorf("failed to read JOB_SPEC env, got error: %w", err), ""
 		}
 		// get commit details for base sha
 		commit, _, err = client.Repositories.GetCommit(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseSHA)
 		if err != nil {
-			logrus.WithError(err).Fatalf("failed get commit %s", jobSpec.Refs.BaseSHA)
+			return fmt.Errorf("failed get commit %s, got error: %w", jobSpec.Refs.BaseSHA, err), ""
 		}
 	}
 	// extract pull request number from commit message
-	prNumber, err := strconv.Atoi(findPRNumber(commit))
+	err, prNumberAsString := findPRNumber(commit)
 	if err != nil {
-		logrus.WithError(err).Fatalf("failed convert PR number to integer")
+		return fmt.Errorf("failed get PR number, got error: %w", err), ""
+	}
+	prNumber, err := strconv.Atoi(prNumberAsString)
+	if err != nil {
+		return fmt.Errorf("failed convert PR number to integer, got error: %w", err), ""
 	}
 	// get pull request details for extracted pr
 	pr, _, err := client.PullRequests.Get(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, prNumber)
 	if err != nil {
-		logrus.WithError(err).Fatalf("failed get Pull Request number %d", prNumber)
+		return fmt.Errorf("failed get Pull Request number %d, got error: %w", prNumber, err), ""
 	}
 	// check if correct pr was found
-	if verifyPR(pr, jobSpec.Refs.BaseSHA) {
-		if numberOnly {
-			fmt.Printf("%d", prNumber)
-		} else {
-			// print PR image tag
-			fmt.Printf("PR-%d", prNumber)
-		}
+	if err := verifyPR(pr, jobSpec.Refs.BaseSHA); err != nil {
+		return fmt.Errorf("pr verification failed, got error: %w", err), ""
+	}
+	if numberOnly {
+		return nil, fmt.Sprintf("%d", prNumber)
+	} else {
+		// print PR image tag
+		return nil, fmt.Sprintf("PR-%d", prNumber)
 	}
 }
