@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"k8s.io/test-infra/prow/apis/prowjobs/v1"
+	v1 "k8s.io/test-infra/prow/apis/prowjobs/v1"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
-	"os"
 )
 
 var (
