@@ -93,7 +93,7 @@ func Mainerr() error {
 
 	var messages []pkgSlack.Message
 
-	completionTime := "Not yet ended"
+	completionTime := "Not yet completed"
 	if cts.Status.CompletionTime != nil {
 		completionTime = cts.Status.CompletionTime.String()
 	}
