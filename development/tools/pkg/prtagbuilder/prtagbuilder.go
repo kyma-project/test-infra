@@ -17,7 +17,6 @@ var (
 	client *github.Client
 	ctx    = context.Background()
 	commit *github.RepositoryCommit
-	err    error
 )
 
 // findPRNumber match commit message with regex to extract pull request number. By default github add pr number to the commit message.
@@ -56,6 +55,7 @@ func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool) {
 		commit = branch.GetCommit()
 		jobSpec.Refs.BaseSHA = *commit.SHA
 	} else {
+		var err error
 		// get git base reference from postsubmit environment variables
 		jobSpec, err = downwardapi.ResolveSpecFromEnv()
 		if err != nil {
