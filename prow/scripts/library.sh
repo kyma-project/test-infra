@@ -36,8 +36,14 @@ function start_docker() {
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       authenticateDocker "${GOOGLE_APPLICATION_CREDENTIALS}"
     else
-      echo "Skipping docker authnetication in registry. No credentials provided."
+      echo "Skipping docker authentication in GCR. Credentials not provided."
     fi
+
+    if [[ -n "${DOCKER_HUB_USER}" ]]; then
+      echo "Authenticating in docker hub."
+      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin || exit 1
+    fi
+
     echo "Done setting up docker in docker."
 }
 
@@ -51,7 +57,7 @@ function authenticateSaGcr() {
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
       gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
     else
-      echo "No GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
+      echo "Environment variable GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS not present. Credentials not provided. Skipping authentication."
     fi
 
 }
@@ -228,9 +234,9 @@ function gkeCleanup() {
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-    #    shout "Delete Gateway DNS Record"
+        shout "Delete Gateway DNS Record"
         date
-    #    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
@@ -240,7 +246,7 @@ function gkeCleanup() {
     fi
 
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        shout "Docker image clenup"
+        shout "Docker image cleanup"
 
         if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
             shout "Delete temporary Compass-Installer Docker image"
@@ -260,9 +266,9 @@ function gkeCleanup() {
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        #shout "Delete Apiserver proxy DNS Record"
+        shout "Delete Apiserver proxy DNS Record"
         date
-        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
     fi
 
     MSG=""

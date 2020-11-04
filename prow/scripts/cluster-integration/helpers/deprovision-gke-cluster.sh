@@ -33,11 +33,23 @@ gcloud auth activate-service-account --key-file="${GCLOUD_SERVICE_KEY_PATH}"
 gcloud config set project "${GCLOUD_PROJECT_NAME}"
 gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
 
+declare -a GCLOUD_PARAMS
+
+GCLOUD_PARAMS+=("${CLUSTER_NAME}")
+GCLOUD_PARAMS+=("--quiet")
+
 # Check if removing regionl cluster.
 if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
   #Pass gke region name to delete command.
-  gcloud container clusters delete "${CLUSTER_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --quiet --async
-else
-  gcloud container clusters delete "${CLUSTER_NAME}" --quiet --async
+  GCLOUD_PARAMS+=("--region=${CLOUDSDK_COMPUTE_REGION}")
 fi
 
+if [ -z "${DISABLE_ASYNC_DEPROVISION+x}" ]; then
+    GCLOUD_PARAMS+=("--async")
+fi
+
+echo -e "\n---> Deleting cluster with following parameters."
+echo "${GCLOUD_PARAMS[@]}"
+echo -e "\n---> Deleting cluster"
+
+gcloud container clusters delete "${GCLOUD_PARAMS[@]}"
