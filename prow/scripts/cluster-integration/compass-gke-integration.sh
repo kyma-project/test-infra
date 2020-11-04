@@ -155,13 +155,13 @@ function applyKymaOverrides() {
     --label "component=api-gateway"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
-    --data "global.istio.gateway.name=compass-istio-gateway" \
-    --data "global.istio.gateway.namespace=compass-system" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
     --label "component=dex"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "ory-overrides" \
-    --data "global.istio.gateway.name=compass-istio-gateway" \
-    --data "global.istio.gateway.namespace=compass-system" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
     --label "component=ory"
 }
 
