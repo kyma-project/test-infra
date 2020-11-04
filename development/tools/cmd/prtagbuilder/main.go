@@ -19,10 +19,10 @@ var (
 		Short: "prtagbuilder will find pull request number for commit or branch head.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			numFlags := cmd.Flags().NFlag()
-			if numFlags == 1 && !cmd.Flags().Changed("numberOnly") || numFlags > 2 {
+			if numFlags == 1 && !cmd.Flags().Changed("numberOnly") || numFlags > 1 {
 				err := checkFlags(cmd.Flags())
 				if err != nil {
-					logrus.WithError(err).Fatalf("Required flag is empty")
+					return fmt.Errorf("required flag is empty, got error: %w", err)
 				}
 				if numFlags > 2 {
 					fromFlags = true
