@@ -18,20 +18,15 @@ var (
 		Use:   "prtagbuilder [-o, --org string], [-r, --repo string], [-b --baseref string], [-O --numberOnly]",
 		Short: "prtagbuilder will find pull request number for commit or branch head.",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if cmd.Flags().NFlag() == 1 {
-				if !cmd.Flags().Changed("numberOnly") {
-					err := checkFlags(cmd.Flags())
-					if err != nil {
-						logrus.WithError(err).Fatalf("Required flag is empty")
-					}
-				}
-			} else if cmd.Flags().NFlag() > 2 {
+			numFlags := cmd.Flags().NFlag()
+			if numFlags == 1 && !cmd.Flags().Changed("numberOnly") || numFlags > 2 {
 				err := checkFlags(cmd.Flags())
 				if err != nil {
 					logrus.WithError(err).Fatalf("Required flag is empty")
 				}
-				// set prtagbuilder to use data from flags
-				fromFlags = true
+				if numFlags > 2 {
+					fromFlags = true
+				}
 			}
 			prNumber, err := prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly)
 			if err != nil {
