@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-console-backend-service$
+    - ^release-(1\.17|1\.16|1\.15)-console-backend-service$
   run_if_changed: "^components/console-backend-service/|^common/makefiles/"
   spec:
     containers:

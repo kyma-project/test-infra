@@ -51,42 +51,40 @@ func TestKymaGKECompassIntegrationPresubmit(t *testing.T) {
 
 func TestKymaGKECompassIntegrationJobsReleases(t *testing.T) {
 	for _, currentRelease := range releases.GetAllKymaReleases() {
-		if currentRelease.IsNotOlderThan(releases.Release114) {
-			t.Run(currentRelease.String(), func(t *testing.T) {
-				jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-gke-compass-integration.yaml")
-				// THEN
-				require.NoError(t, err)
-				actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-compass-integration", currentRelease), currentRelease.Branch())
-				require.NotNil(t, actualPresubmit)
-				assert.False(t, actualPresubmit.Optional)
-				assert.False(t, actualPresubmit.SkipReport)
-				assert.True(t, actualPresubmit.Decorate)
-				assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-				tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-				tester.AssertThatHasPresets(t, actualPresubmit.JobBase,
-					"preset-kyma-guard-bot-github-token",
-					"preset-kyma-keyring",
-					"preset-kyma-encryption-key",
-					"preset-kms-gc-project-env",
-					"preset-sa-gke-kyma-integration",
-					"preset-gc-compute-envs",
-					"preset-gc-project-env",
-					"preset-docker-push-repository-gke-integration",
-					"preset-dind-enabled",
-					"preset-kyma-artifacts-bucket",
-					"preset-gardener-azure-kyma-integration",
-					"preset-build-release",
-				)
-				assert.False(t, actualPresubmit.AlwaysRun)
-				assert.Len(t, actualPresubmit.Spec.Containers, 1)
-				testContainer := actualPresubmit.Spec.Containers[0]
+		t.Run(currentRelease.String(), func(t *testing.T) {
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-gke-compass-integration.yaml")
+			// THEN
+			require.NoError(t, err)
+			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-compass-integration", currentRelease), currentRelease.Branch())
+			require.NotNil(t, actualPresubmit)
+			assert.False(t, actualPresubmit.Optional)
+			assert.False(t, actualPresubmit.SkipReport)
+			assert.True(t, actualPresubmit.Decorate)
+			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase,
+				"preset-kyma-guard-bot-github-token",
+				"preset-kyma-keyring",
+				"preset-kyma-encryption-key",
+				"preset-kms-gc-project-env",
+				"preset-sa-gke-kyma-integration",
+				"preset-gc-compute-envs",
+				"preset-gc-project-env",
+				"preset-docker-push-repository-gke-integration",
+				"preset-dind-enabled",
+				"preset-kyma-artifacts-bucket",
+				"preset-gardener-azure-kyma-integration",
+				"preset-build-release",
+			)
+			assert.False(t, actualPresubmit.AlwaysRun)
+			assert.Len(t, actualPresubmit.Spec.Containers, 1)
+			testContainer := actualPresubmit.Spec.Containers[0]
 
-				assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
+			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 
-				assert.Len(t, testContainer.Command, 1)
-				tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-			})
-		}
+			assert.Len(t, testContainer.Command, 1)
+			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
+		})
 	}
 }
 

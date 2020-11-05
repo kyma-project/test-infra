@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-application-broker$
+    - ^release-(1\.17|1\.16|1\.15)-application-broker$
   run_if_changed: "^components/application-broker/|^common/makefiles/"
   spec:
     containers:

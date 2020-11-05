@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^release-(1\.17)-subscription-cleanup-job$
   run_if_changed: "^components/subscription-cleanup-job/|^scripts/"
   spec:
     containers:

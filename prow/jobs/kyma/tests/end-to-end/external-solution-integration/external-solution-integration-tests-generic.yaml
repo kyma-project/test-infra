@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-external-solution-integration$
+    - ^release-(1\.17|1\.16|1\.15)-external-solution-integration$
   run_if_changed: "^tests/end-to-end/external-solution-integration/|^common/makefiles/"
   spec:
     containers:

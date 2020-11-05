@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-event-subscriber$
+    - ^release-(1\.17|1\.16|1\.15)-event-subscriber$
   run_if_changed: "^tools/event-subscriber/|^common/makefiles/"
   spec:
     containers:

@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^release-(1\.17)-event-publisher-proxy$
   run_if_changed: "^components/event-publisher-proxy/|^common/makefiles/"
   spec:
     containers:

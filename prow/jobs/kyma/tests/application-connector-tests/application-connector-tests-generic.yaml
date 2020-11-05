@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-application-connector-tests$
+    - ^release-(1\.17|1\.16|1\.15)-application-connector-tests$
   run_if_changed: "^tests/application-connector-tests/|^common/makefiles/"
   spec:
     containers:

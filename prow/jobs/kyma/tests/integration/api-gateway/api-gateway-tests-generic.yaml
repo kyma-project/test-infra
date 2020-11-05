@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-api-gateway$
+    - ^release-(1\.17|1\.16|1\.15)-api-gateway$
   run_if_changed: "^tests/integration/api-gateway/|^common/makefiles/"
   spec:
     containers:
