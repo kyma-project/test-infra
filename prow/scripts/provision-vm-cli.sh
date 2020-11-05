@@ -128,6 +128,36 @@ for i in $(seq 1 5); do
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma version" && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
+
+shout "Create local resources for a sample Function"
+date
+for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma init function" && break;
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+done;
+shout "Apply local resources for the Function to the Kyma cluster"
+date
+for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma apply function" && break;
+    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
+done;
+echo "Check if the Function is running"
+date
+attempts=3
+for ((i=1; i<=attempts; i++)); do
+    result=$(gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'")
+    if [[ "$result" == *"Running"* ]]; then
+        echo "The Function is in Running state"
+        break
+    elif [[ "${i}" == "${attempts}" ]]; then
+        echo "ERROR: The Function is in ${result} state"
+        exit 1
+    fi
+    echo "Sleep for 15 seconds"
+    sleep 15
+done
 shout "Running a simple test on Kyma"
 date
 for i in $(seq 1 5); do
