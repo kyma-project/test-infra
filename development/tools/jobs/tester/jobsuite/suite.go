@@ -19,7 +19,7 @@ type JobConfigPathProvider interface {
 }
 
 // CheckFilesAreTested function
-func CheckFilesAreTested(repos map[string]struct{}, testedConfigurations map[string]struct{}, jobBasePath string, subfolders ...string) func(t *testing.T) {
+func CheckFilesAreTested(repos map[string]struct{}, testedConfigurations map[string]struct{}, jobBasePath string, subfolders []string) func(t *testing.T) {
 	return func(t *testing.T) {
 		for repo := range repos {
 			var err error

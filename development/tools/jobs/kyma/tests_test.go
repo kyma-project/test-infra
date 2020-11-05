@@ -154,5 +154,5 @@ func TestTestJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "tests"))
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, []string{"tests"}))
 }
