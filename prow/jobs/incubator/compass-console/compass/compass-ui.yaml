@@ -8,7 +8,7 @@ test_infra_ref: &test_infra_ref
 
 job_template: &job_template
   decorate: true
-  path_alias: github.com/kyma-incubator/compass
+  path_alias: github.com/kyma-incubator/compass-console
   max_concurrency: 10
   labels:
     preset-dind-enabled: "true"
@@ -19,8 +19,9 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^main$
     - ^release-(1\.16)-compass$
-  run_if_changed: "^components/console/compass/|^scripts/"
+  run_if_changed: "^compass/|^components/|^shared/|^package.json"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
@@ -29,22 +30,22 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/console/compass"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass-console/compass"
         resources:
           requests:
             memory: 1.5Gi
             cpu: 0.8
 
 presubmits: # runs on PRs
-  kyma-incubator/compass:
-    - name: pre-compass-components-console-compass
+  kyma-incubator/compass-console:
+    - name: pre-compass-console-compass
       cluster: untrusted-workload
       optional: false
       <<: *job_template
 
 postsubmits:
-  kyma-incubator/compass:
-    - name: post-compass-components-console-compass
+  kyma-incubator/compass-console:
+    - name: post-compass-console-compass
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"

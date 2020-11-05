@@ -83,6 +83,15 @@ func CompassRepo() Option {
 	}
 }
 
+// CompassConsoleRepo function returns Option type
+func CompassConsoleRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-incubator/compass-console"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoIncubator
+		suite.BuildPresetMaster = preset.BuildMaster
+	}
+}
+
 // ControlPlaneRepo function returns Option type
 func ControlPlaneRepo() Option {
 	return func(suite *Config) {

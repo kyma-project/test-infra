@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^main$
     - ^release-(1\.16|1\.15|1\.14)-tests$
   run_if_changed: "^tests/|^components/|^shared/|^package.json"
   spec:
