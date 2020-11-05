@@ -32,6 +32,18 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
 
+    - name: pre-rel117-kyma-artifacts
+      cluster: untrusted-workload
+      branches:
+        - release-1.17
+      <<: *job_template
+      always_run: false
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.17
+      labels:
+        <<: *job_labels_template
+
     - name: pre-rel116-kyma-artifacts
       cluster: untrusted-workload
       branches:
@@ -53,18 +65,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.15
-      labels:
-        <<: *job_labels_template
-
-    - name: pre-rel114-kyma-artifacts
-      cluster: untrusted-workload
-      branches:
-        - release-1.14
-      <<: *job_template
-      always_run: false
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.14
       labels:
         <<: *job_labels_template
 

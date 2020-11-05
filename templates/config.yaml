@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.17"
+  nextRelease: "1.18"
   releases:
+    - "1.17"
     - "1.16"
     - "1.15"
-    - "1.14"
   whitesource:
     - name: "control-plane"
       language: "golang-mod"

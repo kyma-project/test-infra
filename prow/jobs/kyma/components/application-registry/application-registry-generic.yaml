@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-application-registry$
+    - ^release-(1\.17|1\.16|1\.15)-application-registry$
   run_if_changed: "^components/application-registry/|^common/makefiles/"
   spec:
     containers:

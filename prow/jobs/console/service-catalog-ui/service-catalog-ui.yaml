@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-service-catalog-ui$
+    - ^release-(1\.17|1\.16|1\.15)-service-catalog-ui$
   run_if_changed: "^service-catalog-ui/|^components/|^shared/|^package.json"
   spec:
     containers:

@@ -20,7 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
-    - ^release-(1\.16|1\.15|1\.14)-knative-channel-kafka$
+    - ^release-(1\.17|1\.16|1\.15)-knative-channel-kafka$
   run_if_changed: "^tests/contract/knative-channel-kafka/|^common/makefiles/"
   spec:
     containers:
