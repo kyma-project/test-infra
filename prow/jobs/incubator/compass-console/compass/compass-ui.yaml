@@ -19,6 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^main$
     - ^release-(1\.16)-compass$
   run_if_changed: "^compass/|^components/|^shared/|^package.json"
   spec:

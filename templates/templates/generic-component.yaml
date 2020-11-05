@@ -49,6 +49,7 @@ job_template: &job_template
   branches:
 {{- if $isValidForNextRelease }}
     - ^master$
+    - ^main$
 {{- end }}
 {{- if ne $releaseBranchPattern "" }}
     - {{ $releaseBranchPattern }}
