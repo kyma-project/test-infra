@@ -49,6 +49,8 @@ const (
 	ImageBootstrap20181204 = "eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be"
 	// ImageBootstrap20190604 represents boostrap image published on 2019.06.04
 	ImageBootstrap20190604 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20190604-d08e7fe"
+	// ImageBootstrap20201009 represents boostrap image published on 2019.06.04
+	ImageBootstrap20201009 = "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352"
 	// ImageBootstrap001 represents version 0.0.1 of bootstrap image
 	ImageBootstrap001 = "eu.gcr.io/kyma-project/prow/bootstrap:0.0.1"
 	// ImageKymaIntegrationK14 represents kyma integration image with kubectl 1.14

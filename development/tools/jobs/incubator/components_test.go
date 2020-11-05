@@ -111,15 +111,15 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "compass",
+		name:  "compass-console",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			func(suite *jobsuite.Config) {
-				suite.Path = "compass/components/console/compass"
+				suite.Path = "compass-console/compass"
 			},
 			jobsuite.JobFileSuffix("ui"),
-			jobsuite.CompassRepo(),
+			jobsuite.CompassConsoleRepo(),
 			jobsuite.Since(releases.Release116),
 		},
 	},
@@ -149,5 +149,5 @@ func TestComponentJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components"))
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components", "compass"))
 }

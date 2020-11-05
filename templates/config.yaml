@@ -155,6 +155,16 @@ compass_generic_component: &compass_generic_component
   additionalRunIfChanged:
     - ^scripts/
 
+compass_console_generic_component: &compass_console_generic_component
+  repository: github.com/kyma-incubator/compass-console
+  pushRepository: incubator
+  build: build
+  bootstrapTag: v20201009-ec3cc352
+  additionalRunIfChanged:
+    - ^components/
+    - ^shared/
+    - ^package.json
+
 control_plane_generic_component: &control_plane_generic_component
   repository: github.com/kyma-project/control-plane
   build: build
@@ -372,11 +382,11 @@ templates:
           since: "1.16"
           optional: true
           additionalRunIfChanged: # necessary so that it overrides the additionalRunIfChanged property from compass_generic_component and thus does not include the /scripts folder
-      - to: ../prow/jobs/incubator/compass/components/console/compass/compass-ui.yaml
+      - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
         values:
           <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/console/compass
+          <<: *compass_console_generic_component
+          path: compass
           since: "1.16"
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
