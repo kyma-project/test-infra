@@ -154,6 +154,8 @@ function applyKymaOverrides() {
     --data "tests.env.gatewayNamespace=compass-system" \
     --label "component=api-gateway"
 
+  shout "Testing custom implementation of prow jobs!"
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
     --data "global.istio.gateway.name=kyma-gateway" \
     --data "global.istio.gateway.namespace=kyma-system" \
