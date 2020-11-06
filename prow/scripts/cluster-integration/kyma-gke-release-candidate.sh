@@ -151,20 +151,34 @@ date
 init
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-shout "Reserve IP Address for Ingressgateway"
-date
-GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
-CLEANUP_GATEWAY_IP_ADDRESS="true"
-echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
-
-
-shout "Create DNS Record for Ingressgateway IP"
-date
+#shout "Reserve IP Address for Ingressgateway"
+#date
+#GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
+#GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+#CLEANUP_GATEWAY_IP_ADDRESS="true"
+#echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
+#
+#
+#shout "Create DNS Record for Ingressgateway IP"
+#date
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-CLEANUP_GATEWAY_DNS_RECORD="true"
-IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+#CLEANUP_GATEWAY_DNS_RECORD="true"
+#IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 
+# get IP which is already present in the DNS zone
+# we will manually add the IP address and DNS record as for now...
+ATTEMPTS=60
+while [ $ATTEMPTS -gt 0 ]; do
+  GATEWAY_IP_ADDRESS=$(dig +short "$GATEWAY_DNS_FULL_NAME" | awk '{ print ; exit }')
+  if [ -n "$GATEWAY_IP_ADDRESS" ]; then
+    echo "Resolved the host $GATEWAY_DNS_FULL_NAME to IP $GATEWAY_IP_ADDRESS"
+    break
+  fi
+  # address might have not yet to propagate over the DNS zone. Wait a bit for propagation
+  echo "Address not yet present. Try again..."
+  sleep 10
+  ATTEMPTS=$((ATTEMPTS - 1))
+done
 
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 if [ "$NETWORK_EXISTS" -gt 0 ]; then
