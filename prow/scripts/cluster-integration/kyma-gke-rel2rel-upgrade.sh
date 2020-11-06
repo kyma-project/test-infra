@@ -77,10 +77,19 @@ getSourceVersion() {
     echo "${version}"
 }
 
+
+function getLastRCVersion() {
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
+
+  echo "${version}"
+}
+
 downloadAssets() {
     mkdir -p /tmp/kyma-gke-upgradeability
 
-    SOURCE_VERSION=$(getSourceVersion)
+    #SOURCE_VERSION=$(getSourceVersion)
+    SOURCE_VERSION=$(getLastRCVersion)
     TARGET_VERSION="${PULL_BASE_REF}"
 
     shout "Upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
@@ -215,7 +224,7 @@ installKyma() {
         --data "global.tlsCrt=${TLS_CERT}" \
         --data "global.tlsKey=${TLS_KEY}"
 
-      cat << EOF > "$PWD/kyma_istio_operator"
+    cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
