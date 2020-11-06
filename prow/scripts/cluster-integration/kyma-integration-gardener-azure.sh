@@ -281,7 +281,7 @@ test_kyma(){
         --name "${SUITE_NAME}" \
         --concurrency "${CONCURRENCY}" \
         --max-retries 1 \
-        --timeout 90m \
+        --timeout 120m \
         --watch \
         --non-interactive
     set +x

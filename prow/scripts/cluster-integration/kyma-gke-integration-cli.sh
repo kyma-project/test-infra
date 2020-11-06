@@ -167,7 +167,7 @@ kyma install \
     --domain "${DOMAIN}" \
     --tlsCert "${TLS_CERT}" \
     --tlsKey "${TLS_KEY}" \
-    --timeout 60m
+    --timeout 90m
 
 shout "Checking the versions"
 date
