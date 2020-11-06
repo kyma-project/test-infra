@@ -190,6 +190,15 @@ function applyCompassOverrides() {
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --label "component=compass"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
+    --data "global.agentPreconfiguration=true" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
+    --data "global.connector.secrets.ca.name=connector-service-app-ca" \
+    --data "global.connector.secrets.ca.namespace=kyma-integration" \
+    --data "gateway.gateway.enabled=false" \
+    --label "component=compass"
 }
 
 function applyCommonOverrides() {
@@ -221,7 +230,8 @@ function installKyma() {
   applyKymaOverrides
 
   if [[ "$BUILD_TYPE" == "pr" ]]; then
-    COMPASS_VERSION="PR-${PULL_NUMBER}"
+#    COMPASS_VERSION="PR-${PULL_NUMBER}"
+    COMPASS_VERSION="PR-1596"
   else
     COMPASS_VERSION="master-${COMMIT_ID}"
   fi
