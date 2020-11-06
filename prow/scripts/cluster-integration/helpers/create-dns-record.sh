@@ -95,4 +95,6 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 done
 
 echo "Cannot resolve ${DNS_FULL_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."
-exit 1
+log::warn "WARNING! I will continue anyway... Kyma installation may fail!"
+#TODO: fix it
+#exit 1
