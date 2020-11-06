@@ -89,7 +89,8 @@ downloadAssets() {
     mkdir -p /tmp/kyma-gke-upgradeability
 
     #SOURCE_VERSION=$(getSourceVersion)
-    SOURCE_VERSION=$(getLastRCVersion)
+    #SOURCE_VERSION=$(getLastRCVersion)
+    SOURCE_VERSION="1.16.0-rc3"
     TARGET_VERSION="${PULL_BASE_REF}"
 
     shout "Upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
