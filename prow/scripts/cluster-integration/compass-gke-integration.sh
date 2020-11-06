@@ -231,7 +231,7 @@ function installKyma() {
 
   if [[ "$BUILD_TYPE" == "pr" ]]; then
 #    COMPASS_VERSION="PR-${PULL_NUMBER}"
-    COMPASS_VERSION="PR-1603"
+    COMPASS_VERSION="PR-1596"
   else
     COMPASS_VERSION="master-${COMMIT_ID}"
   fi
