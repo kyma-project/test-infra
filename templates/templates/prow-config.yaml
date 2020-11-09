@@ -81,7 +81,7 @@ presets:
       - name: GOOGLE_APPLICATION_CREDENTIALS
         value: /etc/credentials/sa-gke-kyma-integration/service-account.json
       - name: CLOUDSDK_DNS_ZONE_NAME
-        value: "build-kyma-workloads" #GCloud DNS Zone Name (NOT it's DNS name!)
+        value: "Z00179973ENN5MQ3DYHYE" #GCP CloudDNS - Zone Name / AWS Route53 - Hosted Zone ID
       - name: KYMA_PROJECT_DIR
         value: "/home/prow/go/src/github.com/kyma-project"
     volumes:
@@ -209,6 +209,24 @@ presets:
       - name: az-kyma-prow-credentials
         mountPath: /etc/credentials/az-kyma-prow-credentials
 
+  - labels:
+      preset-aws-dns-sa-kyma-integration: "true"
+    env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-dns-sa
+          key: aws_access_key_id
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-dns-sa
+          key: aws_secret_access_key
+    - name: AWS_DEFAULT_REGION
+      valueFrom:
+        secretKeyRef:
+          name: aws-dns-sa
+          key: aws_default_region
   - labels:
       preset-dind-enabled: "true"
     env:
