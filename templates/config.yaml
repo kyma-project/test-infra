@@ -536,7 +536,7 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
-          until: "1.16"
+          until: "1.17"
           optional: true
       - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
         values:
