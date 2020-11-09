@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common \
     lsb-release \
     gettext \
+    unzip \
     && apt-get clean
 
 # Docker-in-docker
@@ -109,7 +110,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     software-properties-common \
     dirmngr \
-    gnupg2
+    gnupg2 \
+    && apt-get clean
 
 ENV AZURE_CLI_VERSION="2.2.0-1~buster"
 
@@ -118,7 +120,8 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(lsb_release -cs)" main" | \
     tee /etc/apt/sources.list.d/azure-cli.list && \
     apt-get update && \
-    apt-get install -y azure-cli=${AZURE_CLI_VERSION}
+    apt-get install -y azure-cli=${AZURE_CLI_VERSION} \
+    && apt-get clean
 
 #################################################################
 ########################## Prow Tools ###########################
@@ -149,3 +152,15 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     gcloud components install alpha beta kubectl docker-credential-gcr && \
     gcloud info | tee /workspace/gcloud-info.txt && \
     mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
+
+#################################################################
+######################## Install AWS CLI ########################
+#################################################################
+
+
+ENV AWSCLI_VERSION=2.0.62
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip" -o "awscliv2.zip" && \
+    unzip -qq awscliv2.zip && \
+    sudo ./aws/install && \
+    rm -rf aws awscliv2.zip
