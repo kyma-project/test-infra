@@ -152,7 +152,19 @@ metadata:
     kyma-project.io/installation: ""
     component: istio
 data:
-  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+  kyma_istio_operator: |
+    apiVersion: install.istio.io/v1alpha1
+    kind: IstioOperator
+    metadata:
+      namespace: istio-system
+    spec:
+      components:
+        ingressGateways:
+          - name: istio-ingressgateway
+            k8s:
+              service:
+                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+                type: LoadBalancer
 EOF
 )
 
@@ -166,7 +178,8 @@ kyma install \
     -o "${COMPONENT_OVERRIDES_FILE}" \
     --domain "${DOMAIN}" \
     --tlsCert "${TLS_CERT}" \
-    --tlsKey "${TLS_KEY}"
+    --tlsKey "${TLS_KEY}" \
+    --timeout 90m
 
 shout "Checking the versions"
 date
@@ -182,6 +195,34 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
+shout "Create local resources for a sample Function"
+date
+
+kyma init function
+
+shout "Apply local resources for the Function to the Kyma cluster"
+date
+
+kyma apply function
+
+sleep 15
+
+shout "Check if the Function is running"
+date
+
+attempts=3
+for ((i=1; i<=attempts; i++)); do
+    result=$(kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}')
+    if [[ "$result" == *"Running"* ]]; then
+        echo "The Function is in Running state"
+        break
+    elif [[ "${i}" == "${attempts}" ]]; then
+        echo "ERROR: The Function is in ${result} state"
+        exit 1
+    fi
+    echo "Sleep for 15 seconds"
+    sleep 15
+done
 
 shout "Running Kyma tests"
 date
