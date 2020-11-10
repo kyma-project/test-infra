@@ -49,6 +49,7 @@ job_template: &job_template
   branches:
 {{- if $isValidForNextRelease }}
     - ^master$
+    - ^main$
 {{- end }}
 {{- if ne $releaseBranchPattern "" }}
     - {{ $releaseBranchPattern }}
@@ -56,7 +57,7 @@ job_template: &job_template
   run_if_changed: "{{ $runIfChanged }}"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:{{ .Values.bootstrapTag }}
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:{{ .Values.bootstrapTag }}
         securityContext:
           privileged: true
         command:

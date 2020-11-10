@@ -19,11 +19,12 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-service-binding-usage-controller$
+    - ^main$
+    - ^release-(1\.17|1\.16|1\.15)-service-binding-usage-controller$
   run_if_changed: "^components/service-binding-usage-controller/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
         securityContext:
           privileged: true
         command:

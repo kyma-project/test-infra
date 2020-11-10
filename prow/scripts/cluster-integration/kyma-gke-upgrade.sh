@@ -5,6 +5,7 @@
 #
 # Expected vars:
 #
+#  - SCENARIO_TYPE - Set up by prow, upgrade test scenario
 #  - REPO_OWNER - Set up by prow, repository owner/organization
 #  - REPO_NAME - Set up by prow, repository name
 #  - BUILD_TYPE - Set up by prow, pr/master/release
@@ -123,19 +124,20 @@ cleanup() {
     log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
 
     #save disk names while the cluster still exists to remove them later
-    DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-    export DISKS
+    #DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+    #export DISKS
 
     #Delete cluster
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
 
     #Delete orphaned disks
-    log::info "Delete orphaned PVC disks..."
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+    #log::info "Delete orphaned PVC disks..."
+    #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
   fi
 
   if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
     log::info "Delete Gateway DNS Record"
+    date
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
   fi
 
@@ -151,6 +153,7 @@ cleanup() {
 
   if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
     log::info "Delete Apiserver proxy DNS Record"
+    date
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
   fi
 
@@ -172,8 +175,7 @@ function installCli() {
 runTestLogCollector() {
   if [ "${enableTestLogCollector}" = true ]; then
     if [[ "$BUILD_TYPE" == "master" ]]; then
-      shout "Install test-log-collector"
-      date
+      log::info "Install test-log-collector"
       export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
       (
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
@@ -290,11 +292,18 @@ function getLastReleaseVersion() {
   echo "${version}"
 }
 
+function getLastRCVersion() {
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
+  
+  echo "${version}"
+}
+
 function installKyma() {
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
   mkdir -p /tmp/kyma-gke-upgradeability
-  LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-
+  # LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+  LAST_RELEASE_VERSION=$(getLastRCVersion)
   if [ -z "$LAST_RELEASE_VERSION" ]; then
     log::error "Couldn't grab latest version from GitHub API, stopping."
     exit 1
@@ -319,28 +328,24 @@ function installKyma() {
     --data "global.tlsCrt=${TLS_CERT}" \
     --data "global.tlsKey=${TLS_KEY}"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-        --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-        --label "component=istio"
+cat << EOF > "$PWD/kyma_istio_operator"
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
 
-# cat << EOF > "$PWD/kyma_istio_operator"
-# apiVersion: install.istio.io/v1alpha1
-# kind: IstioOperator
-# metadata:
-#   namespace: istio-system
-# spec:
-#   components:
-#     ingressGateways:
-#       - name: istio-ingressgateway
-#         k8s:
-#           service:
-#             loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-#             type: LoadBalancer
-# EOF
-
-#     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-#         --label "component=istio" \
-#         --file "$PWD/kyma_istio_operator"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+        --label "component=istio" \
+        --file "$PWD/kyma_istio_operator"
 
   log::info "Use released artifacts from version ${LAST_RELEASE_VERSION}"
 
@@ -459,7 +464,9 @@ function upgradeKyma() {
   else
     upgradeKymaToCommit
   fi
+}
 
+function createDNSRecord() {
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
@@ -493,6 +500,25 @@ function testKyma() {
   testing::remove_addons_if_necessary
 }
 
+function applyScenario() {
+  if [ "$SCENARIO_TYPE" == "pre" ]; then
+    upgradeKyma
+    createDNSRecord
+    upgradeKyma
+  elif [ "$SCENARIO_TYPE" == "post" ]; then
+    testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
+    upgradeKyma
+    createDNSRecord
+    testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+  elif [ "$SCENARIO_TYPE" == "release" ]; then
+    testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
+    upgradeKyma
+    createDNSRecord
+    upgradeKyma
+    testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+  fi
+}
+
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -514,11 +540,7 @@ createTestResources
 
 enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
-testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
-
-upgradeKyma
-
-testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
+applyScenario
 
 log::success "Job finished with success"
 

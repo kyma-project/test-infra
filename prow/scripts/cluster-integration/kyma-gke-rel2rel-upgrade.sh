@@ -57,74 +57,12 @@ export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="tests"
 
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
-cleanup() {
-    ## Save status of failed script execution
-    EXIT_STATUS=$?
-
-    if [[ "${ERROR_LOGGING_GUARD}" = "true" ]]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
-
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
-    set +e
-
-    if [[ -n "${CLEANUP_CLUSTER}" ]]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
-
-        #save disk names while the cluster still exists to remove them later
-        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        export DISKS
-
-        #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-
-        #Delete orphaned disks
-        shout "Delete orphaned PVC disks..."
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-    fi
-
-    if [[ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]]; then
-        shout "Delete Gateway DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-    fi
-
-    if [[ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]]; then
-        shout "Release Gateway IP Address"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-    fi
-
-    if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-    fi
-
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        shout "Delete Apiserver proxy DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    fi
-
-    MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
-    set -e
-
-    exit "${EXIT_STATUS}"
-}
-
-trap cleanup EXIT INT
+trap gkeCleanup EXIT INT
 
 getSourceVersion() {
     releaseIndex=2
@@ -139,10 +77,20 @@ getSourceVersion() {
     echo "${version}"
 }
 
+
+function getLastRCVersion() {
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
+
+  echo "${version}"
+}
+
 downloadAssets() {
     mkdir -p /tmp/kyma-gke-upgradeability
 
-    SOURCE_VERSION=$(getSourceVersion)
+    #SOURCE_VERSION=$(getSourceVersion)
+    #SOURCE_VERSION=$(getLastRCVersion)
+    SOURCE_VERSION="1.16.0-rc3"
     TARGET_VERSION="${PULL_BASE_REF}"
 
     shout "Upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
@@ -277,7 +225,7 @@ installKyma() {
         --data "global.tlsCrt=${TLS_CERT}" \
         --data "global.tlsKey=${TLS_KEY}"
 
-      cat << EOF > "$PWD/kyma_istio_operator"
+    cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:

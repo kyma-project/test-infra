@@ -19,11 +19,12 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^main$
     - ^release-.*-rafter$
   run_if_changed: "^tests/rafter/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
         securityContext:
           privileged: true
         command:

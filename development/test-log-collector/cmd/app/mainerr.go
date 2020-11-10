@@ -1,10 +1,7 @@
 package app
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"time"
 
@@ -73,18 +70,18 @@ func Mainerr() error {
 		return errors.Wrapf(err, "while listing ClusterTestSuites")
 	}
 
-	newestCts, err := getNewestClusterTestSuite(ctsList)
+	cts, err := getClusterTestSuite(ctsList)
 	if err != nil {
 		return errors.Wrap(err, "while getting newest ClusterTestSuite")
 	}
 
-	logf.Infof("Newest ClusterTestSuite name: %s", newestCts.Name)
+	logf.Infof("Newest ClusterTestSuite name: %s", cts.Name)
 
 	logf.Info("Listing test pods")
 
 	selector := labels.SelectorFromSet(map[string]string{
 		octopusTypes.LabelKeyCreatedByOctopus: "true",
-		octopusTypes.LabelKeySuiteName:        newestCts.Name,
+		octopusTypes.LabelKeySuiteName:        cts.Name,
 	})
 
 	pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{
@@ -95,6 +92,11 @@ func Mainerr() error {
 	}
 
 	var messages []pkgSlack.Message
+
+	completionTime := "Not yet completed"
+	if cts.Status.CompletionTime != nil {
+		completionTime = cts.Status.CompletionTime.String()
+	}
 
 	for _, pod := range pods.Items {
 		testName, ok := pod.Labels[octopusTypes.LabelKeyTestDefName]
@@ -107,7 +109,7 @@ func Mainerr() error {
 			return errors.Wrapf(err, "while getting dispatching config for %s test suite", testName)
 		}
 
-		status, err := extractTestStatus(testName, newestCts)
+		status, err := extractTestStatus(testName, cts)
 		if err != nil {
 			return errors.Wrapf(err, "while extracting test status from ClusterTestSuite for label %s", testName)
 		}
@@ -134,12 +136,12 @@ func Mainerr() error {
 			Attributes: pkgSlack.Attributes{
 				Name:             testName,
 				Status:           string(status),
-				ClusterTestSuite: newestCts.Name,
-				CompletionTime:   newestCts.Status.CompletionTime.String(),
+				ClusterTestSuite: cts.Name,
+				CompletionTime:   completionTime,
 			},
 		}
 
-		data, err := consumeRequest(req)
+		data, err := req.DoRaw()
 		if err != nil {
 			// one of the possible things in test is like a failed init container, in which case we send error as string
 			reqErr := errors.Wrapf(err, "while reading request from container %s in pod %s in namespace %s", container, pod.Name, pod.Namespace)
@@ -153,7 +155,7 @@ func Mainerr() error {
 	}
 
 	logf.Info("Uploading logs to appropriate slack thread")
-	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, newestCts.Name, newestCts.Status.CompletionTime.String()); err != nil {
+	if err := slackClient.UploadLogFiles(messages, conf.ProwJobName, cts.Name, completionTime); err != nil {
 		return errors.Wrap(err, "while uploading files to slack thread")
 	}
 	return nil
@@ -190,56 +192,13 @@ func getTestContainerName(pod corev1.Pod) (string, error) {
 	return names[0], nil
 }
 
-// consumeRequest reads the data from request and writes into
-// the out writer. It buffers data from requests until the newline or io.EOF
-// occurs in the data, so it doesn't interleave logs sub-line
-// when running concurrently.
-//
-// A successful read returns err == nil, not err == io.EOF.
-// Because the function is defined to read from request until io.EOF, it does
-// not treat an io.EOF as an error to be reported.
-func consumeRequest(request restclient.ResponseWrapper) ([]byte, error) {
-	var b bytes.Buffer
-	readCloser, err := request.Stream()
-	if err != nil {
-		return []byte{}, err
-	}
-	defer readCloser.Close()
-
-	r := bufio.NewReader(readCloser)
-	for {
-		bytesln, err := r.ReadBytes('\n')
-		if _, err := b.Write(bytesln); err != nil {
-			return []byte{}, err
-		}
-
-		if err != nil {
-			if err != io.EOF {
-				return []byte{}, err
-			}
-			return b.Bytes(), nil
-		}
-	}
-}
-
-func getNewestClusterTestSuite(ctsList octopusTypes.ClusterTestSuiteList) (octopusTypes.ClusterTestSuite, error) {
+func getClusterTestSuite(ctsList octopusTypes.ClusterTestSuiteList) (octopusTypes.ClusterTestSuite, error) {
 	if len(ctsList.Items) == 0 {
 		return octopusTypes.ClusterTestSuite{}, errors.New("there's no ClusterTestSuites")
 	}
 
-	newest := ctsList.Items[0]
-
-	for _, cts := range ctsList.Items {
-		if newest.Status.CompletionTime.Before(cts.Status.CompletionTime) {
-			newest = cts
-		}
-	}
-
-	if newest.Status.CompletionTime == nil {
-		return octopusTypes.ClusterTestSuite{}, fmt.Errorf("no ClusterTestSuite has been completed yet")
-	}
-
-	return newest, nil
+	// in our pipelines there's only 1 cts at a time
+	return ctsList.Items[0], nil
 }
 
 func extractTestStatus(defName string, cts octopusTypes.ClusterTestSuite) (octopusTypes.TestStatus, error) {

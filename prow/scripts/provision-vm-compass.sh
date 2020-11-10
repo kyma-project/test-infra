@@ -98,6 +98,9 @@ done || exit 1
 
 trap cleanup exit INT
 
+chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
+mkdir -p /home/prow/go/src/github.com/kyma-incubator/compass/components/console/shared/build
+
 shout "Copying Compass to the instance"
 
 for i in $(seq 1 5); do

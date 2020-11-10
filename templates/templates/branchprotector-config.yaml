@@ -66,6 +66,14 @@ branch-protection:
           branches:
             master:
               protect: true
+              required_status_checks:
+                strict: true
+        compass-console:
+          branches:
+            main:
+              protect: true
+              required_status_checks:
+                strict: true
         marketplaces:
           protect: true
         documentation-component:

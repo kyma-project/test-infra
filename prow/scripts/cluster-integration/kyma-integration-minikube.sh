@@ -86,7 +86,8 @@ kyma test run \
           --watch \
           --max-retries=1 \
           --name="${testsuiteName}" \
-          --timeout="${KYMA_TEST_TIMEOUT}"
+          --timeout="${KYMA_TEST_TIMEOUT}" \
+          --selector kyma-project.io/test.integration=true
 
 ENDTIME=$(date +%s)
 echo "  Test time: $((ENDTIME - STARTTIME)) seconds."
@@ -94,6 +95,12 @@ echo "  Test time: $((ENDTIME - STARTTIME)) seconds."
 echo "  Test summary"
 kyma test status "${testsuiteName}" -owide
 statusSucceeded=$(kubectl get cts "${testsuiteName}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
+
+# disable exit on error to get as many logs as possible
+set +e
+
+echo "  Generate junit results"
+kyma test status "${testsuiteName}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > junit_kyma_octopus-test-suite.xml
 if [[ "${statusSucceeded}" != *"True"* ]]; then
   echo "- Fetching logs from testing pods in Failed status..."
   kyma test logs "${testsuiteName}" --test-status Failed
@@ -105,6 +112,5 @@ if [[ "${statusSucceeded}" != *"True"* ]]; then
   kyma test logs "${testsuiteName}" --test-status Running
   exit 1
 fi
-echo "  Generate junit results"
-kyma test status "${testsuiteName}" -ojunit | sed 's/ (executions: [0-9]*)"/"/g' > junit_kyma_octopus-test-suite.xml
+
 echo "--> Success"

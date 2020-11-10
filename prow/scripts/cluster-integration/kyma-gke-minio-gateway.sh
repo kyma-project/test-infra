@@ -87,16 +87,16 @@ cleanup() {
         date
 
         #save disk names while the cluster still exists to remove them later
-        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        export DISKS
+        #DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        #export DISKS
 
         #Delete cluster
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
 
         #Delete orphaned disks
-        shout "Delete orphaned PVC disks..."
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+        #shout "Delete orphaned PVC disks..."
+        #date
+        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then

@@ -58,6 +58,35 @@ presets:
         value: kyma-minio-gateway
       - name: AZURE_REGION
         value: westeurope
+  {{- range .Values.gkeVersions }}
+  - labels:
+      {{- $ch := printf "_%v_default" .channel }}
+      {{- $ver := default  $ch .version }}
+      {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+        preset-gke-ver{{ $preset }}: "true"
+    env:
+      {{- if .version }}
+      - name: CLUSTER_VERSION
+        value: {{ .version }}
+      {{- end }}
+      - name: RELEASE_CHANNEL
+        value: {{ .channel }}
+  {{- end }}
+  - labels:
+      preset-gke-upgrade-pre-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: pre
+  - labels:
+      preset-gke-upgrade-pre-release-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: release
+  - labels:
+      preset-gke-upgrade-post-job: "true"
+    env:
+      - name: SCENARIO_TYPE
+        value: post
 
 gke_job_template: &gke_job_template
   decorate: true
@@ -297,6 +326,28 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+  {{- range .Values.gkeVersions }}
+  {{- if has "presubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: pre-master-kyma-gke{{ $preset }}-integration
+  {{- if .optional }}
+      optional: true
+  {{- end }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+      <<: *gke_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        <<: *gke_job_labels_template
+        preset-gke-ver{{ $preset }}: "true"
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+  {{- end }}
+  {{- end }}
 
     - name: pre-master-kyma-gke-int-test
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
@@ -339,12 +390,13 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
+        preset-gke-upgrade-pre-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
 
-{{- range (matchingReleases .Global.releases "1.11" nil) }}
+{{- range (matchingReleases .Global.releases "1.17" nil) }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -353,18 +405,19 @@ presubmits: # runs on PRs
       always_run: false
       labels:
         preset-build-release: "true"
+        preset-gke-upgrade-pre-release-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-{{ . }}
 {{- end }}
 
-{{- range (matchingReleases .Global.releases "1.8" "1.10") }}
+{{- range (matchingReleases .Global.releases "1.11" "1.16") }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-gke-upgrade
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
-      <<: *gke_upgrade_job_template_k14
+      <<: *gke_upgrade_job_template
       always_run: false
       labels:
         preset-build-release: "true"
@@ -398,53 +451,6 @@ presubmits: # runs on PRs
       labels:
         preset-build-release: "true"
         <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
-{{- range (matchingReleases .Global.releases "1.8" "1.10") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-central-connector
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      branches:
-        - release-{{ . }}
-      <<: *gke_central_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
-{{- range (matchingReleases .Global.releases "1.11" "1.11") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: true
-      branches:
-        - release-{{ . }}
-      <<: *gke_backup_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-{{ . }}
-{{- end }}
-
-{{- range (matchingReleases .Global.releases "1.8" "1.10") }}
-    - name: pre-rel{{ . | replace "." "" }}-kyma-gke-backup
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: true
-      branches:
-        - release-{{ . }}
-      <<: *gke_backup_job_template_k14
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_backup_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-{{ . }}
@@ -511,13 +517,35 @@ postsubmits:
       branches:
         - ^master$
       labels:
+        preset-gke-upgrade-post-job: "true"
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-
+  {{- range .Values.gkeVersions }}
+  {{- if has "postsubmit" .jobs }}
+  {{- $ch := printf "_%v_default" .channel }}
+  {{- $ver := default  $ch .version }}
+  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
+    - name: post-master-kyma-gke-ver{{ $preset }}-integration
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      <<: *gke_job_template
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-master: "true"
+        preset-gke-ver{{ $preset }}: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+  {{- end }}
+  {{- end }}
 periodics:
   # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
   # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
@@ -610,7 +638,7 @@ periodics:
             - "bash"
           args:
             - "-c"
-            - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-upgrade|gke-gkekcpint'"
+            - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-gkeint|gke-upgrade|gke-provisioner|gke-backup|weekly|nightly|gke-central|gke-minio|gke-gkecompint|restore|gke-release|gke-gkeext|gke-gke-upgrade|gke-gkekcpint|gke-test'"
           resources:
             requests:
               memory: 100Mi

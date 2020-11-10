@@ -43,9 +43,6 @@ spec:
             - name: job-config
               mountPath: /etc/job-config
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
       volumes:
         - name: kubeconfig
           secret:
@@ -59,7 +56,3 @@ spec:
         - name: job-config
           configMap:
             name: job-config
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster

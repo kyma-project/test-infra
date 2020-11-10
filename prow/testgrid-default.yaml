@@ -5,9 +5,9 @@ dashboards:
   # kyma
   - name: kyma_integration
   - name: kyma_control-plane
+  - name: kyma_release-1.17
   - name: kyma_release-1.16
   - name: kyma_release-1.15
-  - name: kyma_release-1.14
 
   # kyma-incubator
   - name: kyma-incubator_compass
@@ -17,7 +17,7 @@ dashboard_groups:
     dashboard_names:
       - kyma_integration
       - kyma_control-plane
+      - kyma_release-1.17
       - kyma_release-1.16
       - kyma_release-1.15
-      - kyma_release-1.14
       - kyma-incubator_compass
