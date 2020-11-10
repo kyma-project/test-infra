@@ -495,7 +495,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
-	o.prFinder = prtagbuilder.NewGhClient(nil)
+	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 	var testPrCfg *map[string]prOrg
 	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
 	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
