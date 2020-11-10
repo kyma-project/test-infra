@@ -329,6 +329,28 @@ checkTestPodTerminated() {
     return 1
 }
 
+function installTestChartOrFail() {
+  local path=$1
+  local name=$2
+  local namespace=$3
+
+  log::info "Create ${name} resources"
+
+  helm install "${name}" \
+    --namespace "${namespace}" \
+    --create-namespace \
+    "${path}" \
+    --timeout "${HELM_TIMEOUT_SEC}" \
+    --set domain="${DOMAIN}" \
+    --wait
+
+  prepareResult=$?
+  if [[ "${prepareResult}" != 0 ]]; then
+    echo "Helm install ${name} operation failed: ${prepareResult}"
+    exit "${prepareResult}"
+  fi
+}
+
 function createTestResources() {
   shout "Install additional charts"
   # install upgrade test
