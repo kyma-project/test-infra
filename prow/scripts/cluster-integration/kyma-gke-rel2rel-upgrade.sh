@@ -462,8 +462,6 @@ enableTestLogCollector=true # enable test-log-collector before tests; if prowjob
 
 applyScenario
 
-upgradeKyma
-
 remove_addons_if_necessary
 
 # testKyma
