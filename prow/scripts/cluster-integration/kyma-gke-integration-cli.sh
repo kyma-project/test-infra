@@ -152,7 +152,19 @@ metadata:
     kyma-project.io/installation: ""
     component: istio
 data:
-  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+  kyma_istio_operator: |
+    apiVersion: install.istio.io/v1alpha1
+    kind: IstioOperator
+    metadata:
+      namespace: istio-system
+    spec:
+      components:
+        ingressGateways:
+          - name: istio-ingressgateway
+            k8s:
+              service:
+                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+                type: LoadBalancer
 EOF
 )
 
