@@ -143,7 +143,7 @@ for i in $(seq 1 5); do
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma apply function" && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
-sleep 15
+sleep 30
 shout "Check if the Function is running"
 date
 attempts=3
