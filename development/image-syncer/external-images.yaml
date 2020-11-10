@@ -32,7 +32,7 @@ images:
 - source: "quay.io/kubernetes-service-catalog/service-catalog:v0.3.0-6-g8e85904-dirty"
 - source: "quay.io/prometheus/alertmanager:v0.21.0"
 - source: "quay.io/prometheus/prometheus:v2.17.1"
-- source: "quay.io/service-manager/sb-proxy-k8s:v0.8.8"
+- source: "quay.io/service-manager/sb-proxy-k8s:v0.8.10"
 - source: "jmedrek/application-gateway-alpine:1.14"
 - source: "jmedrek/application-gateway-alpine:1.15"
 - source: "jmedrek/connectivity-validator-alpine:1.14"
