@@ -57,6 +57,9 @@ export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="tests"
+export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
+export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
+
 
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
