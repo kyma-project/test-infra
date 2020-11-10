@@ -32,7 +32,7 @@ type GitHubClient struct {
 	// if you want easy access to client.Rate or other fields
 }
 
-// NewGhClient returns new instance of go-github GitHubClient implementation.
+// NewGitHubClient returns new instance of go-github GitHubClient implementation.
 func NewGitHubClient(httpClient *http.Client) *GitHubClient {
 	client := github.NewClient(httpClient)
 	// optionally set client.BaseURL, client.UserAgent, etc
