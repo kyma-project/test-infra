@@ -334,7 +334,7 @@ function installTestChartOrFail() {
   local name=$2
   local namespace=$3
 
-  log::info "Create ${name} resources"
+  shout "Create ${name} resources"
 
   helm install "${name}" \
     --namespace "${namespace}" \
