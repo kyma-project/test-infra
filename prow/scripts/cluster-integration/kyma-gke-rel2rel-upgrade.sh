@@ -59,6 +59,8 @@ export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="tests"
 export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
+export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
+export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 
 
 KYMA_LABEL_PREFIX="kyma-project.io"
