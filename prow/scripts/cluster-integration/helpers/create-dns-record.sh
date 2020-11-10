@@ -58,6 +58,14 @@ function createDNSWithRetries() {
     set -e
 }
 
+function checkDNSResponse() {
+
+  if [ "${RESOLVED_IP_ADDRESS}" = "${IP_ADDRESS}" ]; then
+    echo "Successfully resolved ${DNS_FULL_NAME} to ${RESOLVED_IP_ADDRESS}"
+    exit 0
+  fi
+}
+
 createDNSWithRetries
 
 SECONDS=0
@@ -67,6 +75,8 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
     echo "Trying to resolve ${DNS_FULL_NAME}"
     sleep 10
 
+    RESOLVED_IP_ADDRESS=$(dig +short "${DNS_FULL_NAME}")
+    for dnssrv in ns-cloud-b1.googledomains.com. ns-cloud-b2.googledomains.com. ns-cloud-b3.googledomains.com. ns-cloud-b4.googledomains.com.; do
     RESOLVED_IP_ADDRESS=$(dig +short "${DNS_FULL_NAME}")
 
     if [ "${RESOLVED_IP_ADDRESS}" = "${IP_ADDRESS}" ]; then
