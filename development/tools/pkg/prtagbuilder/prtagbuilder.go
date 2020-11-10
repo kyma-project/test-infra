@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,6 +12,35 @@ import (
 	"github.com/google/go-github/v31/github"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 )
+
+type githubRepoService interface {
+	GetBranch(ctx context.Context, owner, repo, branch string) (*github.Branch, *github.Response, error)
+	GetCommit(ctx context.Context, owner, repo, sha string) (*github.RepositoryCommit, *github.Response, error)
+	// other repository methods used in your app
+}
+
+type githubPullRequestsService interface {
+	Get(ctx context.Context, owner string, repo string, number int) (*github.PullRequest, *github.Response, error)
+	// other pull requests methods used in your app
+}
+
+type GitHubClient struct {
+	Repositories githubRepoService
+	PullRequests githubPullRequestsService
+	// optionally store and export the underlying *github.Client
+	// if you want easy access to client.Rate or other fields
+}
+
+func NewGhClient(httpClient *http.Client) *GitHubClient {
+	client := github.NewClient(httpClient)
+	// optionally set client.BaseURL, client.UserAgent, etc
+
+	return &GitHubClient{
+		Repositories: client.Repositories,
+		PullRequests: client.PullRequests,
+		// any other services your app uses
+	}
+}
 
 // findPRNumber match commit message with regex to extract pull request number. By default github add pr number to the commit message.
 func findPRNumber(commit *github.RepositoryCommit) (string, error) {
@@ -36,14 +66,14 @@ func verifyPR(pr *github.PullRequest, commitSHA string) error {
 }
 
 // BuildPrTag will extract PR number from commit message, search PR, validate if correct PR was found and print pr tag.
-func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool) (string, error) {
+func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool, client *GitHubClient) (string, error) {
 	var (
 		ctx    = context.Background()
 		commit *github.RepositoryCommit
 	)
 
 	// create github client
-	client := github.NewClient(nil)
+	//client := github.NewClient(nil)
 	if fromFlags {
 		// get commit for a branch
 		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef)

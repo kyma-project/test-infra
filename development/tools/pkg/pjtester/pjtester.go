@@ -78,6 +78,7 @@ type options struct {
 
 	github       prowflagutil.GitHubOptions
 	githubClient githubClient
+	prFinder     *prtagbuilder.GitHubClient
 	pullRequests map[string]prOrg
 	prFetched    bool
 }
@@ -208,8 +209,13 @@ func (o options) withGithubClientOptions() options {
 
 // getPullRequests will download pull requests details from github, for numbers provided in pjtester.yaml.
 func (o *options) getPullRequests(t testCfg) {
-	o.pullRequests = t.PrConfigs
+	if o.pullRequests == nil {
+		o.pullRequests = make(map[string]prOrg)
+	}
 	for org, repos := range t.PrConfigs {
+		if _, ok := o.pullRequests[org]; !ok {
+			o.pullRequests[org] = prOrg{}
+		}
 		for repo, prcfg := range repos {
 			pr, err := o.githubClient.GetPullRequest(org, repo, prcfg.PrNumber)
 			if err != nil {
@@ -219,7 +225,7 @@ func (o *options) getPullRequests(t testCfg) {
 			o.pullRequests[org][repo] = prcfg
 		}
 	}
-	o.prFetched = true
+	//o.prFetched = true
 }
 
 // genJobSpec will generate job specifications for prowjob to test
@@ -240,7 +246,7 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 				})
 				pjs, err = presubmitRefs(pjs, *o)
 				if err != nil {
-					logrus.WithError(err).Fatalf("failed generate presubmit refs and extrarefs")
+					logrus.WithError(err).Fatalf("failed generate presubmit refs or extrarefs")
 				}
 				return p.JobBase, pjs
 			}
@@ -340,7 +346,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 			pjs.Refs.BaseRef = defaultMasterBranch
 			// get latest PR number for BaseRef branch
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
-			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true)
+			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
 			if err != nil {
 				return pjs, fmt.Errorf("could not get pr number for branch head, got error: %w", err)
 			}
@@ -349,9 +355,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 				return pjs, fmt.Errorf("failed converting pr number string to integer, got error: %w", err)
 			}
 			opt.getPullRequests(testCfg{PrConfigs: map[string]prOrg{pjs.Refs.Org: {pjs.Refs.Repo: prCfg{PrNumber: branchPR}}}})
-			if !opt.matchRefPR(pjs.Refs) {
-
-			}
+			opt.matchRefPR(pjs.Refs)
 		}
 		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
 		for index, ref := range pjs.ExtraRefs {
@@ -490,8 +494,10 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
+	o.prFinder = prtagbuilder.NewGhClient(nil)
 	var testPrCfg *map[string]prOrg
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
+	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
+	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
 		o.getPullRequests(testCfg)
 	}
 	for _, pjCfg := range testCfg.PjNames {
