@@ -71,7 +71,7 @@ source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 runTestLogCollector() {
   if [ "${enableTestLogCollector}" = true ]; then
     if [[ "$BUILD_TYPE" == "master" ]]; then
-      log::info "Install test-log-collector"
+      shout "Install test-log-collector"
       export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
       (
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
@@ -330,7 +330,7 @@ checkTestPodTerminated() {
 }
 
 function createTestResources() {
-  log::banner "Install additional charts"
+  shout "Install additional charts"
   # install upgrade test
   installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
 
@@ -401,7 +401,7 @@ function testKyma() {
     test_args+=("${suitename}")
   fi
 
-  log::banner "Test Kyma " "${test_args[@]}"
+  shout "Test Kyma " "${test_args[@]}"
   "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
 
   testing::remove_addons_if_necessary
