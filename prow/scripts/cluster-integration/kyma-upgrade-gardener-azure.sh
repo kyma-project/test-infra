@@ -373,6 +373,8 @@ testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
 
 upgradeKyma
 
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+
 testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
 
 log::success "Job finished with success"
