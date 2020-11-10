@@ -11,7 +11,7 @@ import (
 	mock "github.com/stretchr/testify/mock"
 )
 
-func NewFakeGhClient(httpClient *http.Client) *prtagbuilder.GitHubClient {
+func NewFakeGitHubClient(httpClient *http.Client) *prtagbuilder.GitHubClient {
 	return &prtagbuilder.GitHubClient{
 		Repositories: &GithubRepoService{},
 		PullRequests: &GithubPullRequestsService{},

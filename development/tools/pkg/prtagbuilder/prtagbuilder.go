@@ -33,7 +33,7 @@ type GitHubClient struct {
 }
 
 // NewGhClient returns new instance of go-github GitHubClient implementation.
-func NewGhClient(httpClient *http.Client) *GitHubClient {
+func NewGitHubClient(httpClient *http.Client) *GitHubClient {
 	client := github.NewClient(httpClient)
 	// optionally set client.BaseURL, client.UserAgent, etc
 
@@ -74,8 +74,6 @@ func BuildPrTag(jobSpec *downwardapi.JobSpec, fromFlags bool, numberOnly bool, c
 		commit *github.RepositoryCommit
 	)
 
-	// create github client
-	//client := github.NewClient(nil)
 	if fromFlags {
 		// get commit for a branch
 		branch, _, err := client.Repositories.GetBranch(ctx, jobSpec.Refs.Org, jobSpec.Refs.Repo, jobSpec.Refs.BaseRef)

@@ -28,7 +28,7 @@ var (
 					fromFlags = true
 				}
 			}
-			ghClient := prtagbuilder.NewGhClient(nil)
+			ghClient := prtagbuilder.NewGitHubClient(nil)
 			prNumber, err := prtagbuilder.BuildPrTag(jobSpec, fromFlags, numberOnly, ghClient)
 			if err != nil {
 				return fmt.Errorf("failed build prtag, got error: %w", err)

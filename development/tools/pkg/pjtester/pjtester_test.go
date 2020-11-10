@@ -190,7 +190,7 @@ func TestNewTestPJ(t *testing.T) {
 		},
 	}
 	o.githubClient = fakeGitHubClient
-	o.prFinder = mocks.NewFakeGhClient(nil)
+	o.prFinder = mocks.NewFakeGitHubClient(nil)
 	ctx := context.Background()
 	o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef).Return(&gogithub.Branch{
 		Name: &fakeRepoMasterName,
