@@ -24,6 +24,7 @@ type githubPullRequestsService interface {
 	// other pull requests methods used in your app
 }
 
+// GitHubClient is an implementation of go-github client with needed services only.
 type GitHubClient struct {
 	Repositories githubRepoService
 	PullRequests githubPullRequestsService
@@ -31,6 +32,7 @@ type GitHubClient struct {
 	// if you want easy access to client.Rate or other fields
 }
 
+// NewGhClient returns new instance of go-github GitHubClient implementation.
 func NewGhClient(httpClient *http.Client) *GitHubClient {
 	client := github.NewClient(httpClient)
 	// optionally set client.BaseURL, client.UserAgent, etc
