@@ -1,6 +1,7 @@
 package pjtester
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -8,9 +9,12 @@ import (
 	"strconv"
 	"strings"
 
+	"k8s.io/test-infra/prow/pod-utils/downwardapi"
+
 	"k8s.io/test-infra/prow/config/secret"
 
 	"github.com/go-yaml/yaml"
+	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -75,6 +79,7 @@ type options struct {
 
 	github       prowflagutil.GitHubOptions
 	githubClient githubClient
+	prFinder     *prtagbuilder.GitHubClient
 	pullRequests map[string]prOrg
 	prFetched    bool
 }
@@ -112,8 +117,8 @@ func newProwK8sClientset() *prowclient.Clientset {
 	return clientset
 }
 
-// readTestCfg read and validate data to test from pjtester.yaml file.
-// It will set default location for prowjobs and config files location if not provided in a file.
+// readTestCfg read and validate data from pjtester.yaml file.
+// It will set default path for prowjobs and config files if not provided in a file.
 func readTestCfg(testCfgFile string) testCfg {
 	var t testCfg
 	yamlFile, err := ioutil.ReadFile(testCfgFile)
@@ -205,18 +210,23 @@ func (o options) withGithubClientOptions() options {
 
 // getPullRequests will download pull requests details from github, for numbers provided in pjtester.yaml.
 func (o *options) getPullRequests(t testCfg) {
-	o.pullRequests = t.PrConfigs
+	if o.pullRequests == nil {
+		o.pullRequests = make(map[string]prOrg)
+	}
 	for org, repos := range t.PrConfigs {
+		if _, ok := o.pullRequests[org]; !ok {
+			o.pullRequests[org] = prOrg{}
+		}
 		for repo, prcfg := range repos {
 			pr, err := o.githubClient.GetPullRequest(org, repo, prcfg.PrNumber)
 			if err != nil {
-				logrus.WithError(err).Fatalf("failed to fetch PullRequest from GitHub: %v", err)
+				logrus.WithError(err).Fatalf("failed to fetch PullRequest from GitHub")
 			}
 			prcfg.pullRequest = *pr
 			o.pullRequests[org][repo] = prcfg
 		}
 	}
-	o.prFetched = true
+	//o.prFetched = true
 }
 
 // genJobSpec will generate job specifications for prowjob to test
@@ -235,7 +245,10 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 					Org:  org,
 					Repo: repo,
 				})
-				pjs = submitRefs(pjs, *o)
+				pjs, err = presubmitRefs(pjs, *o)
+				if err != nil {
+					logrus.WithError(err).Fatalf("failed generate presubmit refs or extrarefs")
+				}
 				return p.JobBase, pjs
 			}
 		}
@@ -252,15 +265,22 @@ func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, 
 					Org:  org,
 					Repo: repo,
 				})
-				pjs = submitRefs(pjs, *o)
+				pjs, err = postsubmitRefs(pjs, *o)
+				if err != nil {
+					logrus.WithError(err).Fatalf("failed generate postsubmit refs and extrarefs")
+				}
 				return p.JobBase, pjs
 			}
 		}
 	}
 	for _, p := range conf.Periodics {
 		if p.Name == o.jobName {
+			var err error
 			pjs := pjutil.PeriodicSpec(p)
-			pjs = periodicRefs(pjs, *o)
+			pjs, err = periodicRefs(pjs, *o)
+			if err != nil {
+				logrus.WithError(err).Fatalf("failed generate periodic extrarefs")
+			}
 			return p.JobBase, pjs
 		}
 	}
@@ -288,62 +308,143 @@ func setPrHeadSHA(refs *prowapi.Refs, o options) {
 }
 
 // matchRefPR will add pull request details to ExtraRefs.
-func (o *options) matchRefPR(ref *prowapi.Refs) {
+func (o *options) matchRefPR(ref *prowapi.Refs) bool {
 	if pr, present := o.pullRequests[ref.Org][ref.Repo]; present {
 		ref.Pulls = []prowapi.Pull{{
 			Author: pr.pullRequest.User.Login,
 			Number: pr.PrNumber,
 			SHA:    pr.pullRequest.Head.SHA,
 		}}
+		ref.BaseSHA = pr.pullRequest.Base.SHA
+		ref.BaseRef = pr.pullRequest.Base.Ref
+		return true
 	}
+	return false
 }
 
-// submitRefs set test-infra refs as prowjob refs.
-// If refs points to other repo than test-infra it, will be moved to prowjob extra refs.
-// Pull request head SHA is added to test-infra refs.
-func submitRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
-	// If prowjob refs point to test infra repo, add PR to test head SHA to refs because we are going to test code from this PR.
+// submitRefs build prowjob refs and extra refs according to tested PR refs and PRs refs from pjtester.yaml
+// It ensure, refs for presubmit and postsubmit contain valid PR head SHA.
+// If pjtester.yaml doesn't specify PR from other repo, test-infra refs from tested PR are used as prowjob refs.
+// It adds PR refs to ExtraRefs for PR provided in pjtester.yaml.
+func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
+	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
 		setPrHeadSHA(pjs.Refs, opt)
+		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
-			opt.matchRefPR(&ref)
-			pjs.ExtraRefs[index] = ref
-		}
-		return pjs
-	}
-	// If prowjob refs point to another repo, move refs to extra refs and set refs to test-infra PR to test head SHA, because we are going to test code from this PR.
-	// Because pjtester test changes in test-infra repository, it must be present in extra refs.
-	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
-		refs := pjs.Refs
-		refs.BaseRef = defaultMasterBranch
-		opt.matchRefPR(refs)
-		for index, ref := range pjs.ExtraRefs {
-			if ref.Org == opt.org && ref.Repo == opt.repo {
-				setPrHeadSHA(&ref, opt)
-				pjs.Refs = &ref
-				pjs.ExtraRefs[index] = *refs
-			} else {
-				opt.matchRefPR(&ref)
+			matched := opt.matchRefPR(&ref)
+			if matched {
 				pjs.ExtraRefs[index] = ref
 			}
 		}
+		return pjs, nil
 	}
-	return pjs
+	// If prowjob specification refs point to another repo.
+	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
+		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		if !opt.matchRefPR(pjs.Refs) {
+			// If PR number not provided set BaseRef to master
+			pjs.Refs.BaseRef = defaultMasterBranch
+			// get latest PR number for BaseRef branch
+			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
+			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
+			if err != nil {
+				return pjs, fmt.Errorf("could not get pr number for branch head, got error: %w", err)
+			}
+			branchPR, err := strconv.Atoi(branchPrAsString)
+			if err != nil {
+				return pjs, fmt.Errorf("failed converting pr number string to integer, got error: %w", err)
+			}
+			opt.getPullRequests(testCfg{PrConfigs: map[string]prOrg{pjs.Refs.Org: {pjs.Refs.Repo: prCfg{PrNumber: branchPR}}}})
+			opt.matchRefPR(pjs.Refs)
+		}
+		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
+		for index, ref := range pjs.ExtraRefs {
+			// If ExtraRefs ref points to test-infra, use refs from tested PR.
+			if ref.Org == opt.org && ref.Repo == opt.repo {
+				setPrHeadSHA(&ref, opt)
+				// If for prowjob specification refs was provided PR number in pjtester.yaml, keep test-infra refs in ExtraRefs. Otherwise swap with current prowjob refs.
+				pjs.ExtraRefs[index] = ref
+			} else {
+				matchedExtraRef := opt.matchRefPR(&ref)
+				if matchedExtraRef {
+					pjs.ExtraRefs[index] = ref
+				}
+			}
+		}
+	}
+	return pjs, nil
+}
+
+func postsubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
+	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
+	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
+		setPrHeadSHA(pjs.Refs, opt)
+		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
+		for index, ref := range pjs.ExtraRefs {
+			if opt.matchRefPR(&ref) {
+				pjs.ExtraRefs[index] = ref
+			}
+		}
+		return pjs, nil
+	}
+	// If prowjob specification refs point to another repo.
+	if pjs.Refs.Org != opt.org || pjs.Refs.Repo != opt.repo {
+		//Check if PR number for prowjob specification refs was provided in pjtester.yaml.
+		matched := opt.matchRefPR(pjs.Refs)
+		if !matched {
+			// If PR number not provided set BaseRef to master
+			pjs.Refs.BaseRef = defaultMasterBranch
+		}
+		// Set PR refs for prowjob ExtraRefs if PR number provided in pjtester.yaml.
+		for index, ref := range pjs.ExtraRefs {
+			// If ExtraRefs ref points to test-infra, use refs from tested PR.
+			if ref.Org == opt.org && ref.Repo == opt.repo {
+				setPrHeadSHA(&ref, opt)
+				// If for prowjob specification refs was provided PR number in pjtester.yaml, keep test-infra refs in ExtraRefs. Otherwise swap with current prowjob refs.
+				pjs.ExtraRefs[index] = ref
+			} else {
+				matchedExtraRef := opt.matchRefPR(&ref)
+				if matchedExtraRef {
+					pjs.ExtraRefs[index] = ref
+				}
+			}
+		}
+	}
+	return pjs, nil
 }
 
 // periodicRefs set pull request head SHA for test-infra extra refs.
 // Periodics are not bound to any repo so there is no prowjob refs.
-func periodicRefs(pjs prowapi.ProwJobSpec, opt options) prowapi.ProwJobSpec {
+func periodicRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
 	for index, ref := range pjs.ExtraRefs {
 		if ref.Org == opt.org && ref.Repo == opt.repo {
 			setPrHeadSHA(&ref, opt)
 			pjs.ExtraRefs[index] = ref
 		} else {
-			opt.matchRefPR(&ref)
-			pjs.ExtraRefs[index] = ref
+			matched := opt.matchRefPR(&ref)
+			if matched {
+				pjs.ExtraRefs[index] = ref
+			}
 		}
 	}
-	return pjs
+	return pjs, nil
+}
+
+// formatPjName builds and formats testing prowjobname to match gcp cluster labels restrictions.
+func formatPjName(pullAuthor, pjName string) string {
+	fullName := fmt.Sprintf("%s_test_of_prowjob_%s", pullAuthor, pjName)
+	formated := strings.ToLower(fullName)
+	// Cut prowjob name to not exceed 63 kb.
+	if len(formated) > 63 {
+		runes := bytes.Runes([]byte(formated))
+		for i := len(runes); i > 2; i-- {
+			if len(string(runes[:i])) <= 63 {
+				return string(runes[:i])
+			}
+		}
+	}
+	return formated
 }
 
 // newTestPJ is building a prowjob definition for test
@@ -360,7 +461,7 @@ func newTestPJ(pjCfg pjCfg, opt options) prowapi.ProwJob {
 	// Building prowjob based on generated job specifications.
 	pj := pjutil.NewProwJob(pjs, job.Labels, job.Annotations)
 	// Add prefix to prowjob to test name.
-	pj.Spec.Job = fmt.Sprintf("%s_test_of_prowjob_%s", opt.pullAuthor, pj.Spec.Job)
+	pj.Spec.Job = formatPjName(opt.pullAuthor, pj.Spec.Job)
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	if pjCfg.Report {
@@ -394,8 +495,10 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
+	o.prFinder = prtagbuilder.NewGitHubClient(nil)
 	var testPrCfg *map[string]prOrg
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
+	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
+	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
 		o.getPullRequests(testCfg)
 	}
 	for _, pjCfg := range testCfg.PjNames {

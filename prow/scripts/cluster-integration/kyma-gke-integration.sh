@@ -69,6 +69,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
+
 #!Put cleanup code in this function! Function is executed at exit from the script and on interruption.
 # TODO (@Ressetkk): I think we can safely source this method from external file to use it with other GKE scripts.
 cleanup() {
@@ -138,10 +139,10 @@ runTestLogCollector(){
         if [[ "$BUILD_TYPE" == "master" ]]; then
             log::info "Install test-log-collector"
             export PROW_JOB_NAME="post-master-kyma-gke-integration"
-            ( 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-            )    
-        fi    
+            (
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+            )
+        fi
     fi
 }
 
