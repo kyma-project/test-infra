@@ -5,10 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 	"os"
 	"strconv"
 	"strings"
+
+	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
 	"k8s.io/test-infra/prow/config/secret"
 
