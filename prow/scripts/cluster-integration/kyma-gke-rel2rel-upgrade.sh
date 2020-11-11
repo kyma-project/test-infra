@@ -461,6 +461,16 @@ function testKyma() {
 #     "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 # }
 
+function createDNSRecord() {
+  if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+    log::info "Create DNS Record for Apiserver proxy IP"
+    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    CLEANUP_APISERVER_DNS_RECORD="true"
+    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+  fi
+}
+
 
 function applyScenario() {
     testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
