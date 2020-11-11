@@ -74,6 +74,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
+# shellcheck source=prow/scripts/lib/testing-helpers.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+
 runTestLogCollector() {
   if [ "${enableTestLogCollector}" = true ]; then
     if [[ "$BUILD_TYPE" == "master" ]]; then
