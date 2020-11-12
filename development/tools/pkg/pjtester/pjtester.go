@@ -81,7 +81,6 @@ type options struct {
 	githubClient githubClient
 	prFinder     *prtagbuilder.GitHubClient
 	pullRequests map[string]prOrg
-	prFetched    bool
 }
 
 type githubClient interface {
@@ -193,7 +192,6 @@ func gatherOptions(configPath string, ghOptions prowflagutil.GitHubOptions) opti
 	o.pullSha = os.Getenv("PULL_PULL_SHA")
 	// pullAuthor is an author of github pull request under test
 	o.pullAuthor = gjson.Get(os.Getenv("JOB_SPEC"), "refs.pulls.0.author").String()
-	o.prFetched = false
 	return o
 }
 
@@ -208,7 +206,7 @@ func (o options) withGithubClientOptions() options {
 	return o
 }
 
-// getPullRequests will download pull requests details from github, for numbers provided in pjtester.yaml.
+// getPullRequests will download pull requests details from github.
 func (o *options) getPullRequests(t testCfg) {
 	if o.pullRequests == nil {
 		o.pullRequests = make(map[string]prOrg)
@@ -226,12 +224,11 @@ func (o *options) getPullRequests(t testCfg) {
 			o.pullRequests[org][repo] = prcfg
 		}
 	}
-	//o.prFetched = true
 }
 
 // genJobSpec will generate job specifications for prowjob to test
-// It will set test-infra pull request to test in Refs and move other repos refs to ExtraRefs.
-// Refs will point to test-infra pull request to test head SHA.
+// For presubmits it will find and download PR details for prowjob Refs, if the PR number for that repo was not provided in pjtester.yaml
+// All test-infra refs will be set to pull request head SHA for which pjtester is triggered for.
 func (o *options) genJobSpec(conf *config.Config, name string) (config.JobBase, prowapi.ProwJobSpec) {
 	for fullRepoName, ps := range conf.PresubmitsStatic {
 		org, repo, err := splitRepoName(fullRepoName)
@@ -296,7 +293,7 @@ func splitRepoName(repo string) (string, string, error) {
 	return s[0], s[1], nil
 }
 
-// setPrHeadSHA set pull request head SHA for provided refs.
+// setPrHeadSHA set pull request head details for provided refs.
 func setPrHeadSHA(refs *prowapi.Refs, o options) {
 	refs.BaseSHA = o.baseSha
 	refs.BaseRef = o.baseRef
@@ -322,13 +319,14 @@ func (o *options) matchRefPR(ref *prowapi.Refs) bool {
 	return false
 }
 
-// submitRefs build prowjob refs and extra refs according to tested PR refs and PRs refs from pjtester.yaml
-// It ensure, refs for presubmit and postsubmit contain valid PR head SHA.
-// If pjtester.yaml doesn't specify PR from other repo, test-infra refs from tested PR are used as prowjob refs.
-// It adds PR refs to ExtraRefs for PR provided in pjtester.yaml.
+// submitRefs build prowjob refs and extrarefs according.
+// It ensure, refs for test-infra is set to details of pull request fro which pjtester was triggered.
+// It ensures refs contains pull requests details for presubmit jobs.
+// It ensures details of pull request numbers provided in pjtester.yaml are set for respecting refs or extra refs.
 func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, error) {
 	// If prowjob specification refs point to test infra repo, add test-infra PR refs because we are going to test code from this PR.
 	if pjs.Refs.Org == opt.org && pjs.Refs.Repo == opt.repo {
+		// set refs with details of tested PR
 		setPrHeadSHA(pjs.Refs, opt)
 		//Add PR details to ExtraRefs if PR number was provided in pjtester.yaml
 		for index, ref := range pjs.ExtraRefs {
@@ -345,7 +343,7 @@ func presubmitRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, e
 		if !opt.matchRefPR(pjs.Refs) {
 			// If PR number not provided set BaseRef to master
 			pjs.Refs.BaseRef = defaultMasterBranch
-			// get latest PR number for BaseRef branch
+			// get latest PR number for BaseRef branch and use it to set extra refs
 			jobSpec := &downwardapi.JobSpec{Refs: pjs.Refs}
 			branchPrAsString, err := prtagbuilder.BuildPrTag(jobSpec, true, true, opt.prFinder)
 			if err != nil {
@@ -435,7 +433,7 @@ func periodicRefs(pjs prowapi.ProwJobSpec, opt options) (prowapi.ProwJobSpec, er
 func formatPjName(pullAuthor, pjName string) string {
 	fullName := fmt.Sprintf("%s_test_of_prowjob_%s", pullAuthor, pjName)
 	formated := strings.ToLower(fullName)
-	// Cut prowjob name to not exceed 63 kb.
+	// Cut prowjob name to not exceed 63 bytes.
 	if len(formated) > 63 {
 		runes := bytes.Runes([]byte(formated))
 		for i := len(runes); i > 2; i-- {
