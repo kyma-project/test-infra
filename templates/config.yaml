@@ -143,7 +143,7 @@ go_kyma_component_v20181119: &go_kyma_component_v20181119
 kyma_generic_component: &kyma_generic_component
   repository: github.com/kyma-project/kyma
   pushRepository: kyma
-  bootstrapTag: v20201009-ec3cc352
+  bootstrapTag: PR-2943
   additionalRunIfChanged:
     - ^common/makefiles/
 
@@ -159,7 +159,7 @@ compass_console_generic_component: &compass_console_generic_component
   repository: github.com/kyma-incubator/compass-console
   pushRepository: incubator
   build: build
-  bootstrapTag: v20201009-ec3cc352
+  bootstrapTag: PR-2943
   additionalRunIfChanged:
     - ^components/
     - ^shared/
@@ -169,7 +169,7 @@ control_plane_generic_component: &control_plane_generic_component
   repository: github.com/kyma-project/control-plane
   build: build
   pushRepository: control-plane
-  bootstrapTag: v20201009-ec3cc352
+  bootstrapTag: PR-2943
   additionalRunIfChanged:
     - ^scripts/
 
@@ -177,7 +177,7 @@ console_generic_component: &console_generic_component
   repository: github.com/kyma-project/console
   pushRepository: kyma
   build: build-console
-  bootstrapTag: v20201009-ec3cc352
+  bootstrapTag: PR-2943
   additionalRunIfChanged:
     - ^components/
     - ^shared/
