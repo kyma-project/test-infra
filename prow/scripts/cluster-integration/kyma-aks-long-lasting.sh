@@ -295,6 +295,7 @@ metadata:
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
   global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
+  prometheus-istio.server.resources.limits.memory: "6Gi"
 #---
 #apiVersion: v1
 #kind: ConfigMap
