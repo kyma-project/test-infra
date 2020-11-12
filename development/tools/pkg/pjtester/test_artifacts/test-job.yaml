@@ -6,7 +6,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: presubmit-test-job
+    - name: test-infra-presubmit-test-job
       run_if_changed: "^(development/image-syncer)"
       branches:
         - ^master$
@@ -31,4 +31,34 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
+          base_ref: master
+  kyma-project/fake-repo:
+    - name: fake-repo-presubmit-test-job
+      run_if_changed: "^(development/image-syncer)"
+      branches:
+        - ^master$
+      max_concurrency: 10
+      labels:
+        <<: *job_labels_template
+      decorate: true
+      path_alias: github.com/kyma-project/fake-repo
+      spec:
+        containers:
+          - image: *buildpack_golang_image
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "development/image-syncer"
+              - "validate"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 0.8
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          base_ref: master
+        - org: kyma-project
+          repo: test-infra
           base_ref: master

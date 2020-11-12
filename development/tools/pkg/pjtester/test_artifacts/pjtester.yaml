@@ -1,8 +1,10 @@
 pjNames:
   # presubmit
-  - pjName: "presubmit-test-job"
+  - pjName: "test-infra-presubmit-test-job"
     pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
     report: true
+  - pjName: "fake-repo-presubmit-test-job"
+    pjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/"
   # periodic
   - pjName: "orphaned-disks-cleaner"
   # postsubmit
