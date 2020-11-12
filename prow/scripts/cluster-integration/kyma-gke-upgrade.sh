@@ -505,7 +505,6 @@ function applyScenario() {
     testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
     upgradeKyma
     createDNSRecord
-    upgradeKyma
     testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
   elif [ "$SCENARIO_TYPE" == "post" ] || [ "$SCENARIO_TYPE" == "release" ]; then
     testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
