@@ -15,16 +15,12 @@ presubmits: # runs on PRs
       labels:
         <<: *job_labels_template
       decorate: true
-      #path_alias: github.com/kyma-project/test-infra
       spec:
         containers:
         - image: *prow-tools_image
           imagePullPolicy: Always
           command:
             - "pjtester"
-          args:
-            - "--github-endpoint=http://ghproxy"
-            - "--github-endpoint=https://api.github.com"
           env:
             - name: KYMA_PROJECT_DIR
               value: "/home/prow/go/src/github.com/kyma-project"
