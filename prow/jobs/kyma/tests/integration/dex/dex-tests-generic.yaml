@@ -24,7 +24,7 @@ job_template: &job_template
   run_if_changed: "^tests/integration/dex/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2943
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
         securityContext:
           privileged: true
         command:
