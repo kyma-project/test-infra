@@ -25,7 +25,7 @@ Prtagbuilder accepts the following flags:
 | **org** | o | No | GitHub owner name of the repository to find a PR number for. If provided, you must also specify the **repo** and **baseref** flags. |
 | **repo** | r | No | GitHub repository to find a PR number for. If provided, you must also specify the **org** and **baseref** flags. |
 | **baseref** | b | No | Branch name to find a PR number for. If provided, you must also specify the **org** and **repo** flags. |
-| **numberOnly** | O | No | Parameter that prints a PR number. By default, the tool prints a PR tag in the `PR-{PR_NUMBER} format.` |
+| **numberonly** | O | No | Parameter that prints a PR number. By default, the tool prints a PR tag in the `PR-{PR_NUMBER} format.` |
 
 The tool fails on any error that prevents it from finding a valid PR number for a commit.
 

@@ -15,11 +15,11 @@ import (
 var (
 	log     = logrus.New()
 	rootCmd = &cobra.Command{
-		Use:   "prtagbuilder [-o, --org string], [-r, --repo string], [-b --baseref string], [-O --numberOnly]",
+		Use:   "prtagbuilder [-o, --org string], [-r, --repo string], [-b --baseref string], [-O --numberonly]",
 		Short: "prtagbuilder will find pull request number for commit or branch head.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			numFlags := cmd.Flags().NFlag()
-			if numFlags == 1 && !cmd.Flags().Changed("numberOnly") || numFlags > 1 {
+			if numFlags == 1 && !cmd.Flags().Changed("numberonly") || numFlags > 1 {
 				err := checkFlags(cmd.Flags())
 				if err != nil {
 					return fmt.Errorf("required flag is empty, got error: %w", err)
@@ -62,7 +62,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.Org, "org", "o", "", "Github organisation which owns repo.")
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.Repo, "repo", "r", "", "Github repository.")
 	rootCmd.PersistentFlags().StringVarP(&jobSpec.Refs.BaseRef, "baseref", "b", "", "Base branch name.")
-	rootCmd.PersistentFlags().BoolVarP(&numberOnly, "numberOnly", "O", false, "Return only PR number.")
+	rootCmd.PersistentFlags().BoolVarP(&numberOnly, "numberonly", "O", false, "Return only PR number.")
 	if err := rootCmd.Execute(); err != nil {
 		logrus.WithError(err).Fatalf("prtagbuilder execution failed")
 	}
