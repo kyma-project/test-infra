@@ -14,11 +14,13 @@ It is configured by the **run-if-changed** option:
 run_if_changed: "^(vpath/pjtester.yaml)"
 ```
 
-`pjtester` expects to find the the configuration of the ProwJobs to tests under `vpath/pjtester.yaml`.
+`pjtester` expects to find the configuration of the ProwJobs to tests under `vpath/pjtester.yaml`.
 
 By default, `pjtester` disables all reporting for the ProwJob. That means no Slack messages and no status report on Github. To check the test results, consult the [ProwStatus](https://status.build.kyma-project.io/) dashboard.
 
 Details from `pjtester.yaml` and from the ProwJob environment variables are used to construct the specification of the ProwJob to test. `pjtester` uses the environment variables created by Prow for the presubmit job which identify the pull request and its commit hash in the `test-infra` repository. The generated ProwJob to test then uses the `test-infra` code from the pull request's head, ensuring that the latest code is under test.
+
+For presubmit jobs, Prow requires the pull request's head SHA, pull request number, and pull request author set in the ProwJob refs. In the `pjtester.yaml file`, you must specify a pull request number for a repository against which a tested Prow job is running. If you don't specify one, `pjtester` will find a pull request for the `master` branch (`HEAD`) and use its details for the presubmit refs.
 
 Finally, `pjtester` creates the ProwJob on the production Prow instance. The ProwJob name for which you triggered the test is prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
 
@@ -61,14 +63,6 @@ prConfigs:
       prNumber: 1212
 configPath: "test-infra/prow/custom_config.yaml"
 ```
-
-By default, pjtester will disable all reporting for a Prow job. That means no slack messages and no status report on Github will be provided. To check test result please consult [ProwStatus](https://status.build.kyma-project.io/) dashboard.
-
-Details from `pjtester.yaml` and from the Prow job environment variables are used to construct the ProwJob specification to test. Pjtester will use the environment variables created by Prow for the presubmit which identify the pull request and its commit hash on `test-infra` repository. The generated ProwJob to test will use the `test-infra` code from the pull request's head, ensuring that the latest code is under test.
-
-Finally, pjtester will create the ProwJob on the production Prow instance. The Prow job name for which you triggered the test will be prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
-
-Because the file `vpath/pjtester.yaml` is used by pjtester only to know the ProwJob name to test, it should not exist outside of the PR. This is why the `pre-master-test-infra-vpathgurad` required context was added. Its simple task is to fail whenever the `vpath` directory exists and to prevent the PR merge. As soon as the virtual path disappears from the PR, `vpathguard` will allow for the PR merge.
 
 
 ## Usage
