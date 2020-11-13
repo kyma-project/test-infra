@@ -20,7 +20,7 @@ By default, `pjtester` disables all reporting for the ProwJob. That means no Sla
 
 Details from `pjtester.yaml` and from the ProwJob environment variables are used to construct the specification of the ProwJob to test. `pjtester` uses the environment variables created by Prow for the presubmit job which identify the pull request and its commit hash in the `test-infra` repository. The generated ProwJob to test then uses the `test-infra` code from the pull request's head, ensuring that the latest code is under test.
 
-For presubmit jobs, prow require to have pull request head SHA, pull request number and pull request author set in prowjob refs. If you don't provide in pjtester.yaml file a pull request number for repo against which tested prowjob is running, `pjtester` will find pull request for master branch head and use this details for presubmit refs.
+For presubmit jobs, Prow requires the pull request's head SHA, pull request number, and pull request author set in the ProwJob refs. In the `pjtester.yaml file`, you must specify a pull request number for a repository against which a tested Prow job is running. If you don't specify one, `pjtester` will find a pull request for the `master` branch (`HEAD`) and use its details for the presubmit refs.
 
 Finally, `pjtester` creates the ProwJob on the production Prow instance. The ProwJob name for which you triggered the test is prefixed with `{YOUR_GITHUB_USER}_test_of_prowjob_`.
 
