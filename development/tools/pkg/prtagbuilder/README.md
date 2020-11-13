@@ -6,7 +6,7 @@ PR Tag Builder is a tool that finds a pull request number for a commit.
 
 ## Prerequisites
 
-The tool is a go binary. There are no prerequisites.
+The tool is a Go binary. There are no prerequisites.
 
 ## Installation
 
@@ -16,16 +16,16 @@ The tool is a part of the `test-infra` **prow-tools** image. It is copied from t
 
 All data required for the tool to work can be retrieved from the **JOB_SPEC** environment variable. This environment variable is set by Prow for all prowjobs. In this mode a tool will find pull request number for base SHA of branch for which prowjob is running.
 
-Optionally prtagbuilder can be run with flags which instruct it to find pull request number for head of provided branch.
+Optionally, prtagbuilder can be run with flags that instruct it to find a pull request number for the head of the provided branch.
 
-`prtagbuilder` accept following flags.
+Prtagbuilder accepts the following flags:
 
-| Parameter name | Short name | Required | Description |
+| Full name | Short name | Required | Description |
 |----------------|------------|----------|-------------|
-| **org** | o | No | Github owner name of repository to find PR number for. If provided, **repo** and **baseref** flags must be provided. |
-| **repo** | r | No | Github repository to find PR number for. If provided, **org** and **baseref** flags must be provided. |
-| **baseref** | b | No | Branch name to find a PR number for. If provided, **org** and **repo** flags must be provided. |
-| **numberOnly** | O | No | Print only a PR number. By default print pr tag in format `PR-<pr number>` |
+| **org** | o | No | GitHub owner name of the repository to find a PR number for. If provided, you must also specify the **repo** and **baseref** flags. |
+| **repo** | r | No | GitHub repository to find a PR number for. If provided, you must also specify the **org** and **baseref** flags. |
+| **baseref** | b | No | Branch name to find a PR number for. If provided, you must also specify the **org** and **repo** flags. |
+| **numberOnly** | O | No | Parameter that prints a PR number. By default, the tool prints a PR tag in the `PR-{PR_NUMBER} format.` |
 
 The tool fails on any error that prevents it from finding a valid PR number for a commit.
 
