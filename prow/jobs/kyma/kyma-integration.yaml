@@ -338,7 +338,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-
     - name: pre-rel117-kyma-gke-integration
       cluster: untrusted-workload
       branches:
