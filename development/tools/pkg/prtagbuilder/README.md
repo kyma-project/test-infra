@@ -6,7 +6,7 @@ PR Tag Builder is a tool that finds a pull request number for a commit.
 
 ## Prerequisites
 
-The tool is called on postsubmit Prow jobs. You need a Prow instance to use it.
+The tool is a Go binary. There are no prerequisites.
 
 ## Installation
 
@@ -14,11 +14,20 @@ The tool is a part of the `test-infra` **prow-tools** image. It is copied from t
 
 ## Usage
 
-The tool doesn't accept any flags and arguments. All data required for the tool to work is retrieved from the  **JOB_SPEC** environment variable. This environment variable is set by Prow for postsubmit jobs.
+You can retrieve all data required for the tool to work from the **JOB_SPEC** environment variable. This environment variable is set by Prow for all Prow jobs. In this mode, a tool will find a pull request number for the base SHA of the branch for which the Prow job is running.
+
+Optionally, prtagbuilder can be run with flags that instruct it to find a pull request number for the head of the provided branch.
+
+Prtagbuilder accepts the following flags:
+
+| Full name | Short name | Required | Description |
+|----------------|------------|----------|-------------|
+| **org** | o | No | GitHub owner name of the repository to find a PR number for. If provided, you must also specify the **repo** and **baseref** flags. |
+| **repo** | r | No | GitHub repository to find a PR number for. If provided, you must also specify the **org** and **baseref** flags. |
+| **baseref** | b | No | Branch name to find a PR number for. If provided, you must also specify the **org** and **repo** flags. |
+| **numberonly** | O | No | Parameter that prints a PR number. By default, the tool prints a PR tag in the `PR-{PR_NUMBER} format.` |
 
 The tool fails on any error that prevents it from finding a valid PR number for a commit.
-
-The tool doesn't work on presubmit jobs.
 
 ## Development
 
