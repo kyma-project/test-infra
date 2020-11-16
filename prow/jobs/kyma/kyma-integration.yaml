@@ -64,7 +64,7 @@ presets:
         preset-gke-ver1_18_10: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.18.10-gke.601
+        value: 1.18.10-gke.2101
       - name: RELEASE_CHANNEL
         value: rapid
   - labels:
