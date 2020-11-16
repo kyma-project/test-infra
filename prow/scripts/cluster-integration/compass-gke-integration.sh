@@ -145,6 +145,25 @@ function applyKymaOverrides() {
     --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
+  cat << EOF > "$PWD/kyma_istio_operator"
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+    --label "component=istio" \
+    --file "$PWD/kyma_istio_operator"
+
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
     --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
     --label "component=istio"
@@ -155,13 +174,13 @@ function applyKymaOverrides() {
     --label "component=api-gateway"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
-    --data "global.istio.gateway.name=compass-istio-gateway" \
-    --data "global.istio.gateway.namespace=compass-system" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
     --label "component=dex"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "ory-overrides" \
-    --data "global.istio.gateway.name=compass-istio-gateway" \
-    --data "global.istio.gateway.namespace=compass-system" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
     --label "component=ory"
 }
 
@@ -187,6 +206,12 @@ function applyCompassOverrides() {
     --data "global.externalServicesMock.enabled=true" \
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
+    --label "component=compass"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
+    --data "gateway.gateway.enabled=false" \
     --label "component=compass"
 }
 
@@ -219,7 +244,8 @@ function installKyma() {
   applyKymaOverrides
 
   if [[ "$BUILD_TYPE" == "pr" ]]; then
-    COMPASS_VERSION="PR-${PULL_NUMBER}"
+#    COMPASS_VERSION="PR-${PULL_NUMBER}"
+    COMPASS_VERSION="PR-"
   else
     COMPASS_VERSION="master-${COMMIT_ID}"
   fi
