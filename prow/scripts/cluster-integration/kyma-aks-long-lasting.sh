@@ -295,7 +295,6 @@ metadata:
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
   global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
-  prometheus-istio.server.resources.limits.memory: "6Gi"
 #---
 #apiVersion: v1
 #kind: ConfigMap
@@ -351,6 +350,9 @@ cat << EOF > istio-ingressgateway-patch-yq.yaml
     type: LoadBalancer
 EOF
   yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
+
+  # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
+  sed -i 's/prometheus-istio.server.resources.limits.memory: "3Gi"/prometheus-istio.server.resources.limits.memory: "6Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
