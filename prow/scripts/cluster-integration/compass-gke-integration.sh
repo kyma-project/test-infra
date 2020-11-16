@@ -164,10 +164,6 @@ EOF
     --label "component=istio" \
     --file "$PWD/kyma_istio_operator"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --label "component=istio"
-
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "api-gateway-overrides" \
     --data "tests.env.gatewayName=compass-istio-gateway" \
     --data "tests.env.gatewayNamespace=compass-system" \
