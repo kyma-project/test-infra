@@ -143,6 +143,7 @@ metadata:
     kyma-project.io/installation: ""
 data:
   global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+  limitRange.max.memory: "6Gi"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -180,7 +181,6 @@ metadata:
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
   global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
-  prometheus-istio.server.resources.limits.memory: "6Gi"
 #---
 #apiVersion: v1
 #kind: ConfigMap
@@ -300,13 +300,6 @@ function installStackdriverPrometheusCollector(){
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
-function patchlimitrange(){
-  # Patching limitrange on kyma-system namespace to meet prometheus memory requirements.
-	echo "Patching kyma-default LimitRange"
-	kubectl -n kyma-system patch limitrange kyma-default --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/limitrange-patch.yaml)"
-
-}
-
 shout "Authenticate"
 date
 init
@@ -339,11 +332,6 @@ installKyma
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
 applyDexGithibKymaAdminGroup
-
-# Prometheus container need minimum 6Gi memory limit.
-shout "Increase cluster max container memory limit"
-date
-patchlimitrange
 
 shout "Install stackdriver-prometheus collector"
 date

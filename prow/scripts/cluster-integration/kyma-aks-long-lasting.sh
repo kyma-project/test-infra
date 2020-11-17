@@ -257,6 +257,7 @@ metadata:
     kyma-project.io/installation: ""
 data:
   global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+  limitRange.max.memory: "6Gi"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -388,13 +389,6 @@ function test_console_url() {
   fi
 }
 
-function patchlimitrange(){
-  # Patching limitrange on kyma-system namespace to meet prometheus memory requirements.
-	echo "Patching kyma-default LimitRange"
-	kubectl -n kyma-system patch limitrange kyma-default --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/limitrange-patch.yaml)"
-
-}
-
 init
 azureAuthenticating
 
@@ -423,11 +417,6 @@ installKyma
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
 applyDexGithibKymaAdminGroup
-
-# Prometheus-Istio container need minimum 6Gi memory limit.
-shout "Increase cluster max container memory limit"
-date
-patchlimitrange
 
 shout "Install stability-checker"
 date
