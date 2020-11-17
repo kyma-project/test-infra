@@ -152,7 +152,7 @@ metadata:
   labels:
     installer: overrides
     kyma-project.io/installation: ""
-	component: cluster-essentials
+    component: cluster-essentials
 data:
   limitRange.max.memory: "6Gi"
 ---
