@@ -257,6 +257,17 @@ metadata:
     kyma-project.io/installation: ""
 data:
   global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "cluster-essentials-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+	component: cluster-essentials
+data:
   limitRange.max.memory: "6Gi"
 ---
 apiVersion: v1
