@@ -204,8 +204,6 @@ function applyCompassOverrides() {
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --label "component=compass"
 
-  shout "Testing message -->"
-
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
     --data "gateway.gateway.enabled=false" \
     --data "global.istio.gateway.name=kyma-gateway" \
