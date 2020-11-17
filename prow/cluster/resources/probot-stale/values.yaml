@@ -24,7 +24,6 @@ ingress:
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     certmanager.k8s.io/acme-http01-edit-in-place: "true"
-    kubernetes.io/ingress.allow-http: "false"
   path: /*
   host: stale.build.kyma-project.io
   tls:

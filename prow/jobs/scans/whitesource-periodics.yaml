@@ -469,3 +469,133 @@ periodics:
               memory: 1Gi
               cpu: 400m
 
+
+#-------------Release-----------------------------
+
+
+  - name: release-kyma-1.17-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: trusted-workload
+    decorate: true
+    cron: "5 5 5 5 5" #once per year
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-wssagent-keys: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: release-1.17
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: kyma
+            - name: CUSTOM_PROJECTNAME
+              value: release-kyma
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: golang
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+
+  - name: release-kyma-mod-1.17-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: trusted-workload
+    decorate: true
+    cron: "5 5 5 5 5" #once per year
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-wssagent-keys: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: release-1.17
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: kyma
+            - name: CUSTOM_PROJECTNAME
+              value: release-kyma-mod
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: golang-mod
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+
+  - name: release-cli-1.17-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: trusted-workload
+    decorate: true
+    cron: "5 5 5 5 5" #once per year
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-wssagent-keys: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: kyma-project
+          repo: cli
+          path_alias: github.com/kyma-project/cli
+          base_ref: release-1.17
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: cli
+            - name: CUSTOM_PROJECTNAME
+              value: release-cli
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: golang-mod
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+

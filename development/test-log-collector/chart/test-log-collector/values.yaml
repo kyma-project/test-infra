@@ -1,6 +1,6 @@
 image:
-  repository: eu.gcr.io/kyma-project/pr/test-log-collector  # will be updated after this PR is merged
-  tag: PR-2683
+  repository: eu.gcr.io/kyma-project/pr/test-log-collector
+  tag: PR-2916
   pullPolicy: IfNotPresent
 
 serviceAccountName: ""

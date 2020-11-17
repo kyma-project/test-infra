@@ -20,7 +20,7 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 
 readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
 
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
@@ -71,69 +71,6 @@ COMPASS_RESOURCES_DIR="${COMPASS_SOURCES_DIR}/installation/resources"
 
 INSTALLER_YAML="${COMPASS_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${COMPASS_RESOURCES_DIR}/installer-cr.yaml.tpl"
-
-function cleanup() {
-    #!!! Must be at the beginning of this function !!!
-    EXIT_STATUS=$?
-
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
-
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
-    set +e
-
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
-
-        #save disk names while the cluster still exists to remove them later
-        DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        export DISKS
-
-        #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-
-        #Delete orphaned disks
-        shout "Delete orphaned PVC disks..."
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-        shout "Delete Gateway DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        shout "Release Gateway IP Address"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-    fi
-
-
-    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        shout "Delete temporary Compass-Installer Docker image"
-        date
-        KYMA_INSTALLER_IMAGE="${COMPASS_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-    fi
-
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        shout "Delete Apiserver proxy DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    fi
-
-    MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
-    set -e
-
-    exit "${EXIT_STATUS}"
-}
 
 function createCluster() {
   #Used to detect errors for logging purposes
@@ -346,7 +283,7 @@ function installCompass() {
   fi
 }
 
-trap cleanup EXIT INT
+trap gkeCleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"

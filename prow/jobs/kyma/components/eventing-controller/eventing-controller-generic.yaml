@@ -19,10 +19,12 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
+    - ^main$
+    - ^release-(1\.17)-eventing-controller$
   run_if_changed: "^components/eventing-controller/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
         securityContext:
           privileged: true
         command:
@@ -38,7 +40,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-eventing-controller
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
 
 postsubmits:
@@ -47,7 +49,4 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template

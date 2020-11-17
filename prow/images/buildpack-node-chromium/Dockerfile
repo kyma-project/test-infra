@@ -4,7 +4,6 @@ FROM eu.gcr.io/kyma-project/prow/test-infra/buildpack-node:v20181130-b28250b
 
 ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CHROMIUM_VERSION 70.0.3538.110-1~deb9u1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     procps \
@@ -47,5 +46,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     xdg-utils \
     wget \
-    chromium=${CHROMIUM_VERSION} \
+    chromium \
     && apt-get clean

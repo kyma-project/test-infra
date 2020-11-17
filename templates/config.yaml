@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.17"
+  nextRelease: "1.18"
   releases:
+    - "1.17"
     - "1.16"
     - "1.15"
-    - "1.14"
   whitesource:
     - name: "control-plane"
       language: "golang-mod"
@@ -41,10 +41,23 @@ global:
       language: "golang-mod"
       project: "kyma-incubator"
       base_ref: "kyma-master"
-      
+  whitesource_release:
+    - name: "kyma"
+      language: "golang"
+      project: "kyma-project"
+      custom_projectname: "release-kyma"
+    - name: "kyma"
+      language: "golang-mod"
+      project: "kyma-project"
+      custom_projectname: "release-kyma-mod"
+    - name: "cli"
+      language: "golang-mod"
+      project: "kyma-project"
+      custom_projectname: "release-cli"
+
 globalSets:
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-5d8104e0"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352"
     
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
@@ -130,7 +143,7 @@ go_kyma_component_v20181119: &go_kyma_component_v20181119
 kyma_generic_component: &kyma_generic_component
   repository: github.com/kyma-project/kyma
   pushRepository: kyma
-  bootstrapTag: v20181204-a6e79be
+  bootstrapTag: v20201009-ec3cc352
   additionalRunIfChanged:
     - ^common/makefiles/
 
@@ -138,15 +151,25 @@ compass_generic_component: &compass_generic_component
   repository: github.com/kyma-incubator/compass
   build: build
   pushRepository: incubator
-  bootstrapTag: v20181204-a6e79be
+  bootstrapTag: v20201009-ec3cc352
   additionalRunIfChanged:
     - ^scripts/
+
+compass_console_generic_component: &compass_console_generic_component
+  repository: github.com/kyma-incubator/compass-console
+  pushRepository: incubator
+  build: build
+  bootstrapTag: v20201009-ec3cc352
+  additionalRunIfChanged:
+    - ^components/
+    - ^shared/
+    - ^package.json
 
 control_plane_generic_component: &control_plane_generic_component
   repository: github.com/kyma-project/control-plane
   build: build
   pushRepository: control-plane
-  bootstrapTag: v20181204-a6e79be
+  bootstrapTag: v20201009-ec3cc352
   additionalRunIfChanged:
     - ^scripts/
 
@@ -154,7 +177,7 @@ console_generic_component: &console_generic_component
   repository: github.com/kyma-project/console
   pushRepository: kyma
   build: build-console
-  bootstrapTag: v20181204-a6e79be
+  bootstrapTag: v20201009-ec3cc352
   additionalRunIfChanged:
     - ^components/
     - ^shared/
@@ -351,6 +374,20 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/system-broker
+          since: "1.16"
+          optional: true
+          additionalRunIfChanged: # necessary so that it overrides the additionalRunIfChanged property from compass_generic_component and thus does not include the /scripts folder
+      - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_console_generic_component
+          path: compass
+          since: "1.16"
       - to: ../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         values:
           <<: *cluster_default
@@ -499,6 +536,8 @@ templates:
           <<: *kyma_generic_component
           path: components/istio-kyma-patch
           since: "1.7"
+          until: "1.17"
+          optional: true
       - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
         values:
           <<: *cluster_default
@@ -585,7 +624,6 @@ templates:
           <<: *kyma_generic_component
           path: components/eventing-controller
           since: "1.17"
-          optional: true
       - to: ../prow/jobs/kyma/components/nats-init/nats-init-generic.yaml
         values:
           <<: *cluster_default
@@ -665,12 +703,6 @@ templates:
           <<: *console_generic_component
           path: tests
           since: "1.11"
-      - to: ../prow/jobs/console/compass/compass.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: compass
-          since: "1.12"
       - to: ../prow/jobs/console/core/core.yaml
         values:
           <<: *cluster_default
@@ -693,6 +725,14 @@ templates:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
         values:
           <<: *cluster_default
+          gkeVersions:
+            - channel: rapid
+              version: 1.18.10-gke.601
+              jobs: [ "postsubmit" ]
+            - channel: regular
+              version: 1.17.12-gke.1504
+              jobs: [ "presubmit", "postsubmit" ]
+              optional: true
   - from: templates/kyma-integration-gardener.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration-gardener.yaml
@@ -842,11 +882,6 @@ templates:
           <<: *bootstrap_kyma_component
           path: components/dex-static-user-configurer
           until: "1.6"
-      - to: ../prow/jobs/kyma/components/etcd-tls-setup-job/etcd-tls-setup-job.yaml
-        values:
-          <<: *cluster_default
-          <<: *go_kyma_component_1_11
-          path: components/etcd-tls-setup-job
       - to: ../prow/jobs/kyma/components/event-bus/event-bus.yaml
         values:
           <<: *cluster_default
@@ -1148,6 +1183,12 @@ templates:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
         values:
           <<: *cluster_default
+  - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
+    render:
+      - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
+        values:
+          <<: *cluster_default
+          optional: true
   - from: templates/knative-kafka-component.yaml
     render:
       - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
@@ -1604,7 +1645,7 @@ templates:
                 name: "pre-test-infra-prow-tools"
                 run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                 args:
-                  - "//home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
             - inheritedConfigs:
                 global:
                   - "image_bootstrap"
@@ -1615,7 +1656,7 @@ templates:
                 name: "post-test-infra-prow-tools"
                 run_if_changed: '^development/tools/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                 args:
-                  - "//home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/prow-tools"
             - inheritedConfigs:
                 global:
                   - "image_bootstrap"
@@ -1638,3 +1679,25 @@ templates:
                 run_if_changed: "^prow/images/clonerefs/"
                 args:
                   - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/clonerefs"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                  - "presubmit"
+              jobConfig:
+                name: "pre-test-infra-image-guard"
+                run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+            - inheritedConfigs:
+                global:
+                  - "image_bootstrap"
+                local:
+                  - "default"
+                  - "postsubmit"
+              jobConfig:
+                name: "post-test-infra-image-guard"
+                run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                args:
+                  - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"

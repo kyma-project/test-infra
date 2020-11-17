@@ -21,42 +21,37 @@ var components = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "core-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "core-ui", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "core", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "core", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "service-catalog-ui", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "service-catalog-ui", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "add-ons", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "add-ons", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "logging", yamlName: &loggingYamlName, image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "compass", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.AllReleases(),
-		},
-	},
-	{path: "content", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "content", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.AllReleases(),
 		},

@@ -66,8 +66,12 @@ buildTarget="release"
 shout "Build kcp-installer with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
 
-shout "Build SKR CLI with target ${buildTarget}"
+shout "Build KCP CLI with target ${buildTarget}"
 make -C "${KCP_PATH}/components/kyma-environment-broker" -f Makefile.cli ${buildTarget}
+
+shout "Switch to a different service account to push to GCS bucket"
+export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
+authenticate
 
 shout "Create development artifacts"
 # INPUTS:
@@ -80,11 +84,6 @@ env KCP_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KCP_PA
 shout "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-shout "Switch to a different service account to push to GCS bucket"
-
-export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-authenticate
-
 shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-installer.yaml"
 gsutil cp  "${KCP_PATH}/installation/scripts/is-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
@@ -95,9 +94,9 @@ gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCK
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
 gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-compass-installed.sh"
 
-gsutil cp "${ARTIFACTS}/skr.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/skr.exe"
-gsutil cp "${ARTIFACTS}/skr-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/skr-linux"
-gsutil cp "${ARTIFACTS}/skr-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/skr-darwin"
+gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp.exe"
+gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-linux"
+gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-darwin"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
   shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
@@ -110,7 +109,7 @@ if [[ "${BUILD_TYPE}" == "master" ]]; then
   gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
   gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-compass-installed.sh"
 
-  gsutil cp "${ARTIFACTS}/skr.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/skr.exe"
-  gsutil cp "${ARTIFACTS}/skr-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/skr-linux"
-  gsutil cp "${ARTIFACTS}/skr-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/skr-darwin"
+  gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp.exe"
+  gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-linux"
+  gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-darwin"
 fi

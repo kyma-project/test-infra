@@ -16,7 +16,7 @@ var tests = []struct {
 }{
 	{
 		name:  "connector-tests",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -26,7 +26,7 @@ var tests = []struct {
 	},
 	{
 		name:  "director",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic-approach"),
@@ -35,7 +35,7 @@ var tests = []struct {
 	},
 	{
 		name:  "connectivity-adapter",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
@@ -69,5 +69,5 @@ func TestTestJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "tests"))
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, []string{"tests"}))
 }

@@ -21,57 +21,57 @@ var components = []struct {
 }{
 	{
 		name:  "provisioner",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Since(releases.Release114),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
 		name:  "kyma-environment-broker",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Since(releases.Release114),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
 		name:  "schema-migrator",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("kcp-generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Since(releases.Release114),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
 		name:  "metris",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Since(releases.Release114),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
 		name:  "kubeconfig-service",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.ControlPlaneRepo(),
-			jobsuite.Since(releases.Release114),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
 		name:  "subscription-cleanup-job",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -89,7 +89,7 @@ func TestComponentJobs(t *testing.T) {
 			opts := []jobsuite.Option{
 				jobsuite.Component(component.name, component.image),
 				jobsuite.ControlPlaneRepo(),
-				jobsuite.Since(releases.Release114),
+				jobsuite.AllReleases(),
 			}
 			opts = append(opts, component.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
@@ -105,5 +105,5 @@ func TestComponentJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "components"))
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, []string{"components"}))
 }

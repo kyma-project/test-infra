@@ -151,6 +151,7 @@ periodics:
       - <<: *kyma_ref
         base_ref: master
     labels:
+      preset-log-collector-slack-token: "true"
       <<: *gardener_gcp_job_labels_template
 
   - name: kyma-integration-gardener-aws
@@ -189,5 +190,6 @@ periodics:
       - <<: *kyma_ref
         base_ref: master
     labels:
+      preset-log-collector-slack-token: "true"
       <<: *gardener_azure_job_labels_template
 

@@ -75,7 +75,7 @@ func (s Client) UploadLogFiles(messages []Message, prowJobName, ctsName, complet
 
 	for channelID, messageSlice := range s.groupMessagesByChannelID(messages) {
 
-		parentMsg := fmt.Sprintf("Prow Job name: `%s`; ClusterTestSuite `%s`; completion time `%s`", prowJobName, ctsName, completionTime)
+		parentMsg := fmt.Sprintf("Prow Job name: `%s`; ClusterTestSuite: `%s`; completion time: `%s`", prowJobName, ctsName, completionTime)
 		if len(failedTestNames) > 0 {
 			parentMsg = fmt.Sprintf("%s; failed test names: `%s`", parentMsg, strings.Join(failedTestNames, ", "))
 		}

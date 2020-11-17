@@ -48,3 +48,50 @@ periodics:
               memory: 1Gi
               cpu: 400m
 {{ end }}
+
+#-------------Release-----------------------------
+
+{{ $release := index .Global.releases 0 }}
+{{- range .Global.whitesource_release }}
+  - name: {{ default .name .custom_projectname }}-{{ $release }}-whitesource-scan
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    decorate: true
+    cron: "5 5 5 5 5" #once per year
+    labels:
+        preset-kyma-wssagent-config: "true"
+        preset-wssagent-keys: "true"
+        preset-kyma-keyring: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kms-gc-project-env: "true"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration-{{ .project }}-whitesource: "true"
+    extra_refs:
+        - <<: *test_infra_ref
+        - org: {{ .project }}
+          repo: {{ .name }}
+          path_alias: github.com/{{ .project }}/{{ .name }}
+          base_ref: release-{{ $release }}
+    spec:
+        containers:
+        - image: eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+          env:
+            - name : PROJECTNAME
+              value: {{ .name }}
+            - name: CUSTOM_PROJECTNAME
+              value: {{ default "" .custom_projectname }}
+            - name: DRYRUN
+              value: "false"
+            - name: SCAN_LANGUAGE
+              value: {{ .language }}
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 400m
+{{ end }}

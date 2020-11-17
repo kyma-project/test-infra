@@ -30,6 +30,11 @@ job_labels_template: &job_labels_template
 
 presets:
 - labels:
+    preset-target-commit-1.17: "true"
+  env:
+    - name: RELEASE_TARGET_COMMIT
+      value: release-1.17
+- labels:
     preset-target-commit-1.16: "true"
   env:
     - name: RELEASE_TARGET_COMMIT
@@ -39,15 +44,26 @@ presets:
   env:
     - name: RELEASE_TARGET_COMMIT
       value: release-1.15
-- labels:
-    preset-target-commit-1.14: "true"
-  env:
-    - name: RELEASE_TARGET_COMMIT
-      value: release-1.14
   
   
 postsubmits:
   kyma-project/kyma:
+  - name: post-rel117-kyma-github-release
+    cluster: trusted-workload
+    annotations:
+      testgrid-dashboards: kyma_release-1.17
+      description: GitHub Release job for Kyma 1.17.
+      testgrid-days-of-results: "90"
+    branches:
+      - release-1.17
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.17
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
+      preset-target-commit-1.17: "true"
   - name: post-rel116-kyma-github-release
     cluster: trusted-workload
     annotations:
@@ -80,20 +96,4 @@ postsubmits:
       <<: *job_labels_template
       preset-build-release: "true"
       preset-target-commit-1.15: "true"
-  - name: post-rel114-kyma-github-release
-    cluster: trusted-workload
-    annotations:
-      testgrid-dashboards: kyma_release-1.14
-      description: GitHub Release job for Kyma 1.14.
-      testgrid-days-of-results: "90"
-    branches:
-      - release-1.14
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.14
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-      preset-target-commit-1.14: "true"
 

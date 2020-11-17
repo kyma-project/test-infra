@@ -1,5 +1,5 @@
 job_template: &job_template
-  run_if_changed: "^kiali-operator/"
+  run_if_changed: "^k8s-tools/"
   skip_report: false
   decorate: true
   path_alias: github.com/kyma-incubator/third-party-images
@@ -19,7 +19,7 @@ job_template: &job_template
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
       args:
-      - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/kiali-operator"
+      - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/k8s-tools"
       resources:
         requests:
           memory: 1.5Gi
@@ -32,7 +32,7 @@ job_labels_template: &job_labels_template
 
 presubmits: # runs on PRs
   kyma-incubator/third-party-images:
-  - name: pre-master-tpi-kiali-operator
+  - name: pre-master-tpi-k8s-tools
     cluster: untrusted-workload
     <<: *job_template
     labels:
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/third-party-images:
-  - name: post-master-tpi-kiali-operator
+  - name: post-master-tpi-k8s-tools
     cluster: trusted-workload
     annotations:
       testgrid-create-test-group: "false"

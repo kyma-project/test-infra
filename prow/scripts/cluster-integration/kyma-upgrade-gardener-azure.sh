@@ -20,6 +20,7 @@
 set -e
 
 discoverUnsetVar=false
+enableTestLogCollector=false
 
 VARIABLES=(
     KYMA_PROJECT_DIR
@@ -46,6 +47,15 @@ done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
+
+
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        echo "ERROR: LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
+
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
@@ -97,6 +107,9 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
+
     if [[ -n "${SUITE_NAME}" ]]; then
         testSummary
     fi 
@@ -127,6 +140,19 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+runTestLogCollector(){
+    if [ "${enableTestLogCollector}" = true ] ; then
+        if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
+            shout "Install test-log-collector"
+            date
+            export PROW_JOB_NAME="kyma-upgrade-gardener-azure"
+            ( 
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+            )    
+        fi    
+    fi
 }
 
 function provisionCluster() {

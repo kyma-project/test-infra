@@ -18,12 +18,11 @@ job_template: &job_template
     - <<: *test_infra_ref
       base_ref: master
   branches:
-    - ^master$
-    - ^release-(1\.16|1\.15|1\.14)-istio-kyma-patch$
+    - ^release-(1\.17|1\.16|1\.15)-istio-kyma-patch$
   run_if_changed: "^components/istio-kyma-patch/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
+      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:v20201009-ec3cc352
         securityContext:
           privileged: true
         command:
@@ -39,7 +38,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-components-istio-kyma-patch
       cluster: untrusted-workload
-      optional: false
+      optional: true
       <<: *job_template
 
 postsubmits:
@@ -48,4 +47,7 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
       <<: *job_template

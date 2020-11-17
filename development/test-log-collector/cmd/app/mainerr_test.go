@@ -1,22 +1,17 @@
 package app
 
 import (
-	"io"
-	"io/ioutil"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/rest"
 
 	octopusTypes "github.com/kyma-project/test-infra/development/test-log-collector/pkg/resources/clustertestsuite/types"
 )
 
 func Test_getNewestClusterTestSuite(t *testing.T) {
-
 	date2009 := metav1.NewTime(time.Date(2009, 11, 17, 20, 34, 58, 651387237, time.UTC))
 	date2020 := metav1.NewTime(time.Date(2020, 11, 17, 20, 34, 58, 651387237, time.UTC))
 
@@ -38,18 +33,28 @@ func Test_getNewestClusterTestSuite(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "should throw error on only 1 clustertestsuite which is not finished",
+			name: "should pass on only 1 clustertestsuite which is not finished",
 			args: args{ctsList: octopusTypes.ClusterTestSuiteList{
 				Items: []octopusTypes.ClusterTestSuite{
 					{
 						Status: octopusTypes.TestSuiteStatus{
 							CompletionTime: nil,
 						},
+						ObjectMeta: metav1.ObjectMeta{
+							Name: "testst",
+						},
 					},
 				},
 			}},
-			want:    octopusTypes.ClusterTestSuite{},
-			wantErr: true,
+			want: octopusTypes.ClusterTestSuite{
+				Status: octopusTypes.TestSuiteStatus{
+					CompletionTime: nil,
+				},
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "testst",
+				},
+			},
+			wantErr: false,
 		},
 		{
 			name: "should pass on 1 clustertestsuite",
@@ -68,7 +73,7 @@ func Test_getNewestClusterTestSuite(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "should return newest clustertestsuite",
+			name: "should return first clustertestsuite",
 			args: args{ctsList: octopusTypes.ClusterTestSuiteList{
 				Items: []octopusTypes.ClusterTestSuite{
 					{
@@ -83,40 +88,11 @@ func Test_getNewestClusterTestSuite(t *testing.T) {
 					},
 				},
 			}},
-			want: octopusTypes.ClusterTestSuite{Status: octopusTypes.TestSuiteStatus{
-				CompletionTime: &date2020,
-			}},
-			wantErr: false,
-		},
-		{
-			name: "should return newest clustertestsuite",
-			args: args{ctsList: octopusTypes.ClusterTestSuiteList{
-				Items: []octopusTypes.ClusterTestSuite{
-					{
-						Status: octopusTypes.TestSuiteStatus{
-							CompletionTime: &date2009,
-						},
-					},
-					{
-						ObjectMeta: metav1.ObjectMeta{
-							Name: "test-name-no-status-completion-time",
-						},
-					},
-					{
-						ObjectMeta: metav1.ObjectMeta{
-							Name: "test-name-no-status-completion-time2",
-						},
-					},
-					{
-						Status: octopusTypes.TestSuiteStatus{
-							CompletionTime: &date2020,
-						},
-					},
+			want: octopusTypes.ClusterTestSuite{
+				Status: octopusTypes.TestSuiteStatus{
+					CompletionTime: &date2009,
 				},
-			}},
-			want: octopusTypes.ClusterTestSuite{Status: octopusTypes.TestSuiteStatus{
-				CompletionTime: &date2020,
-			}},
+			},
 			wantErr: false,
 		},
 	}
@@ -124,7 +100,7 @@ func Test_getNewestClusterTestSuite(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			g := gomega.NewWithT(t)
 
-			got, err := getNewestClusterTestSuite(tt.args.ctsList)
+			got, err := getClusterTestSuite(tt.args.ctsList)
 			// then
 			g.Expect(err != nil).To(gomega.Equal(tt.wantErr))
 			g.Expect(got).To(gomega.Equal(tt.want))
@@ -203,59 +179,6 @@ func Test_getTestContainerName(t *testing.T) {
 			g := gomega.NewWithT(t)
 
 			got, err := getTestContainerName(tt.args.pod)
-
-			g.Expect(err != nil).To(gomega.Equal(tt.wantErr))
-			g.Expect(got).To(gomega.Equal(tt.want))
-		})
-	}
-}
-
-type testStruct struct {
-	Data string
-}
-
-func (t testStruct) DoRaw() ([]byte, error) {
-	return []byte{}, nil
-}
-
-func (t testStruct) Stream() (io.ReadCloser, error) {
-	return ioutil.NopCloser(strings.NewReader(t.Data)), nil
-}
-
-var _ rest.ResponseWrapper = &testStruct{}
-
-func TestConsumeRequest(t *testing.T) {
-	tests := []struct {
-		name    string
-		arg     string
-		want    []byte
-		wantErr bool
-	}{
-		{
-			name:    "correctly reads single line",
-			arg:     "single line of text for test",
-			want:    []byte("single line of text for test"),
-			wantErr: false,
-		},
-		{
-			name: "correctly reads multi line text",
-			arg: `multiline
-just 
-for
-test`,
-			want: []byte(`multiline
-just 
-for
-test`),
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			g := gomega.NewWithT(t)
-			testStr := testStruct{Data: tt.arg} // create readcloser
-
-			got, err := consumeRequest(testStr)
 
 			g.Expect(err != nil).To(gomega.Equal(tt.wantErr))
 			g.Expect(got).To(gomega.Equal(tt.want))

@@ -50,6 +50,7 @@ CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},created-at-readable=
 
 GCLOUD_PARAMS+=("${CLUSTER_NAME}")
 if [ "${CLUSTER_VERSION}" ]; then GCLOUD_PARAMS+=("--cluster-version=${CLUSTER_VERSION}"); else GCLOUD_PARAMS+=("${CLUSTER_VERSION_PARAM}"); fi
+if [ "${RELEASE_CHANNEL}" ]; then GCLOUD_PARAMS+=("--release-channel=${RELEASE_CHANNEL}"); fi
 if [ "${MACHINE_TYPE}" ]; then GCLOUD_PARAMS+=("--machine-type=${MACHINE_TYPE}"); else GCLOUD_PARAMS+=("${MACHINE_TYPE_PARAM}"); fi
 if [ "${NUM_NODES}" ]; then GCLOUD_PARAMS+=("--num-nodes=${NUM_NODES}"); else GCLOUD_PARAMS+=("${NUM_NODES_PARAM}"); fi
 if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then GCLOUD_PARAMS+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else GCLOUD_PARAMS+=("${NETWORK_PARAM}"); fi

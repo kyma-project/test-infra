@@ -14,20 +14,20 @@ var tools = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "event-subscriber", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "event-subscriber", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.AllReleases(),
 			jobsuite.Optional(),
 		},
 	},
-	{path: "alpine-net", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "alpine-net", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Until(releases.Release115),
 		},
 	},
-	{path: "gitserver", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "gitserver", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release115),

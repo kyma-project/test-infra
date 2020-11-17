@@ -113,7 +113,10 @@ function main() {
   echo "----------------------------"
 
   export INSTALL_DIR=${TMP_DIR}
-  install::kyma_cli
+  if ! [[ -x "$(command -v kyma)" ]];
+  then
+    install::kyma_cli
+  fi
 
   cts::check_crd_exist
 

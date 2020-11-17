@@ -4,7 +4,6 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
-  optional: true
   decorate: true
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
@@ -38,7 +37,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-master-kyma-development-artifacts
     cluster: untrusted-workload
-    run_if_changed: "^installation|^resources|^components/kyma-operator|^tools/kyma-installer"
+    always_run: true
     branches:
     - ^master$
     <<: *job_template

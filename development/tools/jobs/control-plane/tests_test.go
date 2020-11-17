@@ -4,7 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -17,7 +16,7 @@ var tests = []struct {
 }{
 	{
 		name:  "provisioner-tests",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -26,7 +25,7 @@ var tests = []struct {
 	},
 	{
 		name:  "e2e/provisioning",
-		image: tester.ImageBootstrap20181204,
+		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("test-generic"),
@@ -43,7 +42,7 @@ func TestTestJobs(t *testing.T) {
 			opts := []jobsuite.Option{
 				jobsuite.Test(test.name, test.image),
 				jobsuite.ControlPlaneRepo(),
-				jobsuite.Since(releases.Release114),
+				jobsuite.AllReleases(),
 			}
 			opts = append(opts, test.additionalOptions...)
 			cfg := jobsuite.NewConfig(opts...)
@@ -59,5 +58,5 @@ func TestTestJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "tests"))
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, []string{"tests"}))
 }

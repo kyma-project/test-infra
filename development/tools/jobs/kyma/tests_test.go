@@ -15,114 +15,114 @@ var tests = []struct {
 	suite             func(config *jobsuite.Config) jobsuite.Suite
 	additionalOptions []jobsuite.Option
 }{
-	{path: "service-catalog", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "service-catalog", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "application-connector-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "application-connector-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "application-gateway-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "application-gateway-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "application-gateway-legacy-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "application-gateway-legacy-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.Since(releases.Release116),
 		},
 	},
-	{path: "application-operator-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "application-operator-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "application-registry-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "application-registry-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "compass-runtime-agent", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "compass-runtime-agent", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "connection-token-handler-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "connection-token-handler-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "connector-service-tests", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "connector-service-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "console-backend-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "console-backend-service", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.RunIfChanged("components/console-backend-service/main.go", "scripts/go-dep.mk"),
 		},
 	},
-	{path: "end-to-end/upgrade", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
+	{path: "end-to-end/upgrade", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite, additionalOptions: []jobsuite.Option{
 		jobsuite.RunIfChanged("^tests/end-to-end/upgrade/[^chart]", "tests/end-to-end/upgrade/fix"),
 		jobsuite.JobFileSuffix("tests-generic"),
 	}},
-	{path: "end-to-end/external-solution-integration", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "end-to-end/external-solution-integration", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "integration/event-service", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "integration/event-service", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.AllReleases(),
 		},
 	},
-	{path: "integration/apiserver-proxy", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "integration/apiserver-proxy", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "rafter", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "rafter", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "integration/api-gateway", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "integration/api-gateway", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "integration/dex", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "integration/dex", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "integration/logging", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "integration/logging", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "integration/monitoring", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "integration/monitoring", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "contract/knative-channel-kafka", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "contract/knative-channel-kafka", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "function-controller", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "function-controller", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 		},
 	},
-	{path: "knative-serving", image: tester.ImageBootstrap20181204, suite: tester.NewGenericComponentSuite,
+	{path: "knative-serving", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.Until(releases.Release115),
@@ -154,5 +154,5 @@ func TestTestJobs(t *testing.T) {
 			ts.Run(t)
 		})
 	}
-	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, "tests"))
+	t.Run("All Files covered by test", jobsuite.CheckFilesAreTested(repos, testedConfigurations, jobBasePath, []string{"tests"}))
 }

@@ -12,6 +12,10 @@
 
 set -o errexit
 
+SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+#shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPTS_PATH}/lib/log.sh"
+
 discoverUnsetVar=false
 
 for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_FULL_NAME IP_ADDRESS; do
@@ -32,7 +36,7 @@ function createDNSWithRetries() {
 
     for ((i=1; i<=attempts; i++)); do
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=300 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+        gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
         gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
         if [[ $? -eq 0 ]]; then
@@ -70,7 +74,27 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         exit 0
     fi
 
+
+    log::banner "Debugging DNS issues"
+    log::date
+    {
+      log::info "trace DNS response for ${DNS_FULL_NAME}"
+      dig +trace "${DNS_FULL_NAME}"
+      log::info "query authoritative servers directly"
+      log::info "ns-cloud-b1.googledomains.com."
+      dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
+      log::info "ns-cloud-b2.googledomains.com."
+      dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
+      log::info "ns-cloud-b3.googledomains.com."
+      dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
+      log::info "ns-cloud-b4.googledomains.com."
+      dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
+    } >> "${ARTIFACTS}/dns-debug.txt"
+
+
 done
 
 echo "Cannot resolve ${DNS_FULL_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."
-exit 1
+log::warn "WARNING! I will continue anyway... Kyma installation may fail!"
+#TODO: fix it
+#exit 1

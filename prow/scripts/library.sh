@@ -36,8 +36,14 @@ function start_docker() {
     elif [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
       authenticateDocker "${GOOGLE_APPLICATION_CREDENTIALS}"
     else
-      echo "Skipping docker authnetication in registry. No credentials provided."
+      echo "Skipping docker authentication in GCR. Credentials not provided."
     fi
+
+    if [[ -n "${DOCKER_HUB_USER}" ]]; then
+      echo "Authenticating in docker hub."
+      echo "${DOCKER_HUB_PASS}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin || exit 1
+    fi
+
     echo "Done setting up docker in docker."
 }
 
@@ -51,7 +57,7 @@ function authenticateSaGcr() {
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
       gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
     else
-      echo "No GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS"
+      echo "Environment variable GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS not present. Credentials not provided. Skipping authentication."
     fi
 
 }
@@ -194,4 +200,82 @@ EOF
 
 	kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
 
+}
+
+function gkeCleanup() {
+    #!!! Must be at the beginning of this function !!!
+    EXIT_STATUS=$?
+
+    shout "Cleanup"
+
+    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+        shout "AN ERROR OCCURED! Take a look at preceding log entries."
+        echo
+    fi
+
+    #Turn off exit-on-error so that next step is executed even if previous one fails.
+    set +e
+
+    if [ -n "${CLEANUP_CLUSTER}" ]; then
+        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
+        date
+
+        #save disk names while the cluster still exists to remove them later
+        #DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
+        #export DISKS
+
+        #Delete cluster
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+
+        #Delete orphaned disks
+        #shout "Delete orphaned PVC disks..."
+        #date
+        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+    fi
+
+    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+        shout "Delete Gateway DNS Record"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+    fi
+
+    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+        shout "Release Gateway IP Address"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+    fi
+
+    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+        shout "Docker image cleanup"
+
+        if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
+            shout "Delete temporary Compass-Installer Docker image"
+            date
+            KYMA_INSTALLER_IMAGE="${COMPASS_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        fi
+
+        if [ -n "${KCP_INSTALLER_IMAGE}" ]; then
+           shout "Delete temporary KCP-Installer Docker image"
+            date
+            KYMA_INSTALLER_IMAGE="${KCP_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        fi
+
+        shout "Delete temporary Kyma-Installer Docker image"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+    fi
+
+    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+        shout "Delete Apiserver proxy DNS Record"
+        date
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+    fi
+
+    MSG=""
+    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+    shout "Job is finished ${MSG}"
+    date
+    set -e
+
+    exit "${EXIT_STATUS}"
 }

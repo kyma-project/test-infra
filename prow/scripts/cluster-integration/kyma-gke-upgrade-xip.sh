@@ -89,9 +89,9 @@ cleanup() {
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
 
         #Delete orphaned disks
-        shout "Delete orphaned PVC disks..."
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+        #shout "Delete orphaned PVC disks..."
+        #date
+        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
     fi
 
     if [[ -n "${CLEANUP_DOCKER_IMAGE}" ]]; then
