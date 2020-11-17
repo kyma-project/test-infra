@@ -148,7 +148,9 @@ shout "Check if the Function is running"
 date
 attempts=3
 for ((i=1; i<=attempts; i++)); do
+    set +e
     result=$(gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'")
+    set -e
     if [[ "$result" == *"Running"* ]]; then
         echo "The Function is in Running state"
         break
