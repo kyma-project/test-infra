@@ -205,7 +205,7 @@ date
 
 kyma apply function
 
-sleep 15
+sleep 30
 
 shout "Check if the Function is running"
 date
