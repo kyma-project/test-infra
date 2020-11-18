@@ -364,7 +364,7 @@ EOF
   yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
 
   # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
-  sed -i 's/prometheus-istio.server.resources.limits.memory: "3Gi"/prometheus-istio.server.resources.limits.memory: "6Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
+  sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "6Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
