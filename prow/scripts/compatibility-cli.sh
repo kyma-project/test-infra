@@ -74,6 +74,19 @@ for r in "${RELEASES[@]}"; do
     fi
 done
 
+# Exceptional release replacements. Add a replacement pair here as follows: "release::replacement"
+# This is required when we have special releases that do not follow the regular pattern.
+EXCEPTIONS=('1.16.0::1.16.0-rc3')
+
+for index in "${EXCEPTIONS[@]}" ; do
+    KEY="${index%%::*}"
+    VALUE="${index##*::}"
+    if [[ "${TARGET}" == "${KEY}" ]]; then
+        TARGET="${VALUE}"
+        break
+    fi
+done
+
 shout "Checking Kyma CLI compatibility with Kyma ${TARGET}"
 date
 
