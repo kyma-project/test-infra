@@ -325,18 +325,18 @@ function upgradeKyma() {
 
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
-    log::info "Upgrading Kyma ${TARGET_VERSION}"
+    log::info "Upgrading Kyma ${TARGET_VERSION:0:8}"
 
     log::info "Downloading Kyma installer CR"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
         --output installer-cr-azure-eventhubs.yaml.tpl
 
     log::info "Downloading production profile"
-        curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/installer-config-production.yaml.tpl" \
+        curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-production.yaml.tpl" \
         --output installer-config-production.yaml.tpl
 
     log::info "Downloading Azure EventHubs config"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
         --output installer-config-azure-eventhubs.yaml.tpl
 
     log::info "Triggering update with timeout ${KYMA_UPDATE_TIMEOUT}"
@@ -344,7 +344,7 @@ function upgradeKyma() {
         set -x
         kyma upgrade \
             --ci \
-            --source "${TARGET_VERSION}" \
+            --source "${TARGET_VERSION:0:8}" \
             -c installer-cr-azure-eventhubs.yaml.tpl \
             -o installer-config-production.yaml.tpl \
             -o installer-config-azure-eventhubs.yaml.tpl \
