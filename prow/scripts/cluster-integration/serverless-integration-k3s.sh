@@ -5,9 +5,10 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 date
 
+export KANIKO_IMAGE="eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0"
 export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 if [[ -z $REGISTRY_VALUES ]]; then
-  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=aerfio/kaniko:latest"
+  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE}"
 fi
 
 export KYMA_SOURCES_DIR="./kyma"
