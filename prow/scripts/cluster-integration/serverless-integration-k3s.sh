@@ -106,15 +106,6 @@ function host::patch_coredns() {
   kubectl -n kube-system patch cm coredns --patch "$(cat coredns-patch.yaml)"
 }
 
-function create_kyma_namespace() {
-cat <<EOF | kubectl apply -f - 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kyma-system
-EOF
-}
-
 host::create_coredns_template
 host::create_docker_registry
 # shellcheck disable=SC2155
@@ -132,10 +123,8 @@ install::k3s
 while [[ $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "Waiting for cluster nodes to be ready, elapsed time: $(( $SECONDS/60 )) min $(( $SECONDS % 60 )) sec"; sleep 2; done
 host::patch_coredns
 
-create_kyma_namespace
-
 kubectl apply -f "$KYMA_SOURCES_DIR/resources/cluster-essentials/files" -n kyma-system
-helm upgrade --atomic -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
+helm upgrade --atomic -create-namespace -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
 
 echo "##############################################################################"
 # shellcheck disable=SC2004
