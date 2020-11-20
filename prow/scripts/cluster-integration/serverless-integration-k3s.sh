@@ -58,9 +58,8 @@ EOL
 }
 
 host::update_etc_hosts(){
-  # needed for 
+  # needed for external docker registry
   echo "${REGISTRY_IP} registry.localhost" >> /etc/hosts
-  cat /etc/hosts
 }
 
 host::create_docker_registry(){
@@ -124,7 +123,7 @@ while [[ $(kubectl get nodes -o 'jsonpath={..status.conditions[?(@.type=="Ready"
 host::patch_coredns
 
 kubectl apply -f "$KYMA_SOURCES_DIR/resources/cluster-essentials/files" -n kyma-system
-helm upgrade --atomic -create-namespace -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
+helm upgrade --atomic --create-namespace -i serverless "$KYMA_SOURCES_DIR/resources/serverless" -n kyma-system --set "$REGISTRY_VALUES",global.ingress.domainName="$DOMAIN" --wait
 
 echo "##############################################################################"
 # shellcheck disable=SC2004
