@@ -215,6 +215,24 @@ presets:
           name: kyma-azure-credential-tenant
           key: subscription-tenant
   - labels:
+      preset-az-kyma-prow-credentials: "true"
+    env:
+      - name: AZURE_CREDENTIALS_FILE
+        value: /etc/credentials/az-kyma-prow-credentials/azure-credentials.json
+      - name: AZURE_SUBSCRIPTION_ID
+        valueFrom:
+          secretKeyRef:
+            name: kyma-azure-credential-id
+            key: subscription-id
+    volumes:
+      - name: az-kyma-prow-credentials
+        secret:
+          secretName: az-kyma-prow-credentials
+    volumeMounts:
+      - name: az-kyma-prow-credentials
+        mountPath: /etc/credentials/az-kyma-prow-credentials
+
+  - labels:
       preset-dind-enabled: "true"
     env:
       - name: DOCKER_IN_DOCKER_ENABLED

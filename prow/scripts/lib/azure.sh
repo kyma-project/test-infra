@@ -23,7 +23,7 @@ function az::verify_deps {
 # az::login logs in to the azure service using provided credentials file in the function argument.
 # Function accepts JSON file formatted below:
 # {
-#   "tenant": "tenant_id",
+#   "tenant_id": "tenant_id",
 #   "app_id": "subscription_app_id",
 #   "secret": "subscription_secret"
 # }
@@ -37,15 +37,19 @@ function az::login {
   if [[ -z "$1" ]]; then
     log::error "Azure credentials file not provided. please provide azure credentials filepath in the argument. Exiting..."
     exit 1
-  elif ! [[ -f "$1" ]]; then
-    log:error "Azure credentials file not found. Make sure it is present under the provided filepath. Exiting..."
+  elif [[ ! -f "$1" ]]; then
+    log::error "Azure credentials file not found. Make sure it is present under the provided filepath. Exiting..."
     exit 1
   fi
   AZURE_CREDENTIALS_FILE="$1"
-  read -r AZURE_SUBSCRIPTION_TENANT AZURE_SUBSCRIPTION_APP_ID AZURE_SUBSCRIPTION_SECRET < <(jq -r '.tenant, .app_id, .secret' "$AZURE_CREDENTIALS_FILE")
+  AZURE_SUBSCRIPTION_TENANT=$(jq -r '.tenant_id' "$AZURE_CREDENTIALS_FILE")
+  AZURE_SUBSCRIPTION_APP_ID=$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")
+  AZURE_SUBSCRIPTION_SECRET=$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")
 
   # login
+  log::info "Logging in to Azure"
   az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
+  log::info "Successfully logged-in!"
 }
 
 # az::set_subscription sets the subscription using provided subscription ID in the argument.
