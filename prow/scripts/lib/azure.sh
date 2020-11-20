@@ -12,6 +12,12 @@ function az::verify_binary {
   else
     az version
   fi
+  if ! [[ -x $(command -v jq) ]]; then
+    log::error "'jq' command not found in \$PATH. Exiting..."
+    exit 1
+  else
+    jq --version
+  fi
 }
 
 # az::login logs in to the azure service using provided credentials file in the function argument.
@@ -40,6 +46,16 @@ function az::login {
 
   # login
   az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
+}
+
+# az::set_subscription sets the subscription using provided subscription ID in the argument.
+function az::set_subscription {
+  if [[ -z "$1" ]]; then
+    log::error "Azure Subscription ID is not found. Please provide azure subscription ID in the argument. Exiting..."
+    exit 1
+  fi
+  az account set \
+    --subscription "$1"
 }
 
 # This check will trigger everytime the file is sourced.

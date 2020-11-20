@@ -17,8 +17,10 @@ set -o pipefail  #Fail a pipe if any sub-command fails.
 ########################################################################################################################
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/azure.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
 
 #
 #Global Variables
@@ -28,9 +30,7 @@ VARIABLES=(
   RS_GROUP
   REGION
   AZURE_SUBSCRIPTION_ID
-  AZURE_SUBSCRIPTION_APP_ID
-  AZURE_SUBSCRIPTION_SECRET
-  AZURE_SUBSCRIPTION_TENANT
+  AZURE_CREDENTIALS_FILE
   RS_GROUP
   EVENTHUB_NAMESPACE_NAME
   EVENTHUB_SECRET_OVERRIDE_FILE
@@ -38,7 +38,7 @@ VARIABLES=(
 
 for var in "${VARIABLES[@]}"; do
   if [ -z "${!var}" ] ; then
-    shout "ERROR: $var is not set"
+    log::error "$var is not set"
     discoverUnsetVar=true
   fi
 done
@@ -65,8 +65,7 @@ K8S_SECRET_BROKER_PORT="9093"
 #
 
 createGroup() {
-  shout "Create Azure group"
-  date
+  log::info "Create Azure group"
 
   az group create \
     --name "${RS_GROUP}" \
@@ -78,7 +77,7 @@ createGroup() {
     sleep 15
     counter=$(( counter + 1 ))
     if (( counter == 5 )); then
-      echo -e "---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
+      log::error "Azure resource group ${RS_GROUP} still not present after one minute wait. Exiting..."
       exit 1
     fi
   done
@@ -108,59 +107,30 @@ cmdNamespacePrimaryConnectionString() {
     jq -r ".primaryConnectionString"
 }
 
-#Verify the Expected Dependencies are present on $PATH
-verifyPathDependencies() {
-
-  if ! [[ -x "$(command -v az)" ]]; then
-    shout "Executable 'az' Not Found On \$PATH - Exiting"
-    exit 1
-  fi
-
-  if ! [[ -x "$(command -v jq)" ]]; then
-    shout "Executable 'jq' Not Found On \$PATH - Exiting"
-    exit 1
-  fi
-
-}
-
-
-function azureAuthenticating() {
-  shout "Authenticating to azure"
-  date
-
-  az login \
-    --service-principal \
-    -u "${AZURE_SUBSCRIPTION_APP_ID}" \
-    -p "${AZURE_SUBSCRIPTION_SECRET}" \
-    --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-  az account set \
-    --subscription "${AZURE_SUBSCRIPTION_ID}"
-}
-
 #Enable this while debugging to confirm the user's desire to provision
 #A new EventHub Namespace for their current Azure context
 confirmConfiguration() {
 
   #Log the configuration summary
-  shout "The following configuration will be used to provision the new EventHub Namespace - review for correctness before continuing!"
-  echo "Azure Resource Group: ${RS_GROUP}"
-  echo "New EventHub Namespace name: ${EVENTHUB_NAMESPACE_NAME}"
-  echo "New EventHub Namespace location: ${EVENTHUB_NAMESPACE_LOCATION}"
-  echo "New EventHub Namespace throughput min: ${EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS}"
-  echo "New EventHub Namespace throughput max: ${EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS}"
-  echo "Kubernetes Secret name: ${EVENTHUB_NAMESPACE_NAME}"
-  echo "Kubernetes Secret Namespace: ${K8S_SECRET_NAMESPACE}"
+  log::info "The following configuration will be used to provision the new EventHub Namespace - review for correctness before continuing!"
+  echo " > Azure Resource Group: ${RS_GROUP}"
+  echo " > New EventHub Namespace name: ${EVENTHUB_NAMESPACE_NAME}"
+  echo " > New EventHub Namespace location: ${EVENTHUB_NAMESPACE_LOCATION}"
+  echo " > New EventHub Namespace throughput min: ${EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS}"
+  echo " > New EventHub Namespace throughput max: ${EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS}"
+  echo " > Kubernetes Secret name: ${EVENTHUB_NAMESPACE_NAME}"
+  echo " > Kubernetes Secret Namespace: ${K8S_SECRET_NAMESPACE}"
 }
 
 #Create the EventHub Namespace based on user's current Azure Subscription
 createEventHubNamespace() {
 
   #Execute the Azure EventHubs Namespace creation command & handle the results
-  shout "Creating New EventHubs Namespace... (takes several minutes - be patient :)"
+  log::info "Creating New EventHubs Namespace... (takes several minutes - be patient :)"
   if [[ $(cmdCreateEventHubNamespace) -eq 0 ]]; then
-    shout "Successfully Created New EventHub Namespace!"
+    log::info "Successfully Created New EventHub Namespace!"
   else
-    shout "Failed To Create New EventHub Namespace - Exiting!"
+    log::error "Failed To Create New EventHub Namespace - Exiting!"
     exit 1
   fi
 }
@@ -169,7 +139,7 @@ createEventHubNamespace() {
 loadAuthorizationKey() {
 
   #Get the new EventHub Namespace's PrimaryConnectionString
-  shout "Loading the new EventHub Namespace's authorization key..."
+  log::info "Loading the new EventHub Namespace's authorization key..."
   local primaryConnectionString=""
   primaryConnectionString=$(cmdNamespacePrimaryConnectionString)
 
@@ -181,7 +151,7 @@ loadAuthorizationKey() {
 #Creates The EventHub Namespace Secret override file
 createK8SSecretFile() {
 
-  shout "Creating a Kubernetes Secret override file for the New EventHub Namespace..."
+  log::info "Creating a Kubernetes Secret override file for the New EventHub Namespace..."
 
 kafkaSecret=$(cat << EOF
 apiVersion: v1
@@ -212,14 +182,12 @@ EOF
 #Main Script Execution
 #
 
-#Verify The Environment Contains the expected dependencies
-verifyPathDependencies
+# Login to azure using credentials file
+az::login "${AZURE_CREDENTIALS_FILE}"
+az::set_subscription "${AZURE_SUBSCRIPTION_ID}"
 
 #Confirm the configuration
 confirmConfiguration
-
-#Authenticating in Azure
-azureAuthenticating
 
 #Create the New Azure Resource Group
 createGroup
