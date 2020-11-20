@@ -203,12 +203,6 @@ function applyCompassOverrides() {
     --data "gateway.gateway.auditlog.enabled=true" \
     --data "gateway.gateway.auditlog.authMode=oauth" \
     --label "component=compass"
-
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-gateway-overrides" \
-    --data "gateway.gateway.enabled=false" \
-    --data "global.istio.gateway.name=kyma-gateway" \
-    --data "global.istio.gateway.namespace=kyma-system" \
-    --label "component=compass"
 }
 
 function applyCommonOverrides() {
