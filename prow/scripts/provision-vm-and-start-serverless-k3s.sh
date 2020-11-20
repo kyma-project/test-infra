@@ -9,16 +9,13 @@ date
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-# readonly TMP_DIR=$(mktemp -d)
-# readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_kyma_octopus-test-suite.xml"
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    # TODO uncomment me!
-    # "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {

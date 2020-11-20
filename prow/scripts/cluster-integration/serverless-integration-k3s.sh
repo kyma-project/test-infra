@@ -141,14 +141,10 @@ echo "##########################################################################
 echo "# Serverless installed in $(( $SECONDS/60 )) min $(( $SECONDS % 60 )) sec"
 echo "##############################################################################"
 
-sleep 10 # controller sometimes cant get runtime configmap :V
-
 kubectl apply -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml"
 echo "wait 180s for function to be ready"
 kubectl wait --for=condition=Running function/demo --timeout 180s
 echo "success!"
 kubectl get -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml" -oyaml
-
-date
 
 exit 0
