@@ -165,8 +165,9 @@ kyma install \
     --source latest-published \
     -o "${COMPONENT_OVERRIDES_FILE}" \
     --domain "${DOMAIN}" \
-    --tlsCert "${TLS_CERT}" \
-    --tlsKey "${TLS_KEY}"
+    --tls-cert "${TLS_CERT}" \
+    --tls-key "${TLS_KEY}" \
+    --timeout 90m
 
 shout "Checking the versions"
 date
@@ -181,7 +182,6 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     CLEANUP_APISERVER_DNS_RECORD="true"
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
-
 
 shout "Running Kyma tests"
 date
