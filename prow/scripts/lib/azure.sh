@@ -10,12 +10,14 @@ function az::verify_deps {
     log::error "'az' command not found in \$PATH. Exiting..."
     exit 1
   else
+    echo "Azure CLI Version:"
     az version
   fi
   if ! [[ -x $(command -v jq) ]]; then
     log::error "'jq' command not found in \$PATH. Exiting..."
     exit 1
   else
+    echo "jq version:"
     jq --version
   fi
 }
