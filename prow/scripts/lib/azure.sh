@@ -5,7 +5,7 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}"/log.sh
 
-function az::verify_binary {
+function az::verify_deps {
   if ! [[ -x $(command -v az) ]]; then
     log::error "'az' command not found in \$PATH. Exiting..."
     exit 1
@@ -61,4 +61,4 @@ function az::set_subscription {
 # This check will trigger everytime the file is sourced.
 # This should allow easy checking for the related requirements without copying loads of code.
 # If more checks will be needed we should add another function there.
-az::verify_binary
+az::verify_deps
