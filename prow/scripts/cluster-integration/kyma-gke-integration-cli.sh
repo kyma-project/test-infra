@@ -177,8 +177,8 @@ kyma install \
     --source latest-published \
     -o "${COMPONENT_OVERRIDES_FILE}" \
     --domain "${DOMAIN}" \
-    --tlsCert "${TLS_CERT}" \
-    --tlsKey "${TLS_KEY}" \
+    --tls-cert "${TLS_CERT}" \
+    --tls-key "${TLS_KEY}" \
     --timeout 90m
 
 shout "Checking the versions"
