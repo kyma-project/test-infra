@@ -711,15 +711,6 @@ templates:
           since: "1.12"
           additionalRunIfChanged:
             - ^package.json
-      - to: ../prow/jobs/console/content/content.yaml
-        values:
-          <<: *cluster_default
-          <<: *console_generic_component
-          path: content
-          since: "1.12"
-          additionalRunIfChanged:
-            - ^components/
-            - ^package.json
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
