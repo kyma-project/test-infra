@@ -7,9 +7,7 @@ VARIABLES=(
 	RS_GROUP
 	REGION
 	AZURE_SUBSCRIPTION_ID
-	AZURE_SUBSCRIPTION_APP_ID
-	AZURE_SUBSCRIPTION_SECRET
-	AZURE_SUBSCRIPTION_TENANT
+	AZURE_CREDENTIALS_FILE
 	KYMA_PROJECT_DIR
 	INPUT_CLUSTER_NAME
 	GOOGLE_APPLICATION_CREDENTIALS
@@ -56,12 +54,14 @@ if [ -z "${CLUSTER_VERSION}" ]; then
 fi
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma-cli.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/azure.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
 
 function check_status() {
   status="${1}"
@@ -73,8 +73,7 @@ function check_status() {
 }
 
 function cleanup() {
-	shout "Cleanup"
-	date
+	log::info "Cleanup"
 
 	# Turn off exit-on-error so that next step is executed even if previous one fails.
 	# Cleanup is best-effort since we don't know in which state the previous cluster is, if there is any.
@@ -161,8 +160,7 @@ function cleanup() {
 }
 
 function createGroup() {
-	shout "Create Azure group"
-	date
+	log::info "Create Azure group"
 
 	# Export variable for use in subshells.
 	export RS_GROUP
@@ -175,15 +173,14 @@ function createGroup() {
 		sleep 15
 		counter=$(( counter + 1 ))
 		if (( counter == 5 )); then
-			log::info "\n---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
+			log::error "\n---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
 			exit 1
 		fi
 	done
 }
 
 function installCluster() {
-	shout "Install Kubernetes on Azure"
-	date
+	log::info "Install Kubernetes on Azure"
 
 	log::info "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
 	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
@@ -202,20 +199,11 @@ function installCluster() {
 	  --zones 1 2 3
 }
 
-function azureAuthenticating() {
-	shout "Authenticating to azure"
-	date
-
-	az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-	az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
-}
-
 function createPublicIPandDNS() {
 	CLUSTER_RS_GROUP=$(az aks show -g "${RS_GROUP}" -n "${CLUSTER_NAME}" --query nodeResourceGroup -o tsv)
 
 	# IP address and DNS for Ingressgateway
-	shout "Reserve IP Address for Ingressgateway"
-	date
+	log::info "Reserve IP Address for Ingressgateway"
 
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
@@ -223,16 +211,14 @@ function createPublicIPandDNS() {
 	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
 	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
-	shout "Create DNS Record for Ingressgateway IP"
-	date
+	log::info "Create DNS Record for Ingressgateway IP"
 
 	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 }
 
 function setupKubeconfig() {
-	shout "Setup kubeconfig and create ClusterRoleBinding"
-	date
+	log::info "Setup kubeconfig and create ClusterRoleBinding"
 
 	az aks get-credentials --resource-group "${RS_GROUP}" --name "${CLUSTER_NAME}"
 	kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(az account show | jq -r .user.name)"
@@ -240,8 +226,7 @@ function setupKubeconfig() {
 
 function installKyma() {
 
-	shout "Prepare Kyma overrides"
-	date
+	log::info "Prepare Kyma overrides"
 
 	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
@@ -369,8 +354,7 @@ EOF
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
-	shout "Trigger installation"
-	date
+	log::info "Trigger installation"
 
   kyma install \
 			--ci \
@@ -383,8 +367,7 @@ EOF
 			--timeout 60m
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-		shout "Create DNS Record for Apiserver proxy IP"
-		date
+		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
 		IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
@@ -401,7 +384,8 @@ function test_console_url() {
 }
 
 init
-azureAuthenticating
+az::login "$AZURE_CREDENTIALS_FILE"
+az::set_subscription "$AZURE_SUBSCRIPTION_ID"
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --project="${CLOUDSDK_CORE_PROJECT}" --format="value(dnsName)")"
 export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -426,11 +410,10 @@ install::kyma_cli
 installKyma
 
 
-shout "Override kyma-admin-binding ClusterRoleBinding"
+log::info "Override kyma-admin-binding ClusterRoleBinding"
 applyDexGithibKymaAdminGroup
 
-shout "Install stability-checker"
-date
+log::info "Install stability-checker"
 (
 export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
 		CLUSTER_NAME SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID SLACK_CLIENT_TOKEN TEST_RESULT_WINDOW_TIME
