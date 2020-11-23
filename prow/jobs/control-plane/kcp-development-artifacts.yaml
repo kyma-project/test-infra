@@ -41,7 +41,7 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
   - name: pre-master-kcp-development-artifacts
     cluster: untrusted-workload
-    run_if_changed: "^installation|^resources|^tools/kcp-installer|^components/kyma-environment-broker/cmd/cli"
+    run_if_changed: "^installation|^resources|^tools/kcp-installer|^components/cli"
     branches:
     - ^master$
     <<: *job_template
