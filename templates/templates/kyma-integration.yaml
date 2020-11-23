@@ -534,7 +534,7 @@ periodics:
     annotations:
       testgrid-create-test-group: "false"
     labels:
-      preset-creds-aks-kyma-integration: "true"
+      preset-az-kyma-prow-credentials: "true"
     decorate: true
     extra_refs:
       - <<: *test_infra_ref
@@ -906,7 +906,7 @@ periodics:
       preset-build-master: "true"
       preset-stability-checker-slack-notifications: "true"
       preset-nightly-aks-github-integration: "true"
-      preset-creds-aks-kyma-integration: "true"
+      preset-az-kyma-prow-credentials: "true"
       preset-kms-gc-project-env: "true"
       preset-certificates-bucket: "true"
       <<: *gke_job_labels_template
