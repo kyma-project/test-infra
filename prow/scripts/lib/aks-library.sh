@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# DEPRECATED - use azure.sh file.
+# This file is not used anywhere and will be removed in the future.
+
 if [ -f "../../prow/scripts/library.sh" ]; then
     export TEST_INFRA_SOURCES_DIR="../.."
 
