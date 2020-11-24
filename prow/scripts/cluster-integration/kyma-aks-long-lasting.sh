@@ -346,7 +346,7 @@ cat << EOF > istio-ingressgateway-patch-yq.yaml
     loadBalancerIP: ${GATEWAY_IP_ADDRESS}
     type: LoadBalancer
 EOF
-  yq w -i -d0 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d0 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
+  yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
 
   # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
   sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "6Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
