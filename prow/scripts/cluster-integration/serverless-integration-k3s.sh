@@ -8,7 +8,7 @@ date
 export KANIKO_IMAGE="eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0"
 export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 if [[ -z $REGISTRY_VALUES ]]; then
-  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,docker-registry.destinationRule.enabled=false,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE}"
+  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,docker-registry.destinationRule.enabled=false,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE},images.manager.repository=aerfio/function-controller,images.manager.tag=latest"
 fi
 
 export KYMA_SOURCES_DIR="./kyma"
