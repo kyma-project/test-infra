@@ -1,3 +1,6 @@
 pjNames:
 - pjName: "pre-master-serverless-integration-k3s"
-
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10009
