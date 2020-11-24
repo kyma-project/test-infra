@@ -5,6 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 date
 
+# https://github.com/kyma-project/test-infra/pull/2967 - explanation for that kaniko image
 export KANIKO_IMAGE="eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0"
 export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 if [[ -z $REGISTRY_VALUES ]]; then
