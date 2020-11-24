@@ -339,6 +339,11 @@ function upgradeKyma() {
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
         --output installer-config-azure-eventhubs.yaml.tpl
 
+    log::info "Use release artifacts from version ${TARGET_VERSION:0:8}"
+    curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
+        --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
+    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
+
     log::info "Triggering update with timeout ${KYMA_UPDATE_TIMEOUT}"
     (
         set -x
@@ -350,12 +355,6 @@ function upgradeKyma() {
             -o installer-config-azure-eventhubs.yaml.tpl \
             --timeout ${KYMA_UPDATE_TIMEOUT}
     )
-
-    # curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
-    #     --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
-
-    # log::info "Use release artifacts from version ${TARGET_VERSION}"
-    # kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
 
     # log::info "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     # "${KYMA_SOURCES_DIR}"/installation/scripts/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
