@@ -88,6 +88,8 @@ docker run -d \
 install::prereq(){
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
     apt-get -y install jq
+    wget https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -O /usr/bin/yq &&\
+    chmod +x /usr/bin/yq
 }
 
 install::k3s() {
@@ -137,4 +139,27 @@ kubectl wait --for=condition=Running function/demo --timeout 180s
 echo "success!"
 kubectl get -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml" -oyaml
 
-exit 0
+yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image"
+
+# cat << EOF | kubectl apply -f -
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: test
+# spec:
+#   backoffLimit: 0
+#   template:
+#     spec:
+#       restartPolicy: Never
+#       containers:
+#         - name: tests
+#           image: "dbadurasap/serverless-test:latest"
+#           imagePullPolicy: Always
+#           args: ["serverless-integraion"]
+#           env:
+#             - name: APP_TEST_WAIT_TIMEOUT
+#               value: "5m"
+#             - name: APP_TEST_VERBOSE
+#               value: "false"
+# EOF
+
