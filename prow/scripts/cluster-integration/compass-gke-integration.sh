@@ -164,11 +164,6 @@ EOF
     --label "component=istio" \
     --file "$PWD/kyma_istio_operator"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "api-gateway-overrides" \
-    --data "tests.env.gatewayName=kyma-gateway" \
-    --data "tests.env.gatewayNamespace=kyma-system" \
-    --label "component=api-gateway"
-
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
     --data "global.istio.gateway.name=kyma-gateway" \
     --data "global.istio.gateway.namespace=kyma-system" \
