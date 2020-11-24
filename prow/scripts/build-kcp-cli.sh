@@ -6,12 +6,15 @@ set -e
 
 discoverUnsetVar=false
 
-for var in KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
+function check_missing_var() {
+    local var=$1
     if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true
     fi
-done
+}
+
+check_missing_var KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
