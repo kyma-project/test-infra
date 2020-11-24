@@ -4,9 +4,7 @@
 #
 # Expected vars:
 #
-# - AZURE_SUBSCRIPTION_APP_ID - Azure Subscription App ID required to authenticate to Azure.
-# - AZURE_SUBSCRIPTION_SECRET - Azure Subscription Secret required to authenticate to Azure.
-# - AZURE_SUBSCRIPTION_TENANT - Azure Subscription Tenant required to authenticate to Azure.
+# - AZURE_CREDENTIALS_FILE    - Azure credentials JSON file required for authentication.
 # - AZURE_SUBSCRIPTION_ID     - Azure Subscription ID required to set the current active Subscription.
 # - AZURE_SUBSCRIPTION_NAME   - Azure Subscription Name with the Eventhubs Namespaces to be cleaned-up.
 # - TTL_HOURS                 - Time to live in hours before Azure Eventhubs Namespace is cleaned-up.
@@ -19,9 +17,7 @@ set -o pipefail
 # Global Variables
 #########################################################################################################
 VARIABLES=(
-  AZURE_SUBSCRIPTION_APP_ID
-  AZURE_SUBSCRIPTION_SECRET
-  AZURE_SUBSCRIPTION_TENANT
+  AZURE_CREDENTIALS_FILE
   AZURE_SUBSCRIPTION_ID
   AZURE_SUBSCRIPTION_NAME
   TTL_HOURS
@@ -37,8 +33,10 @@ readonly TEST_INFRA_PROJECT_DIR=/home/prow/go/src/github.com/kyma-project/test-i
 #########################################################################################################
 # Source common library
 #########################################################################################################
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/azure.sh
+source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/azure.sh"
 
 #########################################################################################################
 # Ensure that all expected vars are set before running the script.
@@ -65,28 +63,6 @@ function ensure_vars_or_die() {
   if [ "${discoverUnsetVar}" = true ]; then
     exit 1
   fi
-}
-
-#########################################################################################################
-# Authenticate to Azure.
-#
-# GLOBALS:
-#   AZURE_SUBSCRIPTION_APP_ID
-#   AZURE_SUBSCRIPTION_SECRET
-#   AZURE_SUBSCRIPTION_TENANT
-#   AZURE_SUBSCRIPTION_ID
-# ARGUMENTS:
-#   None
-# OUTPUTS:
-#   Print the result of authenticating to Azure.
-# RETURN:
-#   0 if success, non-zero on error.
-#########################################################################################################
-function authenticate_to_azure() {
-  log::banner "Authenticate to Azure"
-
-  az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-  az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
 }
 
 #########################################################################################################
@@ -151,7 +127,8 @@ function cleanup() {
 #########################################################################################################
 function main() {
   ensure_vars_or_die
-  authenticate_to_azure
+  az::login "$AZURE_CREDENTIALS_FILE"
+  az::set_subscription "$AZURE_SUBSCRIPTION_ID"
   cleanup
   log::success "Cleanup Azure Eventhubs Namespaces finished successfully"
 }

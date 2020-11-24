@@ -50,4 +50,4 @@ periodics:
       - <<: *test_infra_ref
         base_ref: master
     labels:
-      preset-creds-aks-kyma-integration: "true"
+      preset-az-kyma-prow-credentials: "true"

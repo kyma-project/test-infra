@@ -192,29 +192,6 @@ presets:
     - name: gardener-kyma-prow-kubeconfig
       mountPath: /etc/credentials/gardener-kyma-prow
   - labels:
-      preset-creds-aks-kyma-integration: "true"
-    env:
-    - name: AZURE_SUBSCRIPTION_ID
-      valueFrom:
-        secretKeyRef:
-          name: kyma-azure-credential-id
-          key: subscription-id
-    - name: AZURE_SUBSCRIPTION_APP_ID
-      valueFrom:
-        secretKeyRef:
-          name: kyma-azure-credential-app-id
-          key: subscription-app-id
-    - name: AZURE_SUBSCRIPTION_SECRET
-      valueFrom:
-        secretKeyRef:
-          name: kyma-azure-credential-secret
-          key: subscription-secret
-    - name: AZURE_SUBSCRIPTION_TENANT
-      valueFrom:
-        secretKeyRef:
-          name: kyma-azure-credential-tenant
-          key: subscription-tenant
-  - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
       - name: AZURE_CREDENTIALS_FILE

@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+# TEST_INFRA_SOURCES_DIR is exported in parent script
+# shellcheck source=prow/scripts/lib/azure.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
+
 validateAzureGatewayEnvironment() {
     shout "Validating Azure Blob Gateway environment"; date
 
-    for var in AZURE_RS_GROUP AZURE_REGION AZURE_SUBSCRIPTION_ID AZURE_SUBSCRIPTION_APP_ID AZURE_SUBSCRIPTION_SECRET AZURE_SUBSCRIPTION_TENANT AZURE_STORAGE_ACCOUNT_NAME; do
+    for var in AZURE_RS_GROUP AZURE_REGION AZURE_SUBSCRIPTION_ID AZURE_CREDENTIALS_FILE AZURE_STORAGE_ACCOUNT_NAME; do
         if [ -z "${!var}" ] ; then
             echo "ERROR: $var is not set"
             local discoverUnsetVar=true
@@ -16,18 +20,10 @@ validateAzureGatewayEnvironment() {
     echo "Environment validated"; date
 }
 
-authenticateToAzure() {
-    shout "Authenticating to Azure"; date
-
-    az login --service-principal -u "${AZURE_SUBSCRIPTION_APP_ID}" -p "${AZURE_SUBSCRIPTION_SECRET}" --tenant "${AZURE_SUBSCRIPTION_TENANT}"
-    az account set --subscription "${AZURE_SUBSCRIPTION_ID}"
-
-    echo "Authenticated"; date
-}
-
 beforeTest() {
     validateAzureGatewayEnvironment
-    authenticateToAzure
+    az::login "$AZURE_CREDENTIALS_FILE"
+    az:set_subscription "$AZURE_SUBSCRIPTION_ID"
     createResourceGroup
     createStorageAccount
 }

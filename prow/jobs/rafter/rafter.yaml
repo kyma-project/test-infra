@@ -45,7 +45,7 @@ common_job_labels_minio_gcs_gateway_template: &common_job_labels_minio_gcs_gatew
 
 common_job_labels_minio_az_gateway_template: &common_job_labels_minio_az_gateway_template
   preset-rafter-minio-az-gateway: "true"
-  preset-creds-aks-kyma-integration: "true"
+  preset-az-kyma-prow-credentials: "true"
 
 job_tolerations_template: &job_tolerations_template
   key: resources-usage
