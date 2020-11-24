@@ -34,23 +34,19 @@ function export_variables() {
    if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
-        CLI_VERSION="PR-${PULL_NUMBER}-${COMMIT_ID}"
     else
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
-        CLI_VERSION="master-${COMMIT_ID}"
     fi
 
    readonly DOCKER_TAG
    readonly KCP_INSTALLER_PUSH_DIR
    readonly BUCKET_DIR
    readonly KCP_INSTALLER_VERSION
-   readonly CLI_VERSION
 
    export DOCKER_TAG
    export KCP_INSTALLER_PUSH_DIR
    export BUCKET_DIR
-   export CLI_VERSION
 }
 
 init
@@ -65,9 +61,6 @@ buildTarget="release"
 
 shout "Build kcp-installer with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
-
-shout "Build KCP CLI with target ${buildTarget}"
-make -C "${KCP_PATH}/components/kyma-environment-broker" -f Makefile.cli ${buildTarget}
 
 shout "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
@@ -94,10 +87,6 @@ gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCK
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
 gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-compass-installed.sh"
 
-gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp.exe"
-gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-linux"
-gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-darwin"
-
 if [[ "${BUILD_TYPE}" == "master" ]]; then
   shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-installer.yaml"
@@ -108,8 +97,4 @@ if [[ "${BUILD_TYPE}" == "master" ]]; then
 
   gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
   gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-compass-installed.sh"
-
-  gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp.exe"
-  gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-linux"
-  gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-darwin"
 fi
