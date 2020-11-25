@@ -9,7 +9,7 @@ date
 export KANIKO_IMAGE="eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0"
 export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
 if [[ -z $REGISTRY_VALUES ]]; then
-  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE},images.manager.repository=aerfio/function-controller,images.manager.tag=ratelimited"
+  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=${KANIKO_IMAGE}"
 fi
 
 export KYMA_SOURCES_DIR="./kyma"
@@ -139,8 +139,10 @@ kubectl wait --for=condition=Running function/demo --timeout 180s
 echo "success!"
 kubectl get -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml" -oyaml
 
-yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image"
+TEST_IMG_REPO=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.repository")
+TEST_IMG_TAG=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.tag")
 
+echo "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
 # cat << EOF | kubectl apply -f -
 # apiVersion: batch/v1
 # kind: Job
