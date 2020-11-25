@@ -196,6 +196,8 @@ spec:
               value: "5m"
             - name: APP_TEST_VERBOSE
               value: "false"
+            - name: APP_TEST_CLEANUP
+              value: "no"  
 EOF
 
 job_status=""
