@@ -318,8 +318,8 @@ yes | kyma install \
   -s "${KYMA_SOURCE}" \
   -o "$PWD/kyma-installer-overrides.yaml" \
   --domain "${DOMAIN}" \
-  --tlsCert="${TLS_CERT}" \
-  --tlsKey="${TLS_KEY}" \
+  --tls-cert="${TLS_CERT}" \
+  --tls-key="${TLS_KEY}" \
   --timeout 60m
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
