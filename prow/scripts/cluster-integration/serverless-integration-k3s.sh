@@ -146,29 +146,50 @@ kubectl wait --for=condition=Running function/demo --timeout 180s
 echo "success!"
 kubectl get -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml" -oyaml
 
-TEST_IMG_REPO=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.repository")
-TEST_IMG_TAG=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.tag")
+# TEST_IMG_REPO=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.repository")
+# TEST_IMG_TAG=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.tag")
+
+TEST_IMG_REPO="eu.gcr.io/kyma-project/function-controller-test"
+TEST_IMG_TAG="PR-9991"
 
 echo "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
-# cat << EOF | kubectl apply -f -
-# apiVersion: batch/v1
-# kind: Job
-# metadata:
-#   name: test
-# spec:
-#   backoffLimit: 0
-#   template:
-#     spec:
-#       restartPolicy: Never
-#       containers:
-#         - name: tests
-#           image: "dbadurasap/serverless-test:latest"
-#           imagePullPolicy: Always
-#           args: ["serverless-integraion"]
-#           env:
-#             - name: APP_TEST_WAIT_TIMEOUT
-#               value: "5m"
-#             - name: APP_TEST_VERBOSE
-#               value: "false"
-# EOF
 
+job_name="serverless-test"
+
+cat << EOF | kubectl apply -f -
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${job_name}
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: test
+          image: "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
+          args: ["serverless-integration"]
+          env:
+            - name: APP_TEST_WAIT_TIMEOUT
+              value: "5m"
+            - name: APP_TEST_VERBOSE
+              value: "false"
+EOF
+
+job_status=""
+
+getjobstatus(){
+while true; do
+    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && break
+    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && break
+    sleep 2
+done
+}
+
+
+getjobstatus
+
+echo $job_status
+
+exit $job_status
