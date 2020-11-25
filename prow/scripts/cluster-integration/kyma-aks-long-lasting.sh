@@ -104,7 +104,7 @@ function cleanup() {
 			  log::error "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
 			  EXIT_STATUS=${TMP_STATUS}
 			else
-			  log:success "Deleted dns record : ${GATEWAY_DNS_FULL_NAME}"
+			  log::success "Deleted dns record : ${GATEWAY_DNS_FULL_NAME}"
 			fi
 		else
 			log::warn "Could not delete DNS record : ${GATEWAY_DNS_FULL_NAME}. Record does not exist."
@@ -193,8 +193,8 @@ function installCluster() {
 	  --node-vm-size "${CLUSTER_SIZE}" \
 	  --kubernetes-version "${AKS_CLUSTER_VERSION}" \
 	  --enable-addons "${CLUSTER_ADDONS}" \
-	  --service-principal "${AZURE_SUBSCRIPTION_APP_ID}" \
-	  --client-secret "${AZURE_SUBSCRIPTION_SECRET}" \
+	  --service-principal "$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")" \
+	  --client-secret "$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")" \
 	  --generate-ssh-keys \
 	  --zones 1 2 3
 }
