@@ -157,14 +157,35 @@ echo "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
 job_name="serverless-test"
 
 cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata: 
+  name: ${job_name}
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user-crb
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: ${job_name}
+  namespace: default
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: ${job_name}
+  namespace: default
 spec:
   backoffLimit: 0
   template:
     spec:
+      serviceAccountName: ${job_name}
       restartPolicy: Never
       containers:
         - name: test
@@ -175,21 +196,23 @@ spec:
               value: "5m"
             - name: APP_TEST_VERBOSE
               value: "false"
+
 EOF
 
 job_status=""
 
 getjobstatus(){
 while true; do
-    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && break
-    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && break
+    echo "Test job not completed yet..."
+    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
+    [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
     sleep 2
 done
 }
 
-
 getjobstatus
 
 echo $job_status
+echo "Exit code ${job_status}"
 
 exit $job_status
