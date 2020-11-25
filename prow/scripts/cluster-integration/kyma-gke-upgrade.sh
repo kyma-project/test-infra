@@ -303,7 +303,8 @@ function installKyma() {
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
   mkdir -p /tmp/kyma-gke-upgradeability
   # LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-  LAST_RELEASE_VERSION=$(getLastRCVersion)
+  #LAST_RELEASE_VERSION=$(getLastRCVersion)
+  LAST_RELEASE_VERSION=1.16.0-rc3
   if [ -z "$LAST_RELEASE_VERSION" ]; then
     log::error "Couldn't grab latest version from GitHub API, stopping."
     exit 1
