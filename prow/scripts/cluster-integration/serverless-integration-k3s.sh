@@ -133,6 +133,13 @@ echo "##########################################################################
 echo "# Serverless installed in $(( $SECONDS/60 )) min $(( $SECONDS % 60 )) sec"
 echo "##############################################################################"
 
+# I know it's bad practice and kinda smelly to do this, but we have two nasty dataraces that might happen, and simple sleep solves them both:
+# webhook might not be ready in time (but somehow it still accepts the function, we have an issue for that)
+# runtime configmaps might now have been copied to that namespace
+########
+sleep 10
+########
+
 kubectl apply -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml"
 echo "wait 180s for function to be ready"
 kubectl wait --for=condition=Running function/demo --timeout 180s
