@@ -140,9 +140,6 @@ echo "##########################################################################
 sleep 10
 ########
 
-# TEST_IMG_REPO=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.repository")
-# TEST_IMG_TAG=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.tag")
-
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 job_name="k3s-serverless-test"
 
@@ -163,14 +160,14 @@ done
 
 getjobstatus
 
-echo "###################"
-echo "kubectl get jobs -A"
-echo "###################"
-kubectl get jobs -A
 echo "####################"
 echo "kubectl get pods -A"
 echo "###################"
 kubectl get pods -A
+echo "########################"
+echo "kubectl get functions -A"
+echo "########################"
+kubectl get functions -A
 echo "########################################################"
 echo "kubectl logs -n kyma-system -l app=serverless --tail=-1"
 kubectl logs -n kyma-system -l app=serverless --tail=-1

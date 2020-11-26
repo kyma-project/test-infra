@@ -15,14 +15,12 @@ source "${SCRIPT_DIR}/library.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
-    # TODO uncomment
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {
     ARG=$?
     shout "Removing instance kyma-integration-test-${RANDOM_ID}"
-    # TODO uncomment
     gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     date
     exit $ARG
