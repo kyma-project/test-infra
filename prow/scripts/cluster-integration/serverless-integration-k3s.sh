@@ -150,7 +150,7 @@ kubectl get -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/
 # TEST_IMG_TAG=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.tag")
 
 TEST_IMG_REPO="eu.gcr.io/kyma-project/function-controller-test"
-TEST_IMG_TAG="PR-9991"
+TEST_IMG_TAG="PR-10055"
 
 echo "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
 
