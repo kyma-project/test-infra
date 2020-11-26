@@ -146,20 +146,12 @@ sleep 10
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 job_name="k3s-serverless-test"
 
-helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}" --wait
 
-echo "###################"
-echo "kubectl get jobs -A"
-echo "###################"
-kubectl get jobs
-echo "####################"
-echo "kubectl get pods -A"
-echo "###################"
-kubectl get pods 
-
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
 
 job_status=""
 
+# helm does not wait for jobs to complete even with --wait
 getjobstatus(){
 while true; do
     echo "Test job not completed yet..."
@@ -170,7 +162,24 @@ done
 }
 
 getjobstatus
-# TODO: add proper logs here
+
+echo "###################"
+echo "kubectl get jobs -A"
+echo "###################"
+kubectl get jobs
+echo "####################"
+echo "kubectl get pods -A"
+echo "###################"
+kubectl get pods 
+echo "###################"
+echo "kubectl logs -l k3s-test=serverless"
+kubectl logs -l k3s-test=serverless 
+echo "#############################################"
+echo "kubectl logs -n kyma-system -l app=serverless"
+kubectl logs -n kyma-system -l app=serverless
+echo "####"
+echo ""
+
 echo "Exit code ${job_status}"
 
 exit $job_status
