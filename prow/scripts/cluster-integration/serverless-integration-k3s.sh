@@ -148,8 +148,15 @@ job_name="k3s-serverless-test"
 
 helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}" --wait
 
+echo "###################"
+echo "kubectl get jobs -A"
+echo "###################"
 kubectl get jobs
+echo "####################"
+echo "kubectl get pods -A"
+echo "###################"
 kubectl get pods 
+
 
 job_status=""
 
