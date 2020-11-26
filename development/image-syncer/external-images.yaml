@@ -28,7 +28,7 @@ images:
 - source: "prom/pushgateway:v1.3.0"
 - source: "quay.io/coreos/configmap-reload:v0.0.1"
 - source: "quay.io/coreos/etcd:v3.3.25"
-- source: "quay.io/coreos/kube-state-metrics:v1.9.5"
+- source: "quay.io/coreos/kube-state-metrics:v1.9.7"
 - source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.43.2"
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.43.2"
 - source: "quay.io/kubernetes-service-catalog/service-catalog:v0.3.0-6-g8e85904-dirty"
