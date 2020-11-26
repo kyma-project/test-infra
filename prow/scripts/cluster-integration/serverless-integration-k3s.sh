@@ -166,11 +166,11 @@ getjobstatus
 echo "###################"
 echo "kubectl get jobs -A"
 echo "###################"
-kubectl get jobs
+kubectl get jobs -A
 echo "####################"
 echo "kubectl get pods -A"
 echo "###################"
-kubectl get pods 
+kubectl get pods -A
 echo "###################"
 echo "kubectl logs -l k3s-test=serverless"
 kubectl logs -l k3s-test=serverless 
