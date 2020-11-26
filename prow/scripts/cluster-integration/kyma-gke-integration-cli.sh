@@ -174,7 +174,7 @@ shout "Installing Kyma"
 date
 kyma install \
     --ci \
-    --source latest-published \
+    --source master \
     -o "${COMPONENT_OVERRIDES_FILE}" \
     --domain "${DOMAIN}" \
     --tls-cert "${TLS_CERT}" \

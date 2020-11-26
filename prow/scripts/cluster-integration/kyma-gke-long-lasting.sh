@@ -256,7 +256,7 @@ EOF
 
 	kyma install \
 			--ci \
-			--source latest-published \
+			--source master \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
 			-o "${componentOverridesFile}" \
 			--domain "${DOMAIN}" \

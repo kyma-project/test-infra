@@ -235,7 +235,7 @@ build_image() {
 
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
     else
-        KYMA_INSTALLER_IMAGE=latest-published
+        KYMA_INSTALLER_IMAGE=master
     fi
 }
 

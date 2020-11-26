@@ -160,7 +160,7 @@ date
 set -x
 kyma install \
     --ci \
-    --source latest-published \
+    --source master \
     --timeout 90m
 )
 
