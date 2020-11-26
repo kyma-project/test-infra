@@ -12,15 +12,15 @@ presets:
       - name: gardener-neighbors-kubeconfig
         secret:
           secretName: gardener-neighbors-kubeconfig
-      volumeMounts:
-        - name: gardener-neighbors-kubeconfig
-          mountPath: /etc/credentials/gardener-neighbors
+    volumeMounts:
+      - name: gardener-neighbors-kubeconfig
+        mountPath: /etc/credentials/gardener-neighbors
 
 periodics:
   - name: unstale-gardener-project
     annotations:
       testgrid-create-test-group: "false"
-    cluster: untrusted-workload
+    cluster: trusted-workload
     decorate: true
     cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
     labels:
