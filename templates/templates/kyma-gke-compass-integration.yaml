@@ -62,6 +62,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-compass-integration
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      optional: true
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16

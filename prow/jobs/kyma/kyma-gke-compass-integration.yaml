@@ -64,6 +64,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-gke-compass-integration
       cluster: untrusted-workload
+      optional: true
       branches:
         - ^master$
       <<: *gke_integration_job_template_k16
