@@ -172,11 +172,11 @@ echo "kubectl get pods -A"
 echo "###################"
 kubectl get pods -A
 echo "###################"
-echo "kubectl logs -l k3s-test=serverless"
-kubectl logs -l job-name=k3s-serverless-test --since=1h
+echo "kubectl logs -l job-name=${job_name} --tail=-1"
+kubectl logs -l job-name=${job_name} --tail=-1
 echo "#############################################"
-echo "kubectl logs -n kyma-system -l app=serverless"
-kubectl logs -n kyma-system -l app=serverless
+echo "kubectl logs -n kyma-system -l app=serverless --tail=-1"
+kubectl logs -n kyma-system -l app=serverless --tail=-1
 echo "###############"
 echo ""
 
