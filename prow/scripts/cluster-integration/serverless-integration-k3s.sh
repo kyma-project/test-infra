@@ -146,7 +146,10 @@ sleep 10
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 job_name="k3s-serverless-test"
 
-helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}" --wait
+
+kubectl get jobs
+kubectl get pods 
 
 job_status=""
 
