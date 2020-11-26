@@ -140,65 +140,13 @@ echo "##########################################################################
 sleep 10
 ########
 
-kubectl apply -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml"
-echo "wait 180s for function to be ready"
-kubectl wait --for=condition=Running function/demo --timeout 180s
-echo "success!"
-kubectl get -f "$KYMA_SOURCES_DIR/components/function-controller/config/samples/serverless_v1alpha1_function.yaml" -oyaml
-
 # TEST_IMG_REPO=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.repository")
 # TEST_IMG_TAG=$(yq r "${KYMA_SOURCES_DIR}/resources/serverless/values.yaml" "tests.image.tag")
 
-TEST_IMG_REPO="eu.gcr.io/kyma-project/function-controller-test"
-TEST_IMG_TAG="PR-10055"
+SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
+job_name="k3s-serverless-test"
 
-echo "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
-
-job_name="serverless-test"
-
-cat << EOF | kubectl apply -f -
-apiVersion: v1
-kind: ServiceAccount
-metadata: 
-  name: ${job_name}
-  namespace: default
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: admin-user-crb
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: ${job_name}
-  namespace: default
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: ${job_name}
-  namespace: default
-spec:
-  backoffLimit: 0
-  template:
-    spec:
-      serviceAccountName: ${job_name}
-      restartPolicy: Never
-      containers:
-        - name: test
-          image: "${TEST_IMG_REPO}:${TEST_IMG_TAG}"
-          args: ["serverless-integration"]
-          env:
-            - name: APP_TEST_WAIT_TIMEOUT
-              value: "5m"
-            - name: APP_TEST_VERBOSE
-              value: "false"
-            - name: APP_TEST_CLEANUP
-              value: "no"  
-EOF
+helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
 
 job_status=""
 
@@ -207,13 +155,12 @@ while true; do
     echo "Test job not completed yet..."
     [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == "True" ]] && job_status=1 && echo "Test job failed" && break
     [[ $(kubectl get jobs $job_name -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == "True" ]] && job_status=0 && echo "Test job completed successfully" && break
-    sleep 2
+    sleep 5
 done
 }
 
 getjobstatus
-
-echo $job_status
+# TODO: add proper logs here
 echo "Exit code ${job_status}"
 
 exit $job_status
