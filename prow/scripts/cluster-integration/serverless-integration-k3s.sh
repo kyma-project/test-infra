@@ -177,7 +177,7 @@ kubectl logs -l k3s-test=serverless
 echo "#############################################"
 echo "kubectl logs -n kyma-system -l app=serverless"
 kubectl logs -n kyma-system -l app=serverless
-echo "####"
+echo "###############"
 echo ""
 
 echo "Exit code ${job_status}"
