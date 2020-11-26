@@ -1,0 +1,44 @@
+presets:
+  - labels:
+      preset-gardener-neighbors: "true"
+    env:
+      - name: GARDENER_KUBECONFIG
+        value: /etc/credentials/gardener-neighbors/kubeconfig
+      - name: GARDENER_PROJECT_NAME
+        value: "neighbors"
+      - name: GARDENER_PROVIDER_SECRET_NAME
+        value: "neighbors-gardener"
+    volumes:
+      - name: gardener-neighbors-kubeconfig
+        secret:
+          secretName: gardener-neighbors-kubeconfig
+    volumeMounts:
+      - name: gardener-neighbors-kubeconfig
+        mountPath: /etc/credentials/gardener-neighbors
+
+periodics:
+  - name: unstale-gardener-project
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: trusted-workload
+    decorate: true
+    cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
+    labels:
+      preset-gardener-neighbors: "true"
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        base_ref: master
+        path_alias: github.com/kyma-project/test-infra
+    spec:
+      containers:
+        - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201113-a3e68400-k8s1.16
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/unstale-gardener-project.sh"
+          env:
+            - name: MACHINE_TYPE
+              value: "n1-standard-4"
+            - name: GARDENER_REGION
+              value: "europe-west4"
+            - name: GARDENER_ZONES
+              value: "europe-west4-b"

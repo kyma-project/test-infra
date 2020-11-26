@@ -4,14 +4,13 @@ install::kyma_cli() {
     local settings
     local kyma_version
     settings="$(set +o); set -$-"
-    set -u
-    mkdir -p "${INSTALL_DIR}/bin"
-    export PATH="${INSTALL_DIR}/bin:${PATH}"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
     os=$(host::os)
 
-    pushd "${INSTALL_DIR}/bin" || exit
+    pushd "/tmp/bin" || exit
 
-    echo "--> Install kyma CLI ${os} locally to ${INSTALL_DIR}/bin"
+    echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
     curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
