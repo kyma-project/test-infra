@@ -10,3 +10,17 @@
     - serverless-long
     - serverless
     - rafter
+- channelName: "#framefrog-notifications"
+  channelID: "C01FNPJDHLJ"
+  onlyReportFailure: true
+  testCases:
+    - application-connector
+    - application-operator
+    - application-operator-gateway
+    - application-registry
+    - connection-token-handler
+    - connector-service
+    - core-test-external-solution
+    - compass-runtime-agent-tests
+    - compass-runtime-agent-adapter-external-solution
+    - compass-runtime-agent-external-solution

@@ -68,6 +68,9 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
+
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
 
@@ -112,6 +115,18 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
+}
+
+runTestLogCollector() {
+  if [ "${enableTestLogCollector}" = true ]; then
+    if [[ "$BUILD_TYPE" == "master" ]]; then
+      log::info "Install test-log-collector"
+      export PROW_JOB_NAME="post-master-kyma-gke-central-connector"
+      (
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+      )
+    fi
+  fi
 }
 
 trap cleanup EXIT INT

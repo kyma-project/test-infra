@@ -316,6 +316,18 @@ installCompass() {
   "${COMPASS_TMP_DIR}"/is-installed.sh --timeout 30m
 }
 
+runTestLogCollector() {
+  if [ "${enableTestLogCollector}" = true ]; then
+    if [[ "$BUILD_TYPE" == "master" ]]; then
+      log::info "Install test-log-collector"
+      export PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
+      (
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+      )
+    fi
+  fi
+}
+
 trap gkeCleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
@@ -341,6 +353,9 @@ date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 shout "Success"
+
+shout "Collect logs from failed tests before deprovisioning"
+runTestLogCollector
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
