@@ -1,0 +1,8 @@
+pjNames:
+  - pjName: "pre-master-kyma-gke-central-connector"
+  - pjName: "pre-master-kyma-gke-compass-integration"
+  - pjName: "pre-master-kyma-gke-integration"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10077
