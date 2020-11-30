@@ -22,6 +22,13 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
+
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
