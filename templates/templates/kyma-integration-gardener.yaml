@@ -72,6 +72,32 @@ gardener_gcp_job_template: &gardener_gcp_job_template
             memory: 1Gi
             cpu: 400m
 
+gardener_gcp_parallel_job_template: &gardener_gcp_parallel_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+      - <<: *base_image_k16
+        securityContext:
+          privileged: true
+        command:
+          - "bash"
+        args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp-parallel.sh"
+        env:
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "europe-west4"
+          - name: GARDENER_ZONES
+            value: "europe-west4-b"
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 400m
+
 gardener_azure_job_labels_template: &gardener_azure_job_labels_template
   preset-gardener-azure-kyma-integration: "true"
   preset-docker-push-repository-gke-integration: "true"
@@ -145,6 +171,26 @@ periodics:
       timeout: 14400000000000 # 4h
       grace_period: 600000000000 # 10min
     cron: "00 08 * * *"
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_ref
+        base_ref: master
+    labels:
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_gcp_job_labels_template
+
+  - name: kyma-integration-gardener-gcp-parallel
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Kyma GCP Gardener integration job using parallel installation library.
+    cluster: untrusted-workload
+    <<: *gardener_gcp_parallel_job_template
+    decorate: true
+    decoration_config:
+      timeout: 14400000000000 # 4h
+      grace_period: 600000000000 # 10min
+    cron: "00 07 * * *"
     extra_refs:
       - <<: *test_infra_ref
         base_ref: master
