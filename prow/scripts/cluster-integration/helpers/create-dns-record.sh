@@ -89,6 +89,15 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
       dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
       log::info "ns-cloud-b4.googledomains.com."
       dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
+      log::info "checking /etc/resolv.conf"
+      cat /etc/resolv.conf
+      log::info "checking kube-dns service IP"
+      kubectl get svc -n kube-system kube-dns -o jsonpath="{.spec.clusterIP}"
+      log::info "checking kube-dns endpoint addresses"
+      endpoints=$(kubectl get ep -n kube-system kube-dns -o=jsonpath='{.subsets[*].addresses[*].ip}')
+      echo "$endpoints"
+      log::info "query kube-dns pods directly"
+      for srv in $endpoints; do dig "${DNS_FULL_NAME}" @"$srv";done
     } >> "${ARTIFACTS}/dns-debug.txt"
 
 
