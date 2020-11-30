@@ -10,3 +10,9 @@
     - serverless-long
     - serverless
     - rafter
+- channelName: "#hasselhoff-notifications"
+  channelID: C01G4PUT9JM
+  onlyReportFailure: true
+  testCases:
+    - console-web
+    - console-backend
