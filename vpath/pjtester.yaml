@@ -1,7 +1,10 @@
 pjNames:
   - pjName: "pre-master-kyma-gke-central-connector"
+    report: true
   - pjName: "pre-master-kyma-gke-compass-integration"
+    report: true
   - pjName: "pre-master-kyma-gke-integration"
+    report: true
 prConfigs:
   kyma-project:
     kyma:
