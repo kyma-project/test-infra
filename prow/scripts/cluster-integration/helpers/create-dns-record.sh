@@ -93,7 +93,7 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
       cat /etc/resolv.conf
       log::info "checking kube-dns service IP"
       token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-      kubectl --server kubernetes.default.svc:443 --token "$token" --certificate-authority /var/run/secrets/kubernetes.io/serviceaccount/ca.crt get svc -n kube-system kube-dns -o jsonpath="{.spec.clusterIP}"
+      kubectl --server https://kubernetes.default.svc:443 --token "$token" --certificate-authority /var/run/secrets/kubernetes.io/serviceaccount/ca.crt get svc -n kube-system kube-dns -o jsonpath="{.spec.clusterIP}"
       log::info "checking kube-dns endpoint addresses"
       endpoints=$(kubectl --server kubernetes.default.svc:6443 --token "$token" --certificate-authority /var/run/secrets/kubernetes.io/serviceaccount/ca.crt get ep -n kube-system kube-dns -o=jsonpath='{.subsets[*].addresses[*].ip}')
       echo "$endpoints"
