@@ -104,6 +104,7 @@ postsubmits:
         slack:
           channel: 'kyma-prow-dev-null'
       labels:
+        preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         <<: *gke_integration_job_labels_template
       extra_refs:
