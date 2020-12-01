@@ -181,6 +181,64 @@ kyma provision gardener gcp \
 shout "Installing Kyma"
 date
 
+cat << EOF > "$PWD/kyma-parallel-install-installationCR.yaml"
+apiVersion: "installer.kyma-project.io/v1alpha1"
+kind: Installation
+metadata:
+  name: kyma-installation
+  namespace: default
+spec:
+  components:
+    - name: "testing"
+      namespace: "kyma-system"
+    - name: "knative-eventing"
+      namespace: "knative-eventing"
+    - name: "dex"
+      namespace: "kyma-system"
+    - name: "ory"
+      namespace: "kyma-system"
+    - name: "api-gateway"
+      namespace: "kyma-system"
+    - name: "rafter"
+      namespace: "kyma-system"
+    - name: "service-catalog"
+      namespace: "kyma-system"
+    - name: "service-catalog-addons"
+      namespace: "kyma-system"
+    - name: "helm-broker"
+      namespace: "kyma-system"
+    - name: "nats-streaming"
+      namespace: "natss"
+    - name: "core"
+      namespace: "kyma-system"
+    - name: "cluster-users"
+      namespace: "kyma-system"
+    - name: "logging"
+      namespace: "kyma-system"
+    - name: "permission-controller"
+      namespace: "kyma-system"
+    - name: "apiserver-proxy"
+      namespace: "kyma-system"
+    - name: "iam-kubeconfig-service"
+      namespace: "kyma-system"
+    - name: "serverless"
+      namespace: "kyma-system"
+    - name: "knative-provisioner-natss"
+      namespace: "knative-eventing"
+    - name: "event-sources"
+      namespace: "kyma-system"
+    - name: "application-connector"
+      namespace: "kyma-integration"
+    - name: "tracing"
+      namespace: "kyma-system"
+    - name: "monitoring"
+      namespace: "kyma-system"
+    - name: "kiali"
+      namespace: "kyma-system"
+    - name: "console"
+      namespace: "kyma-system"
+EOF
+
 (
 set -x
 if [ -z "$PARALLEL_INSTALL" ]; then
@@ -192,7 +250,7 @@ else
 kyma alpha install \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "${KYMA_PROJECT_DIR}/kyma/installation/resources/installer-cr-cluster.yaml.tpl"
+    --components "$PWD/kyma-parallel-install-installationCR.yaml"
 fi
 )
 
