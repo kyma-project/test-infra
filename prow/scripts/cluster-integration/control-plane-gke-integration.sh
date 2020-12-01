@@ -3,6 +3,8 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
+enableTestLogCollector=false
+
 discoverUnsetVar=false
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME; do
   if [ -z "${!var}" ] ; then
@@ -12,6 +14,13 @@ for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK
 done
 if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
+fi
+
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
 fi
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -363,6 +372,18 @@ function installControlPlane() {
   fi
 }
 
+runTestLogCollector() {
+  if [ "${enableTestLogCollector}" = true ]; then
+    if [[ "$BUILD_TYPE" == "master" ]]; then
+      log::info "Install test-log-collector"
+      export PROW_JOB_NAME="post-master-control-plane-gke-integration"
+      (
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+      )
+    fi
+  fi
+}
+
 trap gkeCleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
@@ -393,11 +414,16 @@ shout "Install Control Plane"
 date
 installControlPlane
 
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+
 shout "Test Kyma, Compass and Control Plane"
 date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 shout "Success"
+
+shout "Collect logs from failed tests before deprovisioning"
+runTestLogCollector
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
