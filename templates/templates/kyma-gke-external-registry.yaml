@@ -13,6 +13,7 @@ gke_job_template: &gke_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:

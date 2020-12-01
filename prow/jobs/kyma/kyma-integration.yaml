@@ -118,6 +118,7 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -146,6 +147,7 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -168,6 +170,7 @@ gke_central_job_template: &gke_central_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -190,6 +193,7 @@ gke_central_job_template_k14: &gke_central_job_template_k14
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -210,6 +214,7 @@ gke_central_job_template_k14: &gke_central_job_template_k14
 gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -230,6 +235,7 @@ gke_backup_job_template: &gke_backup_job_template
 gke_backup_job_template_k14: &gke_backup_job_template_k14
   decorate: true
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:

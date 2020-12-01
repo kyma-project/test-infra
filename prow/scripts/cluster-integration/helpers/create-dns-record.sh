@@ -74,8 +74,7 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         exit 0
     fi
 
-    #log::banner "sleep for debug"
-    #sleep 3600
+    set +e
     log::banner "Debugging DNS issues"
     log::date
     {
@@ -95,12 +94,13 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
       log::info "checking kube-dns service IP"
       token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
       curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/services?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .spec.clusterIP"
-      log::info "checking kube-dns endpoint addresses"
-      endpoins=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
+      log::info "checking kube-dns endpoints addresses"
+      endpoints=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
       echo "$endpoints"
       log::info "query kube-dns pods directly"
-      for srv in $endpoints; do dig "${DNS_FULL_NAME}" @"$srv";done
+      for srv in $endpoints; do log::info "querying $srv"; dig "${DNS_FULL_NAME}" @"$srv";done
     } >> "${ARTIFACTS}/dns-debug.txt"
+    set -e
 
 
 done
