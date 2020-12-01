@@ -21,6 +21,7 @@ gardener_aws_job_template: &gardener_aws_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -51,6 +52,7 @@ gardener_gcp_job_template: &gardener_gcp_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -116,6 +118,7 @@ gardener_azure_job_template: &gardener_azure_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:

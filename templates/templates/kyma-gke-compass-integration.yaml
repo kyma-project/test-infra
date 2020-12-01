@@ -36,6 +36,7 @@ gke_integration_job_template: &gke_integration_job_template
 gke_integration_job_template_k16: &gke_integration_job_template_k16
   <<: *gke_integration_job_template
   spec:
+    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         <<: *base_container_config
