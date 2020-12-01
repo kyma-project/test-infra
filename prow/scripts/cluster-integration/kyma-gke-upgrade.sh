@@ -105,6 +105,9 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/cluster-integration/helpers/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
+# shellcheck source=prow/scripts/library.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 function installCli() {
   export INSTALL_DIR=${TMP_DIR}
   install::kyma_cli
