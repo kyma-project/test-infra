@@ -6,3 +6,7 @@ pjNames:
   - pjName: "post-master-control-plane-gke-provisioner-integration"
   - pjName: "post-master-kyma-gke-integration"
   - pjName: "post-master-kyma-gke-upgrade"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10077
