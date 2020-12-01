@@ -29,6 +29,7 @@
 set -o errexit
 
 discoverUnsetVar=false
+enableTestLogCollector=false
 
 for var in REPO_OWNER REPO_NAME KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS BOT_GITHUB_TOKEN CLOUDSDK_COMPUTE_ZONE; do
     if [[ -z "${!var}" ]] ; then
@@ -56,11 +57,37 @@ export UPGRADE_TEST_RESOURCE_LABEL="kyma-project.io/upgrade-e2e-test"
 export UPGRADE_TEST_LABEL_VALUE_PREPARE="prepareData"
 export UPGRADE_TEST_LABEL_VALUE_EXECUTE="executeTests"
 export TEST_CONTAINER_NAME="tests"
+export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
+export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
+export EXTERNAL_SOLUTION_TEST_PATH="${KYMA_SOURCES_DIR}/tests/end-to-end/external-solution-integration/chart/external-solution"
+export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
+export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
+
+
+KYMA_LABEL_PREFIX="kyma-project.io"
+KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
+POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
+
+# shellcheck source=prow/scripts/lib/testing-helpers.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+
+runTestLogCollector() {
+  if [ "${enableTestLogCollector}" = true ]; then
+    if [[ "$BUILD_TYPE" == "master" ]]; then
+      shout "Install test-log-collector"
+      export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
+      (
+        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+      )
+    fi
+  fi
+}
 
 trap gkeCleanup EXIT INT
 
@@ -311,37 +338,35 @@ checkTestPodTerminated() {
     return 1
 }
 
-createTestResources() {
-    shout "Create e2e upgrade test resources"
-    date
+function installTestChartOrFail() {
+  local path=$1
+  local name=$2
+  local namespace=$3
 
-    injectTestingAddons
+  shout "Create ${name} resources"
 
-    # shellcheck disable=SC2086
-    helm install "${UPGRADE_TEST_RELEASE_NAME}" \
-        --namespace "${UPGRADE_TEST_NAMESPACE}" \
-        --create-namespace \
-        "${UPGRADE_TEST_PATH}" \
-        --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" \
-        --wait ${HELM_ARGS}
+  helm install "${name}" \
+    --namespace "${namespace}" \
+    --create-namespace \
+    "${path}" \
+    --timeout "${HELM_TIMEOUT_SEC}" \
+    --set domain="${DOMAIN}" \
+    --wait
 
-    prepareResult=$?
-    if [ "${prepareResult}" != 0 ]; then
-        echo "Helm install operation failed: ${prepareResult}"
-        exit "${prepareResult}"
-    fi
+  prepareResult=$?
+  if [[ "${prepareResult}" != 0 ]]; then
+    echo "Helm install ${name} operation failed: ${prepareResult}"
+    exit "${prepareResult}"
+  fi
+}
 
-    set +o errexit
-    checkTestPodTerminated
-    prepareTestResult=$?
-    set -o errexit
+function createTestResources() {
+  shout "Install additional charts"
+  # install upgrade test
+  installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
 
-    echo "Logs for prepare data operation to test e2e upgrade: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_PREPARE}" -c "${TEST_CONTAINER_NAME}"
-    if [ "${prepareTestResult}" != 0 ]; then
-        echo "Exit status for prepare upgrade e2e tests: ${prepareTestResult}"
-        exit "${prepareTestResult}"
-    fi
+  # install external-solution test
+  installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 }
 
 upgradeKyma() {
@@ -364,14 +389,14 @@ upgradeKyma() {
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 
 
-    if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-        shout "Create DNS Record for Apiserver proxy IP"
-        date
-        APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-        CLEANUP_APISERVER_DNS_RECORD="true"
-        IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
-    fi
+    # if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+    #     shout "Create DNS Record for Apiserver proxy IP"
+    #     date
+    #     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    #     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    #     CLEANUP_APISERVER_DNS_RECORD="true"
+    #     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+    # fi
 }
 
 remove_addons_if_necessary() {
@@ -389,27 +414,69 @@ remove_addons_if_necessary() {
   fi
 }
 
-testKyma() {
-    shout "Test Kyma end-to-end upgrade scenarios"
-    date
+# testKyma executes the kyma-testing.sh. labelqueries can be passed as arguments and will be passed to the kyma cli
+function testKyma() {
+  testing::inject_addons_if_necessary
 
-    set +o errexit
-    # shellcheck disable=SC2086
-    helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
-    testEndToEndResult=$?
+  local labelquery=${1}
+  local suitename=${2}
+  local test_args=()
 
-    echo "Test e2e upgrade logs: "
-    kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
+  if [[ -n ${labelquery} ]]; then
+    test_args+=("-l")
+    test_args+=("${labelquery}")
+  fi
 
-    if [ "${testEndToEndResult}" != 0 ]; then
-        echo "Helm test operation failed: ${testEndToEndResult}"
-        exit "${testEndToEndResult}"
-    fi
-    set -o errexit
+  if [[ -n ${suitename} ]]; then
+    test_args+=("-n")
+    test_args+=("${suitename}")
+  fi
 
-    shout "Test Kyma"
-    date
-    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+  shout "Test Kyma " "${test_args[@]}"
+  "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
+
+  testing::remove_addons_if_necessary
+}
+
+# testKyma() {
+#     shout "Test Kyma end-to-end upgrade scenarios"
+#     date
+
+#     set +o errexit
+#     # shellcheck disable=SC2086
+#     helm test -n "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RELEASE_NAME}" --timeout "${UPGRADE_TEST_HELM_TIMEOUT_SEC}" ${HELM_ARGS}
+#     testEndToEndResult=$?
+
+#     echo "Test e2e upgrade logs: "
+#     kubectl logs -n "${UPGRADE_TEST_NAMESPACE}" -l "${UPGRADE_TEST_RESOURCE_LABEL}=${UPGRADE_TEST_LABEL_VALUE_EXECUTE}" -c "${TEST_CONTAINER_NAME}"
+
+#     if [ "${testEndToEndResult}" != 0 ]; then
+#         echo "Helm test operation failed: ${testEndToEndResult}"
+#         exit "${testEndToEndResult}"
+#     fi
+#     set -o errexit
+
+#     shout "Test Kyma"
+#     date
+#     "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+# }
+
+function createDNSRecord() {
+  if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
+    log::info "Create DNS Record for Apiserver proxy IP"
+    APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
+    CLEANUP_APISERVER_DNS_RECORD="true"
+    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+  fi
+}
+
+
+function applyScenario() {
+    testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
+    upgradeKyma
+    createDNSRecord
+    testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
 }
 
 # Used to detect errors for logging purposes
@@ -431,11 +498,13 @@ installKyma
 
 createTestResources
 
-upgradeKyma
+enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+
+applyScenario
 
 remove_addons_if_necessary
 
-testKyma
+# testKyma
 
 shout "Job finished with success"
 
