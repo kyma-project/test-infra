@@ -74,8 +74,8 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         exit 0
     fi
 
-    log::banner "sleep for debug"
-    sleep 3600
+    #log::banner "sleep for debug"
+    #sleep 3600
     log::banner "Debugging DNS issues"
     log::date
     {
