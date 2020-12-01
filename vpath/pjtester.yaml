@@ -1,0 +1,3 @@
+pjNames:
+  - pjName: "kyma-integration-gardener-gcp-parallel"
+  - pjName: "kyma-integration-gardener-gcp"

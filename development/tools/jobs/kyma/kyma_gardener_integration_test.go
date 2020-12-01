@@ -78,10 +78,11 @@ func TestKymaGardenerGCPParallelIntegrationJobPeriodics(t *testing.T) {
 	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerGCPIntegration, preset.KymaCLIStable)
 	tester.AssertThatHasExtraRepoRef(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp-parallel.sh"}, job.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp.sh"}, job.Spec.Containers[0].Args)
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
 	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
+	tester.AssertThatContainerHasEnv(t, job.Spec.Containers[0], "PARALLEL_INSTALL", "true")
 	tester.AssertThatSpecifiesResourceRequests(t, job.JobBase)
 }
 

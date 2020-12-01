@@ -183,10 +183,17 @@ date
 
 (
 set -x
+if [ -z "$PARALLEL_INSTALL" ]; then
 kyma install \
     --ci \
     --source master \
     --timeout 90m
+else 
+kyma alpha install \
+    --ci \
+    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
+    --components "${KYMA_PROJECT_DIR}/kyma/installation/resources/installer-cr-cluster.yaml.tpl"
+fi
 )
 
 shout "Checking the versions"
