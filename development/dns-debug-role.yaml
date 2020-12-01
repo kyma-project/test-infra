@@ -5,7 +5,7 @@ metadata:
   name: dns-debug
 rules:
   - apiGroups: [""]
-    resources: ["services"]
+    resources: ["services", "endpoints"]
     verbs: ["get", "list", "watch"]
 
 ---
