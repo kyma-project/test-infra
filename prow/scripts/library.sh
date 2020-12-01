@@ -202,6 +202,18 @@ EOF
 
 }
 
+runTestLogCollector(){
+    if [[ -n "${enableTestLogCollector}" && "${enableTestLogCollector}" == true ]] ; then
+        if [[ "$BUILD_TYPE" == "master" ]]; then
+            log::info "Install test-log-collector"
+            export PROW_JOB_NAME="${TEST_LOG_COLLECTOR_PROW_JOB_NAME:-some_prow_job}"
+            (
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+            )
+        fi
+    fi
+}
+
 function gkeCleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
@@ -215,6 +227,9 @@ function gkeCleanup() {
 
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
+
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""

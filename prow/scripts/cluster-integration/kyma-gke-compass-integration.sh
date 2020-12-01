@@ -10,6 +10,7 @@ if [ "${JOB_TYPE}" = "periodic" ]; then
 fi
 
 enableTestLogCollector=false
+TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
 
 discoverUnsetVar=false
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
@@ -325,18 +326,6 @@ installCompass() {
   "${COMPASS_TMP_DIR}"/is-installed.sh --timeout 30m
 }
 
-runTestLogCollector() {
-  if [ "${enableTestLogCollector}" = true ]; then
-    if [[ "$BUILD_TYPE" == "master" ]]; then
-      log::info "Install test-log-collector"
-      export PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
-      (
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
-      )
-    fi
-  fi
-}
-
 trap gkeCleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
@@ -363,9 +352,6 @@ date
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 shout "Success"
-
-shout "Collect logs from failed tests before deprovisioning"
-runTestLogCollector
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

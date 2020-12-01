@@ -1,11 +1,8 @@
 pjNames:
   - pjName: "post-master-kyma-gke-central-connector"
-    report: true
   - pjName: "post-master-kyma-gke-compass-integration"
-    report: true
   - pjName: "post-master-kyma-gke-integration"
-    report: true
   - pjName: "post-master-control-plane-gke-integration"
-    report: true
   - pjName: "post-master-control-plane-gke-provisioner-integration"
-    report: true
+  - pjName: "post-master-kyma-gke-integration"
+  - pjName: "post-master-kyma-gke-upgrade"
