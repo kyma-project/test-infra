@@ -181,6 +181,8 @@ kyma provision gardener gcp \
 shout "Installing Kyma"
 date
 
+# Parallel-install library installs cluster-essentials, istio, and xip-patch before kyma installation. That's why they should not exist on the InstallationCR.
+# Once we figure out a way to fix this, this custom CR can be deleted from this script.
 cat << EOF > "$PWD/kyma-parallel-install-installationCR.yaml"
 apiVersion: "installer.kyma-project.io/v1alpha1"
 kind: Installation
