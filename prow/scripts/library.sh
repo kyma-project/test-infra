@@ -270,14 +270,16 @@ function gkeCleanup() {
         fi
 
         if [ -n "${KCP_INSTALLER_IMAGE}" ]; then
-           shout "Delete temporary KCP-Installer Docker image"
+            shout "Delete temporary KCP-Installer Docker image"
             date
             KYMA_INSTALLER_IMAGE="${KCP_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
         fi
 
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
+            shout "Delete temporary Kyma-Installer Docker image"
+            date
+            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        fi
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
