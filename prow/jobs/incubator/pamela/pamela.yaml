@@ -36,12 +36,14 @@ presubmits: # runs on PRs
     - name: pre-kyma-incubator-pamela
       cluster: untrusted-workload
       optional: false
+      always_run: true
       <<: *job_template
 
 postsubmits:
   kyma-incubator/pamela:
     - name: post-kyma-incubator-pamela
       cluster: trusted-workload
+      always_run: true
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template
