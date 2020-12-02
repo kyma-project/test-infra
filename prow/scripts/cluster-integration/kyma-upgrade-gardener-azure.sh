@@ -81,7 +81,7 @@ export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
 export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_CONTAINER_NAME="tests"
-export KYMA_UPDATE_TIMEOUT="40m"
+export KYMA_UPDATE_TIMEOUT="90m"
 export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
