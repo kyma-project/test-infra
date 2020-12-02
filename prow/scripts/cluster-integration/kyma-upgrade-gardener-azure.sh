@@ -181,9 +181,20 @@ function getLastReleaseVersion() {
     echo "${version}"
 }
 
+function getLastReleaseCandidateVersion() {
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
+  
+  echo "${version}"
+}
+
 function installKyma() {
-    LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+    #LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+    # change back to release version once release 1.17 is available
+    LAST_RELEASE_VERSION=$(getLastReleaseCandidateVersion)
+
     mkdir -p /tmp/kyma-gardener-upgradeability
+
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         log::error "Couldn't grab latest version from GitHub API, stopping."
         exit 1
@@ -314,15 +325,6 @@ createTestResources() {
 }
 
 function upgradeKyma() {
-    # log::info "Delete the kyma-installation CR and kyma-installer deployment"
-    # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
-    # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
-    # kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-    # kubectl delete Installation -n default kyma-installation
-
-    # Remove the current installer to prevent it performing any action.
-    # kubectl delete deployment -n kyma-installer kyma-installer
-
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
     log::info "Upgrading Kyma ${TARGET_VERSION:0:8}"
@@ -335,15 +337,6 @@ function upgradeKyma() {
         curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-production.yaml.tpl" \
         --output installer-config-production.yaml.tpl
 
-    log::info "Downloading Azure EventHubs config"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
-        --output installer-config-azure-eventhubs.yaml.tpl
-
-    log::info "Use release artifacts from version ${TARGET_VERSION:0:8}"
-    curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
-    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
-
     log::info "Triggering update with timeout ${KYMA_UPDATE_TIMEOUT}"
     (
         set -x
@@ -352,12 +345,8 @@ function upgradeKyma() {
             --source "${TARGET_VERSION:0:8}" \
             -c installer-cr-azure-eventhubs.yaml.tpl \
             -o installer-config-production.yaml.tpl \
-            -o installer-config-azure-eventhubs.yaml.tpl \
             --timeout ${KYMA_UPDATE_TIMEOUT}
     )
-
-    # log::info "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
-    # "${KYMA_SOURCES_DIR}"/installation/scripts/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 }
 
 remove_addons_if_necessary() {
