@@ -110,12 +110,9 @@ else
 fi
 export EVENTHUB_NAMESPACE_NAME
 
-if [ -z ${EXECUTION_PROFILE+x} ]; then
-    EXECUTION_PROFILE="evaluation"
-fi
 echo "Execution profile: ${EXECUTION_PROFILE}"
 
-if [ -z ${MACHINE_TYPE+x} ]; then
+if [ -z "${MACHINE_TYPE}" ]; then
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
         export MACHINE_TYPE="Standard_D4_v3"
     else
@@ -271,13 +268,12 @@ install_kyma() {
     fi
 
     INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
-    set -x
 
+    set -x
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        KYMA_SOURCE="PR-10122"
         kyma install \
             --ci \
-            -s "${KYMA_SOURCE}" \
+            --source "${KYMA_INSTALLER_IMAGE}" \
             -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
             -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
             -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
@@ -286,7 +282,7 @@ install_kyma() {
             --verbose
     else
         kyma install \
-        --ci \
+            --ci \
             --source "${KYMA_INSTALLER_IMAGE}" \
             -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
             -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
@@ -296,8 +292,6 @@ install_kyma() {
             --timeout 90m \
             --verbose
     fi
-
-    kubectl get installations.installer.kyma-project.io kyma-installation -o yaml
     set +x
 
     shout "Checking the versions"
@@ -327,7 +321,6 @@ test_kyma(){
 }
 
 test_local_kyma(){
-    helm -n kyma-system delete monitoring
     shout "Running Kyma tests (from local-kyma repo)"
     date
 

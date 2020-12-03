@@ -176,6 +176,8 @@ gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
         value: "westeurope"
       - name: GARDENER_ZONES
         value: "1"
+      - name: EXECUTION_PROFILE
+        value: "evaluation"
       resources:
         requests:
           memory: 1Gi
@@ -290,7 +292,7 @@ periodics:
     decoration_config:
       timeout: 3600000000000 # 45min
       grace_period: 600000000000 # 10min
-    cron: "0 4,7,10,13 * * *"
+    cron: "0 5,8,11,14 * * *"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
