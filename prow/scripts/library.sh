@@ -202,8 +202,8 @@ EOF
 
 }
 
-runTestLogCollector(){
-    if [[ -n "${enableTestLogCollector}" && "${enableTestLogCollector}" == true ]] ; then
+function runTestLogCollector(){
+    if [[ -n "${ENABLE_TEST_LOG_COLLECTOR}" && "${ENABLE_TEST_LOG_COLLECTOR}" == true ]] ; then
         if [[ "$BUILD_TYPE" == "master" ]]; then
             log::info "Install test-log-collector"
             export PROW_JOB_NAME="${TEST_LOG_COLLECTOR_PROW_JOB_NAME:-some_prow_job}"
@@ -263,6 +263,8 @@ function gkeCleanup() {
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Docker image cleanup"
 
+        KYMA_INSTALLER_IMAGE_TMP="${KYMA_INSTALLER_IMAGE}"
+
         if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
             shout "Delete temporary Compass-Installer Docker image"
             date
@@ -275,10 +277,10 @@ function gkeCleanup() {
             KYMA_INSTALLER_IMAGE="${KCP_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
         fi
 
-        if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
+        if [ -n "${KYMA_INSTALLER_IMAGE_TMP}" ]; then
             shout "Delete temporary Kyma-Installer Docker image"
             date
-            "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+            KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE_TMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
         fi
     fi
 
@@ -286,6 +288,10 @@ function gkeCleanup() {
         shout "Delete Apiserver proxy DNS Record"
         date
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+    fi
+
+    if [ -n "${TMP_DIR}" ]; then
+        rm -rf "${TMP_DIR}"
     fi
 
     MSG=""

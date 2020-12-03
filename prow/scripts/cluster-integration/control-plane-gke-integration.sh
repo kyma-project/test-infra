@@ -3,7 +3,7 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-enableTestLogCollector=false
+ENABLE_TEST_LOG_COLLECTOR=false
 TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-control-plane-gke-provisioner-integration"
 
 discoverUnsetVar=false
@@ -403,7 +403,7 @@ shout "Install Control Plane"
 date
 installControlPlane
 
-enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 shout "Test Kyma, Compass and Control Plane"
 date

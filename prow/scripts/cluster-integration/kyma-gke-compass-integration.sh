@@ -9,7 +9,7 @@ if [ "${JOB_TYPE}" = "periodic" ]; then
   REPO_NAME="kyma"
 fi
 
-enableTestLogCollector=false
+ENABLE_TEST_LOG_COLLECTOR=false
 TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
 
 discoverUnsetVar=false
@@ -345,7 +345,7 @@ shout "Install Compass on top of Kyma"
 date
 installCompass
 
-enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 shout "Test Kyma with Compass"
 date
