@@ -24,7 +24,7 @@
     - compass-runtime-agent-tests
     - compass-runtime-agent-adapter-external-solution
     - compass-runtime-agent-external-solution
-    - provisioner-tests
+    - kcp-provisioner-tests
 - channelName: "#hasselhoff-notifications"
   channelID: C01G4PUT9JM
   onlyReportFailure: true
