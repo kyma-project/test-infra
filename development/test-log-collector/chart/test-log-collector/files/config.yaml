@@ -12,7 +12,7 @@
     - rafter
 - channelName: "#framefrog-notifications"
   channelID: "C01FNPJDHLJ"
-  onlyReportFailure: false
+  onlyReportFailure: true
   testCases:
     - application-connector
     - application-operator
