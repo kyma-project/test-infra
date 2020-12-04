@@ -9,6 +9,9 @@ if [ "${JOB_TYPE}" = "periodic" ]; then
   REPO_NAME="kyma"
 fi
 
+ENABLE_TEST_LOG_COLLECTOR=false
+TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
+
 discoverUnsetVar=false
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
   if [ -z "${!var}" ] ; then
@@ -18,6 +21,13 @@ for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK
 done
 if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
+fi
+
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
 fi
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -335,6 +345,7 @@ shout "Install Compass on top of Kyma"
 date
 installCompass
 
+ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 shout "Test Kyma with Compass"
 date

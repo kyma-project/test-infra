@@ -30,8 +30,10 @@
 
 set -o errexit
 
-discoverUnsetVar=false
+ENABLE_TEST_LOG_COLLECTOR=false
+TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-central-connector"
 
+discoverUnsetVar=false
 for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
     if [ -z "${!var}" ] ; then
         echo "$var is not set"
@@ -40,6 +42,13 @@ for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK
 done
 if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
+fi
+
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
 fi
 
 #Exported variables
@@ -53,68 +62,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/common.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/library.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
-#!Put cleanup code in this function!
-cleanup() {
-    #!!! Must be at the beginning of this function !!!
-    EXIT_STATUS=$?
-
-    log::banner "CLEANUP"
-
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        log::error "AN ERROR OCCURED! Take a look at preceding log entries."
-    fi
-
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
-    set +e
-
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
-        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-
-        #save disk names while the cluster still exists to remove them later
-        #DISKS=$(kubectl get pvc --all-namespaces -o jsonpath="{.items[*].spec.volumeName}" | xargs -n1 echo)
-        #export DISKS
-
-        #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
-
-        #Delete orphaned disks
-        #log::info "Delete orphaned PVC disks..."
-        #"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
-        log::info "Delete Gateway DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
-    fi
-
-    if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
-        log::info "Release Gateway IP Address"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
-    fi
-
-    if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
-        log::info "Delete temporary Kyma-Installer Docker image"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
-    fi
-
-    if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
-        log::info "Delete Apiserver proxy DNS Record"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
-    fi
-
-
-    MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    log::info "Job is finished ${MSG}"
-    set -e
-
-    exit "${EXIT_STATUS}"
-}
-
-trap cleanup EXIT INT
+trap gkeCleanup EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -298,6 +249,8 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     CLEANUP_APISERVER_DNS_RECORD="true"
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
+
+ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 log::info "Test Kyma"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh

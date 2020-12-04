@@ -20,7 +20,7 @@
 set -e
 
 discoverUnsetVar=false
-enableTestLogCollector=false
+ENABLE_TEST_LOG_COLLECTOR=false
 
 VARIABLES=(
     KYMA_PROJECT_DIR
@@ -134,7 +134,7 @@ cleanup() {
 }
 
 runTestLogCollector(){
-    if [ "${enableTestLogCollector}" = true ] ; then
+    if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
             shout "Install test-log-collector"
             date
@@ -413,7 +413,7 @@ fi
 
 remove_addons_if_necessary
 
-enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 testKyma
 

@@ -202,6 +202,18 @@ EOF
 
 }
 
+function runTestLogCollector(){
+    if [[ -n "${ENABLE_TEST_LOG_COLLECTOR}" && "${ENABLE_TEST_LOG_COLLECTOR}" == true ]] ; then
+        if [[ "$BUILD_TYPE" == "master" ]]; then
+            log::info "Install test-log-collector"
+            export PROW_JOB_NAME="${TEST_LOG_COLLECTOR_PROW_JOB_NAME:-some_prow_job}"
+            (
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+            )
+        fi
+    fi
+}
+
 function gkeCleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
@@ -215,6 +227,9 @@ function gkeCleanup() {
 
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
+
+    # collect logs from failed tests before deprovisioning
+    runTestLogCollector
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         shout "Deprovision cluster: \"${CLUSTER_NAME}\""
@@ -248,6 +263,8 @@ function gkeCleanup() {
     if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
         shout "Docker image cleanup"
 
+        KYMA_INSTALLER_IMAGE_TMP="${KYMA_INSTALLER_IMAGE}"
+
         if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
             shout "Delete temporary Compass-Installer Docker image"
             date
@@ -255,14 +272,16 @@ function gkeCleanup() {
         fi
 
         if [ -n "${KCP_INSTALLER_IMAGE}" ]; then
-           shout "Delete temporary KCP-Installer Docker image"
+            shout "Delete temporary KCP-Installer Docker image"
             date
             KYMA_INSTALLER_IMAGE="${KCP_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
         fi
 
-        shout "Delete temporary Kyma-Installer Docker image"
-        date
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        if [ -n "${KYMA_INSTALLER_IMAGE_TMP}" ]; then
+            shout "Delete temporary Kyma-Installer Docker image"
+            date
+            KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE_TMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-image.sh"
+        fi
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
