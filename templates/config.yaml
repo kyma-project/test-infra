@@ -655,13 +655,6 @@ templates:
           <<: *kyma_generic_component
           path: tests/contract/knative-channel-kafka
           since: "1.10"
-      - to: ../prow/jobs/kyma/tests/knative-serving/knative-serving-tests-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tests/knative-serving
-          since: "1.9"
-          until: "1.15"
       - to: ../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
         values:
           <<: *cluster_default
