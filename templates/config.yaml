@@ -575,19 +575,6 @@ templates:
           path: tools/event-subscriber
           since: "1.12"
           optional: true
-      - to: ../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tools/gitserver
-          since: "1.15"
-      - to: ../prow/jobs/kyma/tools/alpine-net/alpine-net-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: tools/alpine-net
-          since: "1.7"
-          until: "1.15"
       - to: ../prow/jobs/kyma/tests/integration/api-gateway/api-gateway-tests-generic.yaml
         values:
           <<: *cluster_default
