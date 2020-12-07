@@ -110,6 +110,16 @@ else
 fi
 export EVENTHUB_NAMESPACE_NAME
 
+echo "Execution profile: ${EXECUTION_PROFILE}"
+
+if [ -z "${MACHINE_TYPE}" ]; then
+    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+        export MACHINE_TYPE="Standard_D4_v3"
+    else
+        export MACHINE_TYPE="Standard_D8_v3"
+    fi
+fi
+
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {
     #!!! Must be at the beginning of this function !!!
@@ -122,6 +132,9 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     shout "Cleanup"
     set +e
+
+    shout "Describe nodes"
+    kubectl describe nodes
 
     # collect logs from failed tests before deprovisioning
     runTestLogCollector
@@ -209,20 +222,26 @@ generate_azure_overrides() {
 provision_cluster() {
     shout "Provision cluster: \"${CLUSTER_NAME}\""
 
-    if [ -z "$MACHINE_TYPE" ]; then
-        export MACHINE_TYPE="Standard_D8_v3"
-    fi
-
-
     CLEANUP_CLUSTER="true"
     set -x
-    kyma provision gardener az \
-        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-        --scaler-max 4 --scaler-min 2 \
-        --kube-version=${GARDENER_CLUSTER_VERSION} \
-        --verbose
+    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+        kyma provision gardener az \
+            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+            --scaler-max 1 --scaler-min 1 \
+            --disk-type StandardSSD_LRS \
+            --kube-version=${GARDENER_CLUSTER_VERSION} \
+            --verbose
+    else
+        kyma provision gardener az \
+            --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
+            --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+            --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
+            --disk-type StandardSSD_LRS \
+            --kube-version=${GARDENER_CLUSTER_VERSION} \
+            --verbose
+    fi
     set +x
 }
 
@@ -249,17 +268,30 @@ install_kyma() {
     fi
 
     INSTALLATION_RESOURCES_DIR=${KYMA_SOURCES_DIR}/installation/resources
+
     set -x
-    kyma install \
-        --ci \
-        --source $KYMA_INSTALLER_IMAGE \
-        -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-        -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
-        -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
-        -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-        --timeout 90m \
-        --verbose
+    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+        kyma install \
+            --ci \
+            --source "${KYMA_INSTALLER_IMAGE}" \
+            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
+            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+            --timeout 35m \
+            --profile evaluation \
+            --verbose
+    else
+        kyma install \
+            --ci \
+            --source "${KYMA_INSTALLER_IMAGE}" \
+            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
+            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
+            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
+            --timeout 90m \
+            --verbose
+    fi
     set +x
 
     shout "Checking the versions"
@@ -284,6 +316,20 @@ test_kyma(){
         --non-interactive
     set +x
 
+    date
+    shout "Tests completed"
+}
+
+test_local_kyma(){
+    shout "Running Kyma tests (from local-kyma repo)"
+    date
+
+    pushd /home/prow/go/src/github.com/kyma-incubator/local-kyma
+    shout "Executing app-connector-example"
+    ./app-connector-example.sh
+    popd
+
+    date
     shout "Tests completed"
 }
 
@@ -302,7 +348,6 @@ runTestLogCollector(){
 
 trap cleanup EXIT INT
 
-
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
@@ -315,13 +360,19 @@ provision_cluster
 build_image
 
 install_kyma
+shout "Describe nodes (after installation)"
+kubectl describe nodes
+
 if [[ "$?" -ne 0 ]]; then
     return 1
 fi
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-
-test_kyma
+if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+    test_local_kyma
+else
+    ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+    test_kyma
+fi
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
