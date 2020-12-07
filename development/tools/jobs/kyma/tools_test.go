@@ -3,7 +3,6 @@ package kyma
 import (
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -19,18 +18,6 @@ var tools = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.AllReleases(),
 			jobsuite.Optional(),
-		},
-	},
-	{path: "alpine-net", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Until(releases.Release115),
-		},
-	},
-	{path: "gitserver", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release115),
 		},
 	},
 }
