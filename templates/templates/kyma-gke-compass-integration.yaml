@@ -82,6 +82,7 @@ presubmits: # runs on PRs
       branches:
         - release-{{ . }}
       always_run: false
+      optional: true
       <<: *gke_integration_job_template_k16
       labels:
         preset-build-release: "true"
