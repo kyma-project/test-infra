@@ -82,6 +82,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.18
       always_run: false
+      optional: true
       <<: *gke_integration_job_template_k16
       labels:
         preset-build-release: "true"
@@ -94,6 +95,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.17
       always_run: false
+      optional: true
       <<: *gke_integration_job_template_k16
       labels:
         preset-build-release: "true"
@@ -106,6 +108,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.16
       always_run: false
+      optional: true
       <<: *gke_integration_job_template_k16
       labels:
         preset-build-release: "true"
