@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	logf "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
@@ -50,6 +51,7 @@ func contains(slice []string, element string) bool {
 func (d Dispatching) GetConfigByName(name string) (LogsScrapingConfig, error) {
 	for _, conf := range d.Config {
 		if contains(conf.TestCases, name) {
+			logf.Infof("Sending testSuite %s data to channel %s", name, conf.ChannelName)
 			return conf, nil
 		}
 	}
@@ -63,6 +65,7 @@ func (d Dispatching) GetConfigByNameWithFallback(name string) (LogsScrapingConfi
 		return config, err
 	}
 
+	logf.Warnf("falling back to default config for %s", name)
 	return d.GetConfigByName("default")
 }
 

@@ -57,7 +57,7 @@ func (s Client) createParentMessage(channelID, parentMessage string) error {
 
 	_, exists := s.parentMessageTimestamp(*hist, parentMessage)
 	if exists {
-		logf.Info("parent message already exists")
+		logf.Warn("parent message already exists")
 		return nil
 	}
 

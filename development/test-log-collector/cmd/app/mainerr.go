@@ -151,6 +151,8 @@ func Mainerr() error {
 			msg.Data = string(data)
 		}
 
+		logf.Infof("Created msg for pod %s that will be sent to channel %s", pod.Name, msg.ChannelName)
+
 		messages = append(messages, msg)
 	}
 
