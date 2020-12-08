@@ -145,7 +145,7 @@ cleanup() {
 runTestLogCollector(){
     if [ "${enableTestLogCollector}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
-            shout "Install test-log-collector"
+            log::info "Install test-log-collector"
             date
             export PROW_JOB_NAME="kyma-upgrade-gardener-azure"
             ( 
@@ -381,6 +381,9 @@ function testKyma() {
     test_args+=("-n")
     test_args+=("${suitename}")
   fi
+
+  test_args+=("-to")
+  test_args+=("90m")
 
   log::banner "Test Kyma " "${test_args[@]}"
   "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
