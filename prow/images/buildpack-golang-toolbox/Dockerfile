@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.5
 
 # Commit details
 
@@ -28,6 +28,6 @@ ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
 
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201113-72ed0661 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20201208-c200b51a /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
