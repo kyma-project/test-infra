@@ -380,7 +380,8 @@ function testKyma() {
     test_args+=("${suitename}")
   fi
 
-  test_args+=("-t 3h")
+  test_args+=("-t")
+  test_args+=("2h")
 
   log::banner "Test Kyma " "${test_args[@]}"
   "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
