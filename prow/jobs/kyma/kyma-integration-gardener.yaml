@@ -18,7 +18,7 @@ kyma_local_ref: &kyma_local_ref
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
-  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.16
+  image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
 
 gardener_aws_job_labels_template: &gardener_aws_job_labels_template
   preset-gardener-aws-kyma-integration: "true"
@@ -204,6 +204,52 @@ presubmits:
       extra_refs:
          - <<: *test_infra_ref
            base_ref: master
+    - name: pre-master-kyma-gardener-azure-fast-integration
+      cluster: untrusted-workload
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: true
+      always_run: false
+      branches:
+        - ^master$
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      spec:
+        containers:
+          - <<: *base_image_k16
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"
+            env:
+              - name: RS_GROUP
+                value: "kyma-gardener-azure"
+              - name: REGION
+                value: "northeurope"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+              - name: GARDENER_REGION
+                value: "westeurope"
+              - name: GARDENER_ZONES
+                value: "1"
+              - name: EXECUTION_PROFILE
+                value: "evaluation"
+              - name: FAST_INTEGRATION_TESTS
+                value: "true"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
 
 periodics:
   - name: kyma-integration-gardener-gcp

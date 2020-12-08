@@ -135,6 +135,8 @@ cleanup() {
 
     shout "Describe nodes"
     kubectl describe nodes
+    kubectl top nodes
+    kubectl top pods --all-namespaces
 
     # collect logs from failed tests before deprovisioning
     runTestLogCollector
@@ -333,6 +335,19 @@ test_local_kyma(){
     shout "Tests completed"
 }
 
+test_fast_integration_kyma() {
+    shout "Running Kyma Fast Integration tests"
+    date
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    npm install
+    npm test
+    popd
+
+    shout "Tests completed"
+    date
+}
+
 runTestLogCollector(){
     if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
@@ -361,13 +376,20 @@ build_image
 
 install_kyma
 shout "Describe nodes (after installation)"
+
+set +e
 kubectl describe nodes
+kubectl top nodes
+kubectl top pods --all-namespaces
+set -e
 
 if [[ "$?" -ne 0 ]]; then
     return 1
 fi
 
-if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+if [[ "$FAST_INTEGRATION_TESTS" == "true" ]]; then
+    test_fast_integration_kyma
+elif [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
     test_local_kyma
 else
     ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
