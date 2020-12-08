@@ -189,9 +189,7 @@ function getLastReleaseCandidateVersion() {
 }
 
 function installKyma() {
-    #LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-    # change back to release version once release 1.17 is available
-    LAST_RELEASE_VERSION=$(getLastReleaseCandidateVersion)
+    LAST_RELEASE_VERSION=$(getLastReleaseVersion)
 
     mkdir -p /tmp/kyma-gardener-upgradeability
 
