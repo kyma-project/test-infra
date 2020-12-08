@@ -87,6 +87,14 @@ RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
+
+#################################################################
+###################### Node.js ##################################
+#################################################################
+
+RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+RUN apt -y install nodejs
+
 #################################################################
 ###################### Cluster Integration ###################### 
 #################################################################
