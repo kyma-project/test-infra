@@ -135,6 +135,8 @@ cleanup() {
 
     shout "Describe nodes"
     kubectl describe nodes
+    kubectl top nodes
+    kubectl top pods --all-namespaces
 
     # collect logs from failed tests before deprovisioning
     runTestLogCollector
@@ -374,7 +376,12 @@ build_image
 
 install_kyma
 shout "Describe nodes (after installation)"
+
+set +e
 kubectl describe nodes
+kubectl top nodes
+kubectl top pods --all-namespaces
+set -e
 
 if [[ "$?" -ne 0 ]]; then
     return 1
