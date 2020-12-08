@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
+KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1.5h}
 
 
 readonly TMP_DIR=$(mktemp -d)
