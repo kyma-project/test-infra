@@ -23,7 +23,6 @@ branch-protection:
                 contexts:
                   - pre-rel118-kyma-integration
                   - pre-rel118-kyma-gke-integration
-                  - pre-rel118-kyma-gke-compass-integration
                   - pre-rel118-kyma-gke-upgrade
                   - pre-rel118-kyma-gke-central-connector
                   - pre-rel118-kyma-artifacts
@@ -33,7 +32,6 @@ branch-protection:
                 contexts:
                   - pre-rel117-kyma-integration
                   - pre-rel117-kyma-gke-integration
-                  - pre-rel117-kyma-gke-compass-integration
                   - pre-rel117-kyma-gke-upgrade
                   - pre-rel117-kyma-gke-central-connector
                   - pre-rel117-kyma-artifacts
@@ -43,7 +41,6 @@ branch-protection:
                 contexts:
                   - pre-rel116-kyma-integration
                   - pre-rel116-kyma-gke-integration
-                  - pre-rel116-kyma-gke-compass-integration
                   - pre-rel116-kyma-gke-upgrade
                   - pre-rel116-kyma-gke-central-connector
                   - pre-rel116-kyma-artifacts
