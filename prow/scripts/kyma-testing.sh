@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 CURRENT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1.5h}
+KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=2h}
 
 
 readonly TMP_DIR=$(mktemp -d)
@@ -25,11 +25,10 @@ function printUsage() {
   Usage:
   -l <label expression> (optional, specify multiple times): Specify a label expression to limit execution testdefinitions by labels
   -n <cluster-test-suite-name> (optional): Specify the name of the cluster test suite used for executing the set of testdefinitions
-  -to <timeout> (optional): Specify the duration until timeout
   "
 }
 
-while getopts "l:n:to:" opt; do
+while getopts "l:n:" opt; do
     case $opt in
         l)
           KYMA_OPTIONS+=("-l")
@@ -37,9 +36,6 @@ while getopts "l:n:to:" opt; do
           ;;
         n)
           SUITE_NAME="$OPTARG"
-          ;;
-        to)
-          KYMA_TEST_TIMEOUT="$OPTARG"
           ;;
         *)
           printUsage
