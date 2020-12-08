@@ -192,7 +192,7 @@ metadata:
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
   global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
-  prometheus-istio.envoyStats.sampleLimit: 10000
+  prometheus-istio.envoyStats.sampleLimit: "10000"
 #---
 #apiVersion: v1
 #kind: ConfigMap
