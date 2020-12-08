@@ -273,7 +273,7 @@ install_kyma() {
     if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
         kyma install \
             --ci \
-            --source "${KYMA_INSTALLER_IMAGE}" \
+            --source "PR-10030" \
             -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
             -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
             -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
