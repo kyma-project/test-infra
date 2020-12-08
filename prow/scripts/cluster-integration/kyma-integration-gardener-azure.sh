@@ -333,6 +333,19 @@ test_local_kyma(){
     shout "Tests completed"
 }
 
+test_fast_integration_kyma() {
+    shout "Running Kyma Fast Integration tests"
+    date
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    npm install
+    npm test
+    popd
+
+    shout "Tests completed"
+    date
+}
+
 runTestLogCollector(){
     if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
@@ -367,7 +380,9 @@ if [[ "$?" -ne 0 ]]; then
     return 1
 fi
 
-if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+if [[ "$FAST_INTEGRATION_TESTS" == "true" ]]; then
+    test_fast_integration_kyma
+elif [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
     test_local_kyma
 else
     ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
