@@ -1,6 +1,7 @@
 package incubator
 
 import (
+	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"path"
 	"testing"
 
@@ -41,6 +42,17 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
+		},
+	},
+	{
+		name:  "tenant-fetcher",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Optional(),
+			jobsuite.Since(releases.Release117),
 		},
 	},
 }

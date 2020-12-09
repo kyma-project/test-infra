@@ -457,6 +457,13 @@ templates:
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
+      - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/tenant-fetcher
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default
