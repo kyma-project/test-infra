@@ -146,7 +146,6 @@ runTestLogCollector(){
     if [ "${enableTestLogCollector}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
             log::info "Install test-log-collector"
-            date
             export PROW_JOB_NAME="kyma-upgrade-gardener-azure"
             ( 
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
