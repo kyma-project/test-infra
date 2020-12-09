@@ -190,9 +190,7 @@ function getLastReleaseCandidateVersion() {
 
 function installKyma() {
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
-
     mkdir -p /tmp/kyma-gardener-upgradeability
-
     if [ -z "$LAST_RELEASE_VERSION" ]; then
         log::error "Couldn't grab latest version from GitHub API, stopping."
         exit 1
