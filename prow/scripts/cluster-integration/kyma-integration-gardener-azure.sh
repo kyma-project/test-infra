@@ -322,6 +322,123 @@ test_kyma(){
     shout "Tests completed"
 }
 
+
+hibernate_kyma(){
+    local SAVED_KUBECONFIG=$KUBECONFIG
+    export KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
+
+    shout "Hibernating kyma cluster"
+    date
+    kubectl patch shoots "${CLUSTER_NAME}" -p '{"spec": {"hibernation" : {"enabled" : true }}}'
+
+    shout "Checking state of kyma hibernation...hold on"
+
+    local STATUS
+    SECONDS=0
+    local END_TIME=$((SECONDS+1000))
+    while [ ${SECONDS} -lt ${END_TIME} ];do
+        STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
+        if [ "$STATUS" == "true" ]; then
+            echo "Kyma is hibernated."
+            break
+        fi
+        echo "waiting 60s for operation to complete, kyma hibernated : ${STATUS}"
+        sleep 60
+    done
+    if [ "$STATUS" != "true" ]; then
+        echo "Timeout. Kyma cluster is not hibernated after $SECONDS seconds"
+        exit 1
+    fi
+    export KUBECONFIG=$SAVED_KUBECONFIG
+}
+
+wake_up_kyma(){
+    local SAVED_KUBECONFIG=$KUBECONFIG
+    export KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
+
+    shout "Waking up kyma cluster"
+    date
+    kubectl patch shoots "${CLUSTER_NAME}" -p '{"spec": {"hibernation" : {"enabled" : false }}}'
+
+    shout "Checking state of kyma waking up...hold on"
+
+    local STATUS
+    SECONDS=0
+    local END_TIME=$((SECONDS+1000))
+    while [ ${SECONDS} -lt ${END_TIME} ];do
+        STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
+        if [ "$STATUS" == "false" ]; then
+            date
+            echo "Kyma is awake."
+            break
+        fi
+        echo "Waiting 60s for operation to complete, kyma cluster is waking up."
+        sleep 60
+    done
+    if [ "$STATUS" != "false" ]; then
+        echo "Timeout. Kyma cluster is not awake after $SECONDS seconds"
+        exit 1
+    fi
+
+    shout "Waiting for pods to be running"
+    date
+    export KUBECONFIG=$SAVED_KUBECONFIG
+
+    local namespaces=("istio-system" "kyma-system" "kyma-integration")
+    wait_for_pods_in_namespaces "${namespaces[@]}"
+    date
+}
+
+pods_running(){
+    list=$(kubectl get pods -n "$1" -o=jsonpath='{range .items[*]}{.status.phase}{"\n"}')
+    if [[ -z $list ]]; then
+      echo "Failed to get pod list"
+      return 1
+    fi
+
+    for status in $list
+    do
+        if [[ "$status" != "Running" && "$status" != "Succeeded" ]]; then
+          return 1
+        fi
+    done
+
+    return 0
+}
+
+check_pods_in_namespaces(){
+    local namespaces=("$@")
+    for ns in "${namespaces[@]}"; do
+        echo "checking pods in namespace : $ns"
+        if ! pods_running "$ns"; then
+            echo "pods in $ns are still not running..."
+            return 1
+        fi
+    done
+    return 0
+}
+
+wait_for_pods_in_namespaces(){
+    local namespaces=("$@")
+    local done=1
+    SECONDS=0
+    local END_TIME=$((SECONDS+900))
+    while [ ${SECONDS} -lt ${END_TIME} ];do
+        if check_pods_in_namespaces "${namespaces[@]}"; then
+            done=0
+            break
+        fi
+        echo "waiting for 30s"
+        sleep 30
+    done
+
+    if [ ! $done ]; then
+        echo "Timeout exceeded, pods are still not running in required namespaces"
+    else
+        echo "all pods in required namespaces are running"
+    fi
+}
+
 test_local_kyma(){
     shout "Running Kyma tests (from local-kyma repo)"
     date
@@ -354,10 +471,10 @@ runTestLogCollector(){
             shout "Install test-log-collector"
             date
             export PROW_JOB_NAME="kyma-integration-gardener-azure"
-            ( 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-            )    
-        fi    
+            (
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
+            )
+        fi
     fi
 }
 
@@ -385,6 +502,12 @@ set -e
 
 if [[ "$?" -ne 0 ]]; then
     return 1
+fi
+
+if [[ "$HIBERNATION_ENABLED" == "true" ]]; then
+    hibernate_kyma
+    sleep 120
+    wake_up_kyma
 fi
 
 if [[ "$FAST_INTEGRATION_TESTS" == "true" ]]; then

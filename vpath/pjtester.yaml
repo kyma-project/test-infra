@@ -1,0 +1,6 @@
+pjNames:
+- pjName: "kyma-integration-hibernation-gardener-azure"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10115
