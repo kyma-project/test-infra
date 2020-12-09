@@ -238,6 +238,28 @@ function gcloud::decrypt {
       --project "${CLOUDSDK_KMS_PROJECT}"
 }
 
+# gcloud::create_network creates a GCP network for a cluster
+# Required exported variables:
+# GCLOUD_NETWORK_NAME - name for the new GCP network
+# GCLOUD_SUBNET_NAME - name for the subnet of the network
+# GCLOUD_PROJECT_NAME - name of GCP project
+function gcloud::create_network {
+  if gcloud compute networks describe "$GCLOUD_NETWORK_NAME"; then
+    log::warn "Network $GCLOUD_NETWORK_NAME already exists! Skipping network creation."
+    return 0
+  fi
+  log::info "Creating network $GCLOUD_NETWORK_NAME"
+  gcloud compute networks create "${GCLOUD_NETWORK_NAME}" \
+ --project="${GCLOUD_PROJECT_NAME}" \
+ --subnet-mode=custom
+
+  gcloud compute networks subnets create "${GCLOUD_SUBNET_NAME}" \
+   --network="${GCLOUD_NETWORK_NAME}" \
+   --range=10.0.0.0/22
+
+   log::info "successfully created network $GCLOUD_NETWORK_NAME"
+}
+
 function gcloud::cleanup {
   true
 }
