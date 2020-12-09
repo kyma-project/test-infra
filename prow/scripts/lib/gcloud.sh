@@ -4,6 +4,7 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}"/log.sh
 
+# gcloud::verify_deps checks if the needed preconditions are met to use this library
 function gcloud::verify_deps {
   commands=(
   gcloud
@@ -15,11 +16,19 @@ function gcloud::verify_deps {
   done
 }
 
+# gcloud::authenticate authenticates to gcloud.
+# Required exported variables:
+# GOOGLE_APPLICATION_CREDENTIALS - google login credentials
 function gcloud::authenticate() {
     echo "Authenticating to gcloud"
     gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
 }
 
+# gcloud::reserve_ip_address requests a new IP address from gcloud and prints this value to STDOUT
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT - gcp project
+# CLOUDSDK_COMPUTE_REGION - gcp region
+# IP_ADDRESS_NAME - name of the IP address to be set in gcp
 function gcloud::reserve_ip_address {
   counter=0
   # Check if IP address reservation is present. Wait and retry for one minute to disappear. If IP reservation was removed just before it need few seconds to disappear.
@@ -46,13 +55,32 @@ function gcloud::delete_ip_address {
   true
 }
 
+# gcloud::create_dns_record creates an A dns record for corresponding ip address
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT - gcp project
+# CLOUDSDK_COMPUTE_REGION - gcp region
+#
+# Arguments:
+# $1 - ip address
+# $2 - domain name
 function gcloud::create_dns_record {
+  if [ -z "$1" ]; then
+    log::error "IP address is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    log::error "Domain name is empty. Exiting..."
+    exit 1
+  fi
+  ipAddress=$1
+  dnsName=$2
+
   set +e
   local attempts=10
   local retryTimeInSec="5"
   for ((i=1; i<=attempts; i++)); do
       gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-      gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+      gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction add "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
       gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
 
       if [[ $? -eq 0 ]]; then
@@ -77,30 +105,30 @@ function gcloud::create_dns_record {
   local END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
 
   while [ ${SECONDS} -lt ${END_TIME} ];do
-      echo "Trying to resolve ${DNS_FULL_NAME}"
+      echo "Trying to resolve ${dnsName}"
       sleep 10
 
-      RESOLVED_IP_ADDRESS=$(dig +short "${DNS_FULL_NAME}")
+      RESOLVED_IP_ADDRESS=$(dig +short "${dnsName}")
 
-      if [ "${RESOLVED_IP_ADDRESS}" = "${IP_ADDRESS}" ]; then
-          echo "Successfully resolved ${DNS_FULL_NAME} to ${RESOLVED_IP_ADDRESS}!"
+      if [ "${RESOLVED_IP_ADDRESS}" = "${ipAddress}" ]; then
+          echo "Successfully resolved ${dnsName} to ${RESOLVED_IP_ADDRESS}!"
           return 0
       fi
 
       set +e
       log::info "Fetching DNS related debug logs and storing them in the artifacts folder..."
       {
-        log::info "trace DNS response for ${DNS_FULL_NAME}"
-        dig +trace "${DNS_FULL_NAME}"
+        log::info "trace DNS response for ${dnsName}"
+        dig +trace "${dnsName}"
         log::info "query authoritative servers directly"
         log::info "ns-cloud-b1.googledomains.com."
-        dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
+        dig "${dnsName}" @ns-cloud-b1.googledomains.com.
         log::info "ns-cloud-b2.googledomains.com."
-        dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
+        dig "${dnsName}" @ns-cloud-b2.googledomains.com.
         log::info "ns-cloud-b3.googledomains.com."
-        dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
+        dig "${dnsName}" @ns-cloud-b3.googledomains.com.
         log::info "ns-cloud-b4.googledomains.com."
-        dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
+        dig "${dnsName}" @ns-cloud-b4.googledomains.com.
         log::info "checking /etc/resolv.conf"
         cat /etc/resolv.conf
         log::info "checking kube-dns service IP"
@@ -110,26 +138,54 @@ function gcloud::create_dns_record {
         endpoints=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
         echo "$endpoints"
         log::info "query kube-dns pods directly"
-        for srv in $endpoints; do log::info "querying $srv"; dig "${DNS_FULL_NAME}" @"$srv";done
+        for srv in $endpoints; do log::info "querying $srv"; dig "${dnsName}" @"$srv";done
       } >> "${ARTIFACTS}/dns-debug.txt"
       set -e
   done
 
-  echo "Cannot resolve ${DNS_FULL_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."
+  echo "Cannot resolve ${dnsName} to expected IP_ADDRESS: ${ipAddress}."
   log::warn "WARNING! I will continue anyway... Kyma installation may fail!"
   #TODO: fix it
 }
 
+# gcloud::delete_dns_record
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT - gcp project
+# CLOUDSDK_COMPUTE_REGION - gcp region
+#
+# Arguments:
+# $1 - ip address
+# $2 - domain name
 function gcloud::delete_dns_record {
+  if [ -z "$1" ]; then
+    log::error "IP address is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    log::error "Domain name is empty. Exiting..."
+    exit 1
+  fi
+  ipAddress=$1
+  dnsName=$2
+
   log::info "Deleting DNS record $DNS_FULL_NAME"
   set +e
   gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-  gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${IP_ADDRESS}" --name="${DNS_FULL_NAME}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+  gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
   gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
   log::info "DNS Record deleted, but it can be visible for some time due to DNS caches"
   set -e
 }
 
+# gcloud::encrypt encrypts text using Google KMS
+# Required exported variables:
+# CLOUDSDK_KMS_PROJECT
+# KYMA_KEYRING
+# KYMA_ENCRYPTION_KEY
+#
+# Arguments:
+# $1 - plain text to encrypt
+# $2 - cipher
 function gcloud::encrypt {
   readonly PLAIN_TEXT="$1"
   if [ -p "$PLAIN_TEXT" ]; then
@@ -151,15 +207,24 @@ function gcloud::encrypt {
       --project "${CLOUDSDK_KMS_PROJECT}"
 }
 
+# gcloud::encrypt encrypts text using Google KMS
+# Required exported variables:
+# CLOUDSDK_KMS_PROJECT
+# KYMA_KEYRING
+# KYMA_ENCRYPTION_KEY
+#
+# Arguments:
+# $1 - plain text to encrypt
+# $2 - cipher
 function gcloud::decrypt {
   readonly PLAIN_TEXT="$1"
   if [ -p "$PLAIN_TEXT" ]; then
-      echo "Plaintext variable is missing!"
+      echo "PLAIN_TEXT variable is missing!"
       exit 1
   fi
   readonly CIPHER_TEXT="$2"
   if [ -c "$CIPHER_TEXT" ]; then
-      echo "Ciphertext variable is missing!"
+      echo "CIPHER_TEXT variable is missing. Exiting..."
       exit 1
   fi
 
