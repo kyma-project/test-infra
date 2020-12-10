@@ -30,8 +30,14 @@ function gcloud::authenticate() {
 # CLOUDSDK_COMPUTE_REGION - gcp region
 # IP_ADDRESS_NAME - name of the IP address to be set in gcp
 function gcloud::reserve_ip_address {
+  if [ -z "$1" ]; then
+    log::error "IP address name is empty. Exiting..."
+    exit 1
+  fi
+  IP_ADDRESS_NAME=$1
+
   counter=0
-  # Check if IP address reservation is present. Wait and retry for one minute to disappear. If IP reservation was removed just before it need few seconds to disappear.
+  # Check if IP address reservation is present. Wait and retry for one minute to disappear. If IP reservation was removed just before it need a few seconds to disappear.
   # Otherwise, creation will fail.
   IP_ADDRESS=$(gcloud compute addresses list --filter="name=${IP_ADDRESS_NAME}" --format="value(ADDRESS)")
   until [[ -z ${IP_ADDRESS} ]]; do
@@ -51,8 +57,15 @@ function gcloud::reserve_ip_address {
 }
 
 function gcloud::delete_ip_address {
-  # TODO (@Ressetkk): write some implementation that allows to safely remove IP address.
-  true
+  if [ -z "$1" ]; then
+    log::error "IP address name is empty. Exiting..."
+    exit 1
+  fi
+
+  IP_ADDRESS_NAME=$1
+  log::info "Removing IP address $IP_ADDRESS_NAME."
+  gcloud compute addresses delete "$IP_ADDRESS_NAME" --project="${CLOUDSDK_CORE_PROJECT}" --region="${CLOUDSDK_COMPUTE_REGION}"
+  log::info "Successfully removed IP $IP_ADDRESS_NAME!"
 }
 
 # gcloud::create_dns_record creates an A dns record for corresponding ip address
@@ -261,6 +274,17 @@ function gcloud::decrypt {
 # GCLOUD_SUBNET_NAME - name for the subnet of the network
 # GCLOUD_PROJECT_NAME - name of GCP project
 function gcloud::create_network {
+  if [ -z "$1" ]; then
+    log::error "Network name is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    log::error "Subnet name is empty. Exiting..."
+    exit 1
+  fi
+  GCLOUD_NETWORK_NAME=$1
+  GCLOUD_SUBNET_NAME=$2
+
   if gcloud compute networks describe "$GCLOUD_NETWORK_NAME"; then
     log::warn "Network $GCLOUD_NETWORK_NAME already exists! Skipping network creation."
     return 0
@@ -343,7 +367,7 @@ function gcloud::provision_gke_cluster {
 
   log::info "Provisioning GKE cluster"
   gcloud --project="$GCLOUD_PROJECT_NAME" clusters create "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
-  log::info "Done!"
+  log::info "Successfully created cluster $CLUSTER_NAME!"
 
   log::info "Patching kube-dns with stub domains"
   counter=0
@@ -391,11 +415,39 @@ function gcloud::deprovision_gke_cluster {
 
   log::info "Deprovisioning cluster $CLUSTER_NAME."
   gcloud --project="$GCLOUD_PROJECT_NAME" container clusters delete "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
-  log::info "Done!"
+  log::info "Successfully removed cluster $CLUSTER_NAME!"
 }
 
+# gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.
+# Required exported variables:
+# CLOUDSDK_CORE_PROJECT
+# CLOUDSDK_DNS_ZONE_NAME
+# CLOUDSDK_COMPUTE_REGION
+# GATEWAY_DNS_FULL_NAME
+# GATEWAY_IP_ADDRESS
+# APISERVER_DNS_FULL_NAME
+# APISERVER_IP_ADDRESS
 function gcloud::cleanup {
-  true
+  EXIT_STATUS=$?
+  # TODO (@Ressetkk): Not yet finished.
+  if [ -n "$CLEANUP_CLUSTER" ]; then
+    log::info "Removing cluster $CLUSTER_NAME"
+    gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
+  fi
+  if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
+    log::info "Removing DNS record for $GATEWAY_DNS_FULL_NAME"
+    gcloud::delete_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
+  fi
+  if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
+    log::info "Removing IP address $GATEWAY_IP_ADDRESS_NAME"
+    gcloud::delete_ip_address "$GATEWAY_IP_ADDRESS_NAME"
+  fi
+  if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
+    log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
+    gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+  fi
+
+  return $EXIT_STATUS
 }
 
 gcloud::verify_deps
