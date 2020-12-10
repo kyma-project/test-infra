@@ -144,7 +144,7 @@ function gcloud::create_dns_record {
   done
 
   echo "Cannot resolve ${dnsName} to expected IP_ADDRESS: ${ipAddress}."
-  log::warn "WARNING! I will continue anyway... Kyma installation may fail!"
+  log::warn "Continuing anyway... Kyma installation may fail!"
   #TODO: fix it
 }
 
@@ -170,9 +170,26 @@ function gcloud::delete_dns_record {
 
   log::info "Deleting DNS record $DNS_FULL_NAME"
   set +e
-  gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-  gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
-  gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+  for ((i=1; i<=attempts; i++)); do
+    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
+    gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction execute --zone="${CLOUDSDK_DNS_ZONE_NAME}"
+
+    if [[ $? -eq 0 ]]; then
+      break
+    fi
+
+    gcloud dns record-sets transaction abort --zone="${CLOUDSDK_DNS_ZONE_NAME}" --verbosity none
+
+    if [[ "${i}" -lt "${attempts}" ]]; then
+      echo "Unable to delete DNS record, Retrying after $retryTimeInSec. Attempts ${i} of ${attempts}."
+    else
+      echo "Unable to delete DNS record after ${attempts} attempts, giving up."
+      exit 1
+    fi
+    sleep ${retryTimeInSec}
+  done
+
   log::info "DNS Record deleted, but it can be visible for some time due to DNS caches"
   set -e
 }
@@ -258,6 +275,106 @@ function gcloud::create_network {
    --range=10.0.0.0/22
 
    log::info "successfully created network $GCLOUD_NETWORK_NAME"
+}
+
+# gcloud::provision_gke_cluster creates a GKE cluster
+# For switch parameters look up the code below.
+#
+# Required exported variables:
+# GCLOUD_COMPUTE_ZONE - zone in which the new cluster will be created
+# GCLOUD_PROJECT_NAME - name of GCP project
+#
+# Arguments:
+# $1 - cluster name
+function gcloud::provision_gke_cluster {
+  if [ -z "$1" ]; then
+    log::error "Cluster name not provided. Provide proper cluster name."
+    exit 1
+  fi
+  CLUSTER_NAME=$1
+
+  readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
+  readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
+  TTL_HOURS_PARAM="3"
+  CLUSTER_VERSION_PARAM="--cluster-version=1.16"
+  MACHINE_TYPE_PARAM="--machine-type=n1-standard-4"
+  NUM_NODES_PARAM="--num-nodes=3"
+  NETWORK_PARAM="--network=default"
+
+  local params
+
+  if [ "${TTL_HOURS}" ]; then TTL_HOURS_PARAM="${TTL_HOURS}"; fi
+  CLEANER_LABELS_PARAM="created-at=${CURRENT_TIMESTAMP_PARAM},created-at-readable=${CURRENT_TIMESTAMP_READABLE_PARAM},ttl=${TTL_HOURS_PARAM}"
+
+#  gcloud config set project "$GCLOUD_PROJECT_NAME"
+#  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
+  # Resolving parameters
+  if [ "${CLUSTER_VERSION}" ]; then params+=("--cluster-version=${CLUSTER_VERSION}"); else params+=("${CLUSTER_VERSION_PARAM}"); fi
+  if [ "${RELEASE_CHANNEL}" ]; then params+=("--release-channel=${RELEASE_CHANNEL}"); fi
+  if [ "${MACHINE_TYPE}" ]; then params+=("--machine-type=${MACHINE_TYPE}"); else params+=("${MACHINE_TYPE_PARAM}"); fi
+  if [ "${NUM_NODES}" ]; then params+=("--num-nodes=${NUM_NODES}"); else params+=("${NUM_NODES_PARAM}"); fi
+  if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then params+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else params+=("${NETWORK_PARAM}"); fi
+  if [ "${STACKDRIVER_KUBERNETES}" ];then params+=("--enable-stackdriver-kubernetes"); fi
+  if [ "${CLUSTER_USE_SSD}" ];then params+=("--disk-type=pd-ssd"); fi
+  # Must be added at the end to override --num-nodes parameter value set earlier.
+  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then params+=("--region=${CLOUDSDK_COMPUTE_REGION}" "--num-nodes=${NODES_PER_ZONE}"); fi
+  if [ "${GCLOUD_SECURITY_GROUP_DOMAIN}" ]; then params+=("--security-group=gke-security-groups@${GCLOUD_SECURITY_GROUP_DOMAIN}"); fi
+
+  APPENDED_LABELS=""
+  if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
+  params+=("--labels=job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
+
+  log::info "Provisioning GKE cluster"
+  gcloud --project="$GCLOUD_PROJECT_NAME" clusters create "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
+  log::info "Done!"
+
+  log::info "Patching kube-dns with stub domains"
+  counter=0
+  until [[ $(kubectl get cm kube-dns -n kube-system > /dev/null 2>&1; echo $?) == 0 ]]; do
+      if (( counter == 5 )); then
+          echo -e "kube-dns configmap not available after 5 tries, exiting"
+          exit 1
+      fi
+      echo -e "Waiting for kube-dns to be available. Try $(( counter + 1 )) of 5"
+      counter=$(( counter + 1 ))
+      sleep 15
+  done
+
+  kubectl -n kube-system patch cm kube-dns --type merge --patch \
+    "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/kube-dns-stub-domains-patch.yaml)"
+}
+
+# gcloud::deprovision_gke_cluster removes a GKE cluster
+# Required exported variables:
+# GCLOUD_COMPUTE_ZONE - zone in which the new cluster will be removed
+# GCLOUD_PROJECT_NAME - name of GCP project
+#
+# Arguments:
+# $1 - cluster name
+function gcloud::deprovision_gke_cluster {
+  if [ -z "$1" ]; then
+    log::error "Cluster name not provided. Provide proper cluster name."
+    exit 1
+  fi
+  CLUSTER_NAME=$1
+
+#  gcloud config set project "${GCLOUD_PROJECT_NAME}"
+#  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
+
+  local params
+  params+=("--quiet")
+  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
+    #Pass gke region name to delete command.
+    params+=("--region=${CLOUDSDK_COMPUTE_REGION}")
+  fi
+
+  if [ -z "${DISABLE_ASYNC_DEPROVISION+x}" ]; then
+      params+=("--async")
+  fi
+
+  log::info "Deprovisioning cluster $CLUSTER_NAME."
+  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters delete "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
+  log::info "Done!"
 }
 
 function gcloud::cleanup {
