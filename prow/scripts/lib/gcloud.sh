@@ -274,7 +274,24 @@ function gcloud::create_network {
    --network="${GCLOUD_NETWORK_NAME}" \
    --range=10.0.0.0/22
 
-   log::info "successfully created network $GCLOUD_NETWORK_NAME"
+   log::info "Successfully created network $GCLOUD_NETWORK_NAME"
+}
+
+# gcloud::delete_network deletes a GCP network for a cluster
+# Required exported variables:
+# GCLOUD_NETWORK_NAME - name for the new GCP network
+# GCLOUD_SUBNET_NAME - name for the subnet of the network
+# GCLOUD_PROJECT_NAME - name of GCP project
+function gcloud::delete_network {
+  log::info "Deleting network $GCLOUD_NETWORK_NAME"
+  gcloud compute networks subnets delete "${GCLOUD_SUBNET_NAME}" \
+    --quiet
+
+  gcloud compute networks delete "${GCLOUD_NETWORK_NAME}" \
+    --project="${GCLOUD_PROJECT_NAME}" \
+    --quiet
+
+  log::info "Successfully deleted network $GCLOUD_NETWORK_NAME"
 }
 
 # gcloud::provision_gke_cluster creates a GKE cluster
