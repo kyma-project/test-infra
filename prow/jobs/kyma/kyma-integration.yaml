@@ -75,10 +75,10 @@ presets:
       - name: AZURE_REGION
         value: westeurope
   - labels:
-        preset-gke-ver1_18_10: "true"
+        preset-gke-ver1_18_12: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.18.10-gke.2701
+        value: 1.18.12-gke.300
       - name: RELEASE_CHANNEL
         value: rapid
   - labels:
@@ -587,7 +587,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: post-master-kyma-gke-ver1_18_10-integration
+    - name: post-master-kyma-gke-ver1_18_12-integration
       cluster: trusted-workload
       <<: *gke_job_template
       annotations:
@@ -597,7 +597,7 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
-        preset-gke-ver1_18_10: "true"
+        preset-gke-ver1_18_12: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
