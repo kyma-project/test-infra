@@ -46,7 +46,7 @@ fi
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
     if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
+        log::error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
         exit 1
     fi
 fi
