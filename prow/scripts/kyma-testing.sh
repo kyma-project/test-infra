@@ -25,10 +25,11 @@ function printUsage() {
   Usage:
   -l <label expression> (optional, specify multiple times): Specify a label expression to limit execution testdefinitions by labels
   -n <cluster-test-suite-name> (optional): Specify the name of the cluster test suite used for executing the set of testdefinitions
+  -t <timeout> (optional): Specify the duration until timeout
   "
 }
 
-while getopts "l:n:" opt; do
+while getopts "l:n:t:" opt; do
     case $opt in
         l)
           KYMA_OPTIONS+=("-l")
@@ -36,6 +37,9 @@ while getopts "l:n:" opt; do
           ;;
         n)
           SUITE_NAME="$OPTARG"
+          ;;
+        t)
+          KYMA_TEST_TIMEOUT="$OPTARG"
           ;;
         *)
           printUsage

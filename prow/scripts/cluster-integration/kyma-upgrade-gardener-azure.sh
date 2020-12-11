@@ -75,7 +75,7 @@ export EXTERNAL_SOLUTION_TEST_NAMESPACE="integration-test"
 export EXTERNAL_SOLUTION_TEST_RELEASE_NAME="${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
 export EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL="kyma-project.io/external-solution-e2e-test"
 export TEST_CONTAINER_NAME="tests"
-export KYMA_UPDATE_TIMEOUT="40m"
+export KYMA_UPDATE_TIMEOUT="90m"
 export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -85,6 +85,11 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
+
+KYMA_LABEL_PREFIX="kyma-project.io"
+KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
+BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
+POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 EVENTHUB_NAMESPACE_NAME="kyma-grdnr-upgrade-${RANDOM_NAME_SUFFIX}"
@@ -104,20 +109,19 @@ cleanup() {
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
+        log::error "AN ERROR OCCURED! Take a look at preceding log entries."
     fi
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+
         # Export envvars for the script
         export GARDENER_CLUSTER_NAME=${CLUSTER_NAME}
         export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
         export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
 
-        shout "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
+        log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
         # Delete the Azure Event Hubs namespace which was created
         az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
     fi
@@ -126,8 +130,7 @@ cleanup() {
 
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
+    log::info "Job is finished ${MSG}"
     set -e
 
     exit "${EXIT_STATUS}"
@@ -136,8 +139,7 @@ cleanup() {
 runTestLogCollector(){
     if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
-            shout "Install test-log-collector"
-            date
+            log::info "Install test-log-collector"
             export PROW_JOB_NAME="kyma-upgrade-gardener-azure"
             ( 
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
@@ -147,7 +149,7 @@ runTestLogCollector(){
 }
 
 function provisionCluster() {
-    shout "Provision cluster: \"${CLUSTER_NAME}\""
+    log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
     if [ -z "$MACHINE_TYPE" ]; then
         export MACHINE_TYPE="Standard_D8_v3"
@@ -172,31 +174,36 @@ function getLastReleaseVersion() {
     echo "${version}"
 }
 
+function getLastReleaseCandidateVersion() {
+  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+    jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
+  
+  echo "${version}"
+}
+
 function installKyma() {
     LAST_RELEASE_VERSION=$(getLastReleaseVersion)
     mkdir -p /tmp/kyma-gardener-upgradeability
     if [ -z "$LAST_RELEASE_VERSION" ]; then
-        shout "Couldn't grab latest version from GitHub API, stopping."
+        log::error "Couldn't grab latest version from GitHub API, stopping."
         exit 1
     fi
 
-    shout "Installing Kyma"
-    date
+    log::info "Installing Kyma ${LAST_RELEASE_VERSION}"
 
-    shout "Downloading Kyma installer CR"
+    log::info "Downloading Kyma installer CR"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
         --output installer-cr-azure-eventhubs.yaml.tpl
 
-    echo "Downlading production profile"
+    log::info "Downlading production profile"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-production.yaml.tpl" \
         --output installer-config-production.yaml.tpl
 
-    shout "Downloading Azure EventHubs config"
+    log::info "Downloading Azure EventHubs config"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
         --output installer-config-azure-eventhubs.yaml.tpl
 
-    shout "Generate Azure Event Hubs overrides"
-    date
+    log::info "Generate Azure Event Hubs overrides"
 
     # create-azure-event-hubs-secret.sh creates an override secret file, eventhubs-secret-overrides.yaml for Azure EventHub in current working directory.
     # The override is later used in the Kyma installation to configure the kafka-knative channel.
@@ -205,9 +212,6 @@ function installKyma() {
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-azure-event-hubs-secret.sh
 
     prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
 
     (
     set -x
@@ -284,8 +288,7 @@ function installTestChartOrFail() {
   local domain
   domain=$(kubectl get gateways.networking.istio.io --namespace kyma-system kyma-gateway -o jsonpath='{.spec.servers[?(@.port.protocol=="HTTPS")].hosts[0]}' | sed s/\*\.//g)
 
-  shout "Create ${name} resources"
-  date
+  log::info "Create ${name} resources"
 
   helm install "${name}" \
       --namespace "${namespace}" \
@@ -302,63 +305,37 @@ function installTestChartOrFail() {
   fi
 }
 
-function waitForTestPodToFinish() {
-  local name=$1
-  local namespace=$2
-  local label=$3
-
-  set +o errexit
-  checkTestPodTerminated "${namespace}"
-  prepareTestResult=$?
-  set -o errexit
-
-  echo "Logs for prepare data operation to ${name}: "
-  # shellcheck disable=SC2046
-  kubectl logs -n "${namespace}" $(kubectl get pod -n "${name}" -l "${label}=${TEST_RESOURCE_LABEL_VALUE_PREPARE}" -o json | jq -r '.items | .[] | .metadata.name') -c "${TEST_CONTAINER_NAME}"
-  if [[ "${prepareTestResult}" != 0 ]]; then
-      echo "Exit status for prepare ${name}: ${prepareTestResult}"
-      exit "${prepareTestResult}"
-  fi
-}
-
 createTestResources() {
-    injectTestingAddons
-
     # install upgrade test
     installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
 
     # install external-solution test
     installTestChartOrFail "${EXTERNAL_SOLUTION_TEST_PATH}" "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}"
-
-    # wait for upgrade test to finish
-    waitForTestPodToFinish "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}" "${UPGRADE_TEST_RESOURCE_LABEL}"
-
-    # wait for external-solution test to finish
-    waitForTestPodToFinish "${EXTERNAL_SOLUTION_TEST_RELEASE_NAME}" "${EXTERNAL_SOLUTION_TEST_NAMESPACE}" "${EXTERNAL_SOLUTION_TEST_RESOURCE_LABEL}"
 }
 
 function upgradeKyma() {
-    shout "Delete the kyma-installation CR and kyma-installer deployment"
-    # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
-    # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
-    kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
-    kubectl delete Installation -n default kyma-installation
-
-    # Remove the current installer to prevent it performing any action.
-    kubectl delete deployment -n kyma-installer kyma-installer
-
     TARGET_VERSION=$(cd "$KYMA_SOURCES_DIR" && git rev-parse --short HEAD)
 
-    curl -L --silent --fail --show-error "https://storage.googleapis.com/kyma-development-artifacts/master-${TARGET_VERSION:0:8}/kyma-installer-cluster.yaml" \
-        --output /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
+    log::info "Upgrading Kyma ${TARGET_VERSION:0:8}"
 
-    shout "Use release artifacts from version ${TARGET_VERSION}"
-    date
-    kubectl apply -f /tmp/kyma-gardener-upgradeability/upgraded-release-installer.yaml
+    log::info "Downloading Kyma installer CR"
+    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
+        --output installer-cr-azure-eventhubs.yaml.tpl
 
-    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
-    date
-    "${KYMA_SOURCES_DIR}"/installation/scripts/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
+    log::info "Downloading production profile"
+        curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-production.yaml.tpl" \
+        --output installer-config-production.yaml.tpl
+
+    log::info "Triggering update with timeout ${KYMA_UPDATE_TIMEOUT}"
+    (
+        set -x
+        kyma upgrade \
+            --ci \
+            --source "${TARGET_VERSION:0:8}" \
+            -c installer-cr-azure-eventhubs.yaml.tpl \
+            -o installer-config-production.yaml.tpl \
+            --timeout ${KYMA_UPDATE_TIMEOUT}
+    )
 }
 
 remove_addons_if_necessary() {
@@ -376,10 +353,31 @@ remove_addons_if_necessary() {
   fi
 }
 
+# testKyma executes the kyma-testing.sh. labelqueries can be passed as arguments and will be passed to the kyma cli
 function testKyma() {
-    shout "Test Kyma"
-    date
-    "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+  testing::inject_addons_if_necessary
+
+  local labelquery=${1}
+  local suitename=${2}
+  local test_args=()
+
+  if [[ -n ${labelquery} ]]; then
+    test_args+=("-l")
+    test_args+=("${labelquery}")
+  fi
+
+  if [[ -n ${suitename} ]]; then
+    test_args+=("-n")
+    test_args+=("${suitename}")
+  fi
+
+  test_args+=("-t")
+  test_args+=("2h")
+
+  log::banner "Test Kyma " "${test_args[@]}"
+  "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
+
+  testing::remove_addons_if_necessary
 }
 
 trap cleanup EXIT INT
@@ -400,24 +398,18 @@ install::kyma_cli
 provisionCluster
 
 installKyma
-if [[ "$?" -ne 0 ]]; then
-    return 1
-fi
 
 createTestResources
 
-upgradeKyma
-if [[ "$?" -ne 0 ]]; then
-    return 1
-fi
+testKyma "${BEFORE_UPGRADE_LABEL_QUERY}" testsuite-all-before-upgrade
 
-remove_addons_if_necessary
+upgradeKyma
 
 ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
-testKyma
+testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
 
-shout "Job finished with success"
+log::success "Job finished with success"
 
-#!!! Must be at the end of the script !!!
+#!!! Must be at the end of the script because cleanup evaluates it !!!
 ERROR_LOGGING_GUARD="false"
