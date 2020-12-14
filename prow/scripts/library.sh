@@ -205,7 +205,7 @@ EOF
 function runTestLogCollector(){
     if [[ -n "${ENABLE_TEST_LOG_COLLECTOR}" && "${ENABLE_TEST_LOG_COLLECTOR}" == true ]] ; then
         if [[ "$BUILD_TYPE" == "master" ]]; then
-            log::info "Install test-log-collector"
+            shout "Install test-log-collector"
             export PROW_JOB_NAME="${TEST_LOG_COLLECTOR_PROW_JOB_NAME:-some_prow_job}"
             (
                 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster

@@ -59,13 +59,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        echo "ERROR: LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
-
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
@@ -392,7 +385,10 @@ if [[ "$FAST_INTEGRATION_TESTS" == "true" ]]; then
 elif [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
     test_local_kyma
 else
-    ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}"]]; then
+      ENABLE_TEST_LOG_COLLECTOR=true
+    fi
     test_kyma
 fi
 

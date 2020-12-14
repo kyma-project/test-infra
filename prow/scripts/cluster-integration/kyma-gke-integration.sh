@@ -45,14 +45,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
     exit 1
 fi
 
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log::error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
-
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -256,7 +248,10 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}"]]; then
+  ENABLE_TEST_LOG_COLLECTOR=true
+fi
 
 log::info "Test Kyma"
 # shellcheck disable=SC2031
