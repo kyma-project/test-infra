@@ -456,7 +456,7 @@ installKyma
 createTestResources
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}"]]; then
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
   ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
