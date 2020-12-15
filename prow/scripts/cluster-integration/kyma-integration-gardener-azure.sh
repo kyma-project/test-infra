@@ -324,6 +324,9 @@ test_kyma(){
 
 
 hibernate_kyma(){
+    local SAVED_KUBECONFIG=$KUBECONFIG
+    export KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
+
     shout "Checking if cluster can be hibernated"
     HIBERNATION_POSSIBLE=$(kubectl get shoots "${CLUSTER_NAME}" -o jsonpath='{.status.constraints[?(@.type=="HibernationPossible")].status}')
 
@@ -334,9 +337,6 @@ hibernate_kyma(){
     fi
 
     echo "Cluster can be hibernated"
-
-    local SAVED_KUBECONFIG=$KUBECONFIG
-    export KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
 
     shout "Hibernating kyma cluster"
     date
