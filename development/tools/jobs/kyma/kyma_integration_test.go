@@ -28,7 +28,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			testContainer := actualPresubmit.Spec.Containers[0]
 			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
-			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
+			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh", testContainer.Command[0])
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
 	}
