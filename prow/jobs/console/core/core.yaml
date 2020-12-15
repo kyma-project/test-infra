@@ -21,7 +21,7 @@ job_template: &job_template
     - ^master$
     - ^main$
     - ^release-(1\.18|1\.17|1\.16)-core$
-  run_if_changed: "^core/|^package.json"
+  run_if_changed: "^core/|^components/|^shared/|^package.json"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
