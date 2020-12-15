@@ -374,6 +374,13 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/tenant-fetcher
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         values:
           <<: *cluster_default
@@ -450,6 +457,13 @@ templates:
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
+      - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/tenant-fetcher
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default
