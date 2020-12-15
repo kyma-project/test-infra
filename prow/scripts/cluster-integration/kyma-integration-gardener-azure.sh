@@ -375,7 +375,7 @@ wake_up_kyma(){
 
     local STATUS
     SECONDS=0
-    local END_TIME=$((SECONDS+1000))
+    local END_TIME=$((SECONDS+1200))
     while [ ${SECONDS} -lt ${END_TIME} ];do
         STATUS=$(kubectl get shoot "${CLUSTER_NAME}" -o jsonpath='{.status.hibernated}')
         if [ "$STATUS" == "false" ]; then
