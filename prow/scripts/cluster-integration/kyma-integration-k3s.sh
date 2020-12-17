@@ -32,5 +32,3 @@ run::tests() {
 install::prereq
 install::kyma
 run::tests
-
-sleep 1200
