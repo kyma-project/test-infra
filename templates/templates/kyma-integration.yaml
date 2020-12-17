@@ -318,6 +318,7 @@ presubmits: # runs on PRs
           base_ref: master
     
     - name: pre-master-kyma-integration-k3s
+      optional: true
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
       - ^master$
