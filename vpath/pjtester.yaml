@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "pre-master-kyma-intefration-k3s"
+  - pjName: "pre-master-kyma-integration-k3s"
 prConfigs:
   kyma-project:
     kyma:
