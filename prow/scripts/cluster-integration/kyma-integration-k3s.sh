@@ -42,7 +42,6 @@ run::sleep() {
     node -e 'setTimeout(() => {}, 1000*60*60);'
 }
 
-host::update_etc_hosts
 install::prereq
 install::kyma
 #run::tests
