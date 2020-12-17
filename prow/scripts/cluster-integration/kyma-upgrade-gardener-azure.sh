@@ -378,9 +378,7 @@ function testKyma() {
   "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
 
   # remove cluster-users test as it takes more than 1h to run
-  if [[ "${labelquery}" == "${POST_UPGRADE_LABEL_QUERY}" ]]; then
-    kubectl delete -n kyma-system testdefinition/cluster-users --ignore-not-found
-  fi
+  kubectl delete -n kyma-system testdefinition/cluster-users --ignore-not-found
 
   testing::remove_addons_if_necessary
 }
