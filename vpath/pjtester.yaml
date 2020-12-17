@@ -1,3 +1,6 @@
 pjNames:
   - pjName: "pre-master-kyma-intefration-k3s"
-
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10232
