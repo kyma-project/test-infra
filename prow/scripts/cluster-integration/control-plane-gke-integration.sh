@@ -17,13 +17,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log::error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KCP_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -403,7 +396,10 @@ shout "Install Control Plane"
 date
 installControlPlane
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+  ENABLE_TEST_LOG_COLLECTOR=true
+fi
 
 shout "Test Kyma, Compass and Control Plane"
 date
