@@ -18,7 +18,8 @@ install::kyma() {
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
     ./install-istio.sh -f config-istio.yaml
-    ./install-kyma.sh
+    REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000,containers.manager.envs.functionBuildExecutorImage.value=eu.gcr.io/kyma-project/external/aerfio/kaniko-executor:v1.3.0" \
+      ./install-kyma.sh
     popd
 }
 
