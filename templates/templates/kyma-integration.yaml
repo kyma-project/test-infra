@@ -324,7 +324,7 @@ presubmits: # runs on PRs
       - ^master$
       <<: *vm_job_template_k3s
       # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      run_if_changed: "^((installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-pr: "true"
         <<: *vm_job_labels_template
