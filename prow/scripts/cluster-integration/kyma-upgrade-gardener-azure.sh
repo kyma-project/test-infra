@@ -377,10 +377,10 @@ function testKyma() {
   log::banner "Test Kyma " "${test_args[@]}"
   "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
 
+  testing::remove_addons_if_necessary
+  
   # remove cluster-users test as it takes more than 1h to run
   kubectl delete -n kyma-system testdefinition/cluster-users --ignore-not-found
-
-  testing::remove_addons_if_necessary
 }
 
 trap cleanup EXIT INT
