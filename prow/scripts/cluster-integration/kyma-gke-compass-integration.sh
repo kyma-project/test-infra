@@ -23,13 +23,6 @@ if [ "${discoverUnsetVar}" = true ] ; then
   exit 1
 fi
 
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log::error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -55,6 +48,13 @@ export REPO_NAME
 
 readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
+
+if [[ "${BUILD_TYPE}" == "master" ]]; then
+    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
+        log::error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
+        exit 1
+    fi
+fi
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
   # In case of PR, operate on PR number
