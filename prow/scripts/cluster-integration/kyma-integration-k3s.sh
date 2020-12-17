@@ -29,6 +29,11 @@ run::tests() {
     popd
 }
 
+run::sleep() {
+    node -e 'setTimeout(() => {}, 1000*60*60);'
+}
+
 install::prereq
 install::kyma
-run::tests
+#run::tests
+run::sleep
