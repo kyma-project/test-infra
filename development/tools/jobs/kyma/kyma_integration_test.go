@@ -82,6 +82,23 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
+		"Should contain the kyma-integration K3s job": {
+			givenJobName: "pre-master-kyma-integration-k3s",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
+			},
+
+			expRunIfChangedRegex: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
+		},
 		"Should contain the gke-integration job": {
 			givenJobName: "pre-master-kyma-gke-integration",
 
