@@ -1,6 +1,0 @@
-pjNames:
-- pjName: "pre-master-protecode-integration"
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 9400
