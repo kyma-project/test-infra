@@ -25,7 +25,7 @@ install_kyma() {
 
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    node -e 'setTimeout(()=>{},1000*60*10)'
+    
     npm install
     npm test
     
