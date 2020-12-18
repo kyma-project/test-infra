@@ -18,6 +18,7 @@ KUBECTL_CLI_VERSION=v1.16.3
 CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.2.1"
 DOCKER_VERSION=18.06.1~ce~3-0~debian
+NODEJS_VERSION="14.x"
 
 # install docker
 sudo apt-get update
@@ -58,3 +59,9 @@ curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKU
 wget https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
 sudo tar zxvf crictl-${CRICTL_VERSION}-linux-amd64.tar.gz -C /usr/local/bin
 rm -f crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
+
+# install jq and nodejs
+curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} | sudo bash -
+sudo apt-get -y install \
+     jq \
+     nodejs
