@@ -6,10 +6,11 @@ set -o pipefail
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
 
-install_prereq() {
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-    curl -sL https://deb.nodesource.com/setup_14.x | bash -
-    apt-get -y install jq nodejs
+prereq_test() {
+    command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
+    command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
+    command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
+    command -v helm >/dev/null 2>&1 || { echo >&2 "helm not found"; exit 1; }
 }
 
 install_kyma() {
@@ -31,13 +32,13 @@ install_kyma() {
 
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-    
+
     npm install
     npm test
     
     popd
 }
 
-install_prereq
+prereq_test
 install_kyma
 run_tests
