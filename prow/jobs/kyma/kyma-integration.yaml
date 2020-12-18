@@ -104,7 +104,7 @@ presets:
         preset-gke-ver1_17_13: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.17.13-gke.2001
+        value: 1.17.13-gke.2600
       - name: RELEASE_CHANNEL
         value: regular
   - labels:
