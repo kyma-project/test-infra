@@ -47,13 +47,21 @@ do
     key="$1"
 
     case ${key} in
-        --image)
+        --image|-i)
             IMAGE="$2"
             testCustomImage "${IMAGE}"
             shift 2
             ;;
-        --kyma-version)
+        --kyma-version|-kv)
             SOURCE="--source $2"
+            shift 2
+            ;;
+        --kubernetes-runtime|-kr)
+            KUBERNETES_RUNTIME="$2"
+            shift 2
+            ;;
+        --test-suite|-ts)
+            TEST_SUITE="$2"
             shift 2
             ;;
         --*)
@@ -96,6 +104,12 @@ for ZONE in ${EU_ZONES}; do
     shout "Could not create machine in zone ${ZONE}"
 done || exit 1
 
+# sanity check: verify value of KUBERNETES_RUNTIME is 'minikube' or 'k3s'
+if [ "$KUBERNETES_RUNTIME" != 'minikube' ]; then
+    KUBERNETES_RUNTIME='k3s'
+fi
+shout "Local Kubernetes runtime will be: $KUBERNETES_RUNTIME"
+
 trap cleanup exit INT
 
 shout "Building Kyma CLI"
@@ -113,73 +127,22 @@ for i in $(seq 1 5); do
 done;
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
-shout "Provisioning Minikube"
+# Provision Kubernetes runtime
+shout "Provisioning ${KUBERNETES_RUNTIME}"
 date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
+if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
+else
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --non-interactive"
+fi
 
-shout "Installing Kyma"
-date
-gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
+# Run test suite
+source "${SCRIPT_DIR}/lib/clitests.sh"
+clitests::testSuiteExists "$TEST_SUITE"
+if [ $? -eq 0 ]; then
+    clitests::execute "$TEST_SUITE" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
+else
+    shoutFail "Test suite '${TEST_SUITE}' not found"
+fi
 
-shout "Checking the versions"
-date
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma version" && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
 
-shout "Create local resources for a sample Function"
-date
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma init function" && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
-shout "Apply local resources for the Function to the Kyma cluster"
-date
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma apply function" && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
-sleep 30
-shout "Check if the Function is running"
-date
-attempts=3
-for ((i=1; i<=attempts; i++)); do
-    set +e
-    result=$(gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kubectl get pods -lserverless.kyma-project.io/function-name=first-function,serverless.kyma-project.io/resource=deployment -o jsonpath='{.items[0].status.phase}'")
-    set -e
-    if [[ "$result" == *"Running"* ]]; then
-        echo "The Function is in Running state"
-        break
-    elif [[ "${i}" == "${attempts}" ]]; then
-        echo "ERROR: The Function is in ${result} state"
-        exit 1
-    fi
-    echo "Sleep for 15 seconds"
-    sleep 15
-done
-shout "Running a simple test on Kyma"
-date
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test run dex-connection" && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
-echo "Check if the test succeeds"
-date
-attempts=3
-for ((i=1; i<=attempts; i++)); do
-    result=$(gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo kyma test status -o json" | jq '.status.results[0].status')
-    if [[ "$result" == *"Succeeded"* ]]; then
-        echo "The test succeeded"
-        break
-    elif [[ "${i}" == "${attempts}" ]]; then
-        echo "ERROR: test result is ${result}"
-        exit 1
-    fi
-    echo "Sleep for 15 seconds"
-    sleep 15
-done
