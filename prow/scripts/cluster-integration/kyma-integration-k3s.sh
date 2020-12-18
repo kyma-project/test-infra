@@ -6,12 +6,6 @@ set -o pipefail
 export KYMA_SOURCES_DIR="./kyma"
 export LOCAL_KYMA_DIR="./local-kyma"
 
-install_prereq() {
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-    curl -sL https://deb.nodesource.com/setup_14.x | bash -
-    apt-get -y install jq nodejs
-}
-
 install_kyma() {
     mv "${KYMA_SOURCES_DIR}/resources" "${LOCAL_KYMA_DIR}/"
 
@@ -38,6 +32,5 @@ run_tests() {
     popd
 }
 
-install_prereq
 install_kyma
 run_tests
