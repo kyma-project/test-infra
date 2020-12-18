@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+
+TMP_DIR=$(mktemp -d)
+
+CLOUD_FUNCTION_URL="https://europe-west3-kyma-project.cloudfunctions.net/get-scan-result"
+RESPONSE_FILE=${TMP_DIR}/response.json
+
+getScanResult(){
+    local tag=$1
+    curl -s "${CLOUD_FUNCTION_URL}?tag=${tag}" -H "Content-Type:application/json" > "${RESPONSE_FILE}"
+
+    SUCCESS=$(jq '.success' "${RESPONSE_FILE}")
+
+    if [[ "$SUCCESS" == "true" ]]; then
+        echo "success"
+    fi
+
+    echo "failure"
+}
+
+if [[ "${BUILD_TYPE}" == "pr" ]]; then
+  log::info "Execute Job Guard"
+  "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+fi
+
+PR_NAME="PR-${PULL_NUMBER}"
+
+echo "Protecode scan result for ${PR_NAME}:"
+
+counter=1
+while [ $counter -le 10 ]
+do
+    log::banner "Attempt ${counter}"
+    ((counter++))
+
+    RESULT=$(getScanResult "${PR_NAME}")
+    jq '.' "${RESPONSE_FILE}"
+
+    if [[ "${RESULT}" == "success" ]]; then
+        log::success "All images are green!"
+        exit 0
+    else
+        log::warn "Some images contain security vulnerabilities"
+        log::warn "For more details please check json output"
+    fi
+
+    sleep 10
+done
+
+log::error "Timeout reached - job failed"
+exit 1
