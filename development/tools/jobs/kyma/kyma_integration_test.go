@@ -211,6 +211,13 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
 			},
 		},
+		"Should contain the kyma-integration-k3s job": {
+			givenJobName: "post-master-kyma-integration-k3s",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
+			},
+		},
 		"Should contain the gke-integration job": {
 			givenJobName: "post-master-kyma-gke-integration",
 
