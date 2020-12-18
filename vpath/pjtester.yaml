@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "post-master-kyma-gke-integration-k3s"
+  - pjName: "post-master-kyma-integration-k3s"
 prConfigs:
   kyma-project:
     kyma:
