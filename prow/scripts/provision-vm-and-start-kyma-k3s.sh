@@ -99,6 +99,10 @@ trap cleanup exit INT
 
 log::info "Copying Kyma to the instance"
 
+du -s -h /home/prow/go/src/github.com/kyma-project/kyma
+rm -rf "/home/prow/go/src/github.com/kyma-project/kyma/.git"
+du -s -h /home/prow/go/src/github.com/kyma-project/kyma
+
 for i in $(seq 1 5); do
   [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
   gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
@@ -107,6 +111,7 @@ done;
 
 log::info "Copying Kyma-Local to the instance"
 
+rm -rf "/home/prow/go/src/github.com/kyma-incubator/local-kyma/.git"
 for i in $(seq 1 5); do
   [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
   gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-incubator/local-kyma "kyma-integration-test-${RANDOM_ID}":~/local-kyma && break;
