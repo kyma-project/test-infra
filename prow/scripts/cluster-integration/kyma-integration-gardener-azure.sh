@@ -443,19 +443,6 @@ wait_for_pods_in_namespaces(){
     fi
 }
 
-test_local_kyma(){
-    shout "Running Kyma tests (from local-kyma repo)"
-    date
-
-    pushd /home/prow/go/src/github.com/kyma-incubator/local-kyma
-    shout "Executing app-connector-example"
-    ./app-connector-example.sh
-    popd
-
-    date
-    shout "Tests completed"
-}
-
 test_fast_integration_kyma() {
     shout "Running Kyma Fast Integration tests"
     date
@@ -514,10 +501,8 @@ if [[ "$HIBERNATION_ENABLED" == "true" ]]; then
     wake_up_kyma
 fi
 
-if [[ "$FAST_INTEGRATION_TESTS" == "true" ]]; then
+if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
     test_fast_integration_kyma
-elif [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-    test_local_kyma
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
