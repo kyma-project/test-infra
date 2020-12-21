@@ -65,7 +65,7 @@ cleanup() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    runTestLogCollector
+    testing::runTestLogCollector "kyma-integration-gardener-gcp"
 
     if [[ -n "${SUITE_NAME}" ]]; then
         testSummary
@@ -122,19 +122,6 @@ testSummary() {
 
     echo "ClusterTestSuite details"
     kubectl get cts "${SUITE_NAME}" -oyaml
-}
-
-runTestLogCollector(){
-    if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
-        if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
-            shout "Install test-log-collector"
-            date
-            export PROW_JOB_NAME="kyma-integration-gardener-gcp"
-            ( 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-            )    
-        fi    
-    fi
 }
 
 trap cleanup EXIT INT

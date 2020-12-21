@@ -229,3 +229,15 @@ function testing::remove_addons_if_necessary() {
       log::info "- Skipping removing ClusterAddonsConfiguration"
   fi
 }
+
+testing::runTestLogCollector(){
+    if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] && [[ -n "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}" ]]; then
+        if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
+            log::info "Install test-log-collector"
+            export PROW_JOB_NAME=$1
+            (
+                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+            )
+        fi
+    fi
+}

@@ -77,18 +77,6 @@ source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 
-runTestLogCollector() {
-  if [ "${enableTestLogCollector}" = true ]; then
-    if [[ "$BUILD_TYPE" == "master" ]]; then
-      shout "Install test-log-collector"
-      export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
-      (
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
-      )
-    fi
-  fi
-}
-
 trap gkeCleanup EXIT INT
 
 getSourceVersion() {

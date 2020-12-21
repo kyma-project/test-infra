@@ -94,7 +94,7 @@ cleanup() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    runTestLogCollector
+    testing::runTestLogCollector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
         testSummary
@@ -126,18 +126,6 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
-}
-
-runTestLogCollector(){
-    if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
-        if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
-            log::info "Install test-log-collector"
-            export PROW_JOB_NAME="kyma-upgrade-gardener-azure"
-            ( 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-            )    
-        fi    
-    fi
 }
 
 function provisionCluster() {
