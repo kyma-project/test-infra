@@ -278,8 +278,6 @@ presubmits:
                 value: "1"
               - name: EXECUTION_PROFILE
                 value: "evaluation"
-              - name: FAST_INTEGRATION_TESTS
-                value: "true"
             resources:
               requests:
                 memory: 1Gi
