@@ -59,12 +59,12 @@ clitests::execute() {
     local testSuite=$1
     local gcpZone=$2
     local gcpHost=$3
+    # optional:
     local cliVersion=$4
 
     clitests::assertVarNotEmpty testSuite
     clitests::assertVarNotEmpty gcpZone
     clitests::assertVarNotEmpty gcpHost
-    clitests::assertVarNotEmpty cliVersion
 
     shout "Executing test suite '$testSuite'"
     export ZONE=$gcpZone
