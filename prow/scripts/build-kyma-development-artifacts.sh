@@ -14,18 +14,15 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/common.sh"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/log.sh"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/lib/utils.sh"
 
-discoverUnsetVar=false
+requiredVars=(
+    DOCKER_PUSH_REPOSITORY
+    KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
+)
 
-for var in DOCKER_PUSH_REPOSITORY KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
-    if [ -z "${!var}" ] ; then
-        log::error "$var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::checkRequiredVars ${requiredVars[@]}
 
 function export_variables() {
     COMMIT_ID="${PULL_BASE_SHA::8}"

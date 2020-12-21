@@ -11,18 +11,19 @@
 
 set -o errexit
 
-discoverUnsetVar=false
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION IP_ADDRESS_NAME; do
-	if [ -z "${!var}" ] ; then
-		echo "ERROR: $var is not set"
-		discoverUnsetVar=true
-	fi
-done
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
-if [ "${discoverUnsetVar}" = true ] ; then
-	exit 1
-fi
+requiredVars=(
+   CLOUDSDK_CORE_PROJECT
+   CLOUDSDK_COMPUTE_REGION
+   IP_ADDRESS_NAME
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 # Export variable used in subshell.
 export IP_ADDRESS_NAME

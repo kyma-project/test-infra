@@ -21,6 +21,8 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
+# shellcheck source=prow/scripts/lib/azure.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 #
 #Global Variables
@@ -36,16 +38,7 @@ VARIABLES=(
   EVENTHUB_SECRET_OVERRIDE_FILE
 )
 
-for var in "${VARIABLES[@]}"; do
-  if [ -z "${!var}" ] ; then
-    log::error "$var is not set"
-    discoverUnsetVar=true
-  fi
-done
-
-if [ "${discoverUnsetVar}" = true ] ; then
-  exit 1
-fi
+utils::checkRequiredVars ${VARIABLES[@]}
 
 EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS=2 #Must be greater than zero and less than maximum value!
 EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS=4 #Must be greater than minimum value and less than 20!

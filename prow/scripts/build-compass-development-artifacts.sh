@@ -8,24 +8,21 @@
 
 set -e
 
-discoverUnsetVar=false
-
-for var in DOCKER_PUSH_REPOSITORY KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
-
-readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
-readonly CURRENT_TIMESTAMP=$(date +%s)
-
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/lib/utils.sh"
+
+requiredVars=(
+    DOCKER_PUSH_REPOSITORY
+    KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
+
+readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
+readonly CURRENT_TIMESTAMP=$(date +%s)
 
 function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)

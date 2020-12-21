@@ -26,38 +26,7 @@
 
 set -e
 
-discoverUnsetVar=false
 ENABLE_TEST_LOG_COLLECTOR=false
-
-VARIABLES=(
-    JOB_TYPE
-    KYMA_PROJECT_DIR
-    DOCKER_PUSH_REPOSITORY
-    GARDENER_REGION
-    GARDENER_ZONES
-    GARDENER_KYMA_PROW_KUBECONFIG
-    GARDENER_KYMA_PROW_PROJECT_NAME
-    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    RS_GROUP
-    REGION
-    AZURE_SUBSCRIPTION_ID
-    AZURE_CREDENTIALS_FILE
-    CLOUDSDK_CORE_PROJECT
-)
-
-if [[ "$JOB_TYPE" == "presubmit" ]]; then
-    VARIABLES+=( DOCKER_PUSH_DIRECTORY )
-fi
-
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
 
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
@@ -80,10 +49,34 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 set -o
+
+requiredVars=(
+    JOB_TYPE
+    KYMA_PROJECT_DIR
+    DOCKER_PUSH_REPOSITORY
+    GARDENER_REGION
+    GARDENER_ZONES
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    RS_GROUP
+    REGION
+    AZURE_SUBSCRIPTION_ID
+    AZURE_CREDENTIALS_FILE
+    CLOUDSDK_CORE_PROJECT
+)
+
+if [[ "$JOB_TYPE" == "presubmit" ]]; then
+    requiredVars+=( DOCKER_PUSH_DIRECTORY )
+fi
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
 init

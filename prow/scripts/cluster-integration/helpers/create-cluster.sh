@@ -10,29 +10,27 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function createCluster() {
-	discoverUnsetVar=false
+	requiredVars=(
+		CLUSTER_NAME
+		STANDARIZED_NAME
+		TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
+	)
 
-	for var in CLUSTER_NAME STANDARIZED_NAME TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS; do
-		if [ -z "${!var}" ] ; then
-			echo "ERROR: $var is not set"
-			discoverUnsetVar=true
-		fi
-	done
+	utils::checkRequiredVars ${requiredVars[@]}
 
-	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-		for var in GCLOUD_NETWORK_NAME GCLOUD_SUBNET_NAME DNS_SUBDOMAIN DNS_DOMAIN; do
-			if [ -z "${!var}" ] ; then
-				echo "ERROR: $var is not set"
-				discoverUnsetVar=true
-			fi
-		done
+	if [[ -z "${PERFORMACE_CLUSTER_SETUP}" ]]; then
+		requiredVars+=(
+			GCLOUD_NETWORK_NAME
+			GCLOUD_SUBNET_NAME
+			DNS_SUBDOMAIN DNS_DOMAIN
+		)
 	fi
 
-	if [ "${discoverUnsetVar}" = true ] ; then
-		exit 1
-	fi
+	utils::checkRequiredVars ${requiredVars[@]}
 
 	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
 

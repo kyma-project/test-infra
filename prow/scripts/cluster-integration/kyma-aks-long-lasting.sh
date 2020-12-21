@@ -3,7 +3,17 @@
 set -o errexit   # Exit immediately if a command exits with a non-zero status.
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-VARIABLES=(
+# INIT ENVIRONMENT VARIABLES
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
 	RS_GROUP
 	REGION
 	AZURE_SUBSCRIPTION_ID
@@ -23,24 +33,7 @@ VARIABLES=(
 	DOCKER_PUSH_DIRECTORY
 )
 
-discoverUnsetVar=false
-
-for var in "${VARIABLES[@]}"; do
-	if [ -z "${!var}" ] ; then
-		echo "ERROR: $var is not set"
-		discoverUnsetVar=true
-	fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-	exit 1
-fi
-
-# INIT ENVIRONMENT VARIABLES
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+utils::checkRequiredVars ${requiredVars[@]}
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"

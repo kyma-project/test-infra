@@ -13,32 +13,30 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 DNS_NAME="a.build.kyma-project.io."
 
 function cleanup() {
 	
 	shout "Running cleanup-cluster process"
-	discoverUnsetVar=false
 
-	for var in CLUSTER_NAME TEST_INFRA_SOURCES_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME; do
-		if [ -z "${!var}" ] ; then
-			echo "ERROR: $var is not set"
-			discoverUnsetVar=true
-		fi
-	done
+	requiredVars=(
+		CLUSTER_NAME
+		TEST_INFRA_SOURCES_DIR
+		TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
+		CLOUDSDK_COMPUTE_REGION
+		CLOUDSDK_DNS_ZONE_NAME
+	)
 
-	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-		for var in GCLOUD_NETWORK_NAME GCLOUD_SUBNET_NAME; do
-			if [ -z "${!var}" ] ; then
-				echo "ERROR: $var is not set"
-				discoverUnsetVar=true
-			fi
-		done
+	if [[ -z "${PERFORMACE_CLUSTER_SETUP}" ]]; then
+		requiredVars+=(
+			GCLOUD_NETWORK_NAME
+			GCLOUD_SUBNET_NAME
+		)
 	fi
 
-	if [ "${discoverUnsetVar}" = true ] ; then
-		exit 1
-	fi
+	utils::checkRequiredVars ${requiredVars[@]}
 
 	#Exporting variables used in subshells.
 	export CLOUDSDK_DNS_ZONE_NAME

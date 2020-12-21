@@ -9,17 +9,19 @@
 
 set -o errexit
 
-discoverUnsetVar=false
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-for var in GCLOUD_NETWORK_NAME GCLOUD_SUBNET_NAME GCLOUD_PROJECT_NAME; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+    GCLOUD_NETWORK_NAME
+    GCLOUD_SUBNET_NAME
+    GCLOUD_PROJECT_NAME
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 gcloud compute networks subnets delete "${GCLOUD_SUBNET_NAME}" \
  --quiet

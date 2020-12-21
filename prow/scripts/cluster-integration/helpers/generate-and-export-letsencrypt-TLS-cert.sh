@@ -11,18 +11,15 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
-discoverUnsetVar=false
+requiredVars=(
+   DOMAIN
+   GOOGLE_APPLICATION_CREDENTIALS
+)
 
-for var in DOMAIN GOOGLE_APPLICATION_CREDENTIALS; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::checkRequiredVars ${requiredVars[@]}
 
 shout "Generate lets encrypt certificate"
 date

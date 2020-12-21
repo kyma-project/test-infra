@@ -19,32 +19,7 @@
 
 set -e
 
-discoverUnsetVar=false
 ENABLE_TEST_LOG_COLLECTOR=false
-
-VARIABLES=(
-    KYMA_PROJECT_DIR
-    GARDENER_REGION
-    GARDENER_ZONES
-    GARDENER_KYMA_PROW_KUBECONFIG
-    GARDENER_KYMA_PROW_PROJECT_NAME
-    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    REGION
-    AZURE_SUBSCRIPTION_ID
-    AZURE_CREDENTIALS_FILE
-    BOT_GITHUB_TOKEN
-    RS_GROUP
-)
-
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
 
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
@@ -74,9 +49,27 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
+
+requiredVars=(
+    KYMA_PROJECT_DIR
+    GARDENER_REGION
+    GARDENER_ZONES
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    REGION
+    AZURE_SUBSCRIPTION_ID
+    AZURE_CREDENTIALS_FILE
+    BOT_GITHUB_TOKEN
+    RS_GROUP
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"

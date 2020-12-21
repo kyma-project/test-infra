@@ -6,18 +6,18 @@ set -o errexit
 source "prow/scripts/lib/azure.sh"
 #shellcheck source=prow/scripts/lib/log.sh
 source "prow/scripts/lib/log.sh"
+# shellcheck disable=SC1090
+source "prow/scripts/lib/utils.sh"
 
 log::info "Validating environment"
-discoverUnsetVar=false
-for var in AZURE_RS_GROUP AZURE_SUBSCRIPTION_ID AZURE_CREDENTIALS_FILE; do
-    if [ -z "${!var}" ] ; then
-        log::error "$var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+
+requiredVars=(
+    AZURE_RS_GROUP
+    AZURE_SUBSCRIPTION_ID
+    AZURE_CREDENTIALS_FILE
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 az::login "$AZURE_CREDENTIALS_FILE"
 az::set_subscription "$AZURE_SUBSCRIPTION_ID"

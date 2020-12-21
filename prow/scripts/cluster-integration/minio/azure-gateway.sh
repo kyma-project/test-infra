@@ -3,19 +3,21 @@
 # TEST_INFRA_SOURCES_DIR is exported in parent script
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 validateAzureGatewayEnvironment() {
     shout "Validating Azure Blob Gateway environment"; date
 
-    for var in AZURE_RS_GROUP AZURE_REGION AZURE_SUBSCRIPTION_ID AZURE_CREDENTIALS_FILE AZURE_STORAGE_ACCOUNT_NAME; do
-        if [ -z "${!var}" ] ; then
-            echo "ERROR: $var is not set"
-            local discoverUnsetVar=true
-        fi
-    done
-    if [ "${discoverUnsetVar}" = true ] ; then
-        exit 1
-    fi
+    requiredVars=(
+        AZURE_RS_GROUP
+        AZURE_REGION
+        AZURE_SUBSCRIPTION_ID
+        AZURE_CREDENTIALS_FILE
+        AZURE_STORAGE_ACCOUNT_NAME
+    )
+
+    utils::checkRequiredVars ${requiredVars[@]}
 
     echo "Environment validated"; date
 }

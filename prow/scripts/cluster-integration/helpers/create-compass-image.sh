@@ -11,15 +11,16 @@
 
 set -o errexit
 
-for var in COMPASS_SOURCES_DIR COMPASS_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+    COMPASS_SOURCES_DIR
+    COMPASS_INSTALLER_IMAGE
+    CLOUDSDK_CORE_PROJECT
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Compass-Installer image: ${COMPASS_INSTALLER_IMAGE}"

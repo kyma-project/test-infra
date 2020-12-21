@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
 beforeTest() {
     shout "Validating Google Cloud Storage Gateway environment"; date
 
-    for var in GOOGLE_APPLICATION_CREDENTIALS CLOUDSDK_CORE_PROJECT TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS; do
-        if [ -z "${!var}" ] ; then
-            echo "ERROR: $var is not set"
-            local discoverUnsetVar=true
-        fi
-    done
-    if [ "${discoverUnsetVar}" = true ] ; then
-        exit 1
-    fi
+    requiredVars=(
+        GOOGLE_APPLICATION_CREDENTIALS
+        CLOUDSDK_CORE_PROJECT
+        TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
+    )
+
+    utils::checkRequiredVars ${requiredVars[@]}
 
     echo "Environment validated"; date
 }

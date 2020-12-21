@@ -37,6 +37,8 @@ readonly TEST_INFRA_PROJECT_DIR=/home/prow/go/src/github.com/kyma-project/test-i
 source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/azure.sh"
+# shellcheck source=prow/scripts/lib/azure.sh
+source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/utils.sh"
 
 #########################################################################################################
 # Ensure that all expected vars are set before running the script.
@@ -53,16 +55,7 @@ source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/azure.sh"
 function ensure_vars_or_die() {
   log::banner "Ensure Env Vars"
 
-  for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ]; then
-      log::error "ERROR: $var is not set"
-      discoverUnsetVar=true
-    fi
-  done
-
-  if [ "${discoverUnsetVar}" = true ]; then
-    exit 1
-  fi
+  utils::checkRequiredVars ${VARIABLES[@]}
 }
 
 #########################################################################################################

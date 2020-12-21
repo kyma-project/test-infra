@@ -28,19 +28,6 @@
 
 set -o errexit
 
-discoverUnsetVar=false
-enableTestLogCollector=false
-
-for var in REPO_OWNER REPO_NAME KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS BOT_GITHUB_TOKEN CLOUDSDK_COMPUTE_ZONE; do
-    if [[ -z "${!var}" ]] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [[ "${discoverUnsetVar}" = true ]] ; then
-    exit 1
-fi
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -69,6 +56,8 @@ KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
 POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -76,6 +65,20 @@ source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    BOT_GITHUB_TOKEN
+    CLOUDSDK_COMPUTE_ZONE
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 trap gkeCleanup EXIT INT
 

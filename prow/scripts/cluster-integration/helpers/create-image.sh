@@ -10,15 +10,15 @@
 
 set -o errexit
 
-for var in KYMA_SOURCES_DIR KYMA_INSTALLER_IMAGE; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+   KYMA_SOURCES_DIR
+   KYMA_INSTALLER_IMAGE
+)
+
+utils::checkRequiredVars ${requiredVars[@]}
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"

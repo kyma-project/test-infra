@@ -2,23 +2,19 @@
 
 set -o errexit
 
-VARIABLES=(
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
     TEST_INFRA_SOURCES_DIR
     LOG_COLLECTOR_SLACK_TOKEN
     PROW_JOB_NAME
 )
 
-discoverUnsetVar=false
-
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::checkRequiredVars ${requiredVars[@]}
 
 function installTestLogColletor() {
     TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
