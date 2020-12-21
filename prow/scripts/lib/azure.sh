@@ -80,12 +80,12 @@ function az::create_resource_group {
     exit 1
   fi
   local rsGroup
-  local region
+  local azRegion
   rsGroup=$1
-  region=$2
+  azRegion=$2
 
-  log::info "Creating resouce group \"$rsGroup\" in a region \"$region\""
-  az group create --name "${rsGroup}" --location "${region}"
+  log::info "Creating resouce group \"$rsGroup\" in a region \"$azRegion\""
+  az group create --name "${rsGroup}" --location "${azRegion}"
   until [[ $(az group exists --name "${rsGroup}" -o json) == true ]]; do
 		sleep 15
 		counter=$(( counter + 1 ))
