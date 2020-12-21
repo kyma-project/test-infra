@@ -36,7 +36,11 @@ clitests::assertVarNotEmpty() {
   local msg=$2
 
   if [ -z "${!var}" ]; then
-    shoutFail ${msg:="The variable '$var' was not defined or is empty"}
+    if [ -z "$msg" ]; then
+        shoutFail "The variable '$var' was not defined or is empty"
+    else
+        shoutFail "$msg"
+    fi
     exit 1
   fi
 }
@@ -64,5 +68,9 @@ clitests::execute() {
     export ZONE=$gcpZone
     export HOST=$gcpHost
     export SOURCE=$cliVersion
-    source "$(clitests::getTestFile $testSuite)"
+
+    local testFile
+    testFile=$(clitests::getTestFile "$testSuite")
+    # shellcheck disable=SC1090
+    source "$testFile"
 }

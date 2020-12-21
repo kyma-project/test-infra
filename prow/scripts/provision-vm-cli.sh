@@ -7,7 +7,6 @@
 set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 
 # shellcheck disable=SC1090
@@ -137,9 +136,10 @@ else
 fi
 
 # Run test suite
+# shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
 clitests::testSuiteExists "$TEST_SUITE"
-if [ $? -eq 0 ]; then
+if $?; then
     clitests::execute "$TEST_SUITE" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
 else
     shoutFail "Test suite '${TEST_SUITE}' not found"
