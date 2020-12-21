@@ -39,6 +39,10 @@ else
     LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=cli-integration")
 fi
 
+# Support configuration via ENV vars (can be be overwritten by CLI args)
+KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
+TEST_SUITE="${TEST_SUITE:=default}"
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -103,12 +107,6 @@ for ZONE in ${EU_ZONES}; do
     shout "Could not create machine in zone ${ZONE}"
 done || exit 1
 
-# sanity check: verify value of KUBERNETES_RUNTIME is 'minikube' or 'k3s'
-if [ "$KUBERNETES_RUNTIME" != 'minikube' ]; then
-    KUBERNETES_RUNTIME='k3s'
-fi
-shout "Local Kubernetes runtime will be: $KUBERNETES_RUNTIME"
-
 trap cleanup exit INT
 
 shout "Building Kyma CLI"
@@ -127,7 +125,7 @@ done;
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 # Provision Kubernetes runtime
-shout "Provisioning ${KUBERNETES_RUNTIME}"
+shout "Provisioning Kubernetes runtime '$KUBERNETES_RUNTIME'"
 date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
