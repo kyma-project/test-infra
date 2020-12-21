@@ -241,3 +241,34 @@ testing::runTestLogCollector(){
         fi
     fi
 }
+
+testing::testSummary() {
+    local tests_exit=0
+    if [[ -n "${SUITE_NAME}" ]]; then
+        echo "Test Summary"
+        kyma test status "${SUITE_NAME}" -owide
+
+        statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
+        if [[ "${statusSucceeded}" != *"True"* ]]; then
+            tests_exit=1
+            echo "- Fetching logs due to test suite failure"
+
+            echo "- Fetching logs from testing pods in Failed status..."
+            kyma test logs "${SUITE_NAME}" --test-status Failed
+
+            echo "- Fetching logs from testing pods in Unknown status..."
+            kyma test logs "${SUITE_NAME}" --test-status Unknown
+
+            echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
+            kyma test logs "${SUITE_NAME}" --test-status Running
+        fi
+
+        echo "ClusterTestSuite details"
+        kubectl get cts "${SUITE_NAME}" -oyaml
+        return $tests_exit
+    else
+        tests_exit=1
+        echo "SUITE_NAME was not set"
+        return $tests_exit
+    fi
+}

@@ -63,7 +63,7 @@ cleanup() {
     set +e
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testSummary
+        testing::testSummary
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then

@@ -17,23 +17,17 @@ VARIABLES=(
     COMPAT_BACKTRACK
 )
 
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
-
 #Exported variables
 export KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts"
 
 # shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+# shellcheck disable=SC1090
 source "${TEST_INFRA_SCRIPTS}/library.sh"
+
+checkRequiredVars "${VARIABLES[@]}"
 
 echo "--------------------------------------------------------------------------------"
 echo "Kyma CLI compatibility checker"

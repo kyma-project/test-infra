@@ -97,7 +97,7 @@ cleanup() {
     testing::runTestLogCollector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testSummary
+        testing::testSummary
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then

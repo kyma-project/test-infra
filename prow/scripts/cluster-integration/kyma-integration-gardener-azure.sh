@@ -135,7 +135,7 @@ cleanup() {
     testing::runTestLogCollector "kyma-integration-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testSummary
+        testing::testSummary
         SUITE_EXIT_STATUS=$?
         if [[ ${EXIT_STATUS} -eq 0 ]]; then
             EXIT_STATUS=$SUITE_EXIT_STATUS
@@ -172,31 +172,6 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
-}
-
-testSummary() {
-    local tests_exit=0
-    echo "Test Summary"
-    kyma test status "${SUITE_NAME}" -owide
-
-    statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
-    if [[ "${statusSucceeded}" != *"True"* ]]; then
-        tests_exit=1
-        echo "- Fetching logs due to test suite failure"
-
-        echo "- Fetching logs from testing pods in Failed status..."
-        kyma test logs "${SUITE_NAME}" --test-status Failed
-
-        echo "- Fetching logs from testing pods in Unknown status..."
-        kyma test logs "${SUITE_NAME}" --test-status Unknown
-
-        echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
-        kyma test logs "${SUITE_NAME}" --test-status Running
-    fi
-
-    echo "ClusterTestSuite details"
-    kubectl get cts "${SUITE_NAME}" -oyaml
-    return $tests_exit
 }
 
 install_cli(){

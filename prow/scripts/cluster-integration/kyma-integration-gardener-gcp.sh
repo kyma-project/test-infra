@@ -68,7 +68,7 @@ cleanup() {
     testing::runTestLogCollector "kyma-integration-gardener-gcp"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testSummary
+        testing::testSummary
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
@@ -95,33 +95,6 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
-}
-
-testSummary() {
-    echo "Test Summary"
-    kyma test status "${SUITE_NAME}" -owide
-
-    statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
-    if [[ "${statusSucceeded}" != *"True"* ]]; then
-        echo "- Fetching logs due to test suite failure"
-
-        echo "- Fetching logs from testing pods in Failed status..."
-        kyma test logs "${SUITE_NAME}" --test-status Failed
-
-        echo "- Fetching logs from testing pods in Unknown status..."
-        kyma test logs "${SUITE_NAME}" --test-status Unknown
-
-        echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
-        kyma test logs "${SUITE_NAME}" --test-status Running
-
-        echo "ClusterTestSuite details"
-        kubectl get cts "${SUITE_NAME}" -oyaml
-
-        exit 1
-    fi
-
-    echo "ClusterTestSuite details"
-    kubectl get cts "${SUITE_NAME}" -oyaml
 }
 
 trap cleanup EXIT INT
