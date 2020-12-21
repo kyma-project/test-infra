@@ -22,7 +22,9 @@ clitests::testSuiteExists() {
 
     clitests::assertVarNotEmpty testSuite
 
-    test -f "$(clitests::getTestFile $testSuite)"
+    local testFile
+    testFile=$(clitests::getTestFile "$testSuite")
+    test -f "$testFile"
     return $?
 }
 
