@@ -337,8 +337,7 @@ EOF
   # install if yq does not exist
   if [[ ! -x $(command -v yq) ]];
   then
-    yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-    curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+    curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
   fi
 cat << EOF > istio-ingressgateway-patch-yq.yaml
 - command: update

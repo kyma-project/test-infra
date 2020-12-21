@@ -241,8 +241,7 @@ EOF
 
   # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
   echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
-  yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
 cat << EOF > istio-ingressgateway-patch-yq.yaml
 - command: update
   path: spec.components.ingressGateways[0].k8s.service
