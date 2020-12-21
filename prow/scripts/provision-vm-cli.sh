@@ -141,5 +141,3 @@ if clitests::testSuiteExists "$TEST_SUITE"; then
 else
     shoutFail "Test suite '${TEST_SUITE}' not found"
 fi
-
-
