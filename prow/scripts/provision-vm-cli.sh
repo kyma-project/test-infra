@@ -136,8 +136,7 @@ fi
 # Run test suite
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/clitests.sh"
-clitests::testSuiteExists "$TEST_SUITE"
-if $?; then
+if clitests::testSuiteExists "$TEST_SUITE"; then
     clitests::execute "$TEST_SUITE" "${ZONE}" "cli-integration-test-${RANDOM_ID}" "$SOURCE"
 else
     shoutFail "Test suite '${TEST_SUITE}' not found"
