@@ -355,7 +355,7 @@ function gcloud::provision_gke_cluster {
   params+=("--labels=job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
 
   log::info "Provisioning GKE cluster"
-  gcloud --project="$GCLOUD_PROJECT_NAME" clusters create "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
+  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters create "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
   log::info "Successfully created cluster $CLUSTER_NAME!"
 
   log::info "Patching kube-dns with stub domains"
