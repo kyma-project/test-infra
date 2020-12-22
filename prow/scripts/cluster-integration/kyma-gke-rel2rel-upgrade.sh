@@ -78,7 +78,7 @@ requiredVars=(
     CLOUDSDK_COMPUTE_ZONE
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 trap gkeCleanup EXIT INT
 

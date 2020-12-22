@@ -76,7 +76,7 @@ if [[ "$JOB_TYPE" == "presubmit" ]]; then
     requiredVars+=( DOCKER_PUSH_DIRECTORY )
 fi
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
 init
@@ -125,10 +125,10 @@ cleanup() {
     kubectl top pods --all-namespaces
 
     # collect logs from failed tests before deprovisioning
-    testing::runTestLogCollector "kyma-integration-gardener-azure"
+    testing::run_test_log_collector "kyma-integration-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testing::testSummary
+        testing::test_summary
         SUITE_EXIT_STATUS=$?
         if [[ ${EXIT_STATUS} -eq 0 ]]; then
             EXIT_STATUS=$SUITE_EXIT_STATUS

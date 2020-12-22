@@ -24,7 +24,7 @@ requiredVars=(
     DNS_FULL_NAME IP_ADDRESS
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 attempts=10
 retryTimeInSec="5"

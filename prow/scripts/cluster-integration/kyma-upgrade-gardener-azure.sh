@@ -69,7 +69,7 @@ requiredVars=(
     RS_GROUP
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
@@ -87,10 +87,10 @@ cleanup() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    testing::runTestLogCollector "kyma-upgrade-gardener-azure"
+    testing::run_test_log_collector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testing::testSummary
+        testing::test_summary
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then

@@ -29,7 +29,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROJECT_NAME
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
 export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}

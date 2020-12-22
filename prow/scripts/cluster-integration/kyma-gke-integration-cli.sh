@@ -44,7 +44,7 @@ requiredVars=(
     GOOGLE_APPLICATION_CREDENTIALS
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 trap gkeCleanup EXIT INT
 

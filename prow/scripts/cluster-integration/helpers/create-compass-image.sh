@@ -20,7 +20,7 @@ requiredVars=(
     CLOUDSDK_CORE_PROJECT
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Compass-Installer image: ${COMPASS_INSTALLER_IMAGE}"

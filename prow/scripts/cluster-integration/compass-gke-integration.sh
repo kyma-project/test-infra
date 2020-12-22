@@ -29,7 +29,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 

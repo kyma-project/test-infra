@@ -12,7 +12,7 @@ beforeTest() {
         TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
     )
 
-    utils::checkRequiredVars "${requiredVars[@]}"
+    utils::check_required_vars "${requiredVars[@]}"
 
     echo "Environment validated"; date
 }

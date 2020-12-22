@@ -38,7 +38,7 @@ VARIABLES=(
   EVENTHUB_SECRET_OVERRIDE_FILE
 )
 
-utils::checkRequiredVars "${VARIABLES[@]}"
+utils::check_required_vars "${VARIABLES[@]}"
 
 EVENTHUB_NAMESPACE_MIN_THROUGHPUT_UNITS=2 #Must be greater than zero and less than maximum value!
 EVENTHUB_NAMESPACE_MAX_THROUGHPUT_UNITS=4 #Must be greater than minimum value and less than 20!

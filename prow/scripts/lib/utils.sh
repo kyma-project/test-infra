@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-utils::checkRequiredVars() {
+utils::check_required_vars() {
     local discoverUnsetVar=false
     for var in "$@"; do
       if [ -z "${!var}" ] ; then

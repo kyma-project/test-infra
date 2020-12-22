@@ -230,7 +230,7 @@ function testing::remove_addons_if_necessary() {
   fi
 }
 
-testing::runTestLogCollector(){
+testing::run_test_log_collector(){
     if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] && [[ -n "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}" ]]; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
             log::info "Install test-log-collector"
@@ -242,7 +242,7 @@ testing::runTestLogCollector(){
     fi
 }
 
-testing::testSummary() {
+testing::test_summary() {
     local tests_exit=0
     if [[ -n "${SUITE_NAME}" ]]; then
         echo "Test Summary"

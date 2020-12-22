@@ -23,7 +23,7 @@ requiredVars=(
    IP_ADDRESS_NAME
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 # Export variable used in subshell.
 export IP_ADDRESS_NAME

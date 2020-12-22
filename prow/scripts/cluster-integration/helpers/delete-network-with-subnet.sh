@@ -21,7 +21,7 @@ requiredVars=(
     GCLOUD_PROJECT_NAME
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 gcloud compute networks subnets delete "${GCLOUD_SUBNET_NAME}" \
  --quiet

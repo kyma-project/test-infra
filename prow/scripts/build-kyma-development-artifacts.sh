@@ -14,7 +14,7 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/lib/common.sh"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/log.sh"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 
 requiredVars=(
@@ -22,7 +22,7 @@ requiredVars=(
     KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 function export_variables() {
     COMMIT_ID="${PULL_BASE_SHA::8}"

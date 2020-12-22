@@ -41,7 +41,7 @@ requiredVars=(
     GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 

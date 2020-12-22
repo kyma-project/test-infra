@@ -38,7 +38,7 @@ requiredVars=(
    TEST_INFRA_SOURCES_DIR
 )
 
-utils::checkRequiredVars "${requiredVars[@]}"
+utils::check_required_vars "${requiredVars[@]}"
 
 readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
 readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
