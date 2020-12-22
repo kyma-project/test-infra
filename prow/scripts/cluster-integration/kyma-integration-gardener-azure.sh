@@ -26,38 +26,7 @@
 
 set -e
 
-discoverUnsetVar=false
 ENABLE_TEST_LOG_COLLECTOR=false
-
-VARIABLES=(
-    JOB_TYPE
-    KYMA_PROJECT_DIR
-    DOCKER_PUSH_REPOSITORY
-    GARDENER_REGION
-    GARDENER_ZONES
-    GARDENER_KYMA_PROW_KUBECONFIG
-    GARDENER_KYMA_PROW_PROJECT_NAME
-    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    RS_GROUP
-    REGION
-    AZURE_SUBSCRIPTION_ID
-    AZURE_CREDENTIALS_FILE
-    CLOUDSDK_CORE_PROJECT
-)
-
-if [[ "$JOB_TYPE" == "presubmit" ]]; then
-    VARIABLES+=( DOCKER_PUSH_DIRECTORY )
-fi
-
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
 
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
@@ -79,11 +48,35 @@ TMP_DIR=$(mktemp -d)
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 set -o
+
+requiredVars=(
+    JOB_TYPE
+    KYMA_PROJECT_DIR
+    DOCKER_PUSH_REPOSITORY
+    GARDENER_REGION
+    GARDENER_ZONES
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    RS_GROUP
+    REGION
+    AZURE_SUBSCRIPTION_ID
+    AZURE_CREDENTIALS_FILE
+    CLOUDSDK_CORE_PROJECT
+)
+
+if [[ "$JOB_TYPE" == "presubmit" ]]; then
+    requiredVars+=( DOCKER_PUSH_DIRECTORY )
+fi
+
+utils::check_required_vars "${requiredVars[@]}"
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
 init
@@ -132,10 +125,10 @@ cleanup() {
     kubectl top pods --all-namespaces
 
     # collect logs from failed tests before deprovisioning
-    runTestLogCollector
+    testing::run_test_log_collector "kyma-integration-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testSummary
+        testing::test_summary
         SUITE_EXIT_STATUS=$?
         if [[ ${EXIT_STATUS} -eq 0 ]]; then
             EXIT_STATUS=$SUITE_EXIT_STATUS
@@ -172,31 +165,6 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
-}
-
-testSummary() {
-    local tests_exit=0
-    echo "Test Summary"
-    kyma test status "${SUITE_NAME}" -owide
-
-    statusSucceeded=$(kubectl get cts "${SUITE_NAME}" -ojsonpath="{.status.conditions[?(@.type=='Succeeded')]}")
-    if [[ "${statusSucceeded}" != *"True"* ]]; then
-        tests_exit=1
-        echo "- Fetching logs due to test suite failure"
-
-        echo "- Fetching logs from testing pods in Failed status..."
-        kyma test logs "${SUITE_NAME}" --test-status Failed
-
-        echo "- Fetching logs from testing pods in Unknown status..."
-        kyma test logs "${SUITE_NAME}" --test-status Unknown
-
-        echo "- Fetching logs from testing pods in Running status due to running afer test suite timeout..."
-        kyma test logs "${SUITE_NAME}" --test-status Running
-    fi
-
-    echo "ClusterTestSuite details"
-    kubectl get cts "${SUITE_NAME}" -oyaml
-    return $tests_exit
 }
 
 install_cli(){
@@ -456,19 +424,6 @@ test_fast_integration_kyma() {
     date
 }
 
-runTestLogCollector(){
-    if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
-        if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
-            shout "Install test-log-collector"
-            date
-            export PROW_JOB_NAME="kyma-integration-gardener-azure"
-            (
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
-            )
-        fi
-    fi
-}
-
 trap cleanup EXIT INT
 
 #Used to detect errors for logging purposes
@@ -506,7 +461,7 @@ if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      ENABLE_TEST_LOG_COLLECTOR=true
+      export ENABLE_TEST_LOG_COLLECTOR=true
     fi
     test_kyma
 fi

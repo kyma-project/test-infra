@@ -24,17 +24,21 @@
 
 set -o errexit
 
-discoverUnsetVar=false
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-for var in GCLOUD_SERVICE_KEY_PATH GCLOUD_PROJECT_NAME CLUSTER_NAME GCLOUD_COMPUTE_ZONE TEST_INFRA_SOURCES_DIR TEST_INFRA_SOURCES_DIR; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+   GCLOUD_SERVICE_KEY_PATH
+   GCLOUD_PROJECT_NAME
+   CLUSTER_NAME
+   GCLOUD_COMPUTE_ZONE
+   TEST_INFRA_SOURCES_DIR
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
 readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)

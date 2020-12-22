@@ -4,27 +4,22 @@
 
 set -e
 
-discoverUnsetVar=false
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${SCRIPT_DIR}/lib/utils.sh"
 
-function check_missing_var() {
-    local var=$1
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-}
+requiredVars=(
+    KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
+)
 
-check_missing_var KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::check_required_vars "${requiredVars[@]}"
 
 readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
 readonly CURRENT_TIMESTAMP=$(date +%s)
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+
 
 function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)

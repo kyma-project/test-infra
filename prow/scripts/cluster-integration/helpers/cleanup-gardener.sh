@@ -14,32 +14,25 @@ readonly SECONDS_PER_HOUR=3600
 
 set -e
 
-discoverUnsetVar=false
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-VARIABLES=(
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+requiredVars=(
     KYMA_PROJECT_DIR
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
 )
 
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::check_required_vars "${requiredVars[@]}"
 
-#Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
 export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
-
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 
 echo "--------------------------------------------------------------------------------"
 echo "Removing Gardener clusters allocated by failed/terminated integration jobs...  "

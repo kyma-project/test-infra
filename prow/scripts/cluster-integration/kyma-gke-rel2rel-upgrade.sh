@@ -28,19 +28,6 @@
 
 set -o errexit
 
-discoverUnsetVar=false
-enableTestLogCollector=false
-
-for var in REPO_OWNER REPO_NAME KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS BOT_GITHUB_TOKEN CLOUDSDK_COMPUTE_ZONE; do
-    if [[ -z "${!var}" ]] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [[ "${discoverUnsetVar}" = true ]] ; then
-    exit 1
-fi
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -69,6 +56,8 @@ KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
 POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
@@ -77,17 +66,19 @@ source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 
-runTestLogCollector() {
-  if [ "${enableTestLogCollector}" = true ]; then
-    if [[ "$BUILD_TYPE" == "master" ]]; then
-      shout "Install test-log-collector"
-      export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
-      (
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
-      )
-    fi
-  fi
-}
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    BOT_GITHUB_TOKEN
+    CLOUDSDK_COMPUTE_ZONE
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 trap gkeCleanup EXIT INT
 
@@ -496,7 +487,7 @@ installKyma
 
 createTestResources
 
-enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+export ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 applyScenario
 

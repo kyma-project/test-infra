@@ -19,32 +19,7 @@
 
 set -e
 
-discoverUnsetVar=false
 ENABLE_TEST_LOG_COLLECTOR=false
-
-VARIABLES=(
-    KYMA_PROJECT_DIR
-    GARDENER_REGION
-    GARDENER_ZONES
-    GARDENER_KYMA_PROW_KUBECONFIG
-    GARDENER_KYMA_PROW_PROJECT_NAME
-    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-    REGION
-    AZURE_SUBSCRIPTION_ID
-    AZURE_CREDENTIALS_FILE
-    BOT_GITHUB_TOKEN
-    RS_GROUP
-)
-
-for var in "${VARIABLES[@]}"; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
 
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
@@ -73,10 +48,28 @@ export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.ya
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
+
+requiredVars=(
+    KYMA_PROJECT_DIR
+    GARDENER_REGION
+    GARDENER_ZONES
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    REGION
+    AZURE_SUBSCRIPTION_ID
+    AZURE_CREDENTIALS_FILE
+    BOT_GITHUB_TOKEN
+    RS_GROUP
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
@@ -94,10 +87,10 @@ cleanup() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    runTestLogCollector
+    testing::run_test_log_collector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testSummary
+        testing::test_summary
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
@@ -126,18 +119,6 @@ cleanup() {
     set -e
 
     exit "${EXIT_STATUS}"
-}
-
-runTestLogCollector(){
-    if [ "${ENABLE_TEST_LOG_COLLECTOR}" = true ] ; then
-        if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "$BUILD_TYPE" ]]; then
-            log::info "Install test-log-collector"
-            export PROW_JOB_NAME="kyma-upgrade-gardener-azure"
-            ( 
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
-            )    
-        fi    
-    fi
 }
 
 function provisionCluster() {
@@ -399,7 +380,7 @@ upgradeKyma
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-  ENABLE_TEST_LOG_COLLECTOR=true
+  export ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
 testKyma "${POST_UPGRADE_LABEL_QUERY}" testsuite-all-after-upgrade
