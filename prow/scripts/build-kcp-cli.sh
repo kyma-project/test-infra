@@ -14,7 +14,7 @@ requiredVars=(
     KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
 readonly CURRENT_TIMESTAMP=$(date +%s)

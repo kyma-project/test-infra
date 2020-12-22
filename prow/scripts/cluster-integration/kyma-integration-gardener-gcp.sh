@@ -48,7 +48,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 cleanup() {

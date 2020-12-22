@@ -19,7 +19,7 @@ requiredVars=(
     KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
 readonly CURRENT_TIMESTAMP=$(date +%s)

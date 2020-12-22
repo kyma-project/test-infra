@@ -69,7 +69,7 @@ requiredVars=(
     RS_GROUP
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"

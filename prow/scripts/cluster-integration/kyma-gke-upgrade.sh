@@ -97,7 +97,7 @@ requiredVars=(
     GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 
 function installCli() {

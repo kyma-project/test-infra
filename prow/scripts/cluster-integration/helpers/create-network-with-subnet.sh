@@ -21,7 +21,7 @@ requiredVars=(
    GCLOUD_PROJECT_NAME
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 gcloud compute networks create "${GCLOUD_NETWORK_NAME}" \
  --project="${GCLOUD_PROJECT_NAME}" \

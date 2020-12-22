@@ -55,7 +55,7 @@ source "${TEST_INFRA_PROJECT_DIR}/prow/scripts/lib/utils.sh"
 function ensure_vars_or_die() {
   log::banner "Ensure Env Vars"
 
-  utils::checkRequiredVars ${VARIABLES[@]}
+  utils::checkRequiredVars "${VARIABLES[@]}"
 }
 
 #########################################################################################################

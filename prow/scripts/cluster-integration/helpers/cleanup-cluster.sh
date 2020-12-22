@@ -36,7 +36,7 @@ function cleanup() {
 		)
 	fi
 
-	utils::checkRequiredVars ${requiredVars[@]}
+	utils::checkRequiredVars "${requiredVars[@]}"
 
 	#Exporting variables used in subshells.
 	export CLOUDSDK_DNS_ZONE_NAME

@@ -17,7 +17,7 @@ requiredVars=(
     AZURE_CREDENTIALS_FILE
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 az::login "$AZURE_CREDENTIALS_FILE"
 az::set_subscription "$AZURE_SUBSCRIPTION_ID"

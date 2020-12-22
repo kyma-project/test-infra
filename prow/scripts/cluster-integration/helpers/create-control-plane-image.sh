@@ -23,7 +23,7 @@ requiredVars=(
     CLOUDSDK_CORE_PROJECT
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 echo "--------------------------------------------------------------------------------"
 echo "Building KCP-Installer image: ${KCP_INSTALLER_IMAGE}"

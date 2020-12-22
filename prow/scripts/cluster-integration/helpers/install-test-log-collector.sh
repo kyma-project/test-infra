@@ -14,7 +14,7 @@ requiredVars=(
     PROW_JOB_NAME
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 function installTestLogColletor() {
     TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"

@@ -28,7 +28,7 @@ requiredVars=(
 	CERTIFICATES_BUCKET
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"

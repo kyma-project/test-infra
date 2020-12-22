@@ -20,7 +20,7 @@ function createCluster() {
 		TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
 	)
 
-	utils::checkRequiredVars ${requiredVars[@]}
+	utils::checkRequiredVars "${requiredVars[@]}"
 
 	if [[ -z "${PERFORMACE_CLUSTER_SETUP}" ]]; then
 		requiredVars+=(
@@ -30,7 +30,7 @@ function createCluster() {
 		)
 	fi
 
-	utils::checkRequiredVars ${requiredVars[@]}
+	utils::checkRequiredVars "${requiredVars[@]}"
 
 	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
 

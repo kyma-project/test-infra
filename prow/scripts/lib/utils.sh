@@ -2,7 +2,7 @@
 
 utils::checkRequiredVars() {
     local discoverUnsetVar=false
-    for var in $@; do
+    for var in "$@"; do
       if [ -z "${!var}" ] ; then
         echo "ERROR: $var is not set"
         discoverUnsetVar=true

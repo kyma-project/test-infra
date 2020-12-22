@@ -28,7 +28,7 @@ requiredVars=(
    GCLOUD_COMPUTE_ZONE
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 command -v gcloud
 

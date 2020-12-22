@@ -17,7 +17,7 @@ validateAzureGatewayEnvironment() {
         AZURE_STORAGE_ACCOUNT_NAME
     )
 
-    utils::checkRequiredVars ${requiredVars[@]}
+    utils::checkRequiredVars "${requiredVars[@]}"
 
     echo "Environment validated"; date
 }

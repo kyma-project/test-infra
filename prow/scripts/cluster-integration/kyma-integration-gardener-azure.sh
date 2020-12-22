@@ -76,7 +76,7 @@ if [[ "$JOB_TYPE" == "presubmit" ]]; then
     requiredVars+=( DOCKER_PUSH_DIRECTORY )
 fi
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
 init

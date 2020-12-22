@@ -19,7 +19,7 @@ requiredVars=(
    GOOGLE_APPLICATION_CREDENTIALS
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 shout "Generate lets encrypt certificate"
 date

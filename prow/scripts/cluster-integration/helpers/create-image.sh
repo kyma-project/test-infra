@@ -18,7 +18,7 @@ requiredVars=(
    KYMA_INSTALLER_IMAGE
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 echo "--------------------------------------------------------------------------------"
 echo "Building Kyma-Installer image: ${KYMA_INSTALLER_IMAGE}"

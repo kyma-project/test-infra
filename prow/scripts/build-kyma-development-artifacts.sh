@@ -22,7 +22,7 @@ requiredVars=(
     KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 function export_variables() {
     COMMIT_ID="${PULL_BASE_SHA::8}"

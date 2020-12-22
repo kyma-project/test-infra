@@ -33,7 +33,7 @@ requiredVars=(
 	DOCKER_PUSH_DIRECTORY
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"

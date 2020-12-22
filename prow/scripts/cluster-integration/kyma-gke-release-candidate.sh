@@ -49,7 +49,7 @@ requiredVars=(
     KYMA_ARTIFACTS_BUCKET
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 trap cleanupOnError EXIT INT
 

@@ -18,7 +18,7 @@ requiredVars=(
    TEST_RESULT_WINDOW_TIME
 )
 
-utils::checkRequiredVars ${requiredVars[@]}
+utils::checkRequiredVars "${requiredVars[@]}"
 
 function installStabilityChecker() {
   curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
