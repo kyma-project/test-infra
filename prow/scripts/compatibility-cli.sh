@@ -22,12 +22,12 @@ export KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-p
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SCRIPTS}/library.sh"
 
-checkRequiredVars "${VARIABLES[@]}"
+utils::check_required_vars "${VARIABLES[@]}"
 
 echo "--------------------------------------------------------------------------------"
 echo "Kyma CLI compatibility checker"
