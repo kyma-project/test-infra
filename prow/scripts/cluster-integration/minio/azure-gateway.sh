@@ -3,7 +3,7 @@
 # TEST_INFRA_SOURCES_DIR is exported in parent script
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 validateAzureGatewayEnvironment() {

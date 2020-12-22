@@ -12,7 +12,7 @@
 
 set -o errexit
 
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 requiredVars=(
