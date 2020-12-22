@@ -38,8 +38,8 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-# shellcheck source=prow/scripts/lib/common.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/common.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/log.sh
@@ -117,7 +117,7 @@ DNS_SUBDOMAIN="${COMMON_NAME}"
 ERROR_LOGGING_GUARD="true"
 
 log::info "Authenticate"
-common::init
+gcloud::authenticate
 INSTALL_DIR=$(mktemp -d) install::kyma_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"

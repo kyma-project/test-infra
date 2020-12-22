@@ -43,8 +43,8 @@ KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
 
-# shellcheck source=prow/scripts/lib/common.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/common.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/log.sh
@@ -125,7 +125,7 @@ ERROR_LOGGING_GUARD="true"
 
 log::info "Authenticate"
 date
-common::init
+gcloud::authenticate
 INSTALL_DIR=$(mktemp -d) install::kyma_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
