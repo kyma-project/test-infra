@@ -487,7 +487,7 @@ installKyma
 
 createTestResources
 
-enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+export ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 applyScenario
 
