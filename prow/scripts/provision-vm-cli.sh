@@ -40,8 +40,8 @@ else
 fi
 
 # Support configuration via ENV vars (can be be overwritten by CLI args)
-KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=minikube}"
-TEST_SUITE="${TEST_SUITE:=default}"
+KUBERNETES_RUNTIME="${KUBERNETES_RUNTIME:=k3s}"
+TEST_SUITE="${TEST_SUITE:=alpha}"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
