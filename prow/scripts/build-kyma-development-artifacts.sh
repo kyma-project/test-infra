@@ -10,8 +10,10 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/lib/common.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -42,7 +44,8 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-common::init
+gcloud::authenticate
+docker::start
 export_variables
 
 # installer ci-pr, ci-master, kyma-installer ci-pr, ci-master
@@ -68,7 +71,7 @@ ls -la "${ARTIFACTS}"
 log::info "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-gcloud::authenticate # sourced by common.sh
+gcloud::authenticate # sourced by gcloud.sh
 
 log::info "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster.yaml"
