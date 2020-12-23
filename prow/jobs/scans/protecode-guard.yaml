@@ -16,7 +16,9 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-protecode-guard
+      cluster: untrusted-workload
       optional: true
+      always_run: false
       branches:
       - ^master$
       decorate: true
@@ -48,7 +50,9 @@ presubmits: # runs on PRs
 
   kyma-project/console:
     - name: pre-master-console-protecode-guard
+      cluster: untrusted-workload
       optional: true
+      always_run: false
       branches:
       - ^master$
       decorate: true
@@ -80,7 +84,9 @@ presubmits: # runs on PRs
 
   kyma-incubator/pamela:
     - name: pre-master-pamela-protecode-guard
+      cluster: untrusted-workload
       optional: true
+      always_run: true
       branches:
       - ^master$
       decorate: true

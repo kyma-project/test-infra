@@ -15,7 +15,9 @@ presubmits: # runs on PRs
 {{- range .Values.repos }}
   {{ .project }}/{{ .name  }}:
     - name: pre-master-{{ .name }}-protecode-guard
+      cluster: untrusted-workload
       optional: {{ .optional }}
+      always_run: {{ .always_run }}
       branches:
       - ^master$
       decorate: true
