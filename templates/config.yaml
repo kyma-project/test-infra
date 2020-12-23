@@ -1667,3 +1667,20 @@ templates:
                 run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                 args:
                   - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+  - from: templates/protecode-guard.yaml
+    render:
+    - to: ../prow/jobs/scans/protecode-guard.yaml
+      values:
+        repos:
+        - name: kyma
+          project: kyma-project
+          optional: true
+          run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+        - name: console
+          project: kyma-project
+          optional: true
+          run_if_changed: "^"
+        - name: pamela
+          project: kyma-incubator
+          optional: true
+          run_if_changed: ""
