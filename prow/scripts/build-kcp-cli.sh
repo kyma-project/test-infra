@@ -9,6 +9,8 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/library.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
 
 requiredVars=(
     KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
@@ -38,7 +40,7 @@ function export_variables() {
    export CLI_VERSION
 }
 
-init
+gcloud::authenticate
 export_variables
 
 export KCP_PATH="/home/prow/go/src/github.com/kyma-project/control-plane"

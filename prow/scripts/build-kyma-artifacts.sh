@@ -11,6 +11,10 @@ set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${SCRIPT_DIR}/lib/docker.sh"
 
 function export_variables() {
    DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
@@ -20,7 +24,8 @@ function export_variables() {
    export DOCKER_TAG
 }
 
-init
+gcloud::authenticate
+docker::start
 export_variables
 
 make -C /home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer ci-create-release-artifacts

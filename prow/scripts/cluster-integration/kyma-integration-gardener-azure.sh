@@ -50,6 +50,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 # shellcheck disable=SC1090
@@ -79,7 +83,8 @@ fi
 utils::check_required_vars "${requiredVars[@]}"
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
-init
+gcloud::authenticate
+docker::start
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
 readonly COMMON_NAME_PREFIX="grd"

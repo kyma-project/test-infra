@@ -84,6 +84,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	shout "Reserve IP Address for Ingressgateway"
@@ -323,7 +327,8 @@ function installStackdriverPrometheusCollector(){
 
 shout "Authenticate"
 date
-init
+gcloud::authenticate
+docker::start
 
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
