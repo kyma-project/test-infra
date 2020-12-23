@@ -1688,5 +1688,5 @@ templates:
           project: kyma-incubator
           optional: true
           always_run: true
-          run_if_changed: "pre-kyma-incubator-pamela"
+          run_if_changed: ""
           job_guard_pattern: ".*"

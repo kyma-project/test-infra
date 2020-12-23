@@ -9,6 +9,7 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_labels_template: &job_labels_template
+  preset-kyma-guard-bot-github-token: "true"
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
@@ -31,6 +32,8 @@ presubmits: # runs on PRs
           env:
             - name: JOB_NAME_PATTERN
               value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+            - name: JOBGUARD_TIMEOUT
+              value: "25m"
           command:
           - "bash"
           args:
@@ -65,6 +68,8 @@ presubmits: # runs on PRs
           env:
             - name: JOB_NAME_PATTERN
               value: "pre-console-.*"
+            - name: JOBGUARD_TIMEOUT
+              value: "25m"
           command:
           - "bash"
           args:
@@ -99,6 +104,8 @@ presubmits: # runs on PRs
           env:
             - name: JOB_NAME_PATTERN
               value: ".*"
+            - name: JOBGUARD_TIMEOUT
+              value: "25m"
           command:
           - "bash"
           args:
@@ -108,7 +115,7 @@ presubmits: # runs on PRs
             requests:
               memory: 200Mi
               cpu: 80m
-      run_if_changed: "pre-kyma-incubator-pamela"
+      run_if_changed: ""
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
