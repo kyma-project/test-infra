@@ -1675,15 +1675,18 @@ templates:
         - name: kyma
           project: kyma-project
           optional: true
+          always_run: false
           run_if_changed: '^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))'
           job_guard_pattern: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
         - name: console
           project: kyma-project
           optional: true
+          always_run: false
           run_if_changed: ".*"
           job_guard_pattern: "pre-console-.*"
         - name: pamela
           project: kyma-incubator
           optional: true
-          run_if_changed: "pre-kyma-incubator-pamela"
+          always_run: true
+          run_if_changed: ""
           job_guard_pattern: ".*"

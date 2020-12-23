@@ -7,6 +7,7 @@ test_infra_ref: &test_infra_ref
   path_alias: github.com/kyma-project/test-infra
 
 job_labels_template: &job_labels_template
+  preset-kyma-guard-bot-github-token: "true"
   preset-sa-gke-kyma-integration: "true"
   preset-gc-compute-envs: "true"
   preset-gc-project-env: "true"
@@ -15,7 +16,9 @@ presubmits: # runs on PRs
 {{- range .Values.repos }}
   {{ .project }}/{{ .name  }}:
     - name: pre-master-{{ .name }}-protecode-guard
+      cluster: untrusted-workload
       optional: {{ .optional }}
+      always_run: {{ .always_run }}
       branches:
       - ^master$
       decorate: true
@@ -28,6 +31,8 @@ presubmits: # runs on PRs
           env:
             - name: JOB_NAME_PATTERN
               value: "{{ .job_guard_pattern }}"
+            - name: JOBGUARD_TIMEOUT
+              value: "25m"
           command:
           - "bash"
           args:
