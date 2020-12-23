@@ -15,30 +15,33 @@ presubmits: # runs on PRs
 {{- range .Values.repos }}
   {{ .project }}/{{ .name  }}:
     - name: pre-master-{{ .name }}-protecode-guard
-        optional: {{ .optional }}
-        branches:
-        - ^master$
-        decorate: true
-        path_alias: github.com/{{ .project }}/{{ .name }}
-        max_concurrency: 10
-        spec:
-          automountServiceAccountToken: true
-          containers:
-          - <<: *base_image_k16
-            command:
-            - "bash"
-            args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        run_if_changed: "{{ .run_if_changed }}"
-        labels:
-          preset-build-pr: "true"
-          <<: *job_labels_template
-        extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+      optional: {{ .optional }}
+      branches:
+      - ^master$
+      decorate: true
+      path_alias: github.com/{{ .project }}/{{ .name }}
+      max_concurrency: 10
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - <<: *base_image_k16
+          env:
+            - name: JOB_NAME_PATTERN
+              value: "{{ .job_guard_pattern }}"
+          command:
+          - "bash"
+          args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+      run_if_changed: "{{ .run_if_changed }}"
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
 {{ end }}

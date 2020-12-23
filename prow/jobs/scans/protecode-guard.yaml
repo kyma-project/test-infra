@@ -16,88 +16,97 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-protecode-guard
-        optional: true
-        branches:
-        - ^master$
-        decorate: true
-        path_alias: github.com/kyma-project/kyma
-        max_concurrency: 10
-        spec:
-          automountServiceAccountToken: true
-          containers:
-          - <<: *base_image_k16
-            command:
-            - "bash"
-            args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        run_if_changed: "^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))"
-        labels:
-          preset-build-pr: "true"
-          <<: *job_labels_template
-        extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+      optional: true
+      branches:
+      - ^master$
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      max_concurrency: 10
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - <<: *base_image_k16
+          env:
+            - name: JOB_NAME_PATTERN
+              value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+          command:
+          - "bash"
+          args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+      run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
 
   kyma-project/console:
     - name: pre-master-console-protecode-guard
-        optional: true
-        branches:
-        - ^master$
-        decorate: true
-        path_alias: github.com/kyma-project/console
-        max_concurrency: 10
-        spec:
-          automountServiceAccountToken: true
-          containers:
-          - <<: *base_image_k16
-            command:
-            - "bash"
-            args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        run_if_changed: "^"
-        labels:
-          preset-build-pr: "true"
-          <<: *job_labels_template
-        extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+      optional: true
+      branches:
+      - ^master$
+      decorate: true
+      path_alias: github.com/kyma-project/console
+      max_concurrency: 10
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - <<: *base_image_k16
+          env:
+            - name: JOB_NAME_PATTERN
+              value: "pre-console-.*"
+          command:
+          - "bash"
+          args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+      run_if_changed: ".*"
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
 
   kyma-incubator/pamela:
     - name: pre-master-pamela-protecode-guard
-        optional: true
-        branches:
-        - ^master$
-        decorate: true
-        path_alias: github.com/kyma-incubator/pamela
-        max_concurrency: 10
-        spec:
-          automountServiceAccountToken: true
-          containers:
-          - <<: *base_image_k16
-            command:
-            - "bash"
-            args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        run_if_changed: ""
-        labels:
-          preset-build-pr: "true"
-          <<: *job_labels_template
-        extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
+      optional: true
+      branches:
+      - ^master$
+      decorate: true
+      path_alias: github.com/kyma-incubator/pamela
+      max_concurrency: 10
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - <<: *base_image_k16
+          env:
+            - name: JOB_NAME_PATTERN
+              value: ".*"
+          command:
+          - "bash"
+          args:
+          - "-c"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+      run_if_changed: "pre-kyma-incubator-pamela"
+      labels:
+        preset-build-pr: "true"
+        <<: *job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
 

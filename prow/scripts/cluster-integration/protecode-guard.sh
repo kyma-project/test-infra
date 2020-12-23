@@ -18,12 +18,11 @@ getScanResult(){
     curl -s "${CLOUD_FUNCTION_URL}?tag=${tag}" -H "Content-Type:application/json" > "${RESPONSE_FILE}"
 
     SUCCESS=$(jq '.success' "${RESPONSE_FILE}")
-
     if [[ "$SUCCESS" == "true" ]]; then
         echo "success"
+    else
+        echo "failure"
     fi
-
-    echo "failure"
 }
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
@@ -36,9 +35,10 @@ PR_NAME="PR-${PULL_NUMBER}"
 echo "Protecode scan result for ${PR_NAME}:"
 
 counter=1
-while [ $counter -le 10 ]
+limit=10
+while [ $counter -le $limit ]
 do
-    log::banner "Attempt ${counter}"
+    log::banner "Attempt ${counter} of ${limit}"
     ((counter++))
 
     RESULT=$(getScanResult "${PR_NAME}")
