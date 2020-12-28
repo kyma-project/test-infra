@@ -115,7 +115,6 @@ presubmits: # runs on PRs
             requests:
               memory: 200Mi
               cpu: 80m
-
       labels:
         preset-build-pr: "true"
         <<: *job_labels_template
