@@ -17,6 +17,7 @@ job_template: &job_template
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+  branches:
   run_if_changed: "^components/istio-kyma-patch/|^common/makefiles/"
   spec:
     containers:
@@ -37,20 +38,6 @@ presubmits: # runs on PRs
     - name: pre-kyma-components-istio-kyma-patch
       cluster: untrusted-workload
       optional: true
-      branches:
-      <<: *job_template
-    
-    - name: pre-rel117-kyma-components-istio-kyma-patch
-      cluster: untrusted-workload
-      optional: true
-      branches:
-        - release-1.17
-      <<: *job_template
-    - name: pre-rel116-kyma-components-istio-kyma-patch
-      cluster: untrusted-workload
-      optional: true
-      branches:
-        - release-1.16
       <<: *job_template
 
 postsubmits:
@@ -59,28 +46,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      branches:
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      <<: *job_template
-    
-    - name: post-rel117-kyma-components-istio-kyma-patch
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      branches:
-        - release-1.17
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      <<: *job_template
-    - name: post-rel116-kyma-components-istio-kyma-patch
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      branches:
-        - release-1.16
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'

@@ -46,6 +46,12 @@ job_template: &job_template
     - <<: *test_infra_ref
       base_ref: master
 {{- end }}
+  branches:
+  {{- if $isValidForNextRelease }}
+    - ^master$
+    - ^main$
+    - ^release-({{ $releasesPattern }})$
+  {{- end }}
   run_if_changed: "{{ $runIfChanged }}"
   spec:
     containers:
@@ -66,20 +72,7 @@ presubmits: # runs on PRs
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       optional: {{ .Values.optional | default false }}
-      branches:
-        {{- if $isValidForNextRelease }}
-        - ^master$
-        - ^main$
-        {{- end }}
       <<: *job_template
-    {{ range $releases }}
-    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
-      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      optional: {{ $.Values.optional | default false }}
-      branches:
-        - release-{{ . }}
-      <<: *job_template
-{{- end }}
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
@@ -87,28 +80,9 @@ postsubmits:
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
         testgrid-create-test-group: "false"
-      branches:
-        {{- if $isValidForNextRelease }}
-        - ^master$
-        - ^main$
-        {{- end }}
       {{- if or .Values.optional .Values.skipSlackReport }}
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'
       {{- end}}
       <<: *job_template
-    {{ range $releases }}
-    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
-      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-      annotations:
-        testgrid-create-test-group: "false"
-      branches:
-        - release-{{ . }}
-      {{- if or $.Values.optional $.Values.skipSlackReport }}
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      {{- end }}
-      <<: *job_template
-{{- end }}

@@ -17,6 +17,10 @@ job_template: &job_template
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
+  branches:
+    - ^master$
+    - ^main$
+    - ^release-(1\.18|1\.17)$
   run_if_changed: "^tests/tenant-fetcher/|^scripts/"
   spec:
     containers:
@@ -37,22 +41,6 @@ presubmits: # runs on PRs
     - name: pre-compass-tests-tenant-fetcher
       cluster: untrusted-workload
       optional: true
-      branches:
-        - ^master$
-        - ^main$
-      <<: *job_template
-    
-    - name: pre-rel118-compass-tests-tenant-fetcher
-      cluster: untrusted-workload
-      optional: true
-      branches:
-        - release-1.18
-      <<: *job_template
-    - name: pre-rel117-compass-tests-tenant-fetcher
-      cluster: untrusted-workload
-      optional: true
-      branches:
-        - release-1.17
       <<: *job_template
 
 postsubmits:
@@ -61,30 +49,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      branches:
-        - ^master$
-        - ^main$
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      <<: *job_template
-    
-    - name: post-rel118-compass-tests-tenant-fetcher
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      branches:
-        - release-1.18
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      <<: *job_template
-    - name: post-rel117-compass-tests-tenant-fetcher
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      branches:
-        - release-1.17
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'
