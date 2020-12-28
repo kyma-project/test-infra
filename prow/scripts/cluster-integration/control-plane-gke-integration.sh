@@ -14,6 +14,10 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -96,7 +100,8 @@ function createCluster() {
 
   shout "Authenticate"
   date
-  init
+  gcloud::authenticate
+  docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"

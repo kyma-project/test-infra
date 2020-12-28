@@ -55,6 +55,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function check_status() {
   status="${1}"
@@ -376,7 +380,8 @@ function test_console_url() {
   fi
 }
 
-init
+gcloud::authenticate
+docker::start
 az::login "$AZURE_CREDENTIALS_FILE"
 az::set_subscription "$AZURE_SUBSCRIPTION_ID"
 

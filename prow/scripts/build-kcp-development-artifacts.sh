@@ -14,6 +14,10 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${SCRIPT_DIR}/library.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${SCRIPT_DIR}/lib/docker.sh"
 
 requiredVars=(
     DOCKER_PUSH_REPOSITORY
@@ -47,7 +51,8 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-init
+gcloud::authenticate
+docker::start
 export_variables
 
 # installer ci-pr, ci-master, kyma-installer ci-pr, ci-master

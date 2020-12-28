@@ -35,6 +35,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -70,7 +72,7 @@ ERROR_LOGGING_GUARD="true"
 
 shout "Authenticate"
 date
-init
+gcloud::authenticate
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 

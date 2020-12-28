@@ -38,6 +38,10 @@ export TTL_HOURS=168 #7 days
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -151,7 +155,8 @@ ERROR_LOGGING_GUARD="true"
 
 shout "Authenticate"
 date
-init
+gcloud::authenticate
+docker::start
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 shout "Reserve IP Address for Ingressgateway"
