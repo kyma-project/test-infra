@@ -17,10 +17,6 @@ job_template: &job_template
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  branches:
-    - ^master$
-    - ^main$
-    - ^release-(1\.18|1\.17|1\.16)-event-sources$
   run_if_changed: "^components/event-sources/|^common/makefiles/"
   spec:
     containers:
@@ -41,6 +37,28 @@ presubmits: # runs on PRs
     - name: pre-kyma-components-event-sources
       cluster: untrusted-workload
       optional: false
+      branches:
+        - ^master$
+        - ^main$
+      <<: *job_template
+    
+    - name: pre-rel118-kyma-components-event-sources
+      cluster: untrusted-workload
+      optional: false
+      branches:
+        - release-1.18
+      <<: *job_template
+    - name: pre-rel117-kyma-components-event-sources
+      cluster: untrusted-workload
+      optional: false
+      branches:
+        - release-1.17
+      <<: *job_template
+    - name: pre-rel116-kyma-components-event-sources
+      cluster: untrusted-workload
+      optional: false
+      branches:
+        - release-1.16
       <<: *job_template
 
 postsubmits:
@@ -49,4 +67,29 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
+      branches:
+        - ^master$
+        - ^main$
+      <<: *job_template
+    
+    - name: post-rel118-kyma-components-event-sources
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - release-1.18
+      <<: *job_template
+    - name: post-rel117-kyma-components-event-sources
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - release-1.17
+      <<: *job_template
+    - name: post-rel116-kyma-components-event-sources
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      branches:
+        - release-1.16
       <<: *job_template

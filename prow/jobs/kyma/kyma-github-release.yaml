@@ -55,7 +55,7 @@ postsubmits:
       description: GitHub Release job for Kyma 1.18.
       testgrid-days-of-results: "90"
     branches:
-      - release-1.18
+      - '^1\.18\.\d+(?:-.*)?$' # release tags
     <<: *job_template
     extra_refs:
       - <<: *test_infra_ref
@@ -71,7 +71,7 @@ postsubmits:
       description: GitHub Release job for Kyma 1.17.
       testgrid-days-of-results: "90"
     branches:
-      - release-1.17
+      - '^1\.17\.\d+(?:-.*)?$' # release tags
     <<: *job_template
     extra_refs:
       - <<: *test_infra_ref
@@ -87,7 +87,7 @@ postsubmits:
       description: GitHub Release job for Kyma 1.16.
       testgrid-days-of-results: "90"
     branches:
-      - release-1.16
+      - '^1\.16\.\d+(?:-.*)?$' # release tags
     <<: *job_template
     extra_refs:
       - <<: *test_infra_ref

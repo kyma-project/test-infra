@@ -46,7 +46,7 @@ postsubmits:
       description: GitHub Release job for Kyma {{ . }}.
       testgrid-days-of-results: "90"
     branches:
-      - release-{{ . }}
+      - '^{{ . | replace "." "\\." }}\.\d+(?:-.*)?$' # release tags
     <<: *job_template
     extra_refs:
       - <<: *test_infra_ref
