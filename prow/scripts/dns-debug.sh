@@ -20,7 +20,7 @@ export DNS_FULL_NAME="dns-test.a.build.kyma-project.io."
 export IP_ADDRESS_NAME="dns-test"
 export IP_ADDRESS
 
-SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
+SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPTS_PATH}/lib/log.sh"
 
