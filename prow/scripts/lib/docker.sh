@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}/log.sh"
+
 # docker::start starts the Docker Daemon if not already started
 function docker::start {
     log::banner "Starting Docker..."
