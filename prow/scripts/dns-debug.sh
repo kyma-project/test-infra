@@ -23,7 +23,10 @@ export IP_ADDRESS
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPTS_PATH}/lib/log.sh"
+# shellcheck source=prow/scripts/lib/common.sh
+source "${SCRIPTS_PATH}/lib/common.sh"
 
+common::init
 IP_ADDRESS=$("${SCRIPTS_PATH}"/cluster-integration/helpers/reserve-ip-address.sh)
 "${SCRIPTS_PATH}"/cluster-integration/helpers/create-dns-record.sh
 "${SCRIPTS_PATH}"/cluster-integration/helpers/delete-dns-record-gcloud.sh
