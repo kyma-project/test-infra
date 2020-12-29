@@ -21,10 +21,11 @@ export IP_ADDRESS_NAME="dns-test"
 export IP_ADDRESS
 
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-#shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPTS_PATH}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/common.sh
 source "${SCRIPTS_PATH}/lib/common.sh"
+#shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPTS_PATH}/lib/log.sh"
+
 
 common::init
 IP_ADDRESS=$("${SCRIPTS_PATH}"/cluster-integration/helpers/reserve-ip-address.sh)
