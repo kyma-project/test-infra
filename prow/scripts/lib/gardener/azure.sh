@@ -126,7 +126,7 @@ gardener::provision_cluster() {
             --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
             --scaler-max 1 --scaler-min 1 \
             --disk-type StandardSSD_LRS \
-            --kube-version=${GARDENER_CLUSTER_VERSION} \
+            --kube-version="${GARDENER_CLUSTER_VERSION}" \
             --verbose
     else
         kyma provision gardener az \
@@ -134,7 +134,7 @@ gardener::provision_cluster() {
             --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
             --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
             --disk-type StandardSSD_LRS \
-            --kube-version=${GARDENER_CLUSTER_VERSION} \
+            --kube-version="${GARDENER_CLUSTER_VERSION}" \
             --verbose
     fi
     set +x
