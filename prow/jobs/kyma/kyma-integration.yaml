@@ -1002,6 +1002,37 @@ periodics:
               memory: 200Mi
               cpu: 80m
 
+  - name: dns-debug
+    cluster: untrusted-workload
+    cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    labels:
+      <<: *gke_job_labels_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    spec:
+      volumes:
+        - name: sa-stability-fluentd-storage-writer
+          secret:
+            secretName: sa-stability-fluentd-storage-writer
+      containers:
+        - <<: *base_image_k16
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: sa-stability-fluentd-storage-writer
+              mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+              readOnly: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/dns-debug.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
+          
   - name: kyma-aks-nightly
     cluster: trusted-workload
     cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
