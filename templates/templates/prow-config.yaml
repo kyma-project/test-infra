@@ -152,6 +152,8 @@ presets:
       value: "kyma-prow"
     - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
       value: "kyma-azure"
+    - name: GARDENER_PROVIDER
+      value: "azure"
     volumes:
     - name: gardener-kyma-prow-kubeconfig
       secret:
@@ -168,6 +170,8 @@ presets:
       value: "kyma-prow"
     - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
       value: "kyma-gcp-workloads"
+    - name: GARDENER_PROVIDER
+      value: "gcp"
     volumes:
     - name: gardener-kyma-prow-kubeconfig
       secret:
@@ -184,6 +188,8 @@ presets:
       value: "kyma-prow"
     - name: GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
       value: "prow-dev-aws"
+    - name: GARDENER_PROVIDER
+      value: "aws"
     volumes:
     - name: gardener-kyma-prow-kubeconfig
       secret:
