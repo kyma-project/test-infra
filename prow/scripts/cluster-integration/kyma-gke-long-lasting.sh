@@ -82,8 +82,8 @@ TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
@@ -350,7 +350,7 @@ log::info "install image-guard"
 helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-guard"
 
 export INSTALL_DIR=${TMP_DIR}
-install::kyma_cli
+kyma::install_cli
 
 shout "Install kyma"
 date

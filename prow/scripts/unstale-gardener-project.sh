@@ -10,11 +10,11 @@ KYMA_PROJECT_DIR="/home/prow/go/src/github.com/kyma-project"
 
 #shellcheck source=prow/scripts/lib/log.sh
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/log.sh"
-#shellcheck source=prow/scripts/lib/kyma-cli.sh
-source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/kyma-cli.sh"
+#shellcheck source=prow/scripts/lib/kyma.sh
+source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/kyma.sh"
 
 log::info "Install Kyma CLI"
-install::kyma_cli
+kyma::install_cli
 
 log::info "Provision Gardener cluster in GCP"
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c4)

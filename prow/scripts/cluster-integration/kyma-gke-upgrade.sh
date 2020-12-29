@@ -76,8 +76,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
-# shellcheck source=prow/scripts/cluster-integration/helpers/kyma-cli.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -102,7 +102,7 @@ utils::check_required_vars "${requiredVars[@]}"
 
 function installCli() {
   export INSTALL_DIR=${TMP_DIR}
-  install::kyma_cli
+  kyma::install_cli
 }
 
 trap gkeCleanup EXIT INT

@@ -58,8 +58,8 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/cluster-integration/helpers/kyma-cli.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -135,7 +135,7 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-install::kyma_cli
+kyma::install_cli
 
 # currently only Azure generates overrides, but this may chaneg in the future
 gardener::generate_overrides

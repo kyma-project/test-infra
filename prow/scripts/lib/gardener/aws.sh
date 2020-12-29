@@ -2,8 +2,8 @@
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/testing-helpers.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
@@ -20,10 +20,10 @@ gardener::cleanup() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    testing::run_test_log_collector "kyma-integration-gardener-aws"
+    kyma::run_test_log_collector "kyma-integration-gardener-aws"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testing::test_summary
+        kyma::test_summary
         SUITE_EXIT_STATUS=$?
         if [[ ${EXIT_STATUS} -eq 0 ]]; then
             EXIT_STATUS=$SUITE_EXIT_STATUS
