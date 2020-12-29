@@ -83,7 +83,6 @@ fi
 utils::check_required_vars "${requiredVars[@]}"
 
 # we need to start the docker daemon. This is done by calling init from the library.sh
-gcloud::authenticate
 docker::start
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c6)
