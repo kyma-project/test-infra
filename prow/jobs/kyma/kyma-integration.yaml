@@ -1059,7 +1059,8 @@ periodics:
 
   - name: dns-debug
     cluster: untrusted-workload
-    cron: "0 4 * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    interval: 5m
+    #cron: "0/5 * * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
     labels:
       <<: *gke_job_labels_template
     decorate: true
