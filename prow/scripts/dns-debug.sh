@@ -13,12 +13,14 @@
 #Permissions: In order to run this script you need to use a service account with "DNS Administrator" role
 #Permissions: In order to run this script you need to use a service account with "Compute Network Admin" role
 
+export IP_ADDRESS
+export IP_ADDRESS_NAME
+export DNS_FULL_NAME
 export CLOUDSDK_CORE_PROJECT="sap-kyma-prow-workloads"
 export CLOUDSDK_DNS_ZONE_NAME="build-kyma-workloads"
 export CLOUDSDK_COMPUTE_REGION="europe-west3"
-export DNS_FULL_NAME="dns-test-$(date +%s).a.build.kyma-project.io."
-export IP_ADDRESS_NAME="dns-test-$(date +%s)"
-export IP_ADDRESS
+DNS_FULL_NAME="dns-test-$(date +%s).a.build.kyma-project.io."
+IP_ADDRESS_NAME="dns-test-$(date +%s)"
 
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck source=prow/scripts/lib/gcloud.sh
