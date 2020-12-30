@@ -126,7 +126,7 @@ ERROR_LOGGING_GUARD="true"
 log::info "Authenticate"
 date
 gcloud::authenticate
-INSTALL_DIR=$(mktemp -d) kyma::install_cli
+kyma::install_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
