@@ -31,4 +31,4 @@ gcloud::authenticate
 IP_ADDRESS=$("${SCRIPTS_PATH}"/cluster-integration/helpers/reserve-ip-address.sh)
 "${SCRIPTS_PATH}"/cluster-integration/helpers/create-dns-record.sh
 "${SCRIPTS_PATH}"/cluster-integration/helpers/delete-dns-record-gcloud.sh
-"${SCRIPTS_PATH}"/cluster-integration/helpers/release-ip-address.sh --dryRun false --ipname ${IP_ADDRESS_NAME} --project ${CLOUDSDK_CORE_PROJECT} --region ${CLOUDSDK_COMPUTE_REGION}
+"${SCRIPTS_PATH}"/cluster-integration/helpers/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
