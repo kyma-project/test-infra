@@ -12,24 +12,6 @@ fi
 ENABLE_TEST_LOG_COLLECTOR=false
 TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
 
-discoverUnsetVar=false
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
-  if [ -z "${!var}" ] ; then
-    echo "ERROR: $var is not set"
-    discoverUnsetVar=true
-  fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-  exit 1
-fi
-
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -38,6 +20,32 @@ readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCK
 
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    DOCKER_PUSH_REPOSITORY
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_COMPUTE_ZONE
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -100,7 +108,8 @@ function createCluster() {
 
   shout "Authenticate"
   date
-  init
+  gcloud::authenticate
+  docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -345,7 +354,10 @@ shout "Install Compass on top of Kyma"
 date
 installCompass
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+  ENABLE_TEST_LOG_COLLECTOR=true
+fi
 
 shout "Test Kyma with Compass"
 date

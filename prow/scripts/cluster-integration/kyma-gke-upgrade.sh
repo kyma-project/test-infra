@@ -35,35 +35,6 @@ set -o errexit
 ENABLE_TEST_LOG_COLLECTOR=false
 TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-upgrade"
 
-discoverUnsetVar=false
-for var in REPO_OWNER \
-  REPO_NAME \
-  DOCKER_PUSH_REPOSITORY \
-  KYMA_PROJECT_DIR \
-  CLOUDSDK_CORE_PROJECT \
-  CLOUDSDK_COMPUTE_REGION \
-  CLOUDSDK_DNS_ZONE_NAME \
-  GOOGLE_APPLICATION_CREDENTIALS \
-  KYMA_ARTIFACTS_BUCKET \
-  BOT_GITHUB_TOKEN \
-  DOCKER_IN_DOCKER_ENABLED \
-  GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
-  if [[ -z "${!var}" ]]; then
-    echo "ERROR: $var is not set"
-    discoverUnsetVar=true
-  fi
-done
-if [[ "${discoverUnsetVar}" = true ]]; then
-  exit 1
-fi
-
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-  if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ]; then
-    echo "ERROR: LOG_COLLECTOR_SLACK_TOKEN is not set"
-    exit 1
-  fi
-fi
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -102,11 +73,32 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
 # shellcheck source=prow/scripts/cluster-integration/helpers/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
 
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    DOCKER_PUSH_REPOSITORY
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    KYMA_ARTIFACTS_BUCKET
+    BOT_GITHUB_TOKEN
+    DOCKER_IN_DOCKER_ENABLED
+    GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+)
+
+utils::check_required_vars "${requiredVars[@]}"
+
 
 function installCli() {
   export INSTALL_DIR=${TMP_DIR}
@@ -462,7 +454,10 @@ installKyma
 
 createTestResources
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+  ENABLE_TEST_LOG_COLLECTOR=true
+fi
 
 applyScenario
 

@@ -10,6 +10,11 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
+kyma_local_ref: &kyma_local_ref
+  org: kyma-incubator
+  repo: local-kyma
+  path_alias: github.com/kyma-incubator/local-kyma
+
 # Kubectl 1.14 and CLUSTER_VERSION=1.14
 base_image_k14: &base_image_k14
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.14
@@ -34,11 +39,25 @@ vm_job_template: &vm_job_template
     containers:
       - <<: *base_image_k16
         command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
         resources:
           requests:
             memory: 100Mi
             cpu: 50m
+
+vm_job_template_k3s: &vm_job_template_k3s
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
 
 vm_job_template_serverless_k3s: &vm_job_template_serverless_k3s
   decorate: true
@@ -75,17 +94,17 @@ presets:
       - name: AZURE_REGION
         value: westeurope
   - labels:
-        preset-gke-ver1_18_10: "true"
+        preset-gke-ver1_18_12: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.18.10-gke.2701
+        value: 1.18.12-gke.1201
       - name: RELEASE_CHANNEL
         value: rapid
   - labels:
         preset-gke-ver1_17_13: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.17.13-gke.2001
+        value: 1.17.13-gke.2600
       - name: RELEASE_CHANNEL
         value: regular
   - labels:
@@ -299,6 +318,24 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    
+    - name: pre-master-kyma-integration-k3s
+      optional: true
+      cluster: untrusted-workload
+      branches:
+      - ^master$
+      <<: *vm_job_template_k3s
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
+    
     - name: pre-master-serverless-integration-k3s
       cluster: untrusted-workload
       branches:
@@ -535,6 +572,24 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+      
+    - name: post-master-kyma-integration-k3s
+      cluster: trusted-workload
+      annotations:
+        testgrid-dashboards: kyma_integration
+        description: Kyma integration job on k3s.
+        testgrid-days-of-results: "60"
+      <<: *vm_job_template_k3s
+      branches:
+      - ^master$
+      labels:
+        preset-build-master: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
 
     - name: post-master-kyma-gke-integration
       cluster: trusted-workload
@@ -587,7 +642,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: post-master-kyma-gke-ver1_18_10-integration
+    - name: post-master-kyma-gke-ver1_18_12-integration
       cluster: trusted-workload
       <<: *gke_job_template
       annotations:
@@ -597,7 +652,7 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
-        preset-gke-ver1_18_10: "true"
+        preset-gke-ver1_18_12: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref

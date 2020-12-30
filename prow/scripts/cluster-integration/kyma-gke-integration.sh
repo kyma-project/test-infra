@@ -34,25 +34,6 @@ set -o errexit
 ENABLE_TEST_LOG_COLLECTOR=false
 TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-integration"
 
-discoverUnsetVar=false
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS KYMA_ARTIFACTS_BUCKET GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
-    if [ -z "${!var}" ] ; then
-        log::error "$var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
-
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
-
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -62,14 +43,31 @@ KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 INTEGRATION_TEST_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.integration=true"
 
-# shellcheck source=prow/scripts/lib/common.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/common.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/kyma-cli.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    DOCKER_PUSH_REPOSITORY
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    KYMA_ARTIFACTS_BUCKET
+    GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 trap gkeCleanup EXIT INT
 
@@ -127,7 +125,7 @@ ERROR_LOGGING_GUARD="true"
 
 log::info "Authenticate"
 date
-common::init
+gcloud::authenticate
 INSTALL_DIR=$(mktemp -d) install::kyma_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
@@ -256,7 +254,10 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+  ENABLE_TEST_LOG_COLLECTOR=true
+fi
 
 log::info "Test Kyma"
 # shellcheck disable=SC2031

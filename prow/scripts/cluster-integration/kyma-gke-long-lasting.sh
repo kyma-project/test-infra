@@ -3,22 +3,32 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-discoverUnsetVar=false
-
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG CERTIFICATES_BUCKET; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+	INPUT_CLUSTER_NAME
+	DOCKER_PUSH_REPOSITORY
+	DOCKER_PUSH_DIRECTORY
+	KYMA_PROJECT_DIR
+	CLOUDSDK_CORE_PROJECT
+	CLOUDSDK_COMPUTE_REGION
+	CLOUDSDK_COMPUTE_ZONE
+	CLOUDSDK_DNS_ZONE_NAME
+	GOOGLE_APPLICATION_CREDENTIALS
+	SLACK_CLIENT_TOKEN
+	SLACK_CLIENT_WEBHOOK_URL
+	STABILITY_SLACK_CLIENT_CHANNEL_ID
+	STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
+	CERTIFICATES_BUCKET
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
@@ -74,6 +84,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	shout "Reserve IP Address for Ingressgateway"
@@ -241,8 +255,7 @@ EOF
 
   # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
   echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
-  yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
 cat << EOF > istio-ingressgateway-patch-yq.yaml
 - command: update
   path: spec.components.ingressGateways[0].k8s.service
@@ -314,7 +327,8 @@ function installStackdriverPrometheusCollector(){
 
 shout "Authenticate"
 date
-init
+gcloud::authenticate
+docker::start
 
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"

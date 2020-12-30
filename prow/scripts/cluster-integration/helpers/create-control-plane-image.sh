@@ -11,15 +11,19 @@
 
 set -o errexit
 
-for var in KCP_SOURCES_DIR KCP_INSTALLER_IMAGE CLOUDSDK_CORE_PROJECT; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+#Exported variables
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+    KCP_SOURCES_DIR
+    KCP_INSTALLER_IMAGE
+    CLOUDSDK_CORE_PROJECT
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 echo "--------------------------------------------------------------------------------"
 echo "Building KCP-Installer image: ${KCP_INSTALLER_IMAGE}"

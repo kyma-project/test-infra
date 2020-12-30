@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}/log.sh"
+
 # docker::start starts the Docker Daemon if not already started
 function docker::start {
     log::banner "Starting Docker..."
@@ -74,7 +79,7 @@ function docker::build_post_pr_tag {
       log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
       return 0
     else
-      log:error "Failed building PR tag."
+      log::error "Failed building PR tag."
       return 0
     fi
   else
@@ -96,7 +101,7 @@ function docker::build_post_pr_tag {
         log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
         return 0
       else
-        log:error "Failed building PR tag."
+        log::error "Failed building PR tag."
         return 0
       fi
     else
