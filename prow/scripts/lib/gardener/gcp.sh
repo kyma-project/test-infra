@@ -43,8 +43,6 @@ gardener::cleanup() {
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
     fi
 
-    rm -rf "${TMP_DIR}"
-
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     log::info "Job is finished ${MSG}"

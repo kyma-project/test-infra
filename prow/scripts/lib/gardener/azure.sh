@@ -51,8 +51,6 @@ gardener::cleanup() {
         az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
     fi
 
-    rm -rf "${TMP_DIR}"
-
     MSG=""
     if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
     log::info "Job is finished ${MSG}"
