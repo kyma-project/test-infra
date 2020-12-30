@@ -2,7 +2,7 @@
 
 #Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
 #
-#Expected vars:
+#Expected common vars:
 # - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - GARDENER_REGION - Gardener compute region
@@ -12,35 +12,9 @@
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the secret configured in the gardener project to access the cloud provider
 # - MACHINE_TYPE (optional): machine type
 #
-#Provider specific:
-#
-#AWS:
-#Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
-# - Compute Admin
-# - Service Account User
-# - Service Account Admin
-# - Service Account Token Creator
-# - Make sure the service account is enabled for the Google Identity and Access Management API.
-#
-#
-#Azure:
-# - RS_GROUP - azure resource group
-# - REGION - azure region
-# - AZURE_SUBSCRIPTION_ID
-# - AZURE_SUBSCRIPTION_APP_ID
-# - AZURE_SUBSCRIPTION_SECRET
-# - AZURE_SUBSCRIPTION_TENANT
-# - CLOUDSDK_CORE_PROJECT - required for cleanup of resources
-#Permissions: In order to run this script you need to use an AKS service account with the contributor role
-#
-#
-#GCP:
-#Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
-# - Compute Admin
-# - Service Account User
-# - Service Account Admin
-# - Service Account Token Creator
-# - Make sure the service account is enabled for the Google Identity and Access Management API.
+#Please look in each provider script for provider specific requirements
+
+
 
 
 # exit on error, and raise error when variable is not set when used

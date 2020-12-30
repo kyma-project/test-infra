@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+#Azure:
+#Expected vars (additional to common vars):
+# - RS_GROUP - azure resource group
+# - REGION - azure region
+# - AZURE_SUBSCRIPTION_ID
+# - AZURE_SUBSCRIPTION_APP_ID
+# - AZURE_SUBSCRIPTION_SECRET
+# - AZURE_SUBSCRIPTION_TENANT
+# - CLOUDSDK_CORE_PROJECT - required for cleanup of resources
+#Permissions: In order to run this script you need to use an AKS service account with the contributor role
+
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh

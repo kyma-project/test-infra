@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+#Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
+# - Compute Admin
+# - Service Account User
+# - Service Account Admin
+# - Service Account Token Creator
+# - Make sure the service account is enabled for the Google Identity and Access Management API.
+
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh

@@ -101,7 +101,6 @@ utils::check_required_vars "${requiredVars[@]}"
 
 
 function installCli() {
-  export INSTALL_DIR=${TMP_DIR}
   kyma::install_cli
 }
 

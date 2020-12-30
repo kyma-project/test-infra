@@ -349,7 +349,6 @@ createCluster
 log::info "install image-guard"
 helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-guard"
 
-export INSTALL_DIR=${TMP_DIR}
 kyma::install_cli
 
 shout "Install kyma"

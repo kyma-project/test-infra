@@ -367,7 +367,6 @@ export CLUSTER_NAME="${COMMON_NAME}"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-export INSTALL_DIR=${TMP_DIR}
 kyma::install_cli
 
 provisionCluster

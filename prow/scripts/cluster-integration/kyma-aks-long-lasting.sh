@@ -402,7 +402,6 @@ export TLS_KEY
 
 setupKubeconfig
 
-export INSTALL_DIR=${TMP_DIR}
 kyma::install_cli
 
 installKyma

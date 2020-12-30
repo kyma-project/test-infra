@@ -84,7 +84,6 @@ function main() {
   echo "- Testing Kyma..."
   echo "----------------------------"
 
-  export INSTALL_DIR=${TMP_DIR}
   if ! [[ -x "$(command -v kyma)" ]];
   then
     kyma::install_cli
