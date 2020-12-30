@@ -55,7 +55,6 @@ export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
 export TEST_CONTAINER_NAME="tests"
 
-TMP_DIR=$(mktemp -d)
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
