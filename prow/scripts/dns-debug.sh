@@ -21,13 +21,13 @@ export IP_ADDRESS_NAME="dns-test"
 export IP_ADDRESS
 
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/lib/common.sh
-source "${SCRIPTS_PATH}/lib/common.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPTS_PATH}/lib/gcloud.sh"
 #shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPTS_PATH}/lib/log.sh"
 
 
-common::init
+gcloud::authenticate
 IP_ADDRESS=$("${SCRIPTS_PATH}"/cluster-integration/helpers/reserve-ip-address.sh)
 "${SCRIPTS_PATH}"/cluster-integration/helpers/create-dns-record.sh
 "${SCRIPTS_PATH}"/cluster-integration/helpers/delete-dns-record-gcloud.sh
