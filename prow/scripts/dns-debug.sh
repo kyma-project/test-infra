@@ -16,8 +16,8 @@
 export CLOUDSDK_CORE_PROJECT="sap-kyma-prow-workloads"
 export CLOUDSDK_DNS_ZONE_NAME="build-kyma-workloads"
 export CLOUDSDK_COMPUTE_REGION="europe-west3"
-export DNS_FULL_NAME="dns-test.a.build.kyma-project.io."
-export IP_ADDRESS_NAME="dns-test"
+export DNS_FULL_NAME="dns-test-$(date +%s).a.build.kyma-project.io."
+export IP_ADDRESS_NAME="dns-test-$(date +%s)"
 export IP_ADDRESS
 
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -30,5 +30,7 @@ source "${SCRIPTS_PATH}/lib/log.sh"
 gcloud::authenticate
 IP_ADDRESS=$("${SCRIPTS_PATH}"/cluster-integration/helpers/reserve-ip-address.sh)
 "${SCRIPTS_PATH}"/cluster-integration/helpers/create-dns-record.sh
+log::banner "Debug output"
+cat "${ARTIFACTS}/dns-debug.txt"
 "${SCRIPTS_PATH}"/cluster-integration/helpers/delete-dns-record-gcloud.sh
 "${SCRIPTS_PATH}"/cluster-integration/helpers/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
