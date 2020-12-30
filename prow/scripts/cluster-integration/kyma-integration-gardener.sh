@@ -44,7 +44,7 @@
 
 
 # exit on error, and raise error when variable is not set when used
-set -eu
+set -e
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
@@ -111,7 +111,7 @@ if [[ -n ${PULL_NUMBER} ]]; then
     KYMA_SOURCE="PR-${PULL_NUMBER}"
     export KYMA_SOURCE
     # TODO maybe can be replaced with PULL_BASE_REF?
-elif [[ "$BUILD_TYPE" == "release" ]]; then
+elif [[ "${BUILD_TYPE}" == "release" ]]; then
     readonly RELEASE_VERSION=$(cat "${TEST_INFRA_SOURCES_DIR}/prow/RELEASE_VERSION")
     log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     KYMA_SOURCE="${RELEASE_VERSION}"
@@ -147,13 +147,13 @@ gardener::provision_cluster
 gardener::install_kyma
 
 
-if [[ "$HIBERNATION_ENABLED" == "true" ]]; then
+if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
     gardener::wake_up_kyma
 fi
 
-if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+if [[ "${EXECUTION_PROFILE}" == "evaluation" ]]; then
     gardener::test_fast_integration_kyma
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
