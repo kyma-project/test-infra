@@ -1067,6 +1067,7 @@ periodics:
       - <<: *test_infra_ref
         base_ref: master
     spec:
+      automountServiceAccountToken: true
       containers:
         - <<: *base_image_k16
           securityContext:

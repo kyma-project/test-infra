@@ -74,7 +74,7 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
     set +e
     log::banner "Debugging DNS issues"
     {
-      log:banner "get full dns response"
+      log::banner "get full dns response"
       dig "${DNS_FULL_NAME}"
       log::banner "trace DNS response"
       dig +trace "${DNS_FULL_NAME}"
