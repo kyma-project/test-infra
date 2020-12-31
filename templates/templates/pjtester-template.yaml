@@ -1,0 +1,6 @@
+templates:
+  - from: templates/pjtester-template.yaml
+    render:
+      - to: ../prow/jobs/test-infra/pjtester.yaml
+        localSets:
+        jobConfigs:
