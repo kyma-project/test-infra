@@ -26,17 +26,6 @@ gardener::cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    # collect logs from failed tests before deprovisioning
-    kyma::run_test_log_collector "kyma-integration-gardener-aws"
-
-    if [[ -n "${SUITE_NAME}" ]]; then
-        kyma::test_summary
-        SUITE_EXIT_STATUS=$?
-        if [[ ${EXIT_STATUS} -eq 0 ]]; then
-            EXIT_STATUS=$SUITE_EXIT_STATUS
-        fi
-    fi
-
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
         # Export envvars for the script
@@ -122,6 +111,7 @@ gardener::test_kyma() {
 
     readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
     readonly CONCURRENCY=5
+    set +e
     (
     set -x
     kyma test run \
@@ -133,5 +123,13 @@ gardener::test_kyma() {
         --non-interactive
     )
 
+    # collect logs from failed tests before deprovisioning
+    kyma::run_test_log_collector "kyma-integration-gardener-aws"
+    if ! kyma::test_summary; then
+      log::error "Tests have failed"
+      set -e
+      return 1
+    fi
+    set -e
     log::success "Tests completed"
 }
