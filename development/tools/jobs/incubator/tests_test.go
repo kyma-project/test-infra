@@ -46,6 +46,16 @@ var tests = []struct {
 		},
 	},
 	{
+		name:  "ord-service",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release117),
+		},
+	},
+	{
 		name:  "tenant-fetcher",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,

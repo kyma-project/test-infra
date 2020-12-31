@@ -155,6 +155,14 @@ compass_generic_component: &compass_generic_component
   additionalRunIfChanged:
     - ^scripts/
 
+compass_ord_service_generic_component: &compass_ord_service_generic_component
+  repository: github.com/kyma-incubator/ord-service
+  build: build
+  pushRepository: incubator
+  bootstrapTag: PR-2951
+  additionalRunIfChanged:
+    - ^scripts/
+
 compass_console_generic_component: &compass_console_generic_component
   repository: github.com/kyma-incubator/compass-console
   pushRepository: incubator
@@ -374,6 +382,13 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_ord_service_generic_component
+          path: components/ord-service
+          since: "1.17"
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
         values:
           <<: *cluster_default
@@ -456,6 +471,13 @@ templates:
           <<: *compass_generic_component
           path: tests/connectivity-adapter
           since: "1.11"
+          optional: false
+      - to: ../prow/jobs/incubator/compass/tests/ord-service/ord-service-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/ord-service
+          since: "1.17"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
         values:
