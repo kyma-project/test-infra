@@ -40,24 +40,24 @@ gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 log::info "Building kyma-installer"
-# Building kyma-installer image using build.sh script.
+# Building kyma-installer image using build-generic.sh script.
 # Handles basically everything related to building process including determining version, exporting DOCKER_TAG etc.
 "${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
 
 log::info "Create Kyma artifacts"
-env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_PATH}/installation/scripts/release-generate-kyma-installer-artifacts.sh"
+env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "installation/scripts/release-generate-kyma-installer-artifacts.sh"
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
-GOOGLE_APPLICATION_CREDENTIALS=SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS gcloud::authenticate
+GOOGLE_APPLICATION_CREDENTIALS="$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS" gcloud::authenticate
 
 if [ -n "$PULL_NUMBER" ]; then
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
 elif [[ "$PULL_BASE_REF" =~ ^release-.* ]]; then
   copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
+  # TODO this script needs to be revisited for future improvements...
+  "${SCRIPT_DIR}"/changelog-generator.sh
 else
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
 fi
-
-"${SCRIPT_DIR}"/changelog-generator.sh
