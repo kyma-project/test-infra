@@ -44,19 +44,19 @@ log::info "Building kyma-installer"
 # Handles basically everything related to building process including determining version, exporting DOCKER_TAG etc.
 "${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
 
-log::info "Create development artifacts"
+log::info "Create Kyma artifacts"
 env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_PATH}/installation/scripts/release-generate-kyma-installer-artifacts.sh"
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-if [ "$BUILD_TYPE" == "pr" ]; then
+if [ -n "$PULL_NUMBER" ]; then
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
-elif [ "$BUILD_TYPE" == "master" ]; then
+elif [[ "$PULL_BASE_REF" =~ ^release-.* ]]; then
+  copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
+else
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
-elif [ "$BUILD_TYPE" == "release" ]; then
-  copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
 fi
 
 "${SCRIPT_DIR}"/changelog-generator.sh
