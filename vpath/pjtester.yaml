@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-ord-service-components-ord-service"
+    pjPath: "test-infra/prow/jobs/incubator/ord-service/components/ord-service/"
+prConfigs:
+  kyma-incubator:
+    ord-service:
+      prNumber: 1
