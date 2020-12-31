@@ -16,30 +16,47 @@ source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 
-function export_variables() {
-   DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
-   echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
+# copy_artifacts copies artifacts to the destined bucket path.
+# it accepts one argument BUCKET_PATH which should be formatted as:
+# gs://bucket-name/bucket-folder
+function copy_artifacts {
+  readonly BUCKET_PATH=$1
+  log::info "Copying artifacts to $BUCKET_PATH..."
 
-   readonly DOCKER_TAG
-   export DOCKER_TAG
+  gsutil cp  "installation/scripts/is-installed.sh" "$BUCKET_PATH/is-installed.sh"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "$BUCKET_PATH/kyma-installer-cluster.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cluster-runtime.yaml" "$BUCKET_PATH/kyma-installer-cluster-runtime.yaml"
+
+  gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "$BUCKET_PATH/kyma-config-local.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-local.yaml" "$BUCKET_PATH/kyma-installer-local.yaml"
+
+  gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "$BUCKET_PATH/kyma-installer.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "$BUCKET_PATH/kyma-installer-cr-cluster.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cr-local.yaml" "$BUCKET_PATH/kyma-installer-cr-local.yaml"
+  gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "$BUCKET_PATH/kyma-installer-cr-cluster-runtime.yaml"
 }
 
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
-export_variables
 
-make -C /home/prow/go/src/github.com/kyma-project/kyma/tools/kyma-installer ci-create-release-artifacts
+log::info "Building kyma-installer"
+# Building kyma-installer image using build.sh script.
+# Handles basically everything related to building process including determining version, exporting DOCKER_TAG etc.
+"${SCRIPT_DIR}"/build.sh "tools/kyma-installer"
 
-gsutil cp "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster.yaml"
-gsutil cp "${ARTIFACTS}/kyma-installer-cluster-runtime.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cluster-runtime.yaml"
+log::info "Create development artifacts"
+env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_PATH}/installation/scripts/release-generate-kyma-installer-artifacts.sh"
 
-gsutil cp "${ARTIFACTS}/kyma-config-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-config-local.yaml"
-gsutil cp "${ARTIFACTS}/kyma-installer-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-local.yaml"
+log::info "Content of the local artifacts directory"
+ls -la "${ARTIFACTS}"
 
-gsutil cp "${ARTIFACTS}/kyma-installer.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer.yaml"
-gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr-cluster.yaml"
-gsutil cp "${ARTIFACTS}/kyma-installer-cr-local.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr-local.yaml"
-gsutil cp "${ARTIFACTS}/kyma-installer-cr-cluster-runtime.yaml" "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}/kyma-installer-cr-cluster-runtime.yaml"
-
+if [ "$BUILD_TYPE" == "pr" ]; then
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
+elif [ "$BUILD_TYPE" == "master" ]; then
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+elif [ "$BUILD_TYPE" == "release" ]; then
+  copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
+fi
 
 "${SCRIPT_DIR}"/changelog-generator.sh

@@ -760,11 +760,6 @@ templates:
       - to: ../prow/jobs/kyma/kyma-artifacts.yaml
         values:
           <<: *cluster_default
-  - from: templates/kyma-installer.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-installer.yaml
-        values:
-          <<: *cluster_default
   - from: templates/kyma-github-release.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-github-release.yaml

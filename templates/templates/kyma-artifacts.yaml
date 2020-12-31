@@ -20,25 +20,86 @@ job_template: &job_template
             cpu: 0.2
 
 job_labels_template: &job_labels_template
-  preset-dind-enabled: "true"
   preset-sa-kyma-artifacts: "true"
-  preset-kyma-artifacts-bucket: "true"
   preset-bot-github-token: "true"
+
+build_labels: &build_labels
+  preset-dind-enabled: "true"
+  preset-docker-push-repository-kyma: "true"
+
+release_job_labels: &release_job_labels
+  preset-kyma-artifacts-bucket: "true"
   preset-build-release: "true"
-  preset-docker-push-repository: "true"
+
+develop_job_labels: &develop_job_labels
+  preset-kyma-development-artifacts-bucket: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-{{ range .Global.releases }}
+    - name: pre-kyma-artifacts
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+        - ^main$
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      labels:
+        preset-build-pr: "true"
+        <<: *build_labels
+        <<: *develop_job_labels
+        <<: *job_labels_template
+    {{- range .Global.releases }}
     - name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
-        - release-{{ . }}
+        - ^release-{{ . }}$
       <<: *job_template
-      always_run: false
+      always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: release-{{ . }}
+          base_ref: ^release-{{ . }}$
       labels:
+        <<: *build_labels
+        <<: *develop_job_labels
         <<: *job_labels_template
-{{ end }}
+    {{- end }}
+
+postsubmits:
+  kyma-project/kyma:
+    - name: post-kyma-artifacts
+      annotations:
+        testgrid-create-test-group: "false"
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^master$
+        - ^main$
+      <<: *job_template
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      labels:
+        preset-build-artifacts-master: "true"
+        <<: *build_labels
+        <<: *develop_job_labels
+        <<: *job_labels_template
+    {{- range .Global.releases }}
+    - name: post-rel{{ . | replace "." "" }}-kyma-artifacts
+      annotations:
+        testgrid-create-test-group: "false"
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^release-{{ . }}$
+        - '^{{ . | replace "." "\\." }}\.\d+(?:-.*)?$' # release tags
+      always_run: true
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: ^release-{{ . }}$
+      labels:
+        <<: *build_labels
+        <<: *release_job_labels
+        <<: *job_labels_template
+    {{- end }}

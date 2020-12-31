@@ -22,10 +22,10 @@ if [[ -z "${SOURCES_DIR}" ]]; then
 fi
 
 function export_variables() {
-    if [[ "${BUILD_TYPE}" == "pr" ]]; then
+    if [[ -n "$PULL_NUMBER" ]] || [[ "$BUILD_TYPE" == "pr" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}"
     elif [[ "${BUILD_TYPE}" == "master" ]]; then
-        DOCKER_TAG=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
+        DOCKER_TAG="${PULL_BASE_SHA::8}"
     elif [[ "${BUILD_TYPE}" == "release" ]]; then
         # TODO: Improve this part
         if [[ ( "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ) || "${REPO_OWNER}" == "kyma-incubator" && "${REPO_NAME}" == "compass" ]]; then
@@ -54,7 +54,7 @@ fi
 
 export_variables
 
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
+if [[ -n "$PULL_NUMBER" ]] || [[ "$BUILD_TYPE" == "pr" ]]; then
     make -C "${SOURCES_DIR}" ci-pr
 elif [[ "${BUILD_TYPE}" == "master" ]]; then
     make -C "${SOURCES_DIR}" ci-master
