@@ -30,9 +30,9 @@ source "${SCRIPTS_PATH}/lib/log.sh"
 
 
 gcloud::authenticate
-IP_ADDRESS=$("${SCRIPTS_PATH}"/cluster-integration/helpers/reserve-ip-address.sh)
-"${SCRIPTS_PATH}"/cluster-integration/helpers/create-dns-record.sh
+IP_ADDRESS=$(gcloud::reserve_ip_address "${IP_ADDRESS_NAME}")
+gcloud::create_dns_record "${IP_ADDRESS}" "${DNS_FULL_NAME}"
 log::banner "Debug output"
 cat "${ARTIFACTS}/dns-debug.txt"
-"${SCRIPTS_PATH}"/cluster-integration/helpers/delete-dns-record-gcloud.sh
-"${SCRIPTS_PATH}"/cluster-integration/helpers/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+gcloud::delete_dns_record "${IP_ADDRESS}" "${DNS_FULL_NAME}"
+gcloud::delete_ip_address "${IP_ADDRESS_NAME}"
