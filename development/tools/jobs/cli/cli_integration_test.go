@@ -62,7 +62,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 1)
+	assert.Len(t, periodics, 2)
 
 	expName := "kyma-cli-integration-gke"
 	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -77,4 +77,18 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GO111MODULE", "on")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"}, actualPeriodic.Spec.Containers[0].Command)
+
+	expName := "kyma-cli-alpha-upgrade-gke"
+	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	require.NotNil(t, actualPeriodic)
+	assert.Equal(t, expName, actualPeriodic.Name)
+	assert.True(t, actualPeriodic.Decorate)
+	assert.Equal(t, "00 */1 * * 1-5", actualPeriodic.Cron)
+	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli", "kyma"})
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, "preset-gc-compute-envs", "preset-cluster-use-ssd")
+	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
+	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GO111MODULE", "on")
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-cli-alpha.sh"}, actualPeriodic.Spec.Containers[0].Command)
 }
