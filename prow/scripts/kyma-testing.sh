@@ -84,10 +84,7 @@ function main() {
   echo "- Testing Kyma..."
   echo "----------------------------"
 
-  if ! [[ -x "$(command -v kyma)" ]];
-  then
-    kyma::install_cli
-  fi
+  kyma::install_cli
 
   cts::check_crd_exist
 

@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}/log.sh"
+
 # kyma::install starts Kyma installation on the cluster
 #
 # Arguments:
@@ -89,24 +94,28 @@ function kyma::get_last_release_version {
 }
 
 kyma::install_cli() {
-    local settings
-    local kyma_version
-    settings="$(set +o); set -$-"
-    mkdir -p "/tmp/bin"
-    export PATH="/tmp/bin:${PATH}"
-    os=$(host::os)
+    if ! [[ -x "$(command -v kyma)" ]]; then
+        local settings
+        local kyma_version
+        settings="$(set +o); set -$-"
+        mkdir -p "/tmp/bin"
+        export PATH="/tmp/bin:${PATH}"
+        os=$(host::os)
 
-    pushd "/tmp/bin" || exit
+        pushd "/tmp/bin" || exit
 
-    echo "--> Install kyma CLI ${os} locally to /tmp/bin"
+        echo "--> Install kyma CLI ${os} locally to /tmp/bin"
 
-    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-    chmod +x kyma
-    kyma_version=$(kyma version --client)
-    echo "--> Kyma CLI version: ${kyma_version}"
-    echo "OK"
-    popd || exit
-    eval "${settings}"
+        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
+        chmod +x kyma
+        kyma_version=$(kyma version --client)
+        echo "--> Kyma CLI version: ${kyma_version}"
+        echo "OK"
+        popd || exit
+        eval "${settings}"
+    else
+        log::info "Kyma CLI is already installed: $(kyma version -c)"
+    fi
 }
 
 host::os() {
