@@ -94,6 +94,7 @@ postsubmits:
       branches:
         - ^release-{{ . }}$
         - '^{{ . | replace "." "\\." }}\.\d+(?:-.*)?$' # release tags
+      <<: *job_template
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
