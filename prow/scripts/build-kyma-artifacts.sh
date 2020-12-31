@@ -49,6 +49,7 @@ env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
+GOOGLE_APPLICATION_CREDENTIALS=SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS gcloud::authenticate
 
 if [ -n "$PULL_NUMBER" ]; then
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"

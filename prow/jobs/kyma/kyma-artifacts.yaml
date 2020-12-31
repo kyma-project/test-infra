@@ -22,11 +22,12 @@ job_template: &job_template
             cpu: 0.2
 
 job_labels_template: &job_labels_template
-  preset-sa-kyma-artifacts: "true"
+  preset-sa-kyma-push-artifacts: "true"
   preset-bot-github-token: "true"
 
 build_labels: &build_labels
   preset-dind-enabled: "true"
+  preset-sa-gcr-push: "true"
   preset-docker-push-repository-kyma: "true"
 
 release_job_labels: &release_job_labels
@@ -34,6 +35,23 @@ release_job_labels: &release_job_labels
 
 develop_job_labels: &develop_job_labels
   preset-kyma-development-artifacts-bucket: "true"
+
+# WORKAROUND: we create new preset with credentials to sa-kyma-artifacts but with different env variable.
+# related preset
+# preset-sa-kyma-artifacts: "true"
+presets:
+  - labels:
+      preset-sa-kyma-push-artifacts: "true"
+    env:
+      - name: SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-kyma-artifacts/service-account.json
+    volumes:
+      - name: sa-kyma-artifacts
+        secret:
+          secretName: sa-kyma-artifacts
+    volumeMounts:
+      - name: sa-kyma-artifacts
+        mountPath: /etc/credentials/sa-kyma-artifacts
 
 presubmits: # runs on PRs
   kyma-project/kyma:
