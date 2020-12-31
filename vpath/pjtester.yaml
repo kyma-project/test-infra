@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-test-infra-buildpack-java"
+    pjPath: "test-infra/prow/jobs/test-infra/"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 3076
