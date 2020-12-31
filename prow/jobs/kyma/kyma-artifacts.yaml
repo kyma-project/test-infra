@@ -31,7 +31,6 @@ build_labels: &build_labels
 
 release_job_labels: &release_job_labels
   preset-kyma-artifacts-bucket: "true"
-  preset-build-release: "true"
 
 develop_job_labels: &develop_job_labels
   preset-kyma-development-artifacts-bucket: "true"
@@ -49,7 +48,6 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
       labels:
-        preset-build-pr: "true"
         <<: *build_labels
         <<: *develop_job_labels
         <<: *job_labels_template
@@ -108,7 +106,6 @@ postsubmits:
         - <<: *test_infra_ref
           base_ref: master
       labels:
-        preset-build-artifacts-master: "true"
         <<: *build_labels
         <<: *develop_job_labels
         <<: *job_labels_template
@@ -118,7 +115,6 @@ postsubmits:
       cluster: trusted-workload
       branches:
         - ^release-1.18$
-        - '^1\.18\.\d+(?:-.*)?$' # release tags
       <<: *job_template
       always_run: true
       extra_refs:
@@ -134,7 +130,6 @@ postsubmits:
       cluster: trusted-workload
       branches:
         - ^release-1.17$
-        - '^1\.17\.\d+(?:-.*)?$' # release tags
       <<: *job_template
       always_run: true
       extra_refs:
@@ -150,7 +145,6 @@ postsubmits:
       cluster: trusted-workload
       branches:
         - ^release-1.16$
-        - '^1\.16\.\d+(?:-.*)?$' # release tags
       <<: *job_template
       always_run: true
       extra_refs:

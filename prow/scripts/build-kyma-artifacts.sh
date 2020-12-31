@@ -42,7 +42,7 @@ docker::start
 log::info "Building kyma-installer"
 # Building kyma-installer image using build.sh script.
 # Handles basically everything related to building process including determining version, exporting DOCKER_TAG etc.
-"${SCRIPT_DIR}"/build.sh "tools/kyma-installer"
+"${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
 
 log::info "Create development artifacts"
 env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KYMA_PATH}/installation/scripts/release-generate-kyma-installer-artifacts.sh"
