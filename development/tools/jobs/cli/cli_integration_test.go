@@ -78,8 +78,8 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GO111MODULE", "on")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration-cli.sh"}, actualPeriodic.Spec.Containers[0].Command)
 
-	expName := "kyma-cli-alpha-upgrade-gke"
-	actualPeriodic := tester.FindPeriodicJobByName(periodics, expName)
+	expName = "kyma-cli-alpha-upgrade-gke"
+	actualPeriodic = tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, actualPeriodic)
 	assert.Equal(t, expName, actualPeriodic.Name)
 	assert.True(t, actualPeriodic.Decorate)
