@@ -73,28 +73,29 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
 
     set +e
     log::banner "Debugging DNS issues"
-    log::date
     {
-      log::info "trace DNS response for ${DNS_FULL_NAME}"
+      log::banner "get full dns response"
+      dig "${DNS_FULL_NAME}"
+      log::banner "trace DNS response"
       dig +trace "${DNS_FULL_NAME}"
-      log::info "query authoritative servers directly"
-      log::info "ns-cloud-b1.googledomains.com."
+      log::banner "query authoritative servers directly"
+      log::info "server: ns-cloud-b1.googledomains.com."
       dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
-      log::info "ns-cloud-b2.googledomains.com."
+      log::info "server: ns-cloud-b2.googledomains.com."
       dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
-      log::info "ns-cloud-b3.googledomains.com."
+      log::info "server: ns-cloud-b3.googledomains.com."
       dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
-      log::info "ns-cloud-b4.googledomains.com."
+      log::info "server: ns-cloud-b4.googledomains.com."
       dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
-      log::info "checking /etc/resolv.conf"
+      log::banner "checking /etc/resolv.conf"
       cat /etc/resolv.conf
-      log::info "checking kube-dns service IP"
+      log::banner "checking kube-dns service IP"
       token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
       curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/services?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .spec.clusterIP"
-      log::info "checking kube-dns endpoints addresses"
+      log::banner "checking kube-dns endpoints addresses"
       endpoints=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
       echo "$endpoints"
-      log::info "query kube-dns pods directly"
+      log::banner "query kube-dns pods directly"
       for srv in $endpoints; do log::info "querying $srv"; dig "${DNS_FULL_NAME}" @"$srv";done
     } >> "${ARTIFACTS}/dns-debug.txt"
     set -e

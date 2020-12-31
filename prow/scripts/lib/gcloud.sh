@@ -129,11 +129,13 @@ function gcloud::create_dns_record {
       fi
 
       set +e
-      log::info "Fetching DNS related debug logs and storing them in the artifacts folder..."
+      log::banner "Fetching DNS related debug logs and storing them in the artifacts folder..."
       {
-        log::info "trace DNS response for ${dnsName}"
+        log::banner "get full dns response"
+        dig "${DNS_FULL_NAME}"
+        log::banner "trace DNS response for ${dnsName}"
         dig +trace "${dnsName}"
-        log::info "query authoritative servers directly"
+        log::banner "query authoritative servers directly"
         log::info "ns-cloud-b1.googledomains.com."
         dig "${dnsName}" @ns-cloud-b1.googledomains.com.
         log::info "ns-cloud-b2.googledomains.com."
@@ -142,15 +144,15 @@ function gcloud::create_dns_record {
         dig "${dnsName}" @ns-cloud-b3.googledomains.com.
         log::info "ns-cloud-b4.googledomains.com."
         dig "${dnsName}" @ns-cloud-b4.googledomains.com.
-        log::info "checking /etc/resolv.conf"
+        log::banner "checking /etc/resolv.conf"
         cat /etc/resolv.conf
-        log::info "checking kube-dns service IP"
+        log::banner "checking kube-dns service IP"
         token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
         curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/services?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .spec.clusterIP"
-        log::info "checking kube-dns endpoints addresses"
+        log::banner "checking kube-dns endpoints addresses"
         endpoints=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
         echo "$endpoints"
-        log::info "query kube-dns pods directly"
+        log::banner "query kube-dns pods directly"
         for srv in $endpoints; do log::info "querying $srv"; dig "${dnsName}" @"$srv";done
       } >> "${ARTIFACTS}/dns-debug.txt"
       set -e

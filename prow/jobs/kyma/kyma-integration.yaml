@@ -1121,3 +1121,31 @@ periodics:
             requests:
               memory: 200Mi
               cpu: 80m
+
+  - name: dns-debug
+    annotations:
+      testgrid-create-test-group: "false"
+    cluster: untrusted-workload
+    interval: 5m
+    #cron: "0/5 * * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    labels:
+      <<: *gke_job_labels_template
+    decorate: true
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - <<: *base_image_k16
+          securityContext:
+            privileged: true
+          command:
+            - "bash"
+          args:
+            - "-c"
+            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/dns-debug.sh"
+          resources:
+            requests:
+              memory: 200Mi
+              cpu: 80m
