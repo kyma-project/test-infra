@@ -113,7 +113,7 @@ periodics:
     - <<: *cli_ref
       base_ref: master
     - <<: *kyma_ref
-      base_ref: release-1.18
+      base_ref: master
     spec:
       containers:
       - <<: *base_image_k16
