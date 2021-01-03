@@ -21,6 +21,7 @@ presubmits: # runs on PRs
       always_run: {{ .always_run }}
       branches:
       - ^master$
+      - ^main$
       decorate: true
       path_alias: github.com/{{ .project }}/{{ .name }}
       max_concurrency: 10

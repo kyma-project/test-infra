@@ -22,6 +22,7 @@ presubmits: # runs on PRs
       always_run: false
       branches:
       - ^master$
+      - ^main$
       decorate: true
       path_alias: github.com/kyma-project/kyma
       max_concurrency: 10
@@ -58,6 +59,7 @@ presubmits: # runs on PRs
       always_run: false
       branches:
       - ^master$
+      - ^main$
       decorate: true
       path_alias: github.com/kyma-project/console
       max_concurrency: 10
@@ -94,6 +96,7 @@ presubmits: # runs on PRs
       always_run: true
       branches:
       - ^master$
+      - ^main$
       decorate: true
       path_alias: github.com/kyma-incubator/pamela
       max_concurrency: 10
