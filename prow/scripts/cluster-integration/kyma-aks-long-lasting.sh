@@ -51,8 +51,8 @@ export CLUSTER_ADDONS="monitoring,http_application_routing"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/kyma-cli.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
@@ -402,8 +402,7 @@ export TLS_KEY
 
 setupKubeconfig
 
-export INSTALL_DIR=${TMP_DIR}
-install::kyma_cli
+kyma::install_cli
 
 installKyma
 
