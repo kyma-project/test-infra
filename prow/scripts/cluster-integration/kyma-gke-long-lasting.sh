@@ -310,6 +310,16 @@ EOF
 echo "${serviceCatalogOverrides}" >> "${componentOverridesFile}"
 }
 
+function apply_dex_github_kyma_admin_group() {
+    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+    kubectl replace -f kyma-admin-binding.yaml
+}
+
 function installStackdriverPrometheusCollector(){
   # Patching prometheus resource of prometheus-operator.
   # Injecting stackdriver-collector sidecar to export metrics in to stackdriver monitoring.
@@ -356,7 +366,7 @@ date
 installKyma
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
-applyDexGithibKymaAdminGroup
+apply_dex_github_kyma_admin_group
 
 shout "Install stackdriver-prometheus collector"
 date

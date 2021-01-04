@@ -181,6 +181,7 @@ function checkInfraInputParameterValue() {
     fi
 }
 
+# Unused
 function applyDexGithibKymaAdminGroup() {
     kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
 - apiGroup: rbac.authorization.k8s.io
