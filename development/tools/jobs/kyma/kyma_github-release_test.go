@@ -10,6 +10,7 @@ import (
 )
 
 func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
+	t.Skip("Test skipped because the job needs to run against tags instead of branches. Needs rewrite.")
 	// WHEN
 	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {

@@ -1,11 +1,11 @@
 package kyma
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
-	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -20,9 +20,9 @@ func TestKymaArtifactsReleases(t *testing.T) {
 			assert.False(t, actualPresubmit.SkipReport)
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, "preset-sa-kyma-artifacts", "preset-kyma-artifacts-bucket")
-			assert.False(t, actualPresubmit.AlwaysRun)
+			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, fmt.Sprintf("^%v$", currentRelease.Branch())) // needs to have exact beginning and end boundaries
+			//tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, "preset-sa-kyma-artifacts", "preset-kyma-artifacts-bucket")
+			assert.True(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
 			assert.Equal(t, tester.ImageBootstrap20181204, testContainer.Image)

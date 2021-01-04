@@ -50,6 +50,8 @@ job_template: &job_template
   {{- if $isValidForNextRelease }}
     - ^master$
     - ^main$
+  {{- end }}
+  {{- if ne $releaseBranchPattern "" }} # FIXME: we need to rewrite the pattern generation for release jobs.
     - ^release-({{ $releasesPattern }})$
   {{- end }}
   run_if_changed: "{{ $runIfChanged }}"

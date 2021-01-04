@@ -19,7 +19,7 @@ job_template: &job_template
       base_ref: master
   branches:
     - ^master$
-    - ^main$
+    - ^main$ # FIXME: we need to rewrite the pattern generation for release jobs.
     - ^release-(1\.18|1\.17|1\.16)$
   run_if_changed: "^tests/integration/dex/|^common/makefiles/"
   spec:

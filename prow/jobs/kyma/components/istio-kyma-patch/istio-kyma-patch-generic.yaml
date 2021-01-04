@@ -17,7 +17,8 @@ job_template: &job_template
   extra_refs:
     - <<: *test_infra_ref
       base_ref: master
-  branches:
+  branches: # FIXME: we need to rewrite the pattern generation for release jobs.
+    - ^release-(1\.17|1\.16)$
   run_if_changed: "^components/istio-kyma-patch/|^common/makefiles/"
   spec:
     containers:
