@@ -1685,7 +1685,7 @@ templates:
           run_if_changed: ".*"
           job_guard_pattern: "pre-console-.*"
         - name: pamela
-          project: kyma-incubator
+          project: kyma-project
           optional: true
           always_run: true
           run_if_changed: ""
