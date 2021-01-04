@@ -171,7 +171,7 @@ FIND:
 				continue FIND
 			}
 		}
-		unsupportedBranches = append(unsupportedBranches, fmt.Sprintf("%v-%v-%v", "release", rel.String(), s.componentName()))
+		unsupportedBranches = append(unsupportedBranches, fmt.Sprintf("%v-%v", "release", rel.String()))
 	}
 	return unsupportedBranches
 }
@@ -180,7 +180,7 @@ func (s GenericComponentSuite) componentReleaseBranches() []string {
 	releaseBranches := []string{}
 
 	for _, rel := range s.Releases {
-		releaseBranches = append(releaseBranches, fmt.Sprintf("%v-%v-%v", "release", rel.String(), s.componentName()))
+		releaseBranches = append(releaseBranches, fmt.Sprintf("%v-%v", "release", rel.String()))
 	}
 	return releaseBranches
 }
