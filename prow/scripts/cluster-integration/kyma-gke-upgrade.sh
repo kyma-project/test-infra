@@ -55,7 +55,6 @@ export HELM_TIMEOUT_SEC=10000s # timeout in sec for helm install/test operation
 export TEST_TIMEOUT_SEC=600    # timeout in sec for test pods until they reach the terminating state
 export TEST_CONTAINER_NAME="tests"
 
-TMP_DIR=$(mktemp -d)
 KYMA_LABEL_PREFIX="kyma-project.io"
 KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
@@ -76,8 +75,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
-# shellcheck source=prow/scripts/cluster-integration/helpers/kyma-cli.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
@@ -101,8 +100,7 @@ utils::check_required_vars "${requiredVars[@]}"
 
 
 function installCli() {
-  export INSTALL_DIR=${TMP_DIR}
-  install::kyma_cli
+  kyma::install_cli
 }
 
 trap gkeCleanup EXIT INT
