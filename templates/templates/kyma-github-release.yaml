@@ -16,7 +16,7 @@ job_template: &job_template
       - "bash"
       args:
       - "-c"
-      - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${RELEASE_TARGET_COMMIT} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${PULL_BASE_REF} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"
       resources:
         requests:
           memory: 200Mi
@@ -25,16 +25,6 @@ job_template: &job_template
 job_labels_template: &job_labels_template
   preset-sa-kyma-artifacts: "true"
   preset-bot-github-token: "true"
-
-presets:
-  {{- range .Global.releases }}
-- labels:
-    preset-target-commit-{{ . }}: "true"
-  env:
-    - name: RELEASE_TARGET_COMMIT
-      value: release-{{ . }}
-  {{- end }}
-  
   
 postsubmits:
   kyma-project/kyma:
@@ -54,6 +44,5 @@ postsubmits:
     labels:
       <<: *job_labels_template
       preset-build-release: "true"
-      preset-target-commit-{{ . }}: "true"
 {{- end }}
 
