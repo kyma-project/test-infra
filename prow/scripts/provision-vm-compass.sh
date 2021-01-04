@@ -11,6 +11,8 @@ KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
@@ -33,7 +35,7 @@ function testCustomImage() {
     fi
 }
 
-authenticate
+gcloud::authenticate
 
 RANDOM_ID=$(openssl rand -hex 4)
 

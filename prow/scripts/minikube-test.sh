@@ -24,7 +24,7 @@ function testCustomImage() {
     fi
 }
 
-authenticate
+gcloud::authenticate
 
 RANDOM_ID=$(openssl rand -hex 4)
 

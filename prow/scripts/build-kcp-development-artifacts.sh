@@ -67,7 +67,7 @@ make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
 
 shout "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-authenticate
+gcloud::authenticate
 
 shout "Create development artifacts"
 # INPUTS:
