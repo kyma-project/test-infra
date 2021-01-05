@@ -7,6 +7,7 @@ images:
 #- source: "busybox:1.32.0"
 - source: "curlimages/curl:7.70.0"
 - source: "golang:1.14.8-alpine"
+- source: "golang:1.15.6-alpine"
 - source: "grafana/grafana:7.3.3"
 - source: "grafana/loki:1.5.0"
 - source: "hudymi/mockice:0.1.3"
