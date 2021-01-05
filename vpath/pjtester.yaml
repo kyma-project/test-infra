@@ -1,7 +1,7 @@
 pjNames:
-  - pjName: "pre-compass-tests-ord-service"
-    pjPath: "test-infra/prow/jobs/incubator/compass/tests/ord-service/"
+  - pjName: "pre-ord-service-components-ord-service"
+    pjPath: "test-infra/prow/jobs/incubator/ord-service/components/ord-service/"
 prConfigs:
   kyma-incubator:
     compass:
-      prNumber: 1666
+      prNumber: 1
