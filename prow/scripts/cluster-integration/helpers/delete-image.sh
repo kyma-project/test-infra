@@ -14,8 +14,6 @@ set -o errexit
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 requiredVars=(
     KYMA_INSTALLER_IMAGE
@@ -26,24 +24,17 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
+# shellcheck disable=SC1090
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+
 function cleanup() {
-    # activate defauklt SA
-    client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
-    log::info "Activating account $client_email"
-    gcloud config set account "${client_email}" || exit 1
+  activateDefaultSa
 }
 
-log::info "Authenticate as service account with write access to GCR"
+shout "Authenticate as service account with write access to GCR"
+date
 trap cleanup EXIT
-# authenticate Sa Gcr
-authKey=$1
-if [[ -n "${authKey}" ]]; then
-    client_email=$(jq -r '.client_email' < "${authKey}")
-    log::info "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
-    docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${authKey}" || exit 1
-else
-    log::info "could not authenticate to Docker Registry: authKey is empty" >&2
-fi
+authenticateSaGcr
 
 gcloud container images delete "${KYMA_INSTALLER_IMAGE}"
 

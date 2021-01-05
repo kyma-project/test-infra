@@ -420,6 +420,40 @@ function gcloud::deprovision_gke_cluster {
   log::info "Successfully removed cluster $CLUSTER_NAME!"
 }
 
+# gcloud::activate_default_sa activates default service account
+# gcloud::delete_image deletes image
+# Required exported variables:
+# GOOGLE_APPLICATION_CREDENTIALS
+function gcloud::activate_default_sa() {
+  log::info "Authenticate as service account with write access to GCR"
+  client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
+  log::info "Activating account $client_email"
+  gcloud config set account "${client_email}" || exit 1
+}
+
+# gcloud::authenticate_sa_gcr authenticates GCR service account
+# Optional exported variables:
+# GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+function gcloud::authenticate_sa_gcr() {
+  log::info "Authenticating"
+  if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
+    gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+  else
+    log::info "Environment variable GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS not present. Credentials not provided. Skipping authentication."
+  fi
+}
+
+# gcloud::delete_docker_image deletes Docker image
+# Required exported variables:
+# GOOGLE_APPLICATION_CREDENTIALS
+# Optional exported variables:
+# GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+function gcloud::delete_docker_image() {
+  gcloud::authenticate_sa_gcr
+  gcloud container images delete "$1"
+  gcloud::activate_default_sa
+}
+
 # gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.
 # Required exported variables:
 # CLOUDSDK_CORE_PROJECT
