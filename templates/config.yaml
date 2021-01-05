@@ -1204,7 +1204,6 @@ templates:
             - name: kyma-gke-upgrade
             - name: kyma-gke-central-connector
             - name: kyma-artifacts
-            - name: kyma-installer
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
