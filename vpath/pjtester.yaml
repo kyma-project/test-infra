@@ -3,5 +3,5 @@ pjNames:
     pjPath: "test-infra/prow/jobs/incubator/ord-service/components/ord-service/"
 prConfigs:
   kyma-incubator:
-    compass:
+    ord-service:
       prNumber: 1
