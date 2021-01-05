@@ -229,6 +229,7 @@ function runTestLogCollector(){
     fi
 }
 
+# Unused
 function gkeCleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?

@@ -4,7 +4,6 @@ set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
 ENABLE_TEST_LOG_COLLECTOR=false
-TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-control-plane-gke-provisioner-integration"
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KCP_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
@@ -18,6 +17,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     REPO_OWNER
@@ -93,6 +94,40 @@ KCP_RESOURCES_DIR="${KCP_SOURCES_DIR}/installation/resources"
 INSTALLER_YAML="${KCP_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KCP_RESOURCES_DIR}/installer-cr.yaml.tpl"
 
+# post_hook runs at the end of a script or on any error
+function post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  # collect logs from failed tests before deprovisioning
+  kyma::run_test_log_collector "post-master-control-plane-gke-provisioner-integration"
+
+  gcloud::cleanup
+
+  if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+    log::info "Docker image cleanup"
+    if [ -n "${KCP_INSTALLER_IMAGE}" ]; then
+      log::info "Delete temporary KCP-Installer Docker image"
+      gcloud::delete_docker_image "${KCP_INSTALLER_IMAGE}"
+    fi
+  fi
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
+}
 
 function createCluster() {
   #Used to detect errors for logging purposes
@@ -379,7 +414,7 @@ function installControlPlane() {
   fi
 }
 
-trap gkeCleanup EXIT INT
+trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"

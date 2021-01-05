@@ -83,7 +83,31 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-trap gkeCleanup EXIT INT
+# post_hook runs at the end of a script or on any error
+function post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  gcloud::cleanup
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
+}
+
+trap post_hook EXIT INT
 
 getSourceVersion() {
     releaseIndex=2
