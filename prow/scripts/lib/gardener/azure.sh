@@ -81,7 +81,7 @@ gardener::init() {
 
     export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.yaml"
 
-    # we need to start the docker daemon. This is done by calling init from the library.sh
+    # we need to start the docker daemon
     docker::start
 
     EVENTHUB_NAMESPACE_NAME=""
@@ -236,7 +236,7 @@ check_pods_in_namespaces(){
     for ns in "${namespaces[@]}"; do
         log::info "checking pods in namespace : $ns"
         if ! pods_running "$ns"; then
-            log::error "pods in $ns are still not running..."
+            log::info "pods in $ns are still not running..."
             return 1
         fi
     done

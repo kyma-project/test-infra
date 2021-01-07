@@ -17,10 +17,10 @@ The integration job is a pipeline that consists of multiple steps:
 - Test the Kyma installation.
 - Clean up all provisioned resources, also if you get an error.
 
-> **NOTE:** Run [Job Guard](./../../../development/tools/cmd/jobguard/README.md) at the beginning of each integration job that builds and installs Kyma with changes from the pull request.
+> **NOTE:** Run [Job Guard](./../../../development/jobguard/README.md) at the beginning of each integration job that builds and installs Kyma with changes from the pull request.
   ```bash
   if [[ "${BUILD_TYPE}" == "pr" ]]; then
-      shout "Execute Job Guard"
+      log::info "Execute Job Guard"
       "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
   fi
   ```   

@@ -10,8 +10,8 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
@@ -62,14 +62,14 @@ export_variables
 export KCP_PATH="/home/prow/go/src/github.com/kyma-project/control-plane"
 buildTarget="release"
 
-shout "Build kcp-installer with target ${buildTarget}"
+log::info "Build kcp-installer with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/kcp-installer" ${buildTarget}
 
-shout "Switch to a different service account to push to GCS bucket"
+log::info "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-shout "Create development artifacts"
+log::info "Create development artifacts"
 # INPUTS:
 # - KCP_INSTALLER_PUSH_DIR
 # - KCP_INSTALLER_VERSION
@@ -77,10 +77,10 @@ shout "Create development artifacts"
 # - ARTIFACTS_DIR - path to directory where artifacts will be stored
 env KCP_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${KCP_PATH}/installation/scripts/generate-installer-artifacts.sh"
 
-shout "Content of the local artifacts directory"
+log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
+log::info "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-installer.yaml"
 gsutil cp  "${KCP_PATH}/installation/scripts/is-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
 
@@ -91,7 +91,7 @@ gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BU
 gsutil cp  "${ARTIFACTS}/is-compass-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-compass-installed.sh"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-  shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  log::info "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-installer.yaml"
   gsutil cp  "${KCP_PATH}/installation/scripts/is-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
 

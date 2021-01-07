@@ -246,7 +246,7 @@ function gcloud::encrypt {
       exit 1
   fi
 
-  shout "Encrypting ${PLAIN_TEXT} as ${CIPHER_TEXT}"
+  log::info "Encrypting ${PLAIN_TEXT} as ${CIPHER_TEXT}"
   gcloud kms encrypt --location global \
       --keyring "${KYMA_KEYRING}" \
       --key "${KYMA_ENCRYPTION_KEY}" \
@@ -276,7 +276,7 @@ function gcloud::decrypt {
       exit 1
   fi
 
-  shout "Decrypting ${CIPHER_TEXT} to ${PLAIN_TEXT}"
+  log::info "Decrypting ${CIPHER_TEXT} to ${PLAIN_TEXT}"
 
   gcloud kms decrypt --location global \
       --keyring "${KYMA_KEYRING}" \

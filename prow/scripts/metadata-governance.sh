@@ -3,10 +3,10 @@
 
 set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/library.sh
-source "${SCRIPT_DIR}/library.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 
 readonly ARGS=("$@")
 VOLUME_DIR=""
@@ -134,7 +134,7 @@ function main() {
     read_arguments "${ARGS[@]}"
     docker::start
 
-    shout "Validate changed json schema files"
+    log::info "Validate changed json schema files"
     validate_metadata_schema_on_pr
 
     exit ${OUTPUT}

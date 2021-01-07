@@ -6,12 +6,12 @@
 set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 
 cleanup() {
     ARG=$?
-    shout "Removing instance kyma-integration-test-${RANDOM_ID}"
+    log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
     gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     exit $ARG
 }
@@ -20,7 +20,7 @@ function testCustomImage() {
     CUSTOM_IMAGE="$1"
     IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
     if [[ -z "$IMAGE_EXISTS" ]]; then
-        shout "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
+        log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
     fi
 }
 
@@ -62,13 +62,13 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
 if [[ -z "$IMAGE" ]]; then
-    shout "Provisioning vm using the latest default custom image ..."   
+    log::info "Provisioning vm using the latest default custom image ..."
     
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
     
     if [[ -z "$IMAGE" ]]; then
-       shout "There are no default custom images, the script will exit ..." && exit 1 
+       log::error "There are no default custom images, the script will exit ..." && exit 1
     fi   
  fi
 
@@ -76,18 +76,18 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 
 for ZONE in ${EU_ZONES}; do
-    shout "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+    log::info "Attempting to create a new instance named kyma-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
     gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
         --boot-disk-size 30 "${LABELS[@]}" &&\
-    shout "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
-    shout "Could not create machine in zone ${ZONE}"
+    log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
+    log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 
-shout "Copying Kyma to the instance"
+log::info "Copying Kyma to the instance"
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
@@ -95,7 +95,7 @@ for i in $(seq 1 5); do
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
-shout "Triggering the installation"
+log::info "Triggering the installation"
 
 set +e
 gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- ./kyma/installation/scripts/prow/kyma-integration-on-debian/deploy-and-test-kyma.sh
@@ -103,11 +103,11 @@ RUN_RESULT="$?"
 set -e
 
 if [[ $RUN_RESULT -ne 0 ]]; then
-    shout "Something failed, leaving for manual investigation"
-    shout "Instance: kyma-integration-test-${RANDOM_ID} in ZONE: ${ZONE}"
+    log::error "Something failed, leaving for manual investigation"
+    log::info "Instance: kyma-integration-test-${RANDOM_ID} in ZONE: ${ZONE}"
     exit 1
 else
-    shout "Everything passed, removing cluster"
+    log::success "Everything passed, removing cluster"
     cleanup
     exit 0
 fi

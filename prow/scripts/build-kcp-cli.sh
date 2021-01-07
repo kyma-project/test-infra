@@ -5,8 +5,8 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
@@ -46,24 +46,24 @@ export_variables
 export KCP_PATH="/home/prow/go/src/github.com/kyma-project/control-plane"
 buildTarget="release"
 
-shout "Build KCP CLI with target ${buildTarget}"
+log::info "Build KCP CLI with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/cli" ${buildTarget}
 
-shout "Switch to a different service account to push to GCS bucket"
+log::info "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-shout "Content of the local artifacts directory"
+log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
+log::info "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 
 gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp.exe"
 gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-linux"
 gsutil cp "${ARTIFACTS}/kcp-darwin" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kcp-darwin"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-  shout "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  log::info "Copy artifacts to ${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
 
   gsutil cp "${ARTIFACTS}/kcp.exe" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp.exe"
   gsutil cp "${ARTIFACTS}/kcp-linux" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kcp-linux"
