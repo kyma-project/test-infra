@@ -1053,8 +1053,8 @@ periodics:
     annotations:
       testgrid-create-test-group: "false"
     cluster: untrusted-workload
-    interval: 5m
-    #cron: "0/5 * * * 1-5" # "At 04:00 on every day-of-week from Monday through Friday"
+    #interval: 5m
+    cron: "0/5 * * * 1-5" # "every 5 minutes on every day-of-week from Monday through Friday"
     labels:
       <<: *gke_job_labels_template
     decorate: true
