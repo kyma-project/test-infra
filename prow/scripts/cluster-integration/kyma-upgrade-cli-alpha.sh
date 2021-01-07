@@ -194,7 +194,7 @@ cd "${KYMA_PROJECT_DIR}/kyma"
 git fetch --tags
 latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
 shout "Installing Kyma in version: $latestTag"
-git checkout $latestTag
+git checkout "$latestTag"
 set -x
 kyma alpha deploy \
     --ci \
