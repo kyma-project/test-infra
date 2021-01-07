@@ -125,10 +125,18 @@ periodics:
         command:
         - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-cli-alpha.sh"
         env:
-        - name: GO111MODULE
-          value: "on"
-        - name: CLOUDSDK_COMPUTE_ZONE
-          value: "europe-west4-a"
+          - name: GO111MODULE
+            value: "on"
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "westeurope"
+          - name: KYMA_PROJECT_DIR
+            value: "/home/prow/go/src/github.com/kyma-project"
+          - name: GARDENER_REGION
+            value: "westeurope"
+          - name: GARDENER_ZONES
+            value: "1"
         resources:
           requests:
             memory: 1Gi
