@@ -17,12 +17,14 @@ function gcloud::verify_deps {
 }
 
 # gcloud::authenticate authenticates to gcloud.
-# Required exported variables:
-# GOOGLE_APPLICATION_CREDENTIALS - google login credentials
-# Alternatively provide different credentials as argument
+# Arguments:
+# $1 - google login credentials
 function gcloud::authenticate() {
-    echo "Authenticating to gcloud"
-    gcloud auth activate-service-account --key-file "${1:-GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+    if [[ -z "$1" ]]; then
+      log::error "Missing account credentials, please provide proper credentials"
+    fi
+    log::info "Authenticating to gcloud"
+    gcloud auth activate-service-account --key-file "${1}" || exit 1
 }
 
 # gcloud::set_account activates already authenticated account

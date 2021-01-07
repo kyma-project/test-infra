@@ -19,7 +19,7 @@ if [[ -z "${SOURCES_DIR}" ]]; then
     usage
 fi
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 if [ -n "${PULL_NUMBER}" ]; then

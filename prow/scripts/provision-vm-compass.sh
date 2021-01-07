@@ -35,7 +35,7 @@ function testCustomImage() {
     fi
 }
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(openssl rand -hex 4)
 

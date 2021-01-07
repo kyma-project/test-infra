@@ -29,7 +29,7 @@ source "${SCRIPTS_PATH}/lib/gcloud.sh"
 source "${SCRIPTS_PATH}/lib/log.sh"
 
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 IP_ADDRESS=$(gcloud::reserve_ip_address "${IP_ADDRESS_NAME}")
 gcloud::create_dns_record "${IP_ADDRESS}" "${DNS_FULL_NAME}"
 log::banner "Debug output"

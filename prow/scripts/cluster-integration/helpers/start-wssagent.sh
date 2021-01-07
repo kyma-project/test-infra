@@ -23,7 +23,7 @@ GO_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images
 JAVASCRIPT_CONFIG_PATH="/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/whitesource-scanner/javascript-wss-unified-agent.config"
 
 # authenticate gcloud client
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 

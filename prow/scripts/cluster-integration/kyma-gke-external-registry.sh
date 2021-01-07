@@ -166,7 +166,7 @@ ERROR_LOGGING_GUARD="true"
 
 shout "Authenticate"
 date
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 

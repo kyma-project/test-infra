@@ -24,7 +24,7 @@ function export_variables() {
    export DOCKER_TAG
 }
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 

@@ -390,7 +390,7 @@ function test_console_url() {
   fi
 }
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 az::login "$AZURE_CREDENTIALS_FILE"
 az::set_subscription "$AZURE_SUBSCRIPTION_ID"

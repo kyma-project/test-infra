@@ -49,7 +49,7 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 
@@ -77,7 +77,7 @@ ls -la "${ARTIFACTS}"
 shout "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 shout "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
