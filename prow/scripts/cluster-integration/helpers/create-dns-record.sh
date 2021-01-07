@@ -70,37 +70,6 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         echo "Successfully resolved ${DNS_FULL_NAME} to ${RESOLVED_IP_ADDRESS}"
         exit 0
     fi
-
-    set +e
-    log::banner "Debugging DNS issues"
-    {
-      log::banner "get full dns response"
-      dig "${DNS_FULL_NAME}"
-      log::banner "trace DNS response"
-      dig +trace "${DNS_FULL_NAME}"
-      log::banner "query authoritative servers directly"
-      log::info "server: ns-cloud-b1.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
-      log::info "server: ns-cloud-b2.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
-      log::info "server: ns-cloud-b3.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
-      log::info "server: ns-cloud-b4.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
-      log::banner "checking /etc/resolv.conf"
-      cat /etc/resolv.conf
-      log::banner "checking kube-dns service IP"
-      token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-      curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/services?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .spec.clusterIP"
-      log::banner "checking kube-dns endpoints addresses"
-      endpoints=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
-      echo "$endpoints"
-      log::banner "query kube-dns pods directly"
-      for srv in $endpoints; do log::info "querying $srv"; dig "${DNS_FULL_NAME}" @"$srv";done
-    } >> "${ARTIFACTS}/dns-debug.txt"
-    set -e
-
-
 done
 
 echo "Cannot resolve ${DNS_FULL_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."
