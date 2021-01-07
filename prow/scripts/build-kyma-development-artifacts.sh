@@ -44,7 +44,7 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 export_variables
 
@@ -71,7 +71,7 @@ ls -la "${ARTIFACTS}"
 log::info "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-gcloud::authenticate # sourced by gcloud.sh
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 log::info "Copy artifacts to ${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/kyma-installer-cluster.yaml" "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer-cluster.yaml"
