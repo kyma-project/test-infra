@@ -103,13 +103,7 @@ periodics:
     decorate: true
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
-      # preset-sa-gke-kyma-integration: "true"
-      # preset-gc-compute-envs: "true"
-      # preset-gc-project-env: "true"
-      preset-cluster-use-ssd: "true"
-      preset-gardener-azure-kyma-integration: "true"
-      preset-az-kyma-prow-credentials: "true"
-      preset-kyma-guard-bot-github-token: "true"
+      preset-gardener-gcp-kyma-integration: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -127,16 +121,12 @@ periodics:
         env:
           - name: GO111MODULE
             value: "on"
-          - name: RS_GROUP
-            value: "kyma-gardener-azure"
-          - name: REGION
-            value: "westeurope"
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION
-            value: "westeurope"
+            value: "europe-west4"
           - name: GARDENER_ZONES
-            value: "1"
+            value: "europe-west4-b"
         resources:
           requests:
             memory: 1Gi
