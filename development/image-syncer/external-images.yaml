@@ -36,6 +36,7 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.43.2"
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.43.2"
 - source: "quay.io/kubernetes-service-catalog/service-catalog:v0.3.1-3-g87e8bc4-dirty"
+- source: "quay.io/kubernetes-service-catalog/service-catalog:v0.3.1-6-ge839d22-dirty"
 - source: "quay.io/prometheus/alertmanager:v0.21.0"
 - source: "quay.io/prometheus/prometheus:v2.22.1"
 - source: "quay.io/service-manager/sb-proxy-k8s:v0.8.10"
