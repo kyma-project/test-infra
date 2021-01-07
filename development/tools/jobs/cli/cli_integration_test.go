@@ -88,7 +88,8 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, "preset-gardener-gcp-kyma-integration")
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
-	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
-	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GO111MODULE", "on")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "KYMA_PROJECT_DIR", "/home/prow/go/src/github.com/kyma-project")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GARDENER_REGION", "europe-west4")
+	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "GARDENER_ZONES", "europe-west4-b")
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-cli-alpha.sh"}, actualPeriodic.Spec.Containers[0].Command)
 }

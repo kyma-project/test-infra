@@ -128,7 +128,7 @@ date
 
 # Parallel-install library installs cluster-essentials, istio, and xip-patch before kyma installation. That's why they should not exist on the InstallationCR.
 # Once we figure out a way to fix this, this custom CR can be deleted from this script.
-cat << EOF > "$PWD/kyma-parallel-install-installationCR.yaml"
+cat << EOF > "/tmp/kyma-parallel-install-installationCR.yaml"
 apiVersion: "installer.kyma-project.io/v1alpha1"
 kind: Installation
 metadata:
@@ -192,14 +192,14 @@ date
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 git fetch --tags
-latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
+latestTag=$(git describe --tags $(git rev-list --tags --max-count=1))
 shout "Installing Kyma in version: $latestTag"
 git checkout $latestTag
 set -x
 kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "$PWD/kyma-parallel-install-installationCR.yaml"
+    --components "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
 shout "Upgrade to master"
@@ -212,7 +212,7 @@ set -x
 kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "$PWD/kyma-parallel-install-installationCR.yaml"
+    --components "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
 # shout "Running Kyma tests"
