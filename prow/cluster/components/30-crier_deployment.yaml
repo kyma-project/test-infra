@@ -41,9 +41,6 @@ spec:
             - name: slack
               mountPath: /etc/slack
               readOnly: true
-            - name: cluster
-              mountPath: /etc/cluster
-              readOnly: true
             - name: gcs-service-account
               mountPath: /etc/credentials
               readOnly: true
@@ -60,10 +57,6 @@ spec:
         - name: slack
           secret:
             secretName: slack-token
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
         - name: gcs-service-account
           secret:
             secretName: sa-crier
