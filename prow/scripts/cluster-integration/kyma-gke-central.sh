@@ -31,7 +31,6 @@
 set -o errexit
 
 ENABLE_TEST_LOG_COLLECTOR=false
-TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-central-connector"
 
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -64,7 +63,34 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-trap gkeCleanup EXIT INT
+# post_hook runs at the end of a script or on any error
+function post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  # collect logs from failed tests before deprovisioning
+  kyma::run_test_log_collector "post-master-kyma-gke-central-connector"
+
+  gcloud::cleanup
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
+}
+
+trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -117,7 +143,7 @@ DNS_SUBDOMAIN="${COMMON_NAME}"
 ERROR_LOGGING_GUARD="true"
 
 log::info "Authenticate"
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 kyma::install_cli
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"

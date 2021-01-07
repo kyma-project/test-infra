@@ -9,6 +9,7 @@ NC='\033[0m' # No Color
 LICENSE_PULLER_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/license-puller.sh"
 export LICENSE_PULLER_PATH
 
+# Unused outside of library.sh (init)
 function start_docker() {
     echo "Docker in Docker enabled, initializing..."
     printf '=%.0s' {1..80}; echo
@@ -47,11 +48,13 @@ function start_docker() {
     echo "Done setting up docker in docker."
 }
 
+# Unused outside of library.sh (init)
 function authenticate() {
     echo "Authenticating"
     gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
 }
 
+# Unused
 function authenticateSaGcr() {
     echo "Authenticating"
     if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
@@ -62,6 +65,7 @@ function authenticateSaGcr() {
 
 }
 
+# Unused
 function activateDefaultSa() {
     client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
     echo "Activating account $client_email"
@@ -69,6 +73,7 @@ function activateDefaultSa() {
 
 }
 
+# Unused outside of library.sh (start_docker)
 function authenticateDocker() {
     authKey=$1
     if [[ -n "${authKey}" ]]; then
@@ -81,6 +86,7 @@ function authenticateDocker() {
 
 }
 
+# Unused outside of library.sh (init)
 function configure_git() {
     echo "Configuring git"
     # configure ssh
@@ -108,6 +114,7 @@ function configure_git() {
     fi
 }
 
+# Unused
 function init() {
     echo "Initializing"
 
@@ -140,6 +147,7 @@ function shoutFail() {
     ${NC}"
 }
 
+# Unused
 function checkInputParameterValue() {
     if [ -z "${1}" ] || [ "${1:0:2}" == "--" ]; then
         echo -e "${RED}Wrong parameter value"
@@ -148,6 +156,8 @@ function checkInputParameterValue() {
     fi
 }
 
+
+# Unused
 function checkClusterGradeInputParameterValue() {
     if [[  "${CLUSTER_GRADE}" != "production" ]] && [[ "${CLUSTER_GRADE}" != "development" ]]; then
         shoutFail "--cluster-grade  possible values are 'production' or 'development'"
@@ -155,6 +165,7 @@ function checkClusterGradeInputParameterValue() {
     fi
 }
 
+# Unused
 function checkActionInputParameterValue() {
     if [[ "${ACTION}" != "create" ]] && [[ "${ACTION}" != "delete" ]]; then
         shoutFail "--action  possible values are 'create' or 'delete'"
@@ -162,6 +173,7 @@ function checkActionInputParameterValue() {
     fi
 }
 
+# Unused
 function checkInfraInputParameterValue() {
     if [[ "${INFRA}" != "aks" ]] && [[ "${ACTION}" != "gke" ]]; then
         shoutFail "--infra  possible values are 'aks' or 'gke'"
@@ -169,6 +181,7 @@ function checkInfraInputParameterValue() {
     fi
 }
 
+# Unused
 function applyDexGithibKymaAdminGroup() {
     kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
 - apiGroup: rbac.authorization.k8s.io
@@ -179,6 +192,7 @@ EOF
     kubectl replace -f kyma-admin-binding.yaml
 }
 
+# Unused
 #Update stackdriver-metadata-agent memory settings
 function updatememorysettings() {
 
@@ -202,6 +216,7 @@ EOF
 
 }
 
+# Unused outside of library.sh (gkeCleanup)
 function runTestLogCollector(){
     if [[ -n "${ENABLE_TEST_LOG_COLLECTOR}" && "${ENABLE_TEST_LOG_COLLECTOR}" == true ]] ; then
         if [[ "$BUILD_TYPE" == "master" ]]; then
@@ -214,6 +229,7 @@ function runTestLogCollector(){
     fi
 }
 
+# Unused
 function gkeCleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?

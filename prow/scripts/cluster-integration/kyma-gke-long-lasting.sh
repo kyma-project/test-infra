@@ -310,6 +310,16 @@ EOF
 echo "${serviceCatalogOverrides}" >> "${componentOverridesFile}"
 }
 
+function apply_dex_github_kyma_admin_group() {
+    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+    kubectl replace -f kyma-admin-binding.yaml
+}
+
 function installStackdriverPrometheusCollector(){
   # Patching prometheus resource of prometheus-operator.
   # Injecting stackdriver-collector sidecar to export metrics in to stackdriver monitoring.
@@ -327,7 +337,7 @@ function installStackdriverPrometheusCollector(){
 
 shout "Authenticate"
 date
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 
@@ -356,14 +366,31 @@ date
 installKyma
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
-applyDexGithibKymaAdminGroup
+apply_dex_github_kyma_admin_group
 
 shout "Install stackdriver-prometheus collector"
 date
 installStackdriverPrometheusCollector
 
 shout "Update stackdriver-metadata-agent memory settings"
-updatememorysettings
+
+cat <<EOF | kubectl replace -f -
+apiVersion: v1
+data:
+  NannyConfiguration: |-
+    apiVersion: nannyconfig/v1alpha1
+    kind: NannyConfiguration
+    baseMemory: 100Mi
+kind: ConfigMap
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: metadata-agent-config
+  namespace: kube-system
+EOF
+kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+
 
 shout "Collect list of images"
 date

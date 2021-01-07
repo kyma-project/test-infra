@@ -45,7 +45,7 @@ function export_variables() {
 
 # hard to analyze dependencies
 if [[ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]]; then
-    gcloud::authenticate
+    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 fi
 
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == true ]]; then

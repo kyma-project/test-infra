@@ -17,11 +17,27 @@ function gcloud::verify_deps {
 }
 
 # gcloud::authenticate authenticates to gcloud.
-# Required exported variables:
-# GOOGLE_APPLICATION_CREDENTIALS - google login credentials
+# Arguments:
+# $1 - google login credentials
 function gcloud::authenticate() {
-    echo "Authenticating to gcloud"
-    gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+    if [[ -z "$1" ]]; then
+      log::error "Missing account credentials, please provide proper credentials"
+    fi
+    log::info "Authenticating to gcloud"
+    gcloud auth activate-service-account --key-file "${1}" || exit 1
+}
+
+# gcloud::set_account activates already authenticated account
+# Arguments:
+# $1 - credentials to Google application
+function gcloud::set_account() {
+  if [[ -z $1 ]]; then
+    log::error "Missing account credentials, please provide proper credentials"
+    exit 1
+  fi
+  client_email=$(jq -r '.client_email' < "$1")
+  log::info "Activating account $client_email"
+  gcloud config set account "${client_email}" || exit 1
 }
 
 # gcloud::reserve_ip_address requests a new IP address from gcloud and prints this value to STDOUT
@@ -389,6 +405,21 @@ function gcloud::deprovision_gke_cluster {
   log::info "Deprovisioning cluster $CLUSTER_NAME."
   gcloud --project="$GCLOUD_PROJECT_NAME" container clusters delete "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
   log::info "Successfully removed cluster $CLUSTER_NAME!"
+}
+
+# gcloud::delete_docker_image deletes Docker image
+# Arguments:
+# $1 - name of the Docker image
+function gcloud::delete_docker_image() {
+  if [[ -z "$1" ]]; then
+    log::error "Name of the Docker image to delete is missing, please provide proper name"
+    exit 1
+  fi
+  gcloud container images delete "$1" || \
+  (
+    log::error "Could not remove Docker image" && \
+    exit 1
+  )
 }
 
 # gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.

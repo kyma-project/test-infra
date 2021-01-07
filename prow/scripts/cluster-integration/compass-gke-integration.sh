@@ -84,13 +84,47 @@ COMPASS_RESOURCES_DIR="${COMPASS_SOURCES_DIR}/installation/resources"
 INSTALLER_YAML="${COMPASS_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${COMPASS_RESOURCES_DIR}/installer-cr.yaml.tpl"
 
+# post_hook runs at the end of a script or on any error
+function post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  gcloud::cleanup
+
+  if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+    log::info "Docker image cleanup"
+    if [ -n "${COMPASS_INSTALLER_IMAGE}" ]; then
+      log::info "Delete temporary Compass-Installer Docker image"
+      gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+      gcloud::delete_docker_image "${COMPASS_INSTALLER_IMAGE}"
+      gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+    fi
+  fi
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
+}
+
 function createCluster() {
   #Used to detect errors for logging purposes
   ERROR_LOGGING_GUARD="true"
 
   shout "Authenticate"
   date
-  gcloud::authenticate
+  gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
@@ -306,7 +340,7 @@ function installCompass() {
   fi
 }
 
-trap gkeCleanup EXIT INT
+trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
