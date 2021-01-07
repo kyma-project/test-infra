@@ -55,9 +55,6 @@ cleanup() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    # collect logs from failed tests before deprovisioning
-    testing::run_test_log_collector "kyma-upgrade-cli-alpha"
-
     if [[ -n "${SUITE_NAME}" ]]; then
         testing::test_summary
     fi 
@@ -201,26 +198,26 @@ shout "Checking the versions"
 date
 kyma version
 
-shout "Running Kyma tests"
-date
+# shout "Running Kyma tests"
+# date
 
-# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-  export ENABLE_TEST_LOG_COLLECTOR=true
-fi
+# # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+#   export ENABLE_TEST_LOG_COLLECTOR=true
+# fi
 
-readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-readonly CONCURRENCY=5
-(
-set -x
-kyma test run \
-    --name "${SUITE_NAME}" \
-    --concurrency "${CONCURRENCY}" \
-    --max-retries 1 \
-    --timeout 90m \
-    --watch \
-    --non-interactive
-)
+# readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
+# readonly CONCURRENCY=5
+# (
+# set -x
+# kyma test run \
+#     --name "${SUITE_NAME}" \
+#     --concurrency "${CONCURRENCY}" \
+#     --max-retries 1 \
+#     --timeout 90m \
+#     --watch \
+#     --non-interactive
+# )
 
 shout "Success"
 
