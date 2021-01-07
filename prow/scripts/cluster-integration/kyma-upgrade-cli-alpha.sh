@@ -22,7 +22,7 @@
 
 set -e
 
-ENABLE_TEST_LOG_COLLECTOR=false
+# ENABLE_TEST_LOG_COLLECTOR=false
 
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
@@ -186,7 +186,15 @@ spec:
       namespace: "kyma-system"
 EOF
 
+shout "Get latest Kyma release tag"
+date
+
 (
+cd "${KYMA_PROJECT_DIR}/kyma"
+git fetch --tags
+latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
+shout "Installing Kyma in version: $latestTag"
+git checkout $latestTag
 set -x
 kyma alpha deploy \
     --ci \
@@ -194,9 +202,18 @@ kyma alpha deploy \
     --components "$PWD/kyma-parallel-install-installationCR.yaml"
 )
 
-shout "Checking the versions"
+shout "Upgrade to master"
 date
-kyma version
+
+(
+cd "${KYMA_PROJECT_DIR}/kyma"
+git checkout master
+set -x
+kyma alpha deploy \
+    --ci \
+    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
+    --components "$PWD/kyma-parallel-install-installationCR.yaml"
+)
 
 # shout "Running Kyma tests"
 # date
