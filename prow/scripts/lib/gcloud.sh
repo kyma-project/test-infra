@@ -19,9 +19,23 @@ function gcloud::verify_deps {
 # gcloud::authenticate authenticates to gcloud.
 # Required exported variables:
 # GOOGLE_APPLICATION_CREDENTIALS - google login credentials
+# Alternatively provide different credentials as argument
 function gcloud::authenticate() {
     echo "Authenticating to gcloud"
-    gcloud auth activate-service-account --key-file "${GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+    gcloud auth activate-service-account --key-file "${1:-GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
+}
+
+# gcloud::set_account activates already authenticated account
+# Arguments:
+# $1 - credentials to Google application
+function gcloud::set_account() {
+  if [[ -z $1 ]]; then
+    log::error "Missing account credentials, please provide proper credentials"
+    exit 1
+  fi
+  client_email=$(jq -r '.client_email' < "$1")
+  log::info "Activating account $client_email"
+  gcloud config set account "${client_email}" || exit 1
 }
 
 # gcloud::reserve_ip_address requests a new IP address from gcloud and prints this value to STDOUT
@@ -420,38 +434,16 @@ function gcloud::deprovision_gke_cluster {
   log::info "Successfully removed cluster $CLUSTER_NAME!"
 }
 
-# gcloud::activate_default_sa activates default service account
-# gcloud::delete_image deletes image
-# Required exported variables:
-# GOOGLE_APPLICATION_CREDENTIALS
-function gcloud::activate_default_sa() {
-  log::info "Authenticate as service account with write access to GCR"
-  client_email=$(jq -r '.client_email' < "${GOOGLE_APPLICATION_CREDENTIALS}")
-  log::info "Activating account $client_email"
-  gcloud config set account "${client_email}" || exit 1
-}
-
-# gcloud::authenticate_sa_gcr authenticates GCR service account
-# Optional exported variables:
-# GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
-function gcloud::authenticate_sa_gcr() {
-  log::info "Authenticating"
-  if [[ -n "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" ]];then
-    gcloud auth activate-service-account --key-file "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}" || exit 1
-  else
-    log::info "Environment variable GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS not present. Credentials not provided. Skipping authentication."
-  fi
-}
-
 # gcloud::delete_docker_image deletes Docker image
-# Required exported variables:
-# GOOGLE_APPLICATION_CREDENTIALS
-# Optional exported variables:
-# GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+# Arguments:
+# $1 - name of the Docker image
 function gcloud::delete_docker_image() {
-  gcloud::authenticate_sa_gcr
+  if [[ -z "$1" ]]; then
+    log::error "Name of the Docker image to delete is missing, please provide proper name"
+    exit 1
+  fi
   gcloud container images delete "$1"
-  gcloud::activate_default_sa
+  # maybe could be replaced with "docker rmi $1" ?
 }
 
 # gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.

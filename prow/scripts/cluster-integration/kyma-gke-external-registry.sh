@@ -79,7 +79,9 @@ function post_hook() {
     log::info "Docker image cleanup"
     if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
       log::info "Delete temporary Kyma-Installer Docker image"
+      gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
       gcloud::delete_docker_image "${KYMA_INSTALLER_IMAGE}"
+      gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
     fi
   fi
 
