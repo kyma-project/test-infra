@@ -444,8 +444,11 @@ function gcloud::delete_docker_image() {
     log::error "Name of the Docker image to delete is missing, please provide proper name"
     exit 1
   fi
-  gcloud container images delete "$1"
-  # maybe could be replaced with "docker rmi $1" ?
+  gcloud container images delete "$1" || \
+  (
+    log::error "Could not remove Docker image" && \
+    exit 1
+  )
 }
 
 # gcloud::cleanup is a meta-function that removes all resources that were allocated for specific job.
