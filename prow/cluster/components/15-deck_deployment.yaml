@@ -78,9 +78,6 @@ spec:
           - name: branding
             mountPath: /static/extensions
             readOnly: true
-          - mountPath: /etc/cluster
-            name: cluster
-            readOnly: true
           - name: oauth-config
             mountPath: /etc/githuboauth
             readOnly: true
@@ -107,10 +104,6 @@ spec:
           configMap:
             defaultMode: 420
             name: branding
-        - name: cluster
-          secret:
-            defaultMode: 420
-            secretName: workload-cluster
         - name: oauth-config
           secret:
             secretName: github-oauth-config

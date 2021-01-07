@@ -48,10 +48,12 @@ export INSTALLATION_OVERRIDE_STACKDRIVER="installer-config-logging-stackdiver.ya
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 
@@ -87,10 +89,10 @@ cleanup() {
     set +e
 
     # collect logs from failed tests before deprovisioning
-    testing::run_test_log_collector "kyma-upgrade-gardener-azure"
+    kyma::run_test_log_collector "kyma-upgrade-gardener-azure"
 
     if [[ -n "${SUITE_NAME}" ]]; then
-        testing::test_summary
+        kyma::test_summary
     fi 
 
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
@@ -365,8 +367,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-export INSTALL_DIR=${TMP_DIR}
-install::kyma_cli
+kyma::install_cli
 
 provisionCluster
 

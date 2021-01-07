@@ -22,6 +22,7 @@ presubmits: # runs on PRs
       always_run: false
       branches:
       - ^master$
+      - ^main$
       decorate: true
       path_alias: github.com/kyma-project/kyma
       max_concurrency: 10
@@ -58,6 +59,7 @@ presubmits: # runs on PRs
       always_run: false
       branches:
       - ^master$
+      - ^main$
       decorate: true
       path_alias: github.com/kyma-project/console
       max_concurrency: 10
@@ -87,15 +89,16 @@ presubmits: # runs on PRs
       - <<: *test_infra_ref
         base_ref: master
 
-  kyma-incubator/pamela:
+  kyma-project/pamela:
     - name: pre-master-pamela-protecode-guard
       cluster: untrusted-workload
       optional: true
       always_run: true
       branches:
       - ^master$
+      - ^main$
       decorate: true
-      path_alias: github.com/kyma-incubator/pamela
+      path_alias: github.com/kyma-project/pamela
       max_concurrency: 10
       spec:
         automountServiceAccountToken: true
