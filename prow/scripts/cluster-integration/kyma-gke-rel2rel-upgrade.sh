@@ -28,19 +28,6 @@
 
 set -o errexit
 
-discoverUnsetVar=false
-enableTestLogCollector=false
-
-for var in REPO_OWNER REPO_NAME KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS BOT_GITHUB_TOKEN CLOUDSDK_COMPUTE_ZONE; do
-    if [[ -z "${!var}" ]] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [[ "${discoverUnsetVar}" = true ]] ; then
-    exit 1
-fi
-
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -69,27 +56,58 @@ KYMA_TEST_LABEL_PREFIX="${KYMA_LABEL_PREFIX}/test"
 BEFORE_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.before-upgrade=true"
 POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
-
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/testing-helpers.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 
-runTestLogCollector() {
-  if [ "${enableTestLogCollector}" = true ]; then
-    if [[ "$BUILD_TYPE" == "master" ]]; then
-      shout "Install test-log-collector"
-      export PROW_JOB_NAME="post-master-kyma-gke-upgrade"
-      (
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster
-      )
-    fi
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    BOT_GITHUB_TOKEN
+    CLOUDSDK_COMPUTE_ZONE
+)
+
+utils::check_required_vars "${requiredVars[@]}"
+
+# post_hook runs at the end of a script or on any error
+function post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
   fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  gcloud::cleanup
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
 }
 
-trap gkeCleanup EXIT INT
+trap post_hook EXIT INT
 
 getSourceVersion() {
     releaseIndex=2
@@ -165,7 +183,8 @@ reserveIPsAndCreateDNSRecords() {
     DNS_SUBDOMAIN="${COMMON_NAME}"
     shout "Authenticate with GCP"
     date
-    init
+    gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+    docker::start
 
     DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
@@ -496,7 +515,7 @@ installKyma
 
 createTestResources
 
-enableTestLogCollector=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+export ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 applyScenario
 

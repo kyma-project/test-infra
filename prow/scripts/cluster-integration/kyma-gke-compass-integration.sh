@@ -10,25 +10,6 @@ if [ "${JOB_TYPE}" = "periodic" ]; then
 fi
 
 ENABLE_TEST_LOG_COLLECTOR=false
-TEST_LOG_COLLECTOR_PROW_JOB_NAME="post-master-kyma-gke-compass-integration"
-
-discoverUnsetVar=false
-for var in REPO_OWNER REPO_NAME DOCKER_PUSH_REPOSITORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS GARDENER_KYMA_PROW_PROJECT_NAME GARDENER_KYMA_PROW_KUBECONFIG GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
-  if [ -z "${!var}" ] ; then
-    echo "ERROR: $var is not set"
-    discoverUnsetVar=true
-  fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-  exit 1
-fi
-
-if [[ "${BUILD_TYPE}" == "master" ]]; then
-    if [ -z "${LOG_COLLECTOR_SLACK_TOKEN}" ] ; then
-        log:error "$LOG_COLLECTOR_SLACK_TOKEN is not set"
-        exit 1
-    fi
-fi
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -38,6 +19,34 @@ readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCK
 
 # shellcheck source=prow/scripts/library.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    DOCKER_PUSH_REPOSITORY
+    KYMA_PROJECT_DIR
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_COMPUTE_REGION
+    CLOUDSDK_COMPUTE_ZONE
+    CLOUDSDK_DNS_ZONE_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    GARDENER_KYMA_PROW_PROJECT_NAME
+    GARDENER_KYMA_PROW_KUBECONFIG
+    GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 
@@ -94,13 +103,51 @@ KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
 INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-with-compass-runtime-agent.yaml.tpl"
 
+# post_hook runs at the end of a script or on any error
+function post_hook() {
+  #!!! Must be at the beginning of this function !!!
+  EXIT_STATUS=$?
+
+  log::info "Cleanup"
+
+  if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
+    log::info "AN ERROR OCCURED! Take a look at preceding log entries."
+  fi
+
+  #Turn off exit-on-error so that next step is executed even if previous one fails.
+  set +e
+
+  # collect logs from failed tests before deprovisioning
+  kyma::run_test_log_collector "post-master-kyma-gke-compass-integration"
+
+  gcloud::cleanup
+
+  if [ -n "${CLEANUP_DOCKER_IMAGE}" ]; then
+    log::info "Docker image cleanup"
+    if [ -n "${KYMA_INSTALLER_IMAGE}" ]; then
+      log::info "Delete temporary Kyma-Installer Docker image"
+      gcloud::authenticate "${GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS}"
+      gcloud::delete_docker_image "${KYMA_INSTALLER_IMAGE}"
+      gcloud::set_account "${GOOGLE_APPLICATION_CREDENTIALS}"
+    fi
+  fi
+
+  MSG=""
+  if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
+  log::info "Job is finished ${MSG}"
+  set -e
+
+  exit "${EXIT_STATUS}"
+}
+
 function createCluster() {
   #Used to detect errors for logging purposes
   ERROR_LOGGING_GUARD="true"
 
   shout "Authenticate"
   date
-  init
+  gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+  docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -326,7 +373,7 @@ installCompass() {
   "${COMPASS_TMP_DIR}"/is-installed.sh --timeout 30m
 }
 
-trap gkeCleanup EXIT INT
+trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     shout "Execute Job Guard"
@@ -345,7 +392,10 @@ shout "Install Compass on top of Kyma"
 date
 installCompass
 
-ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
+if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
+  ENABLE_TEST_LOG_COLLECTOR=true
+fi
 
 shout "Test Kyma with Compass"
 date

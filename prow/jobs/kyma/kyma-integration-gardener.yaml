@@ -29,7 +29,6 @@ gardener_aws_job_template: &gardener_aws_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -38,7 +37,7 @@ gardener_aws_job_template: &gardener_aws_job_template
           - "bash"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-aws.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
         env:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
@@ -60,7 +59,6 @@ gardener_gcp_job_template: &gardener_gcp_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -69,7 +67,7 @@ gardener_gcp_job_template: &gardener_gcp_job_template
           - "bash"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
         env:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
@@ -95,7 +93,7 @@ gardener_gcp_parallel_job_template: &gardener_gcp_parallel_job_template
           - "bash"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-gcp.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
         env:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
@@ -126,7 +124,6 @@ gardener_azure_job_template: &gardener_azure_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -135,7 +132,7 @@ gardener_azure_job_template: &gardener_azure_job_template
           - "bash"
         args:
           - "-c"
-          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"
+          - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
         env:
           - name: RS_GROUP
             value: "kyma-gardener-azure"
@@ -166,7 +163,7 @@ gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
       - "bash"
       args:
       - "-c"
-      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
       env:
       - name: RS_GROUP
         value: "kyma-gardener-azure"
@@ -180,6 +177,40 @@ gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
         value: "1"
       - name: EXECUTION_PROFILE
         value: "evaluation"
+      resources:
+        requests:
+          memory: 1Gi
+          cpu: 400m
+
+gardener_azure_hibernation_job_template: &gardener_azure_hibernation_job_template
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      securityContext:
+        privileged: true
+      command:
+      - "bash"
+      args:
+      - "-c"
+      - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+      env:
+      - name: RS_GROUP
+        value: "kyma-gardener-azure"
+      - name: REGION
+        value: "northeurope"
+      - name: KYMA_PROJECT_DIR
+        value: "/home/prow/go/src/github.com/kyma-project"
+      - name: GARDENER_REGION
+        value: "westeurope"
+      - name: GARDENER_ZONES
+        value: "1"
+      - name: EXECUTION_PROFILE
+        value: "evaluation"
+      - name: HIBERNATION_ENABLED
+        value: "true"
       resources:
         requests:
           memory: 1Gi
@@ -230,7 +261,7 @@ presubmits:
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-azure.sh"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
               - name: RS_GROUP
                 value: "kyma-gardener-azure"
@@ -244,8 +275,6 @@ presubmits:
                 value: "1"
               - name: EXECUTION_PROFILE
                 value: "evaluation"
-              - name: FAST_INTEGRATION_TESTS
-                value: "true"
             resources:
               requests:
                 memory: 1Gi
@@ -339,6 +368,27 @@ periodics:
       testgrid-create-test-group: "false"
     decoration_config:
       timeout: 3600000000000 # 45min
+      grace_period: 600000000000 # 10min
+    cron: "0 5,8,11,14 * * *"
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *kyma_ref
+      base_ref: master
+    - <<: *kyma_local_ref
+      base_ref: main
+    labels:
+      preset-log-collector-slack-token: "true"
+      <<: *gardener_azure_job_labels_template
+
+  - name: kyma-integration-hibernation-gardener-azure
+    cluster: untrusted-workload
+    <<: *gardener_azure_hibernation_job_template
+    decorate: true
+    annotations:
+      testgrid-create-test-group: "false"
+    decoration_config:
+      timeout: 5400000000000  # 90min
       grace_period: 600000000000 # 10min
     cron: "0 5,8,11,14 * * *"
     extra_refs:

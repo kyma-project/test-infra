@@ -4,27 +4,24 @@
 
 set -e
 
-discoverUnsetVar=false
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
 
-function check_missing_var() {
-    local var=$1
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-}
+requiredVars=(
+    KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
+)
 
-check_missing_var KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::check_required_vars "${requiredVars[@]}"
 
 readonly KCP_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/kcp"
 readonly CURRENT_TIMESTAMP=$(date +%s)
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+
 
 function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
@@ -43,7 +40,7 @@ function export_variables() {
    export CLI_VERSION
 }
 
-init
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 export_variables
 
 export KCP_PATH="/home/prow/go/src/github.com/kyma-project/control-plane"
@@ -54,7 +51,7 @@ make -C "${KCP_PATH}/tools/cli" ${buildTarget}
 
 shout "Switch to a different service account to push to GCS bucket"
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 shout "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"

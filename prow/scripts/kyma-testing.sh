@@ -11,6 +11,8 @@ SUITE_NAME="testsuite-all"
 
 # shellcheck disable=SC1090
 source "${CURRENT_PATH}/lib/testing-helpers.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${CURRENT_PATH}/lib/kyma.sh"
 
 kc="kubectl $(context_arg)"
 
@@ -25,10 +27,11 @@ function printUsage() {
   Usage:
   -l <label expression> (optional, specify multiple times): Specify a label expression to limit execution testdefinitions by labels
   -n <cluster-test-suite-name> (optional): Specify the name of the cluster test suite used for executing the set of testdefinitions
+  -t <timeout> (optional): Specify the duration until timeout
   "
 }
 
-while getopts "l:n:" opt; do
+while getopts "l:n:t:" opt; do
     case $opt in
         l)
           KYMA_OPTIONS+=("-l")
@@ -37,46 +40,15 @@ while getopts "l:n:" opt; do
         n)
           SUITE_NAME="$OPTARG"
           ;;
+        t)
+          KYMA_TEST_TIMEOUT="$OPTARG"
+          ;;
         *)
           printUsage
           exit 1
           ;;
     esac
 done
-
-host::os() {
-  local host_os
-  case "$(uname -s)" in
-    Darwin)
-      host_os=darwin
-      ;;
-    Linux)
-      host_os=linux
-      ;;
-    *)
-      log::error "Unsupported host OS. Must be Linux or Mac OS X."
-      exit 1
-      ;;
-  esac
-  echo "${host_os}"
-}
-
-install::kyma_cli() {
-    mkdir -p "${INSTALL_DIR}/bin"
-    export PATH="${INSTALL_DIR}/bin:${PATH}"
-    os=$(host::os)
-
-    pushd "${INSTALL_DIR}/bin"
-
-    log::info "- Install kyma CLI ${os} locally to a tempdir..."
-
-    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-    chmod +x kyma
-
-    log::success "OK"
-
-    popd
-}
 
 function printImagesWithLatestTag() {
     retry=10
@@ -112,11 +84,7 @@ function main() {
   echo "- Testing Kyma..."
   echo "----------------------------"
 
-  export INSTALL_DIR=${TMP_DIR}
-  if ! [[ -x "$(command -v kyma)" ]];
-  then
-    install::kyma_cli
-  fi
+  kyma::install_cli
 
   cts::check_crd_exist
 

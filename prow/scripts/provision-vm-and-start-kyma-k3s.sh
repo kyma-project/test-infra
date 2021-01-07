@@ -7,8 +7,6 @@ set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-readonly TMP_DIR=$(mktemp -d)
-readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_kyma_octopus-test-suite.xml"
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
@@ -21,12 +19,9 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 fi
 
 cleanup() {
-  log::info "Fetch JUnit test results and store them in job artifacts"
-  gcloud compute scp --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}:junit_kyma_octopus-test-suite.xml" "${JUNIT_REPORT_PATH}"
-  ARG=$?
+  # TODO - collect junit results
   log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
   gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
-  exit $ARG
 }
 
 function testCustomImage() {
@@ -37,7 +32,7 @@ function testCustomImage() {
   fi
 }
 
-gcloud::authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 RANDOM_ID=$(openssl rand -hex 4)
 
@@ -49,8 +44,7 @@ else
 fi
 
 POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
+while [[ $# -gt 0 ]]; do
   key="$1"
 
   case ${key} in
@@ -80,9 +74,9 @@ if [[ -z "$IMAGE" ]]; then
        --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
 
   if [[ -z "$IMAGE" ]]; then
-   log::error "There are no default custom images, the script will exit ..." && exit 1
+    log::error "There are no default custom images, the script will exit ..." && exit 1
   fi
- fi
+fi
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
@@ -94,7 +88,7 @@ for ZONE in ${EU_ZONES}; do
       --image "${IMAGE}" \
       --machine-type n1-standard-4 \
       --zone "${ZONE}" \
-      --boot-disk-size 30 "${LABELS[@]}" &&\
+      --boot-disk-size 30 "${LABELS[@]}" && \
   log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
   log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
@@ -111,7 +105,15 @@ for i in $(seq 1 5); do
   [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
 done;
 
+log::info "Copying Kyma-Local to the instance"
+
+for i in $(seq 1 5); do
+  [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
+  gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-incubator/local-kyma "kyma-integration-test-${RANDOM_ID}":~/local-kyma && break;
+  [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+done;
+
 log::info "Triggering the installation"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-minikube.sh"
+gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3s.sh"
 
 log::success "all done"

@@ -3,8 +3,10 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${SCRIPT_DIR}/lib/docker.sh"
 
 usage () {
     echo "Usage: \$ ${BASH_SOURCE[1]} /path/to/image"
@@ -30,7 +32,8 @@ function export_variables() {
     export DOCKER_TAG
 }
 
-init
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+docker::start
 export_variables
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then

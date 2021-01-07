@@ -16,8 +16,9 @@ set -o errexit
 MINIKUBE_VERSION=v1.12.2
 KUBECTL_CLI_VERSION=v1.16.3
 CRICTL_VERSION=v1.12.0
-HELM_VERSION="v3.2.1"
+HELM_VERSION="v3.4.2"
 DOCKER_VERSION=18.06.1~ce~3-0~debian
+NODEJS_VERSION="14.x"
 
 # install docker
 sudo apt-get update
@@ -45,8 +46,9 @@ curl -Lo /tmp/kubectl https://storage.googleapis.com/kubernetes-release/release/
  sudo mv /tmp/kubectl /usr/local/bin/kubectl
 
 # install helm
-wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm &&\
-	chmod +x /usr/local/bin/helm &&\
+wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /tmp/helm && \
+	chmod +x /tmp/helm && \
+	sudo mv /tmp/helm /usr/local/bin/helm && \
    rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 # install minikube
@@ -58,3 +60,9 @@ curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKU
 wget https://github.com/kubernetes-sigs/cri-tools/releases/download/${CRICTL_VERSION}/crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
 sudo tar zxvf crictl-${CRICTL_VERSION}-linux-amd64.tar.gz -C /usr/local/bin
 rm -f crictl-${CRICTL_VERSION}-linux-amd64.tar.gz
+
+# install jq and nodejs
+curl -sL https://deb.nodesource.com/setup_${NODEJS_VERSION} | sudo bash -
+sudo apt-get -y install \
+     jq \
+     nodejs

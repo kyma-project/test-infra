@@ -13,32 +13,32 @@
 
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 DNS_NAME="a.build.kyma-project.io."
 
 function cleanup() {
 	
 	shout "Running cleanup-cluster process"
-	discoverUnsetVar=false
 
-	for var in CLUSTER_NAME TEST_INFRA_SOURCES_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS CLOUDSDK_COMPUTE_REGION CLOUDSDK_DNS_ZONE_NAME; do
-		if [ -z "${!var}" ] ; then
-			echo "ERROR: $var is not set"
-			discoverUnsetVar=true
-		fi
-	done
+	requiredVars=(
+		CLUSTER_NAME
+		TEST_INFRA_SOURCES_DIR
+		TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
+		CLOUDSDK_COMPUTE_REGION
+		CLOUDSDK_DNS_ZONE_NAME
+	)
 
-	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-		for var in GCLOUD_NETWORK_NAME GCLOUD_SUBNET_NAME; do
-			if [ -z "${!var}" ] ; then
-				echo "ERROR: $var is not set"
-				discoverUnsetVar=true
-			fi
-		done
+	if [[ -z "${PERFORMACE_CLUSTER_SETUP}" ]]; then
+		requiredVars+=(
+			GCLOUD_NETWORK_NAME
+			GCLOUD_SUBNET_NAME
+		)
 	fi
 
-	if [ "${discoverUnsetVar}" = true ] ; then
-		exit 1
-	fi
+	utils::check_required_vars "${requiredVars[@]}"
 
 	#Exporting variables used in subshells.
 	export CLOUDSDK_DNS_ZONE_NAME
@@ -89,7 +89,7 @@ function removeCluster() {
 
 		echo "KYMA_INSTALLER_IMAGE=${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}"
 
-		KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-image.sh
+		gcloud::delete_docker_image "${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}"
 		TMP_STATUS=$?
 		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 	fi

@@ -3,7 +3,17 @@
 set -o errexit   # Exit immediately if a command exits with a non-zero status.
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-VARIABLES=(
+# INIT ENVIRONMENT VARIABLES
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
+export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
 	RS_GROUP
 	REGION
 	AZURE_SUBSCRIPTION_ID
@@ -23,24 +33,7 @@ VARIABLES=(
 	DOCKER_PUSH_DIRECTORY
 )
 
-discoverUnsetVar=false
-
-for var in "${VARIABLES[@]}"; do
-	if [ -z "${!var}" ] ; then
-		echo "ERROR: $var is not set"
-		discoverUnsetVar=true
-	fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-	exit 1
-fi
-
-# INIT ENVIRONMENT VARIABLES
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
-export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
-export KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
+utils::check_required_vars "${requiredVars[@]}"
 
 readonly STANDARIZED_NAME=$(echo "${INPUT_CLUSTER_NAME}" | tr "[:upper:]" "[:lower:]")
 readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
@@ -58,10 +51,14 @@ export CLUSTER_ADDONS="monitoring,http_application_routing"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/kyma-cli.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function check_status() {
   status="${1}"
@@ -337,8 +334,7 @@ EOF
   # install if yq does not exist
   if [[ ! -x $(command -v yq) ]];
   then
-    yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-    curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+    curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
   fi
 cat << EOF > istio-ingressgateway-patch-yq.yaml
 - command: update
@@ -375,6 +371,16 @@ EOF
 	fi
 }
 
+function apply_dex_github_kyma_admin_group() {
+    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+    kubectl replace -f kyma-admin-binding.yaml
+}
+
 function test_console_url() {
   CONSOLE_URL="https://console.${DOMAIN}"
   console_response=$(curl -L -s -o /dev/null -w "%{http_code}" "${CONSOLE_URL}")
@@ -384,7 +390,8 @@ function test_console_url() {
   fi
 }
 
-init
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+docker::start
 az::login "$AZURE_CREDENTIALS_FILE"
 az::set_subscription "$AZURE_SUBSCRIPTION_ID"
 
@@ -405,14 +412,13 @@ export TLS_KEY
 
 setupKubeconfig
 
-export INSTALL_DIR=${TMP_DIR}
-install::kyma_cli
+kyma::install_cli
 
 installKyma
 
 
 log::info "Override kyma-admin-binding ClusterRoleBinding"
-applyDexGithibKymaAdminGroup
+apply_dex_github_kyma_admin_group
 
 log::info "Install stability-checker"
 (

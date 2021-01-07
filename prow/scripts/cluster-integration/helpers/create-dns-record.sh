@@ -15,19 +15,16 @@ set -o errexit
 SCRIPTS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../.."
 #shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPTS_PATH}/lib/log.sh"
+# shellcheck disable=SC1090
+source "${SCRIPTS_PATH}/lib/utils.sh"
 
-discoverUnsetVar=false
+requiredVars=(
+    CLOUDSDK_CORE_PROJECT
+    CLOUDSDK_DNS_ZONE_NAME
+    DNS_FULL_NAME IP_ADDRESS
+)
 
-for var in CLOUDSDK_CORE_PROJECT CLOUDSDK_DNS_ZONE_NAME DNS_FULL_NAME IP_ADDRESS; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
+utils::check_required_vars "${requiredVars[@]}"
 
 attempts=10
 retryTimeInSec="5"
@@ -73,36 +70,6 @@ while [ ${SECONDS} -lt ${END_TIME} ];do
         echo "Successfully resolved ${DNS_FULL_NAME} to ${RESOLVED_IP_ADDRESS}"
         exit 0
     fi
-
-    set +e
-    log::banner "Debugging DNS issues"
-    log::date
-    {
-      log::info "trace DNS response for ${DNS_FULL_NAME}"
-      dig +trace "${DNS_FULL_NAME}"
-      log::info "query authoritative servers directly"
-      log::info "ns-cloud-b1.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b1.googledomains.com.
-      log::info "ns-cloud-b2.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b2.googledomains.com.
-      log::info "ns-cloud-b3.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b3.googledomains.com.
-      log::info "ns-cloud-b4.googledomains.com."
-      dig "${DNS_FULL_NAME}" @ns-cloud-b4.googledomains.com.
-      log::info "checking /etc/resolv.conf"
-      cat /etc/resolv.conf
-      log::info "checking kube-dns service IP"
-      token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-      curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/services?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .spec.clusterIP"
-      log::info "checking kube-dns endpoints addresses"
-      endpoints=$(curl -X GET -s --header "Authorization: Bearer $token" --insecure https://kubernetes.default.svc/api/v1/namespaces/kube-system/endpoints?labelSelector=k8s-app=kube-dns | jq -r ".items[] | .subsets[] | .addresses[] | .ip")
-      echo "$endpoints"
-      log::info "query kube-dns pods directly"
-      for srv in $endpoints; do log::info "querying $srv"; dig "${DNS_FULL_NAME}" @"$srv";done
-    } >> "${ARTIFACTS}/dns-debug.txt"
-    set -e
-
-
 done
 
 echo "Cannot resolve ${DNS_FULL_NAME} to expected IP_ADDRESS: ${IP_ADDRESS}."

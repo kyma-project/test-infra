@@ -374,6 +374,13 @@ templates:
           path: components/director
           since: "1.7"
           optional: false
+      - to: ../prow/jobs/incubator/compass/components/tenant-fetcher/tenant-fetcher-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/tenant-fetcher
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         values:
           <<: *cluster_default
@@ -450,6 +457,13 @@ templates:
           path: tests/connectivity-adapter
           since: "1.11"
           optional: false
+      - to: ../prow/jobs/incubator/compass/tests/tenant-fetcher/tenant-fetcher-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/tenant-fetcher
+          since: "1.17"
+          optional: true
       - to: ../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
         values:
           <<: *cluster_default
@@ -689,8 +703,6 @@ templates:
           <<: *console_generic_component
           path: core
           since: "1.12"
-          additionalRunIfChanged:
-            - ^package.json
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
@@ -698,10 +710,10 @@ templates:
           <<: *cluster_default
           gkeVersions:
             - channel: rapid
-              version: 1.18.10-gke.2701
+              version: 1.18.12-gke.1201
               jobs: [ "postsubmit" ]
             - channel: regular
-              version: 1.17.13-gke.2001
+              version: 1.17.13-gke.2600
               jobs: [ "presubmit", "postsubmit" ]
               optional: true
   - from: templates/kyma-integration-gardener.yaml
@@ -1655,3 +1667,26 @@ templates:
                 run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                 args:
                   - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+  - from: templates/protecode-guard.yaml
+    render:
+    - to: ../prow/jobs/scans/protecode-guard.yaml
+      values:
+        repos:
+        - name: kyma
+          project: kyma-project
+          optional: true
+          always_run: false
+          run_if_changed: '^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))'
+          job_guard_pattern: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+        - name: console
+          project: kyma-project
+          optional: true
+          always_run: false
+          run_if_changed: ".*"
+          job_guard_pattern: "pre-console-.*"
+        - name: pamela
+          project: kyma-project
+          optional: true
+          always_run: true
+          run_if_changed: ""
+          job_guard_pattern: ".*"

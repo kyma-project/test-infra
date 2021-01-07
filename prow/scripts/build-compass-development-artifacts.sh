@@ -8,24 +8,25 @@
 
 set -e
 
-discoverUnsetVar=false
-
-for var in DOCKER_PUSH_REPOSITORY KYMA_DEVELOPMENT_ARTIFACTS_BUCKET; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
-
-readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
-readonly CURRENT_TIMESTAMP=$(date +%s)
-
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${SCRIPT_DIR}/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${SCRIPT_DIR}/lib/docker.sh"
+
+requiredVars=(
+    DOCKER_PUSH_REPOSITORY
+    KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
+)
+
+utils::check_required_vars "${requiredVars[@]}"
+
+readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
+readonly CURRENT_TIMESTAMP=$(date +%s)
 
 function export_variables() {
     COMMIT_ID=$(echo "${PULL_BASE_SHA}" | cut -c1-8)
@@ -48,7 +49,8 @@ function export_variables() {
    export BUCKET_DIR
 }
 
-init
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+docker::start
 export_variables
 
 # installer ci-pr, ci-master, kyma-installer ci-pr, ci-master
@@ -75,7 +77,7 @@ ls -la "${ARTIFACTS}"
 shout "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-authenticate
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
 shout "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"

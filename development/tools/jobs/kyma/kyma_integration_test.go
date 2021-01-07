@@ -28,7 +28,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 			testContainer := actualPresubmit.Spec.Containers[0]
 			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
 			assert.Len(t, testContainer.Command, 1)
-			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh", testContainer.Command[0])
+			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh", testContainer.Command[0])
 			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
 		})
 	}
@@ -73,6 +73,23 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 
 			expRunIfChangedRegex: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
+			expRunIfChangedPaths: []string{
+				"resources/values.yaml",
+				"installation/file.yaml",
+			},
+			expNotRunIfChangedPaths: []string{
+				"installation/README.md",
+				"installation/test/test/README.MD",
+			},
+		},
+		"Should contain the kyma-integration K3s job": {
+			givenJobName: "pre-master-kyma-integration-k3s",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
+			},
+
+			expRunIfChangedRegex: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
 			expRunIfChangedPaths: []string{
 				"resources/values.yaml",
 				"installation/file.yaml",
@@ -189,6 +206,13 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 	}{
 		"Should contain the kyma-integration job": {
 			givenJobName: "post-master-kyma-integration",
+
+			expPresets: []preset.Preset{
+				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",
+			},
+		},
+		"Should contain the kyma-integration-k3s job": {
+			givenJobName: "post-master-kyma-integration-k3s",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration",

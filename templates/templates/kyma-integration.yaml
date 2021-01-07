@@ -8,6 +8,11 @@ kyma_ref: &kyma_ref
   repo: kyma
   path_alias: github.com/kyma-project/kyma
 
+kyma_local_ref: &kyma_local_ref
+  org: kyma-incubator
+  repo: local-kyma
+  path_alias: github.com/kyma-incubator/local-kyma
+
 # Kubectl 1.14 and CLUSTER_VERSION=1.14
 base_image_k14: &base_image_k14
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20200817-1.14.0-rc1-75-g625c1054-k8s1.14
@@ -32,11 +37,25 @@ vm_job_template: &vm_job_template
     containers:
       - <<: *base_image_k16
         command:
-          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma.sh"
+          - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
         resources:
           requests:
             memory: 100Mi
             cpu: 50m
+
+vm_job_template_k3s: &vm_job_template_k3s
+  decorate: true
+  path_alias: github.com/kyma-project/kyma
+  max_concurrency: 10
+  spec:
+    containers:
+    - <<: *base_image_k16
+      command:
+      - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3s.sh"
+      resources:
+        requests:
+          memory: 100Mi
+          cpu: 50m
 
 vm_job_template_serverless_k3s: &vm_job_template_serverless_k3s
   decorate: true
@@ -107,7 +126,6 @@ gke_job_template: &gke_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -130,7 +148,6 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -159,7 +176,6 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -182,7 +198,6 @@ gke_central_job_template: &gke_central_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -205,7 +220,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -226,7 +240,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
 gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -247,7 +260,6 @@ gke_backup_job_template: &gke_backup_job_template
 gke_backup_job_template_k14: &gke_backup_job_template_k14
   decorate: true
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -297,6 +309,24 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    
+    - name: pre-master-kyma-integration-k3s
+      optional: true
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+      - ^master$
+      <<: *vm_job_template_k3s
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
+    
     - name: pre-master-serverless-integration-k3s
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
@@ -470,6 +500,24 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+      
+    - name: post-master-kyma-integration-k3s
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      annotations:
+        testgrid-dashboards: kyma_integration
+        description: Kyma integration job on k3s.
+        testgrid-days-of-results: "60"
+      <<: *vm_job_template_k3s
+      branches:
+      - ^master$
+      labels:
+        preset-build-master: "true"
+        <<: *vm_job_labels_template
+      extra_refs:
+      - <<: *test_infra_ref
+        base_ref: master
+      - <<: *kyma_local_ref
+        base_ref: main
 
     - name: post-master-kyma-gke-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}

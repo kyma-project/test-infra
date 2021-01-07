@@ -3,22 +3,32 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-discoverUnsetVar=false
-
-for var in INPUT_CLUSTER_NAME DOCKER_PUSH_REPOSITORY DOCKER_PUSH_DIRECTORY KYMA_PROJECT_DIR CLOUDSDK_CORE_PROJECT CLOUDSDK_COMPUTE_REGION CLOUDSDK_COMPUTE_ZONE CLOUDSDK_DNS_ZONE_NAME GOOGLE_APPLICATION_CREDENTIALS SLACK_CLIENT_TOKEN SLACK_CLIENT_WEBHOOK_URL STABILITY_SLACK_CLIENT_CHANNEL_ID STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG CERTIFICATES_BUCKET; do
-    if [ -z "${!var}" ] ; then
-        echo "ERROR: $var is not set"
-        discoverUnsetVar=true
-    fi
-done
-if [ "${discoverUnsetVar}" = true ] ; then
-    exit 1
-fi
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export KYMA_SCRIPTS_DIR="${KYMA_SOURCES_DIR}/installation/scripts"
+
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+
+requiredVars=(
+	INPUT_CLUSTER_NAME
+	DOCKER_PUSH_REPOSITORY
+	DOCKER_PUSH_DIRECTORY
+	KYMA_PROJECT_DIR
+	CLOUDSDK_CORE_PROJECT
+	CLOUDSDK_COMPUTE_REGION
+	CLOUDSDK_COMPUTE_ZONE
+	CLOUDSDK_DNS_ZONE_NAME
+	GOOGLE_APPLICATION_CREDENTIALS
+	SLACK_CLIENT_TOKEN
+	SLACK_CLIENT_WEBHOOK_URL
+	STABILITY_SLACK_CLIENT_CHANNEL_ID
+	STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
+	CERTIFICATES_BUCKET
+)
+
+utils::check_required_vars "${requiredVars[@]}"
 
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
@@ -72,8 +82,12 @@ TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/kyma-cli.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/docker.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	shout "Reserve IP Address for Ingressgateway"
@@ -241,8 +255,7 @@ EOF
 
   # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
   echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
-  yq_rel_latest=$(curl --silent "https://api.github.com/repos/mikefarah/yq/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/${yq_rel_latest}/yq_linux_amd64" && chmod +x /usr/local/bin/yq
+  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
 cat << EOF > istio-ingressgateway-patch-yq.yaml
 - command: update
   path: spec.components.ingressGateways[0].k8s.service
@@ -297,6 +310,16 @@ EOF
 echo "${serviceCatalogOverrides}" >> "${componentOverridesFile}"
 }
 
+function apply_dex_github_kyma_admin_group() {
+    kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: kyma-project:cluster-access
+EOF
+
+    kubectl replace -f kyma-admin-binding.yaml
+}
+
 function installStackdriverPrometheusCollector(){
   # Patching prometheus resource of prometheus-operator.
   # Injecting stackdriver-collector sidecar to export metrics in to stackdriver monitoring.
@@ -314,7 +337,8 @@ function installStackdriverPrometheusCollector(){
 
 shout "Authenticate"
 date
-init
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+docker::start
 
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
@@ -335,22 +359,38 @@ createCluster
 log::info "install image-guard"
 helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-guard"
 
-export INSTALL_DIR=${TMP_DIR}
-install::kyma_cli
+kyma::install_cli
 
 shout "Install kyma"
 date
 installKyma
 
 shout "Override kyma-admin-binding ClusterRoleBinding"
-applyDexGithibKymaAdminGroup
+apply_dex_github_kyma_admin_group
 
 shout "Install stackdriver-prometheus collector"
 date
 installStackdriverPrometheusCollector
 
 shout "Update stackdriver-metadata-agent memory settings"
-updatememorysettings
+
+cat <<EOF | kubectl replace -f -
+apiVersion: v1
+data:
+  NannyConfiguration: |-
+    apiVersion: nannyconfig/v1alpha1
+    kind: NannyConfiguration
+    baseMemory: 100Mi
+kind: ConfigMap
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: metadata-agent-config
+  namespace: kube-system
+EOF
+kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
+
 
 shout "Collect list of images"
 date
