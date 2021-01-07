@@ -126,7 +126,6 @@ gke_job_template: &gke_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -149,7 +148,6 @@ gke_upgrade_job_template: &gke_upgrade_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -178,7 +176,6 @@ gke_upgrade_job_template_k14: &gke_upgrade_job_template_k14
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -201,7 +198,6 @@ gke_central_job_template: &gke_central_job_template
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -224,7 +220,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
   path_alias: github.com/kyma-project/kyma
   max_concurrency: 10
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -245,7 +240,6 @@ gke_central_job_template_k14: &gke_central_job_template_k14
 gke_backup_job_template: &gke_backup_job_template
   decorate: true
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k16
         securityContext:
@@ -266,7 +260,6 @@ gke_backup_job_template: &gke_backup_job_template
 gke_backup_job_template_k14: &gke_backup_job_template_k14
   decorate: true
   spec:
-    automountServiceAccountToken: true
     containers:
       - <<: *base_image_k14
         securityContext:
@@ -1044,34 +1037,6 @@ periodics:
           args:
             - "-c"
             - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-aks-long-lasting.sh"
-          resources:
-            requests:
-              memory: 200Mi
-              cpu: 80m
-
-  - name: dns-debug
-    annotations:
-      testgrid-create-test-group: "false"
-    cluster: untrusted-workload
-    #interval: 5m
-    cron: "0/5 * * * 1-5" # "every 5 minutes on every day-of-week from Monday through Friday"
-    labels:
-      <<: *gke_job_labels_template
-    decorate: true
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: master
-    spec:
-      automountServiceAccountToken: true
-      containers:
-        - <<: *base_image_k16
-          securityContext:
-            privileged: true
-          command:
-            - "bash"
-          args:
-            - "-c"
-            - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/dns-debug.sh"
           resources:
             requests:
               memory: 200Mi
