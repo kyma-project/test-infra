@@ -41,19 +41,6 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-{{ .Values.pushRepository }}: "true"
-{{- if $isNotTestInfra }}
-  extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-{{- end }}
-  branches:
-  {{- if $isValidForNextRelease }}
-    - ^master$
-    - ^main$
-  {{- end }}
-  {{- if ne $releaseBranchPattern "" }} # FIXME: we need to rewrite the pattern generation for release jobs.
-    - ^release-({{ $releasesPattern }})$
-  {{- end }}
   run_if_changed: "{{ $runIfChanged }}"
   spec:
     containers:
@@ -71,13 +58,37 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   {{ .Values.repository | replace "github.com/" "" }}:
+    {{- if $isValidForNextRelease }}
     - name: pre-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       optional: {{ .Values.optional | default false }}
       <<: *job_template
+      {{- if $isNotTestInfra }}
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      branches:
+        - ^master$
+        - ^main$
+    {{ end -}}
+    {{ end -}}
+    {{- range $releases }}
+    - name: pre-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      optional: {{ $.Values.optional | default false }}
+      <<: *job_template
+      {{- if $isNotTestInfra }}
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+      {{- end }}
+      branches:
+        - release-{{ . }}
+    {{ end }}
 
 postsubmits:
   {{ .Values.repository | replace "github.com/" "" }}:
+    {{- if $isValidForNextRelease }}
     - name: post-{{ $repositoryName }}-{{ .Values.path | replace "/" "-" }}
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       annotations:
@@ -86,5 +97,33 @@ postsubmits:
       reporter_config:
         slack:
           channel: 'kyma-prow-dev-null'
-      {{- end}}
+      {{- end }}
       <<: *job_template
+      {{- if $isNotTestInfra }}
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      {{- end }}
+      branches:
+      - ^master$
+      - ^main$
+      {{ end }}
+    {{- range $releases }}
+    - name: post-rel{{ . | replace "." "" }}-{{ $repositoryName }}-{{ $.Values.path | replace "/" "-" }}
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      annotations:
+        testgrid-create-test-group: "false"
+      {{- if or $.Values.optional $.Values.skipSlackReport }}
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      {{- end }}
+      <<: *job_template
+      {{- if $isNotTestInfra }}
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+      {{- end }}
+      branches:
+        - release-{{ . }}
+    {{ end }}
