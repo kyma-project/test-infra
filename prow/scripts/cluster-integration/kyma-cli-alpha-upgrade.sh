@@ -195,7 +195,7 @@ git fetch --tags
 # latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
 # shout "Installing Kyma in version: $latestTag"
 # git checkout "$latestTag"
-git checkout release-1.18
+git checkout 1.18.0
 set -x
 kyma alpha deploy \
     --ci \
