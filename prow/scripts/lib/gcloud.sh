@@ -432,7 +432,6 @@ function gcloud::delete_docker_image() {
 # APISERVER_DNS_FULL_NAME
 # APISERVER_IP_ADDRESS
 function gcloud::cleanup {
-  # TODO (@Ressetkk): Not yet finished.
   if [ -n "$CLEANUP_CLUSTER" ]; then
     log::info "Removing cluster $CLUSTER_NAME"
     gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
