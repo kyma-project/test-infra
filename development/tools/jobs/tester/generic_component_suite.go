@@ -27,6 +27,7 @@ func NewGenericComponentSuite(config *jobsuite.Config) jobsuite.Suite {
 
 // Run runs tests on a ComponentSuite
 func (s GenericComponentSuite) Run(t *testing.T) {
+	// we need to omit this check as we have to skip test if a given prowjob is nil
 	//s.testRunAgainstAnyBranch(t)
 
 	jobConfig, err := ReadJobConfig(s.JobConfigPath())
@@ -43,6 +44,7 @@ func (s GenericComponentSuite) testRunAgainstAnyBranch(t *testing.T) {
 func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		job := FindPresubmitJobByName(jobConfig.AllStaticPresubmits([]string{s.repositorySectionKey()}), s.jobName("pre"))
+		// skip the test if presubmit is nil - we have different prowjobs for releases and not every component is running against master/main
 		//require.NotNil(t, job)
 		if job == nil {
 			t.Skip("TODO: Needs a rewrite")
@@ -74,6 +76,7 @@ func (s GenericComponentSuite) testPresubmitJob(jobConfig config.JobConfig) func
 func (s GenericComponentSuite) testPostsubmitJob(jobConfig config.JobConfig) func(t *testing.T) {
 	return func(t *testing.T) {
 		job := FindPostsubmitJobByName(jobConfig.AllStaticPostsubmits([]string{s.repositorySectionKey()}), s.jobName("post"))
+		// skip the test if postsubmit is nil - we have different prowjobs for releases and not every component is running against master/main
 		//require.NotNil(t, job, "Job must exists")
 		if job == nil {
 			t.Skip("TODO: Needs a rewrite")
@@ -208,6 +211,7 @@ func (s GenericComponentSuite) branchesToRunAgainst() []string {
 		result = append(result, "master")
 	}
 
+	// don't include release branch checking as the components have different prowjobs for releases.
 	//releaseBranches := s.componentReleaseBranches()
 	//result = append(result, releaseBranches...)
 	return result
