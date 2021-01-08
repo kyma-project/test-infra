@@ -186,7 +186,8 @@ spec:
       namespace: "kyma-system"
 EOF
 
-shout "Get latest Kyma release tag"
+# shout "Get latest Kyma release tag"
+shout "Get kyma 1.18.0 & run tests"
 date
 
 (
@@ -203,15 +204,19 @@ kyma alpha deploy \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma test run \
-    --name "testsuite-all-$(date '+%Y-%m-%d-%H-%M')" \
-    --concurrency 5 \
+    --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
+    --concurrency 6 \
     --max-retries 1 \
-    --timeout 30m \
+    --timeout 60m \
     --watch \
-    --non-interactive
+    --non-interactive \
+    istio-kyma-validate application-connector application-operator application-registry \
+    connection-token-handler connector-service api-gateway apiserver-proxy cluster-users \
+    console-backend core-test-external-solution dex-connection dex-integration kiali \
+    logging monitoring rafter serverless serverless-long service-catalog
 )
 
-shout "Upgrade to master"
+shout "Upgrade to master & run tests"
 date
 
 (
@@ -224,34 +229,17 @@ kyma alpha deploy \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma test run \
-    --name "testsuite-all-$(date '+%Y-%m-%d-%H-%M')" \
-    --concurrency 5 \
+    --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
+    --concurrency 6 \
     --max-retries 1 \
-    --timeout 30m \
+    --timeout 60m \
     --watch \
-    --non-interactive
+    --non-interactive \
+    istio-kyma-validate application-connector application-operator application-registry \
+    connection-token-handler connector-service api-gateway apiserver-proxy cluster-users \
+    console-backend core-test-external-solution dex-connection dex-integration kiali \
+    logging monitoring rafter serverless serverless-long service-catalog
 )
-
-# shout "Running Kyma tests"
-# date
-
-# # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-# if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-#   export ENABLE_TEST_LOG_COLLECTOR=true
-# fi
-
-# readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
-# readonly CONCURRENCY=5
-# (
-# set -x
-# kyma test run \
-#     --name "${SUITE_NAME}" \
-#     --concurrency "${CONCURRENCY}" \
-#     --max-retries 1 \
-#     --timeout 90m \
-#     --watch \
-#     --non-interactive
-# )
 
 shout "Success"
 
