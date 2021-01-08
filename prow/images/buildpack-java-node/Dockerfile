@@ -1,6 +1,6 @@
 # Basic node buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-java:v20190729-5052901
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-java:v20210105-9ce011db
 
 # Commit details
 
