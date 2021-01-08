@@ -201,6 +201,14 @@ kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
+
+kyma test run \
+    --name "testsuite-all-$(date '+%Y-%m-%d-%H-%M')" \
+    --concurrency 5 \
+    --max-retries 1 \
+    --timeout 30m \
+    --watch \
+    --non-interactive
 )
 
 shout "Upgrade to master"
@@ -214,6 +222,14 @@ kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
+
+kyma test run \
+    --name "testsuite-all-$(date '+%Y-%m-%d-%H-%M')" \
+    --concurrency 5 \
+    --max-retries 1 \
+    --timeout 30m \
+    --watch \
+    --non-interactive
 )
 
 # shout "Running Kyma tests"
