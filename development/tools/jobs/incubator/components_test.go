@@ -134,6 +134,19 @@ var components = []struct {
 			jobsuite.Since(releases.Release116),
 		},
 	},
+	{
+		name:  "ord-service",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			func(suite *jobsuite.Config) {
+				suite.Path = "ord-service/components/ord-service"
+			},
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassORDServiceRepo(),
+			jobsuite.Since(releases.Release117),
+		},
+	},
 }
 
 func TestComponentJobs(t *testing.T) {

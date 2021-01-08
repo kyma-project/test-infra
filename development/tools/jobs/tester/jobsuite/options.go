@@ -92,6 +92,15 @@ func CompassConsoleRepo() Option {
 	}
 }
 
+// CompassORDServiceRepo function returns Option type
+func CompassORDServiceRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-incubator/ord-service"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoIncubator
+		suite.BuildPresetMaster = preset.BuildMaster
+	}
+}
+
 // ControlPlaneRepo function returns Option type
 func ControlPlaneRepo() Option {
 	return func(suite *Config) {
