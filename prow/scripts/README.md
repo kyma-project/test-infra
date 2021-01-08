@@ -17,6 +17,7 @@ The structure of the folder looks as follows:
   ├── resources                                   # Files used directly by pipelines
   ├── build.sh                                    # This script builds and tests a given Kyma component by running the respective "Makefile" target.
   ├── governance.sh                               # This script runs the "milv" bot for validating internal and external links in Markdown files. It checks all internal and external links in ".md" files changed in PRs. It also checks all links on the master branch once a day.
+  ├── library.sh                                  # This script is used as an integral part of other scripts, such as the "build.sh" script. With proper parameters defined, it authenticates you to GCP and sets up the Docker-in-Docker environment.
   ├── provision-vm-and-start-kyma-minikube.sh     # This script starts a virtual machine as part of the integration job and runs integration tests for Kyma on Minikube.
   ├── provision-vm-and-start-kyma-k3s.sh          # This script starts a virtual machine as part of the integration job and runs fast integration tests for Kyma on k3s.
   ├── validate-config.sh                          # This script runs the "Checker" application and checks the uniqueness of jobs names.
