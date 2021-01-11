@@ -36,7 +36,7 @@ function export_variables() {
         BUCKET_DIR="PR-${PULL_NUMBER}"
    elif [[ "${PULL_BASE_REF}" != "master" ]]; then
         DOCKER_TAG="${PULL_BASE_REF}"
-        SKIP_ARTIFACT_UPLOAD = true
+        SKIP_ARTIFACT_UPLOAD=true
    else
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
