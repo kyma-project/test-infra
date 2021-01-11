@@ -37,10 +37,36 @@ function copy_artifacts {
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
+# copied from build-generic.sh
+# TODO: Find a way to remove this function and use the build-generic.sh script directly. We should use `source`?
+function export_variables() {
+    if [[ -n "$PULL_NUMBER" ]] || [[ "$BUILD_TYPE" == "pr" ]]; then
+        DOCKER_TAG="PR-${PULL_NUMBER}"
+    elif [[ "${BUILD_TYPE}" == "master" ]]; then
+        DOCKER_TAG="${PULL_BASE_SHA::8}"
+    elif [[ "${BUILD_TYPE}" == "release" ]]; then
+        # TODO: Improve this part
+        if [[ ( "${REPO_OWNER}" == "kyma-project" && ("${REPO_NAME}" == "kyma" || "${REPO_NAME}" == "test-infra") ) || "${REPO_OWNER}" == "kyma-incubator" && "${REPO_NAME}" == "compass" ]]; then
+            DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+            echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
+        else
+            DOCKER_TAG="${PULL_BASE_REF}"
+        fi
+    else
+        echo "Not supported build type - ${BUILD_TYPE}"
+        exit 1
+    fi
+
+    readonly DOCKER_TAG
+    export DOCKER_TAG
+}
+export_variables
+
 log::info "Building kyma-installer"
 # Building kyma-installer image using build-generic.sh script.
 # Handles basically everything related to building process including determining version, exporting DOCKER_TAG etc.
-source "${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
+# In the same level as build-kyma-artifacts.sh
+"${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
 
 log::info "Create Kyma artifacts"
 env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "installation/scripts/release-generate-kyma-installer-artifacts.sh"
@@ -54,7 +80,7 @@ if [ -n "$PULL_NUMBER" ]; then
 elif [[ "$PULL_BASE_REF" =~ ^release-.* ]]; then
   copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
   # TODO this script needs to be revisited for future improvements...
-  "${SCRIPT_DIR}"/changelog-generator.sh
+  "${SCRIPT_DIR}"changelog-generator.sh
 else
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
