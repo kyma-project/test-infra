@@ -34,6 +34,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cli-alpha.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -144,10 +146,7 @@ git fetch --tags
 # shout "Installing Kyma in version: $latestTag"
 # git checkout "$latestTag"
 git checkout 1.18.0
-kyma alpha deploy \
-    --ci \
-    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma test run \
     --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
@@ -167,10 +166,7 @@ log::info "Upgrade to master & run tests"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 git checkout master
-kyma alpha deploy \
-    --ci \
-    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma test run \
     --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
