@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
-
 # cli-alpha::deploy starts Kyma installation using the alpha deploy command
 #
 # Arguments:
