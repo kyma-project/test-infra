@@ -22,8 +22,6 @@
 
 set -e
 
-# ENABLE_TEST_LOG_COLLECTOR=false
-
 readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
@@ -36,6 +34,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/gardener/gcp.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -48,44 +48,8 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-#!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
-cleanup() {
-    #!!! Must be at the beginning of this function !!!
-    EXIT_STATUS=$?
-    #Turn off exit-on-error so that next step is executed even if previous one fails.
-    set +e
-
-    if [[ -n "${SUITE_NAME}" ]]; then
-        testing::test_summary
-    fi 
-
-    if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
-        shout "AN ERROR OCCURED! Take a look at preceding log entries."
-        echo
-    fi
-
-    if [ -n "${CLEANUP_CLUSTER}" ]; then
-        shout "Deprovision cluster: \"${CLUSTER_NAME}\""
-        date
-        # Export envvars for the script
-        export GARDENER_CLUSTER_NAME=${CLUSTER_NAME}
-        export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
-        export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
-    fi
-
-    rm -rf "${TMP_DIR}"
-
-    MSG=""
-    if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-    shout "Job is finished ${MSG}"
-    date
-    set -e
-
-    exit "${EXIT_STATUS}"
-}
-
-trap cleanup EXIT INT
+# nice cleanup on exit, be it succesful or on fail
+trap gardener::cleanup EXIT INT
 
 RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c4)
 readonly COMMON_NAME_PREFIX="grdnr"
@@ -99,32 +63,21 @@ export CLUSTER_NAME="${COMMON_NAME}"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-shout "Building Kyma CLI"
-date
+log::info "Building Kyma CLI"
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
 mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
 export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
-shout "Provision cluster: \"${CLUSTER_NAME}\""
+log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
 if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="n1-standard-4"
 fi
 
-CLEANUP_CLUSTER="true"
-(
-set -x
-kyma provision gardener gcp \
-        --secret "${GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME}" --name "${CLUSTER_NAME}" \
-        --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-        --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
-        --scaler-max 4 --scaler-min 2 \
-        --kube-version=${GARDENER_CLUSTER_VERSION}
-)
+gardener::provision_cluster
 
-shout "Installing Kyma"
-date
+log::info "Installing Kyma"
 
 # Parallel-install library installs cluster-essentials, istio, and xip-patch before kyma installation. That's why they should not exist on the InstallationCR.
 # Once we figure out a way to fix this, this custom CR can be deleted from this script.
@@ -197,8 +150,7 @@ kyma alpha deploy \
 
 sleep 1m
 
-shout "Uninstall Kyma"
-date
+log::info "Uninstall Kyma"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 set -x
@@ -209,8 +161,7 @@ kyma alpha uninstall \
 
 sleep 1m
 
-shout "Install Kyma again"
-date
+log::info "Install Kyma again"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 set -x
@@ -220,8 +171,7 @@ kyma alpha deploy \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
-shout "Run Kyma tests"
-date
+log::info "Run Kyma tests"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 set -x
@@ -238,7 +188,7 @@ kyma test run \
     logging monitoring rafter serverless serverless-long service-catalog
 )
 
-shout "Success"
+log::info "Success"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false" 
