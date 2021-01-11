@@ -141,7 +141,7 @@ EOF
 
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
 sleep 1m
@@ -159,7 +159,7 @@ sleep 1m
 log::info "Install Kyma again"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
 log::info "Run Kyma tests"

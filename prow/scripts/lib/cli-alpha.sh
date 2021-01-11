@@ -5,7 +5,7 @@
 # Arguments:
 #	$1 - Path to local resource directory
 #	$2 - Path to local components.yaml file
-function cli-alpha:deploy {
+function cli-alpha::deploy {
 	kyma alpha deploy \
     	--ci \
     	--resources "${1}" \
