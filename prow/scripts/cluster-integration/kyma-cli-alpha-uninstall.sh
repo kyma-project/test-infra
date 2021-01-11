@@ -195,22 +195,36 @@ kyma alpha deploy \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
-shout "Uninstall and install Kyma again, then run tests"
-date
+sleep 1m
 
+shout "Uninstall Kyma"
+date
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 set -x
-
 kyma alpha uninstall \
     --ci \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
+)
 
+sleep 1m
+
+shout "Install Kyma again"
+date
+(
+cd "${KYMA_PROJECT_DIR}/kyma"
+set -x
 kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
+)
 
+shout "Run Kyma tests"
+date
+(
+cd "${KYMA_PROJECT_DIR}/kyma"
+set -x
 kyma test run \
     --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
     --concurrency 6 \
