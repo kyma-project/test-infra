@@ -18,7 +18,7 @@ source "${SCRIPT_DIR}/lib/docker.sh"
 # it accepts one argument BUCKET_PATH which should be formatted as:
 # gs://bucket-name/bucket-folder
 function copy_artifacts {
-  readonly BUCKET_PATH=$1
+  BUCKET_PATH=$1
   log::info "Copying artifacts to $BUCKET_PATH..."
 
   gsutil cp  "installation/scripts/is-installed.sh" "$BUCKET_PATH/is-installed.sh"
