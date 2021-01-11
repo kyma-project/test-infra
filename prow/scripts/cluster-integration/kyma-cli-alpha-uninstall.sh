@@ -34,6 +34,10 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gardener/gcp.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/cli-alpha.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cli-alpha.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -137,10 +141,7 @@ EOF
 
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-kyma alpha deploy \
-    --ci \
-    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
 sleep 1m
@@ -158,10 +159,7 @@ sleep 1m
 log::info "Install Kyma again"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-kyma alpha deploy \
-    --ci \
-    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-    --components "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 )
 
 log::info "Run Kyma tests"
