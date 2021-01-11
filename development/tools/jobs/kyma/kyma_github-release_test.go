@@ -10,6 +10,7 @@ import (
 )
 
 func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
+	t.Skip("Test skipped because the job needs to run against tags instead of branches. Needs rewrite.")
 	// WHEN
 	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
@@ -23,7 +24,7 @@ func TestKymaGithubReleaseJobPostsubmit(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualPostsubmit.JobBase.UtilityConfig, currentRelease.Branch())
 			tester.AssertThatHasPresets(t, actualPostsubmit.JobBase, "preset-sa-kyma-artifacts", "preset-bot-github-token")
 			assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPostsubmit.Spec.Containers[0].Image)
-			assert.Equal(t, []string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${RELEASE_TARGET_COMMIT} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"}, actualPostsubmit.Spec.Containers[0].Args)
+			assert.Equal(t, []string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-release.sh -targetCommit=${PULL_BASE_REF} -githubRepoOwner=${REPO_OWNER} -githubRepoName=${REPO_NAME} -githubAccessToken=${BOT_GITHUB_TOKEN} -releaseVersionFilePath=/home/prow/go/src/github.com/kyma-project/test-infra/prow/RELEASE_VERSION"}, actualPostsubmit.Spec.Containers[0].Args)
 		})
 	}
 }

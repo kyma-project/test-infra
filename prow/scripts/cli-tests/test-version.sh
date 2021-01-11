@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
-shout "Checking the versions"
+log::info "Checking the versions"
 clitests::assertRemoteCommand "sudo kyma version"
-

@@ -3,10 +3,10 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 
 readonly ARGS=("$@")
 readonly MILV_IMAGE="eu.gcr.io/kyma-project/external/magicmatatjahu/milv:0.0.7-beta"
@@ -123,14 +123,14 @@ function main() {
     read_arguments "${ARGS[@]}"
     docker::start
 
-    shout "Validate internal links"
+    log::info "Validate internal links"
     validate_internal
 
     if [ "${FULL_VALIDATION}" == true ]; then
-        shout "Validate external links"
+        log::info "Validate external links"
         validate_external
     else
-        shout "Validate external links on changed markdown files"
+        log::info "Validate external links on changed markdown files"
         validate_external_on_pr
     fi
 
