@@ -248,7 +248,7 @@ metadata:
     kyma-project.io/installation: ""
     component: cluster-essentials
 data:
-  limitRange.max.memory: "6Gi"
+  limitRange.max.memory: "8Gi"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -287,7 +287,7 @@ metadata:
 data:
   global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
   global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
-  prometheus-istio.envoyStats.sampleLimit: "10000"
+  prometheus-istio.envoyStats.sampleLimit: "8000"
 #---
 #apiVersion: v1
 #kind: ConfigMap
@@ -344,7 +344,7 @@ EOF
   yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
 
   # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
-  sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "6Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
+  sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "8Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
