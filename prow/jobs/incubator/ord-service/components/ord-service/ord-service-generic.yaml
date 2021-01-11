@@ -14,13 +14,6 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-incubator: "true"
-  extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-  branches:
-    - ^master$
-    - ^main$
-    - ^release-(1\.18|1\.17)-ord-service$
   run_if_changed: "^components/ord-service/|^scripts/"
   spec:
     containers:
@@ -42,6 +35,33 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       optional: false
       <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      branches:
+        - ^master$
+        - ^main$
+    
+    - name: pre-rel118-ord-service-components-ord-service
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.18
+      branches:
+        - release-1.18
+    
+    - name: pre-rel117-ord-service-components-ord-service
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.17
+      branches:
+        - release-1.17
+    
 
 postsubmits:
   kyma-incubator/ord-service:
@@ -50,3 +70,32 @@ postsubmits:
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      branches:
+      - ^master$
+      - ^main$
+      
+    - name: post-rel118-ord-service-components-ord-service
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.18
+      branches:
+        - release-1.18
+    
+    - name: post-rel117-ord-service-components-ord-service
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.17
+      branches:
+        - release-1.17
+    

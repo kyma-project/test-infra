@@ -14,13 +14,6 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-kyma: "true"
-  extra_refs:
-    - <<: *test_infra_ref
-      base_ref: master
-  branches:
-    - ^master$
-    - ^main$
-    - ^release-(1\.18|1\.17|1\.16)-logging$
   run_if_changed: "^logging/|^components/|^shared/|^package.json"
   spec:
     containers:
@@ -42,6 +35,43 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       optional: false
       <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      branches:
+        - ^master$
+        - ^main$
+    
+    - name: pre-rel118-console-logging
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.18
+      branches:
+        - release-1.18
+    
+    - name: pre-rel117-console-logging
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.17
+      branches:
+        - release-1.17
+    
+    - name: pre-rel116-console-logging
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
+      branches:
+        - release-1.16
+    
 
 postsubmits:
   kyma-project/console:
@@ -50,3 +80,43 @@ postsubmits:
       annotations:
         testgrid-create-test-group: "false"
       <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: master
+      branches:
+      - ^master$
+      - ^main$
+      
+    - name: post-rel118-console-logging
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.18
+      branches:
+        - release-1.18
+    
+    - name: post-rel117-console-logging
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.17
+      branches:
+        - release-1.17
+    
+    - name: post-rel116-console-logging
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.16
+      branches:
+        - release-1.16
+    

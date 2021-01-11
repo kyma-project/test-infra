@@ -38,7 +38,6 @@ function export_variables() {
 
    readonly DOCKER_TAG
    readonly BUCKET_DIR
-   readonly KYMA_INSTALLER_VERSION
 
    export DOCKER_TAG
    export BUCKET_DIR

@@ -760,11 +760,6 @@ templates:
       - to: ../prow/jobs/kyma/kyma-artifacts.yaml
         values:
           <<: *cluster_default
-  - from: templates/kyma-installer.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-installer.yaml
-        values:
-          <<: *cluster_default
   - from: templates/kyma-github-release.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-github-release.yaml
@@ -1209,7 +1204,6 @@ templates:
             - name: kyma-gke-upgrade
             - name: kyma-gke-central-connector
             - name: kyma-artifacts
-            - name: kyma-installer
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
