@@ -6,13 +6,13 @@
 #Expected vars:
 # - KYMA_KEYRING: kyma keyring name
 # - KYMA_ENCRYPTION_KEY: encryption key name used to encrypt the files
-# - TEST_INFRA_SOURCES_DIR: Path for shout library
+# - TEST_INFRA_SOURCES_DIR: Path for log library
 # - CLOUDSDK_KMS_PROJECT: Google Cloud Project ID with encryption key
 
 set -o errexit
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 
 readonly PLAIN_TEXT="$1"
@@ -27,7 +27,7 @@ if [ -c "$CIPHER_TEXT" ]; then
 fi
 
 
-shout "Encrypting ${PLAIN_TEXT} as  ${CIPHER_TEXT}"
+log::info "Encrypting ${PLAIN_TEXT} as  ${CIPHER_TEXT}"
 gcloud kms encrypt --location global \
     --keyring "${KYMA_KEYRING}" \
     --key "${KYMA_ENCRYPTION_KEY}" \

@@ -11,8 +11,8 @@ readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCK
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/library.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
@@ -122,8 +122,7 @@ function createCluster() {
   #Used to detect errors for logging purposes
   ERROR_LOGGING_GUARD="true"
 
-  shout "Authenticate"
-  date
+  log::info "Authenticate"
   gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
@@ -131,30 +130,26 @@ function createCluster() {
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
 
-  shout "Reserve IP Address for Ingressgateway"
-  date
+  log::info "Reserve IP Address for Ingressgateway"
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
   GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
-  shout "Create DNS Record for Ingressgateway IP"
-  date
+  log::info "Create DNS Record for Ingressgateway IP"
   GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
   CLEANUP_GATEWAY_DNS_RECORD="true"
   IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 
   NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
   if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    date
+    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
   else
-    shout "Network ${GCLOUD_NETWORK_NAME} exists"
+    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
   fi
 
-  shout "Provision cluster: \"${CLUSTER_NAME}\""
-  date
+  log::info "Provision cluster: \"${CLUSTER_NAME}\""
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   if [ -z "$MACHINE_TYPE" ]; then
     export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
@@ -289,8 +284,7 @@ function installKyma() {
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
-  shout "Installation triggered"
-  date
+  log::info "Installation triggered"
   "${TMP_DIR}"/is-kyma-installed.sh --timeout 30m
 }
 
@@ -308,13 +302,11 @@ function installCompass() {
     exit 1
   fi
 
-  shout "Build Compass-Installer Docker image"
-  date
+  log::info "Build Compass-Installer Docker image"
   CLEANUP_DOCKER_IMAGE="true"
   COMPASS_INSTALLER_IMAGE="${COMPASS_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-compass-image.sh
 
-  shout "Apply Compass config"
-  date
+  log::info "Apply Compass config"
   kubectl create namespace "compass-installer"
   applyCommonOverrides "compass-installer"
   applyCompassOverrides
@@ -326,13 +318,11 @@ function installCompass() {
   | sed -e "s/__.*__//g" \
   | kubectl apply -f-
   
-  shout "Installation triggered"
-  date
+  log::info "Installation triggered"
   "${COMPASS_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    shout "Create DNS Record for Apiserver proxy IP"
-    date
+    log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_APISERVER_DNS_RECORD="true"
@@ -343,34 +333,29 @@ function installCompass() {
 trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Execute Job Guard"
+    log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-shout "Create new cluster"
-date
+log::info "Create new cluster"
 createCluster
 
-shout "Generate self-signed certificate"
-date
+log::info "Generate self-signed certificate"
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
-shout "Install Kyma"
-date
+log::info "Install Kyma"
 installKyma
 
-shout "Install Compass"
-date
+log::info "Install Compass"
 installCompass
 
-shout "Test Kyma with Compass"
-date
+log::info "Test Kyma with Compass"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
-shout "Success"
+log::success "Success"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

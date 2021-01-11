@@ -9,8 +9,8 @@
 set -o errexit
 set -o pipefail  # Fail a pipe if any sub-command fails.
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
@@ -21,8 +21,7 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-shout "Generate lets encrypt certificate"
-date
+log::info "Generate lets encrypt certificate"
 
 mkdir -p ./letsencrypt
 cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt

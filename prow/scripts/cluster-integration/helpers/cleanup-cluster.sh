@@ -11,8 +11,8 @@
 #
 #Permissions: In order to run this script you need to use a service account with "Compute Admin,DNS Administrator, Kubernetes Engine Admin, Kubernetes Engine Cluster Admin, Service Account User, Storage Admin" role
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
@@ -21,7 +21,7 @@ DNS_NAME="a.build.kyma-project.io."
 
 function cleanup() {
 	
-	shout "Running cleanup-cluster process"
+	log::info "Running cleanup-cluster process"
 
 	requiredVars=(
 		CLUSTER_NAME
@@ -63,7 +63,7 @@ function removeCluster() {
 	set +e
 
 	if [ -z "${SKIP_IMAGE_REMOVAL}" ] || [ "${SKIP_IMAGE_REMOVAL}" == "false" ]; then
-		shout "Fetching OLD_TIMESTAMP from cluster to be deleted"
+		log::info "Fetching OLD_TIMESTAMP from cluster to be deleted"
 		# Check if removing regionl cluster.
 		if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
 			#Pass gke region name instead zone name.
@@ -73,19 +73,17 @@ function removeCluster() {
 		fi
 	fi
 
-	shout "Delete cluster $CLUSTER_NAME"
+	log::info "Delete cluster $CLUSTER_NAME"
 	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	shout "Cluster removal is finished: ${MSG}"
-	date
+	log::info "Cluster removal is finished: ${MSG}"
 
 	if [ -z "${SKIP_IMAGE_REMOVAL}" ] || [ "${SKIP_IMAGE_REMOVAL}" == "false" ]; then
-		shout "Delete temporary Kyma-Installer Docker image with timestamp: ${OLD_TIMESTAMP}"
-		date
+		log::info "Delete temporary Kyma-Installer Docker image with timestamp: ${OLD_TIMESTAMP}"
 
 		echo "KYMA_INSTALLER_IMAGE=${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${OLD_TIMESTAMP}"
 
@@ -101,15 +99,14 @@ function removeResources() {
 	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
 		set +e
 
-		shout "Delete Cluster DNS Record"
-		date
+		log::info "Delete Cluster DNS Record"
 		GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_NAME}"
 		# Get cluster IP address from DNS record.
 		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format "value(rrdatas[0])")
 
 		# Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]]; then
-			shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${GATEWAY_IP_ADDRESS} --dryRun=false"
+			log::info "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${GATEWAY_IP_ADDRESS} --dryRun=false"
 
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
@@ -118,15 +115,14 @@ function removeResources() {
 			echo "DNS entry for ${GATEWAY_DNS_FULL_NAME} not found"
 		fi
 
-		shout "Delete Apiserver DNS Record"
-		date
+		log::info "Delete Apiserver DNS Record"
 		APISERVER_DNS_FULL_NAME="apiserver.${CLUSTER_NAME}.${DNS_NAME}"
 		# Get apiserver IP address from DNS record.
 		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
 
 		# Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-			shout "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${APISERVER_DNS_FULL_NAME} --address=${APISERVER_IP_ADDRESS} --dryRun=false"
+			log::info "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${APISERVER_DNS_FULL_NAME} --address=${APISERVER_IP_ADDRESS} --dryRun=false"
 
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
 			TMP_STATUS=$?
@@ -135,8 +131,7 @@ function removeResources() {
 			echo "DNS entry for ${APISERVER_DNS_FULL_NAME} not found"
 		fi
 
-		shout "Release Cluster IP Address"
-		date
+		log::info "Release Cluster IP Address"
 		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
 
 		# Check if cluster IP address reservation exist.
@@ -163,7 +158,7 @@ function removeResources() {
 				exit 1
 			# Remove IP address reservation.
 			else
-				shout "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
+				log::info "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
 
 				"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
 				TMP_STATUS=$?
@@ -176,8 +171,7 @@ function removeResources() {
 
 	MSG=""
 	if [[ ${EXIT_STATUS} -ne 0 ]]; then MSG="(exit status: ${EXIT_STATUS})"; fi
-	shout "DNS, Gateway IP and Kyma installer image cleanup is finished: ${MSG}"
-	date
+	log::info "DNS, Gateway IP and Kyma installer image cleanup is finished: ${MSG}"
 
 	set -e
 }

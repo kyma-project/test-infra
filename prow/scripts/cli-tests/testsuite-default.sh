@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-shout "Installing Kyma"
+log::info "Installing Kyma"
 date
 gcloud compute ssh --quiet --zone="${ZONE}" "${HOST}" -- "yes | sudo kyma install --non-interactive ${SOURCE}"
 

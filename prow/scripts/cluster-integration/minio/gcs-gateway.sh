@@ -2,9 +2,11 @@
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 beforeTest() {
-    shout "Validating Google Cloud Storage Gateway environment"; date
+    log::info "Validating Google Cloud Storage Gateway environment"
 
     requiredVars=(
         GOOGLE_APPLICATION_CREDENTIALS
@@ -14,19 +16,19 @@ beforeTest() {
 
     utils::check_required_vars "${requiredVars[@]}"
 
-    echo "Environment validated"; date
+    log::info "Environment validated"
 }
 
 afterTest() {
-    shout "Delete Google Cloud Storage Buckets"; date
+    log::info "Delete Google Cloud Storage Buckets"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-buckets.sh"
 
-    echo "Buckets deleted"; date
+    log::info "Buckets deleted"
 }
 
 installOverrides() {
-    shout "Installing Google Cloud Storage Minio Gateway overrides"; date
+    log::info "Installing Google Cloud Storage Minio Gateway overrides"
 
     local -r ASSET_STORE_RESOURCE_NAME="gcs-minio-overrides"
 
@@ -42,5 +44,5 @@ installOverrides() {
         --data "minio.DeploymentUpdate.maxUnavailable=50%" \
         --label "component=assetstore"
     
-    echo "Overrides installed"; date
+    log::info "Overrides installed"
 }

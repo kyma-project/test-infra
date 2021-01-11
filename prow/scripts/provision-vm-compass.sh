@@ -9,20 +9,20 @@ readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
 
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${SCRIPT_DIR}/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Execute Job Guard"
+    log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {
     ARG=$?
-    shout "Removing instance compass-integration-test-${RANDOM_ID}"
+    log::info "Removing instance compass-integration-test-${RANDOM_ID}"
     gcloud compute instances delete --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     exit $ARG
 }
@@ -31,7 +31,7 @@ function testCustomImage() {
     CUSTOM_IMAGE="$1"
     IMAGE_EXISTS=$(gcloud compute images list --filter "name:${CUSTOM_IMAGE}" | tail -n +2 | awk '{print $1}')
     if [[ -z "$IMAGE_EXISTS" ]]; then
-        shout "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
+        log::error "${CUSTOM_IMAGE} is invalid, it is not available in GCP images list, the script will terminate ..." && exit 1
     fi
 }
 
@@ -73,13 +73,13 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
 if [[ -z "$IMAGE" ]]; then
-    shout "Provisioning vm using the latest default custom image ..."   
+    log::info "Provisioning vm using the latest default custom image ..."
     
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
     
     if [[ -z "$IMAGE" ]]; then
-       shout "There are no default custom images, the script will exit ..." && exit 1 
+       log::error "There are no default custom images, the script will exit ..." && exit 1
     fi   
  fi
 
@@ -87,15 +87,15 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 
 for ZONE in ${EU_ZONES}; do
-    shout "Attempting to create a new instance named compass-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+    log::info "Attempting to create a new instance named compass-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
     gcloud compute instances create "compass-integration-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
         --boot-disk-size 30 "${LABELS[@]}" &&\
-    shout "Created compass-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
-    shout "Could not create machine in zone ${ZONE}"
+    log::info "Created compass-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
+    log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 
 trap cleanup exit INT
@@ -103,7 +103,7 @@ trap cleanup exit INT
 chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
 mkdir -p /home/prow/go/src/github.com/kyma-incubator/compass/components/console/shared/build
 
-shout "Copying Compass to the instance"
+log::info "Copying Compass to the instance"
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
@@ -111,7 +111,7 @@ for i in $(seq 1 5); do
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 
-shout "Download stable Kyma CLI"
+log::info "Download stable Kyma CLI"
 curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux
 chmod +x kyma
 
@@ -125,11 +125,11 @@ done;
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
-shout "Triggering the installation"
+log::info "Triggering the installation"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh"
 
-shout "Copying test artifacts from VM"
+log::info "Copying test artifacts from VM"
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;

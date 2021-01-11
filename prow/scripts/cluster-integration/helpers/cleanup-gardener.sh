@@ -20,8 +20,8 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
@@ -57,8 +57,7 @@ do
     
     # clusters older than 4h get deleted
     if [[ ${HOURS_OLD} -ge 4 ]]; then
-        shout "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
-        date
+        log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
         # Export envvars for the script
         export GARDENER_CLUSTER_NAME=${CLUSTER}
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh

@@ -14,8 +14,8 @@
 # - CURRENT_TIMESTAMP: Current timestamp which is computed as $(date +%Y%m%d)
 # - DOMAIN: Combination of gcloud managed-zones and cluster name "${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 function installKyma() {
 
@@ -52,13 +52,11 @@ function installKyma() {
         export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
     fi
 
-    shout "Build Kyma-Installer Docker image"
-    date
+    log::info "Build Kyma-Installer Docker image"
 
     createImage
 
-    shout "Apply Kyma config"
-    date
+    log::info "Apply Kyma config"
     sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
     | kubectl apply -f-
 
@@ -109,21 +107,20 @@ EOF
         kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
     fi
 
-    shout "Trigger installation"
-    date
+    log::info "Trigger installation"
 
     sed -e "s/__VERSION__/0.0.1/g" "${INSTALLER_CR}"  | sed -e "s/__.*__//g" | kubectl apply -f-
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 }
 
 function createImage() {
-    shout "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
+    log::info "Kyma Installer Image: ${KYMA_INSTALLER_IMAGE}"
     # shellcheck disable=SC1090
     source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-image.sh"
 }
 
 function waitUntilInstallerApiAvailable() {
-    shout "Waiting for Installer API"
+    log::info "Waiting for Installer API"
 
     attempts=5
     for ((i=1; i<=attempts; i++)); do
