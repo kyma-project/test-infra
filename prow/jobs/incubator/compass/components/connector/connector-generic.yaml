@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^hotfix-.*$
     - ^release-(1\.18|1\.17|1\.16)-connector$
   run_if_changed: "^components/connector/|^scripts/"
   spec:

@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^hotfix-.*$
     - ^release-(1\.18|1\.17|1\.16)-system-broker$
   run_if_changed: "^components/system-broker/"
   spec:

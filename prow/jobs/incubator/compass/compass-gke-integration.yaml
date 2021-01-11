@@ -75,6 +75,7 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-1.18
+        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:
@@ -88,6 +89,7 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-1.17
+        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:
@@ -101,6 +103,7 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-1.16
+        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:

@@ -75,6 +75,7 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-{{ . }}
+        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:

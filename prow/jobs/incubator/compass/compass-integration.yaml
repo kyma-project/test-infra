@@ -33,6 +33,7 @@ presubmits: # runs on PRs
     cluster: untrusted-workload
     branches:
     - ^master$
+    - ^hotfix-.*$
     <<: *vm_job_template
     run_if_changed: "^(chart|installation)/"
     labels:

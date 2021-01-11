@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^hotfix-.*$
     - ^release-(1\.18|1\.17|1\.16)-director$
   run_if_changed: "^components/director/|^scripts/"
   spec:

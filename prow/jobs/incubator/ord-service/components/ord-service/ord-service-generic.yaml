@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^hotfix-.*$
     - ^release-(1\.18|1\.17)-ord-service$
   run_if_changed: "^components/ord-service/|^scripts/"
   spec:

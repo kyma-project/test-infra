@@ -20,6 +20,7 @@ job_template: &job_template
   branches:
     - ^master$
     - ^main$
+    - ^hotfix-.*$
     - ^release-(1\.18|1\.17)-tenant-fetcher$
   run_if_changed: "^components/tenant-fetcher/|^scripts/"
   spec:
