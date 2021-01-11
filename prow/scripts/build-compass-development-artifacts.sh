@@ -34,10 +34,13 @@ function export_variables() {
    if [[ -n "${PULL_NUMBER}" ]]; then
         DOCKER_TAG="PR-${PULL_NUMBER}-${COMMIT_ID}"
         BUCKET_DIR="PR-${PULL_NUMBER}"
-    else
+   elif [[ "${PULL_BASE_REF}" != "master" ]]; then
+        DOCKER_TAG="${PULL_BASE_REF}"
+        SKIP_ARTIFACT_UPLOAD=true
+   else
         DOCKER_TAG="master-${COMMIT_ID}-${CURRENT_TIMESTAMP}"
         BUCKET_DIR="master-${COMMIT_ID}"
-    fi
+   fi
 
    readonly DOCKER_TAG
    readonly COMPASS_INSTALLER_PUSH_DIR
@@ -62,6 +65,12 @@ buildTarget="release"
 
 log::info "Build compass-installer with target ${buildTarget}"
 make -C "${COMPASS_PATH}/tools/compass-installer" ${buildTarget}
+
+if [[ -n "${SKIP_ARTIFACT_UPLOAD}" ]]; then
+    log::info "Skipping development artifacts upload"
+    exit
+fi
+
 
 log::info "Create development artifacts"
 # INPUTS:
