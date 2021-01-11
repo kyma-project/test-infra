@@ -146,7 +146,7 @@ git fetch --tags
 # shout "Installing Kyma in version: $latestTag"
 # git checkout "$latestTag"
 git checkout 1.18.0
-cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma test run \
     --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
@@ -166,7 +166,7 @@ log::info "Upgrade to master & run tests"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 git checkout master
-cli-alpha:deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma test run \
     --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
