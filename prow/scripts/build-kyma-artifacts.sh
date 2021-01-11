@@ -50,12 +50,12 @@ ls -la "${ARTIFACTS}"
 gcloud::authenticate "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
 
 if [ -n "$PULL_NUMBER" ]; then
-  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
 elif [[ "$PULL_BASE_REF" =~ ^release-.* ]]; then
   copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
   # TODO this script needs to be revisited for future improvements...
   "${SCRIPT_DIR}"/changelog-generator.sh
 else
-  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/$DOCKER_TAG"
+  copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
 fi
