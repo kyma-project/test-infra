@@ -44,23 +44,11 @@ if [ -n "${PULL_NUMBER}" ]; then
   DOCKER_TAG="PR-${PULL_NUMBER}"
 elif [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
   DOCKER_TAG=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-  echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
-  if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
-    NEXT_RELEASE=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
-    echo "Checking if ${NEXT_RELEASE} was already published on github..."
-    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/"${NEXT_RELEASE}")
-    if [[ $RESPONSE != 404* ]]; then
-        echo "The ${NEXT_RELEASE} is already published on github. Stopping."
-        exit 1
-    fi
-  fi
 else
   DOCKER_TAG="${PULL_BASE_SHA::8}"
 fi
-
-readonly DOCKER_TAG
 export DOCKER_TAG
-echo "DOCKER_TAG ${DOCKER_TAG}"
+echo "DOCKER_TAG: ${DOCKER_TAG}"
 }
 export_variables
 
