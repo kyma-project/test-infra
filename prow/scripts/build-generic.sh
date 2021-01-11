@@ -27,7 +27,7 @@ if [ -n "${PULL_NUMBER}" ]; then
   DOCKER_TAG="PR-${PULL_NUMBER}"
 elif [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
   echo "Building from release ${PULL_BASE_REF}"
-  DOCKER_TAG=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+  DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
   echo "Reading docker tag from RELEASE_VERSION file, got: ${DOCKER_TAG}"
 
   if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
