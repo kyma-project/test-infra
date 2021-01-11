@@ -114,7 +114,6 @@ kyma::install_cli
 # currently only Azure generates overrides, but this may chaneg in the future
 gardener::generate_overrides
 
-log::info "Provision cluster: \"${CLUSTER_NAME}\""
 gardener::provision_cluster
 
 # uses previously set KYMA_SOURCE
