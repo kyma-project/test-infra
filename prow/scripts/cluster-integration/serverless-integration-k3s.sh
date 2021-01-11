@@ -92,7 +92,7 @@ install::prereq(){
 
 install::k3s() {
     echo "--> Installing k3s"
-    curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE=777 INSTALL_K3S_EXEC="server --disable traefik" sh -
+    curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE=777 INSTALL_K3S_VERSION="v1.19.5+k3s2" INSTALL_K3S_EXEC="server --disable traefik" sh -
     mkdir -p ~/.kube
     cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
     chmod 600 ~/.kube/config
