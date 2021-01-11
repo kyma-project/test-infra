@@ -29,8 +29,8 @@ readonly CONCURRENCY=5
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-# shellcheck source=prow/scripts/library.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -94,22 +94,19 @@ DNS_SUBDOMAIN="${COMMON_NAME}"
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 
-shout "Authenticate"
-date
+log::info "Authenticate"
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
 
-shout "Reserve IP Address for Ingressgateway"
-date
+log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
 GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
 CLEANUP_GATEWAY_IP_ADDRESS="true"
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 
-shout "Create DNS Record for Ingressgateway IP"
-date
+log::info "Create DNS Record for Ingressgateway IP"
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 CLEANUP_GATEWAY_DNS_RECORD="true"
 IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
@@ -117,16 +114,14 @@ IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_
 
 NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    date
+    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
 else
-    shout "Network ${GCLOUD_NETWORK_NAME} exists"
+    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
 fi
 
 
-shout "Provision cluster: \"${CLUSTER_NAME}\""
-date
+log::info "Provision cluster: \"${CLUSTER_NAME}\""
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
 if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
@@ -138,8 +133,7 @@ CLEANUP_CLUSTER="true"
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
 
 
-shout "Generate self-signed certificate"
-date
+log::info "Generate self-signed certificate"
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
 CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
@@ -147,8 +141,7 @@ TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 
-shout "Building Kyma CLI"
-date
+log::info "Building Kyma CLI"
 cd "${KYMA_PROJECT_DIR}/cli"
 make build-linux
 mv "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "${KYMA_PROJECT_DIR}/cli/bin/kyma"
@@ -196,8 +189,7 @@ EOF
 
 echo "${COMPONENT_OVERRIDES}" > "${COMPONENT_OVERRIDES_FILE}"
 
-shout "Installing Kyma"
-date
+log::info "Installing Kyma"
 kyma install \
     --ci \
     --source master \
@@ -207,34 +199,29 @@ kyma install \
     --tls-key "${TLS_KEY}" \
     --timeout 90m
 
-shout "Checking the versions"
-date
+log::info "Checking the versions"
 kyma version
 
 
 if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    shout "Create DNS Record for Apiserver proxy IP"
-    date
+    log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_APISERVER_DNS_RECORD="true"
     IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
 fi
 
-shout "Create local resources for a sample Function"
-date
+log::info "Create local resources for a sample Function"
 
 kyma init function
 
-shout "Apply local resources for the Function to the Kyma cluster"
-date
+log::info "Apply local resources for the Function to the Kyma cluster"
 
 kyma apply function
 
 sleep 30
 
-shout "Check if the Function is running"
-date
+log::info "Check if the Function is running"
 
 attempts=3
 for ((i=1; i<=attempts; i++)); do
@@ -252,8 +239,7 @@ for ((i=1; i<=attempts; i++)); do
     sleep 15
 done
 
-shout "Running Kyma tests"
-date
+log::info "Running Kyma tests"
 
 kyma test run \
     --name "${SUITE_NAME}" \
@@ -290,7 +276,7 @@ echo "ClusterTestSuite details"
 kubectl get cts "${SUITE_NAME}" -oyaml
 
 
-shout "Success"
+log::success "Success"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

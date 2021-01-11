@@ -8,8 +8,8 @@
 # - DNS_SUBDOMAIN: name of the GCP managed zone
 # - DNS_DOMAIN: name of the cluster
 
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
@@ -34,31 +34,27 @@ function createCluster() {
 
 	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
 
-		shout "Reserve IP Address for Ingressgateway"
-		date
+		log::info "Reserve IP Address for Ingressgateway"
 		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 		GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 		echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
-		shout "Create DNS Record for Ingressgateway IP"
-		date
+		log::info "Create DNS Record for Ingressgateway IP"
 		GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 		IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 
 		NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 		if [ "$NETWORK_EXISTS" -gt 0 ]; then
-			shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-			date
+			log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
 			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
 		else
-			shout "Network ${GCLOUD_NETWORK_NAME} exists"
+			log::info "Network ${GCLOUD_NETWORK_NAME} exists"
 		fi
 
         export GATEWAY_IP_ADDRESS
 	fi
 
-	shout "Provision cluster: \"${CLUSTER_NAME}\""
-	date
+	log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
 	if [ -z "$MACHINE_TYPE" ]; then
 		export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"

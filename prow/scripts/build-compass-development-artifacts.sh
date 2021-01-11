@@ -9,8 +9,8 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck disable=SC1090
-source "${SCRIPT_DIR}/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
@@ -60,10 +60,10 @@ export_variables
 export COMPASS_PATH="/home/prow/go/src/github.com/kyma-incubator/compass"
 buildTarget="release"
 
-shout "Build compass-installer with target ${buildTarget}"
+log::info "Build compass-installer with target ${buildTarget}"
 make -C "${COMPASS_PATH}/tools/compass-installer" ${buildTarget}
 
-shout "Create development artifacts"
+log::info "Create development artifacts"
 # INPUTS:
 # - COMPASS_INSTALLER_PUSH_DIR
 # - COMPASS_INSTALLER_VERSION
@@ -71,22 +71,22 @@ shout "Create development artifacts"
 # - ARTIFACTS_DIR - path to directory where artifacts will be stored
 env COMPASS_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "${COMPASS_PATH}/installation/scripts/generate-compass-installer-artifacts.sh"
 
-shout "Content of the local artifacts directory"
+log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 
-shout "Switch to a different service account to push to GCS bucket"
+log::info "Switch to a different service account to push to GCS bucket"
 
 export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-shout "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
+log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}"
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
 gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer.yaml"
 gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
 gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-kyma-installed.sh"
 
 if [[ "${BUILD_TYPE}" == "master" ]]; then
-  shout "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
+  log::info "Copy artifacts to ${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master"
   gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
   gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-kyma-installed.sh"
   gsutil cp  "${COMPASS_PATH}/installation/scripts/is-installed.sh" "${COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"

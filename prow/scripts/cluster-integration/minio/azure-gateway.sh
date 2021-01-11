@@ -5,9 +5,11 @@
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/azure.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 validateAzureGatewayEnvironment() {
-    shout "Validating Azure Blob Gateway environment"; date
+    log::info "Validating Azure Blob Gateway environment"
 
     requiredVars=(
         AZURE_RS_GROUP
@@ -19,7 +21,7 @@ validateAzureGatewayEnvironment() {
 
     utils::check_required_vars "${requiredVars[@]}"
 
-    echo "Environment validated"; date
+    log::info "Environment validated"
 }
 
 beforeTest() {
@@ -31,10 +33,10 @@ beforeTest() {
 }
 
 createResourceGroup() {
-    shout "Create Azure Resource Group ${AZURE_RS_GROUP}"; date
+    log::info "Create Azure Resource Group ${AZURE_RS_GROUP}"
 
     if [[ $(az group exists --name "${AZURE_RS_GROUP}" -o json) == true ]]; then
-        echo "Azure Resource Group ${AZURE_RS_GROUP} exists"; date
+        log::info "Azure Resource Group ${AZURE_RS_GROUP} exists"
         return
     fi
 
@@ -54,33 +56,33 @@ createResourceGroup() {
         fi
     done
 
-    echo "Resource Group created"; date
+    log::info "Resource Group created"
 }
 
 createStorageAccount() {
-    shout "Create ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"; date
+    log::info "Create ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
 
     az storage account create \
         --name "${AZURE_STORAGE_ACCOUNT_NAME}" \
         --resource-group "${AZURE_RS_GROUP}" \
         --tags "created-at=$(date +%s)" "created-by=prow" "ttl=10800"
 
-    echo "Storage Account created"; date
+    log::info "Storage Account created"
 }
 
 afterTest() {
-    shout "Delete ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"; date
+    log::info "Delete ${AZURE_STORAGE_ACCOUNT_NAME} Storage Account"
 
     az storage account delete \
         --name "${AZURE_STORAGE_ACCOUNT_NAME}" \
         --resource-group "${AZURE_RS_GROUP}" \
         --yes
 
-    echo "Storage Account deleted"; date
+    log::info "Storage Account deleted"
 }
 
 installOverrides() {
-    shout "Installing Azure Minio Gateway overrides"; date
+    log::info "Installing Azure Minio Gateway overrides"
 
     local -r AZURE_ACCOUNT_KEY=$(az storage account keys list --account-name "${AZURE_STORAGE_ACCOUNT_NAME}" --resource-group "${AZURE_RS_GROUP}" --query "[?keyName=='key1'].value" --output tsv)
 
@@ -96,5 +98,5 @@ installOverrides() {
         --data "minio.DeploymentUpdate.maxUnavailable=50%" \
         --label "component=assetstore"
     
-    shout "Overrides installed"; date
+    log::info "Overrides installed"
 }

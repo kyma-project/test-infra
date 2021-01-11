@@ -47,8 +47,6 @@ if [ -z "${CLUSTER_VERSION}" ]; then
 fi
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
-# shellcheck source=prow/scripts/library.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh

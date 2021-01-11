@@ -17,8 +17,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 
 readonly COMPASS_DEVELOPMENT_ARTIFACTS_BUCKET="${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/compass"
 
-# shellcheck source=prow/scripts/library.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -73,7 +71,7 @@ elif [[ "$BUILD_TYPE" == "release" ]]; then
   readonly COMMON_NAME_PREFIX="gkecompint-rel"
   readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
   readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
-  shout "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
+  log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
   COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${RANDOM_NAME_SUFFIX}")
 else
   # Otherwise (master), operate on triggering commit id
@@ -144,8 +142,7 @@ function createCluster() {
   #Used to detect errors for logging purposes
   ERROR_LOGGING_GUARD="true"
 
-  shout "Authenticate"
-  date
+  log::info "Authenticate"
   gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
   docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
@@ -153,30 +150,26 @@ function createCluster() {
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
 
-  shout "Reserve IP Address for Ingressgateway"
-  date
+  log::info "Reserve IP Address for Ingressgateway"
   GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
   GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
   CLEANUP_GATEWAY_IP_ADDRESS="true"
   echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
-  shout "Create DNS Record for Ingressgateway IP"
-  date
+  log::info "Create DNS Record for Ingressgateway IP"
   GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
   CLEANUP_GATEWAY_DNS_RECORD="true"
   IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 
   NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
   if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    date
+    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
   else
-    shout "Network ${GCLOUD_NETWORK_NAME} exists"
+    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
   fi
 
-  shout "Provision cluster: \"${CLUSTER_NAME}\""
-  date
+  log::info "Provision cluster: \"${CLUSTER_NAME}\""
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   if [ -z "$MACHINE_TYPE" ]; then
     export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
@@ -306,22 +299,19 @@ function installKyma() {
   fi
 
   if [[ "$BUILD_TYPE" != "release" ]]; then
-    shout "Build Kyma-Installer Docker image"
-    date
+    log::info "Build Kyma-Installer Docker image"
     CLEANUP_DOCKER_IMAGE="true"
     KYMA_INSTALLER_IMAGE="${KYMA_INSTALLER_IMAGE}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-image.sh
   fi
 
-  shout "Generate self-signed certificate"
-  date
+  log::info "Generate self-signed certificate"
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
   export DOMAIN
   CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
   TLS_CERT=$(echo "${CERT_KEY}" | head -1)
   TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
-  shout "Apply Kyma config"
-  date
+  log::info "Apply Kyma config"
 
   kubectl create namespace "kyma-installer"
   applyCommonOverrides "kyma-installer"
@@ -341,13 +331,11 @@ function installKyma() {
     | kubectl apply -f-
   fi
   
-  shout "Installation triggered"
-  date
+  log::info "Installation triggered"
   "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout 30m
 
   if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    shout "Create DNS Record for Apiserver proxy IP"
-    date
+    log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_APISERVER_DNS_RECORD="true"
@@ -368,28 +356,24 @@ installCompass() {
   chmod +x ${COMPASS_TMP_DIR}/is-installed.sh
   kubectl apply -f ${COMPASS_TMP_DIR}/compass-installer.yaml
 
-  shout "Installation triggered"
-  date
+  log::info "Installation triggered"
   "${COMPASS_TMP_DIR}"/is-installed.sh --timeout 30m
 }
 
 trap post_hook EXIT INT
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
-    shout "Execute Job Guard"
+    log::info "Execute Job Guard"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-shout "Create new cluster"
-date
+log::info "Create new cluster"
 createCluster
 
-shout "Install Kyma components"
-date
+log::info "Install Kyma components"
 installKyma
 
-shout "Install Compass on top of Kyma"
-date
+log::info "Install Compass on top of Kyma"
 installCompass
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
@@ -397,11 +381,10 @@ if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
   ENABLE_TEST_LOG_COLLECTOR=true
 fi
 
-shout "Test Kyma with Compass"
-date
+log::info "Test Kyma with Compass"
 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
-shout "Success"
+log::success "Success"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

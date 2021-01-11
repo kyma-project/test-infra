@@ -58,8 +58,8 @@ POST_UPGRADE_LABEL_QUERY="${KYMA_TEST_LABEL_PREFIX}.after-upgrade=true"
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/library.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck disable=SC1090
 source "${KYMA_SCRIPTS_DIR}/testing-common.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
@@ -136,11 +136,10 @@ downloadAssets() {
     SOURCE_VERSION=$(getSourceVersion)
     TARGET_VERSION="${PULL_BASE_REF}"
 
-    shout "Upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
-    date
+    log::info "Upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 
     if [[ -z "$SOURCE_VERSION" ]]; then
-        shoutFail "Couldn't grab latest version from GitHub API, stopping."
+        log::error "Couldn't grab latest version from GitHub API, stopping."
         exit 1
     fi
 
@@ -181,22 +180,19 @@ generateAndExportClusterName() {
 
 reserveIPsAndCreateDNSRecords() {
     DNS_SUBDOMAIN="${COMMON_NAME}"
-    shout "Authenticate with GCP"
-    date
+    log::info "Authenticate with GCP"
     gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
     docker::start
 
     DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 
-    shout "Reserve IP Address for Ingressgateway"
-    date
+    log::info "Reserve IP Address for Ingressgateway"
     GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
     GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
     CLEANUP_GATEWAY_IP_ADDRESS="true"
     echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
-    shout "Create DNS Record for Ingressgateway IP"
-    date
+    log::info "Create DNS Record for Ingressgateway IP"
     GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_GATEWAY_DNS_RECORD="true"
     IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
@@ -206,8 +202,7 @@ reserveIPsAndCreateDNSRecords() {
 }
 
 generateAndExportCerts() {
-    shout "Generate self-signed certificate"
-    date
+    log::info "Generate self-signed certificate"
     CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
 
     TLS_CERT=$(echo "${CERT_KEY}" | head -1)
@@ -220,17 +215,15 @@ createNetwork() {
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
     NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
     if [ "$NETWORK_EXISTS" -gt 0 ]; then
-        shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-        date
+        log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
         "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
     else
-        shout "Network ${GCLOUD_NETWORK_NAME} exists"
+        log::info "Network ${GCLOUD_NETWORK_NAME} exists"
     fi
 }
 
 createCluster() {
-    shout "Provision cluster: \"${CLUSTER_NAME}\""
-    date
+    log::info "Provision cluster: \"${CLUSTER_NAME}\""
     ### For provision-gke-cluster.sh
     export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
     export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
@@ -249,8 +242,7 @@ createCluster() {
 installKyma() {
     kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 
-    shout "Apply Kyma config"
-    date
+    log::info "Apply Kyma config"
     kubectl create namespace "kyma-installer"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
@@ -289,18 +281,15 @@ EOF
         --file "$PWD/kyma_istio_operator"
 
     if [[ "$SOURCE_VERSION" == "1.14.0" ]]; then
-        shout "Use release artifacts from version ${SOURCE_VERSION}"
-        date
+        log::info "Use release artifacts from version ${SOURCE_VERSION}"
         kubectl apply -f /tmp/kyma-gke-upgradeability/original-release-installer.yaml
     else
-        shout "Use release artifacts from version ${SOURCE_VERSION}"
-        date
+        log::info "Use release artifacts from version ${SOURCE_VERSION}"
         kubectl apply -f /tmp/kyma-gke-upgradeability/original-kyma-installer.yaml
         kubectl apply -f /tmp/kyma-gke-upgradeability/original-kyma-installer-cr-cluster.yaml
     fi
 
-    shout "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
-    date
+    log::info "Installation triggered with timeout ${KYMA_INSTALL_TIMEOUT}"
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_INSTALL_TIMEOUT}
 }
 
@@ -360,7 +349,7 @@ function installTestChartOrFail() {
   local name=$2
   local namespace=$3
 
-  shout "Create ${name} resources"
+  log::info "Create ${name} resources"
 
   helm install "${name}" \
     --namespace "${namespace}" \
@@ -378,7 +367,7 @@ function installTestChartOrFail() {
 }
 
 function createTestResources() {
-  shout "Install additional charts"
+  log::info "Install additional charts"
   # install upgrade test
   installTestChartOrFail "${UPGRADE_TEST_PATH}" "${UPGRADE_TEST_RELEASE_NAME}" "${UPGRADE_TEST_NAMESPACE}"
 
@@ -387,7 +376,7 @@ function createTestResources() {
 }
 
 upgradeKyma() {
-    shout "Delete the kyma-installation CR and kyma-installer deployment"
+    log::info "Delete the kyma-installation CR and kyma-installer deployment"
     # Remove the finalizer form kyma-installation the merge type is used because strategic is not supported on CRD.
     # More info about merge strategy can be found here: https://tools.ietf.org/html/rfc7386
     kubectl patch Installation kyma-installation -n default --patch '{"metadata":{"finalizers":null}}' --type=merge
@@ -396,19 +385,16 @@ upgradeKyma() {
     # Remove the current installer to prevent it performing any action.
     kubectl delete deployment -n kyma-installer kyma-installer
     
-    shout "Use release artifacts from version ${TARGET_VERSION}"
-    date
+    log::info "Use release artifacts from version ${TARGET_VERSION}"
     kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-kyma-installer.yaml
     kubectl apply -f /tmp/kyma-gke-upgradeability/upgraded-kyma-installer-cr-cluster.yaml
 
-    shout "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
-    date
+    log::info "Update triggered with timeout ${KYMA_UPDATE_TIMEOUT}"
     "${KYMA_SCRIPTS_DIR}"/is-installed.sh --timeout ${KYMA_UPDATE_TIMEOUT}
 
 
     # if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-    #     shout "Create DNS Record for Apiserver proxy IP"
-    #     date
+    #     log::info "Create DNS Record for Apiserver proxy IP"
     #     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     #     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     #     CLEANUP_APISERVER_DNS_RECORD="true"
@@ -449,15 +435,14 @@ function testKyma() {
     test_args+=("${suitename}")
   fi
 
-  shout "Test Kyma " "${test_args[@]}"
+  log::info "Test Kyma " "${test_args[@]}"
   "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
 
   testing::remove_addons_if_necessary
 }
 
 # testKyma() {
-#     shout "Test Kyma end-to-end upgrade scenarios"
-#     date
+#     log::info "Test Kyma end-to-end upgrade scenarios"
 
 #     set +o errexit
 #     # shellcheck disable=SC2086
@@ -473,8 +458,7 @@ function testKyma() {
 #     fi
 #     set -o errexit
 
-#     shout "Test Kyma"
-#     date
+#     log::info "Test Kyma"
 #     "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 # }
 
@@ -523,7 +507,7 @@ remove_addons_if_necessary
 
 # testKyma
 
-shout "Job finished with success"
+log::success "Job finished with success"
 
 # Mark execution as successfully
 ERROR_LOGGING_GUARD="false"

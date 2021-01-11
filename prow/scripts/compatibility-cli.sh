@@ -24,8 +24,8 @@ export TEST_INFRA_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts"
 
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SCRIPTS}/library.sh"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 utils::check_required_vars "${VARIABLES[@]}"
 
@@ -81,8 +81,7 @@ for index in "${EXCEPTIONS[@]}" ; do
     fi
 done
 
-shout "Checking Kyma CLI compatibility with Kyma ${TARGET}"
-date
+log::info "Checking Kyma CLI compatibility with Kyma ${TARGET}"
 
 # Call CLI integration script with the target release
 "${TEST_INFRA_SCRIPTS}"/provision-vm-cli.sh --kyma-version "${TARGET}"

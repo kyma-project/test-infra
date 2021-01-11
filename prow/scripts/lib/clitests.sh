@@ -2,6 +2,8 @@
 
 LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 TESTDIR="${LIBDIR}/../cli-tests"
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}/log.sh"
 
 #
 # Get the path to the file containing the test steps.
@@ -39,9 +41,9 @@ clitests::assertVarNotEmpty() {
 
   if [ -z "${!var}" ]; then
     if [ -z "$msg" ]; then
-        shoutFail "The variable '$var' was not defined or is empty"
+        log::error "The variable '$var' was not defined or is empty"
     else
-        shoutFail "$msg"
+        log::error "$msg"
     fi
     exit 1
   fi
@@ -66,7 +68,7 @@ clitests::execute() {
     clitests::assertVarNotEmpty gcpZone
     clitests::assertVarNotEmpty gcpHost
 
-    shout "Executing test suite '$testSuite'"
+    log::info "Executing test suite '$testSuite'"
     export ZONE=$gcpZone
     export HOST=$gcpHost
     export SOURCE=$cliVersion

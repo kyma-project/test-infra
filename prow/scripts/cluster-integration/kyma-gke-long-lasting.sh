@@ -79,8 +79,6 @@ fi
 
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/library.sh"
-# shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
@@ -90,27 +88,24 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
-	shout "Reserve IP Address for Ingressgateway"
-	date
+	log::info "Reserve IP Address for Ingressgateway"
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
-	shout "Create DNS Record for Ingressgateway IP"
-	date
+	log::info "Create DNS Record for Ingressgateway IP"
 	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
 
 	NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
 	if [ "$NETWORK_EXISTS" -gt 0 ]; then
-		shout "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-		date
+		log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
 		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
 	else
-		shout "Network ${GCLOUD_NETWORK_NAME} exists"
+		log::info "Network ${GCLOUD_NETWORK_NAME} exists"
 	fi
 
-	shout "Provision cluster: \"${CLUSTER_NAME}\""
+	log::info "Provision cluster: \"${CLUSTER_NAME}\""
 	date
 	
 	if [ -z "${CLUSTER_VERSION}" ]; then
@@ -140,8 +135,7 @@ function installKyma() {
 	TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
 	export TLS_KEY
 
-	shout "Prepare Kyma overrides"
-	date
+	log::info "Prepare Kyma overrides"
 
 	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
@@ -248,8 +242,7 @@ EOF
 			applyServiceCatalogCRDOverride
 	fi
 
-	shout "Trigger installation"
-	date
+	log::info "Trigger installation"
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
@@ -279,8 +272,7 @@ EOF
 			--timeout 60m
 
 	if [ -n "$(kubectl get service -n kyma-system apiserver-proxy-ssl --ignore-not-found)" ]; then
-		shout "Create DNS Record for Apiserver proxy IP"
-		date
+		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 		IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
@@ -288,7 +280,7 @@ EOF
 }
 
 function applyServiceCatalogCRDOverride(){
-    shout "Apply override for ServiceCatalog to enable CRD implementation"
+    log::info "Apply override for ServiceCatalog to enable CRD implementation"
 
 serviceCatalogOverrides=$(cat << EOF
 ---
@@ -335,8 +327,7 @@ function installStackdriverPrometheusCollector(){
 	kubectl -n kyma-system patch prometheus monitoring-prometheus --type merge --patch "$(cat "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/resources/prometheus-operator-stackdriver-patch.yaml)"
 }
 
-shout "Authenticate"
-date
+log::info "Authenticate"
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
@@ -346,14 +337,12 @@ export DNS_DOMAIN
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 export DOMAIN
 
-shout "Cleanup"
-date
+log::info "Cleanup"
 export SKIP_IMAGE_REMOVAL=true
 export DISABLE_ASYNC_DEPROVISION=true
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/cleanup-cluster.sh"
 
-shout "Create new cluster"
-date
+log::info "Create new cluster"
 createCluster
 
 log::info "install image-guard"
@@ -361,18 +350,16 @@ helm install image-guard "$TEST_INFRA_SOURCES_DIR/development/image-guard/image-
 
 kyma::install_cli
 
-shout "Install kyma"
-date
+log::info "Install kyma"
 installKyma
 
-shout "Override kyma-admin-binding ClusterRoleBinding"
+log::info "Override kyma-admin-binding ClusterRoleBinding"
 apply_dex_github_kyma_admin_group
 
-shout "Install stackdriver-prometheus collector"
-date
+log::info "Install stackdriver-prometheus collector"
 installStackdriverPrometheusCollector
 
-shout "Update stackdriver-metadata-agent memory settings"
+log::info "Update stackdriver-metadata-agent memory settings"
 
 cat <<EOF | kubectl replace -f -
 apiVersion: v1
@@ -392,8 +379,7 @@ EOF
 kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-level
 
 
-shout "Collect list of images"
-date
+log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
     ARTIFACTS:=/tmp/artifacts
 fi
@@ -407,7 +393,7 @@ echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.csv"
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[] | .metadata.ownerReferences[0].name as $owner | (.status.containerStatuses + .status.initContainerStatuses)[] | { name: .imageID, custom_fields: {owner: $owner, image: .image, name: .name }}] | unique | group_by(.name) | map({name: .[0].name, custom_fields: {owner: map(.custom_fields.owner) | unique | join(","), container_name: map(.custom_fields.name) | unique | join(","), image: .[0].custom_fields.image}})}' )
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
 
-shout "Install stability-checker"
+log::info "Install stability-checker"
 date
 (
 export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS \
@@ -415,4 +401,4 @@ export TEST_INFRA_SOURCES_DIR KYMA_SCRIPTS_DIR TEST_INFRA_CLUSTER_INTEGRATION_SC
 "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-stability-checker.sh"
 )
 
-shout "Success"
+log::success "Success"
