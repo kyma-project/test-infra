@@ -43,7 +43,7 @@ function export_variables() {
 if [ -n "${PULL_NUMBER}" ]; then
   DOCKER_TAG="PR-${PULL_NUMBER}"
 elif [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
-  DOCKER_TAG=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+  DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
 else
   DOCKER_TAG="${PULL_BASE_SHA::8}"
 fi
