@@ -204,7 +204,6 @@ set -x
 
 kyma alpha uninstall \
     --ci \
-    --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
 
 kyma alpha deploy \
