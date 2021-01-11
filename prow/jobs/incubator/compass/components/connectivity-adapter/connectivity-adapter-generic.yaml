@@ -41,6 +41,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
+        - ^hotfix-.*$
     
     - name: pre-rel118-compass-components-connectivity-adapter
       cluster: untrusted-workload
