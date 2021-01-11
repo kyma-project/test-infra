@@ -69,9 +69,7 @@ export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
-if [ -z "$MACHINE_TYPE" ]; then
-      export MACHINE_TYPE="n1-standard-4"
-fi
+gardener::set_machine_type
 
 gardener::provision_cluster
 
@@ -139,7 +137,6 @@ EOF
 
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-set -x
 kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
@@ -151,7 +148,6 @@ sleep 1m
 log::info "Uninstall Kyma"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-set -x
 kyma alpha uninstall \
     --ci \
     --components "/tmp/kyma-parallel-install-installationCR.yaml"
@@ -162,7 +158,6 @@ sleep 1m
 log::info "Install Kyma again"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-set -x
 kyma alpha deploy \
     --ci \
     --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
@@ -172,7 +167,6 @@ kyma alpha deploy \
 log::info "Run Kyma tests"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-set -x
 kyma test run \
     --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
     --concurrency 6 \
