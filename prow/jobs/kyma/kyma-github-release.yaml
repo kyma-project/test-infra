@@ -30,6 +30,21 @@ job_labels_template: &job_labels_template
   
 postsubmits:
   kyma-project/kyma:
+  - name: post-rel119-kyma-github-release
+    cluster: trusted-workload
+    annotations:
+      testgrid-dashboards: kyma_release-1.19
+      description: GitHub Release job for Kyma 1.19.
+      testgrid-days-of-results: "90"
+    branches:
+      - '^1\.19\.\d+(?:-.*)?$' # release tags
+    <<: *job_template
+    extra_refs:
+      - <<: *test_infra_ref
+        base_ref: release-1.19
+    labels:
+      <<: *job_labels_template
+      preset-build-release: "true"
   - name: post-rel118-kyma-github-release
     cluster: trusted-workload
     annotations:
@@ -57,21 +72,6 @@ postsubmits:
     extra_refs:
       - <<: *test_infra_ref
         base_ref: release-1.17
-    labels:
-      <<: *job_labels_template
-      preset-build-release: "true"
-  - name: post-rel116-kyma-github-release
-    cluster: trusted-workload
-    annotations:
-      testgrid-dashboards: kyma_release-1.16
-      description: GitHub Release job for Kyma 1.16.
-      testgrid-days-of-results: "90"
-    branches:
-      - '^1\.16\.\d+(?:-.*)?$' # release tags
-    <<: *job_template
-    extra_refs:
-      - <<: *test_infra_ref
-        base_ref: release-1.16
     labels:
       <<: *job_labels_template
       preset-build-release: "true"

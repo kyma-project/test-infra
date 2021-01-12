@@ -342,11 +342,22 @@ presubmits: # runs on PRs
       extra_refs:
       - <<: *test_infra_ref
         base_ref: master
+    - name: pre-rel119-kyma-integration
+      cluster: untrusted-workload
+      branches:
+        - release-1.19
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      <<: *vm_job_template
+      labels:
+        <<: *vm_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.19
     - name: pre-rel118-kyma-integration
       cluster: untrusted-workload
       branches:
         - release-1.18
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       <<: *vm_job_template
       labels:
         <<: *vm_job_labels_template
@@ -357,24 +368,13 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.17
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       <<: *vm_job_template
       labels:
         <<: *vm_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.17
-    - name: pre-rel116-kyma-integration
-      cluster: untrusted-workload
-      branches:
-        - release-1.16
-      always_run: false
-      <<: *vm_job_template
-      labels:
-        <<: *vm_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.16
 
     - name: pre-master-kyma-gke-integration
       cluster: untrusted-workload
@@ -402,12 +402,26 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel119-kyma-gke-integration
+      cluster: untrusted-workload
+      branches:
+        - release-1.19
+      <<: *gke_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.19
     - name: pre-rel118-kyma-gke-integration
       cluster: untrusted-workload
       branches:
         - release-1.18
       <<: *gke_job_template
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-release: "true"
         <<: *gke_job_labels_template
@@ -421,7 +435,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.17
       <<: *gke_job_template
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-release: "true"
         <<: *gke_job_labels_template
@@ -430,20 +444,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.17
-    - name: pre-rel116-kyma-gke-integration
-      cluster: untrusted-workload
-      branches:
-        - release-1.16
-      <<: *gke_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.16
 
     - name: pre-master-kyma-gke-upgrade
       cluster: untrusted-workload
@@ -459,12 +459,25 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel119-kyma-gke-upgrade
+      cluster: untrusted-workload
+      branches:
+        - release-1.19
+      <<: *gke_upgrade_job_template
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-release: "true"
+        preset-gke-upgrade-pre-release-job: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.19
     - name: pre-rel118-kyma-gke-upgrade
       cluster: untrusted-workload
       branches:
         - release-1.18
       <<: *gke_upgrade_job_template
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-release: "true"
         preset-gke-upgrade-pre-release-job: "true"
@@ -477,7 +490,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.17
       <<: *gke_upgrade_job_template
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-release: "true"
         preset-gke-upgrade-pre-release-job: "true"
@@ -485,18 +498,6 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.17
-    - name: pre-rel116-kyma-gke-upgrade
-      cluster: untrusted-workload
-      branches:
-        - release-1.16
-      <<: *gke_upgrade_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.16
 
     - name: pre-master-kyma-gke-central-connector
       cluster: untrusted-workload
@@ -511,12 +512,24 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: pre-rel119-kyma-gke-central-connector
+      cluster: untrusted-workload
+      branches:
+        - release-1.19
+      <<: *gke_central_job_template
+      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-release: "true"
+        <<: *gke_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.19
     - name: pre-rel118-kyma-gke-central-connector
       cluster: untrusted-workload
       branches:
         - release-1.18
       <<: *gke_central_job_template
-      always_run: false
+      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-release: "true"
         <<: *gke_job_labels_template
@@ -528,25 +541,13 @@ presubmits: # runs on PRs
       branches:
         - release-1.17
       <<: *gke_central_job_template
-      always_run: false
+      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         preset-build-release: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.17
-    - name: pre-rel116-kyma-gke-central-connector
-      cluster: untrusted-workload
-      branches:
-        - release-1.16
-      <<: *gke_central_job_template
-      always_run: false
-      labels:
-        preset-build-release: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.16
 
 postsubmits:
   kyma-project/kyma:

@@ -12,7 +12,7 @@ import (
 func TestKymaReleaseUpgradeJobsPostsubmit(t *testing.T) {
 	assert := assert.New(t)
 	require := require.New(t)
-
+	t.Skip()
 	t.Run("", func(t *testing.T) { //todo: desc
 
 		//given
