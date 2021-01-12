@@ -606,7 +606,7 @@ postsubmits:
         - ^release-{{ . }}$
       labels:
         preset-log-collector-slack-token: "true"
-        preset-build-master: "true"
+        preset-build-release: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
@@ -622,7 +622,7 @@ postsubmits:
       branches:
         - ^release-{{ . }}$
       labels:
-        preset-build-master: "true"
+        preset-build-release: "true"
         preset-log-collector-slack-token: "true"
         <<: *gke_job_labels_template
       extra_refs:
@@ -641,7 +641,7 @@ postsubmits:
       labels:
         preset-gke-upgrade-post-job: "true"
         preset-log-collector-slack-token: "true"
-        preset-build-master: "true"
+        preset-build-release: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
