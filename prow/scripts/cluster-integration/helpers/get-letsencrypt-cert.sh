@@ -12,17 +12,19 @@ set -o errexit
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/gcloud.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
 
 function generateLetsEncryptCert() {
     DOMAIN="${DOMAIN}" GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS}" "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/helpers/generate-and-export-letsencrypt-TLS-cert.sh
 
     log::info "Encrypting certs"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh" \
+    gcloud::encrypt \
         "./letsencrypt/live/${DOMAIN}/privkey.pem"  \
         "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
 
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/encrypt.sh"  \
+    gcloud::encrypt \
         "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
         "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
 
@@ -50,13 +52,13 @@ if [[ $VALID_CERT_FILE -eq 0 && $VALID_KEY_FILE -eq 0 ]]; then
 
 
     log::info "Decrypting certs"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh" \
-    "./letsencrypt/live/${DOMAIN}/privkey.pem"  \
-    "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
+    gcloud::decrypt \
+        "./letsencrypt/live/${DOMAIN}/privkey.pem" \
+        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.key.encrypted"
     
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/decrypt.sh"  \
-    "./letsencrypt/live/${DOMAIN}/fullchain.pem"  \
-    "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
+    gcloud::decrypt \
+        "./letsencrypt/live/${DOMAIN}/fullchain.pem" \
+        "./letsencrypt/live/${DOMAIN}/${DOMAIN}.cert.encrypted"
     set +e
     openssl x509 -checkend 1209600 -noout -in "$(pwd)/letsencrypt/live/${DOMAIN}/fullchain.pem"
     VALID_CERT=$?
