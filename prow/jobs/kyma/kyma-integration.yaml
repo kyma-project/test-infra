@@ -313,7 +313,7 @@ presubmits: # runs on PRs
           base_ref: master
     
     - name: pre-master-kyma-integration-k3s
-      optional: true
+      optional: false
       cluster: untrusted-workload
       branches:
       - ^master$
