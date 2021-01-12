@@ -118,6 +118,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.Optional(),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -130,6 +131,7 @@ var components = []struct {
 			},
 			jobsuite.JobFileSuffix("ui"),
 			jobsuite.CompassConsoleRepo(),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
