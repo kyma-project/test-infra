@@ -39,7 +39,7 @@ function createCluster() {
 
 		log::info "Reserve IP Address for Ingressgateway"
 		GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-		GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
+		GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
 		echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 		log::info "Create DNS Record for Ingressgateway IP"
