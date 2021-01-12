@@ -50,7 +50,7 @@ test_infra_ref: &test_infra_ref
 postsubmits: # runs on merges
   kyma-project/kyma:
     {{ range .Global.releases }}
-    - name: post-rel{{ . | replace "." "" }}-kyma-release-upgrade
+    - name: post-rel{{ . | replace "." "" }}-kyma-gke-release-upgrade
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_release-{{ . }}

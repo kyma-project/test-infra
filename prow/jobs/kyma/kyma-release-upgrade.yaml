@@ -52,7 +52,7 @@ test_infra_ref: &test_infra_ref
 postsubmits: # runs on merges
   kyma-project/kyma:
     
-    - name: post-rel119-kyma-release-upgrade
+    - name: post-rel119-kyma-gke-release-upgrade
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_release-1.19
@@ -68,7 +68,7 @@ postsubmits: # runs on merges
         - <<: *test_infra_ref
           base_ref: release-1.19
       
-    - name: post-rel118-kyma-release-upgrade
+    - name: post-rel118-kyma-gke-release-upgrade
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_release-1.18
@@ -84,7 +84,7 @@ postsubmits: # runs on merges
         - <<: *test_infra_ref
           base_ref: release-1.18
       
-    - name: post-rel117-kyma-release-upgrade
+    - name: post-rel117-kyma-gke-release-upgrade
       cluster: trusted-workload
       annotations:
         testgrid-dashboards: kyma_release-1.17
