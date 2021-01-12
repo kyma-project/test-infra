@@ -167,13 +167,8 @@ CLEANUP_GATEWAY_DNS_RECORD="true"
 gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
 
-NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-else
-    log::warn "Network ${GCLOUD_NETWORK_NAME} exists"
-fi
+log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
 
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
