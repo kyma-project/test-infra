@@ -70,8 +70,6 @@ There are two jobs that generate artifacts which allow you to install Kyma on a 
 
 >**NOTE:** For pull requests, the job is executed only if the introduced changes have an impact on the installed Kyma version.
 
-Find the jobs definitions in [this](https://github.com/kyma-project/test-infra/blob/master/prow/jobs/kyma/kyma-development-artifacts.yaml) file.
-
 All artifacts are stored in the publicly available bucket under the `gs://kyma-development-artifacts/` location. The bucket has a defined lifecycle management rule to automatically delete files older than 60 days. These are the exact artifacts locations:
 * For pull requests: `gs://kyma-development-artifacts/PR-<number>`
 * For changes to the `master` branch: `gs://kyma-development-artifacts/master-<commit_sha>`
