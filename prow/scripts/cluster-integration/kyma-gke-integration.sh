@@ -165,6 +165,7 @@ GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 gcloud::create_dns_record "$GATEWAY_IP_ADDRESS" "$GATEWAY_DNS_FULL_NAME"
 export CLEANUP_GATEWAY_DNS_RECORD="true"
 
+log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
 gcloud::create_network "$GCLOUD_NETWORK_NAME" "$GCLOUD_SUBNET_NAME"
 
 log::banner "Provision cluster: \"${CLUSTER_NAME}\""
@@ -264,14 +265,9 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     log::info "Create DNS Record for Apiserver proxy IP"
     APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-<<<<<<< HEAD
 
     gcloud::create_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
     export CLEANUP_APISERVER_DNS_RECORD="true"
-=======
-    CLEANUP_APISERVER_DNS_RECORD="true"
-    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
->>>>>>> d46709dc... scripts: deprecate create-dns-record helper
 fi
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier

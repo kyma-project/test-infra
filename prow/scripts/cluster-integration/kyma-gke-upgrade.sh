@@ -200,13 +200,8 @@ function generateAndExportCerts() {
 
 function createNetwork() {
   export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
-  NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-  if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-  else
-    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
-  fi
+  log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+  gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
 }
 
 function createCluster() {
