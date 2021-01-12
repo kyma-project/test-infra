@@ -54,7 +54,7 @@ postsubmits:
         description: Release candidate job for Kyma {{ . }}.
         testgrid-days-of-results: "90"
       branches:
-        - release-{{ . }}
+        - '^{{ . | replace "." "\\." }}\.\d+(?:-.*)?$' # release tags
       <<: *job_template
       extra_refs:
         - org: kyma-project

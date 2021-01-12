@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.19"
+  nextRelease: "1.20"
   releases:
+    - "1.19"
     - "1.18"
     - "1.17"
-    - "1.16"
   whitesource:
     - name: "control-plane"
       language: "golang-mod"
@@ -210,6 +210,9 @@ cluster_default: &cluster_default
     periodic: trusted-workload
     
 templates:
+  - from: templates/kyma-release-upgrade.yaml
+    render:
+      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml

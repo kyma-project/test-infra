@@ -41,16 +41,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.17
     
-    - name: pre-rel116-kyma-components-istio-kyma-patch
-      cluster: untrusted-workload
-      optional: true
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.16
-      branches:
-        - release-1.16
-    
 
 postsubmits:
   kyma-project/kyma:
@@ -67,18 +57,4 @@ postsubmits:
           base_ref: release-1.17
       branches:
         - release-1.17
-    
-    - name: post-rel116-kyma-components-istio-kyma-patch
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.16
-      branches:
-        - release-1.16
     

@@ -43,6 +43,24 @@ job_labels_template: &job_labels_template
 
 postsubmits:
   kyma-project/kyma:
+    - name: post-rel119-kyma-release-candidate
+      cluster: trusted-workload
+      annotations:
+        testgrid-dashboards: kyma_release-1.19
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+        description: Release candidate job for Kyma 1.19.
+        testgrid-days-of-results: "90"
+      branches:
+        - '^1\.19\.\d+(?:-.*)?$' # release tags
+      <<: *job_template
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-1.19
+      labels:
+        <<: *job_labels_template
     - name: post-rel118-kyma-release-candidate
       cluster: trusted-workload
       annotations:
@@ -52,7 +70,7 @@ postsubmits:
         description: Release candidate job for Kyma 1.18.
         testgrid-days-of-results: "90"
       branches:
-        - release-1.18
+        - '^1\.18\.\d+(?:-.*)?$' # release tags
       <<: *job_template
       extra_refs:
         - org: kyma-project
@@ -70,30 +88,12 @@ postsubmits:
         description: Release candidate job for Kyma 1.17.
         testgrid-days-of-results: "90"
       branches:
-        - release-1.17
+        - '^1\.17\.\d+(?:-.*)?$' # release tags
       <<: *job_template
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-1.17
-      labels:
-        <<: *job_labels_template
-    - name: post-rel116-kyma-release-candidate
-      cluster: trusted-workload
-      annotations:
-        testgrid-dashboards: kyma_release-1.16
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
-        description: Release candidate job for Kyma 1.16.
-        testgrid-days-of-results: "90"
-      branches:
-        - release-1.16
-      <<: *job_template
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-1.16
       labels:
         <<: *job_labels_template

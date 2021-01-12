@@ -4,7 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -33,7 +32,6 @@ var tests = []struct {
 	{path: "application-gateway-legacy-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release116),
 		},
 	},
 	{path: "application-operator-tests", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
