@@ -61,6 +61,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
+        - ^hotfix-.*$
       <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -75,7 +76,6 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-1.18
-        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:
@@ -89,7 +89,6 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-1.17
-        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:
@@ -103,7 +102,6 @@ presubmits: # runs on PRs
       optional: true
       branches:
         - release-1.16
-        - ^hotfix-.*$
       always_run: false
       <<: *gke_integration_job_template_k16
       labels:
