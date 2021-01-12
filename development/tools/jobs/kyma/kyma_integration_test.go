@@ -46,7 +46,7 @@ func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 			assert.True(t, actualPresubmit.Decorate)
 			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
 			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, preset.BuildRelease, preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-kyma-artifacts-bucket")
+			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, preset.BuildPr, preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-kyma-artifacts-bucket")
 			assert.False(t, actualPresubmit.AlwaysRun)
 			assert.Len(t, actualPresubmit.Spec.Containers, 1)
 			testContainer := actualPresubmit.Spec.Containers[0]
