@@ -43,7 +43,7 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-  LABELS=(--labels "branch=$PULL_BASE_REF,job-name=kyma-integration")
+  LABELS=(--labels "commit-id=${PULL_BASE_SHA::8},job-name=$JOB_NAME")
 else
   LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=kyma-integration")
 fi
