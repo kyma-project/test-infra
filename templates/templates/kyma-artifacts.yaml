@@ -76,7 +76,7 @@ presubmits: # runs on PRs
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: ^release-{{ . }}$
+          base_ref: release-{{ . }}
       labels:
         <<: *build_labels
         <<: *develop_job_labels
@@ -112,7 +112,7 @@ postsubmits:
       always_run: true
       extra_refs:
         - <<: *test_infra_ref
-          base_ref: ^release-{{ . }}$
+          base_ref: release-{{ . }}
       labels:
         <<: *build_labels
         <<: *release_job_labels
