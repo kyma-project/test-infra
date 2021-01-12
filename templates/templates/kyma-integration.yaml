@@ -399,7 +399,7 @@ presubmits: # runs on PRs
       <<: *gke_job_template
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
-        preset-build-release: "true"
+        preset-build-pr: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - org: kyma-project
@@ -431,7 +431,7 @@ presubmits: # runs on PRs
       <<: *gke_upgrade_job_template
       run_if_changed: "^((resources\\S+|installation\\S+|tests/end-to-end/upgrade/chart/upgrade/\\S+|tests/end-to-end/external-solution-integration/chart/external-solution/\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
-        preset-build-release: "true"
+        preset-build-pr: "true"
         preset-gke-upgrade-pre-release-job: "true"
         <<: *gke_job_labels_template
       extra_refs:
@@ -461,7 +461,7 @@ presubmits: # runs on PRs
       <<: *gke_central_job_template
       run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
-        preset-build-release: "true"
+        preset-build-pr: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
