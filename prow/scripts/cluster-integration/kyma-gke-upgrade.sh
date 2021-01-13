@@ -206,7 +206,7 @@ function createNetwork() {
 
 function createCluster() {
   log::banner "Provision cluster: \"${CLUSTER_NAME}\""
-  ### For provision-gke-cluster.sh
+  ### For gcloud::provision_gke_cluster
   export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
   export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
   export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
@@ -217,7 +217,7 @@ function createCluster() {
     export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
   fi
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
+  gcloud::provision_gke_cluster "$CLUSTER_NAME"
   CLEANUP_CLUSTER="true"
 }
 

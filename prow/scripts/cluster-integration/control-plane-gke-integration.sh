@@ -82,7 +82,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 export GCLOUD_NETWORK_NAME="gke-long-lasting-net"
 export GCLOUD_SUBNET_NAME="gke-long-lasting-subnet"
 
-### For provision-gke-cluster.sh
+### For gcloud::provision_gke_cluster
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
@@ -166,7 +166,7 @@ function createCluster() {
     export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
   fi
   CLEANUP_CLUSTER="true"
-  env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
+  env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
 function applyKymaOverrides() {

@@ -136,7 +136,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
 export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 
-### For provision-gke-cluster.sh
+### For gcloud::provision_gke_cluster
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
@@ -178,7 +178,7 @@ if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 CLEANUP_CLUSTER="true"
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
+gcloud::provision_gke_cluster "$CLUSTER_NAME"
 
 log::info "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD_SECURITY_GROUP_DOMAIN} domain"
 kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"

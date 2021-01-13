@@ -137,7 +137,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
 export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 
-### For provision-gke-cluster.sh
+### For gcloud::provision_gke_cluster
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
