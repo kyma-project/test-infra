@@ -347,7 +347,11 @@ function gcloud::provision_gke_cluster {
   if [ "${STACKDRIVER_KUBERNETES}" ];then params+=("--enable-stackdriver-kubernetes"); fi
   if [ "${CLUSTER_USE_SSD}" ];then params+=("--disk-type=pd-ssd"); fi
   # Must be added at the end to override --num-nodes parameter value set earlier.
-  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then params+=("--region=${CLOUDSDK_COMPUTE_REGION}" "--num-nodes=${NODES_PER_ZONE}"); fi
+  if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ] && [ "${NODES_PER_ZONE}" ];then
+    params+=("--region=${CLOUDSDK_COMPUTE_REGION}" "--num-nodes=${NODES_PER_ZONE}")
+  else
+    params+=("--zone=${GCLOUD_COMPUTE_ZONE}")
+  fi
   if [ "${GCLOUD_SECURITY_GROUP_DOMAIN}" ]; then params+=("--security-group=gke-security-groups@${GCLOUD_SECURITY_GROUP_DOMAIN}"); fi
 
   APPENDED_LABELS=""
@@ -355,7 +359,7 @@ function gcloud::provision_gke_cluster {
   params+=("--labels=job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
 
   log::info "Provisioning GKE cluster"
-  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters create "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
+  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters create "$CLUSTER_NAME" "${params[@]}"
   log::info "Successfully created cluster $CLUSTER_NAME!"
 
   log::info "Patching kube-dns with stub domains"
@@ -396,6 +400,8 @@ function gcloud::deprovision_gke_cluster {
   if [ "${PROVISION_REGIONAL_CLUSTER}" ] && [ "${CLOUDSDK_COMPUTE_REGION}" ]; then
     #Pass gke region name to delete command.
     params+=("--region=${CLOUDSDK_COMPUTE_REGION}")
+  else
+    params+=("--zone=${GCLOUD_COMPUTE_ZONE}")
   fi
 
   if [ -z "${DISABLE_ASYNC_DEPROVISION+x}" ]; then
@@ -403,7 +409,7 @@ function gcloud::deprovision_gke_cluster {
   fi
 
   log::info "Deprovisioning cluster $CLUSTER_NAME."
-  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters delete "$CLUSTER_NAME" "${params[@]}" --zone="$GCLOUD_COMPUTE_ZONE"
+  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters delete "$CLUSTER_NAME" "${params[@]}"
   log::info "Successfully removed cluster $CLUSTER_NAME!"
 }
 
