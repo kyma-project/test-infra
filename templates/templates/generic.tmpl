@@ -13,15 +13,18 @@
         {{- end}}
       {{- end}}
       {{- if .JobConfig.type_periodic }}
-      {{- if .JobConfig.cron}}
+        {{- if .JobConfig.cron}}
       cron: {{.JobConfig.cron}}
-      {{- else if .JobConfig.interval}}
+        {{- else if .JobConfig.interval}}
       interval: {{.JobConfig.interval}}
-      {{- else}}{{fail ".JobConfig.cron and .JobConfig.interval are not defined"}}{{end}}
-      {{- else}}
-      {{- if .JobConfig.run_if_changed}}
+        {{- else}}{{fail ".JobConfig.cron and .JobConfig.interval are not defined"}}{{end}}
+      {{- else if .JobConfig.run_if_changed}}
       run_if_changed: {{squote .JobConfig.run_if_changed}}
+      {{- else if .JobConfig.always_run}}
+      always_run: {{.JobConfig.always_run}}
       {{- end}}
+      {{- if .JobConfig.optional}}
+      optional: {{.JobConfig.optional}}
       {{- end}}
       skip_report: {{if .JobConfig.skip_report}}{{.JobConfig.skip_report}}{{else}}{{fail ".JobConfig.skip_report is not defined"}}{{end}}
       max_concurrency: {{if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail ".JobConfig.max_concurrency is not defined"}}{{end}}
@@ -40,6 +43,15 @@
         - {{ . }}
         {{- end}}
       {{- else}}{{fail "branches not defined"}}{{- end}}
+      {{- if .JobConfig.extra_refs}}
+      extra_refs:
+        {{- range .JobConfig.extra_refs}}
+        - org: {{ .org }}
+          repo: {{ .repo }}
+          path_alias: {{ .path_alias }}
+          base_ref: {{ .base_ref}}
+        {{- end}}
+      {{- end}}
       spec:
         containers:
           - image: {{ if .JobConfig.image }} {{.JobConfig.image}} {{else}} {{ fail ".JobConfig.image is not defined" }} {{end}}
@@ -76,32 +88,32 @@
 presubmits: # runs on PRs
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
-  {{- range .Jobs -}}
-  {{- if .JobConfig.type_presubmit }}
-  {{- template "commonProwJob" . }}
-  {{- end}}
-  {{- end}}
+    {{- range .Jobs -}}
+      {{- if .JobConfig.type_presubmit }}
+      {{- template "commonProwJob" . }}
+      {{- end}}
+    {{- end}}
   {{end}}
 {{- end}}
 {{- if hasPostsubmit .Values.JobConfigs}}
 postsubmits: # runs on master
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
-  {{- range .Jobs -}}
-  {{- if .JobConfig.type_postsubmit }}
-  {{- template "commonProwJob" . }}
-  {{- end}}
-  {{- end}}
+    {{- range .Jobs -}}
+      {{- if .JobConfig.type_postsubmit }}
+      {{- template "commonProwJob" . }}
+      {{- end}}
+    {{- end}}
   {{end}}
 {{- end}}
 {{- if hasPeriodic .Values.JobConfigs}}
 periodic: # runs on schedule
   {{- range .Values.JobConfigs }}
   {{ replace "github.com/" "" .RepoName -}}:
-  {{- range .Jobs -}}
-  {{- if .JobConfig.type_periodic }}
-  {{- template "commonProwJob" . }}
-  {{- end}}
-  {{- end}}
+    {{- range .Jobs -}}
+      {{- if .JobConfig.type_periodic }}
+      {{- template "commonProwJob" . }}
+      {{- end}}
+    {{- end}}
   {{end}}
 {{- end}}

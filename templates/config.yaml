@@ -63,6 +63,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/prow-tools:current"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:current"
+  image_buildpack-node:
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -87,6 +89,13 @@ globalSets:
       preset-build-release: "true"
     annotations:
       testgrid-create-test-group: "false"
+  # extra_refs sets
+  extra_refs_test-infra:
+    extra_refs:
+      - org: "kyma-project"
+        repo: "test-infra"
+        path_alias: "github.com/kyma-project/test-infra"
+        base_ref: "master"
     
 go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
 go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
