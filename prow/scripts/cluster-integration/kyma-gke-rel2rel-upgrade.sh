@@ -203,7 +203,7 @@ reserveIPsAndCreateDNSRecords() {
 
 generateAndExportCerts() {
     log::info "Generate self-signed certificate"
-    CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+    CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
 
     TLS_CERT=$(echo "${CERT_KEY}" | head -1)
     export TLS_CERT
