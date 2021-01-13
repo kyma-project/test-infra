@@ -65,7 +65,8 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" gcloud::provision_gke_cluster "$CLUSTER_NAME"
+	export ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}"
+	gcloud::provision_gke_cluster "$CLUSTER_NAME"
 
 }
 
