@@ -54,7 +54,7 @@
       {{- end}}
       spec:
         containers:
-          - image: {{ if .JobConfig.image }} {{.JobConfig.image}} {{else}} {{ fail ".JobConfig.image is not defined" }} {{end}}
+          - image: {{ if .JobConfig.image }}{{quote .JobConfig.image}}{{else}}{{ fail ".JobConfig.image is not defined" }}{{end}}
             {{- if .JobConfig.imagePullPolicy }}
             imagePullPolicy: {{ .JobConfig.imagePullPolicy }}
             {{- end }}
