@@ -709,7 +709,7 @@ templates:
           <<: *compass_generic_component
           path: tests/director
           since: "1.10"
-      - to: ../prow/jobs/incubator/compass/tests/system-broker/system-broker-generic-approach.yaml
+      - to: ../prow/jobs/incubator/compass/tests/system-broker/system-broker-tests-generic.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
