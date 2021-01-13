@@ -74,7 +74,7 @@ function removeCluster() {
 	fi
 
 	log::info "Delete cluster $CLUSTER_NAME"
-	"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gke-cluster.sh
+	gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
 	TMP_STATUS=$?
 	if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 
@@ -106,9 +106,9 @@ function removeResources() {
 
 		# Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]]; then
-			log::info "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${GATEWAY_DNS_FULL_NAME} --address=${GATEWAY_IP_ADDRESS} --dryRun=false"
+			log::info "running gcloud::delete_dns_record ${GATEWAY_IP_ADDRESS} ${GATEWAY_DNS_FULL_NAME}"
 
-			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${GCLOUD_PROJECT_NAME}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+			gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		else
@@ -122,7 +122,7 @@ function removeResources() {
 
 		# Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-			log::info "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${APISERVER_DNS_FULL_NAME} --address=${APISERVER_IP_ADDRESS} --dryRun=false"
+			log::info "running gcloud::delete_dns_record ${APISERVER_IP_ADDRESS} ${APISERVER_DNS_FULL_NAME}"
 
 			gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 			TMP_STATUS=$?
@@ -158,9 +158,9 @@ function removeResources() {
 				exit 1
 			# Remove IP address reservation.
 			else
-				log::info "running /release-ip-address.sh --project=${GCLOUD_PROJECT_NAME} --ipname=${GATEWAY_IP_ADDRESS_NAME} --region=${CLOUDSDK_COMPUTE_REGION} --dryRun=false"
+				log::info "gcloud::delete_ip_address ${GATEWAY_IP_ADDRESS_NAME}"
 
-				"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${GCLOUD_PROJECT_NAME}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+				gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
 				TMP_STATUS=$?
 				if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 			fi
