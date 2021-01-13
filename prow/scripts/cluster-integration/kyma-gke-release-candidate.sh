@@ -84,7 +84,7 @@ cleanupOnError() {
         export DISKS
 
         #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+        gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
 
         #Delete orphaned disks
         log::info "Delete orphaned PVC disks..."
@@ -98,7 +98,7 @@ cleanupOnError() {
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         log::info "Release Gateway IP Address"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+        gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
