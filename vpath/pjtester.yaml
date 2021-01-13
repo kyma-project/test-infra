@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pre-compass-tests-system-broker"
+    pjPath: "test-infra/prow/jobs/incubator/compass/tests/system-broker/"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 1686
