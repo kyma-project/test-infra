@@ -59,6 +59,12 @@ log::info "Building kyma-installer"
 "${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
 
 log::info "Create Kyma artifacts"
+if [[ -n "${PULL_NUMBER}" ]] && [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
+  # work only on presubmit release branch.
+  log::info "workaround for release presubmits - rollback release kyma-installer to develop for the PRs"
+  cp "installation/resources/installer.yaml" "/tmp/installer.tpl.yaml"
+  sed -E ";s;image: eu.gcr.io\/kyma-project\/kyma-installer:.+;image: eu.gcr.io\/kyma-project\/develop\/installer:latest;" < "/tmp/installer.tpl.yaml" > "installation/resources/installer.yaml"
+fi
 env KYMA_INSTALLER_VERSION="${DOCKER_TAG}" ARTIFACTS_DIR="${ARTIFACTS}" "installation/scripts/release-generate-kyma-installer-artifacts.sh"
 
 log::info "Content of the local artifacts directory"
