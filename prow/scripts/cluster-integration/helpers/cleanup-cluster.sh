@@ -124,7 +124,7 @@ function removeResources() {
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
 			log::info "running /delete-dns-record.sh --project=${GCLOUD_PROJECT_NAME} --zone=${CLOUDSDK_DNS_ZONE_NAME} --name=${APISERVER_DNS_FULL_NAME} --address=${APISERVER_IP_ADDRESS} --dryRun=false"
 
-			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+			gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
 		else
