@@ -709,6 +709,12 @@ templates:
           <<: *compass_generic_component
           path: tests/director
           since: "1.10"
+      - to: ../prow/jobs/incubator/compass/tests/system-broker/system-broker-generic-approach.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/system-broker
+          since: "1.17"
       - to: ../prow/jobs/incubator/compass/tests/connectivity-adapter/connectivity-adapter-tests-generic.yaml
         values:
           <<: *cluster_default
