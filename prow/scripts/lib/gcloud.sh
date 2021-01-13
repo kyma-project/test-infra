@@ -339,10 +339,10 @@ function gcloud::provision_gke_cluster {
 #  gcloud config set project "$GCLOUD_PROJECT_NAME"
 #  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
   # Resolving parameters
-  params+=("--cluster-version=${CLUSTER_VERSION:-CLUSTER_VERSION_PARAM}")
+  params+=("--cluster-version=${CLUSTER_VERSION:-$CLUSTER_VERSION_PARAM}")
   if [ "${RELEASE_CHANNEL}" ]; then params+=("--release-channel=${RELEASE_CHANNEL}"); fi
-  params+=("--machine-type=${MACHINE_TYPE:-MACHINE_TYPE_PARAM}")
-  params+=("--num-nodes=${NUM_NODES:-NUM_NODES_PARAM}")
+  params+=("--machine-type=${MACHINE_TYPE:-$MACHINE_TYPE_PARAM}")
+  params+=("--num-nodes=${NUM_NODES:-$NUM_NODES_PARAM}")
   if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then params+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else params+=("${NETWORK_PARAM}"); fi
   if [ "${STACKDRIVER_KUBERNETES}" ];then params+=("--enable-stackdriver-kubernetes"); fi
   if [ "${CLUSTER_USE_SSD}" ];then params+=("--disk-type=pd-ssd"); fi
