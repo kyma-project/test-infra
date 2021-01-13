@@ -1,8 +1,0 @@
-pjNames:
-  - pjName: pre-master-kyma-gke-integration
-  - pjName: pre-master-kyma-gke-compass-integration
-  - pjName: pre-master-compass-gke-integration
-prConfigs:
-  kyma-incubator:
-    compass:
-      prNumber: 1677
