@@ -93,7 +93,7 @@ function cleanup() {
 		if [[ -n ${GATEWAY_IP_ADDRESS} ]];then
 			log::success "Fetched Azure Gateway IP: ${GATEWAY_IP_ADDRESS}"
 			# only try to delete the dns record if the ip address has been found
-			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+			gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then
 			  log::error "Failed delete dns record : ${GATEWAY_DNS_FULL_NAME}"
@@ -111,7 +111,7 @@ function cleanup() {
 		TMP_STATUS=$?
 		check_status ${TMP_STATUS} "Could not fetch IP for : ${APISERVER_DNS_FULL_NAME}"
 		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-			"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+			gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then
 			  log::error "Failed delete dns record : ${APISERVER_DNS_FULL_NAME}"
@@ -209,7 +209,7 @@ function createPublicIPandDNS() {
 	log::info "Create DNS Record for Ingressgateway IP"
 
 	GATEWAY_DNS_FULL_NAME="*.${DOMAIN}."
-	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
+	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 }
 
 function setupKubeconfig() {
@@ -365,7 +365,7 @@ EOF
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		APISERVER_DNS_FULL_NAME="apiserver.${DOMAIN}."
-		IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 	fi
 }
 

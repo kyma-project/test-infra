@@ -90,20 +90,15 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/reserve-ip-address.sh)
+	GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
 	GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-	IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/create-dns-record.sh
+	gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
-	NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-	if [ "$NETWORK_EXISTS" -gt 0 ]; then
-		log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-		"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-	else
-		log::info "Network ${GCLOUD_NETWORK_NAME} exists"
-	fi
+	log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+	gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
 
 	log::info "Provision cluster: \"${CLUSTER_NAME}\""
 	date
@@ -111,7 +106,8 @@ function createCluster() {
 	if [ -z "${CLUSTER_VERSION}" ]; then
 		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 	fi
-	env ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}" "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/provision-gke-cluster.sh
+	export ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}"
+	gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
 function installKyma() {
@@ -275,7 +271,7 @@ EOF
 		log::info "Create DNS Record for Apiserver proxy IP"
 		APISERVER_IP_ADDRESS=$(kubectl get service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 		APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
-		IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 	fi
 }
 

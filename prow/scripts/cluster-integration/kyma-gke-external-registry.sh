@@ -149,7 +149,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
 export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 
-### For provision-gke-cluster.sh
+### For gcloud::provision_gke_cluster
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
@@ -177,7 +177,7 @@ fi
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
 CLEANUP_GATEWAY_IP_ADDRESS="true"
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
@@ -185,16 +185,11 @@ echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 log::info "Create DNS Record for Ingressgateway IP"
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 CLEANUP_GATEWAY_DNS_RECORD="true"
-IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
 
-NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-else
-    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
-fi
+log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
 
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
@@ -206,12 +201,11 @@ if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 CLEANUP_CLUSTER="true"
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
+gcloud::provision_gke_cluster "$CLUSTER_NAME"
 
 log::info "Generate self-signed certificate"
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-export DOMAIN
-CERT_KEY=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-self-signed-cert.sh")
+CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
@@ -286,7 +280,7 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_APISERVER_DNS_RECORD="true"
-    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 fi
 
 

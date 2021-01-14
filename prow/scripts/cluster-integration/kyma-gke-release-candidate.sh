@@ -84,7 +84,7 @@ cleanupOnError() {
         export DISKS
 
         #Delete cluster
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/deprovision-gke-cluster.sh"
+        gcloud::deprovision_gke_cluster "$CLUSTER_NAME"
 
         #Delete orphaned disks
         log::info "Delete orphaned PVC disks..."
@@ -93,17 +93,17 @@ cleanupOnError() {
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
         log::info "Delete Gateway DNS Record"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${GATEWAY_DNS_FULL_NAME}" --address="${GATEWAY_IP_ADDRESS}" --dryRun=false
+        gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
     fi
 
     if [ -n "${CLEANUP_GATEWAY_IP_ADDRESS}" ]; then
         log::info "Release Gateway IP Address"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/release-ip-address.sh --project="${CLOUDSDK_CORE_PROJECT}" --ipname="${GATEWAY_IP_ADDRESS_NAME}" --region="${CLOUDSDK_COMPUTE_REGION}" --dryRun=false
+        gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
     fi
 
     if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
         log::info "Delete Apiserver proxy DNS Record"
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/delete-dns-record.sh --project="${CLOUDSDK_CORE_PROJECT}" --zone="${CLOUDSDK_DNS_ZONE_NAME}" --name="${APISERVER_DNS_FULL_NAME}" --address="${APISERVER_IP_ADDRESS}" --dryRun=false
+        gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
     fi
 
 
@@ -136,7 +136,7 @@ export CLUSTER_NAME="${COMMON_NAME}"
 export GCLOUD_NETWORK_NAME="${COMMON_NAME_PREFIX}-net"
 export GCLOUD_SUBNET_NAME="${COMMON_NAME_PREFIX}-subnet"
 
-### For provision-gke-cluster.sh
+### For gcloud::provision_gke_cluster
 export GCLOUD_PROJECT_NAME="${CLOUDSDK_CORE_PROJECT}"
 export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
 
@@ -155,7 +155,7 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-GATEWAY_IP_ADDRESS=$(IP_ADDRESS_NAME=${GATEWAY_IP_ADDRESS_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reserve-ip-address.sh")
+GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
 CLEANUP_GATEWAY_IP_ADDRESS="true"
 echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
@@ -163,18 +163,11 @@ echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 log::info "Create DNS Record for Ingressgateway IP"
 GATEWAY_DNS_FULL_NAME="*.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 CLEANUP_GATEWAY_DNS_RECORD="true"
-IP_ADDRESS=${GATEWAY_IP_ADDRESS} DNS_FULL_NAME=${GATEWAY_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
 
 
-NETWORK_EXISTS=$("${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/network-exists.sh")
-if [ "$NETWORK_EXISTS" -gt 0 ]; then
-    log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
-    date
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-network-with-subnet.sh"
-else
-    log::info "Network ${GCLOUD_NETWORK_NAME} exists"
-fi
-
+log::info "Create ${GCLOUD_NETWORK_NAME} network with ${GCLOUD_SUBNET_NAME} subnet"
+gcloud::create_network "${GCLOUD_NETWORK_NAME}" "${GCLOUD_SUBNET_NAME}"
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
 export GCLOUD_SERVICE_KEY_PATH="${GOOGLE_APPLICATION_CREDENTIALS}"
@@ -185,7 +178,7 @@ if [ -z "${CLUSTER_VERSION}" ]; then
       export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
 fi
 CLEANUP_CLUSTER="true"
-"${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/provision-gke-cluster.sh"
+gcloud::provision_gke_cluster "$CLUSTER_NAME"
 
 log::info "Create CluserRoleBinding for ${GCLOUD_SECURITY_GROUP} group from ${GCLOUD_SECURITY_GROUP_DOMAIN} domain"
 kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="cluster-admin" --group="${GCLOUD_SECURITY_GROUP}@${GCLOUD_SECURITY_GROUP_DOMAIN}"
@@ -277,7 +270,7 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     APISERVER_IP_ADDRESS=$(kubectl get  service -n kyma-system apiserver-proxy-ssl -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
     CLEANUP_APISERVER_DNS_RECORD="true"
-    IP_ADDRESS=${APISERVER_IP_ADDRESS} DNS_FULL_NAME=${APISERVER_DNS_FULL_NAME} "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-dns-record.sh"
+    gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 fi
 
 log::info "Collect list of images"
