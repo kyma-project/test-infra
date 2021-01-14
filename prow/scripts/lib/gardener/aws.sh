@@ -19,10 +19,6 @@ gardener::cleanup() {
     #!!! Must be at the beginning of this function !!!
     EXIT_STATUS=$?
 
-    if [[ -n "${SUITE_NAME}" ]]; then
-        kyma::test_summary
-    fi
-
     if [ "${ERROR_LOGGING_GUARD}" = "true" ]; then
         log::error "AN ERROR OCCURED! Take a look at preceding log entries."
     fi
