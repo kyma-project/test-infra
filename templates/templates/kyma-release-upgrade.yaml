@@ -59,7 +59,7 @@ postsubmits: # runs on merges
         testgrid-days-of-results: "90"
       <<: *gke_upgrade_job_template
       branches:
-        - ^release-{{ . }}$
+        - '^{{ . | replace "." "\\." }}\.\d+(?:-.*)?$' # release tags
       labels:
         <<: *job_labels_template
       extra_refs:
