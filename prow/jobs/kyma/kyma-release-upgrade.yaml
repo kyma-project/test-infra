@@ -61,7 +61,7 @@ postsubmits: # runs on merges
         testgrid-days-of-results: "90"
       <<: *gke_upgrade_job_template
       branches:
-        - ^release-1.19$
+        - '^1\.19\.\d+(?:-.*)?$' # release tags
       labels:
         <<: *job_labels_template
       extra_refs:
@@ -77,7 +77,7 @@ postsubmits: # runs on merges
         testgrid-days-of-results: "90"
       <<: *gke_upgrade_job_template
       branches:
-        - ^release-1.18$
+        - '^1\.18\.\d+(?:-.*)?$' # release tags
       labels:
         <<: *job_labels_template
       extra_refs:
@@ -93,7 +93,7 @@ postsubmits: # runs on merges
         testgrid-days-of-results: "90"
       <<: *gke_upgrade_job_template
       branches:
-        - ^release-1.17$
+        - '^1\.17\.\d+(?:-.*)?$' # release tags
       labels:
         <<: *job_labels_template
       extra_refs:
