@@ -163,6 +163,7 @@ cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-insta
 )
 
 log::info "Run Kyma tests"
+set +e
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 kyma test run \
@@ -177,6 +178,16 @@ kyma test run \
     console-backend core-test-external-solution dex-connection dex-integration kiali \
     logging monitoring rafter serverless serverless-long service-catalog
 )
+
+# collect logs from failed tests before deprovisioning
+kyma::run_test_log_collector "kyma-cli-alpha-uninstall-gke"
+
+if ! kyma::test_summary; then
+    log::error "Tests have failed"
+    set -e
+    return 1
+fi
+set -e
 
 log::info "Success"
 

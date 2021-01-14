@@ -163,6 +163,7 @@ kyma test run \
 
 log::info "Upgrade to master & run tests"
 
+set +e
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
 git checkout master
@@ -180,6 +181,16 @@ kyma test run \
     console-backend core-test-external-solution dex-connection dex-integration kiali \
     logging monitoring rafter serverless serverless-long service-catalog
 )
+
+# collect logs from failed tests before deprovisioning
+kyma::run_test_log_collector "kyma-cli-alpha-upgrade-gke"
+
+if ! kyma::test_summary; then
+    log::error "Tests have failed"
+    set -e
+    return 1
+fi
+set -e
 
 log::info "Success"
 
