@@ -138,6 +138,9 @@ postsubmits:
           base_ref: master
     - name: post-rel119-kyma-gke-compass-integration
       cluster: trusted-workload
+      branches:
+        - ^release-1.19$
+      <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma_release-1.19
         description: Kyma GKE compass integration job for release 1.19.
@@ -153,6 +156,9 @@ postsubmits:
           base_ref: release-1.19
     - name: post-rel118-kyma-gke-compass-integration
       cluster: trusted-workload
+      branches:
+        - ^release-1.18$
+      <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma_release-1.18
         description: Kyma GKE compass integration job for release 1.18.
@@ -168,6 +174,9 @@ postsubmits:
           base_ref: release-1.18
     - name: post-rel117-kyma-gke-compass-integration
       cluster: trusted-workload
+      branches:
+        - ^release-1.17$
+      <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma_release-1.17
         description: Kyma GKE compass integration job for release 1.17.

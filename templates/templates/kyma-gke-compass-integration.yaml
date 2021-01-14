@@ -114,6 +114,9 @@ postsubmits:
     {{ range .Global.releases -}}
     - name: post-rel{{ . | replace "." "" }}-kyma-gke-compass-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^release-{{ . }}$
+      <<: *gke_integration_job_template_latest
       annotations:
         testgrid-dashboards: kyma_release-{{ . }}
         description: Kyma GKE compass integration job for release {{ . }}.
