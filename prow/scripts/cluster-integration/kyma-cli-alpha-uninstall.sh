@@ -38,6 +38,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/cli-alpha.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cli-alpha.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
