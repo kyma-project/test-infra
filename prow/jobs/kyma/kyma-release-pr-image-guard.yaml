@@ -27,7 +27,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
   - name: pre-release-pr-image-guard
     cluster: untrusted-workload
-    optional: true
     branches:
     - ^release-.*$
     <<: *job_template
