@@ -154,26 +154,6 @@ function cleanup() {
 	set -e
 }
 
-function createGroup() {
-	log::info "Create Azure group"
-
-	# Export variable for use in subshells.
-	export RS_GROUP
-
-	az group create --name "${RS_GROUP}" --location "${REGION}"
-
-	# Wait until resource group will be visible in azure.
-	counter=0
-	until [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; do
-		sleep 15
-		counter=$(( counter + 1 ))
-		if (( counter == 5 )); then
-			log::error "\n---\nAzure resource group ${RS_GROUP} still not present after one minute wait.\n---"
-			exit 1
-		fi
-	done
-}
-
 function installCluster() {
 	log::info "Install Kubernetes on Azure"
 
@@ -398,7 +378,7 @@ export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 
 cleanup
 
-createGroup
+az::create_resource_group "${RS_GROUP}" "${REGION}"
 installCluster
 
 createPublicIPandDNS

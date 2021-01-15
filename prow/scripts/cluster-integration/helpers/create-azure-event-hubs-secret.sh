@@ -57,25 +57,6 @@ K8S_SECRET_BROKER_PORT="9093"
 #Utility Functions To Make The Actual Cmd Line Calls
 #
 
-createGroup() {
-  log::info "Create Azure group"
-
-  az group create \
-    --name "${RS_GROUP}" \
-    --location "${REGION}"
-
-  #Wait until resource group will be visible in azure.
-  counter=0
-  until [[ $(az group exists --name "${RS_GROUP}" -o json) == true ]]; do
-    sleep 15
-    counter=$(( counter + 1 ))
-    if (( counter == 5 )); then
-      log::error "Azure resource group ${RS_GROUP} still not present after one minute wait. Exiting..."
-      exit 1
-    fi
-  done
-}
-
 #Create the Azure EventHubs Namespace based on global configuration
 cmdCreateEventHubNamespace() {
   az eventhubs namespace create \
@@ -183,7 +164,7 @@ az::set_subscription "${AZURE_SUBSCRIPTION_ID}"
 confirmConfiguration
 
 #Create the New Azure Resource Group
-createGroup
+az::create_resource_group "${RS_GROUP}" "${REGION}"
 
 #Create the New Azure EventHubs Namespace
 createEventHubNamespace
