@@ -782,7 +782,7 @@ templates:
               version: 1.18.12-gke.1201
               jobs: [ "postsubmit" ]
             - channel: regular
-              version: 1.17.13-gke.2600
+              version: 1.17.14-gke.1200
               jobs: [ "presubmit", "postsubmit" ]
               optional: true
   - from: templates/kyma-integration-gardener.yaml

@@ -101,10 +101,10 @@ presets:
       - name: RELEASE_CHANNEL
         value: rapid
   - labels:
-        preset-gke-ver1_17_13: "true"
+        preset-gke-ver1_17_14: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.17.13-gke.2600
+        value: 1.17.14-gke.1200
       - name: RELEASE_CHANNEL
         value: regular
   - labels:
@@ -389,7 +389,7 @@ presubmits: # runs on PRs
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: pre-master-kyma-gke1_17_13-integration
+    - name: pre-master-kyma-gke1_17_14-integration
       optional: true
       cluster: untrusted-workload
       branches:
@@ -398,7 +398,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         <<: *gke_job_labels_template
-        preset-gke-ver1_17_13: "true"
+        preset-gke-ver1_17_14: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -651,7 +651,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: post-master-kyma-gke-ver1_17_13-integration
+    - name: post-master-kyma-gke-ver1_17_14-integration
       cluster: trusted-workload
       <<: *gke_job_template
       annotations:
@@ -661,7 +661,7 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
-        preset-gke-ver1_17_13: "true"
+        preset-gke-ver1_17_14: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
