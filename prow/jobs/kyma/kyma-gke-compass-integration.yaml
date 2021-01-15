@@ -80,7 +80,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.19
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       optional: true
       <<: *gke_integration_job_template_k16
       labels:
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.18
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       optional: true
       <<: *gke_integration_job_template_k16
       labels:
@@ -106,7 +106,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - release-1.17
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       optional: true
       <<: *gke_integration_job_template_k16
       labels:
@@ -136,6 +136,61 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    - name: post-rel119-kyma-gke-compass-integration
+      cluster: trusted-workload
+      branches:
+        - ^release-1.19$
+      <<: *gke_integration_job_template_latest
+      annotations:
+        testgrid-dashboards: kyma_release-1.19
+        description: Kyma GKE compass integration job for release 1.19.
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.19
+    - name: post-rel118-kyma-gke-compass-integration
+      cluster: trusted-workload
+      branches:
+        - ^release-1.18$
+      <<: *gke_integration_job_template_latest
+      annotations:
+        testgrid-dashboards: kyma_release-1.18
+        description: Kyma GKE compass integration job for release 1.18.
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.18
+    - name: post-rel117-kyma-gke-compass-integration
+      cluster: trusted-workload
+      branches:
+        - ^release-1.17$
+      <<: *gke_integration_job_template_latest
+      annotations:
+        testgrid-dashboards: kyma_release-1.17
+        description: Kyma GKE compass integration job for release 1.17.
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.17
+    
 
 periodics:
   - name: kyma-gke-compass-integration-daily

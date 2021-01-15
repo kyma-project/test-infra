@@ -37,26 +37,27 @@ function copy_artifacts {
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
-# copied from build-generic.sh
-# TODO: Find a way to remove this function and use the build-generic.sh script directly. We should use `source`?
-function export_variables() {
 if [ -n "${PULL_NUMBER}" ]; then
   DOCKER_TAG="PR-${PULL_NUMBER}"
 elif [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
   DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+  if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
+    NEXT_RELEASE="$DOCKER_TAG"
+    echo "Checking if ${NEXT_RELEASE} was already published on github..."
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/"${NEXT_RELEASE}")
+    if [[ $RESPONSE != 404* ]]; then
+        echo "The ${NEXT_RELEASE} is already published on github. Stopping."
+        exit 1
+    fi
+  fi
 else
   DOCKER_TAG="${PULL_BASE_SHA::8}"
 fi
 export DOCKER_TAG
 echo "DOCKER_TAG: ${DOCKER_TAG}"
-}
-export_variables
 
 log::info "Building kyma-installer"
-# Building kyma-installer image using build-generic.sh script.
-# Handles basically everything related to building process including determining version, exporting DOCKER_TAG etc.
-# In the same level as build-kyma-artifacts.sh
-"${SCRIPT_DIR}"/build-generic.sh "tools/kyma-installer"
+make -C "tools/kyma-installer" release
 
 log::info "Create Kyma artifacts"
 if [[ -n "${PULL_NUMBER}" ]] && [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
@@ -76,7 +77,7 @@ if [ -n "$PULL_NUMBER" ]; then
 elif [[ "$PULL_BASE_REF" =~ ^release-.* ]]; then
   copy_artifacts "${KYMA_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
   # TODO this script needs to be revisited for future improvements...
-  "${SCRIPT_DIR}"changelog-generator.sh
+  "${SCRIPT_DIR}"/changelog-generator.sh
 else
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master-${DOCKER_TAG}"
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/master"

@@ -80,7 +80,7 @@ presubmits: # runs on PRs
       cluster: {{if $.Values.cluster.presubmit}}{{ $.Values.cluster.presubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       branches:
         - release-{{ . }}
-      always_run: false
+      run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       optional: true
       <<: *gke_integration_job_template_k16
       labels:
@@ -111,6 +111,26 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
+    {{ range .Global.releases -}}
+    - name: post-rel{{ . | replace "." "" }}-kyma-gke-compass-integration
+      cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+      branches:
+        - ^release-{{ . }}$
+      <<: *gke_integration_job_template_latest
+      annotations:
+        testgrid-dashboards: kyma_release-{{ . }}
+        description: Kyma GKE compass integration job for release {{ . }}.
+      reporter_config:
+        slack:
+          channel: 'kyma-prow-dev-null'
+      labels:
+        preset-log-collector-slack-token: "true"
+        preset-build-release: "true"
+        <<: *gke_integration_job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-{{ . }}
+    {{ end }}
 
 periodics:
   - name: kyma-gke-compass-integration-daily
