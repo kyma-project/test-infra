@@ -136,12 +136,19 @@ host::os() {
 }
 
 kyma::run_test_log_collector(){
-    if [ "${ENABLE_TEST_LOG_COLLECTOR:-}" = true ] && [[ -n "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS:-}" ]]; then
+    if [ "${ENABLE_TEST_LOG_COLLECTOR:-}" = true ] && [[ -n "${LOG_COLLECTOR_SLACK_TOKEN:-}" ]]; then
         if [[ "$BUILD_TYPE" == "master" ]] || [[ -z "${BUILD_TYPE:-}" ]]; then
             log::info "Install test-log-collector"
             export PROW_JOB_NAME=$1
             (
-                "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/install-test-log-collector.sh" || true # we want it to work on "best effort" basis, which does not interfere with cluster 
+                TLC_DIR="${TEST_INFRA_SOURCES_DIR}/development/test-log-collector"
+
+                helm install test-log-collector --set slackToken="${LOG_COLLECTOR_SLACK_TOKEN}" \
+                --set prowJobName="${PROW_JOB_NAME}" \
+                "${TLC_DIR}/chart/test-log-collector" \
+                --namespace=kyma-system \
+                --wait \
+                --timeout=600s || true # we want it to work on "best effort" basis, which does not interfere with cluster
             )
         fi
     fi
