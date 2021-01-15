@@ -365,9 +365,9 @@ periodics:
     annotations:
       testgrid-create-test-group: "false"
     decoration_config:
-      timeout: 3600000000000 # 45min
+      timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
-    cron: "0 5,8,11,14 * * *"
+    cron: "0 * * * *"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
