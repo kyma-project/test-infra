@@ -157,7 +157,7 @@ gardener::install_kyma() {
             -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
             -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
             -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
-            --timeout 35m \
+            --timeout 60m \
             --profile evaluation \
             --verbose
     else

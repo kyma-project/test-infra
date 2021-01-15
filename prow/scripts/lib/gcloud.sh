@@ -206,12 +206,12 @@ function gcloud::delete_dns_record {
 # $1 - plain text to encrypt
 # $2 - cipher
 function gcloud::encrypt {
-  readonly PLAIN_TEXT="$1"
+  local PLAIN_TEXT="$1"
   if [ -p "$PLAIN_TEXT" ]; then
       log::error "Plaintext variable is missing! Exiting..."
       exit 1
   fi
-  readonly CIPHER_TEXT="$2"
+  local CIPHER_TEXT="$2"
   if [ -c "$CIPHER_TEXT" ]; then
       log::error "Ciphertext variable is missing! Exiting..."
       exit 1
@@ -236,17 +236,18 @@ function gcloud::encrypt {
 # $1 - plain text to encrypt
 # $2 - cipher
 function gcloud::decrypt {
-  readonly PLAIN_TEXT="$1"
+  local PLAIN_TEXT="$1"
   if [ -p "$PLAIN_TEXT" ]; then
       echo "PLAIN_TEXT variable is missing!"
       exit 1
   fi
-  readonly CIPHER_TEXT="$2"
+  local CIPHER_TEXT="$2"
   if [ -c "$CIPHER_TEXT" ]; then
       echo "CIPHER_TEXT variable is missing. Exiting..."
       exit 1
   fi
 
+  log::info "Decrypting ${CIPHER_TEXT} to ${PLAIN_TEXT}"
   log::info "Decrypting ${CIPHER_TEXT} to ${PLAIN_TEXT}"
 
   gcloud kms decrypt --location global \
