@@ -324,10 +324,6 @@ function gcloud::provision_gke_cluster {
     exit 1
   fi
   CLUSTER_NAME=$1
-
-  if [ -z "$2" ]; then
-    log::info "No additional labels provided"
-  fi
   ADDITIONAL_LABELS=$2
 
   readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
