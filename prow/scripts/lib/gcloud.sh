@@ -317,12 +317,18 @@ function gcloud::delete_network {
 #
 # Arguments:
 # $1 - cluster name
+# $2 - optional additional labels for the cluster
 function gcloud::provision_gke_cluster {
   if [ -z "$1" ]; then
     log::error "Cluster name not provided. Provide proper cluster name."
     exit 1
   fi
   CLUSTER_NAME=$1
+
+  if [ -z "$2" ]; then
+    log::info "No additional labels provided"
+  fi
+  ADDITIONAL_LABELS=$2
 
   readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
   readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
@@ -355,7 +361,7 @@ function gcloud::provision_gke_cluster {
   fi
   if [ "${GCLOUD_SECURITY_GROUP_DOMAIN}" ]; then params+=("--security-group=gke-security-groups@${GCLOUD_SECURITY_GROUP_DOMAIN}"); fi
 
-  APPENDED_LABELS=""
+  APPENDED_LABELS=()
   if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi
   params+=("--labels=job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
 

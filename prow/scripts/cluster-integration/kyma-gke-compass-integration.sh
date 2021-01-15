@@ -58,7 +58,6 @@ export REPO_OWNER
 readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
-readonly CURRENT_TIMESTAMP=$(date +%Y%m%d)
 readonly RANDOM_NAME_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' < /dev/urandom | head -c10)
 
 if [[ "$BUILD_TYPE" == "pr" ]]; then
@@ -173,7 +172,6 @@ function createCluster() {
     export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
   fi
   CLEANUP_CLUSTER="true"
-  export ADDITIONAL_LABELS="created-at=${CURRENT_TIMESTAMP}"
   gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
