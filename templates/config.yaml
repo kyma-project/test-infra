@@ -58,6 +58,10 @@ global:
     - name: "website"
       language: "javascript"
       project: "kyma-project"
+    - name: "podpreset-crd"
+      language: "golang"
+      project: "kyma-incubator"
+      custom_projectname: "podpreset"
   whitesource_release:
     - name: "kyma"
       language: "golang"
