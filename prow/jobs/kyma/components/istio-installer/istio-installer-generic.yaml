@@ -16,6 +16,10 @@ job_template: &job_template
     preset-docker-push-repository-kyma: "true"
   run_if_changed: "^components/istio-installer/|^common/makefiles/"
   spec:
+    volumes:
+      - name: golang-cache
+        hostPath:
+          path: /tmp/cache
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
         securityContext:
@@ -28,6 +32,16 @@ job_template: &job_template
           requests:
             memory: 1.5Gi
             cpu: 0.8
+        env:
+          - name: K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: CACHE_DIR
+            value: "/root/.cache/"
+        volumeMounts:
+          - name: golang-cache
+            mountPath: "/root/.cache/"
 
 presubmits: # runs on PRs
   kyma-project/kyma:

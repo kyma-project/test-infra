@@ -24,6 +24,21 @@ fi
 gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
+mkdir -p /tmp/artifacts/
+
+echo "K8S_NODE_NAME ${K8S_NODE_NAME}"
+echo "HOME: ${HOME}"
+echo "CACHE_DIR: ${CACHE_DIR}"
+
+ls -la "${CACHE_DIR}"
+touch "${CACHE_DIR}/test.txt"
+ls -la "${CACHE_DIR}"
+
+#ls -la "${CACHE_DIR}/go-build" || true
+rm -rf "${CACHE_DIR}/go-build"
+
+go version
+
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
   DOCKER_TAG="PR-${PULL_NUMBER}"
