@@ -172,6 +172,9 @@ function gcloud::delete_dns_record {
 
   log::info "Deleting DNS record $DNS_FULL_NAME"
   set +e
+
+  local attempts=10
+  local retryTimeInSec="5"
   for ((i=1; i<=attempts; i++)); do
     gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction start --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
     gcloud dns --project="${CLOUDSDK_CORE_PROJECT}" record-sets transaction remove "${ipAddress}" --name="${dnsName}" --ttl=60 --type=A --zone="${CLOUDSDK_DNS_ZONE_NAME}" && \
