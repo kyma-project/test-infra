@@ -1,0 +1,55 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/image-syncer.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-master-test-infra-image-syncer-validate"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-dind-enabled: "true"
+                  privileged: "false"
+                  run_if_changed: "^(development/image-syncer)"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/image-syncer"
+                    - "validate"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pre-master-test-infra-image-syncer-dry-run"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-dind-enabled: "true"
+                  run_if_changed: "^(development/image-syncer/external-images.yaml)"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "post-master-test-infra-image-syncer-run"
+                  labels:
+                    preset-build-release: "true"
+                    preset-dind-enabled: "true"
+                    preset-sa-gcr-push: "true"
+                  run_if_changed: "^(development/image-syncer/external-images.yaml)"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_postsubmit"
