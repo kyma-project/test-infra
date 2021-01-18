@@ -160,6 +160,16 @@ gardener::install_kyma() {
             --timeout 60m \
             --profile evaluation \
             --verbose
+    elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
+        kyma install \
+            --ci \
+            --source "${KYMA_SOURCE}" \
+            -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
+            -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
+            -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+            --timeout 60m \
+            --profile production \
+            --verbose
     else
         kyma install \
             --ci \
