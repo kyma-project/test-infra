@@ -1,0 +1,45 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/testgrid-automation.yaml
+        localSets:
+          jobConfig_default:
+            image: "gcr.io/k8s-prow/transfigure"
+            run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
+            annotations:
+              testgrid-create-test-group: "false"
+            command: "/transfigure.sh"
+            privileged: "false"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: pre-test-infra-validate-testgrid-config
+                  args:
+                    - "test"
+                    - "prow/config.yaml"
+                    - "prow/jobs"
+                    - "prow/testgrid-default.yaml"
+                    - "kyma"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "post-test-infra-upload-testgrid-config"
+                  labels:
+                    preset-bot-github-token: "true"
+                  args:
+                    - "/etc/github-token/token"
+                    - "prow/config.yaml"
+                    - "prow/jobs"
+                    - "prow/testgrid-default.yaml"
+                    - "kyma"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                  local:
+                    - "jobConfig_default"
