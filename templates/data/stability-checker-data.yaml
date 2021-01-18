@@ -1,0 +1,37 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/stability-checker.yaml
+        localSets:
+          jobConfig_default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker"
+            run_if_changed: "^stability-checker/"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-master-stability-checker"
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "build_labels"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "post-master-stability-checker"
+                  labels:
+                    preset-build-master: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "build_labels"
+                    - "jobConfig_postsubmit"
+                  local:
+                    - "jobConfig_default"
