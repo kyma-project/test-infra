@@ -21,38 +21,28 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function installKyma() {
 
-    kymaUnsetVar=false
+    requiredVars=(
+		DOCKER_PUSH_REPOSITORY
+        KYMA_SOURCES_DIR
+        DOCKER_PUSH_DIRECTORY
+        GOOGLE_APPLICATION_CREDENTIALS
+        STANDARIZED_NAME
+        REPO_OWNER
+        REPO_NAME
+        CURRENT_TIMESTAMP
+        GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS
+        GATEWAY_IP_ADDRESS
+        DOMAIN
+	)
 
-    for var in DOCKER_PUSH_REPOSITORY KYMA_SOURCES_DIR DOCKER_PUSH_DIRECTORY GOOGLE_APPLICATION_CREDENTIALS STANDARIZED_NAME REPO_OWNER REPO_NAME CURRENT_TIMESTAMP GCR_PUSH_GOOGLE_APPLICATION_CREDENTIALS; do
-        if [ -z "${!var}" ] ; then
-            echo "ERROR: $var is not set"
-            kymaUnsetVar=true
-        fi
-    done
-
-    if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-        for var in GATEWAY_IP_ADDRESS DOMAIN; do
-            if [ -z "${!var}" ] ; then
-                echo "ERROR: $var is not set"
-                kymaUnsetVar=true
-            fi
-        done
-    fi
-
-    if [ "${kymaUnsetVar}" = true ] ; then
-        exit 1
-    fi
+	utils::check_required_vars "${requiredVars[@]}"
 
     # shellcheck disable=SC2153
     KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
     INSTALLER_YAML="${KYMA_RESOURCES_DIR}/installer.yaml"
     INSTALLER_CR="${KYMA_RESOURCES_DIR}/installer-cr-cluster.yaml.tpl"
 
-    if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
-    else
-        export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}:${CURRENT_TIMESTAMP}"
-    fi
+    export KYMA_INSTALLER_IMAGE="${DOCKER_PUSH_REPOSITORY}${DOCKER_PUSH_DIRECTORY}/${STANDARIZED_NAME}/${REPO_OWNER}/${REPO_NAME}:${CURRENT_TIMESTAMP}"
 
     log::info "Build Kyma-Installer Docker image"
 
@@ -62,10 +52,9 @@ function installKyma() {
     sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
     | kubectl apply -f-
 
-    if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-        read -r TLS_CERT TLS_KEY < <(utils::generate_letsencrypt_cert "${DOMAIN}")
+    read -r TLS_CERT TLS_KEY < <(utils::generate_letsencrypt_cert "${DOMAIN}")
 
-        cat << EOF > "$PWD/kyma_istio_operator"
+    cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -80,19 +69,17 @@ spec:
             type: LoadBalancer
 EOF
 
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
-            --label "component=istio" \
-            --file "$PWD/kyma_istio_operator"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+        --label "component=istio" \
+        --file "$PWD/kyma_istio_operator"
 
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
-            --data "global.domainName=${DOMAIN}" \
-            --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "installation-config-overrides" \
+        --data "global.domainName=${DOMAIN}" \
+        --data "global.loadBalancerIP=${GATEWAY_IP_ADDRESS}"
 
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
-            --data "global.tlsCrt=${TLS_CERT}" \
-            --data "global.tlsKey=${TLS_KEY}"
-
-    fi
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "cluster-certificate-overrides" \
+        --data "global.tlsCrt=${TLS_CERT}" \
+        --data "global.tlsKey=${TLS_KEY}"
 
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "core-test-ui-acceptance-overrides" \
         --data "test.acceptance.ui.logging.enabled=true" \
@@ -103,10 +90,6 @@ EOF
         --label "component=application-connector"
 
     waitUntilInstallerApiAvailable
-
-    if [[ "${PERFORMACE_CLUSTER_SETUP}" != "" ]]; then
-        kubectl config set-context "gke_${CLOUDSDK_CORE_PROJECT}_${CLOUDSDK_COMPUTE_ZONE}_${INPUT_CLUSTER_NAME}" --namespace=default
-    fi
 
     log::info "Trigger installation"
 
