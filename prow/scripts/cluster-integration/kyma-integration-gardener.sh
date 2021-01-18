@@ -126,7 +126,7 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
-if [[ "${EXECUTION_PROFILE}" == "evaluation" ]]; then
+if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
