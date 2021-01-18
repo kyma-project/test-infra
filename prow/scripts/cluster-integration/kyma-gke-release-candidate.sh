@@ -88,7 +88,12 @@ cleanupOnError() {
 
         #Delete orphaned disks
         log::info "Delete orphaned PVC disks..."
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/delete-disks.sh"
+        for NAMEPATTERN in ${DISKS}
+        do
+            DISK_NAME=$(gcloud compute disks list --filter="name~${NAMEPATTERN}" --format="value(name)")
+            echo "Removing disk: ${DISK_NAME}"
+            gcloud compute disks delete "${DISK_NAME}" --quiet
+        done
     fi
 
     if [ -n "${CLEANUP_GATEWAY_DNS_RECORD}" ]; then
