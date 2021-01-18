@@ -185,10 +185,7 @@ kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="c
 
 log::info "Generate certificate"
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-export DOMAIN
-export GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
-# shellcheck disable=SC1090
-  source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/generate-and-export-letsencrypt-TLS-cert.sh"
+read -r TLS_CERT TLS_KEY < <(utils::generate_letsencrypt_cert "${DOMAIN}")
 
 log::info "Apply Kyma config"
 

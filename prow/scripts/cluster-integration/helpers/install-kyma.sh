@@ -16,6 +16,8 @@
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function installKyma() {
 
@@ -61,8 +63,7 @@ function installKyma() {
     | kubectl apply -f-
 
     if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-        # shellcheck disable=SC1090
-        source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/generate-and-export-letsencrypt-TLS-cert.sh
+        read -r TLS_CERT TLS_KEY < <(utils::generate_letsencrypt_cert "${DOMAIN}")
 
         cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
