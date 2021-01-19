@@ -1096,3 +1096,24 @@ periodics:
             requests:
               memory: 200Mi
               cpu: 80m
+  
+  - name: kyma-integration-k3s
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    <<: *vm_job_template_k3s
+    annotations:
+      testgrid-dashboards: kyma_integration
+      description: Kyma integration periodic job on k3s.
+    labels:
+      preset-build-master: "true"
+      <<: *vm_job_labels_template
+    decorate: true
+    cron: "5 * * * *"
+    branches:
+    - ^master$
+    extra_refs:
+    - <<: *test_infra_ref
+      base_ref: master
+    - <<: *kyma_local_ref
+      base_ref: main
+    - <<: *kyma_ref
+      base_ref: master
