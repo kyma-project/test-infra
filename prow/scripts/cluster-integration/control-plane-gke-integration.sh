@@ -211,6 +211,10 @@ function applyKymaOverrides() {
     --data "global.istio.gateway.name=compass-istio-gateway" \
     --data "global.istio.gateway.namespace=compass-system" \
     --label "component=ory"
+
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "tracing-overrides" \
+      --data "global.tracing.enabled=true" \
+      --label "component=tracing"
 }
 
 function applyCompassOverrides() {
