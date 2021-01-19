@@ -178,7 +178,7 @@ function createPublicIPandDNS() {
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
 
-	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+	export GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
 	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
@@ -200,131 +200,15 @@ function installKyma() {
 
 	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
-	componentOverridesFile="component-overrides.yaml"
-	componentOverrides=$(cat << EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "installation-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "cluster-essentials-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: cluster-essentials
-data:
-  limitRange.max.memory: "8Gi"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "core-test-ui-acceptance-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: core
-data:
-  console.test.acceptance.ui.logging.enabled: "true"
-  console.test.acceptance.enabled: "false"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "application-registry-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: application-connector
-data:
-  application-registry.deployment.args.detailedErrorResponse: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "monitoring-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: monitoring
-data:
-  global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
-  global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
-  prometheus-istio.envoyStats.sampleLimit: "8000"
-#---
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: "istio-overrides"
-#  namespace: "kyma-installer"
-#  labels:
-#    installer: overrides
-#    kyma-project.io/installation: ""
-#    component: istio
-#data:
-#  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dex-config-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: dex
-data:
- connectors: |
-  - type: github
-    id: github
-    name: GitHub
-    config:
-      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
-      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
-      redirectURI: ${DEX_CALLBACK_URL}
-      orgs:
-      - name: kyma-project
-EOF
-)
-  echo "${componentOverrides}" > "${componentOverridesFile}"
-
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
-
-  # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
-  echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
-  # install if yq does not exist
-  if [[ ! -x $(command -v yq) ]];
-  then
-    curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
-  fi
-cat << EOF > istio-ingressgateway-patch-yq.yaml
-- command: update
-  path: spec.components.ingressGateways[0].k8s.service
-  value:
-    loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-    type: LoadBalancer
-EOF
-  yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
-
-  # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
-  sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "8Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
 	log::info "Apply Azure disable knative-eventing stdout logging"
 	kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/azure-knative-eventing-logging.yaml"
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
+
+    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst > "$PWD/kyma-installer-overrides.yaml"
+    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" | envsubst > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	log::info "Trigger installation"
 
@@ -332,8 +216,10 @@ EOF
 			--ci \
 			--source master \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-			-o "${componentOverridesFile}" \
+            -o "$PWD/kyma-installer-overrides.yaml" \
+			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			--domain "${DOMAIN}" \
+			--profile production \
 			--tls-cert "${TLS_CERT}" \
 			--tls-key "${TLS_KEY}" \
 			--timeout 60m

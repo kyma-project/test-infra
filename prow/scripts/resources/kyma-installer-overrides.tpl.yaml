@@ -1,18 +1,6 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "installation-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  global.domainName: "${DOMAIN}"
-  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: "core-test-ui-acceptance-overrides"
   namespace: "kyma-installer"
   labels:

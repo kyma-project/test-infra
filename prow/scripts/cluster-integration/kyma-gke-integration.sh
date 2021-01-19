@@ -181,14 +181,13 @@ gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
 
 log::info "Generate self-signed certificate"
-export DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
+DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
 CERT_KEY=$(utils::generate_self_signed_cert "$DOMAIN")
 TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 log::info "Create Kyma CLI overrides"
-
-cat "${TEST_INFRA_SOURCES_DIR}/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst | tee "$PWD/kyma-installer-overrides.yaml"
+cat "${TEST_INFRA_SOURCES_DIR}/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst > "$PWD/kyma-installer-overrides.yaml"
 
 log::info "Installation triggered"
 

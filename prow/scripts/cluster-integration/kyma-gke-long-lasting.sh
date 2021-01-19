@@ -87,7 +87,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+	export GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
@@ -128,130 +128,20 @@ function installKyma() {
 
 	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
-	componentOverridesFile="component-overrides.yaml"
-	componentOverrides=$(cat << EOF
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "installation-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "cluster-essentials-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: cluster-essentials
-data:
-  limitRange.max.memory: "8Gi"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "core-test-ui-acceptance-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: core
-data:
-  test.acceptance.ui.logging.enabled: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "application-registry-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: application-connector
-data:
-  application-registry.deployment.args.detailedErrorResponse: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "monitoring-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: monitoring
-data:
-  global.alertTools.credentials.slack.channel: "${KYMA_ALERTS_CHANNEL}"
-  global.alertTools.credentials.slack.apiurl: "${KYMA_ALERTS_SLACK_API_URL}"
-  prometheus-istio.envoyStats.sampleLimit: "8000"
-#---
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: "istio-overrides"
-#  namespace: "kyma-installer"
-#  labels:
-#    installer: overrides
-#    kyma-project.io/installation: ""
-#    component: istio
-#data:
-#  gateways.istio-ingressgateway.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: dex-config-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: dex
-data:
- connectors: |
-  - type: github
-    id: github
-    name: GitHub
-    config:
-      clientID: ${GITHUB_INTEGRATION_APP_CLIENT_ID}
-      clientSecret: ${GITHUB_INTEGRATION_APP_CLIENT_SECRET}
-      redirectURI: ${DEX_CALLBACK_URL}
-      orgs:
-      - name: kyma-project
-EOF
-)
-  echo "${componentOverrides}" > "${componentOverridesFile}"
+    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst > "$PWD/kyma-installer-overrides.yaml"
+    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" | envsubst > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	log::info "Trigger installation"
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
-  # WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)
-  echo "#### WORKAROUND: add gateway ip address do IstioOperator in installer-config-production.yaml.tpl (see: https://github.com/kyma-project/test-infra/issues/2792)"
-  curl -sSLo /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64" && chmod +x /usr/local/bin/yq
-cat << EOF > istio-ingressgateway-patch-yq.yaml
-- command: update
-  path: spec.components.ingressGateways[0].k8s.service
-  value:
-    loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-    type: LoadBalancer
-EOF
-  yq w -i -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' "$(yq r -d1 "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl 'data.kyma_istio_operator' | yq w - -s istio-ingressgateway-patch-yq.yaml)"
-
-  # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
-  sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "8Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
-
 	kyma install \
 			--ci \
 			--source master \
-			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-			-o "${componentOverridesFile}" \
+			-o "$PWD/kyma-installer-overrides.yaml" \
+			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			--domain "${DOMAIN}" \
+			--profile production \
 			--tls-cert "${TLS_CERT}" \
 			--tls-key "${TLS_KEY}" \
 			--timeout 60m
