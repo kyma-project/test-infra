@@ -1098,7 +1098,7 @@ periodics:
               cpu: 80m
   
   - name: kyma-integration-k3s
-    cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
+    cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
     <<: *vm_job_template_k3s
     annotations:
       testgrid-dashboards: kyma_integration
