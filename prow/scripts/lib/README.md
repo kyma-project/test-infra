@@ -44,3 +44,19 @@ The structure of the folder looks as follows:
 2021/01/18 10:15:49 UTC [INFO] = Cleanup Azure Eventhubs Namespaces finished successfully
 2021/01/18 10:15:49 UTC [INFO] =====================================================================================
 ```
+
+
+### Utils library
+`utils::check_required_vars` funciotn takes in one argument that holds a listo of variables and check if they are set. If at least one variable is unset, it is printed in the log, and script exists.
+Example usage
+```bash
+requiredVars=(
+    REPO_OWNER
+    REPO_NAME
+    DOCKER_PUSH_REPOSITORY
+)
+
+utils::check_required_vars "${requiredVars[@]}"
+```
+
+`utils::generate_self_signed_cert` creates self-signed certificate for the given domain.
