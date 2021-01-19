@@ -74,10 +74,6 @@ if [ "${PROVISION_REGIONAL_CLUSTER}" ]; then
 	fi
 fi
 
-if [ -z "${SERVICE_CATALOG_CRD}" ]; then
-	export SERVICE_CATALOG_CRD="false"
-fi
-
 TEST_RESULT_WINDOW_TIME=${TEST_RESULT_WINDOW_TIME:-3h}
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -231,10 +227,6 @@ EOF
 )
   echo "${componentOverrides}" > "${componentOverridesFile}"
 
-	if [ "${SERVICE_CATALOG_CRD}" = "true" ]; then
-			applyServiceCatalogCRDOverride
-	fi
-
 	log::info "Trigger installation"
 
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
@@ -270,29 +262,6 @@ EOF
 		APISERVER_DNS_FULL_NAME="apiserver.${DNS_SUBDOMAIN}.${DNS_DOMAIN}"
 		gcloud::create_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
 	fi
-}
-
-function applyServiceCatalogCRDOverride(){
-    log::info "Apply override for ServiceCatalog to enable CRD implementation"
-
-serviceCatalogOverrides=$(cat << EOF
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: service-catalog-overrides
-  namespace: kyma-installer
-  labels:
-    installer: overrides
-    component: service-catalog
-    kyma-project.io/installation: ""
-data:
-  service-catalog-apiserver.enabled: "false"
-  service-catalog-crds.enabled: "true"
-EOF
-)
-
-echo "${serviceCatalogOverrides}" >> "${componentOverridesFile}"
 }
 
 function apply_dex_github_kyma_admin_group() {
