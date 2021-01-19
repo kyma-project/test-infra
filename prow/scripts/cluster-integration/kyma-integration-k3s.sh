@@ -14,7 +14,7 @@ prereq_test() {
     command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
 }
 
-install_kyma() {
+prepare_k3s() {
     # mv "${KYMA_SOURCES_DIR}/resources" "${LOCAL_KYMA_DIR}/"
 
     pushd ${LOCAL_KYMA_DIR}
@@ -34,12 +34,11 @@ install_kyma() {
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
 
-    ls -l
     make ci
     
     popd
 }
 
 prereq_test
-install_kyma
+prepare_k3s
 run_tests
