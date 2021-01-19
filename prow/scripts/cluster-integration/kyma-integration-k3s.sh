@@ -34,7 +34,8 @@ install_kyma() {
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
 
-    make test
+    ls -l
+    make ci
     
     popd
 }
