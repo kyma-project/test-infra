@@ -15,7 +15,7 @@ prereq_test() {
 }
 
 install_kyma() {
-    mv "${KYMA_SOURCES_DIR}/resources" "${LOCAL_KYMA_DIR}/"
+    # mv "${KYMA_SOURCES_DIR}/resources" "${LOCAL_KYMA_DIR}/"
 
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
