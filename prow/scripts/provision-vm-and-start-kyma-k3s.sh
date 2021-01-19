@@ -15,7 +15,7 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
-  "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+  # "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {
