@@ -698,7 +698,7 @@ templates:
           <<: *compass_generic_component
           path: components/tenant-fetcher
           since: "1.17"
-          optional: true
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         values:
           <<: *cluster_default
@@ -788,7 +788,7 @@ templates:
           <<: *compass_generic_component
           path: tests/tenant-fetcher
           since: "1.17"
-          optional: true
+          optional: false
   - from: templates/kyma-integration.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration.yaml
