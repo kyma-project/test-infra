@@ -31,7 +31,6 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
 export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
 
 echo "--------------------------------------------------------------------------------"
@@ -58,8 +57,6 @@ do
     # clusters older than 24h get deleted
     if [[ ${HOURS_OLD} -ge 24 ]]; then
         log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
-        # Export envvars for the script
-        export GARDENER_CLUSTER_NAME=${CLUSTER}
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
+        utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
     fi
 done
