@@ -99,17 +99,17 @@ trap cleanup exit INT
 
 log::info "packing tar archive"
 readonly TMP_DIR=$(mktemp -d)
-tar -cf "${TMP_DIR}/kyma.tar" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
+tar -czf "${TMP_DIR}/kyma.tar.gz" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
 
 log::info "Copying Kyma to the instance"
 
 for i in $(seq 1 5); do
   [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
-  gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/kyma.tar" "kyma-integration-test-${RANDOM_ID}":~ && break;
+  gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/kyma.tar.gz" "kyma-integration-test-${RANDOM_ID}":~ && break;
   [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
 done;
 log::info "unpacking archive"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/kyma && tar -xf ~/kyma.tar -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
+gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/kyma && tar -xf ~/kyma.tar.gz -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
 
 log::info "Copying Kyma-Local to the instance"
 
