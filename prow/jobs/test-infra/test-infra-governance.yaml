@@ -39,8 +39,6 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: untrusted-workload
-      branches:
-        - ^master$
       extra_refs:
         - org: kyma-project
           repo: test-infra

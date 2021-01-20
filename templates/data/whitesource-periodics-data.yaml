@@ -1,0 +1,282 @@
+templates:
+  - from: templates/whitesource-periodics.tmpl
+    render:
+      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+        localSets:
+          jobConfig_default:
+            privileged: "false"
+            cron: "0 4 * * *" # At 04:00 am every day
+            command: "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            request_cpu: 400m
+            request_memory: 1Gi
+            cluster: "trusted-workload"
+            annotations:
+              testgrid-create-test-group: "false"
+            labels:
+              preset-kyma-wssagent-config: "true"
+              preset-wssagent-keys: "true"
+              preset-kyma-keyring: "true"
+              preset-kyma-encryption-key: "true"
+              preset-kms-gc-project-env: "true"
+              preset-gc-project-env: "true"
+            env:
+              DRYRUN: "false"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "control-plane"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "control-plane"
+                  language: "golang"
+                  project: "kyma-project"
+                  custom_projectname: "control-plane-dep"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "kyma"
+                  language: "golang"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "kyma"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  custom_projectname: "kyma-mod"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "console"
+                  language: "javascript"
+                  project: "kyma-project"
+                  custom_projectname: "pamela"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                   name: "pamela"
+                   language: "javascript"
+                   project: "kyma-project"
+                   base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "cli"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "helm-broker"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "rafter"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "knative-kafka"
+                  language: "golang"
+                  project: "kyma-incubator"
+                  base_ref: "release-0.12"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "api-gateway"
+                  language: "golang-mod"
+                  project: "kyma-incubator"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "dex"
+                  language: "golang-mod"
+                  project: "kyma-incubator"
+                  base_ref: "kyma-master"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "hydroform"
+                  language: "golang-mod"
+                  project: "kyma-incubator"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "terraform-provider-gardener"
+                  language: "golang-mod"
+                  project: "kyma-incubator"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "octopus"
+                  language: "golang-mod"
+                  project: "kyma-incubator"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "website"
+                  language: "javascript"
+                  project: "kyma-project"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "podpreset-crd"
+                  language: "golang"
+                  project: "kyma-incubator"
+                  custom_projectname: "podpreset"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "kyma"
+                  language: "golang"
+                  project: "kyma-project"
+                  custom_projectname: "release-kyma"
+                  whitesource_release: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "kyma"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  custom_projectname: "release-kyma-mod"
+                  whitesource_release: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "cli"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  custom_projectname: "release-cli"
+                  whitesource_release: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"

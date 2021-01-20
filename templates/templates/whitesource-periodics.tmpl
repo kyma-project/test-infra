@@ -1,15 +1,24 @@
+
 {{- define "commonProwJob" }}
-    - name: {{if .JobConfig.name}}{{.JobConfig.name}}{{else}}{{fail ".JobConfig.name is not defined"}}{{end}}
+    {{- if .JobConfig.name}}
+    - name: {{default .JobConfig.name .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan
+    {{- else}}{{fail ".JobConfig.name is not defined"}}
+    {{- end}}
       {{- if .JobConfig.annotations}}
       annotations:
         {{- range $key, $value := .JobConfig.annotations}}
         {{$key}}: {{quote $value}}
         {{- end}}
       {{- end}}
-      {{- if .JobConfig.labels}}
+      {{- if or .JobConfig.labels .JobConfig.project false}}
       labels:
+        {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}
         {{$key}}: {{quote $value}}
+        {{- end}}
+        {{- end}}
+        {{- if .JobConfig.project}}
+        preset-sa-gke-kyma-integration-{{ .JobConfig.project }}-whitesource: "true"
         {{- end}}
       {{- end}}
       {{- if .JobConfig.type_periodic }}
@@ -38,12 +47,12 @@
       {{- else}}{{ fail ".JobConfig.cluster is not defined"}}{{end}}
       {{- if not .JobConfig.type_periodic}}
       max_concurrency: {{if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail ".JobConfig.max_concurrency is not defined"}}{{end}}
-      {{- if .JobConfig.branches}}
+        {{- if .JobConfig.branches}}
       branches:
           {{- range .JobConfig.branches}}
         - {{ . }}
           {{- end}}
-      {{- end}}
+        {{- end}}
       {{- end}}
       {{- if .JobConfig.extra_refs}}
       extra_refs:
@@ -53,6 +62,10 @@
           path_alias: {{ .path_alias }}
           base_ref: {{ .base_ref}}
         {{- end}}
+        - org: {{ .JobConfig.project }}
+          repo: {{ .JobConfig.name }}
+          path_alias: github.com/{{ .JobConfig.project }}/{{ .JobConfig.name }}
+          base_ref: {{ default "master" .JobConfig.base_ref }}
       {{- end}}
       spec:
         containers:
@@ -78,13 +91,19 @@
               - "{{ . }}"
               {{- end}}
             {{- end}}
-            {{- with .JobConfig.env}}
             env:
-              {{- range $key, $value := . }}
+              {{- if .JobConfig.env}}
+              {{- range $key, $value := .JobConfig.env }}
               - name: {{$key}}
                 value: "{{$value}}"
               {{- end}}
-            {{- end}}
+              {{- end}}
+              - name : PROJECTNAME
+                value: {{ .JobConfig.name }}
+              - name: CUSTOM_PROJECTNAME
+                value: {{ default "" .JobConfig.custom_projectname }}
+              - name: SCAN_LANGUAGE
+                value: {{ .JobConfig.language }}
             {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
             resources:
               requests:
@@ -112,35 +131,25 @@
           {{- end}}
         {{- end}}
 {{- end -}}
-{{- if hasPresubmit .Values.JobConfigs}}
-presubmits: # runs on PRs
-  {{- range .Values.JobConfigs }}
-  {{ replace "github.com/" "" .RepoName -}}:
-    {{- range .Jobs -}}
-      {{- if .JobConfig.type_presubmit }}
-      {{- template "commonProwJob" . }}
-      {{- end}}
-    {{- end}}
-  {{end}}
-{{- end}}
-{{- if hasPostsubmit .Values.JobConfigs}}
-postsubmits: # runs on master
-  {{- range .Values.JobConfigs }}
-  {{ replace "github.com/" "" .RepoName -}}:
-    {{- range .Jobs -}}
-      {{- if .JobConfig.type_postsubmit }}
-      {{- template "commonProwJob" . }}
-      {{- end}}
-    {{- end}}
-  {{end}}
-{{- end}}
-{{- if hasPeriodic .Values.JobConfigs}}
+
+{{- $release := index .Global.releases 0 }}
 periodics: # runs on schedule
   {{- range .Values.JobConfigs }}
   {{- range .Jobs -}}
   {{- if .JobConfig.type_periodic }}
-  {{- template "commonProwJob" . }}
+  {{- template "commonProwJob" .}}
   {{- end}}
   {{- end}}
   {{end}}
-{{- end}}
+#-------------Release-----------------------------
+  {{- range .Values.JobConfigs }}
+  {{- range .Jobs -}}
+  {{- if .JobConfig.type_periodic }}
+  {{- if .JobConfig.whitesource_release}}
+  {{- $JobConf := set .JobConfig "Release" $release}}
+  {{- $JobConfigDict := dict "JobConfig" $JobConf}}
+  {{- template "commonProwJob" $JobConfigDict }}
+  {{- end}}
+  {{- end}}
+  {{- end}}
+  {{end}}
