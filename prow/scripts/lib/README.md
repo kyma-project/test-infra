@@ -2,7 +2,7 @@
 
 ## Overview
 
-The folder contains helper scripts that contains commonly used functions.
+The folder contains helper scripts with commonly used functions.
 
 ### Project structure
 
