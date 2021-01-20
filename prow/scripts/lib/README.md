@@ -2,7 +2,7 @@
 
 ## Overview
 
-The folder contains helper scripts used in pipelines
+The folder contains helper scripts that contains commonly used functions.
 
 ### Project structure
 
@@ -23,7 +23,7 @@ The structure of the folder looks as follows:
 └── utils.sh # This script contains various functions that couldn't be assigned to any of the other helper scripts.
 ```
 
-## Example use case
+### Example use case
 Following example use case reserves IP address from Google Compute Engine and creates new DNS record that uses the IP address.
 
 ```bash
