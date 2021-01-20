@@ -365,7 +365,7 @@ function gcloud::provision_gke_cluster {
   params+=("--labels=job=${JOB_NAME},job-id=${PROW_JOB_ID},cluster=${CLUSTER_NAME},volatile=true${APPENDED_LABELS[@]},${CLEANER_LABELS_PARAM}")
 
   log::info "Provisioning GKE cluster"
-  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters create "$CLUSTER_NAME" "${params[@]}"
+  gcloud --project="$GCLOUD_PROJECT_NAME" beta container clusters create "$CLUSTER_NAME" "${params[@]}"
   log::info "Successfully created cluster $CLUSTER_NAME!"
 
   log::info "Patching kube-dns with stub domains"
@@ -415,7 +415,7 @@ function gcloud::deprovision_gke_cluster {
   fi
 
   log::info "Deprovisioning cluster $CLUSTER_NAME."
-  gcloud --project="$GCLOUD_PROJECT_NAME" container clusters delete "$CLUSTER_NAME" "${params[@]}"
+  gcloud --project="$GCLOUD_PROJECT_NAME" beta container clusters delete "$CLUSTER_NAME" "${params[@]}"
   log::info "Successfully removed cluster $CLUSTER_NAME!"
 }
 
