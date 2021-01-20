@@ -26,9 +26,7 @@ prepare_k3s() {
 
 run_tests() {
     pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-
     make ci
-    
     popd
 }
 
