@@ -15,13 +15,13 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
   log::info "Execute Job Guard"
-  # "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+  "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {
   # TODO - collect junit results
   log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
-  # gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
+  gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
 }
 
 function testCustomImage() {
