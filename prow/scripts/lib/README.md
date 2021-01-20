@@ -24,10 +24,13 @@ The structure of the folder looks as follows:
 ```
 
 ## Example use case
-Example use case that shows how libraries can simplify job 
+Following example use case reserves IP address from Google Compute Engine and creates new DNS record that uses the IP address.
 
 ```bash
 #!/usr/bin/env bash
+
+# this script will reserve IP address and create a DNS record with this address
+
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
 # shellcheck source=prow/scripts/lib/log.sh
