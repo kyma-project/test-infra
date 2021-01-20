@@ -23,40 +23,35 @@ The structure of the folder looks as follows:
 └── utils.sh # This script contains various functions that couldn't be assigned to any of the other helper scripts.
 ```
 
-### Log library
-`log::info`, `log::warn`, and `log::error` functions takes in one argument and prints it together with current time and message severity, for instance `log::info` could print following message:
-```
-2021/01/19 14:44:06 UTC [INFO] Build kcp-installer with target release
-```
+## Example use case
+Example use case that shows how libraries can simplify job 
 
-`log::banner` function takes in one argument and print it with easy to spot in logs border:
-```
-2021/01/19 14:41:25 UTC [INFO] *************************************************************************************
-2021/01/19 14:41:25 UTC [INFO] * Provision cluster: "gkeint-pr-9921-o0ihxwxf07"
-2021/01/19 14:41:25 UTC [INFO] *************************************************************************************
-```
-
-`log::success`  takes in one argument and print it with easy to spot in logs border:
-```
-2021/01/18 10:15:49 UTC [INFO] =====================================================================================
-2021/01/18 10:15:49 UTC [INFO] = SUCCESS                                                                           =
-2021/01/18 10:15:49 UTC [INFO] =====================================================================================
-2021/01/18 10:15:49 UTC [INFO] = Cleanup Azure Eventhubs Namespaces finished successfully
-2021/01/18 10:15:49 UTC [INFO] =====================================================================================
-```
-
-
-### Utils library
-`utils::check_required_vars` funciotn takes in one argument that holds a listo of variables and check if they are set. If at least one variable is unset, it is printed in the log, and script exists.
-Example usage
 ```bash
+#!/usr/bin/env bash
+export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/kyma.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
+
+# make sure all required variables are set
 requiredVars=(
-    REPO_OWNER
-    REPO_NAME
-    DOCKER_PUSH_REPOSITORY
+    GATEWAY_IP_ADDRESS_NAME
+    GOOGLE_APPLICATION_CREDENTIALS
+    GATEWAY_DNS_FULL_NAME
 )
 
 utils::check_required_vars "${requiredVars[@]}"
-```
 
-`utils::generate_self_signed_cert` creates self-signed certificate for the given domain.
+gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
+
+log::info "Reserving IP address"
+GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+
+gcloud::create_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+
+log::success "Created DNS record for ${GATEWAY_IP_ADDRESS} IP address"
+```
