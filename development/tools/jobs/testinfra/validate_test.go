@@ -76,7 +76,7 @@ func TestValidateConfigsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageProwToolsLatest, cont.Image)
+	assert.Equal(t, tester.ImageProwToolsCurrent, cont.Image)
 	assert.Equal(t,
 		[]string{
 			"prow/plugins.yaml",
@@ -103,6 +103,6 @@ func TestValidateScriptsPresubmit(t *testing.T) {
 
 	assert.Len(t, sut.Spec.Containers, 1)
 	cont := sut.Spec.Containers[0]
-	assert.Equal(t, tester.ImageBootstrapLatest, cont.Image)
+	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, cont.Image)
 	assert.Equal(t, []string{"prow/scripts/validate-scripts.sh"}, cont.Command)
 }

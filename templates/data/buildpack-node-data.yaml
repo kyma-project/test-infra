@@ -18,8 +18,6 @@ templates:
                   name: "pre-kyma-project-pamela"
                   optional: "false"
                   always_run: "true"
-                  labels:
-                    preset-build-pr: "false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -31,8 +29,6 @@ templates:
               - jobConfig:
                   name: "post-kyma-project-pamela"
                   always_run: "true"
-                  labels:
-                    preset-build-release: "false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

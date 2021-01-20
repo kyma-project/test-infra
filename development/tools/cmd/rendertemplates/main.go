@@ -222,6 +222,7 @@ func renderTemplate(basePath string, templateConfig TemplateConfig, config *Conf
 		render.mergeConfigs(config.GlobalSets)
 		err = renderFileFromTemplate(basePath, templateInstance, render, config)
 		if err != nil {
+			log.Printf("Failed render %s file", render.To)
 			return err
 		}
 	}

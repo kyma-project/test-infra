@@ -1,0 +1,94 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/validation.yaml
+        localSets:
+          jobConfig_allBranches:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            request_memory: "1.5Gi"
+            request_cpu: "0.8"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-test-infra-validate-scripts"
+                  run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
+                  command: "prow/scripts/validate-scripts.sh"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pre-test-infra-validate-configs"
+                  run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
+                  command: "prow/scripts/validate-config.sh"
+                  args:
+                    - "prow/plugins.yaml"
+                    - "prow/config.yaml"
+                    - "prow/jobs"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "image_prow-tools"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pre-master-test-infra-validate-prow-tools"
+                  privileged: "false"
+                  run_if_changed: "^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/tools"
+                    - "validate"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pre-master-test-infra-validate-prow-jobs"
+                  privileged: "false"
+                  run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
+                  labels:
+                    preset-build-pr: "true"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "development/tools"
+                    - "jobs-tests"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pre-master-test-infra-validate-generated-files"
+                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|jobs/releases/releases.go)"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pre-master-test-infra-validate-prow-installer-files"
+                  run_if_changed: "^development/prow-installer/cmd/|^development/prow-installer/pkg/"
+                  privileged: "false"
+                  labels:
+                    preset-build-pr: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"

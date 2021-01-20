@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+
+# github::configure_git configures global git account
+#
+# Optional exported variables:
+# BOT_GITHUB_SSH_PATH
+# BOT_GITHUB_EMAIL
+# BOT_GITHUB_NAME
 function github::configure_git() {
   echo "Configuring git"
   # configure ssh

@@ -132,6 +132,7 @@ presets:
     volumeMounts:
     - name: sa-kyma-artifacts
       mountPath: /etc/credentials/sa-kyma-artifacts
+# Gardener presets
   - labels:
       preset-sa-gardener-logs: "true"
     env:
@@ -199,6 +200,22 @@ presets:
     volumeMounts:
     - name: gardener-kyma-prow-kubeconfig
       mountPath: /etc/credentials/gardener-kyma-prow
+  - labels:
+      preset-gardener-neighbors: "true"
+    env:
+      - name: GARDENER_KUBECONFIG
+        value: /etc/credentials/gardener-neighbors/kubeconfig
+      - name: GARDENER_PROJECT_NAME
+        value: "neighbors"
+      - name: GARDENER_PROVIDER_SECRET_NAME
+        value: "neighbors-gardener"
+    volumes:
+      - name: gardener-neighbors-kubeconfig
+        secret:
+          secretName: gardener-neighbors-kubeconfig
+    volumeMounts:
+      - name: gardener-neighbors-kubeconfig
+        mountPath: /etc/credentials/gardener-neighbors
   - labels:
       preset-az-kyma-prow-credentials: "true"
     env:

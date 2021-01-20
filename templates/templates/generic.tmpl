@@ -14,7 +14,7 @@
       {{- end}}
       {{- if .JobConfig.type_periodic }}
         {{- if .JobConfig.cron}}
-      cron: {{.JobConfig.cron}}
+      cron: {{quote .JobConfig.cron}}
         {{- else if .JobConfig.interval}}
       interval: {{.JobConfig.interval}}
         {{- else}}{{fail ".JobConfig.cron and .JobConfig.interval are not defined"}}{{end}}
@@ -27,7 +27,6 @@
       optional: {{.JobConfig.optional}}
       {{- end}}
       skip_report: {{if .JobConfig.skip_report}}{{.JobConfig.skip_report}}{{else}}{{fail ".JobConfig.skip_report is not defined"}}{{end}}
-      max_concurrency: {{if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail ".JobConfig.max_concurrency is not defined"}}{{end}}
       {{- if .JobConfig.decorate}}
       decorate: {{.JobConfig.decorate}}
       {{- end}}
@@ -37,12 +36,15 @@
       {{- if .JobConfig.cluster}}
       cluster: {{.JobConfig.cluster }}
       {{- else}}{{ fail ".JobConfig.cluster is not defined"}}{{end}}
+      {{- if not .JobConfig.type_periodic}}
+      max_concurrency: {{if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail ".JobConfig.max_concurrency is not defined"}}{{end}}
+      {{- end}}
       {{- if .JobConfig.branches}}
       branches:
-        {{- range .JobConfig.branches}}
+          {{- range .JobConfig.branches}}
         - {{ . }}
-        {{- end}}
-      {{- else}}{{fail "branches not defined"}}{{- end}}
+          {{- end}}
+      {{- end}}
       {{- if .JobConfig.extra_refs}}
       extra_refs:
         {{- range .JobConfig.extra_refs}}
@@ -65,7 +67,8 @@
             command:
               {{- if .JobConfig.command }}
               - {{ quote .JobConfig.command }}
-              {{- else}} {{fail ".JobConfig.command is not defined"}}{{ end }}
+              {{- else}} {{fail ".JobConfig.command is not defined"}}
+              {{- end }}
             {{- with .JobConfig.args}}
             args:
               {{- range . }}
@@ -79,10 +82,32 @@
                 value: "{{$value}}"
               {{- end}}
             {{- end}}
+            {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
             resources:
               requests:
-                memory: {{if .JobConfig.request_memory}}{{.JobConfig.request_memory}}{{else}}{{ fail ".JobConfig.request_memory is not defined"}}{{end}}
-                cpu: {{if .JobConfig.request_cpu}}{{.JobConfig.request_cpu}}{{else}}{{ fail ".JobConfig.request_cpu is not defined"}}{{end}}
+                {{- if .JobConfig.request_memory}}
+                memory: {{.JobConfig.request_memory}}
+                {{- end}}
+                {{- if .JobConfig.request_cpu}}
+                cpu: {{.JobConfig.request_cpu}}
+                {{- end}}
+            {{- end}}
+            {{- if .JobConfig.volumeMounts}}
+            volumeMounts:
+              {{- range .JobConfig.volumeMounts}}
+              - name: {{ .name }}
+                mountPath: {{ .mountPath }}
+                readOnly: {{ .readOnly}}
+              {{- end}}
+            {{- end}}
+        {{- if .JobConfig.volumes}}
+        volumes:
+          {{- range .JobConfig.volumes}}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}
+            readOnly: {{ .readOnly}}
+          {{- end}}
+        {{- end}}
 {{- end -}}
 {{- if hasPresubmit .Values.JobConfigs}}
 presubmits: # runs on PRs
@@ -107,13 +132,12 @@ postsubmits: # runs on master
   {{end}}
 {{- end}}
 {{- if hasPeriodic .Values.JobConfigs}}
-periodic: # runs on schedule
+periodics: # runs on schedule
   {{- range .Values.JobConfigs }}
-  {{ replace "github.com/" "" .RepoName -}}:
-    {{- range .Jobs -}}
-      {{- if .JobConfig.type_periodic }}
-      {{- template "commonProwJob" . }}
-      {{- end}}
-    {{- end}}
+  {{- range .Jobs -}}
+  {{- if .JobConfig.type_periodic }}
+  {{- template "commonProwJob" . }}
+  {{- end}}
+  {{- end}}
   {{end}}
 {{- end}}

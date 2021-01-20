@@ -1,0 +1,27 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/unstale-gardener-project.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "unstale-gardener-project"
+                  type_periodic: "true"
+                  cluster: "trusted-workload"
+                  decorate: "true"
+                  skip_report: "false"
+                  cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
+                  labels:
+                    preset-gardener-neighbors: "true"
+                  annotations:
+                    testgrid-create-test-group: "false"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/unstale-gardener-project.sh"
+                  env:
+                    MACHINE_TYPE: "n1-standard-4"
+                    GARDENER_REGION: "europe-west4"
+                    GARDENER_ZONES: "europe-west4-b"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
