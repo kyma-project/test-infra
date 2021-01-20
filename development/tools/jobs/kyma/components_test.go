@@ -85,13 +85,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "istio-kyma-patch", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Optional(),
-			jobsuite.Until(releases.Release117),
-		},
-	},
 	{path: "istio-installer", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
