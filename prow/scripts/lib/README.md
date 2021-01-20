@@ -6,7 +6,7 @@ The folder contains helper scripts with commonly used functions.
 
 ### Project structure
 
-The structure of the folder looks as follows:
+The folder structure looks as follows:
 
 ```
 ├── azure.sh # This script contains functions that interact with Azure services.
