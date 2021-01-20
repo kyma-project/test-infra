@@ -397,7 +397,8 @@ periodics:
     <<: *gardener_azure_evaluation_job_template
     decorate: true
     annotations:
-      testgrid-create-test-group: "false"
+      testgrid-dashboards: kyma_integration
+      description: Evaluation profile Kyma Azure Gardener integration job.
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
@@ -418,7 +419,8 @@ periodics:
     <<: *gardener_azure_production_job_template
     decorate: true
     annotations:
-      testgrid-create-test-group: "false"
+      testgrid-dashboards: kyma_integration
+      description: Production profile Kyma Azure Gardener integration job.
     decoration_config:
       timeout: 7200000000000 # 2h
       grace_period: 600000000000 # 10min
