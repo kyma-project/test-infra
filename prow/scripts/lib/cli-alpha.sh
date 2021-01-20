@@ -3,9 +3,9 @@
 # cli-alpha::deploy starts Kyma installation using the alpha deploy command
 #
 # Arguments:
-#	$1 - Path to local resource directory
-#	$2 - Path to local components.yaml file
+#	$1 - OPtional path to an overrides file
 function cli-alpha::deploy {
+	# shellcheck disable=SC2119
 	local overrides=$1
 
 	kyma alpha deploy \
