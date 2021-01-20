@@ -24,7 +24,7 @@ The folder structure looks as follows:
 ```
 
 ### Example use case
-Following example use case reserves IP address from Google Compute Engine and creates new DNS record that uses the IP address.
+The following example use case reserves an IP address from the Google Compute Engine and creates a new DNS record that uses the IP address.
 
 ```bash
 #!/usr/bin/env bash
