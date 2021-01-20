@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}/log.sh"
+
 # docker::start starts the Docker Daemon if not already started
 function docker::start {
     log::banner "Starting Docker..."
@@ -50,7 +55,7 @@ function docker::authenticate() {
   authKey=$1
     if [[ -n "${authKey}" ]]; then
       client_email=$(jq -r '.client_email' < "${authKey}")
-      echo "Authenticating in regsitry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
+      echo "Authenticating in registry ${DOCKER_PUSH_REPOSITORY%%/*} as $client_email"
       docker login -u _json_key --password-stdin https://"${DOCKER_PUSH_REPOSITORY%%/*}" < "${authKey}" || exit 1
     else
       echo "could not authenticate to Docker Registry: authKey is empty" >&2
@@ -74,7 +79,7 @@ function docker::build_post_pr_tag {
       log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
       return 0
     else
-      log:error "Failed building PR tag."
+      log::error "Failed building PR tag."
       return 0
     fi
   else
@@ -96,7 +101,7 @@ function docker::build_post_pr_tag {
         log::success "PR tag built and exported as DOCKER_POST_PR_TAG variable with value: $DOCKER_POST_PR_TAG"
         return 0
       else
-        log:error "Failed building PR tag."
+        log::error "Failed building PR tag."
         return 0
       fi
     else
