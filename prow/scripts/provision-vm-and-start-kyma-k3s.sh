@@ -109,7 +109,7 @@ for i in $(seq 1 5); do
   [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
 done;
 log::info "unpacking archive"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="tar -xf ~/kyma.tar -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
+gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/kyma && tar -xf ~/kyma.tar -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
 
 log::info "Copying Kyma-Local to the instance"
 
