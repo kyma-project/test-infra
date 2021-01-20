@@ -99,7 +99,7 @@ trap cleanup exit INT
 
 log::info "packing tar archive"
 readonly TMP_DIR=$(mktemp -d)
-tar -czf "${TMP_DIR}/kyma.tar" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
+tar -cf "${TMP_DIR}/kyma.tar" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
 
 log::info "Copying Kyma to the instance"
 
