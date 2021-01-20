@@ -6,8 +6,10 @@
 #	$1 - Path to local resource directory
 #	$2 - Path to local components.yaml file
 function cli-alpha::deploy {
+	local overrides=$1
+
 	kyma alpha deploy \
-    	--ci \
-    	--resources "${1}" \
-    	--components "${2}"
+		-v \
+		"$( if [ -n "$overrides" ]; then echo "-f $overrides"; fi )"
+
 }
