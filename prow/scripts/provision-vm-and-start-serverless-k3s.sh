@@ -9,6 +9,7 @@ date
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+readonly TMP_DIR=$(mktemp -d)
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${SCRIPT_DIR}/lib/gcloud.sh"
@@ -105,19 +106,15 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
-log::info "packing tar archive"
-readonly TMP_DIR=$(mktemp -d)
-tar -czf "${TMP_DIR}/kyma.tar" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
-
 log::info "Copying Kyma to the instance"
+tar -czf "${TMP_DIR}/kyma.tar.gz" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/kyma.tar" "kyma-integration-test-${RANDOM_ID}":~ && break;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/kyma.tar.gz" "kyma-integration-test-${RANDOM_ID}":~ && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
-log::info "unpacking archive"
-gcloud compute ssh --quiet --zone="${ZONE}" --command="tar -xf ~/kyma.tar -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
+gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/kyma && tar -xf ~/kyma.tar.gz -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
 
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh"

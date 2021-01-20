@@ -8,6 +8,7 @@ set -o errexit
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
+readonly TMP_DIR=$(mktemp -d)
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${SCRIPT_DIR}/lib/gcloud.sh"
@@ -104,12 +105,14 @@ chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
 mkdir -p /home/prow/go/src/github.com/kyma-incubator/compass/components/console/shared/build
 
 log::info "Copying Compass to the instance"
+tar -czf "${TMP_DIR}/compass.tar.gz" -C "/home/prow/go/src/github.com/kyma-incubator/compass" "."
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-incubator/compass "compass-integration-test-${RANDOM_ID}":~/compass && break;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-incubator/compass "compass-integration-test-${RANDOM_ID}":~ && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
+gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/compass && tar -xf ~/compass.tar.gz -C ~/compass" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
 
 log::info "Download stable Kyma CLI"
 curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux

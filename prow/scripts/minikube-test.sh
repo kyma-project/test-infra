@@ -6,6 +6,8 @@
 set -o errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly TMP_DIR=$(mktemp -d)
+
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 
@@ -88,12 +90,14 @@ for ZONE in ${EU_ZONES}; do
 done || exit 1
 
 log::info "Copying Kyma to the instance"
+tar -czf "${TMP_DIR}/kyma.tar.gz" -C "/home/prow/go/src/github.com/kyma-project/kyma" "."
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/kyma.tar.gz" "kyma-integration-test-${RANDOM_ID}":~ && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
+gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/kyma && tar -xf ~/kyma.tar.gz -C ~/kyma" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
 
 log::info "Triggering the installation"
 
