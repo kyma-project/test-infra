@@ -154,7 +154,7 @@ function reserveIPsAndCreateDNSRecords() {
   log::info "Authenticate with GCP"
 
   # requires "${GOOGLE_APPLICATION_CREDENTIALS}"
-  gcloud::authenticate
+  gcloud::authenticate "${GOOGLE_APPLICATION_CREDENTIALS}"
 
   # requires "$DOCKER_IN_DOCKER_ENABLED" (via preset), needed for building the new installer image
   docker::start
