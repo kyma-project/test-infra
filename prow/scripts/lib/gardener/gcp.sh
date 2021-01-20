@@ -104,8 +104,8 @@ gardener::install_kyma() {
 apiVersion: "installer.kyma-project.io/v1alpha1"
 kind: Installation
 metadata:
-name: kyma-installation
-namespace: default
+  name: kyma-installation
+  namespace: default
 spec:
   components:
     - name: "testing"
