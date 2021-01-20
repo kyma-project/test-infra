@@ -109,7 +109,7 @@ tar -czf "${TMP_DIR}/compass.tar.gz" -C "/home/prow/go/src/github.com/kyma-incub
 
 for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-incubator/compass "compass-integration-test-${RANDOM_ID}":~ && break;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/compass.tar.gz" "compass-integration-test-${RANDOM_ID}":~ && break;
     [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
 done;
 gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/compass && tar -xf ~/compass.tar.gz -C ~/compass" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
