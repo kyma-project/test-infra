@@ -1,0 +1,38 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/test-log-collector.yaml
+        localSets:
+          jobConfig_default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/test-log-collector"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-master-test-log-collector"
+                  run_if_changed: "^development/test-log-collector/"
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "build_labels"
+                  local:
+                    - "jobConfig_default"
+              - jobConfig:
+                  name: "post-master-test-log-collector"
+                  run_if_changed: "^development/test-log-collector/"
+                  labels:
+                    preset-build-master: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang"
+                    - "build_labels"
+                  local:
+                    - "jobConfig_default"
