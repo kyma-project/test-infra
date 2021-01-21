@@ -37,6 +37,9 @@ postsubmits: # runs on master
         testgrid-create-test-group: "false"
       labels:
         preset-build-master: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-sa-gcr-push: "true"
       run_if_changed: '^watch-pods/'
       skip_report: false
       decorate: true

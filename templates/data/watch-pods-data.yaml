@@ -34,3 +34,4 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_postsubmit"
                     - "jobConfig_default"
+                    - "build_labels"
