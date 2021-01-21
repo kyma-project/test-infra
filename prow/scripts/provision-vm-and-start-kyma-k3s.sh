@@ -101,13 +101,14 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Copying Kyma to the instance"
+set +x
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
-
+set -x
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3s.sh"
 
