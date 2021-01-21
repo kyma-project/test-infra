@@ -8,12 +8,13 @@ set -o errexit
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
-readonly TMP_DIR=$(mktemp -d)
 
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${SCRIPT_DIR}/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -105,14 +106,8 @@ chmod -R 0777 /home/prow/go/src/github.com/kyma-incubator/compass/.git
 mkdir -p /home/prow/go/src/github.com/kyma-incubator/compass/components/console/shared/build
 
 log::info "Copying Compass to the instance"
-tar -czf "${TMP_DIR}/compass.tar.gz" -C "/home/prow/go/src/github.com/kyma-incubator/compass" "."
-
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${TMP_DIR}/compass.tar.gz" "compass-integration-test-${RANDOM_ID}":~ && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
-gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ~/compass && tar -xf ~/compass.tar.gz -C ~/compass" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" 
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 log::info "Download stable Kyma CLI"
 curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux
@@ -120,11 +115,8 @@ chmod +x kyma
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --zone="${ZONE}" "kyma" "compass-integration-test-${RANDOM_ID}":~/bin/kyma && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
 
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
@@ -133,11 +125,5 @@ log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}" -- "yes | ./compass/installation/scripts/prow/deploy-and-test.sh"
 
 log::info "Copying test artifacts from VM"
-
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --recurse --zone="${ZONE}" "compass-integration-test-${RANDOM_ID}":/var/log/prow_artifacts "${ARTIFACTS}"  && break;
-    # TODO change exit code to 1 later
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 0
-done;
-
+#shellcheck disable=SC2088
+utils::receive_from_vm "${ZONE}" "compass-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"

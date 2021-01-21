@@ -13,6 +13,8 @@ KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"
 source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${SCRIPT_DIR}/lib/utils.sh"
 
 cleanup() {
     ARG=$?
@@ -118,12 +120,8 @@ make build-linux
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "mkdir \$HOME/bin"
 
 log::info "Copying Kyma CLI to the instance"
-date
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --zone="${ZONE}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "cli-integration-test-${RANDOM_ID}":~/bin/kyma && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "cli-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}/cli/bin/kyma-linux" "~/bin/kyma"
 gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 
 # Provision Kubernetes runtime

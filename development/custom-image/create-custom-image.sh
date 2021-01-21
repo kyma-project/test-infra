@@ -4,8 +4,10 @@ set -o errexit
 
 readonly CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly ROOT_DIR=${CURRENT_DIR}/../../
-# shellcheck disable=SC1090
+# shellcheck source=prow/scripts/lib/log.sh
 source "${ROOT_DIR}/prow/scripts/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${ROOT_DIR}/prow/scripts/lib/utils.sh"
 
 cleanup() {   
     log::info "Removing instance kyma-deps-image-vm-${RANDOM_ID}"
@@ -63,12 +65,8 @@ done
 trap cleanup exit
 
 log::info "Moving install-deps-debian.sh to kyma-deps-image-vm-${RANDOM_ID} in zone ${ZONE} ..."
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --zone="${ZONE}" --recurse  ./install-deps-debian.sh "kyma-deps-image-vm-${RANDOM_ID}":~/ && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done
-
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}" "./install-deps-debian.sh" "~/"
 
 log::info "Running install-deps-debian.sh ..."
 gcloud compute ssh --quiet --zone="${ZONE}" "kyma-deps-image-vm-${RANDOM_ID}" -- ./install-deps-debian.sh
