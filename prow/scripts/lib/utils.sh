@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}"/log.sh
+
 utils::check_required_vars() {
     local discoverUnsetVar=false
     for var in "$@"; do
@@ -48,4 +53,76 @@ function utils::generate_self_signed_cert() {
 
   rm "${KEY_PATH}"
   rm "${CERT_PATH}"
+}
+
+# utils::send_to_vm sends file(s) to Google Compute Platform over scp
+#
+# Arguments
+# $1 - compute zone
+# $1 - local path
+# $2 - remote name
+# $3 - remote path
+function utils::send_to_vm() {
+  if [ -z "$1" ]; then
+    echo "Zone is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$3" ]; then
+    echo "Local path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$4" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  ZONE=$1
+  REMOTE_NAME=$2
+  LOCAL_PATH=$3
+  REMOTE_PATH=$4
+
+  for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+  done;
+}
+
+# utils::compress_send_to_vm compresses and sends file(s) to Google Compute Platform over scp
+#
+# Arguments
+# $1 - compute zone
+# $1 - local path
+# $2 - remote name
+# $3 - remote path
+function utils::compress_send_to_vm() {
+  if [ -z "$1" ]; then
+    echo "Zone is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$3" ]; then
+    echo "Local path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$4" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  ZONE=$1
+  REMOTE_NAME=$2
+  LOCAL_PATH=$3
+  REMOTE_PATH=$4
+
+  local TMP_DIR=$(mktemp -d)
+  tar -czf "${TMP_DIR}/pack.tar.gz" -C "${LOCAL_PATH}" "."
+  utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIR}/pack.tar.gz" "${HOME}/"
+  gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/kyma.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}" 
+  rm -rf "${TMP_DIR}"
 }
