@@ -4,77 +4,6 @@ global:
     - "1.19"
     - "1.18"
     - "1.17"
-  whitesource:
-    - name: "control-plane"
-      language: "golang-mod"
-      project: "kyma-project"
-    - name: "control-plane"
-      language: "golang"
-      project: "kyma-project"
-      custom_projectname: "control-plane-dep"
-    - name: "kyma"
-      language: "golang"
-      project: "kyma-project"
-    - name: "kyma"
-      language: "golang-mod"
-      project: "kyma-project"
-      custom_projectname: "kyma-mod"
-    - name: "console"
-      language: "javascript"
-      project: "kyma-project"
-    - name: "pamela"
-      language: "javascript"
-      project: "kyma-project"
-      base_ref: "main"
-    - name: "cli"
-      language: "golang-mod"
-      project: "kyma-project"
-    - name: "helm-broker"
-      language: "golang-mod"
-      project: "kyma-project"
-    - name: "rafter"
-      language: "golang-mod"
-      project: "kyma-project"
-    - name: "knative-kafka"
-      language: "golang"
-      project: "kyma-incubator"
-      base_ref: "release-0.12"
-    - name: "api-gateway"
-      language: "golang-mod"
-      project: "kyma-incubator"
-    - name: "dex"
-      language: "golang-mod"
-      project: "kyma-incubator"
-      base_ref: "kyma-master"
-    - name: "hydroform"
-      language: "golang-mod"
-      project: "kyma-incubator"
-    - name: "terraform-provider-gardener"
-      language: "golang-mod"
-      project: "kyma-incubator"
-    - name: "octopus"
-      language: "golang-mod"
-      project: "kyma-incubator"
-    - name: "website"
-      language: "javascript"
-      project: "kyma-project"
-    - name: "podpreset-crd"
-      language: "golang"
-      project: "kyma-incubator"
-      custom_projectname: "podpreset"
-  whitesource_release:
-    - name: "kyma"
-      language: "golang"
-      project: "kyma-project"
-      custom_projectname: "release-kyma"
-    - name: "kyma"
-      language: "golang-mod"
-      project: "kyma-project"
-      custom_projectname: "release-kyma-mod"
-    - name: "cli"
-      language: "golang-mod"
-      project: "kyma-project"
-      custom_projectname: "release-cli"
 
 globalSets:
   # Image sets
@@ -88,6 +17,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+  image_wssagent:
+    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -108,6 +39,9 @@ globalSets:
     cluster: "trusted-workload"
     annotations:
       testgrid-create-test-group: "false"
+  jobConfig_periodic:
+    type_periodic: "true"
+    cluster: "untrusted-workload"
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
@@ -1238,11 +1172,6 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
-  - from: templates/whitesource-periodics.yaml
-    render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
-        values:
-          <<: *cluster_default
   - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
@@ -1272,26 +1201,3 @@ templates:
   - from: templates/testgrid-default.yaml
     render:
       - to: ../prow/testgrid-default.yaml
-  - from: templates/protecode-guard.yaml
-    render:
-    - to: ../prow/jobs/scans/protecode-guard.yaml
-      values:
-        repos:
-        - name: kyma
-          project: kyma-project
-          optional: true
-          always_run: false
-          run_if_changed: '^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))'
-          job_guard_pattern: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
-        - name: console
-          project: kyma-project
-          optional: true
-          always_run: false
-          run_if_changed: ".*"
-          job_guard_pattern: "pre-console-.*"
-        - name: pamela
-          project: kyma-project
-          optional: true
-          always_run: true
-          run_if_changed: ""
-          job_guard_pattern: ".*"
