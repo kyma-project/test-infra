@@ -122,6 +122,5 @@ log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" -- "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
 
 log::info "Copying test artifacts from VM"
-#shellcheck disable=SC2088
 utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
 
