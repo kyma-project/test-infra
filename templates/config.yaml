@@ -1172,20 +1172,6 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
-  - from: templates/whitesource-periodics.yaml
-    render:
-      - to: ../prow/jobs/scans/whitesource-periodics.yaml
-        values:
-          <<: *cluster_default
-      - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
-        values:
-          <<: *cluster_default
-          repository: github.com/kyma-project/test-infra
-          path: watch-pods
-          presets:
-            build: build
-            pushRepository: kyma
-          buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
   - from: templates/kyma-azure-event-hubs-namespaces-cleanup.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-azure-event-hubs-namespaces-cleanup.yaml
