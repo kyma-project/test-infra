@@ -68,7 +68,7 @@ function utils::send_to_vm() {
     exit 1
   fi
   if [ -z "$2" ]; then
-    echo "Remote path is empty. Exiting..."
+    echo "Remote name is empty. Exiting..."
     exit 1
   fi
   if [ -z "$3" ]; then
@@ -104,7 +104,7 @@ function utils::compress_send_to_vm() {
     exit 1
   fi
   if [ -z "$2" ]; then
-    echo "Remote path is empty. Exiting..."
+    echo "Remote name is empty. Exiting..."
     exit 1
   fi
   if [ -z "$3" ]; then
@@ -120,9 +120,12 @@ function utils::compress_send_to_vm() {
   LOCAL_PATH=$3
   REMOTE_PATH=$4
 
-  local TMP_DIR=$(mktemp -d)
+  local TMP_DIR
+  TMP_DIR=$(mktemp -d)
+
   tar -czf "${TMP_DIR}/pack.tar.gz" -C "${LOCAL_PATH}" "."
   utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIR}/pack.tar.gz" "${HOME}/"
-  gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/kyma.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}" 
+  gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}" 
+  
   rm -rf "${TMP_DIR}"
 }
