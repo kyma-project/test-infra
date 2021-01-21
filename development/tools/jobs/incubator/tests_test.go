@@ -65,6 +65,16 @@ var tests = []struct {
 			jobsuite.Since(releases.Release117),
 		},
 	},
+	{
+		name:  "system-broker",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("tests-generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.Since(releases.Release117),
+		},
+	},
 }
 
 func TestTestJobs(t *testing.T) {
