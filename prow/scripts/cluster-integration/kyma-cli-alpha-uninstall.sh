@@ -81,69 +81,9 @@ gardener::provision_cluster
 
 log::info "Installing Kyma"
 
-# Parallel-install library installs cluster-essentials, istio, and xip-patch before kyma installation. That's why they should not exist on the InstallationCR.
-# Once we figure out a way to fix this, this custom CR can be deleted from this script.
-cat << EOF > "/tmp/kyma-parallel-install-installationCR.yaml"
-apiVersion: "installer.kyma-project.io/v1alpha1"
-kind: Installation
-metadata:
-  name: kyma-installation
-  namespace: default
-spec:
-  components:
-    - name: "testing"
-      namespace: "kyma-system"
-    - name: "knative-eventing"
-      namespace: "knative-eventing"
-    - name: "dex"
-      namespace: "kyma-system"
-    - name: "ory"
-      namespace: "kyma-system"
-    - name: "api-gateway"
-      namespace: "kyma-system"
-    - name: "rafter"
-      namespace: "kyma-system"
-    - name: "service-catalog"
-      namespace: "kyma-system"
-    - name: "service-catalog-addons"
-      namespace: "kyma-system"
-    - name: "helm-broker"
-      namespace: "kyma-system"
-    - name: "nats-streaming"
-      namespace: "natss"
-    - name: "core"
-      namespace: "kyma-system"
-    - name: "cluster-users"
-      namespace: "kyma-system"
-    - name: "logging"
-      namespace: "kyma-system"
-    - name: "permission-controller"
-      namespace: "kyma-system"
-    - name: "apiserver-proxy"
-      namespace: "kyma-system"
-    - name: "iam-kubeconfig-service"
-      namespace: "kyma-system"
-    - name: "serverless"
-      namespace: "kyma-system"
-    - name: "knative-provisioner-natss"
-      namespace: "knative-eventing"
-    - name: "event-sources"
-      namespace: "kyma-system"
-    - name: "application-connector"
-      namespace: "kyma-integration"
-    - name: "tracing"
-      namespace: "kyma-system"
-    - name: "monitoring"
-      namespace: "kyma-system"
-    - name: "kiali"
-      namespace: "kyma-system"
-    - name: "console"
-      namespace: "kyma-system"
-EOF
-
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha::deploy
 )
 
 sleep 1m
@@ -151,9 +91,7 @@ sleep 1m
 log::info "Uninstall Kyma"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-kyma alpha uninstall \
-    --ci \
-    --components "/tmp/kyma-parallel-install-installationCR.yaml"
+kyma alpha uninstall -v
 )
 
 sleep 1m
@@ -161,7 +99,7 @@ sleep 1m
 log::info "Install Kyma again"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-cli-alpha::deploy "${KYMA_PROJECT_DIR}/kyma/resources" "/tmp/kyma-parallel-install-installationCR.yaml"
+cli-alpha::deploy
 )
 
 log::info "Run Kyma tests"
