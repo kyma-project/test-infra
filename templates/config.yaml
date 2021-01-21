@@ -1172,6 +1172,11 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
+  - from: templates/whitesource-periodics.yaml
+    render:
+      - to: ../prow/jobs/scans/whitesource-periodics.yaml
+        values:
+          <<: *cluster_default
       - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
         values:
           <<: *cluster_default
