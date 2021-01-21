@@ -5,7 +5,7 @@ LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${LIBDIR}"/log.sh
 
-# utils::check_required_vars cehcks if all provided varables are initialized
+# utils::check_required_vars checks if all provided variables are initialized
 #
 # Arguments
 # $1 - list of variables

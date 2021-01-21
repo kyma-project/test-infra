@@ -31,8 +31,6 @@ requiredVars=(
 
 utils::check_required_vars "${requiredVars[@]}"
 
-export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
-
 echo "--------------------------------------------------------------------------------"
 echo "Removing Gardener clusters allocated by failed/terminated integration jobs...  "
 echo "--------------------------------------------------------------------------------"
