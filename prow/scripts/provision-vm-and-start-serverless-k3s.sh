@@ -14,6 +14,8 @@ readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 source "${SCRIPT_DIR}/lib/gcloud.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
@@ -106,12 +108,8 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Copying Kyma to the instance"
-
-for i in $(seq 1 5); do
-    [[ ${i} -gt 1 ]] && echo 'Retrying in 15 seconds..' && sleep 15;
-    gcloud compute scp --quiet --recurse --zone="${ZONE}" /home/prow/go/src/github.com/kyma-project/kyma "kyma-integration-test-${RANDOM_ID}":~/kyma && break;
-    [[ ${i} -ge 5 ]] && echo "Failed after $i attempts." && exit 1
-done;
+#shellcheck disable=SC2088
+utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
 log::info "Triggering the installation"
 gcloud compute ssh --quiet --zone="${ZONE}" --command="sudo bash" --ssh-flag="-o ServerAliveInterval=30" "kyma-integration-test-${RANDOM_ID}" < "${SCRIPT_DIR}/cluster-integration/serverless-integration-k3s.sh"

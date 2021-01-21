@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+LIBDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd)"
+
+# shellcheck source=prow/scripts/lib/log.sh
+source "${LIBDIR}"/log.sh
+
 utils::check_required_vars() {
     local discoverUnsetVar=false
     for var in "$@"; do
@@ -48,4 +53,115 @@ function utils::generate_self_signed_cert() {
 
   rm "${KEY_PATH}"
   rm "${CERT_PATH}"
+}
+
+# utils::receive_from_vm receives file(s) from Google Compute Platform over scp
+#
+# Arguments
+# $1 - compute zone
+# $2 - remote name
+# $3 - remote path
+# $4 - local path
+function utils::receive_from_vm() {
+  if [ -z "$1" ]; then
+    echo "Zone is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    echo "Remote name is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$3" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$4" ]; then
+    echo "Local path is empty. Exiting..."
+    exit 1
+  fi
+  local ZONE=$1
+  local REMOTE_NAME=$2
+  local REMOTE_PATH=$3
+  local LOCAL_PATH=$4
+
+  for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+  done;
+}
+
+# utils::send_to_vm sends file(s) to Google Compute Platform over scp
+#
+# Arguments
+# $1 - compute zone
+# $2 - remote name
+# $3 - local path
+# $4 - remote path
+function utils::send_to_vm() {
+  if [ -z "$1" ]; then
+    echo "Zone is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    echo "Remote name is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$3" ]; then
+    echo "Local path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$4" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  local ZONE=$1
+  local REMOTE_NAME=$2
+  local LOCAL_PATH=$3
+  local REMOTE_PATH=$4
+
+  for i in $(seq 1 5); do
+    [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
+    gcloud compute scp --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+  done;
+}
+
+# utils::compress_send_to_vm compresses and sends file(s) to Google Compute Platform over scp
+#
+# Arguments
+# $1 - compute zone
+# $2 - remote name
+# $3 - local path
+# $4 - remote path
+function utils::compress_send_to_vm() {
+  if [ -z "$1" ]; then
+    echo "Zone is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$2" ]; then
+    echo "Remote name is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$3" ]; then
+    echo "Local path is empty. Exiting..."
+    exit 1
+  fi
+  if [ -z "$4" ]; then
+    echo "Remote path is empty. Exiting..."
+    exit 1
+  fi
+  local ZONE=$1
+  local REMOTE_NAME=$2
+  local LOCAL_PATH=$3
+  local REMOTE_PATH=$4
+
+  TMP_DIRECTORY=$(mktemp -d)
+
+  tar -czf "${TMP_DIRECTORY}/pack.tar.gz" -C "${LOCAL_PATH}" "."
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "${REMOTE_NAME}" "${TMP_DIRECTORY}/pack.tar.gz" "~/"
+  gcloud compute ssh --quiet --zone="${ZONE}" --command="mkdir ${REMOTE_PATH} && tar -xf ~/pack.tar.gz -C ${REMOTE_PATH}" --ssh-flag="-o ServerAliveInterval=30" "${REMOTE_NAME}"
+  
+  rm -rf "${TMP_DIRECTORY}"
 }
