@@ -190,7 +190,7 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: pamela-whitesource-scan
+    - name: console-whitesource-scan
       annotations:
         testgrid-create-test-group: "false"
       labels:
@@ -230,7 +230,7 @@ periodics: # runs on schedule
               - name : PROJECTNAME
                 value: console
               - name: CUSTOM_PROJECTNAME
-                value: pamela
+                value: 
               - name: SCAN_LANGUAGE
                 value: javascript
             resources:

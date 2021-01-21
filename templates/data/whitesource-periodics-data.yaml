@@ -81,7 +81,6 @@ templates:
                   name: "console"
                   language: "javascript"
                   project: "kyma-project"
-                  custom_projectname: "pamela"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
