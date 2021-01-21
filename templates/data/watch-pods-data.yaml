@@ -1,0 +1,37 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
+        localSets:
+          default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+            run_if_changed: "^watch-pods/"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/watch-pods"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-master-test-infra-watch-pods"
+                  labels:
+                    preset-build-pr: "true"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "jobConfig_default"
+                    - "build_labels"
+              - jobConfig:
+                  name: "post-master-test-infra-watch-pods"
+                  labels:
+                    preset-build-master: "true"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_postsubmit"
+                    - "jobConfig_default"
+                    - "build_labels"

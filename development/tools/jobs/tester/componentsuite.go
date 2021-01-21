@@ -69,7 +69,6 @@ func (s ComponentSuite) preMasterTest(jobConfig config.JobConfig) func(t *testin
 		assert.True(t, job.Decorate)
 		assert.Equal(t, s.Optional, job.Optional, "Must be optional: %v", s.Optional)
 		assert.Equal(t, 10, job.MaxConcurrency)
-		assert.Equal(t, s.Repository, job.PathAlias)
 		AssertThatExecGolangBuildpack(t, job.JobBase, s.Image, s.workingDirectory())
 		AssertThatSpecifiesResourceRequests(t, job.JobBase)
 		if !s.isTestInfra() {
@@ -92,7 +91,6 @@ func (s ComponentSuite) postMasterTest(jobConfig config.JobConfig) func(t *testi
 		assert.Equal(t, []string{"^master$"}, job.Branches)
 		assert.Equal(t, 10, job.MaxConcurrency)
 		assert.True(t, job.Decorate)
-		assert.Equal(t, s.Repository, job.PathAlias)
 		if !s.isTestInfra() {
 			AssertThatHasExtraRefTestInfra(t, job.JobBase.UtilityConfig, "master")
 		}

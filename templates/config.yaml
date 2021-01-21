@@ -1238,15 +1238,6 @@ templates:
           noRelease: yes
           skipSlackReport: true
           until: "1.6"
-      - to: ../prow/jobs/test-infra/watch-pods/watch-pods.yaml
-        values:
-          <<: *cluster_default
-          repository: github.com/kyma-project/test-infra
-          path: watch-pods
-          presets:
-            build: build
-            pushRepository: kyma
-          buildpack: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
   - from: templates/whitesource-periodics.yaml
     render:
       - to: ../prow/jobs/scans/whitesource-periodics.yaml
