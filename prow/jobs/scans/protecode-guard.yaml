@@ -34,6 +34,8 @@ presubmits: # runs on PRs
                 value: "25m"
               - name: JOB_NAME_PATTERN
                 value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 200Mi
