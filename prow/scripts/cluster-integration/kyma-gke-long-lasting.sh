@@ -389,9 +389,9 @@ IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
 
 log::info "Gather Kubeaudit logs"
-wget https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz -O - | tar -xzO kubeaudit > ./kubeaudit && \
-    chmod +x ./kubeaudit && \
-    ./kubeaudit privileged privesc -p logrus  > "${ARTIFACTS}/kubeaudit.log"
+curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit
+chmod +x ./kubeaudit
+./kubeaudit privileged privesc -p logrus  > "${ARTIFACTS}/kubeaudit.log"
 
 log::info "Install stability-checker"
 date
