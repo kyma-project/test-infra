@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:10
+FROM alpine:3
 
 # Commit details
 
@@ -20,48 +20,45 @@ RUN mkdir -p /workspace
 ENV WORKSPACE=/workspace \
     TERM=xterm
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+RUN apk update && apk add \
+    build-base \
+    coreutils \
     ca-certificates \
     curl \
     git \
     jq \
-    dnsutils \
+    bind-tools \
     openssh-client \
-    python \
+    python3 \
     wget \
-    apt-transport-https \
-    gnupg2 \
+    gnupg \
     shellcheck \
-    software-properties-common \
-    lsb-release \
+    iptables \
+    ip6tables \
     gettext \
-    && apt-get clean
+    git \
+    tar \ 
+    dpkg \
+    libc6-compat
 
 # Docker-in-docker
+# TODO fix version
+# ENV DOCKER_VERSION=5:19.03.8~3-0~debian-buster
 
-RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg \
-    | apt-key add - && \
-    add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-    $(lsb_release -cs) stable"
-
-ENV DOCKER_VERSION=5:19.03.8~3-0~debian-buster
-
-RUN apt-get update && \
-    echo Y | apt-get install docker-ce=${DOCKER_VERSION} docker-ce-cli=${DOCKER_VERSION} containerd.io && \
+# RUN apk add docker=${DOCKER_VERSION} docker-cli=${DOCKER_VERSION} containerd && \
+RUN apk add docker docker-openrc containerd && \
     sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker
 
 # Move Docker's storage location
 
-RUN echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
+RUN mkdir -p /etc/default/ && \
+    echo 'DOCKER_OPTS="${DOCKER_OPTS} --data-root=/docker-graph"' | \
     tee --append /etc/default/docker && \
     mkdir /docker-graph
 
 #Use iptables instead of nftables
-
-RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
-    update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+RUN update-alternatives --install /sbin/iptables iptables /sbin/iptables-legacy 10 && \
+    update-alternatives --install /sbin/ip6tables ip6tables /sbin/ip6tables-legacy 10
 
 #################################################################
 ###################### GOLANG ###################################
@@ -76,7 +73,7 @@ ENV DEP_RELEASE_TAG v0.5.4
 ENV GOPATH /workspace/go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN wget -q https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \
+RUN wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
     tar xzf go${GO_VERSION}.linux-amd64.tar.gz && \
     rm go${GO_VERSION}.linux-amd64.tar.gz && \
     mv go /usr/local && \
@@ -92,8 +89,10 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 ###################### Node.js ##################################
 #################################################################
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
-RUN apt -y install nodejs
+# TODO proper version
+# RUN curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+# RUN apt -y install nodejs
+RUN apk add nodejs
 
 #################################################################
 ###################### Cluster Integration ###################### 
@@ -107,26 +106,16 @@ RUN wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar 
 	  chmod +x /usr/local/bin/helm &&\
       rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
-# Install Azure CLI
-# If you receive error related to recv-keys please make sure you have latest signing key
-# https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#signingKey
-# Install packages required by az
+# Build and install Azure CLI
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-transport-https \
-    lsb-release \
-    software-properties-common \
-    dirmngr \
-    gnupg2
+ENV AZURE_CLI_VERSION="2.2.0"
 
-ENV AZURE_CLI_VERSION="2.2.0-1~buster"
-
-RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | \
-    tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ "$(lsb_release -cs)" main" | \
-    tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-get update && \
-    apt-get install -y azure-cli=${AZURE_CLI_VERSION}
+RUN apk add \
+    py3-pip \
+    python3-dev \
+    libffi-dev \
+    openssl-dev && \
+    pip install azure-cli==2.2.0
 
 #################################################################
 ########################## Prow Tools ###########################
