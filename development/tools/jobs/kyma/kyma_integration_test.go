@@ -339,7 +339,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, vmsCleanerPeriodic)
 	assert.Equal(t, expName, vmsCleanerPeriodic.Name)
 	assert.True(t, vmsCleanerPeriodic.Decorate)
-	assert.Equal(t, "0 * * * *", vmsCleanerPeriodic.Cron)
+	assert.Equal(t, "15,45 * * * *", vmsCleanerPeriodic.Cron)
 	tester.AssertThatHasPresets(t, vmsCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
 	tester.AssertThatHasExtraRepoRef(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"})
 	assert.Equal(t, tester.ImageProwToolsLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
