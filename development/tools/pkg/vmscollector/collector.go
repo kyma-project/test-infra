@@ -126,6 +126,14 @@ func DefaultInstanceRemovalPredicate(instanceNameRegexp *regexp.Regexp, jobLabel
 		instanceAgeThreshold := time.Since(instanceCreationTime).Hours() - float64(ageInHours)
 		ageMatches = instanceAgeThreshold > 0
 
+		if nameMatches && jobLabelMatches {
+			// If instance is stopped we do not need to check its age
+			if instance.Status == "TERMINATED" {
+				log.Infof("VM Instance is stopped, removing. Name: \"%s\", zone: \"%s\", creationTimestamp: \"%s\"", instance.Name, formatZone(instance.Zone), instance.CreationTimestamp)
+				return true, nil
+			}
+		}
+
 		if nameMatches && jobLabelMatches && ageMatches {
 			//Filter out instances that are not RUNNING at this moment
 			if instance.Status != "RUNNING" {
