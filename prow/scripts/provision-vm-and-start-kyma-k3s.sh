@@ -22,9 +22,14 @@ fi
 
 cleanup() {
   # TODO - collect junit results
-  log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
-  gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
-  log::info "Instance removed"
+  log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
+  log::info "It will be removed automatically by cleaner job"
+
+  # do not fail the job regardless of the vm deletion result
+  set +e
+  gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+
+  log::info "End of cleanup"
 }
 
 function testCustomImage() {
