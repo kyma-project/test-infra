@@ -22,13 +22,9 @@ tag-image:
 	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):current
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-current
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-current
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-current
 ifdef DOCKER_POST_PR_TAG
 	@echo "___ Tagging with pr number ___"
 	docker tag $(IMG):$(DOCKER_TAG)-k8s1.16 $(IMG):k8s1.16-$(DOCKER_POST_PR_TAG)
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.15 $(IMG):k8s1.15-$(DOCKER_POST_PR_TAG)
-	docker tag $(IMG):$(DOCKER_TAG)-k8s1.14 $(IMG):k8s1.14-$(DOCKER_POST_PR_TAG)
 endif
 
 
@@ -36,8 +32,6 @@ endif
 .PHONY: build-image
 build-image:
 	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.16 --build-arg K8S_VERSION=1.16 --build-arg commit=$(DOCKER_TAG) .
-	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.15 --build-arg K8S_VERSION=1.15 --build-arg commit=$(DOCKER_TAG) .
-	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.14 --build-arg K8S_VERSION=1.14 --build-arg commit=$(DOCKER_TAG) .
 
 
 # push image with all tags
