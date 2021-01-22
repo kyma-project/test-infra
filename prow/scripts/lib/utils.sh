@@ -55,6 +55,51 @@ function utils::generate_self_signed_cert() {
   rm "${CERT_PATH}"
 }
 
+# utils::generate_letsenrypt_cert generates let's encrypt certificate for the given domain
+#
+# Expected exported variables
+# GOOGLE_APPLICATION_CREDENTIALS
+#
+# Arguments
+# $1 - domain name
+function utils::generate_letsenrypt_cert() {
+  if [ -z "$1" ]; then
+    echo "Domain name is empty. Exiting..."
+    exit 1
+  fi
+  local DOMAIN
+  DOMAIN=$1
+
+  log::info "Generate lets encrypt certificate"
+
+  mkdir -p ./letsencrypt
+  cp "${GOOGLE_APPLICATION_CREDENTIALS}" letsencrypt
+  docker run  --name certbot \
+      --rm  \
+      -v "$(pwd)/letsencrypt:/etc/letsencrypt"    \
+      -v "$(pwd)/certbot-log:/var/log/letsencrypt"    \
+      -v "/prow-tools:/prow-tools" \
+      -e "GOOGLE_APPLICATION_CREDENTIALS=/etc/letsencrypt/service-account.json" \
+      certbot/certbot \
+      certonly \
+      -m "kyma.bot@sap.com" \
+      --agree-tos \
+      --no-eff-email \
+      --server https://acme-v02.api.letsencrypt.org/directory \
+      --manual \
+      --manual-public-ip-logging-ok \
+      --preferred-challenges dns \
+      --manual-auth-hook /prow-tools/certbotauthenticator \
+      --manual-cleanup-hook "/prow-tools/certbotauthenticator -D" \
+      -d "*.${DOMAIN}"
+
+  TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
+  # export TLS_CERT
+  TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
+  # export TLS_KEY
+  echo "${TLS_CERT} ${TLS_KEY}"
+}
+
 # utils::receive_from_vm receives file(s) from Google Compute Platform over scp
 #
 # Arguments
