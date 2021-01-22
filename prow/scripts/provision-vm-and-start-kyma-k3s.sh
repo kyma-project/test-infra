@@ -24,6 +24,7 @@ cleanup() {
   # TODO - collect junit results
   log::info "Removing instance kyma-integration-test-${RANDOM_ID}"
   gcloud compute instances delete --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
+  log::info "Instance removed"
 }
 
 function testCustomImage() {
@@ -88,7 +89,7 @@ for ZONE in ${EU_ZONES}; do
   gcloud compute instances create "kyma-integration-test-${RANDOM_ID}" \
       --metadata enable-oslogin=TRUE \
       --image "${IMAGE}" \
-      --machine-type n1-standard-4 \
+      --machine-type n2-standard-4 \
       --zone "${ZONE}" \
       --boot-disk-size 30 "${LABELS[@]}" && \
   log::info "Created kyma-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
