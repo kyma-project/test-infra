@@ -22,7 +22,6 @@ set -e
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
-# TODO - replace with 1.19 when 1.20 starts working
 export GARDENER_CLUSTER_VERSION="1.19"
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
