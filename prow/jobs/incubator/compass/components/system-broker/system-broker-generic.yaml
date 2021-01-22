@@ -14,7 +14,7 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-incubator: "true"
-  run_if_changed: "^components/system-broker/"
+  run_if_changed: "^components/system-broker/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-components-system-broker
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -45,7 +45,7 @@ presubmits: # runs on PRs
     
     - name: pre-rel119-compass-components-system-broker
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
     
     - name: pre-rel118-compass-components-system-broker
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
     
     - name: pre-rel117-compass-components-system-broker
       cluster: untrusted-workload
-      optional: true
+      optional: false
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -80,9 +80,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -95,9 +92,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -109,9 +103,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
@@ -123,9 +114,6 @@ postsubmits:
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
-      reporter_config:
-        slack:
-          channel: 'kyma-prow-dev-null'
       <<: *job_template
       extra_refs:
         - <<: *test_infra_ref
