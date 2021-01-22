@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #Description: Gardener cleanup job. Deletes all orphaned clusters allocated by integration jobs that coud not be successfully deleted.
-# Deletes all clusters that are more than 4 hours old.
+# Deletes all clusters that are more than 24 hours old.
 #
 #
 #Expected vars:
@@ -55,8 +55,8 @@ do
     NOW_TS="$(date +%s)"
     HOURS_OLD=$(( (NOW_TS - CREATION_TS) / SECONDS_PER_HOUR ))
     
-    # clusters older than 4h get deleted
-    if [[ ${HOURS_OLD} -ge 4 ]]; then
+    # clusters older than 24h get deleted
+    if [[ ${HOURS_OLD} -ge 24 ]]; then
         log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
         # Export envvars for the script
         export GARDENER_CLUSTER_NAME=${CLUSTER}
