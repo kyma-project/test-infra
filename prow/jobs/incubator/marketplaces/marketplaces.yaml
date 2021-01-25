@@ -32,8 +32,8 @@ job_template: &job_template
       - "/home/prow/go/src/github.com/kyma-incubator/marketplaces"
       resources:
         requests:
-          memory: 18Gi
-          cpu: 7.5
+          memory: 1.5Gi
+          cpu: 0.8
     tolerations:
     - <<: *job_tolerations_template
 
