@@ -14,9 +14,11 @@ set -o errexit
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/gcloud.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcloud.sh"
+# shellcheck source=prow/scripts/lib/utils.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 
 function generateLetsEncryptCert() {
-    DOMAIN="${DOMAIN}" GOOGLE_APPLICATION_CREDENTIALS="${GOOGLE_APPLICATION_CREDENTIALS}" "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/cluster-integration/helpers/generate-and-export-letsencrypt-TLS-cert.sh
+    utils::generate_letsencrypt_cert "${DOMAIN}"
 
     log::info "Encrypting certs"
 
