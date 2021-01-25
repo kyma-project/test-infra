@@ -32,6 +32,7 @@ templates:
                   env:
                     JOB_NAME_PATTERN: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
                     JOBGUARD_TIMEOUT: "25m"
+                    KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
