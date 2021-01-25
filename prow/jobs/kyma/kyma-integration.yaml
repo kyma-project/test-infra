@@ -97,14 +97,14 @@ presets:
         preset-gke-ver1_18_12: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.18.12-gke.1201
+        value: 1.18.12-gke.1205
       - name: RELEASE_CHANNEL
         value: rapid
   - labels:
         preset-gke-ver1_17_14: "true"
     env:
       - name: CLUSTER_VERSION
-        value: 1.17.14-gke.1200
+        value: 1.17.14-gke.1600
       - name: RELEASE_CHANNEL
         value: regular
   - labels:
