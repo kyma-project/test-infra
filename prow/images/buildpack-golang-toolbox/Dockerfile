@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.5
 
 # Commit details
 
