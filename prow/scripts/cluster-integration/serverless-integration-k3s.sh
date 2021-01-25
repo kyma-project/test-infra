@@ -85,11 +85,6 @@ docker run -d \
   registry:2
 }
 
-install::prereq(){
-    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-    apt-get -y install jq
-}
-
 install::k3s() {
     echo "--> Installing k3s"
     curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE=777 INSTALL_K3S_VERSION="v1.19.5+k3s2" INSTALL_K3S_EXEC="server --disable traefik" sh -
@@ -112,8 +107,6 @@ host::create_docker_registry
 export REGISTRY_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' /registry.localhost)
 
 host::update_etc_hosts
-
-install::prereq
 
 date
 echo "--> Creating k8s cluster via k3s"
@@ -147,6 +140,7 @@ helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n defau
 job_status=""
 
 # helm does not wait for jobs to complete even with --wait
+# TODO but helm@v3.5 has a flag that enables that, get rid of this function once we use helm@v3.5
 getjobstatus(){
 while true; do
     echo "Test job not completed yet..."
