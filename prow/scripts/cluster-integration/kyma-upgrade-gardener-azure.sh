@@ -374,11 +374,11 @@ function testKyma() {
   test_args+=("-t")
   test_args+=("2h")
 
-  log::banner "Test Kyma " "${test_args[@]}"
-  "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}" &
-  # remove cluster-users test as it takes more than 1h to run
+  # remove cluster-users test as it takes more than 1h to run and is not an essential test
   kubectl delete -n kyma-system testdefinition/cluster-users --ignore-not-found
-  wait
+
+  log::banner "Test Kyma " "${test_args[@]}"
+  "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh "${test_args[@]}"
 
   testing::remove_addons_if_necessary
 }
