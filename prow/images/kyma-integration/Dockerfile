@@ -21,6 +21,8 @@ ENV WORKSPACE=/workspace \
     TERM=xterm
 
 RUN apk update && apk add \
+    bash \
+    sudo \
     build-base \
     coreutils \
     ca-certificates \
@@ -39,10 +41,12 @@ RUN apk update && apk add \
     git \
     tar \ 
     dpkg \
-    libc6-compat
+    libc6-compat \
+    openssh \
+    openssl
 
 # Docker-in-docker
-# TODO fix version
+# TODO semantic versioning
 # ENV DOCKER_VERSION=5:19.03.8~3-0~debian-buster
 
 # RUN apk add docker=${DOCKER_VERSION} docker-cli=${DOCKER_VERSION} containerd && \
