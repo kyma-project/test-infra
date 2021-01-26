@@ -17,6 +17,8 @@ templates:
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
             request_cpu: 80m
             request_memory: 200Mi
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
           jobConfig_labels:
             preset-kyma-guard-bot-github-token: "true"
             preset-sa-gke-kyma-integration: "true"
@@ -32,7 +34,6 @@ templates:
                   env:
                     JOB_NAME_PATTERN: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
                     JOBGUARD_TIMEOUT: "25m"
-                    KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
