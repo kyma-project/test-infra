@@ -271,6 +271,23 @@ presubmits:
       extra_refs:
          - <<: *test_infra_ref
            base_ref: master
+    - name: pre-master-kyma-gardener-production-azure-integration
+      cluster: untrusted-workload
+      <<: *gardener_azure_production_job_template
+      decoration_config:
+        timeout: 14400000000000 # 4h
+        grace_period: 600000000000 # 10min
+      optional: true
+      branches:
+        - ^master$
+      # following regexp won't start build if only Markdown files were changed
+      run_if_changed: "^(((resources)\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+      labels:
+        preset-build-pr: "true"
+        <<: *gardener_azure_job_labels_template
+      extra_refs:
+         - <<: *test_infra_ref
+           base_ref: master
     - name: pre-master-kyma-gardener-azure-fast-integration
       cluster: untrusted-workload
       decorate: true

@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "ppre-master-kyma-gardener-production-azure-integration"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 1212
