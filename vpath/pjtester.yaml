@@ -1,5 +1,5 @@
 pjNames:
-  - pjName: "ppre-master-kyma-gardener-production-azure-integration"
+  - pjName: "pre-master-kyma-gardener-production-azure-integration"
 prConfigs:
   kyma-project:
     kyma:
