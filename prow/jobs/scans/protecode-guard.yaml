@@ -73,6 +73,8 @@ presubmits: # runs on PRs
                 value: "25m"
               - name: JOB_NAME_PATTERN
                 value: "pre-console-.*"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 200Mi
@@ -110,6 +112,8 @@ presubmits: # runs on PRs
                 value: "25m"
               - name: JOB_NAME_PATTERN
                 value: ".*"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 200Mi
