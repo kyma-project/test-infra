@@ -175,8 +175,6 @@ gardener_azure_evaluation_job_template: &gardener_azure_evaluation_job_template
         value: "1"
       - name: EXECUTION_PROFILE
         value: "evaluation"
-      - name: CLEANUP_ONLY_SUCCEEDED
-        value: "true"
       resources:
         requests:
           memory: 1Gi
@@ -209,8 +207,6 @@ gardener_azure_production_job_template: &gardener_azure_production_job_template
         value: "1"
       - name: EXECUTION_PROFILE
         value: "production"
-      - name: CLEANUP_ONLY_SUCCEEDED
-        value: "true"
       resources:
         requests:
           memory: 1Gi
