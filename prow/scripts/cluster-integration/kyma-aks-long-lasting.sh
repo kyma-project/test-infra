@@ -333,7 +333,7 @@ EOF
 
 	log::info "Trigger installation"
 
-  kyma install \
+    kyma install \
 			--ci \
 			--source master \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
