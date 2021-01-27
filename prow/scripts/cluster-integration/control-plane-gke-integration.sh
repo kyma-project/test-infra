@@ -302,7 +302,7 @@ function applyControlPlaneOverrides() {
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "provisioner.tests.enabled=true" \
+      --data "provisioner.tests.e2e.enabled=true" \
       --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
       --label "component=kcp"
   fi
