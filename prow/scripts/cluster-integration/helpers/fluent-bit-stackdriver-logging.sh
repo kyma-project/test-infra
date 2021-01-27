@@ -63,7 +63,7 @@ data:
     - mountPath: /etc/gcp-sa-stackdriver/
       name: gcp-sa-stackdriver
 
-  fluent-bit.conf.extra: |
+  fluent-bit.config.extra: |
     [Output]
         # see stackdriver documentation: https://docs.fluentbit.io/manual/pipeline/outputs/stackdriver
         Name stackdriver
