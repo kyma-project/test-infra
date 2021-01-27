@@ -287,13 +287,14 @@ function applyControlPlaneOverrides() {
     --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
     --label "component=kcp"
 
-   #Create Provisioning overrides
+   #Create Provisioning/KEB overrides
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioning-enable-overrides" \
     --data "global.provisioning.enabled=true" \
     --data "global.metris.enabled=true" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \
     --data "kyma-environment-broker.e2e.enabled=false" \
+    --data "kyma-environment-broker.disableProcessOperationsInProgress=true" \
     --label "component=kcp"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
