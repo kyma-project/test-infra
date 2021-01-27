@@ -128,8 +128,7 @@ readonly REPO_NAME=$(echo "${REPO_NAME}" | tr '[:upper:]' '[:lower:]')
 export REPO_NAME
 
 readonly COMMON_NAME_PREFIX="gke-release"
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../../RELEASE_VERSION")
+readonly RELEASE_VERSION=$(cat "VERSION")
 log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
 TRIMMED_RELEASE_VERSION=${RELEASE_VERSION//./-}
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}-${TRIMMED_RELEASE_VERSION}" | tr "[:upper:]" "[:lower:]")

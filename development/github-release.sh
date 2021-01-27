@@ -10,7 +10,7 @@ if [ -z "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
    exit 1
 fi
 
-NEXT_RELEASE=$(cat "${DEVELOPMENT_DIR}/../prow/RELEASE_VERSION")
+NEXT_RELEASE=$(cat "VERSION")
 echo "Checking if ${NEXT_RELEASE} was already published on github..."
 RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/kyma-project/kyma/releases/tags/"${NEXT_RELEASE}")
 if [[ $RESPONSE != 404* ]]; then

@@ -86,7 +86,7 @@ if [[ -n ${PULL_NUMBER} ]]; then
     export KYMA_SOURCE
     # TODO maybe can be replaced with PULL_BASE_REF?
 elif [[ "${BUILD_TYPE}" == "release" ]]; then
-    readonly RELEASE_VERSION=$(cat "${TEST_INFRA_SOURCES_DIR}/prow/RELEASE_VERSION")
+    readonly RELEASE_VERSION=$(cat "VERSION")
     log::info "Reading release version from RELEASE_VERSION file, got: ${RELEASE_VERSION}"
     KYMA_SOURCE="${RELEASE_VERSION}"
     export KYMA_SOURCE
