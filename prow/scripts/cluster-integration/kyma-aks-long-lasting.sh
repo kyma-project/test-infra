@@ -301,21 +301,6 @@ data:
       redirectURI: ${DEX_CALLBACK_URL}
       orgs:
       - name: kyma-project
----
-# Disable knative-eventing stdout logging
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: container-azm-ms-agentconfig
-  namespace: kube-system
-data:
-  schema-version: v1
-  config-version: ver1
-  log-data-collection-settings: |-
-      [log_collection_settings]
-         [log_collection_settings.stdout]
-            enabled = true
-            exclude_namespaces = ["kube-system" , "knative-eventing"]
 EOF
 )
   echo "${componentOverrides}" > "${componentOverridesFile}"
@@ -341,6 +326,8 @@ EOF
   # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
   sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "8Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
+	log::info "Apply Azure disable knative-eventing stdout logging"
+	kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/azure-knative-eventing-logging.yaml"
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
