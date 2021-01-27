@@ -301,6 +301,21 @@ data:
       redirectURI: ${DEX_CALLBACK_URL}
       orgs:
       - name: kyma-project
+---
+# Disable knative-eventing stdout logging
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: container-azm-ms-agentconfig
+  namespace: kube-system
+data:
+  schema-version: v1
+  config-version: ver1
+  log-data-collection-settings: |-
+      [log_collection_settings]
+         [log_collection_settings.stdout]
+            enabled = true
+            exclude_namespaces = ["kube-system" , "knative-eventing"]
 EOF
 )
   echo "${componentOverrides}" > "${componentOverridesFile}"
