@@ -326,12 +326,14 @@ EOF
   # Update the memory override for prometheus-istio."${KYMA_RESOURCES_DIR}"
   sed -i 's/prometheus-istio.server.resources.limits.memory: "4Gi"/prometheus-istio.server.resources.limits.memory: "8Gi"/g' "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl
 
+	log::info "Apply Azure disable knative-eventing stdout logging"
+	kubectl apply -f "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/azure-knative-eventing-logging.yaml"
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
 	log::info "Trigger installation"
 
-  kyma install \
+    kyma install \
 			--ci \
 			--source master \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
