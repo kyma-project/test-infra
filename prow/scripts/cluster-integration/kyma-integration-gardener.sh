@@ -111,10 +111,10 @@ gardener::set_machine_type
 
 kyma::install_cli
 
+gardener::provision_cluster
+
 # currently only Azure generates overrides, but this may chaneg in the future
 gardener::generate_overrides
-
-gardener::provision_cluster
 
 # uses previously set KYMA_SOURCE
 gardener::install_kyma
