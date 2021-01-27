@@ -397,21 +397,6 @@ upgradeKyma() {
     # fi
 }
 
-remove_addons_if_necessary() {
-  tdWithAddon=$(kubectl get td --all-namespaces -l testing.kyma-project.io/require-testing-addon=true -o custom-columns=NAME:.metadata.name --no-headers=true)
-
-  if [ -z "$tdWithAddon" ]
-  then
-      echo "- Removing ClusterAddonsConfiguration which provides the testing addons"
-      removeTestingAddons
-      if [[ $? -eq 1 ]]; then
-        exit 1
-      fi
-  else
-      echo "- Skipping removing ClusterAddonsConfiguration"
-  fi
-}
-
 # testKyma executes the kyma-testing.sh. labelqueries can be passed as arguments and will be passed to the kyma cli
 function testKyma() {
   testing::inject_addons_if_necessary
@@ -497,8 +482,6 @@ createTestResources
 export ENABLE_TEST_LOG_COLLECTOR=true # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 
 applyScenario
-
-remove_addons_if_necessary
 
 # testKyma
 
