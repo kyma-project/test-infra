@@ -61,7 +61,9 @@ gardener::set_machine_type() {
 
 gardener::generate_overrides() {
     # currently only Azure generates anything in this function
-    return
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
+        --data "console-backend-service.tests.enabled=false" \
+        --data "cluster-users.tests.enabled=false"
 }
 
 gardener::provision_cluster() {
