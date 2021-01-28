@@ -24,7 +24,7 @@ function checkFile {
 }
 
 function usage {
-    echo "Incorrect input. Available flags: --name, --namespace, --data, --label, --file"
+    echo "Incorrect input. Available flags: --name, --namespace, --label, --file"
     exit 1
 }
 
