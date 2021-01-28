@@ -62,10 +62,11 @@ gardener::set_machine_type() {
 gardener::generate_overrides() {
     kubectl create namespace "kyma-installer"
     TESTS_OVERRIDE_FILE=$(mktemp)
+    
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "application-resource-tests-overrides" \
         --data "console-backend-service.tests.enabled=false" \
         --data "cluster-users.tests.enabled=false" \
-        --file "$TESTS_OVERRIDE_FILE"
+        --file "${TESTS_OVERRIDE_FILE}"
 }
 
 gardener::provision_cluster() {
