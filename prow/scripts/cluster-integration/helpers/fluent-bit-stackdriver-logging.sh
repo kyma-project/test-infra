@@ -67,7 +67,7 @@ data:
     [Output]
         # see stackdriver documentation: https://docs.fluentbit.io/manual/pipeline/outputs/stackdriver
         Name stackdriver
-        Match kube.*
+        Match *
         resource global
         google_service_credentials /etc/gcp-sa-stackdriver/gcp-sa-stackdriver.json
 EOF
