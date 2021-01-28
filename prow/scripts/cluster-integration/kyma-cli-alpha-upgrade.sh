@@ -98,8 +98,8 @@ kyma test run \
     --watch \
     --non-interactive \
     istio-kyma-validate application-connector application-operator application-registry \
-    connection-token-handler connector-service api-gateway apiserver-proxy cluster-users \
-    console-backend core-test-external-solution dex-connection dex-integration kiali \
+    connection-token-handler connector-service api-gateway console-backend \
+    core-test-external-solution dex-connection dex-integration kiali \
     logging monitoring rafter serverless serverless-long service-catalog
 )
 
@@ -119,8 +119,8 @@ kyma test run \
     --watch \
     --non-interactive \
     istio-kyma-validate application-connector application-operator application-registry \
-    connection-token-handler connector-service api-gateway apiserver-proxy cluster-users \
-    console-backend core-test-external-solution dex-connection dex-integration kiali \
+    connection-token-handler connector-service api-gateway console-backend \
+    core-test-external-solution dex-connection dex-integration kiali \
     logging monitoring rafter serverless serverless-long service-catalog
 )
 
