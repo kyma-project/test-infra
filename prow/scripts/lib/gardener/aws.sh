@@ -90,7 +90,6 @@ gardener::install_kyma() {
     kyma install \
         --ci \
         --source "${KYMA_SOURCE}" \
-        -o "$TESTS_OVERRIDE_FILE" \
         --timeout 90m
     )
 }
