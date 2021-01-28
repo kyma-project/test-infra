@@ -13,6 +13,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
+# shellcheck source=prow/scripts/lib/testing-helpers.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 
 #!Put cleanup code in this function! Function is executed at exit from the script and on interuption.
 gardener::cleanup() {
@@ -61,21 +63,9 @@ gardener::set_machine_type() {
 
 gardener::generate_overrides() {
     kubectl create namespace "kyma-installer"
-    TESTS_OVERRIDE_FILE=$(mktemp)
-    
-    cat << EOF > "${TESTS_OVERRIDE_FILE}"
-apiVersion: v1
-data:
-  cluster-users.tests.enabled: "false"
-  console-backend-service.tests.enabled: "false"
-kind: ConfigMap
-metadata:
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-  name: application-resource-tests-overrides
-  namespace: kyma-installer
-EOF
+    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
+        --data "console-backend-service.tests.enabled=false" \
+        --data "cluster-users.tests.enabled=false"
 }
 
 gardener::provision_cluster() {
@@ -119,6 +109,9 @@ gardener::test_fast_integration_kyma() {
 
 gardener::test_kyma() {
     log::info "Running Kyma tests"
+
+    cts::check_crd_exist
+    cts::delete
 
     readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
     readonly CONCURRENCY=5
