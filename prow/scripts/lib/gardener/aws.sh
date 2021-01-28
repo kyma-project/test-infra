@@ -62,10 +62,11 @@ gardener::set_machine_type() {
 }
 
 gardener::generate_overrides() {
-    kubectl create namespace "kyma-installer"
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
-        --data "console-backend-service.tests.enabled=false" \
-        --data "cluster-users.tests.enabled=false"
+    return
+    # kubectl create namespace "kyma-installer"
+    # "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "application-resource-tests-overrides" \
+    #     --data "console-backend-service.tests.enabled=false" \
+    #     --data "cluster-users.tests.enabled=false"
 }
 
 gardener::provision_cluster() {
@@ -109,15 +110,14 @@ gardener::test_fast_integration_kyma() {
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 
-    cts::check_crd_exist
-    cts::delete
-
     readonly SUITE_NAME="testsuite-all-$(date '+%Y-%m-%d-%H-%M')"
     readonly CONCURRENCY=5
     set +e
     (
     set -x
-    kyma test run \
+    kyma test run monitoring kiali rafter application-registry api-gateway istio-kyma-validate service-catalog \
+        serverless-long connection-token-handler apiserver-proxy serverless application-operator connector-service console-web \
+        logging dex-integration dex-connection core-test-external-solution application-connector \
         --name "${SUITE_NAME}" \
         --concurrency "${CONCURRENCY}" \
         --max-retries 1 \
