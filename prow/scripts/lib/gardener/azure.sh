@@ -42,11 +42,12 @@ gardener::cleanup() {
     if [ -n "${CLEANUP_CLUSTER}" ]; then
         if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
             log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-            utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            log::info "please deprovision manually"
+            # utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
 
             log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
             # Delete the Azure Event Hubs namespace which was created
-            az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+            # az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
         fi
     fi
 
@@ -327,7 +328,9 @@ gardener::test_kyma() {
     set +e
     (
     set -x
-    kyma test run \
+    kyma test run monitoring kiali rafter application-registry api-gateway istio-kyma-validate service-catalog \
+        serverless-long connection-token-handler apiserver-proxy serverless application-operator connector-service console-web \
+        logging dex-integration dex-connection core-test-external-solution application-connector \
         --name "${SUITE_NAME}" \
         --concurrency "${CONCURRENCY}" \
         --max-retries 1 \
