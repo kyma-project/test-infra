@@ -347,7 +347,7 @@ log::info "Install Compass"
 installCompass
 
 log::info "Test Kyma with Compass"
-"${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
+CONCURRENCY=1 "${TEST_INFRA_SOURCES_DIR}"/prow/scripts/kyma-testing.sh
 
 log::success "Success"
 
