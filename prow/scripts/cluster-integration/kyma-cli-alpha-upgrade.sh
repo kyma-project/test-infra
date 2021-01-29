@@ -99,8 +99,8 @@ kyma test run \
     --non-interactive \
     istio-kyma-validate application-connector application-operator application-registry \
     connection-token-handler connector-service api-gateway console-backend \
-    core-test-external-solution dex-connection dex-integration kiali \
-    logging monitoring rafter serverless serverless-long service-catalog
+    dex-connection dex-integration kiali logging monitoring \
+    rafter serverless serverless-long service-catalog
 )
 
 log::info "Upgrade to master & run tests"
@@ -120,8 +120,8 @@ kyma test run \
     --non-interactive \
     istio-kyma-validate application-connector application-operator application-registry \
     connection-token-handler connector-service api-gateway console-backend \
-    core-test-external-solution dex-connection dex-integration kiali \
-    logging monitoring rafter serverless serverless-long service-catalog
+    dex-connection dex-integration kiali logging monitoring \
+    rafter serverless serverless-long service-catalog
 )
 
 # collect logs from failed tests before deprovisioning
