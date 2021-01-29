@@ -5,7 +5,9 @@ KYMA_TEST_TIMEOUT=${KYMA_TEST_TIMEOUT:=1h}
 
 readonly TMP_DIR=$(mktemp -d)
 readonly JUNIT_REPORT_PATH="${ARTIFACTS:-${TMP_DIR}}/junit_Kyma_octopus-test-suite-$(date +%s).xml"
-readonly CONCURRENCY=5
+if [ -z "$CONCURRENCY" ]; then
+  CONCURRENCY=5
+fi
 # Should be fixed name, it is displayed in TestGrid
 SUITE_NAME="testsuite-all"
 
