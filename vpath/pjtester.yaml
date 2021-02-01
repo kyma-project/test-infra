@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: pre-master-kyma-integration-k3s
-prConfigs:
-  kyma-incubator:
-    local-kyma:
-      prNumber: 64
-
