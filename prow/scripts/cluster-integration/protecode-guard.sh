@@ -25,7 +25,7 @@ getScanResult(){
     fi
 }
 
-if [[ "${BUILD_TYPE}" == "pr" ]]; then
+if [ -n "${PULL_NUMBER}" ]; then
   log::info "Execute Job Guard"
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
@@ -35,7 +35,7 @@ PR_NAME="PR-${PULL_NUMBER}"
 echo "Protecode scan result for ${PR_NAME}:"
 
 counter=1
-limit=10
+limit=15
 while [ $counter -le $limit ]
 do
     log::banner "Attempt ${counter} of ${limit}"
