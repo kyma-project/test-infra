@@ -60,14 +60,14 @@ function utils::generate_self_signed_cert() {
   rm "${CERT_PATH}"
 }
 
-# utils::generate_letsenrypt_cert generates let's encrypt certificate for the given domain
+# utils::generate_letsencrypt_cert generates let's encrypt certificate for the given domain
 #
 # Expected exported variables
 # GOOGLE_APPLICATION_CREDENTIALS
 #
 # Arguments
 # $1 - domain name
-function utils::generate_letsenrypt_cert() {
+function utils::generate_letsencrypt_cert() {
   if [ -z "$1" ]; then
     echo "Domain name is empty. Exiting..."
     exit 1
