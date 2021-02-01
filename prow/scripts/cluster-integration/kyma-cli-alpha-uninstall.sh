@@ -125,7 +125,7 @@ kyma::run_test_log_collector "kyma-cli-alpha-uninstall-gke"
 if ! kyma::test_summary; then
     log::error "Tests have failed"
     set -e
-    return 1
+    exit 1
 fi
 set -e
 
