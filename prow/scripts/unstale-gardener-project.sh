@@ -12,6 +12,8 @@ KYMA_PROJECT_DIR="/home/prow/go/src/github.com/kyma-project"
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/log.sh"
 #shellcheck source=prow/scripts/lib/kyma.sh
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/kyma.sh"
+#shellcheck source=prow/scripts/lib/utils.sh
+source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/utils.sh"
 
 log::info "Install Kyma CLI"
 kyma::install_cli
@@ -27,8 +29,6 @@ kyma provision gardener gcp \
 
 log::info "Cluster provisioned. Now deleting it..."
 
-readonly NAMESPACE="garden-${GARDENER_PROJECT_NAME}"
-kubectl --kubeconfig "${GARDENER_KUBECONFIG}" -n "${NAMESPACE}" annotate shoot "${CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
-kubectl --kubeconfig "${GARDENER_KUBECONFIG}" -n "${NAMESPACE}" delete shoot "${CLUSTER_NAME}" --wait=false
+utils::deprovision_gardener_cluster "${GARDENER_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KUBECONFIG}"
 
 log::success "Done! See you next time!"

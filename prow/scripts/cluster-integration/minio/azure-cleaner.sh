@@ -6,7 +6,7 @@ set -o errexit
 source "prow/scripts/lib/azure.sh"
 #shellcheck source=prow/scripts/lib/log.sh
 source "prow/scripts/lib/log.sh"
-# shellcheck disable=SC1090
+#shellcheck source=prow/scripts/lib/utils.sh
 source "prow/scripts/lib/utils.sh"
 
 log::info "Validating environment"

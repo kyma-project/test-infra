@@ -29,14 +29,9 @@ function cleanup() {
 		TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS
 		CLOUDSDK_COMPUTE_REGION
 		CLOUDSDK_DNS_ZONE_NAME
+		GCLOUD_NETWORK_NAME
+		GCLOUD_SUBNET_NAME
 	)
-
-	if [[ -z "${PERFORMACE_CLUSTER_SETUP}" ]]; then
-		requiredVars+=(
-			GCLOUD_NETWORK_NAME
-			GCLOUD_SUBNET_NAME
-		)
-	fi
 
 	utils::check_required_vars "${requiredVars[@]}"
 
@@ -96,77 +91,75 @@ function removeCluster() {
 }
 
 function removeResources() {
-	if [[ "${PERFORMACE_CLUSTER_SETUP}" == "" ]]; then
-		set +e
+	set +e
 
-		log::info "Delete Cluster DNS Record"
-		GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_NAME}"
-		# Get cluster IP address from DNS record.
-		GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format "value(rrdatas[0])")
+	log::info "Delete Cluster DNS Record"
+	GATEWAY_DNS_FULL_NAME="*.${CLUSTER_NAME}.${DNS_NAME}"
+	# Get cluster IP address from DNS record.
+	GATEWAY_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${GATEWAY_DNS_FULL_NAME}" --format "value(rrdatas[0])")
 
-		# Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
-		if [[ -n ${GATEWAY_IP_ADDRESS} ]]; then
-			log::info "running gcloud::delete_dns_record ${GATEWAY_IP_ADDRESS} ${GATEWAY_DNS_FULL_NAME}"
+	# Check if cluster IP was retrieved from DNS record. Remove cluster DNS record if IP address was retrieved.
+	if [[ -n ${GATEWAY_IP_ADDRESS} ]]; then
+		log::info "running gcloud::delete_dns_record ${GATEWAY_IP_ADDRESS} ${GATEWAY_DNS_FULL_NAME}"
 
-			gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+		gcloud::delete_dns_record "${GATEWAY_IP_ADDRESS}" "${GATEWAY_DNS_FULL_NAME}"
+		TMP_STATUS=$?
+		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+	else
+		echo "DNS entry for ${GATEWAY_DNS_FULL_NAME} not found"
+	fi
+
+	log::info "Delete Apiserver DNS Record"
+	APISERVER_DNS_FULL_NAME="apiserver.${CLUSTER_NAME}.${DNS_NAME}"
+	# Get apiserver IP address from DNS record.
+	APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
+
+	# Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
+	if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
+		log::info "running gcloud::delete_dns_record ${APISERVER_IP_ADDRESS} ${APISERVER_DNS_FULL_NAME}"
+
+		gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
+		TMP_STATUS=$?
+		if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
+	else
+		echo "DNS entry for ${APISERVER_DNS_FULL_NAME} not found"
+	fi
+
+	log::info "Release Cluster IP Address"
+	GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
+
+	# Check if cluster IP address reservation exist.
+	if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --format "value(ADDRESS)") ]]; then
+		# Get usage status of IP address reservation.
+		GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+		# Check if it's still in use. It shouldn't as we removed DNS records earlier.
+		if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
+			SECONDS=0
+			END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
+			echo "Waiting 600 seconds to unassigne cluster IP address."
+			while [ ${SECONDS} -lt ${END_TIME} ];do
+				sleep 10
+				echo "Checking if cluster IP is unassigned."
+				GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
+				if [[ ${GATEWAY_IP_STATUS} != "IN_USE" ]]; then
+					echo "Cluster IP address sucessfully unassigned."
+					break
+				fi
+			done
+		fi
+		if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
+			echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
+			exit 1
+		# Remove IP address reservation.
+		else
+			log::info "gcloud::delete_ip_address ${GATEWAY_IP_ADDRESS_NAME}"
+
+			gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
 			TMP_STATUS=$?
 			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-		else
-			echo "DNS entry for ${GATEWAY_DNS_FULL_NAME} not found"
 		fi
-
-		log::info "Delete Apiserver DNS Record"
-		APISERVER_DNS_FULL_NAME="apiserver.${CLUSTER_NAME}.${DNS_NAME}"
-		# Get apiserver IP address from DNS record.
-		APISERVER_IP_ADDRESS=$(gcloud dns record-sets list --zone "${CLOUDSDK_DNS_ZONE_NAME}" --name "${APISERVER_DNS_FULL_NAME}" --format="value(rrdatas[0])")
-
-		# Check if apiserver IP was retrieved from DNS record. Remove apiserver DNS record if IP address was retrieved.
-		if [[ -n ${APISERVER_IP_ADDRESS} ]]; then
-			log::info "running gcloud::delete_dns_record ${APISERVER_IP_ADDRESS} ${APISERVER_DNS_FULL_NAME}"
-
-			gcloud::delete_dns_record "${APISERVER_IP_ADDRESS}" "${APISERVER_DNS_FULL_NAME}"
-			TMP_STATUS=$?
-			if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-		else
-			echo "DNS entry for ${APISERVER_DNS_FULL_NAME} not found"
-		fi
-
-		log::info "Release Cluster IP Address"
-		GATEWAY_IP_ADDRESS_NAME=${CLUSTER_NAME}
-
-		# Check if cluster IP address reservation exist.
-		if [[ -n $(gcloud compute addresses list --filter="name=${CLUSTER_NAME}" --format "value(ADDRESS)") ]]; then
-			# Get usage status of IP address reservation.
-			GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
-			# Check if it's still in use. It shouldn't as we removed DNS records earlier.
-			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
-				SECONDS=0
-				END_TIME=$((SECONDS+600)) #600 seconds == 10 minutes
-				echo "Waiting 600 seconds to unassigne cluster IP address."
-				while [ ${SECONDS} -lt ${END_TIME} ];do
-					sleep 10
-					echo "Checking if cluster IP is unassigned."
-					GATEWAY_IP_STATUS=$(gcloud compute addresses describe "${CLUSTER_NAME}" --region "${CLOUDSDK_COMPUTE_REGION}" --format "value(status)")
-					if [[ ${GATEWAY_IP_STATUS} != "IN_USE" ]]; then
-						echo "Cluster IP address sucessfully unassigned."
-						break
-					fi
-				done
-			fi
-			if [[ ${GATEWAY_IP_STATUS} == "IN_USE" ]]; then
-				echo "${GATEWAY_IP_ADDRESS_NAME} IP address has still status IN_USE. It should be unassigned earlier. Exiting"
-				exit 1
-			# Remove IP address reservation.
-			else
-				log::info "gcloud::delete_ip_address ${GATEWAY_IP_ADDRESS_NAME}"
-
-				gcloud::delete_ip_address "${GATEWAY_IP_ADDRESS_NAME}"
-				TMP_STATUS=$?
-				if [[ ${TMP_STATUS} -ne 0 ]]; then EXIT_STATUS=${TMP_STATUS}; fi
-			fi
-		else
-			echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
-		fi
+	else
+		echo "${GATEWAY_IP_ADDRESS_NAME} IP address not found"
 	fi
 
 	MSG=""

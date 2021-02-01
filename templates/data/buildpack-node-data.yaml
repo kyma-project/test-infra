@@ -18,6 +18,9 @@ templates:
                   name: "pre-kyma-project-pamela"
                   optional: "false"
                   always_run: "true"
+                  branches:
+                    - ^master$
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

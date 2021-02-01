@@ -31,6 +31,10 @@ job_template: &job_template
             value: "europe-west4-a"
           - name: CLOUDSDK_COMPUTE_REGION
             value: "europe-west4"
+          - name: PROVISION_REGIONAL_CLUSTER
+            value: "true"
+          - name: NODES_PER_ZONE
+            value: "1"
 
 job_labels_template: &job_labels_template
   preset-dind-enabled: "true"

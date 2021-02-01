@@ -40,16 +40,14 @@ gardener::cleanup() {
     kubectl top pods --all-namespaces
 
     if [ -n "${CLEANUP_CLUSTER}" ]; then
-        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-        # Export envvars for the script
-        export GARDENER_CLUSTER_NAME=${CLUSTER_NAME}
-        export GARDENER_PROJECT_NAME=${GARDENER_KYMA_PROW_PROJECT_NAME}
-        export GARDENER_CREDENTIALS=${GARDENER_KYMA_PROW_KUBECONFIG}
-        "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}"/deprovision-gardener-cluster.sh
+        if  [ -z "${CLEANUP_ONLY_SUCCEEDED}" ] || [[ -n "${CLEANUP_ONLY_SUCCEEDED}" && ${EXIT_STATUS} -eq 0 ]]; then
+            log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+            utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER_NAME}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
 
-        log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
-        # Delete the Azure Event Hubs namespace which was created
-        az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+            log::info "Deleting Azure EventHubs Namespace: \"${EVENTHUB_NAMESPACE_NAME}\""
+            # Delete the Azure Event Hubs namespace which was created
+            az eventhubs namespace delete -n "${EVENTHUB_NAMESPACE_NAME}" -g "${RS_GROUP}"
+        fi
     fi
 
     MSG=""
@@ -157,6 +155,7 @@ gardener::install_kyma() {
             -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
             -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
             -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile evaluation \
             --verbose
@@ -167,6 +166,7 @@ gardener::install_kyma() {
             -c "${INSTALLATION_RESOURCES_DIR}"/installer-cr-azure-eventhubs.yaml.tpl \
             -o "${INSTALLATION_RESOURCES_DIR}"/installer-config-azure-eventhubs.yaml.tpl \
             -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
+            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
             --timeout 60m \
             --profile production \
             --verbose

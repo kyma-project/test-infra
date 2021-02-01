@@ -23,7 +23,7 @@ base_image_k15: &base_image_k15
 
 # prow-tools image
 prow_tools_image: &prow_tools_image
-  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20200608-2db047ac
+  image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41
 
 # Kubectl 1.16 and CLUSTER_VERSION=1.16
 base_image_k16: &base_image_k16
@@ -770,7 +770,7 @@ periodics:
               cpu: 50m
   - name: orphaned-vms-cleaner
     cluster: {{if $.Values.cluster.periodic}}{{ $.Values.cluster.periodic }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
-    cron: "0 * * * *" # "At minute 0 past every hour"
+    cron: "15,45 * * * *" # "At 15 and 45 past every hour"
     annotations:
       testgrid-create-test-group: "false"
     labels:

@@ -193,23 +193,33 @@ function applyKymaOverrides() {
     --data "pushgateway.enabled=true" \
     --label "component=monitoring"
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "istio-overrides" \
-    --data "gateways.istio-ingressgateway.loadBalancerIP=${GATEWAY_IP_ADDRESS}" \
-    --label "component=istio"
+  cat << EOF > "$PWD/kyma_istio_operator"
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        k8s:
+          service:
+            loadBalancerIP: ${GATEWAY_IP_ADDRESS}
+            type: LoadBalancer
+EOF
 
-  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "api-gateway-overrides" \
-    --data "tests.env.gatewayName=compass-istio-gateway" \
-    --data "tests.env.gatewayNamespace=compass-system" \
-    --label "component=api-gateway"
+  "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map-file.sh" --name "istio-overrides" \
+    --label "component=istio" \
+    --file "$PWD/kyma_istio_operator"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "dex-overrides" \
-    --data "global.istio.gateway.name=compass-istio-gateway" \
-    --data "global.istio.gateway.namespace=compass-system" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
     --label "component=dex"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "ory-overrides" \
-    --data "global.istio.gateway.name=compass-istio-gateway" \
-    --data "global.istio.gateway.namespace=compass-system" \
+    --data "global.istio.gateway.name=kyma-gateway" \
+    --data "global.istio.gateway.namespace=kyma-system" \
     --label "component=ory"
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --name "tracing-overrides" \
@@ -277,13 +287,14 @@ function applyControlPlaneOverrides() {
     --data "provisioner.gardener.project=$GARDENER_PROJECT_NAME" \
     --label "component=kcp"
 
-   #Create Provisioning overrides
+   #Create Provisioning/KEB overrides
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioning-enable-overrides" \
     --data "global.provisioning.enabled=true" \
     --data "global.metris.enabled=true" \
     --data "global.database.embedded.enabled=true" \
     --data "global.kyma_environment_broker.enabled=true" \
     --data "kyma-environment-broker.e2e.enabled=false" \
+    --data "kyma-environment-broker.disableProcessOperationsInProgress=true" \
     --label "component=kcp"
 
   if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
@@ -292,7 +303,7 @@ function applyControlPlaneOverrides() {
 
     # Create Config map for Provisioner Tests
     "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "provisioner.tests.enabled=true" \
+      --data "provisioner.tests.e2e.enabled=true" \
       --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
       --label "component=kcp"
   fi

@@ -38,12 +38,12 @@
       {{- else}}{{ fail ".JobConfig.cluster is not defined"}}{{end}}
       {{- if not .JobConfig.type_periodic}}
       max_concurrency: {{if .JobConfig.max_concurrency}}{{.JobConfig.max_concurrency}}{{else}}{{fail ".JobConfig.max_concurrency is not defined"}}{{end}}
-      {{- end}}
       {{- if .JobConfig.branches}}
       branches:
           {{- range .JobConfig.branches}}
         - {{ . }}
           {{- end}}
+      {{- end}}
       {{- end}}
       {{- if .JobConfig.extra_refs}}
       extra_refs:
@@ -60,6 +60,9 @@
             {{- if .JobConfig.imagePullPolicy }}
             imagePullPolicy: {{ .JobConfig.imagePullPolicy }}
             {{- end }}
+            {{- if .JobConfig.automountServiceAccountToken}}
+            automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
+            {{- end}}
             {{- if .JobConfig.privileged}}
             securityContext:
               privileged: {{.JobConfig.privileged}}

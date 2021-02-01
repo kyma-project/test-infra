@@ -1,0 +1,77 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/scans/protecode-guard.yaml
+        localSets:
+          jobConfig_default:
+            privileged: "false"
+            branches:
+              - ^master$
+              - ^main$
+            automountServiceAccountToken: true
+            optional: true
+            always_run: false
+            command: "bash"
+            args:
+              - "-c"
+              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
+            request_cpu: 80m
+            request_memory: 200Mi
+          jobConfig_labels:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-gke-kyma-integration: "true"
+              preset-gc-compute-envs: "true"
+              preset-gc-project-env: "true"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pre-master-kyma-protecode-guard
+                  run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    JOB_NAME_PATTERN: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
+                    JOBGUARD_TIMEOUT: "25m"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_labels"
+          - repoName: "github.com/kyma-project/console"
+            jobs:
+              - jobConfig:
+                  name: pre-master-console-protecode-guard
+                  run_if_changed: "^((components\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    JOB_NAME_PATTERN: "pre-console-.*"
+                    JOBGUARD_TIMEOUT: "25m"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_labels"
+          - repoName: "github.com/kyma-project/pamela"
+            jobs:
+              - jobConfig:
+                  name: pre-master-pamela-protecode-guard
+                  always_run: "true"
+                  env:
+                    JOB_NAME_PATTERN: ".*"
+                    JOBGUARD_TIMEOUT: "25m"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_labels"
