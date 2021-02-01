@@ -17,14 +17,12 @@ templates:
               - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/protecode-guard.sh"
             request_cpu: 80m
             request_memory: 200Mi
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
           jobConfig_labels:
-            preset-kyma-guard-bot-github-token: "true"
-            preset-sa-gke-kyma-integration: "true"
-            preset-gc-compute-envs: "true"
-            preset-gc-project-env: "true"
-            preset-build-pr: "true"
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-gke-kyma-integration: "true"
+              preset-gc-compute-envs: "true"
+              preset-gc-project-env: "true"
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
