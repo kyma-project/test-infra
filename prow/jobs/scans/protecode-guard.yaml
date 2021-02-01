@@ -4,6 +4,11 @@
 presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-master-kyma-protecode-guard
+      labels:
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -34,8 +39,6 @@ presubmits: # runs on PRs
                 value: "25m"
               - name: JOB_NAME_PATTERN
                 value: "(pre-master-kyma-components-.*)|(pre-master-kyma-tests-.*)|(pre-kyma-components-.*)|(pre-kyma-tests-.*)"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 200Mi
@@ -43,6 +46,11 @@ presubmits: # runs on PRs
   
   kyma-project/console:
     - name: pre-master-console-protecode-guard
+      labels:
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((components\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -73,8 +81,6 @@ presubmits: # runs on PRs
                 value: "25m"
               - name: JOB_NAME_PATTERN
                 value: "pre-console-.*"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 200Mi
@@ -82,6 +88,11 @@ presubmits: # runs on PRs
   
   kyma-project/pamela:
     - name: pre-master-pamela-protecode-guard
+      labels:
+        preset-gc-compute-envs: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-gke-kyma-integration: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -112,8 +123,6 @@ presubmits: # runs on PRs
                 value: "25m"
               - name: JOB_NAME_PATTERN
                 value: ".*"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 200Mi
