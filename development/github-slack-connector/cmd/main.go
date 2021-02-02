@@ -11,7 +11,6 @@ import (
 	"path"
 	"strings"
 	"text/template"
-	"time"
 )
 
 type Values struct {
@@ -76,7 +75,7 @@ func main() {
 		for _, templateFile := range templateFiles {
 			if !templateFile.IsDir() && strings.HasSuffix(templateFile.Name(), ".yaml") {
 				generateFile(templateFile, values, templatesDirPath)
-				time.Sleep(20 * time.Second)
+				//time.Sleep(20 * time.Second)
 			}
 		}
 	}
