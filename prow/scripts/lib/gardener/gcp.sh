@@ -154,10 +154,7 @@ spec:
       namespace: "kyma-system"
 EOF
 
-    kyma alpha install \
-        --ci \
-        --resources "${KYMA_PROJECT_DIR}/kyma/resources" \
-        --components "$PWD/kyma-parallel-install-installationCR.yaml"
+    kyma alpha deploy --ci
     fi
     )
 }
