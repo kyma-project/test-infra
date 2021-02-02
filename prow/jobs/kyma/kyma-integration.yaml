@@ -23,6 +23,10 @@ prow_tools_image: &prow_tools_image
 base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
 
+# Kubectl 1.19 and CLUSTER_VERSION=1.16
+base_image_k19: &base_image_k19
+  image: eu.gcr.io/kyma-project/test-infra/pr/kyma-integration:PR-3233-k8s1.19
+
 vm_job_template: &vm_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -112,7 +116,7 @@ gke_job_template: &gke_job_template
   max_concurrency: 10
   spec:
     containers:
-      - <<: *base_image_k16
+      - <<: *base_image_k19
         securityContext:
           privileged: true
         command:
