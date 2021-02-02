@@ -1015,6 +1015,8 @@ periodics:
                   key: secret
             - name: KYMA_ALERTS_CHANNEL
               value: "#kyma-ci-force"
+            - name: CLUSTER_VERSION
+              value: "1.19"
           command:
             - "bash"
           args:
