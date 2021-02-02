@@ -85,6 +85,7 @@ gsutil cp  "${ARTIFACTS}/kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET
 gsutil cp  "${KCP_PATH}/installation/scripts/is-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-installed.sh"
 
 gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-installer.yaml"
+gsutil cp  "${ARTIFACTS}/kyma-kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/kyma-kcp-installer.yaml"
 gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/is-kyma-installed.sh"
 
 gsutil cp  "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/${BUCKET_DIR}/compass-installer.yaml"
@@ -96,6 +97,7 @@ if [[ "${BUILD_TYPE}" == "master" ]]; then
   gsutil cp  "${KCP_PATH}/installation/scripts/is-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-installed.sh"
 
   gsutil cp  "${ARTIFACTS}/kyma-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-installer.yaml"
+  gsutil cp  "${ARTIFACTS}/kyma-kcp-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/kyma-kcp-installer.yaml"
   gsutil cp  "${ARTIFACTS}/is-kyma-installed.sh" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/is-kyma-installed.sh"
 
   gsutil cp "${ARTIFACTS}/compass-installer.yaml" "${KCP_DEVELOPMENT_ARTIFACTS_BUCKET}/master/compass-installer.yaml"
