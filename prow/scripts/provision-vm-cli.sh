@@ -130,7 +130,7 @@ date
 if [ "$KUBERNETES_RUNTIME" = 'minikube' ]; then
     gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma provision minikube --non-interactive"
 else
-    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --non-interactive"
+    gcloud compute ssh --quiet --zone="${ZONE}" "cli-integration-test-${RANDOM_ID}" -- "yes | sudo kyma alpha provision k3s --ci"
 fi
 
 # Run test suite

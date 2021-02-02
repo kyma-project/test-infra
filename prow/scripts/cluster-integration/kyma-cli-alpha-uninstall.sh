@@ -91,7 +91,7 @@ sleep 1m
 log::info "Uninstall Kyma"
 (
 cd "${KYMA_PROJECT_DIR}/kyma"
-kyma alpha uninstall -v
+kyma alpha uninstall --ci
 )
 
 sleep 1m
