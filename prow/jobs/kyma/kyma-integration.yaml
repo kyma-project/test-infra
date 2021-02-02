@@ -23,9 +23,6 @@ prow_tools_image: &prow_tools_image
 base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
 
-base_image_k19: &base_image_k19
-  image: eu.gcr.io/kyma-project/test-infra/pr/kyma-integration:PR-3233-k8s1.19
-
 vm_job_template: &vm_job_template
   decorate: true
   path_alias: github.com/kyma-project/kyma
@@ -1216,7 +1213,7 @@ periodics:
           secret:
             secretName: sa-stability-fluentd-storage-writer
       containers:
-        - <<: *base_image_k19
+        - <<: *base_image_k16
           securityContext:
             privileged: true
           volumeMounts:
@@ -1244,7 +1241,7 @@ periodics:
             - name: KYMA_ALERTS_CHANNEL
               value: "#kyma-ci-force"
             - name: CLUSTER_VERSION
-              value: "1.19.6"
+              value: "1.19"
           command:
             - "bash"
           args:
