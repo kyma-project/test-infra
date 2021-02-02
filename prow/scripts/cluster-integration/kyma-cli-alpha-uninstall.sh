@@ -114,7 +114,7 @@ kyma test run \
     --watch \
     --non-interactive \
     istio-kyma-validate application-connector application-operator application-registry \
-    connection-token-handler connector-service api-gateway apiserver-proxy cluster-users \
+    connection-token-handler connector-service api-gateway cluster-users \
     console-backend core-test-external-solution dex-connection dex-integration kiali \
     logging monitoring rafter serverless serverless-long service-catalog
 )
@@ -125,7 +125,7 @@ kyma::run_test_log_collector "kyma-cli-alpha-uninstall-gke"
 if ! kyma::test_summary; then
     log::error "Tests have failed"
     set -e
-    return 1
+    exit 1
 fi
 set -e
 
