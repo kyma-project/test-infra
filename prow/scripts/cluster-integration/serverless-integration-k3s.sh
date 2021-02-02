@@ -82,7 +82,7 @@ docker run -d \
   --restart=always \
   --name registry.localhost \
   -v "$PWD/registry:/var/lib/registry" \
-  registry:2
+  eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
 }
 
 install::k3s() {
