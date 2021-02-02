@@ -1222,11 +1222,11 @@ periodics:
               readOnly: true
           env:
             - name: RS_GROUP
-              value: "kyma-nightly-aks-test"
+              value: "kyma-nightly-aks"
             - name: REGION
               value: "northeurope"
             - name: INPUT_CLUSTER_NAME
-              value: "nightly-aks-test"
+              value: "nightly-aks"
             - name: TEST_RESULT_WINDOW_TIME
               value: "6h"
             - name: STABILITY_SLACK_CLIENT_CHANNEL_ID
