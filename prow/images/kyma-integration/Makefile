@@ -33,8 +33,8 @@ endif
 # build image and tag it with commit ID or PR number
 .PHONY: build-image
 build-image:
-	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.19 --build-arg K8S_VERSION=1.19 --build-arg commit=$(DOCKER_TAG) .
-	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.16 --build-arg K8S_VERSION=1.16 --build-arg commit=$(DOCKER_TAG) .
+	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.19 --build-arg KUBECTL_VERSION=1.19 --build-arg commit=$(DOCKER_TAG) .
+	docker build -t $(IMG):$(DOCKER_TAG)-k8s1.16 --build-arg KUBECTL_VERSION=1.16 --build-arg commit=$(DOCKER_TAG) .
 
 # push image with all tags
 .PHONY:push-image

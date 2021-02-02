@@ -11,7 +11,6 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.19
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL IMAGE_COMMIT=$commit
@@ -144,7 +143,7 @@ ENV PATH=$PATH:/prow-tools
 ENV CLOUD_SDK_VERSION=324.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-    CLUSTER_VERSION=1.18
+    KUBECTL_VERSION=1.18
 
 RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz && \
     tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / && \
@@ -156,4 +155,4 @@ RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cl
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
     gcloud info | tee /workspace/gcloud-info.txt && \
-    mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
+    mv /google-cloud-sdk/bin/kubectl.${KUBECTL_VERSION} /google-cloud-sdk/bin/kubectl
