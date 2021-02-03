@@ -102,7 +102,7 @@ function az::create_resource_group {
 # RS_GROUP - azure resource group
 # REGION - azure region
 # CLUSTER_SIZE - azure cluster size
-# CLUSTER_VERSION - desired k8s cluster version
+# AKS_CLUSTER_VERSION - desired k8s cluster version
 # CLUSTER_ADDONS - addidional AKS addons
 # AZURE_CREDENTIALS_FILE - credentials file, refer to az::login
 #
@@ -117,15 +117,15 @@ function az::provision_aks_cluster {
   CLUSTER_NAME=$1
 
   log::info "Provisioning AKS cluster"
-  AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	log::info "Latest available version is: ${AKS_CLUSTER_VERSION}"
+  AKS_CLUSTER_VERSION_PRECISE=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${AKS_CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
+	log::info "Latest available version is: ${AKS_CLUSTER_VERSION_PRECISE}"
 
   az aks create \
       --resource-group "${RS_GROUP}" \
       --name "${CLUSTER_NAME}" \
       --node-count 3 \
       --node-vm-size "${CLUSTER_SIZE}" \
-      --kubernetes-version "${AKS_CLUSTER_VERSION}" \
+      --kubernetes-version "${AKS_CLUSTER_VERSION_PRECISE}" \
       --enable-addons "${CLUSTER_ADDONS}" \
       --service-principal "$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")" \
       --client-secret "$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")" \
