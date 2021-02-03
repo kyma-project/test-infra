@@ -1,7 +1,7 @@
 presets:
   # cluster version
   - labels:
-      cluster-version: "true"
+      preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.19"
