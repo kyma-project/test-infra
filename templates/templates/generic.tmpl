@@ -100,15 +100,19 @@
               {{- range .JobConfig.volumeMounts}}
               - name: {{ .name }}
                 mountPath: {{ .mountPath }}
+                {{- if .readOnly }}
                 readOnly: {{ .readOnly}}
+                {{- end }}
               {{- end}}
             {{- end}}
         {{- if .JobConfig.volumes}}
         volumes:
           {{- range .JobConfig.volumes}}
           - name: {{ .name }}
-            mountPath: {{ .mountPath }}
-            readOnly: {{ .readOnly}}
+            {{- if .secretName }}
+            secret:
+              secretName: {{ .secretName }}
+            {{- end }}
           {{- end}}
         {{- end}}
 {{- end -}}
