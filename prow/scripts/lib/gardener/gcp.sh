@@ -154,7 +154,7 @@ spec:
       namespace: "kyma-system"
 EOF
 
-    kyma alpha deploy --ci
+    kyma alpha deploy --ci --source=local -w="${KYMA_PROJECT_DIR}/kyma"
     fi
     )
 }
