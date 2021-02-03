@@ -40,11 +40,6 @@ readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"
-# set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
-export DEFAULT_CLUSTER_VERSION="1.16"
-if [ -z "${CLUSTER_VERSION}" ]; then
-    export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-fi
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
 # shellcheck source=prow/scripts/lib/log.sh
@@ -157,16 +152,16 @@ function cleanup() {
 function installCluster() {
 	log::info "Install Kubernetes on Azure"
 
-	log::info "Find latest cluster version for kubernetes version: ${CLUSTER_VERSION}"
-	AKS_CLUSTER_VERSION=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
-	log::info "Latest available version is: ${AKS_CLUSTER_VERSION}"
+	log::info "Find latest cluster version for kubernetes version: ${AKS_CLUSTER_VERSION}"
+	AKS_CLUSTER_VERSION_PRECISE=$(az aks get-versions -l "${REGION}" | jq '.orchestrators|.[]|select(.orchestratorVersion | contains("'"${AKS_CLUSTER_VERSION}"'"))' | jq -s '.' | jq -r 'sort_by(.orchestratorVersion | split(".") | map(tonumber)) | .[-1].orchestratorVersion')
+	log::info "Latest available version is: ${AKS_CLUSTER_VERSION_PRECISE}"
 
 	az aks create \
 	  --resource-group "${RS_GROUP}" \
 	  --name "${CLUSTER_NAME}" \
 	  --node-count 3 \
 	  --node-vm-size "${CLUSTER_SIZE}" \
-	  --kubernetes-version "${AKS_CLUSTER_VERSION}" \
+	  --kubernetes-version "${AKS_CLUSTER_VERSION_PRECISE}" \
 	  --enable-addons "${CLUSTER_ADDONS}" \
 	  --service-principal "$(jq -r '.app_id' "$AZURE_CREDENTIALS_FILE")" \
 	  --client-secret "$(jq -r '.secret' "$AZURE_CREDENTIALS_FILE")" \

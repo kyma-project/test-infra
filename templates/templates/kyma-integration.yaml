@@ -215,6 +215,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-dind-enabled: "true"
   preset-kyma-artifacts-bucket: "true"
   preset-cluster-use-ssd: "true"
+  preset-cluster-version: "true"
 
 gke_backup_job_labels_template: &gke_backup_job_labels_template
   preset-weekly-github-integration: "true"

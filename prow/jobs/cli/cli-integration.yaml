@@ -104,6 +104,7 @@ periodics:
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
       preset-gardener-gcp-kyma-integration: "true"
+      preset-cluster-version: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -139,6 +140,7 @@ periodics:
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
       preset-gardener-gcp-kyma-integration: "true"
+      preset-cluster-version: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master

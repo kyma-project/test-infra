@@ -25,7 +25,7 @@ func TestKymaGardenerAzureUpgradeJobPeriodics(t *testing.T) {
 	assert.Equal(t, "0 1 * * 1-5", job.Cron)
 	assert.Equal(t, job.DecorationConfig.Timeout.Get(), 4*time.Hour)
 	assert.Equal(t, job.DecorationConfig.GracePeriod.Get(), 10*time.Minute)
-	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.KymaGuardBotGithubToken)
+	tester.AssertThatHasPresets(t, job.JobBase, preset.GardenerAzureIntegration, preset.KymaCLIStable, preset.KymaGuardBotGithubToken, preset.ClusterVersion)
 	tester.AssertThatHasExtraRepoRef(t, job.JobBase.UtilityConfig, []string{"test-infra", "kyma"})
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, job.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-azure.sh"}, job.Spec.Containers[0].Args)

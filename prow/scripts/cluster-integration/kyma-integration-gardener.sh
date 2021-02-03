@@ -7,10 +7,11 @@
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
 # - GARDENER_REGION - Gardener compute region
 # - GARDENER_ZONES - Gardener compute zones inside the region
+# - GARDENER_CLUSTER_VERSION - Version of the Kubernetes cluster
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
-# - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
-# - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the secret configured in the gardener project to access the cloud provider
-# - MACHINE_TYPE (optional): machine type
+# - GARDENER_KYMA_PROW_PROJECT_NAME - Name of the gardener project where the cluster will be integrated.
+# - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME - Name of the secret configured in the gardener project to access the cloud provider
+# - MACHINE_TYPE - (optional) machine type
 #
 #Please look in each provider script for provider specific requirements
 
@@ -21,8 +22,6 @@
 set -e
 
 ENABLE_TEST_LOG_COLLECTOR=false
-
-export GARDENER_CLUSTER_VERSION="1.19"
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
@@ -41,6 +40,7 @@ requiredVars=(
     KYMA_PROJECT_DIR
     GARDENER_REGION
     GARDENER_ZONES
+    GARDENER_CLUSTER_VERSION
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
