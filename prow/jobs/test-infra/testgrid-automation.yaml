@@ -26,6 +26,7 @@ presubmits: # runs on PRs
               - "prow/jobs"
               - "prow/testgrid-default.yaml"
               - "kyma"
+              - "--test_verbose_timeout_warnings"
             resources:
               requests:
                 memory: 1.5Gi

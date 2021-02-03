@@ -4,6 +4,7 @@ test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
+  
 
 kyma_ref: &kyma_ref
   org: kyma-project
