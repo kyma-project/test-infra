@@ -66,4 +66,6 @@ const (
 	KymaEncriptionKey Preset = "preset-kyma-encryption-key"
 	// SaProwJobResourceCleaner means access to service account capable of cleaning various resources
 	SaProwJobResourceCleaner Preset = "preset-sa-prow-job-resource-cleaner"
+	// ClusterVersion contains Kubernetes versions for each provider
+	ClusterVersion Preset = "preset-cluster-version"
 )
