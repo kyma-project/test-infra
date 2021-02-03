@@ -11,6 +11,7 @@
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the GCP secret configured in the gardener project to access the cloud provider
+# - GARDENER_CLUSTER_VERSION - Version of the Kubernetes cluster
 # - MACHINE_TYPE (optional): GCP machine type
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
@@ -21,8 +22,6 @@
 # - Make sure the service account is enabled for the Google Identity and Access Management API.
 
 set -e
-
-readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -46,6 +45,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    GARDENER_CLUSTER_VERSION
 )
 
 utils::check_required_vars "${requiredVars[@]}"

@@ -11,6 +11,7 @@
 # - GARDENER_KYMA_PROW_KUBECONFIG - Kubeconfig of the Gardener service account
 # - GARDENER_KYMA_PROW_PROJECT_NAME Name of the gardener project where the cluster will be integrated.
 # - GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME Name of the azure secret configured in the gardener project to access the cloud provider
+# - GARDENER_CLUSTER_VERSION - Version of the Kubernetes cluster
 # - MACHINE_TYPE (optional): AKS machine type
 # - BOT_GITHUB_TOKEN: Bot github token used for API queries
 # - RS_GROUP - azure resource group
@@ -20,8 +21,6 @@
 set -e
 
 ENABLE_TEST_LOG_COLLECTOR=false
-
-readonly GARDENER_CLUSTER_VERSION="1.16"
 
 #Exported variables
 export RS_GROUP \
@@ -62,6 +61,7 @@ requiredVars=(
     GARDENER_KYMA_PROW_KUBECONFIG
     GARDENER_KYMA_PROW_PROJECT_NAME
     GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+    GARDENER_CLUSTER_VERSION
     REGION
     AZURE_SUBSCRIPTION_ID
     AZURE_CREDENTIALS_FILE
@@ -132,7 +132,7 @@ function provisionCluster() {
             --project "${GARDENER_KYMA_PROW_PROJECT_NAME}" --credentials "${GARDENER_KYMA_PROW_KUBECONFIG}" \
             --region "${GARDENER_REGION}" -z "${GARDENER_ZONES}" -t "${MACHINE_TYPE}" \
             --scaler-max 4 --scaler-min 3 \
-            --kube-version=${GARDENER_CLUSTER_VERSION}
+            --kube-version="${GARDENER_CLUSTER_VERSION}"
     )
 }
 
