@@ -60,6 +60,7 @@ func (k Sender) SendToKyma(eventType, sourceID, eventTypeVersion, eventID string
 		return apperrors.Internal("Can not marshall given struct: %s", err.Error())
 	}
 
+	log.Printf("%s", jsonToSend)
 	kymaRequest, err := http.NewRequest(http.MethodPost, k.serviceURL,
 		bytes.NewReader(jsonToSend))
 	if err != nil {

@@ -14,22 +14,26 @@ import (
 )
 
 type Values struct {
-	ContainerPort      string `yaml:"containerPort"`
-	Image              string `yaml:"image"`
-	Namespace          string `yaml:"namespace"`
-	Name               string `yaml:"name"`
-	KymaHostname       string `yaml:"kymaHostname"`
-	CmpAppName         string `yaml:"cmpAppName"`
-	CmpSlackAppName    string `yaml:"cmpSlackAppName"`
-	WebhookSecretValue string `yaml:"webhookSecretValue"`
-	RepositoryUrl      string `yaml:"repositoryUrl"`
-	FunctionBaseDir    string `yaml:"functionBaseDir"`
+	ContainerPort         string `yaml:"containerPort"`
+	Image                 string `yaml:"image"`
+	Namespace             string `yaml:"namespace"`
+	Name                  string `yaml:"name"`
+	KymaHostname          string `yaml:"kymaHostname"`
+	AppName               string `yaml:"appName"`
+	SlackAppName          string `yaml:"slackAppName"`
+	WebhookSecretValue    string `yaml:"webhookSecretValue"`
+	RepositoryUrl         string `yaml:"repositoryUrl"`
+	FunctionBaseDir       string `yaml:"functionBaseDir"`
+	CmpAppPlanSuffix      string `yaml:"cmpAppPlanSuffix"`
+	CmpSlackAppPlanSuffix string `yaml:"cmpSlackAppPlanSuffix"`
 }
 
 var (
-	valuesFilePath   = flag.String("valuesPath", "../githubConnector/values.yaml", "Path of the values file")
-	templatesDirPath = flag.String("templatesPath", "../githubConnector/templates", "Path to directory with templates")
-	webhookSecret    = flag.String("webhookSecret", "", "Github webhook ")
+	valuesFilePath   = flag.String("valuesfile", "../githubConnector/values.yaml", "Path of the values file")
+	templatesDirPath = flag.String("templatesdir", "../githubConnector/templates", "Path to directory with templates")
+	webhookSecret    = flag.String("webhooksecret", "", "Github webhook ")
+	slackAppPlan     = flag.String("slackplansuffix", "", "Slack application plan suffix")
+	appPlan          = flag.String("ghplansuffix", "", "Gihub application plan suffix")
 	templates        = flag.StringSlice("templates", []string{}, "Comma separated list of template filenames to generate.")
 	values           Values
 )
@@ -62,6 +66,12 @@ func main() {
 	}
 	if *webhookSecret != "" {
 		values.WebhookSecretValue = *webhookSecret
+	}
+	if *slackAppPlan != "" {
+		values.CmpSlackAppPlanSuffix = *slackAppPlan
+	}
+	if *appPlan != "" {
+		values.CmpAppPlanSuffix = *appPlan
 	}
 	if len(*templates) != 0 {
 		for _, t := range *templates {

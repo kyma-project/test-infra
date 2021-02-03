@@ -57,7 +57,7 @@ func (wh *WebHookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) 
 	case *github.IssuesEvent:
 		eventType = fmt.Sprintf("issuesevent.%s", *event.Action)
 	}
-	sourceID := os.Getenv("GITHUB_CONNECTOR_NAME")
+	sourceID := os.Getenv("GITHUB_WEBHOOK_GATEWAY_NAME")
 	log.Info(fmt.Sprintf("Event type '%s' received.", eventType))
 	apperr = wh.sender.SendToKyma(eventType, sourceID, "v1", "", payload)
 
