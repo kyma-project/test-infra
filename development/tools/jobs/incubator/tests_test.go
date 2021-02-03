@@ -17,6 +17,17 @@ var tests = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{
+		name:  "async-operations-tests",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release118),
+		},
+	},
+	{
 		name:  "connector-tests",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,

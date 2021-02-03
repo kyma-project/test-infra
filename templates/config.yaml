@@ -612,6 +612,13 @@ templates:
           since: "1.12"
   - from: templates/generic-compass-component.yaml
     render:
+      - to: ../prow/jobs/incubator/compass/components/async-operations/async-operations-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/async-operations
+          since: "1.18"
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *cluster_default
@@ -695,6 +702,13 @@ templates:
           <<: *compass_generic_component
           path: components/schema-migrator
           since: "1.7"
+          optional: false
+      - to: ../prow/jobs/incubator/compass/tests/async-operations-tests/async-operations-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/async-operations-tests
+          since: "1.18"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
