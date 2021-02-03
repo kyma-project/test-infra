@@ -62,4 +62,12 @@ postsubmits: # runs on master
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
+            volumeMounts:
+              - name: github-token
+                mountPath: /etc/github-token
+                readOnly: true
+        volumes:
+          - name: github-token
+            secret:
+              secretName: kyma-bot-github-token
   

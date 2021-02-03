@@ -37,6 +37,13 @@ templates:
                     - "prow/jobs"
                     - "prow/testgrid-default.yaml"
                     - "kyma"
+                  volumeMounts:
+                    - name: "github-token"
+                      mountPath: "/etc/github-token"
+                      readOnly: "true"
+                  volumes:
+                    - name: "github-token"
+                      secretName: "kyma-bot-github-token"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
