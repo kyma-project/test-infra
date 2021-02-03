@@ -643,8 +643,7 @@ templates:
           <<: *compass_generic_component
           path: components/system-broker
           since: "1.16"
-          optional: true
-          additionalRunIfChanged: # necessary so that it overrides the additionalRunIfChanged property from compass_generic_component and thus does not include the /scripts folder
+          optional: false
       - to: ../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
         values:
           <<: *cluster_default
