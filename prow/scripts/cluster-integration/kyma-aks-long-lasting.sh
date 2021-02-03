@@ -40,11 +40,6 @@ readonly DNS_SUBDOMAIN="${STANDARIZED_NAME}"
 
 export CLUSTER_NAME="${STANDARIZED_NAME}"
 export CLUSTER_SIZE="Standard_F8s_v2"
-# set cluster version as MAJOR.MINOR without PATCH part (e.g. 1.10, 1.11)
-export DEFAULT_CLUSTER_VERSION="1.16"
-if [ -z "${AKS_CLUSTER_VERSION}" ]; then
-    export AKS_CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-fi
 
 export CLUSTER_ADDONS="monitoring,http_application_routing"
 # shellcheck source=prow/scripts/lib/log.sh
