@@ -312,8 +312,7 @@ gardener::test_fast_integration_kyma() {
     log::info "Running Kyma Fast Integration tests"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-    npm install
-    npm test
+    make ci-no-install
     popd
 
     log::success "Tests completed"
