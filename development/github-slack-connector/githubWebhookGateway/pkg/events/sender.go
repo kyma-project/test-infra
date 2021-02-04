@@ -30,10 +30,10 @@ type HTTPClient interface {
 
 // EventRequestPayload represents a POST request's body which is sent to Event-Service
 type EventRequestPayload struct {
-	EventType        string          `json:"type"`
-	EventTypeVersion string          `json:"specversion"`
-	EventID          string          `json:"id,omitempty"` //uuid should be generated automatically if send empty
-	EventTime        string          `json:"time"`
+	EventType        string          `json:"event-type"`
+	EventTypeVersion string          `json:"event-type-version"`
+	EventID          string          `json:"event-id,omitempty"` //uuid should be generated automatically if send empty
+	EventTime        string          `json:"event-time"`
 	SourceID         string          `json:"source"`         //put your application name here
 	Data             json.RawMessage `json:"data,omitempty"` //github webhook json payload
 }
@@ -60,7 +60,6 @@ func (k Sender) SendToKyma(eventType, sourceID, eventTypeVersion, eventID string
 		return apperrors.Internal("Can not marshall given struct: %s", err.Error())
 	}
 
-	log.Printf("%s", jsonToSend)
 	kymaRequest, err := http.NewRequest(http.MethodPost, k.serviceURL,
 		bytes.NewReader(jsonToSend))
 	if err != nil {
@@ -73,7 +72,7 @@ func (k Sender) SendToKyma(eventType, sourceID, eventTypeVersion, eventID string
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return apperrors.Internal("Error sending event: %d", response.StatusCode)
+		return apperrors.Internal("Error sending event: status code: %d, response headers: %v response body: %s", response.StatusCode, response.Header, response.Body)
 	}
 
 	log.Info(response)

@@ -4,30 +4,24 @@ from slack_sdk.errors import SlackApiError
 
 
 def main(event, context):
-	print(os.environ['KYMA_SLACK_KYMA_SLACK_CONNECTOR_277A5551_00A9_49DB_9B9A_FBFD891BD070_GATEWAY_URL'])
-	client = WebClient(base_url="{}/".format(os.environ['KYMA_SLACK_KYMA_SLACK_CONNECTOR_277A5551_00A9_49DB_9B9A_FBFD891BD070_GATEWAY_URL']))
+	slack_channel='kyma-prow-dev-null'
+	client = WebClient(base_url="{}/".format(os.environ['KYMA_SLACK_SLACK_CONNECTOR_85DED56E_303B_43B3_A950_8B1C3D519561_GATEWAY_URL']))
 	label = event["data"]["label"]["name"]
-	print(label)
 	title = event["data"]["issue"]["title"]
-	print(title)
 	number = event["data"]["issue"]["number"]
-	print(number)
 	repo = event["data"]["repository"]["name"]
-	print(repo)
+	org = event["data"]["repository"]["owner"]["login"]
 	try:
-		assignee = "Issue {} in repository {} is assigned to `{}`.".format(number, repo, event["data"]["issue"]["assignee"]["login"])
+		assignee = "Issue *{}* in repository *{}/{}* is assigned to `{}`.".format(number, org, repo, event["data"]["issue"]["assignee"]["login"])
 	except TypeError:
-		assignee = "Issue {} in repository {} is not assigned.".format(number, repo)
-	print(assignee)
+		assignee = "Issue *{}* in repository *{}/{}* is not assigned.".format(number, org, repo)
 	sender = event["data"]["sender"]["login"]
-	print(sender)
 	issue_url = event["data"]["issue"]["html_url"]
-	print(issue_url)
 	# Run only for internal-incident and customer-incident labels
 	if (label == "internal-incident") or (label == "customer-incident"):
-		print("run postMessage")
+		print("sending message to {} channel".format(slack_channel))
 		try:
-			response = client.chat_postMessage(channel='kyma-prow-dev-null',
+			response = client.chat_postMessage(channel=slack_channel,
 											   blocks=[
 												{
 													"type": "context",
@@ -60,10 +54,8 @@ def main(event, context):
 														}
 												},
 												])
-			#assert response["ok"]
-			print(response)
+			assert response["ok"]
 		except SlackApiError as e:
 			# You will get a SlackApiError if "ok" is False
-			#assert e.response["ok"] is False
-			#assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
+			assert e.response["ok"] is False
 			print(f"Got an error: {e.response['error']}")
