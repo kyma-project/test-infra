@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-master-stability-checker
       labels:
-        preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -22,9 +21,10 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker"
+              - "ci-release"
             resources:
               requests:
                 memory: 1.5Gi
@@ -36,7 +36,6 @@ postsubmits: # runs on master
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-master: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
@@ -53,9 +52,10 @@ postsubmits: # runs on master
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/stability-checker"
+              - "ci-release"
             resources:
               requests:
                 memory: 1.5Gi
