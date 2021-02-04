@@ -187,6 +187,10 @@ kind: IstioOperator
 metadata:
   namespace: istio-system
 spec:
+  values:
+    global:
+      proxy:
+        holdApplicationUntilProxyStarts: true
   components:
     ingressGateways:
       - name: istio-ingressgateway
