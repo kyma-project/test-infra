@@ -50,7 +50,7 @@ def main(event, context):
 													"text":
 														{
 															"type": "mrkdwn",
-															"text": "*{}* labeled issue `{}` as `{}`.\n{} <{}|Check issue here.>".format(sender, title, label, assignee, issue_url)
+															"text": "*{}* labeled issue `{}` as `{}`.\n{} <{}|See issue here.>".format(sender, title, label, assignee, issue_url)
 														}
 												},
 												])
