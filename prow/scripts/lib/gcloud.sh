@@ -317,6 +317,7 @@ function gcloud::delete_network {
 # Required exported variables:
 # GCLOUD_COMPUTE_ZONE - zone in which the new cluster will be created
 # GCLOUD_PROJECT_NAME - name of GCP project
+# GKE_CLUSTER_VERSION - GKE cluster version
 #
 # Arguments:
 # $1 - cluster name
@@ -332,7 +333,6 @@ function gcloud::provision_gke_cluster {
   readonly CURRENT_TIMESTAMP_READABLE_PARAM=$(date +%Y%m%d)
   readonly CURRENT_TIMESTAMP_PARAM=$(date +%s)
   TTL_HOURS_PARAM="3"
-  CLUSTER_VERSION_PARAM="1.16"
   MACHINE_TYPE_PARAM="n1-standard-4"
   NUM_NODES_PARAM="3"
   NETWORK_PARAM="--network=default"
@@ -345,7 +345,7 @@ function gcloud::provision_gke_cluster {
 #  gcloud config set project "$GCLOUD_PROJECT_NAME"
 #  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
   # Resolving parameters
-  params+=("--cluster-version=${CLUSTER_VERSION:-$CLUSTER_VERSION_PARAM}")
+  params+=("--cluster-version=${GKE_CLUSTER_VERSION}")
   if [ "${RELEASE_CHANNEL}" ]; then params+=("--release-channel=${RELEASE_CHANNEL}"); fi
   params+=("--machine-type=${MACHINE_TYPE:-$MACHINE_TYPE_PARAM}")
   params+=("--num-nodes=${NUM_NODES:-$NUM_NODES_PARAM}")

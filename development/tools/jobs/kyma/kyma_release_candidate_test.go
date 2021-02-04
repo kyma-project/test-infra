@@ -26,7 +26,7 @@ func TestKymaReleaseCandidateJobsPostsubmit(t *testing.T) {
 			tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, currentRelease.Branch())
 			assert.Equal(t, tester.ImageKymaIntegrationLatest, actualJob.Spec.Containers[0].Image)
 			assert.Equal(t, []string{"-c", "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"}, actualJob.Spec.Containers[0].Args)
-			tester.AssertThatHasPresets(t, actualJob.JobBase, preset.DindEnabled, "preset-kyma-artifacts-bucket")
+			tester.AssertThatHasPresets(t, actualJob.JobBase, preset.DindEnabled, "preset-kyma-artifacts-bucket", preset.ClusterVersion)
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
 			tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_REGION", "europe-west4")
 			assert.Equal(t, "true", actualJob.JobBase.Labels["preset-dind-enabled"])

@@ -14,8 +14,8 @@
 #  - CLOUDSDK_COMPUTE_ZONE - GCP compute zone
 #  - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 #  - BOT_GITHUB_TOKEN: Bot github token used for API queries
-#  - MACHINE_TYPE (optional): GKE machine type
-#  - CLUSTER_VERSION (optional): GKE cluster version
+#  - GKE_CLUSTER_VERSION - GKE cluster version
+#  - MACHINE_TYPE - (optional) GKE machine type
 #
 # Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 #  - Compute Admin
@@ -79,6 +79,7 @@ requiredVars=(
     GOOGLE_APPLICATION_CREDENTIALS
     BOT_GITHUB_TOKEN
     CLOUDSDK_COMPUTE_ZONE
+    GKE_CLUSTER_VERSION
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -225,9 +226,6 @@ createCluster() {
     export GCLOUD_COMPUTE_ZONE="${CLOUDSDK_COMPUTE_ZONE}"
     if [[ -z "${MACHINE_TYPE}" ]]; then
         export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
-    fi
-    if [[ -z "${CLUSTER_VERSION}" ]]; then
-        export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
     fi
 
     gcloud::provision_gke_cluster "$CLUSTER_NAME"

@@ -30,7 +30,7 @@ func TestKymaReleaseUpgradeJobsPostsubmit(t *testing.T) {
 		tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master") //todo: ???
 		assert.Equal(tester.ImageKymaIntegrationLatest, actualJob.Spec.Containers[0].Image)
 		assert.Equal([]string{"-c", "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-rel2rel-upgrade.sh"}, actualJob.Spec.Containers[0].Args)
-		tester.AssertThatHasPresets(t, actualJob.JobBase, preset.DindEnabled, preset.BotGithubToken, preset.GCProjectEnv, "preset-gc-compute-envs")
+		tester.AssertThatHasPresets(t, actualJob.JobBase, preset.DindEnabled, preset.BotGithubToken, preset.GCProjectEnv, "preset-gc-compute-envs", preset.ClusterVersion)
 		tester.AssertThatContainerHasEnv(t, actualJob.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
 	})
 }

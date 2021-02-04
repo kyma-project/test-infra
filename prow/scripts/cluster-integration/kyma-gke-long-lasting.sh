@@ -26,6 +26,7 @@ requiredVars=(
 	STABILITY_SLACK_CLIENT_CHANNEL_ID
 	STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
 	CERTIFICATES_BUCKET
+	GKE_CLUSTER_VERSION
 )
 
 utils::check_required_vars "${requiredVars[@]}"
@@ -103,9 +104,6 @@ function createCluster() {
 	log::info "Provision cluster: \"${CLUSTER_NAME}\""
 	date
 	
-	if [ -z "${CLUSTER_VERSION}" ]; then
-		export CLUSTER_VERSION="${DEFAULT_CLUSTER_VERSION}"
-	fi
 	gcloud::provision_gke_cluster "$CLUSTER_NAME"
 }
 
