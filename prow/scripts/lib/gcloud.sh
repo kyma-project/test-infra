@@ -346,7 +346,7 @@ function gcloud::provision_gke_cluster {
 #  gcloud config set compute/zone "${GCLOUD_COMPUTE_ZONE}"
   # Resolving parameters
   params+=("--cluster-version=${GKE_CLUSTER_VERSION}")
-  if [ "${RELEASE_CHANNEL}" ]; then params+=("--release-channel=${RELEASE_CHANNEL}"); fi
+  if [ "${GKE_RELEASE_CHANNEL}" ]; then params+=("--release-channel=${GKE_RELEASE_CHANNEL}"); fi
   params+=("--machine-type=${MACHINE_TYPE:-$MACHINE_TYPE_PARAM}")
   params+=("--num-nodes=${NUM_NODES:-$NUM_NODES_PARAM}")
   if [ "${GCLOUD_NETWORK_NAME}" ] && [ "${GCLOUD_SUBNET_NAME}" ]; then params+=("--network=${GCLOUD_NETWORK_NAME}" "--subnetwork=${GCLOUD_SUBNET_NAME}"); else params+=("${NETWORK_PARAM}"); fi
@@ -459,6 +459,16 @@ function gcloud::cleanup {
   if [ -n "${CLEANUP_APISERVER_DNS_RECORD}" ]; then
     log::info "Removing DNS record for $APISERVER_DNS_FULL_NAME"
     gcloud::delete_dns_record "$APISERVER_IP_ADDRESS" "$APISERVER_DNS_FULL_NAME"
+  fi
+}
+
+# gcloud::set_latest_cluster_version_for_channel checks for latest possible version in GKE_RELEASE_CHANNEL and updates GKE_CLUSTER_VERSION accordingly
+# Required exported variables:
+# GKE_RELEASE_CHANNEL
+function gcloud::set_latest_cluster_version_for_channel() {
+  if [ "${GKE_RELEASE_CHANNEL}" ]; then
+    GKE_CLUSTER_VERSION=$(gcloud container get-server-config --zone europe-west4 --format="json" | jq '.channels|.[]|select(.channel | contains("'"${GKE_RELEASE_CHANNEL}"'"|ascii_upcase))|.validVersions|.[0]')
+    log::info "Updating GKE_CLUSTER_VERSION to newest available in ${GKE_RELEASE_CHANNEL}: ${GKE_CLUSTER_VERSION}"
   fi
 }
 

@@ -85,16 +85,13 @@ presets:
         value: westeurope
   {{- range .Values.gkeVersions }}
   - labels:
-      {{- $ch := printf "_%v_default" .channel }}
-      {{- $ver := default  $ch .version }}
-      {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
-        preset-gke-ver{{ $preset }}: "true"
+        preset-gke-{{ .channel }}: "true"
     env:
       {{- if .version }}
       - name: CLUSTER_VERSION
         value: {{ .version }}
       {{- end }}
-      - name: RELEASE_CHANNEL
+      - name: GKE_RELEASE_CHANNEL
         value: {{ .channel }}
   {{- end }}
   - labels:
@@ -299,10 +296,7 @@ presubmits: # runs on PRs
           base_ref: master
   {{- range .Values.gkeVersions }}
   {{- if has "presubmit" .jobs }}
-  {{- $ch := printf "_%v_default" .channel }}
-  {{- $ver := default  $ch .version }}
-  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
-    - name: pre-master-kyma-gke{{ $preset }}-integration
+    - name: pre-master-kyma-gke-{{ .channel }}-integration
   {{- if .optional }}
       optional: true
   {{- end }}
@@ -313,7 +307,7 @@ presubmits: # runs on PRs
       run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:
         <<: *gke_job_labels_template
-        preset-gke-ver{{ $preset }}: "true"
+        preset-gke-{{ .channel }}: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -486,10 +480,7 @@ postsubmits:
           base_ref: master
   {{- range .Values.gkeVersions }}
   {{- if has "postsubmit" .jobs }}
-  {{- $ch := printf "_%v_default" .channel }}
-  {{- $ver := default  $ch .version }}
-  {{- $preset := regexReplaceAllLiteral "-.*" $ver "" | replace "." "_" }}
-    - name: post-master-kyma-gke-ver{{ $preset }}-integration
+    - name: post-master-kyma-gke-{{ .channel }}-integration
       cluster: {{if $.Values.cluster.postsubmit}}{{ $.Values.cluster.postsubmit }}{{else}}{{fail "Value for cluster not provided"}}{{end}}
       <<: *gke_job_template
       annotations:
@@ -499,7 +490,7 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
-        preset-gke-ver{{ $preset }}: "true"
+        preset-gke-{{ .channel }}: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref

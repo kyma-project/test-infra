@@ -739,12 +739,7 @@ templates:
           <<: *cluster_default
           gkeVersions:
             - channel: rapid
-              version: 1.18.12-gke.1205
               jobs: [ "postsubmit" ]
-            - channel: regular
-              version: 1.17.14-gke.1600
-              jobs: [ "presubmit", "postsubmit" ]
-              optional: true
   - from: templates/kyma-integration-gardener.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-integration-gardener.yaml

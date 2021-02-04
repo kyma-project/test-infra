@@ -19,6 +19,7 @@
 # - KYMA_ARTIFACTS_BUCKET: GCP bucket
 # - LOG_COLLECTOR_SLACK_TOKEN: Slack token for test-log-collector
 # - MACHINE_TYPE - (optional) GKE machine type
+# - GKE_RELEASE_CHANNEL - (optional) GKE release channel
 #
 #Permissions: In order to run this script you need to use a service account with permissions equivalent to the following GCP roles:
 # - Compute Admin
@@ -173,6 +174,9 @@ log::banner "Provision cluster: \"${CLUSTER_NAME}\""
 if [ -z "$MACHINE_TYPE" ]; then
       export MACHINE_TYPE="${DEFAULT_MACHINE_TYPE}"
 fi
+
+# if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
+gcloud::set_latest_cluster_version_for_channel
 
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
