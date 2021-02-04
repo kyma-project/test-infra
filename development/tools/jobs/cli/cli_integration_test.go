@@ -71,7 +71,7 @@ func TestKymaCliIntegrationGKEPeriodic(t *testing.T) {
 	assert.True(t, actualPeriodic.Decorate)
 	assert.Equal(t, "00 00 * * *", actualPeriodic.Cron)
 	tester.AssertThatHasExtraRepoRef(t, actualPeriodic.JobBase.UtilityConfig, []string{"test-infra", "cli"})
-	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, "preset-gc-compute-envs", "preset-cluster-use-ssd")
+	tester.AssertThatHasPresets(t, actualPeriodic.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, "preset-gc-compute-envs", "preset-cluster-use-ssd", preset.ClusterVersion)
 	assert.Equal(t, tester.ImageKymaIntegrationLatest, actualPeriodic.Spec.Containers[0].Image)
 	tester.AssertThatSpecifiesResourceRequests(t, actualPeriodic.JobBase)
 	tester.AssertThatContainerHasEnv(t, actualPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-a")
