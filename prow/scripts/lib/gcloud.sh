@@ -462,10 +462,10 @@ function gcloud::cleanup {
   fi
 }
 
-# gcloud::update_cluster_version_for_channel checks for latest possible version in GKE_RELEASE_CHANNEL and updates GKE_CLUSTER_VERSION accordingly
+# gcloud::set_latest_cluster_version_for_channel checks for latest possible version in GKE_RELEASE_CHANNEL and updates GKE_CLUSTER_VERSION accordingly
 # Required exported variables:
 # GKE_RELEASE_CHANNEL
-function gcloud::update_cluster_version_for_channel() {
+function gcloud::set_latest_cluster_version_for_channel() {
   if [ "${GKE_RELEASE_CHANNEL}" ]; then
     GKE_CLUSTER_VERSION=$(gcloud container get-server-config --zone europe-west4 --format="json" | jq '.channels|.[]|select(.channel | contains("'"${GKE_RELEASE_CHANNEL}"'"|ascii_upcase))|.validVersions|.[0]')
     log::info "Updating GKE_CLUSTER_VERSION to newest available in ${GKE_RELEASE_CHANNEL}: ${GKE_CLUSTER_VERSION}"

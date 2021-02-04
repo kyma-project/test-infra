@@ -176,7 +176,7 @@ if [ -z "$MACHINE_TYPE" ]; then
 fi
 
 # if GKE_RELEASE_CHANNEL is set, get latest possible cluster version
-gcloud::update_cluster_version_for_channel
+gcloud::set_latest_cluster_version_for_channel
 
 gcloud::provision_gke_cluster "$CLUSTER_NAME"
 export CLEANUP_CLUSTER="true"
