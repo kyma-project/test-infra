@@ -31,15 +31,15 @@ gke_integration_job_template: &gke_integration_job_template
   path_alias: github.com/kyma-project/control-plane
   max_concurrency: 10
 
-gke_integration_job_template_k19: &gke_integration_job_template_k19
+gke_integration_job_template_k16: &gke_integration_job_template_k16
   <<: *gke_integration_job_template
   spec:
     containers:
-      - <<: *base_image_k19
+      - <<: *base_image_k16
         <<: *base_container_config
 
 gke_integration_job_template_latest: &gke_integration_job_template_latest
-  <<: *gke_integration_job_template_k19
+  <<: *gke_integration_job_template_k16
 
 gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-keyring: "true"
@@ -63,7 +63,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       branches:
         - ^master$
-      <<: *gke_integration_job_template_k19
+      <<: *gke_integration_job_template_k16
       # following regexp won't start build if only Markdown files were changed
       run_if_changed: "^((resources\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
       labels:

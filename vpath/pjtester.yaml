@@ -1,4 +1,4 @@
 pjNames:
 #  - pjName: pre-master-kyma-gke-integration
   - pjName: pre-master-control-plane-gke-integration
-  - pjName: pre-master-compass-gke-integration
+#  - pjName: pre-master-compass-gke-integration
