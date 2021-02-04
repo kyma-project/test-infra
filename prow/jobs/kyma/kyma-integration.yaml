@@ -86,19 +86,10 @@ presets:
       - name: AZURE_REGION
         value: westeurope
   - labels:
-        preset-gke-ver1_18_12: "true"
+        preset-gke-rapid: "true"
     env:
-      - name: CLUSTER_VERSION
-        value: 1.18.12-gke.1205
-      - name: RELEASE_CHANNEL
+      - name: GKE_RELEASE_CHANNEL
         value: rapid
-  - labels:
-        preset-gke-ver1_17_14: "true"
-    env:
-      - name: CLUSTER_VERSION
-        value: 1.17.14-gke.1600
-      - name: RELEASE_CHANNEL
-        value: regular
   - labels:
       preset-gke-upgrade-pre-job: "true"
     env:
@@ -315,19 +306,6 @@ presubmits: # runs on PRs
       labels:
         preset-build-pr: "true"
         <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-    - name: pre-master-kyma-gke1_17_14-integration
-      optional: true
-      cluster: untrusted-workload
-      branches:
-        - ^master$
-      <<: *gke_job_template
-      run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      labels:
-        <<: *gke_job_labels_template
-        preset-gke-ver1_17_14: "true"
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
@@ -565,7 +543,7 @@ postsubmits:
       extra_refs:
         - <<: *test_infra_ref
           base_ref: master
-    - name: post-master-kyma-gke-ver1_18_12-integration
+    - name: post-master-kyma-gke-rapid-integration
       cluster: trusted-workload
       <<: *gke_job_template
       annotations:
@@ -575,22 +553,7 @@ postsubmits:
       labels:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
-        preset-gke-ver1_18_12: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-    - name: post-master-kyma-gke-ver1_17_14-integration
-      cluster: trusted-workload
-      <<: *gke_job_template
-      annotations:
-        testgrid-create-test-group: "false"
-      branches:
-        - ^master$
-      labels:
-        preset-log-collector-slack-token: "true"
-        preset-build-master: "true"
-        preset-gke-ver1_17_14: "true"
+        preset-gke-rapid: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref
