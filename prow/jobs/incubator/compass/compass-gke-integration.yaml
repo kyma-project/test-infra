@@ -5,7 +5,7 @@ test_infra_ref: &test_infra_ref
   repo: test-infra
   path_alias: github.com/kyma-project/test-infra
 
-# Kubectl 1.16 and CLUSTER_VERSION=1.16
+# Kubectl 1.16
 base_image_k16: &base_image_k16
   image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20201208-8f23a167-k8s1.16
 
@@ -20,8 +20,6 @@ base_container_config: &base_container_config
   env:
     - name: CLOUDSDK_COMPUTE_ZONE
       value: "europe-west4-b"
-    - name: GKE_CLUSTER_VERSION
-      value: "1.16"
   resources:
     requests:
       memory: 200Mi
@@ -56,6 +54,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-kyma-artifacts-bucket: "true"
   preset-gardener-azure-kyma-integration: "true"
   preset-kyma-development-artifacts-bucket: "true"
+  preset-cluster-version: "true"
 
 presubmits: # runs on PRs
   kyma-incubator/compass:

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
+	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -24,19 +25,20 @@ func TestKCPGKEIntegrationPresubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
-		"preset-kyma-guard-bot-github-token",
-		"preset-kyma-keyring",
-		"preset-kyma-encryption-key",
+		preset.KymaGuardBotGithubToken,
+		preset.KymaKeyring,
+		preset.KymaEncriptionKey,
 		"preset-kms-gc-project-env",
-		"preset-sa-gke-kyma-integration",
+		preset.SaGKEKymaIntegration,
 		"preset-gc-compute-envs",
-		"preset-gc-project-env",
+		preset.GCProjectEnv,
 		"preset-docker-push-repository-gke-integration",
-		"preset-dind-enabled",
+		preset.DindEnabled,
 		"preset-kyma-artifacts-bucket",
-		"preset-gardener-azure-kyma-integration",
-		"preset-build-pr",
+		preset.GardenerAzureIntegration,
+		preset.BuildPr,
 		"preset-kyma-development-artifacts-bucket",
+		preset.ClusterVersion,
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
@@ -64,19 +66,20 @@ func TestKCPGKEIntegrationPostsubmit(t *testing.T) {
 	assert.Equal(t, "github.com/kyma-project/control-plane", actualJob.PathAlias)
 	assert.Equal(t, 10, actualJob.MaxConcurrency)
 	tester.AssertThatHasPresets(t, actualJob.JobBase,
-		"preset-kyma-guard-bot-github-token",
-		"preset-kyma-keyring",
-		"preset-kyma-encryption-key",
+		preset.KymaGuardBotGithubToken,
+		preset.KymaKeyring,
+		preset.KymaEncriptionKey,
 		"preset-kms-gc-project-env",
-		"preset-sa-gke-kyma-integration",
+		preset.SaGKEKymaIntegration,
 		"preset-gc-compute-envs",
-		"preset-gc-project-env",
+		preset.GCProjectEnv,
 		"preset-docker-push-repository-gke-integration",
-		"preset-dind-enabled",
+		preset.DindEnabled,
 		"preset-kyma-artifacts-bucket",
-		"preset-gardener-azure-kyma-integration",
-		"preset-build-master",
+		preset.GardenerAzureIntegration,
+		preset.BuildMaster,
 		"preset-kyma-development-artifacts-bucket",
+		preset.ClusterVersion,
 	)
 	tester.AssertThatHasExtraRefTestInfra(t, actualJob.JobBase.UtilityConfig, "master")
 	require.Len(t, actualJob.Spec.Containers, 1)
