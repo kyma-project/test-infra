@@ -350,7 +350,10 @@ function installKyma() {
   gsutil cp "${KCP_ARTIFACTS}/kyma-installer.yaml" ${TMP_DIR}/kyma-installer.yaml
   gsutil cp "${KCP_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
+  set +e
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
+  set -e
+  log::info "retrying config"
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
   log::info "Installation triggered"

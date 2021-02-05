@@ -35,7 +35,7 @@ gke_integration_job_template_k16: &gke_integration_job_template_k16
   <<: *gke_integration_job_template
   spec:
     containers:
-      - <<: *base_image_k16
+      - <<: *base_image_k19
         <<: *base_container_config
 
 gke_integration_job_template_latest: &gke_integration_job_template_latest
