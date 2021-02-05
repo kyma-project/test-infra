@@ -21,17 +21,6 @@ var components = []struct {
 	additionalOptions []jobsuite.Option
 }{
 	{
-		name:  "async-operations",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-			jobsuite.Since(releases.Release118),
-		},
-	},
-	{
 		name:  "connector",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
@@ -156,6 +145,17 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassORDServiceRepo(),
 			jobsuite.Since(releases.Release117),
+		},
+	},
+	{
+		name:  "operations-controller",
+		image: tester.ImageBootstrapTestInfraLatest,
+		suite: tester.NewGenericComponentSuite,
+		additionalOptions: []jobsuite.Option{
+			jobsuite.JobFileSuffix("generic"),
+			jobsuite.CompassRepo(),
+			jobsuite.AllReleases(),
+			jobsuite.Since(releases.Release118),
 		},
 	},
 }

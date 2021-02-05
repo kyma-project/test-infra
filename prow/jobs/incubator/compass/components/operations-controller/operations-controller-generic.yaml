@@ -14,7 +14,7 @@ job_template: &job_template
     preset-dind-enabled: "true"
     preset-sa-gcr-push: "true"
     preset-docker-push-repository-incubator: "true"
-  run_if_changed: "^tests/async-operations-tests/|^scripts/"
+  run_if_changed: "^components/operations-controller/|^scripts/"
   spec:
     containers:
       - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
@@ -23,7 +23,7 @@ job_template: &job_template
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
         args:
-          - "/home/prow/go/src/github.com/kyma-incubator/compass/tests/async-operations-tests"
+          - "/home/prow/go/src/github.com/kyma-incubator/compass/components/operations-controller"
         resources:
           requests:
             memory: 1.5Gi
@@ -31,7 +31,7 @@ job_template: &job_template
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-compass-tests-async-operations-tests
+    - name: pre-compass-components-operations-controller
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -43,7 +43,7 @@ presubmits: # runs on PRs
         - ^main$
         - ^hotfix-.*$
     
-    - name: pre-rel119-compass-tests-async-operations-tests
+    - name: pre-rel119-compass-components-operations-controller
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -53,7 +53,7 @@ presubmits: # runs on PRs
       branches:
         - release-1.19
     
-    - name: pre-rel118-compass-tests-async-operations-tests
+    - name: pre-rel118-compass-components-operations-controller
       cluster: untrusted-workload
       optional: false
       <<: *job_template
@@ -66,7 +66,7 @@ presubmits: # runs on PRs
 
 postsubmits:
   kyma-incubator/compass:
-    - name: post-compass-tests-async-operations-tests
+    - name: post-compass-components-operations-controller
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
@@ -78,7 +78,7 @@ postsubmits:
       - ^master$
       - ^main$
       
-    - name: post-rel119-compass-tests-async-operations-tests
+    - name: post-rel119-compass-components-operations-controller
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
@@ -89,7 +89,7 @@ postsubmits:
       branches:
         - release-1.19
     
-    - name: post-rel118-compass-tests-async-operations-tests
+    - name: post-rel118-compass-components-operations-controller
       cluster: trusted-workload
       annotations:
         testgrid-create-test-group: "false"
