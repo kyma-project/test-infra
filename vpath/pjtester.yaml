@@ -1,8 +1,6 @@
 pjNames:
   - pjName: "pre-compass-components-operations-controller"
   pjPath: "test-infra/prow/jobs/incubator/compass/components/operations-controller/"
-  - pjName: "pre-compass-tests-operations-controller"
-  pjPath: "test-infra/prow/jobs/incubator/compass/tests/operations-controller/"
   prConfigs:
     kyma-incubator:
       compass:
