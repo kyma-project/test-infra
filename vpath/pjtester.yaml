@@ -1,0 +1,8 @@
+pjNames:
+- pjName: "kyma-integration-gardener-aws"
+- pjName: "kyma-integration-gardener-azure"
+- pjName: "kyma-integration-gardener-gcp"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10535

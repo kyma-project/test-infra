@@ -81,6 +81,7 @@ gardener::provision_cluster() {
 }
 
 gardener::install_kyma() {
+    KYMA_SOURCE="PR-10535"
     log::info "Installing Kyma"
 
     (
