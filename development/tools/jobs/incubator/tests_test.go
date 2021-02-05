@@ -71,7 +71,7 @@ var tests = []struct {
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
+			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
 			jobsuite.Since(releases.Release118),

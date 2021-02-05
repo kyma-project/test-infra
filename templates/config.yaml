@@ -703,7 +703,7 @@ templates:
           path: components/schema-migrator
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/tests/operations-controller/operations-controller-generic.yaml
+      - to: ../prow/jobs/incubator/compass/tests/operations-controller/operations-controller-tests-generic.yaml
         values:
           <<: *cluster_default
           <<: *compass_generic_component
