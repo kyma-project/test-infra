@@ -351,6 +351,7 @@ function installKyma() {
   gsutil cp "${KCP_ARTIFACTS}/is-kyma-installed.sh" ${TMP_DIR}/is-kyma-installed.sh
   chmod +x ${TMP_DIR}/is-kyma-installed.sh
   kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
+  kubectl apply -f ${TMP_DIR}/kyma-installer.yaml
 
   log::info "Installation triggered"
   "${TMP_DIR}"/is-kyma-installed.sh --timeout 30m
