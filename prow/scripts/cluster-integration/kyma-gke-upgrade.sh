@@ -219,15 +219,8 @@ function createCluster() {
   CLEANUP_CLUSTER="true"
 }
 
-function getLastReleaseVersion() {
-  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
-    jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
-
-  echo "${version}"
-}
-
 function getLastRCVersion() {
-  version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${BOT_GITHUB_TOKEN}" |
+  version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" |
     jq -r 'del( .[] | select( (.prerelease == false) or (.draft == true) )) | .[0].tag_name ')
   
   echo "${version}"
@@ -236,7 +229,7 @@ function getLastRCVersion() {
 function installKyma() {
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
   mkdir -p /tmp/kyma-gke-upgradeability
-  LAST_RELEASE_VERSION=$(getLastReleaseVersion)
+  LAST_RELEASE_VERSION=$(kyma::get_last_release_version "${BOT_GITHUB_TOKEN}")
   if [ -z "$LAST_RELEASE_VERSION" ]; then
     log::error "Couldn't grab latest version from GitHub API, stopping."
     exit 1
