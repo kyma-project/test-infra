@@ -559,7 +559,7 @@ presubmits: # runs on PRs
         - ^master$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
             securityContext:
               privileged: true
             command:

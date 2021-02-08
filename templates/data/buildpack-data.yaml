@@ -482,7 +482,7 @@ templates:
                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
                     inheritedConfigs:
                       global:
-                        - "image_bootstrap"
+                        - "image_buildpack-golang"
                       local:
                         - "default"
                         - "presubmit"
