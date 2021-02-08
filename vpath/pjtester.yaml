@@ -1,0 +1,3 @@
+pjNames:
+  # presubmit
+  - pjName: "pre-master-kyma-integration-k3s"

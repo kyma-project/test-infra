@@ -27,7 +27,9 @@ cleanup() {
 
   # do not fail the job regardless of the vm deletion result
   set +e
-  gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
+  
+  # utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
+  # gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
