@@ -17,7 +17,7 @@ import (
 )
 
 type toJSON struct {
-	TestJSON string `json:TestJSON"`
+	TestJSON string `json:"TestJSON"`
 }
 
 type ClientMock struct {
@@ -36,7 +36,7 @@ func TestSendToKyma(t *testing.T) {
 		payload := toJSON{TestJSON: "test"}
 		toSend, err := json.Marshal(payload)
 		require.NoError(t, err)
-		assert.Equal(t, nil, k.SendToKyma("issuesevent.opened", "v1", "", "github-connector-app", json.RawMessage(toSend)))
+		assert.Equal(t, nil, k.SendToKyma("issuesevent.labeled", "", "v1", "github-connector-app", toSend))
 	})
 
 	t.Run("should return an internal error when wrong arguments", func(t *testing.T) {
@@ -48,13 +48,13 @@ func TestSendToKyma(t *testing.T) {
 		mockValidator.On("Validate", events.EventRequestPayload{EventTypeVersion: "v1",
 			EventTime: time.Now().Format(time.RFC3339),
 			SourceID:  "github-connector-app",
-			Data:      json.RawMessage(toSend)}).Return(apperrors.Internal("test"))
+			Data:      toSend}).Return(apperrors.Internal("test"))
 
 		k := events.NewSender(&ClientMock{}, mockValidator, "http://event-bus-publish.kyma-system:8080/v1/events")
 		expected := apperrors.Internal("test")
 
 		//when
-		actual := k.SendToKyma("", "v1", "", "github-connector-app", json.RawMessage(toSend))
+		actual := k.SendToKyma("", "github-connector-app", "v1", "", toSend)
 
 		//then
 		assert.Equal(t, expected.Code(), actual.Code())
@@ -69,13 +69,13 @@ func TestSendToKyma(t *testing.T) {
 		mockValidator.On("Validate", events.EventRequestPayload{EventTypeVersion: "v1",
 			EventTime: time.Now().Format(time.RFC3339),
 			SourceID:  "github-connector-app",
-			Data:      json.RawMessage(toSend)}).Return(apperrors.Internal("test"))
+			Data:      toSend}).Return(apperrors.Internal("test"))
 
 		k := events.NewSender(&ClientMock{}, mockValidator, "test")
 		expected := apperrors.Internal("test")
 
 		//when
-		actual := k.SendToKyma("", "v1", "", "github-connector-app", json.RawMessage(toSend))
+		actual := k.SendToKyma("", "github-connector-app", "v1", "", toSend)
 
 		//then
 		assert.Equal(t, expected.Code(), actual.Code())
@@ -93,11 +93,11 @@ func TestSendToKyma(t *testing.T) {
 		toSend, err := json.Marshal(payload)
 		require.NoError(t, err)
 
-		validatorMock.On("Validate", events.EventRequestPayload{EventType: "issuesevent.opened", EventTypeVersion: "v1", EventTime: time.Now().Format(time.RFC3339), SourceID: "github-connector-app", Data: json.RawMessage(toSend)}).Return(nil)
+		validatorMock.On("Validate", events.EventRequestPayload{EventType: "issuesevent.labeled", EventTypeVersion: "v1", EventTime: time.Now().Format(time.RFC3339), SourceID: "github-connector-app", Data: toSend}).Return(nil)
 		sender := events.NewSender(&http.Client{}, events.NewValidator(), ts.URL)
 
 		// when
-		apperr := sender.SendToKyma("issuesevent.opened", "v1", "", "github-connector-app", json.RawMessage(toSend))
+		apperr := sender.SendToKyma("issuesevent.labeled", "github-connector-app", "v1", "", toSend)
 
 		// then
 		require.NoError(t, apperr)
@@ -118,11 +118,11 @@ func TestSendToKyma(t *testing.T) {
 		toSend, err := json.Marshal(payload)
 		require.NoError(t, err)
 
-		validatorMock.On("Validate", events.EventRequestPayload{EventTime: time.Now().Format(time.RFC3339), SourceID: "github-connector-app", Data: json.RawMessage(toSend)}).Return(nil)
+		validatorMock.On("Validate", events.EventRequestPayload{EventTime: time.Now().Format(time.RFC3339), SourceID: "github-connector-app", Data: toSend}).Return(nil)
 		sender := events.NewSender(&http.Client{}, events.NewValidator(), ts.URL)
 
 		// when
-		apperr := sender.SendToKyma("", "", "", "github-connector-app", json.RawMessage(toSend))
+		apperr := sender.SendToKyma("", "github-connector-app", "", "", toSend)
 
 		// then
 		require.Error(t, apperr)
@@ -138,7 +138,7 @@ func checkEventRequest(t *testing.T, r *http.Request) {
 	err := decoder.Decode(&testStruct)
 	require.NoError(t, err)
 
-	assert.Equal(t, "issuesevent.opened", testStruct.EventType)
+	assert.Equal(t, "issuesevent.labeled", testStruct.EventType)
 	assert.Equal(t, "v1", testStruct.EventTypeVersion)
 	assert.Equal(t, "github-connector-app", testStruct.SourceID)
 }
