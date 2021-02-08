@@ -9,7 +9,7 @@ templates:
               - ^master$
               - ^main$
             automountServiceAccountToken: true
-            optional: true
+            optional: false
             always_run: false
             command: "bash"
             args:
