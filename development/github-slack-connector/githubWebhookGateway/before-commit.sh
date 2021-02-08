@@ -30,7 +30,7 @@ goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/
 ##
 # GO BUILD
 ##
-binaries=("github-webhook-gateway")
+binaries=("cmd/main.go")
 buildEnv=""
 if [ "$1" == "$CI_FLAG" ]; then
   # build binary statically
