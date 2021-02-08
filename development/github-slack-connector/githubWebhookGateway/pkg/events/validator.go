@@ -28,9 +28,9 @@ func (v validator) Validate(payload EventRequestPayload) apperrors.AppError {
 	if payload.EventTypeVersion == "" {
 		return apperrors.WrongInput("eventTypeVersion should not be empty")
 	}
-	//if payload.SourceID == "" {
-	//	return apperrors.WrongInput("sourceID should not be empty")
-	//}
+	if payload.SourceID == "" {
+		return apperrors.WrongInput("sourceID should not be empty")
+	}
 	if len(payload.Data) == 0 {
 		return apperrors.WrongInput("data should not be empty")
 	}

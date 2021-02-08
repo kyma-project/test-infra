@@ -36,7 +36,7 @@ func TestSendToKyma(t *testing.T) {
 		payload := toJSON{TestJSON: "test"}
 		toSend, err := json.Marshal(payload)
 		require.NoError(t, err)
-		assert.Equal(t, nil, k.SendToKyma("issuesevent.labeled", "", "v1", "github-connector-app", toSend))
+		assert.Equal(t, nil, k.SendToKyma("issuesevent.labeled", "github-connector-app", "v1", "", toSend))
 	})
 
 	t.Run("should return an internal error when wrong arguments", func(t *testing.T) {
