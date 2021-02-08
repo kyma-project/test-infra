@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/google/go-github/github"
@@ -18,13 +17,14 @@ import (
 )
 
 type toJSON struct {
-	TestJSON string `json:TestJSON"`
+	TestJSON string `json:"TestJSON"`
+	Action   string `json:"Action"`
 }
 
 //createRequest creates an HTTP request for test purposes
 func createRequest(t *testing.T) *http.Request {
 
-	payload := toJSON{TestJSON: "test"}
+	payload := toJSON{TestJSON: "test", Action: "labeled"}
 	toSend, err := json.Marshal(payload)
 	require.NoError(t, err)
 
@@ -95,19 +95,21 @@ func TestWebhookHandler(t *testing.T) {
 
 		// given
 		req := createRequest(t)
+		req.Header.Set("X-Github-Event", "issues")
 		rr := httptest.NewRecorder()
 
 		mockValidator := &gitmocks.Validator{}
 		mockSender := &mocks.Sender{}
-		mockPayload, err := json.Marshal(toJSON{TestJSON: "test"})
+		mockPayload, err := json.Marshal(toJSON{TestJSON: "test", Action: "labeled"})
 		require.NoError(t, err)
 		rawPayload := json.RawMessage(mockPayload)
-		mockSender.On("SendToKyma", "IssuesEvent", "v1", "", os.Getenv("GITHUB_CONNECTOR_NAME")+"-app", rawPayload).Return(nil)
+		mockSender.On("SendToKyma", "issuesevent.labeled", "", "v1", "", rawPayload).Return(nil)
 
 		mockValidator.On("GetToken").Return("test")
 		mockValidator.On("ValidatePayload", req, []byte("test")).Return(mockPayload, nil)
-		event := &github.IssuesEvent{}
-		mockValidator.On("ParseWebHook", "", mockPayload).Return(event, nil)
+		var action = "labeled"
+		event := &github.IssuesEvent{Action: &action}
+		mockValidator.On("ParseWebHook", "issues", mockPayload).Return(event, nil)
 
 		wh := NewWebHookHandler(mockValidator, mockSender)
 
