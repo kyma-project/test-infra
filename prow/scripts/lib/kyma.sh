@@ -87,7 +87,12 @@ function kyma::update_hosts {
 # Returns:
 #   Last Kyma release version
 function kyma::get_last_release_version {
-    version=$(curl --silent --fail --show-error "https://api.github.com/repos/kyma-project/kyma/releases?access_token=${1}" \
+    if [[ -z "$1" ]]; then
+        log::error "Github token is missing, please provide token"
+        exit 1
+    fi
+    
+    version=$(curl --silent --fail --show-error -H "Authorization: token ${1}" "https://api.github.com/repos/kyma-project/kyma/releases" \
         | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
 
     echo "${version}"
