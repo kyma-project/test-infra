@@ -27,7 +27,7 @@ cleanup() {
 
   # do not fail the job regardless of the vm deletion result
   set +e
-  
+
   #shellcheck disable=SC2088
   utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/fast-integration-junit.xml" "${ARTIFACTS}"
   # utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
@@ -112,6 +112,8 @@ trap cleanup exit INT
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
+# needed for the test script to be able to create fast-integration-junit.xml file
+gcloud compute ssh --quiet --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}" -- "chmod -R 777 \$HOME/kyma/tests/fast-integration"
 
 log::info "Copying Kyma-Local to the instance"
 #shellcheck disable=SC2088
