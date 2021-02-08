@@ -34,10 +34,6 @@ branch-protection:
           required_status_checks:
             contexts:
               - "netlify/kyma-project/deploy-preview"
-        pamela:
-          branches:
-            main:
-              protect: true
     kyma-incubator:
       required_pull_request_reviews:
         dismiss_stale_reviews: true

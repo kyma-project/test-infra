@@ -21,6 +21,7 @@ templates:
                   branches:
                     - ^master$
                     - ^main$
+                    - ^pamela$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
