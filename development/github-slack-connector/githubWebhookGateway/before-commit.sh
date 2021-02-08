@@ -30,7 +30,7 @@ goFilesToCheck=$(find . -type f -name "*.go" | egrep -v "\/vendor\/|_*/automock/
 ##
 # GO BUILD
 ##
-binaries=("cmd/main.go")
+binaries=("ghwebhookgateway")
 buildEnv=""
 if [ "$1" == "$CI_FLAG" ]; then
   # build binary statically
@@ -38,7 +38,7 @@ if [ "$1" == "$CI_FLAG" ]; then
 fi
 
 for binary in "${binaries[@]}"; do
-  ${buildEnv} go build -o "${binary}" .
+  ${buildEnv} go build -o "${binary}" ./cmd
   goBuildResult=$?
   if [ ${goBuildResult} != 0 ]; then
     echo -e "${RED}✗ go build ${binary} ${NC}\n $goBuildResult${NC}"
