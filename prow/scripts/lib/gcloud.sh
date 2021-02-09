@@ -359,6 +359,7 @@ function gcloud::provision_gke_cluster {
     params+=("--zone=${GCLOUD_COMPUTE_ZONE}")
   fi
   if [ "${GCLOUD_SECURITY_GROUP_DOMAIN}" ]; then params+=("--security-group=gke-security-groups@${GCLOUD_SECURITY_GROUP_DOMAIN}"); fi
+  if [ "${GKE_ENABLE_POD_SECURITY_POLICY}" ]; then params+=("--enable-pod-security-policy"); fi
 
   APPENDED_LABELS=()
   if [ "${ADDITIONAL_LABELS}" ]; then APPENDED_LABELS=(",${ADDITIONAL_LABELS}") ; fi

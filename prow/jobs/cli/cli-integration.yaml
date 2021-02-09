@@ -76,6 +76,7 @@ periodics:
       preset-gc-project-env: "true"
       preset-cluster-use-ssd: "true"
       preset-cluster-version: "true"
+      preset-gke-pod-security-policy: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -106,6 +107,7 @@ periodics:
     labels:
       preset-gardener-gcp-kyma-integration: "true"
       preset-cluster-version: "true"
+      preset-gke-pod-security-policy: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -142,6 +144,7 @@ periodics:
     labels:
       preset-gardener-gcp-kyma-integration: "true"
       preset-cluster-version: "true"
+      preset-gke-pod-security-policy: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
