@@ -40,7 +40,7 @@ docker::start
 if [ -n "${PULL_NUMBER}" ]; then
   DOCKER_TAG="PR-${PULL_NUMBER}"
 elif [[ "${PULL_BASE_REF}" =~ ^release-.* ]]; then
-  DOCKER_TAG=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+  DOCKER_TAG=$(cat "VERSION")
   if [[ "${REPO_OWNER}" == "kyma-project" && "${REPO_NAME}" == "kyma" ]]; then
     NEXT_RELEASE="$DOCKER_TAG"
     echo "Checking if ${NEXT_RELEASE} was already published on github..."

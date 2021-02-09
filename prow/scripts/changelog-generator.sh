@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly KYMA_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
-readonly RELEASE_VERSION=$(cat "${SCRIPT_DIR}/../RELEASE_VERSION")
+readonly RELEASE_VERSION=$(cat "${KYMA_DIR}/VERSION")
 
 # find latest tag from which the generator should started
 # shellcheck disable=SC2046
