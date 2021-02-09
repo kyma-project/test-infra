@@ -519,9 +519,9 @@ presets:
     - name: CLUSTER_USE_SSD
       value: "true"
   - labels:
-      preset-pod-security-policy: "true"
+      preset-gke-pod-security-policy: "true"
     env:
-    - name: CLUSTER_USE_POD_SECURITY_POLICY
+    - name: GKE_ENABLE_POD_SECURITY_POLICY
       value: "true"
   # whitesource labels
   - labels:

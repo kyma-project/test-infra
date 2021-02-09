@@ -58,7 +58,7 @@ gke_integration_job_labels_template: &gke_integration_job_labels_template
   preset-gardener-azure-kyma-integration: "true"
   preset-kyma-development-artifacts-bucket: "true"
   preset-cluster-version: "true"
-  preset-pod-security-policy: "true"
+  preset-gke-pod-security-policy: "true"
 
 presubmits: # runs on PRs
   kyma-project/kyma:

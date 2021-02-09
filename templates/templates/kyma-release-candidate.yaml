@@ -41,7 +41,7 @@ job_labels_template: &job_labels_template
   preset-gke-kyma-developers-group: "true"
   preset-docker-push-repository-kyma: "true"
   preset-cluster-version: "true"
-  preset-pod-security-policy: "true"
+  preset-gke-pod-security-policy: "true"
 
 postsubmits:
   kyma-project/kyma:
