@@ -1,0 +1,195 @@
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/examples/examples-buildpack.yaml
+        localSets:
+          default:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+        jobConfigs:
+          - repoName: "kyma-project/examples"
+            jobs:
+              - jobConfig:
+                  run_if_changed: "^event-email-service/"
+                  name: "pre-master-examples-event-email-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/event-email-service"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-node"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^event-email-service/"
+                  name: "post-master-examples-event-email-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/event-email-service"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-node"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  run_if_changed: "^http-db-service/"
+                  name: "pre-master-examples-http-db-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/http-db-service"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^http-db-service/"
+                  name: "post-master-examples-http-db-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/http-db-service"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  run_if_changed: "^monitoring-custom-metrics/"
+                  name: "pre-master-examples-monitoring-custom-metrics"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^monitoring-custom-metrics/"
+                  name: "post-master-examples-monitoring-custom-metrics"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/monitoring-custom-metrics"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  run_if_changed: "^orders-service/"
+                  name: "pre-master-examples-orders-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/orders-service"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^orders-service/"
+                  name: "post-master-examples-orders-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/orders-service"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  run_if_changed: "^tests/http-db-service/"
+                  name: "pre-master-examples-tests-http-db-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^tests/http-db-service/"
+                  name: "post-master-examples-tests-http-db-service"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/tests/http-db-service"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  run_if_changed: "^tracing/"
+                  name: "pre-master-examples-tracing"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/tracing"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
+              - jobConfig:
+                  run_if_changed: "^tracing/"
+                  name: "post-master-examples-tracing"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/examples/tracing"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "build_labels"
+                  local:
+                    - "default"
