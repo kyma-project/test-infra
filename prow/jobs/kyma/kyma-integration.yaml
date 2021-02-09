@@ -209,6 +209,7 @@ gke_job_labels_template: &gke_job_labels_template
   preset-kyma-artifacts-bucket: "true"
   preset-cluster-use-ssd: "true"
   preset-cluster-version: "true"
+  preset-pod-security-policy: "true"
 
 gke_backup_job_labels_template: &gke_backup_job_labels_template
   preset-weekly-github-integration: "true"
