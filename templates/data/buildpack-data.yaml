@@ -475,3 +475,26 @@ templates:
                       run_if_changed: '^development/image-guard/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
                         - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-guard"
+                  - jobConfig:
+                     name: "pre-test-infra-github-connector-webhook-gateway"
+                     run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                     args:
+                       - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+                    inheritedConfigs:
+                      global:
+                        - "image_buildpack-golang"
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-github-connector-webhook-gateway"
+                      run_if_changed: '^development/github-slack-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                      args:
+                        - "/home/prow/go/src/github.com/kyma-project/test-infra/development/github-slack-connector/githubWebhookGateway"
+                    inheritedConfigs:
+                      global:
+                        - "image_buildpack-golang"
+                      local:
+                        - "default"
+                        - "postsubmit"
+                        
