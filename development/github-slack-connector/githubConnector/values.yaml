@@ -1,6 +1,6 @@
 webhookGateway:
   containerPort: 8080
-  image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:1.1.0"
+  image: "eu.gcr.io/kyma-project/test-infra/github-webhook-gateway:PR-3267"
   webhookSecretValue: "dummy-secret"
 appName: "github-connector"
 slackAppName: "slack-connector"

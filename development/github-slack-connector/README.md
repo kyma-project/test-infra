@@ -21,7 +21,7 @@ You can [install](#quick-start) an example scenario, which labels issues on GitH
 
 This diagram shows the interaction of the components in the described scenario:
 
-![Software architecture image](docs/assets/flowdiagram.svg)
+![Software architecture image]
 
 ## Quick start
 
@@ -55,8 +55,8 @@ You can install the Connectors and start using them in just a few steps. Follow 
 
 Install the Connectors locally or on a cluster. For installation details, see the corresponding guides:
 
-* [The GitHub Connector installation](/docs/github-connector/installation.md)
-* [The Slack Connector installation](/docs/slack-connector/installation.md)
+* [The GitHub Connector installation]
+* [The Slack Connector installation]
 
 ## Development
 
