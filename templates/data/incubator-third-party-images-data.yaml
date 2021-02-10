@@ -301,3 +301,32 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "default"
+
+              - jobConfig:
+                  name: "pre-master-tpi-grafana"
+                  run_if_changed: "^grafana/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/grafana"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-master-tpi-grafana"
+                  run_if_changed: "^grafana/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/grafana"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
