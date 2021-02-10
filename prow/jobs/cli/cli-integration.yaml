@@ -104,6 +104,7 @@ periodics:
       testgrid-create-test-group: "false"
     decorate: true
     skip_report: true
+    report: false
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
       preset-gardener-gcp-kyma-integration: "true"
@@ -142,6 +143,7 @@ periodics:
       testgrid-create-test-group: "false"
     decorate: true
     skip_report: true
+    report: false
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
       preset-gardener-gcp-kyma-integration: "true"
