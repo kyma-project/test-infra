@@ -4,9 +4,6 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-master-test-infra-image-syncer-validate
-      labels:
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: '^(development/image-syncer)'
       skip_report: false
       decorate: true
@@ -31,8 +28,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-master-test-infra-image-syncer-dry-run
       labels:
-        preset-build-pr: "true"
         preset-dind-enabled: "true"
+        preset-docker-push-repository: "true"
+        preset-sa-gcr-push: "true"
       run_if_changed: '^(development/image-syncer/external-images.yaml)'
       skip_report: false
       decorate: true
@@ -61,8 +59,8 @@ postsubmits: # runs on master
       annotations:
         testgrid-create-test-group: "false"
       labels:
-        preset-build-release: "true"
         preset-dind-enabled: "true"
+        preset-docker-push-repository: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^(development/image-syncer/external-images.yaml)'
       skip_report: false
