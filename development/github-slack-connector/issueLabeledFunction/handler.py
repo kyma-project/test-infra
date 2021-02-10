@@ -4,7 +4,7 @@ from slack_sdk.errors import SlackApiError
 
 
 def main(event, context):
-	slack_channel='kyma-prow-dev-null'
+	slack_channel = os.environ['NOTIFICATION_SLACK_CHANNEL']
 	client = WebClient(base_url="{}/".format(os.environ['KYMA_SLACK_SLACK_CONNECTOR_85DED56E_303B_43B3_A950_8B1C3D519561_GATEWAY_URL']))
 	label = event["data"]["label"]["name"]
 	title = event["data"]["issue"]["title"]
@@ -12,9 +12,9 @@ def main(event, context):
 	repo = event["data"]["repository"]["name"]
 	org = event["data"]["repository"]["owner"]["login"]
 	try:
-		assignee = "Issue *{}* in repository *{}/{}* is assigned to `{}`.".format(number, org, repo, event["data"]["issue"]["assignee"]["login"])
+		assignee = "Issue #{} in repository {}/{} is assigned to `{}`.".format(number, org, repo, event["data"]["issue"]["assignee"]["login"])
 	except TypeError:
-		assignee = "Issue *{}* in repository *{}/{}* is not assigned.".format(number, org, repo)
+		assignee = "Issue #{} in repository {}/{} is not assigned.".format(number, org, repo)
 	sender = event["data"]["sender"]["login"]
 	issue_url = event["data"]["issue"]["html_url"]
 	# Run only for internal-incident and customer-incident labels
@@ -50,7 +50,7 @@ def main(event, context):
 													"text":
 														{
 															"type": "mrkdwn",
-															"text": "*{}* labeled issue `{}` as `{}`.\n{} <{}|See issue here.>".format(sender, title, label, assignee, issue_url)
+															"text": "@here {} labeled issue `{}` as `{}`.\n{} <{}|See issue here.>".format(sender, title, label, assignee, issue_url)
 														}
 												},
 												])

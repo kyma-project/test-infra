@@ -15,4 +15,9 @@ spec:
   env:
     - name: REQ_MB_LIMIT
       value: "10"
+    - name: NOTIFICATION_SLACK_CHANNEL
+      valueFrom:
+        secretKeyRef:
+          name: {{ .Release.Name }}-ghsecret
+          key: slackChannel
   runtime: python38
