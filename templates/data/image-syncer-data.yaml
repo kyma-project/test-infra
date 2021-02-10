@@ -7,9 +7,6 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-master-test-infra-image-syncer-validate"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-dind-enabled: "true"
                   privileged: "false"
                   run_if_changed: "^(development/image-syncer)"
                   command: "make"
@@ -25,7 +22,8 @@ templates:
               - jobConfig:
                   name: "pre-master-test-infra-image-syncer-dry-run"
                   labels:
-                    preset-build-pr: "true"
+                    preset-docker-push-repository: "true"
+                    preset-sa-gcr-push: "true"
                     preset-dind-enabled: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
@@ -40,7 +38,7 @@ templates:
               - jobConfig:
                   name: "post-master-test-infra-image-syncer-run"
                   labels:
-                    preset-build-release: "true"
+                    preset-docker-push-repository: "true"
                     preset-dind-enabled: "true"
                     preset-sa-gcr-push: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
