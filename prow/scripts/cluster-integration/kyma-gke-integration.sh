@@ -180,7 +180,7 @@ gcloud::set_latest_cluster_version_for_channel
 # serverless tests are failing, disabling them for now
 if [[ "${GKE_RELEASE_CHANNEL}" == "rapid" ]]; then
   # disabled: core-test-external-solution, serverless-long , serverless
-  KYMA_TESTS="connector-service console-backend api-gateway application-connector monitoring console-web dex-connection apiserver-proxy kiali core-test-external-solution application-registry application-operator service-catalog cluster-users rafter connection-token-handler istio-kyma-validate logging dex-integration"
+  KYMA_TESTS="connector-service console-backend api-gateway application-connector monitoring console-web dex-connection apiserver-proxy kiali application-registry application-operator service-catalog cluster-users rafter connection-token-handler istio-kyma-validate logging dex-integration"
   export KYMA_TESTS
 fi
 
