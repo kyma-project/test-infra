@@ -274,6 +274,35 @@ templates:
                     - "default"
 
               - jobConfig:
+                  name: "pre-master-tpi-console-nginx"
+                  run_if_changed: "^console-nginx/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/console-nginx"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-master-tpi-console-nginx"
+                  run_if_changed: "^console-nginx/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/third-party-images/console-nginx"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+
+              - jobConfig:
                   name: "pre-master-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
