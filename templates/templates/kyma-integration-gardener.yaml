@@ -353,7 +353,9 @@ periodics:
     labels:
       preset-log-collector-slack-token: "true"
       <<: *gardener_gcp_job_labels_template
-    report: false
+    reporter_config:
+      slack:
+        channel: 'kyma-prow-dev-null'
 
   - name: kyma-integration-gardener-aws
     annotations:
