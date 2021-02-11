@@ -685,13 +685,6 @@ templates:
           path: components/gateway
           since: "1.7"
           optional: false
-      - to: ../prow/jobs/incubator/compass/components/healthchecker/healthchecker-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *compass_generic_component
-          path: components/healthchecker
-          since: "1.7"
-          optional: false
       - to: ../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         values:
           <<: *cluster_default

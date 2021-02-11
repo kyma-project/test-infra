@@ -51,16 +51,6 @@ var components = []struct {
 		},
 	},
 	{
-		name:  "healthchecker",
-		image: tester.ImageBootstrapTestInfraLatest,
-		suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.CompassRepo(),
-			jobsuite.AllReleases(),
-		},
-	},
-	{
 		name:  "schema-migrator",
 		image: tester.ImageBootstrapTestInfraLatest,
 		suite: tester.NewGenericComponentSuite,
