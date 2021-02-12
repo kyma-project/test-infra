@@ -25,6 +25,9 @@ echo "PATH: ${PATH}"
 echo "GOPATH: ${GOPATH}"
 echo -e "${NC}"
 
+# GOPROXY="http://athens-proxy.c.sap-kyma-prow.internal:80"
+# export GOPROXY
+
 function check_result() {
   local step=$1
   local result=$2
@@ -39,9 +42,22 @@ function check_result() {
 }
 
 ##
+# GO MOD DOWNLOAD
+##
+echo "? $(date +"%Y/%m/%d %T %Z") go mod download"
+go mod download
+ensureResult=$?
+if [ ${ensureResult} != 0 ]; then
+  echo -e "${RED}✗ go mod download${NC}\n$ensureResult${NC}"
+  exit 1
+else
+  echo -e "${GREEN}√ go mod download${NC}"
+fi
+
+##
 # GO MOD VERIFY
 ##
-echo "? go mod verify"
+echo "? $(date +"%Y/%m/%d %T %Z") go mod verify"
 go mod verify
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
@@ -54,7 +70,7 @@ fi
 ##
 # GO TEST
 ##
-echo "? go test"
+echo "? $(date +"%Y/%m/%d %T %Z") go test"
 go test -count=1 "${DIRS_TO_CHECK[@]}"
 
 check_result "go test" $?
@@ -62,7 +78,7 @@ check_result "go test" $?
 ##
 #  GO LINT
 ##
-echo "? golint"
+echo "? $(date +"%Y/%m/%d %T %Z") golint"
 go get golang.org/x/lint/golint
 buildLintResult=$?
 if [ ${buildLintResult} != 0 ]; then
@@ -81,7 +97,7 @@ fi
 ##
 # GO IMPORTS & FMT
 ##
-echo "? goimports"
+echo "? $(date +"%Y/%m/%d %T %Z") goimports"
 go get golang.org/x/tools/cmd/goimports
 buildGoImportResult=$?
 if [ ${buildGoImportResult} != 0 ]; then
@@ -107,7 +123,7 @@ fi
 ##
 # GO VET
 ##
-echo "? go vet"
+echo "? $(date +"%Y/%m/%d %T %Z") go vet"
 for vPackage in "${DIRS_TO_CHECK[@]}"; do
   vetResult=$(go vet "${vPackage}")
   check_result "go vet ${vPackage}" "${#vetResult}" "${vetResult}"
