@@ -45,7 +45,7 @@ function check_result() {
 # GO MOD DOWNLOAD
 ##
 echo "? $(date +"%Y/%m/%d %T %Z") go mod download"
-go mod download
+go mod download -x
 ensureResult=$?
 if [ ${ensureResult} != 0 ]; then
   echo -e "${RED}✗ go mod download${NC}\n$ensureResult${NC}"
