@@ -616,6 +616,13 @@ templates:
           since: "1.18"
   - from: templates/generic-compass-component.yaml
     render:
+      - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: components/operations-controller
+          since: "1.19"
+          optional: false
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *cluster_default
@@ -691,6 +698,13 @@ templates:
           <<: *compass_generic_component
           path: components/schema-migrator
           since: "1.7"
+          optional: false
+      - to: ../prow/jobs/incubator/compass/tests/operations-controller/operations-controller-tests-generic.yaml
+        values:
+          <<: *cluster_default
+          <<: *compass_generic_component
+          path: tests/operations-controller
+          since: "1.19"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
