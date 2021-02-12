@@ -155,7 +155,7 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
-			jobsuite.Since(releases.Release118),
+			jobsuite.Since(releases.Release119),
 		},
 	},
 }

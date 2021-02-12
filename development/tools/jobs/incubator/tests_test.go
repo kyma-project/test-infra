@@ -74,7 +74,7 @@ var tests = []struct {
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.CompassRepo(),
 			jobsuite.AllReleases(),
-			jobsuite.Since(releases.Release118),
+			jobsuite.Since(releases.Release119),
 		},
 	},
 }

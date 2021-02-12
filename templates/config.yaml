@@ -617,7 +617,7 @@ templates:
           <<: *cluster_default
           <<: *compass_generic_component
           path: components/operations-controller
-          since: "1.18"
+          since: "1.19"
           optional: false
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
@@ -708,7 +708,7 @@ templates:
           <<: *cluster_default
           <<: *compass_generic_component
           path: tests/operations-controller
-          since: "1.18"
+          since: "1.19"
           optional: false
       - to: ../prow/jobs/incubator/compass/tests/connector-tests/connector-tests-generic.yaml
         values:
