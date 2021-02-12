@@ -25,8 +25,8 @@ echo "PATH: ${PATH}"
 echo "GOPATH: ${GOPATH}"
 echo -e "${NC}"
 
-# GOPROXY="http://athens-proxy.c.sap-kyma-prow.internal:80"
-# export GOPROXY
+GOPROXY="http://athens-proxy.c.sap-kyma-prow.internal:80"
+export GOPROXY
 
 function check_result() {
   local step=$1
