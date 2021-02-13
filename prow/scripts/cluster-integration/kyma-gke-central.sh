@@ -190,6 +190,7 @@ metadata:
 data:
   global.domainName: "${DOMAIN}"
   global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+  global.certificates.selfSigned: "true"
 ---
 apiVersion: v1
 kind: ConfigMap

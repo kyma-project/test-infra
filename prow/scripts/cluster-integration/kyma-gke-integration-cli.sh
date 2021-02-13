@@ -152,6 +152,8 @@ metadata:
     kyma-project.io/installation: ""
 data:
   global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
+  global.certificates.selfSigned: "true"
+
 ---
 apiVersion: v1
 kind: ConfigMap
