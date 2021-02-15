@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.20"
+  nextRelease: "1.21"
   releases:
+    - "1.20"
     - "1.19"
     - "1.18"
-    - "1.17"
 
 globalSets:
   # Image sets
