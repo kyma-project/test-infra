@@ -152,6 +152,14 @@ compass_generic_component: &compass_generic_component
   additionalRunIfChanged:
     - ^scripts/
 
+compass_controller_component: &compass_controller_component
+  repository: github.com/kyma-incubator/compass
+  build: build
+  pushRepository: incubator
+  imageTag: v20201113-a3e68400
+  additionalRunIfChanged:
+    - ^scripts/
+
 compass_ord_service_generic_component: &compass_ord_service_generic_component
   repository: github.com/kyma-incubator/ord-service
   build: build
@@ -606,15 +614,17 @@ templates:
           <<: *console_generic_component
           path: pamela
           since: "1.18"
-  - from: templates/generic-compass-component.yaml
+  - from: templates/generic-compass-controller-component.yaml
     render:
       - to: ../prow/jobs/incubator/compass/components/operations-controller/operations-controller-generic.yaml
         values:
           <<: *cluster_default
-          <<: *compass_generic_component
+          <<: *compass_controller_component
           path: components/operations-controller
           since: "1.19"
           optional: false
+  - from: templates/generic-compass-component.yaml
+    render:
       - to: ../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         values:
           <<: *cluster_default
