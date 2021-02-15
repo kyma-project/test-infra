@@ -1,10 +1,10 @@
 - channelName: "#kyma-default-notifications"
-  channelID: "C01DWQK3W5B"
+  channelID: "C01N0UPPF29"
   onlyReportFailure: true
   testCases:
     - default
 - channelName: "#wookiee-notifications"
-  channelID: "C01DWLHBHKP"
+  channelID: "C01NUBR3L72"
   onlyReportFailure: true
   testCases:
     - serverless-long
