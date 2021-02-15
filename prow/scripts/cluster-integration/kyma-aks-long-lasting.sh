@@ -178,7 +178,8 @@ function createPublicIPandDNS() {
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
 	az network public-ip create -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" -l "${REGION}" --allocation-method static --sku Standard
 
-	export GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
+	export GATEWAY_IP_ADDRESS
+	GATEWAY_IP_ADDRESS=$(az network public-ip show -g "${CLUSTER_RS_GROUP}" -n "${GATEWAY_IP_ADDRESS_NAME}" --query ipAddress -o tsv)
 	log::success "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
@@ -207,8 +208,8 @@ function installKyma() {
 	log::info "Apply Azure crb for healthz"
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
-    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst > "$PWD/kyma-installer-overrides.yaml"
-    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" | envsubst > "$PWD/overrides-dex-and-monitoring.yaml"
+  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
+  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	log::info "Trigger installation"
 
@@ -216,8 +217,9 @@ function installKyma() {
 			--ci \
 			--source master \
 			-o "${KYMA_RESOURCES_DIR}"/installer-config-production.yaml.tpl \
-            -o "$PWD/kyma-installer-overrides.yaml" \
+      -o "$PWD/kyma-installer-overrides.yaml" \
 			-o "$PWD/overrides-dex-and-monitoring.yaml" \
+			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-cert "${TLS_CERT}" \

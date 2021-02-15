@@ -87,7 +87,8 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
 	GATEWAY_IP_ADDRESS_NAME="${STANDARIZED_NAME}"
-	export GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
+	export GATEWAY_IP_ADDRESS
+	GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "${GATEWAY_IP_ADDRESS_NAME}")
 	echo "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
 	log::info "Create DNS Record for Ingressgateway IP"
@@ -128,18 +129,17 @@ function installKyma() {
 
 	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
 
-    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst > "$PWD/kyma-installer-overrides.yaml"
-    cat "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" | envsubst > "$PWD/overrides-dex-and-monitoring.yaml"
+    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
+    envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	log::info "Trigger installation"
-
-	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 	kyma install \
 			--ci \
 			--source master \
 			-o "$PWD/kyma-installer-overrides.yaml" \
 			-o "$PWD/overrides-dex-and-monitoring.yaml" \
+			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \
 			--tls-cert "${TLS_CERT}" \
@@ -233,7 +233,7 @@ kubectl delete deployment -n kube-system stackdriver-metadata-agent-cluster-leve
 
 log::info "Collect list of images"
 if [ -z "$ARTIFACTS" ] ; then
-    ARTIFACTS:=/tmp/artifacts
+    ARTIFACTS=/tmp/artifacts
 fi
 
 IMAGES_LIST=$(kubectl get pods --all-namespaces -o go-template --template='{{range .items}}{{range .status.containerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{range .status.initContainerStatuses}}{{.name}},{{.image}},{{.imageID}}{{printf "\n"}}{{end}}{{end}}' | uniq | sort)

@@ -156,7 +156,8 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
-export GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "$GATEWAY_IP_ADDRESS_NAME")
+export GATEWAY_IP_ADDRESS
+GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "$GATEWAY_IP_ADDRESS_NAME")
 export CLEANUP_GATEWAY_IP_ADDRESS="true"
 log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
 
@@ -187,7 +188,7 @@ TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 log::info "Create Kyma CLI overrides"
-cat "${TEST_INFRA_SOURCES_DIR}/scripts/resources/kyma-installer-overrides.tpl.yaml" | envsubst > "$PWD/kyma-installer-overrides.yaml"
+envsubst < "${TEST_INFRA_SOURCES_DIR}/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
 
 log::info "Installation triggered"
 
