@@ -49,6 +49,22 @@ test_infra_ref: &test_infra_ref
 postsubmits: # runs on merges
   kyma-project/kyma:
     
+    - name: post-rel120-kyma-gke-release-upgrade
+      cluster: trusted-workload
+      annotations:
+        testgrid-dashboards: kyma_release-1.20
+        # testgrid-alert-email: email-here@sap.com
+        testgrid-num-failures-to-alert: '1'
+        testgrid-days-of-results: "90"
+      <<: *gke_upgrade_job_template
+      branches:
+        - '^1\.20\.\d+(?:-.*)?$' # release tags
+      labels:
+        <<: *job_labels_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.20
+      
     - name: post-rel119-kyma-gke-release-upgrade
       cluster: trusted-workload
       annotations:
@@ -80,20 +96,4 @@ postsubmits: # runs on merges
       extra_refs:
         - <<: *test_infra_ref
           base_ref: release-1.18
-      
-    - name: post-rel117-kyma-gke-release-upgrade
-      cluster: trusted-workload
-      annotations:
-        testgrid-dashboards: kyma_release-1.17
-        # testgrid-alert-email: email-here@sap.com
-        testgrid-num-failures-to-alert: '1'
-        testgrid-days-of-results: "90"
-      <<: *gke_upgrade_job_template
-      branches:
-        - '^1\.17\.\d+(?:-.*)?$' # release tags
-      labels:
-        <<: *job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.17
       

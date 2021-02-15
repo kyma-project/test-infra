@@ -52,7 +52,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -62,7 +62,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -72,7 +72,7 @@ var tests = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("tests-generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 	{

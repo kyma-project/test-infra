@@ -42,6 +42,16 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
     
+    - name: pre-rel120-kyma-components-uaa-activator
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.20
+      branches:
+        - release-1.20
+    
     - name: pre-rel119-kyma-components-uaa-activator
       cluster: untrusted-workload
       optional: false
@@ -62,16 +72,6 @@ presubmits: # runs on PRs
       branches:
         - release-1.18
     
-    - name: pre-rel117-kyma-components-uaa-activator
-      cluster: untrusted-workload
-      optional: false
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.17
-      branches:
-        - release-1.17
-    
 
 postsubmits:
   kyma-project/kyma:
@@ -87,6 +87,17 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel120-kyma-components-uaa-activator
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.20
+      branches:
+        - release-1.20
+    
     - name: post-rel119-kyma-components-uaa-activator
       cluster: trusted-workload
       annotations:
@@ -108,15 +119,4 @@ postsubmits:
           base_ref: release-1.18
       branches:
         - release-1.18
-    
-    - name: post-rel117-kyma-components-uaa-activator
-      cluster: trusted-workload
-      annotations:
-        testgrid-create-test-group: "false"
-      <<: *job_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: release-1.17
-      branches:
-        - release-1.17
     

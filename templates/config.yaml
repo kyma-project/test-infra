@@ -1,9 +1,9 @@
 global:
-  nextRelease: "1.20"
+  nextRelease: "1.21"
   releases:
+    - "1.20"
     - "1.19"
     - "1.18"
-    - "1.17"
 
 globalSets:
   # Image sets
@@ -447,14 +447,6 @@ templates:
           <<: *kyma_generic_component
           path: components/dex-static-user-configurer
           since: "1.7"
-      - to: ../prow/jobs/kyma/components/istio-kyma-patch/istio-kyma-patch-generic.yaml
-        values:
-          <<: *cluster_default
-          <<: *kyma_generic_component
-          path: components/istio-kyma-patch
-          since: "1.7"
-          until: "1.17"
-          optional: true
       - to: ../prow/jobs/kyma/components/istio-installer/istio-installer-generic.yaml
         values:
           <<: *cluster_default
