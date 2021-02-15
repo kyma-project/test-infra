@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-overrides
+  namespace: kyma-installer
+  labels:
+    installer: overrides
+    component: monitoring
+    kyma-project.io/installation: ""
+data:
+  prometheus-istio.server.resources.limits.memory: "8Gi"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "cluster-essentials-overrides"
+  namespace: "kyma-installer"
+  labels:
+    installer: overrides
+    kyma-project.io/installation: ""
+    component: cluster-essentials
+data:
+  limitRange.max.memory: "8Gi"

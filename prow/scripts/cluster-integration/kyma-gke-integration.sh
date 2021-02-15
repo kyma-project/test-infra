@@ -156,6 +156,7 @@ DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --fo
 
 log::info "Reserve IP Address for Ingressgateway"
 GATEWAY_IP_ADDRESS_NAME="${COMMON_NAME}"
+export GATEWAY_IP_ADDRESS
 GATEWAY_IP_ADDRESS=$(gcloud::reserve_ip_address "$GATEWAY_IP_ADDRESS_NAME")
 export CLEANUP_GATEWAY_IP_ADDRESS="true"
 log::info "Created IP Address for Ingressgateway: ${GATEWAY_IP_ADDRESS}"
@@ -194,69 +195,7 @@ TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 log::info "Create Kyma CLI overrides"
-
-cat << EOF > "$PWD/kyma-installer-overrides.yaml"
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "installation-config-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-data:
-  global.domainName: "${DOMAIN}"
-  global.loadBalancerIP: "${GATEWAY_IP_ADDRESS}"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "core-test-ui-acceptance-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: core
-data:
-  test.acceptance.ui.logging.enabled: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "application-registry-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: application-connector
-data:
-  application-registry.deployment.args.detailedErrorResponse: "true"
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: "istio-overrides"
-  namespace: "kyma-installer"
-  labels:
-    installer: overrides
-    kyma-project.io/installation: ""
-    component: istio
-data:
-  kyma_istio_operator: |
-    apiVersion: install.istio.io/v1alpha1
-    kind: IstioOperator
-    metadata:
-      namespace: istio-system
-    spec:
-      components:
-        ingressGateways:
-          - name: istio-ingressgateway
-            k8s:
-              service:
-                loadBalancerIP: ${GATEWAY_IP_ADDRESS}
-                type: LoadBalancer
-EOF
-cat "$PWD/kyma-installer-overrides.yaml"
+envsubst < "${TEST_INFRA_SOURCES_DIR}/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
 
 log::info "Installation triggered"
 

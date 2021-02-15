@@ -157,10 +157,6 @@ function installKyma() {
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
         --output installer-cr-azure-eventhubs.yaml.tpl
 
-    log::info "Downlading production profile"
-    curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-production.yaml.tpl" \
-        --output installer-config-production.yaml.tpl
-
     log::info "Downloading Azure EventHubs config"
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${LAST_RELEASE_VERSION}/installation/resources/installer-config-azure-eventhubs.yaml.tpl" \
         --output installer-config-azure-eventhubs.yaml.tpl
@@ -181,7 +177,6 @@ function installKyma() {
         --ci \
         --source "${LAST_RELEASE_VERSION}" \
         -c installer-cr-azure-eventhubs.yaml.tpl \
-        -o installer-config-production.yaml.tpl \
         -o installer-config-azure-eventhubs.yaml.tpl \
         -o "${EVENTHUB_SECRET_OVERRIDE_FILE}" \
         -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
@@ -284,10 +279,6 @@ function upgradeKyma() {
     curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-cr-azure-eventhubs.yaml.tpl" \
         --output installer-cr-azure-eventhubs.yaml.tpl
 
-    log::info "Downloading production profile"
-        curl -L --silent --fail --show-error "https://raw.githubusercontent.com/kyma-project/kyma/${TARGET_VERSION:0:8}/installation/resources/installer-config-production.yaml.tpl" \
-        --output installer-config-production.yaml.tpl
-
     log::info "Triggering update with timeout ${KYMA_UPDATE_TIMEOUT}"
     (
         set -x
@@ -295,7 +286,6 @@ function upgradeKyma() {
             --ci \
             --source "${TARGET_VERSION:0:8}" \
             -c installer-cr-azure-eventhubs.yaml.tpl \
-            -o installer-config-production.yaml.tpl \
             --timeout ${KYMA_UPDATE_TIMEOUT}
     )
 }
