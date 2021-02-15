@@ -43,6 +43,16 @@ presubmits: # runs on PRs
         - ^main$
         - ^pamela$
     
+    - name: pre-rel120-console-pamela
+      cluster: untrusted-workload
+      optional: false
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.20
+      branches:
+        - release-1.20
+    
     - name: pre-rel119-console-pamela
       cluster: untrusted-workload
       optional: false
@@ -78,6 +88,17 @@ postsubmits:
       - ^master$
       - ^main$
       
+    - name: post-rel120-console-pamela
+      cluster: trusted-workload
+      annotations:
+        testgrid-create-test-group: "false"
+      <<: *job_template
+      extra_refs:
+        - <<: *test_infra_ref
+          base_ref: release-1.20
+      branches:
+        - release-1.20
+    
     - name: post-rel119-console-pamela
       cluster: trusted-workload
       annotations:
