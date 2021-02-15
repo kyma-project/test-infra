@@ -96,7 +96,7 @@ var components = []struct {
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassRepo(),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 	{
@@ -132,7 +132,7 @@ var components = []struct {
 			},
 			jobsuite.JobFileSuffix("generic"),
 			jobsuite.CompassORDServiceRepo(),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 	{

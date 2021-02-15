@@ -4,7 +4,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/jobsuite"
 )
@@ -85,13 +84,6 @@ var components = []struct {
 			jobsuite.JobFileSuffix("generic"),
 		},
 	},
-	{path: "istio-kyma-patch", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
-		additionalOptions: []jobsuite.Option{
-			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Optional(),
-			jobsuite.Until(releases.Release117),
-		},
-	},
 	{path: "istio-installer", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -159,13 +151,13 @@ var components = []struct {
 	{path: "event-publisher-proxy", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 	{path: "eventing-controller", image: tester.ImageBootstrapTestInfraLatest, suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
-			jobsuite.Since(releases.Release117),
+			jobsuite.AllReleases(),
 		},
 	},
 }
