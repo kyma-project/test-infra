@@ -195,7 +195,7 @@ TLS_CERT=$(echo "${CERT_KEY}" | head -1)
 TLS_KEY=$(echo "${CERT_KEY}" | tail -1)
 
 log::info "Create Kyma CLI overrides"
-envsubst < "${TEST_INFRA_SOURCES_DIR}/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
+envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
 
 log::info "Installation triggered"
 
