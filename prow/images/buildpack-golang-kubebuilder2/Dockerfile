@@ -27,8 +27,10 @@ RUN curl -L -O "https://github.com/kubernetes-sigs/kubebuilder/releases/download
     mv kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH} kubebuilder && \
     mv kubebuilder /usr/local/
 
-RUN curl -L -o kustomize "https://github.com/kubernetes-sigs/kustomize/releases/download/v${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_${ARCH}" && \
-    chmod u+x kustomize && \
+RUN curl -L -o kustomize "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz" && \
+    tar -zxvf kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
+    rm kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz && \
+    mv kustomize_v${KUSTOMIZE_VERSION}_linux_${ARCH}.tar.gz kustomize && \
     mv kustomize /usr/local/bin/kustomize
 
 # Paths
