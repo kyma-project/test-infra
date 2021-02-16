@@ -37,7 +37,7 @@ echo DOCKER_TAG "${DOCKER_TAG}"
 
 # Adding script argument checking allows to define custom build targets because `ci-release` is not in several Makefiles.
 if [ -n "$1" ]; then
-  make -C "${SOURCES_DIR}" "$@"
+  make -C "${SOURCES_DIR}" "$@" | while read line ; do echo "$(date +"%Y/%m/%d %T %Z")| $line"; done;
 else
-  make -C "${SOURCES_DIR}" release
+  make -C "${SOURCES_DIR}" release | while read line ; do echo "$(date +"%Y/%m/%d %T %Z")| $line"; done;
 fi
