@@ -1,2 +1,6 @@
 pjNames:
-  - pjName: pre-kyma-components-eventing-controller
+  - pjName: pre-kyma-components-application-gateway
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 10600
