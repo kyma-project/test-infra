@@ -131,12 +131,18 @@ func main() {
 	for _, dataFile := range dataFiles {
 		if !dataFile.IsDir() {
 			var dataFileConfig Config
-			file, err := ioutil.ReadFile(filepath.Join(dataFilesDir, dataFile.Name()))
+			var cfg bytes.Buffer
+			// load datafile as template
+			t, err := loadTemplate(dataFilesDir, dataFile.Name())
 			if err != nil {
-				log.Fatalf("Cannot read data file: %s", err)
+				log.Fatalf("Could not load data file %s: %v", dataFile.Name(), err)
 			}
-			err = yaml.Unmarshal(file, &dataFileConfig)
-			if err != nil {
+			// execute rendering the datafile from template and store it in-memory
+			// at this point the config has all the global values from config.yaml file
+			if err := t.Execute(&cfg, config); err != nil {
+				log.Fatalf("Cannot render data template: %v", err)
+			}
+			if err := yaml.Unmarshal(cfg.Bytes(), &dataFileConfig); err != nil {
 				log.Fatalf("Cannot parse data file yaml: %s\n", err)
 			}
 			dataFilesTemplates = append(dataFilesTemplates, dataFileConfig.Templates...)
