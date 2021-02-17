@@ -10,6 +10,8 @@
     - serverless-long
     - serverless
     - rafter
+    - execute-serverlessupgradetest
+    - prepare-serverlessupgradetest
 - channelName: "#framefrog-notifications"
   channelID: "C01FNPJDHLJ"
   onlyReportFailure: true
