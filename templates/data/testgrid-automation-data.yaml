@@ -48,5 +48,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
