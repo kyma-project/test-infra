@@ -223,10 +223,7 @@ if [ -z "$ARTIFACTS" ] ; then
 fi
 
 # generate pod-security-policy list in json
-## this is false-positive as we need to use single-quotes for jq
-# shellcheck disable=SC2016
-PSP_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ pods: [ .items[] | .metadata.ownerReferences[0].name as $owner | .metadata.annotations."kubernetes.io\/psp" as $psp | { name: .metadata.name, namespace: .metadata.namespace, owner: $owner, psp: $psp} ] | unique | group_by(.name) | map({ name: .[0].name, namespace: .[0].namespace, owner: .[0].owner, psp: .[0].psp }) | sort_by(.psp, .name)}' )
-echo "${PSP_LIST}" > "${ARTIFACTS}/kyma-psp-${CLUSTER_NAME}.json"
+utils::save_psp_list "${ARTIFACTS}/kyma-psp-${CLUSTER_NAME}.json"
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

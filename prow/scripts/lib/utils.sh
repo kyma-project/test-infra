@@ -244,3 +244,21 @@ function utils::deprovision_gardener_cluster() {
   kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" annotate shoot "${GARDENER_CLUSTER_NAME}" confirmation.gardener.cloud/deletion=true --overwrite
   kubectl --kubeconfig "${GARDENER_CREDENTIALS}" -n "${NAMESPACE}" delete shoot "${GARDENER_CLUSTER_NAME}" --wait=false
 }
+
+
+# utils::save_psp_list generates pod-security-policy list and saves it to json file
+#
+# Arguments
+# $1 - Name of the output json file
+function utils::save_psp_list() {
+  if [ -z "$1" ]; then
+    echo "File name is empty. Exiting..."
+    exit 1
+  fi
+  local output_path=$1
+
+  # this is false-positive as we need to use single-quotes for jq
+  # shellcheck disable=SC2016
+  PSP_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ pods: [ .items[] | .metadata.ownerReferences[0].name as $owner | .metadata.annotations."kubernetes.io\/psp" as $psp | { name: .metadata.name, namespace: .metadata.namespace, owner: $owner, psp: $psp} ] | unique | group_by(.name) | map({ name: .[0].name, namespace: .[0].namespace, owner: .[0].owner, psp: .[0].psp }) | sort_by(.psp, .name)}' )
+  echo "${PSP_LIST}" > "${output_path}"
+}
