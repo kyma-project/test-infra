@@ -33,5 +33,6 @@ templates:
                     - "image_buildpack-node"
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
+                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"

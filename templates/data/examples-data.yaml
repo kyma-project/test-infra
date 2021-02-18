@@ -36,6 +36,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "build_labels"
+                    - "disable_testgrid"
                   local:
                     - "default"
 
@@ -67,6 +68,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "build_labels"
+                    - "disable_testgrid"
                   local:
                     - "default"
 
@@ -98,6 +100,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "build_labels"
+                    - "disable_testgrid"
                   local:
                     - "default"
 
@@ -129,6 +132,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "build_labels"
+                    - "disable_testgrid"
                   local:
                     - "default"
 
@@ -160,6 +164,7 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "build_labels"
+                    - "disable_testgrid"
                   local:
                     - "default"
 
@@ -191,5 +196,6 @@ templates:
                     - "jobConfig_postsubmit"
                     - "extra_refs_test-infra"
                     - "build_labels"
+                    - "disable_testgrid"
                   local:
                     - "default"

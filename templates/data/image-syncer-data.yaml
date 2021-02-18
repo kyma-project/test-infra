@@ -51,3 +51,4 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_postsubmit"
+                    - "disable_testgrid"
