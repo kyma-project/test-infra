@@ -246,7 +246,7 @@ IMAGES_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ images: [.items[
 echo "${IMAGES_LIST}" > "${ARTIFACTS}/kyma-images-${CLUSTER_NAME}.json"
 
 # generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp-${CLUSTER_NAME}.json"
+utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 log::info "Gather Kubeaudit logs"
 curl -sL https://github.com/Shopify/kubeaudit/releases/download/v0.11.8/kubeaudit_0.11.8_linux_amd64.tar.gz | tar -xzO kubeaudit > ./kubeaudit

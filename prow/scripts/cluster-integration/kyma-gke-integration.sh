@@ -223,7 +223,7 @@ if [ -z "$ARTIFACTS" ] ; then
 fi
 
 # generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp-${CLUSTER_NAME}.json"
+utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
