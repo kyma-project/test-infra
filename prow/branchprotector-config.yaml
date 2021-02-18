@@ -24,7 +24,6 @@ branch-protection:
                   - pre-rel120-kyma-integration
                   - pre-rel120-kyma-gke-integration
                   - pre-rel120-kyma-gke-upgrade
-                  - pre-rel120-kyma-gke-central-connector
                   - pre-rel120-kyma-artifacts
             release-1.19:
               required_status_checks:
@@ -32,7 +31,6 @@ branch-protection:
                   - pre-rel119-kyma-integration
                   - pre-rel119-kyma-gke-integration
                   - pre-rel119-kyma-gke-upgrade
-                  - pre-rel119-kyma-gke-central-connector
                   - pre-rel119-kyma-artifacts
             release-1.18:
               required_status_checks:
@@ -40,7 +38,6 @@ branch-protection:
                   - pre-rel118-kyma-integration
                   - pre-rel118-kyma-gke-integration
                   - pre-rel118-kyma-gke-upgrade
-                  - pre-rel118-kyma-gke-central-connector
                   - pre-rel118-kyma-artifacts
         test-infra:
           required_status_checks:

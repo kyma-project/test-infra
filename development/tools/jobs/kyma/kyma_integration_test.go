@@ -117,26 +117,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/test/test/README.MD",
 			},
 		},
-		"Should contain the gke-central job": {
-			givenJobName: "pre-master-kyma-gke-central-connector",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.BuildPr,
-				preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-			expRunIfChangedRegex: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))",
-			expRunIfChangedPaths: []string{
-				"resources/application-connector/values.yaml",
-				"installation/file.yaml",
-				"resources/core/templates/tests/test-external-solution.yaml",
-			},
-			expNotRunIfChangedPaths: []string{
-				"installation/README.md",
-				"installation/test/test/README.MD",
-				"resources/test/values.yaml",
-			},
-		},
 	}
 
 	for tn, tc := range tests {
@@ -229,15 +209,6 @@ func TestKymaIntegrationJobsPostsubmit(t *testing.T) {
 		},
 		"Should contain the gke-upgrade job": {
 			givenJobName: "post-master-kyma-gke-upgrade",
-
-			expPresets: []preset.Preset{
-				preset.GCProjectEnv, preset.BuildMaster,
-				preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration",
-				"preset-gc-compute-envs", "preset-docker-push-repository-gke-integration",
-			},
-		},
-		"Should contain the gke-central job": {
-			givenJobName: "post-master-kyma-gke-central-connector",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.BuildMaster,
