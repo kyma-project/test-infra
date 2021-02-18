@@ -217,6 +217,14 @@ if [ -n "$(kubectl get  service -n kyma-system apiserver-proxy-ssl --ignore-not-
     export CLEANUP_APISERVER_DNS_RECORD="true"
 fi
 
+log::info "Collect list of images"
+if [ -z "$ARTIFACTS" ] ; then
+    ARTIFACTS=/tmp/artifacts
+fi
+
+# generate pod-security-policy list in json
+utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
 # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
 if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
   export ENABLE_TEST_LOG_COLLECTOR=true

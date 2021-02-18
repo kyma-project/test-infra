@@ -826,6 +826,7 @@ periodics:
       preset-nightly-github-integration: "true"
       preset-kms-gc-project-env: "true"
       preset-certificates-bucket: "true"
+      preset-gke-pod-security-policy: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
@@ -898,6 +899,7 @@ periodics:
       preset-weekly-github-integration: "true"
       preset-kms-gc-project-env: "true"
       preset-certificates-bucket: "true"
+      preset-gke-pod-security-policy: "true"
       <<: *gke_job_labels_template
     decorate: true
     extra_refs:
