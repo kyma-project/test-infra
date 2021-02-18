@@ -37,11 +37,12 @@ globalSets:
   jobConfig_postsubmit:
     type_postsubmit: "true"
     cluster: "trusted-workload"
-    annotations:
-      testgrid-create-test-group: "false"
   jobConfig_periodic:
     type_periodic: "true"
     cluster: "untrusted-workload"
+  disable_testgrid:
+    annotations:
+      testgrid-create-test-group: "false"
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:

@@ -29,6 +29,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
+                    - "disable_testgrid"
                     - "image_buildpack-golang"
                     - "build_labels"
                   local:
