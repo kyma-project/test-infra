@@ -13,7 +13,7 @@ import (
 func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/release/kyma-old-releases.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-integration", currentRelease), currentRelease.Branch())
@@ -37,7 +37,7 @@ func TestKymaIntegrationVMJobsReleases(t *testing.T) {
 func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
 	for _, currentRelease := range releases.GetAllKymaReleases() {
 		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
+			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/release/kyma-old-releases.yaml")
 			// THEN
 			require.NoError(t, err)
 			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-integration", currentRelease), currentRelease.Branch())
