@@ -207,9 +207,9 @@ cluster_default: &cluster_default
     periodic: trusted-workload
 
 templates:
-  - from: templates/kyma-release-upgrade.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
+#  - from: templates/kyma-release-upgrade.yaml
+#    render:
+#      - to: ../prow/jobs/kyma/kyma-release-upgrade.yaml
   - from: templates/generic-component.yaml
     render:
       - to: ../prow/jobs/kyma/components/application-broker/application-broker-generic.yaml
@@ -796,11 +796,11 @@ templates:
         values:
           <<: *cluster_default
           since: "1.13"
-  - from: templates/kyma-release-candidate.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
-        values:
-          <<: *cluster_default
+#  - from: templates/kyma-release-candidate.yaml
+#    render:
+#      - to: ../prow/jobs/kyma/kyma-release-candidate.yaml
+#        values:
+#          <<: *cluster_default
   - from: templates/compass-integration.yaml
     render:
       - to: ../prow/jobs/incubator/compass/compass-integration.yaml

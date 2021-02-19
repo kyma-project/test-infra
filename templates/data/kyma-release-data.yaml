@@ -220,5 +220,55 @@ templates:
                     - "test-infra"
                     - "bot_token"
                     - "gke_config"
-
-
+              - jobConfig:
+                  name: post-rel{{ $relShort }}-kyma-release-candidate
+                  branches:
+                    - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
+                  annotations:
+                    testgrid-dashboards: kyma_release-{{ $rel }}
+                    description: Release candidate job for Kyma {{ $rel }}.
+                    testgrid-days-of-results: "60"
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kyma-artifacts-bucket: "true"
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                    preset-gke-kyma-developers-group: "true"
+                    preset-docker-push-repository-kyma: "true"
+                    preset-cluster-version: "true"
+                  command: "bash"
+                  request_memory: 200Mi
+                  request_cpu: 80m
+                  args:
+                    - "-c"
+                    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-release-candidate.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                  local:
+                    - "test-infra"
+              - jobConfig:
+                  name: post-rel{{ $relShort }}-kyma-gke-release-upgrade
+                  branches:
+                    - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
+                  env:
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    NODES_PER_ZONE: "1"
+                    MACHINE_TYPE: "n1-highcpu-16"
+                  annotations:
+                    testgrid-dashboards: kyma_release-{{ $rel }}
+                    testgrid-days-of-results: "90"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-rel2rel-upgrade.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                  local:
+                    - "test-infra"
