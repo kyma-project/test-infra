@@ -28,7 +28,6 @@ images:
 - source: "oryd/hydra-maester:v0.0.15"
 - source: "oryd/hydra:v1.4.6"
 - source: "oryd/oathkeeper-maester:v0.1.0"
-- source: "oryd/oathkeeper:v0.38.2-beta.1-alpine"
 - source: "oryd/oathkeeper:v0.38.6-alpine"
 - source: "postgres:11.11-alpine"
 - source: "prom/pushgateway:v1.3.0"
