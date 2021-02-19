@@ -5,6 +5,7 @@ dashboards:
   # kyma
   - name: kyma_integration
   - name: kyma_control-plane
+  - name: kyma_release-1.21
   - name: kyma_release-1.20
   - name: kyma_release-1.19
   - name: kyma_release-1.18
@@ -17,6 +18,7 @@ dashboard_groups:
     dashboard_names:
       - kyma_integration
       - kyma_control-plane
+      - kyma_release-1.21
       - kyma_release-1.20
       - kyma_release-1.19
       - kyma_release-1.18
