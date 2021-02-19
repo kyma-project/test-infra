@@ -3,5 +3,9 @@
 # cli-alpha::deploy starts Kyma installation using the alpha deploy command
 #
 function cli-alpha::deploy {
-	kyma alpha deploy --ci
+  if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
+	  kyma alpha deploy --ci --profile evaluation
+	else
+	  kyma alpha deploy --ci
+	fi
 }

@@ -27,8 +27,8 @@ set -e
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
-# shellcheck source=prow/scripts/lib/gardener/gcp.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+# shellcheck source=prow/scripts/lib/gardener/azure.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/azure.sh"
 # shellcheck disable=SC1090
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
@@ -73,68 +73,24 @@ export PATH="${KYMA_PROJECT_DIR}/cli/bin:${PATH}"
 
 log::info "Provision cluster: \"${CLUSTER_NAME}\""
 
+# checks required vars and initializes gcloud/docker if necessary
+gardener::init
+
+# if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
+
+# currently only Azure generates overrides, but this may change in the future
+gardener::generate_overrides
 
 gardener::provision_cluster
 
-log::info "Installing Kyma"
+log::info "Deploying Kyma"
 
-log::info "Get kyma 1.18.0 & run tests"
-
-(
-cd "${KYMA_PROJECT_DIR}/kyma"
-git fetch --tags
-# latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-# shout "Installing Kyma in version: $latestTag"
-# git checkout "$latestTag"
-git checkout 1.18.0
 cli-alpha::deploy
 
-kyma test run \
-    --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
-    --concurrency 6 \
-    --max-retries 1 \
-    --timeout 60m \
-    --watch \
-    --non-interactive \
-    istio-kyma-validate application-connector application-operator application-registry \
-    connection-token-handler connector-service api-gateway console-backend \
-    dex-connection dex-integration kiali logging monitoring \
-    rafter serverless serverless-long service-catalog
-)
+gardener::test_fast_integration_kyma
 
-log::info "Upgrade to master & run tests"
-
-set +e
-(
-cd "${KYMA_PROJECT_DIR}/kyma"
-git checkout master
-cli-alpha::deploy
-
-kyma test run \
-    --name "testsuite-alpha-$(date '+%Y-%m-%d-%H-%M')" \
-    --concurrency 6 \
-    --max-retries 1 \
-    --timeout 60m \
-    --watch \
-    --non-interactive \
-    istio-kyma-validate application-connector application-operator application-registry \
-    connection-token-handler connector-service api-gateway console-backend \
-    dex-connection dex-integration kiali logging monitoring \
-    rafter serverless serverless-long service-catalog
-)
-
-# collect logs from failed tests before deprovisioning
-kyma::run_test_log_collector "kyma-cli-alpha-upgrade-gke"
-
-if ! kyma::test_summary; then
-    log::error "Tests have failed"
-    set -e
-    exit 1
-fi
-set -e
-
-log::info "Success"
+#TODO handle upgrade
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
