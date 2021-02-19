@@ -136,5 +136,8 @@ else
     gardener::test_kyma
 fi
 
+# generate pod-security-policy list in json
+utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
