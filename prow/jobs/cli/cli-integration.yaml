@@ -149,6 +149,9 @@ periodics:
     labels:
       preset-gardener-azure-kyma-integration: "true"
       preset-az-kyma-prow-credentials: "true"
+      preset-gc-compute-envs: "true"
+      preset-gc-project-env: "true"
+      preset-sa-test-gcr-push: "true"
       preset-cluster-version: "true"
     extra_refs:
     - <<: *test_infra_ref
