@@ -149,6 +149,8 @@ periodics:
     labels:
       preset-gardener-azure-kyma-integration: "true"
       preset-az-kyma-prow-credentials: "true"
+      preset-docker-push-repository-gke-integration: "true"
+      preset-dind-enabled: "true"
       preset-gc-compute-envs: "true"
       preset-gc-project-env: "true"
       preset-sa-test-gcr-push: "true"
