@@ -146,7 +146,8 @@ periodics:
         channel: 'kyma-prow-dev-null'
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
-      preset-gardener-gcp-kyma-integration: "true"
+      preset-gardener-azure-kyma-integration: "true"
+      preset-az-kyma-prow-credentials: "true"
       preset-cluster-version: "true"
     extra_refs:
     - <<: *test_infra_ref
@@ -173,6 +174,10 @@ periodics:
             value: "europe-west4-b"
           - name: EXECUTION_PROFILE
             value: "evaluation"
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
         resources:
           requests:
             memory: 1Gi
