@@ -83,6 +83,7 @@ function copy_files() {
 }
 
 function run_milv_docker() {
+    echo docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${VOLUME_DIR}:/${REPOSITORY_NAME}:ro" "${MILV_IMAGE}" --base-path="/${REPOSITORY_NAME}" "${@}"
     docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v "${VOLUME_DIR}:/${REPOSITORY_NAME}:ro" "${MILV_IMAGE}" --base-path="/${REPOSITORY_NAME}" "${@}"
 
     local result=$?
