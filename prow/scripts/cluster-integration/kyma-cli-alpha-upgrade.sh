@@ -24,7 +24,7 @@
 set -e
 
 #Exported variables
-export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export KYMA_SOURCES="master"
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
