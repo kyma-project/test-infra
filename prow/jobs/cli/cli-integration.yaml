@@ -175,9 +175,9 @@ periodics:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION
-              value: "westeurope"
+            value: "westeurope"
           - name: GARDENER_ZONES
-              value: "1"
+            value: "1"
           - name: EXECUTION_PROFILE
             value: "evaluation"
           - name: RS_GROUP
