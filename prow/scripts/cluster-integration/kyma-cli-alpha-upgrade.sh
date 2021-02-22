@@ -85,6 +85,10 @@ log::info "Deploying Kyma"
 
 cli-alpha::deploy
 
+log::info "Dump pods"
+
+kubectl get pods --all-namespaces
+
 gardener::test_fast_integration_kyma
 
 #TODO handle upgrade
