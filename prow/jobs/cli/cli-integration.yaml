@@ -109,6 +109,7 @@ periodics:
     labels:
       preset-gardener-gcp-kyma-integration: "true"
       preset-cluster-version: "true"
+      preset-gc-project-env: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
