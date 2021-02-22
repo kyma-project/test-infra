@@ -30,14 +30,10 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 
 # shellcheck source=prow/scripts/lib/gardener/azure.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/azure.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/testing-helpers.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/cli-alpha.sh"
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 
 requiredVars=(
     KYMA_PROJECT_DIR
