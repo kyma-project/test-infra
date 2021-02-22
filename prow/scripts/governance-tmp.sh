@@ -124,6 +124,8 @@ function main() {
     read_arguments "${ARGS[@]}"
     docker::start
 
+    echo "PR: $PULL_NUMBER"
+
     log::info "Validate internal links"
     validate_internal
 

@@ -101,7 +101,6 @@ function validate_external() {
 
 function validate_external_on_pr() {
     echo "Fetching changes between origin/master and your branch"
-    echo "PR: $PULL_NUMBER"
     if [ -n "${PULL_NUMBER}" ]; then
         fetch_origin_master
     fi
