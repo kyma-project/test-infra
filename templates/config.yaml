@@ -775,15 +775,6 @@ templates:
 #      - to: ../prow/jobs/kyma/kyma-github-release.yaml
 #        values:
 #          <<: *cluster_default
-  - from: templates/kyma-gke-compass-integration.yaml
-    render:
-      - to: ../prow/jobs/kyma/kyma-gke-compass-integration.yaml
-        values:
-          cluster:
-            presubmit: untrusted-workload
-            postsubmit: trusted-workload
-            periodic: untrusted-workload
-          since: "1.13"
   - from: templates/kyma-gke-external-registry.yaml
     render:
       - to: ../prow/jobs/kyma/kyma-gke-external-registry.yaml
@@ -832,10 +823,7 @@ templates:
           contexts:
             - name: kyma-integration
             - name: kyma-gke-integration
-            #- name: kyma-gke-compass-integration #-this job fails on release
-            #  since: "1.13"
             - name: kyma-gke-upgrade
-            - name: kyma-gke-central-connector
             - name: kyma-artifacts
   - from: templates/testgrid-default.yaml
     render:
