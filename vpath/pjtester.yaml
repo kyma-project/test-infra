@@ -1,6 +1,6 @@
 pjNames:
-  -pjName: "pre-master-community-governance-new-better-milv"
-   pjPath: "test-infra/prow/jobs/community/community-governance-test.yaml"
+  - pjName: "pre-master-community-governance-new-better-milv"
+    pjPath: "test-infra/prow/jobs/community/community-governance-test.yaml"
 prConfig:
   kyma-project:
     community:
