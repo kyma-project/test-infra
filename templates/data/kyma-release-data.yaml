@@ -3,7 +3,7 @@
 templates:
   - from: templates/generic.tmpl
     render:
-      - to: ../prow/jobs/kyma/release/kyma-{{ $relShort }}-release.yaml
+      - to: ../prow/jobs/kyma/releases/kyma-release-{{ $relShort }}.yaml
         localSets:
           bot_token:
             labels:
