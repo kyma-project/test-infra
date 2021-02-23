@@ -96,28 +96,6 @@ templates:
                     - "bot_token"
                     - "gke_config"
               - jobConfig:
-                  name: pre-rel{{ $relShort }}-kyma-gke-central-connector
-                  run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  branches:
-                    - ^release-{{ $rel }}$
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                  labels:
-                    preset-build-pr: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-                    - "gke_config"
-              - jobConfig:
                   name: post-rel{{ $relShort }}-kyma-integration
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
                   branches:
@@ -185,32 +163,6 @@ templates:
                   args:
                     - "-c"
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-upgrade.sh"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                  local:
-                    - "test-infra"
-                    - "bot_token"
-                    - "gke_config"
-              - jobConfig:
-                  name: post-rel{{ $relShort }}-kyma-gke-central-connector
-                  branches:
-                    - ^release-{{ $rel }}$
-                  env:
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                    preset-build-release: "true"
-                  annotations:
-                    testgrid-dashboards: kyma_release-{{ $rel }}
-                    description: Kyma GKE central-connector job for release {{ $rel }}.
-                    testgrid-days-of-results: "60"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-central.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
