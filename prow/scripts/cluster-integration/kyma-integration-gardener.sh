@@ -120,6 +120,9 @@ gardener::provision_cluster
 gardener::install_kyma
 
 
+# generate pod-security-policy list in json
+utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120

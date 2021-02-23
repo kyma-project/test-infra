@@ -267,20 +267,6 @@ presubmits: # runs on PRs
         - <<: *test_infra_ref
           base_ref: master
 
-    - name: pre-master-kyma-gke-central-connector
-      cluster: untrusted-workload
-      branches:
-        - ^master$
-      <<: *gke_central_job_template
-      # following regexp won't start build if only Markdown files were changed
-      run_if_changed: "^((resources/core/templates/tests\\S+|resources/application-connector\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-      labels:
-        preset-build-pr: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
 postsubmits:
   kyma-project/kyma:
     - name: post-master-kyma-integration
@@ -330,23 +316,6 @@ postsubmits:
         preset-log-collector-slack-token: "true"
         preset-build-master: "true"
         preset-gke-pod-security-policy: "true"
-        <<: *gke_job_labels_template
-      extra_refs:
-        - <<: *test_infra_ref
-          base_ref: master
-
-    - name: post-master-kyma-gke-central-connector
-      cluster: trusted-workload
-      <<: *gke_central_job_template
-      annotations:
-        testgrid-dashboards: kyma_integration
-        description: Kyma GKE central-connector job.
-        testgrid-days-of-results: "60"
-      branches:
-        - ^master$
-      labels:
-        preset-build-master: "true"
-        preset-log-collector-slack-token: "true"
         <<: *gke_job_labels_template
       extra_refs:
         - <<: *test_infra_ref

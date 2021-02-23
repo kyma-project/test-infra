@@ -76,7 +76,6 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-integration", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-upgrade", relBranch))
-			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-gke-central-connector", relBranch))
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, generateStatusCheck("kyma-artifacts", relBranch))
 		})
 	}
