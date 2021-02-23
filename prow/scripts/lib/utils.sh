@@ -99,10 +99,9 @@ function utils::generate_letsencrypt_cert() {
       -d "*.${DOMAIN}"
 
   TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-  # export TLS_CERT
+  export TLS_CERT
   TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-  # export TLS_KEY
-  echo "${TLS_CERT} ${TLS_KEY}"
+  export TLS_KEY
 }
 
 # utils::receive_from_vm receives file(s) from Google Compute Platform over scp
