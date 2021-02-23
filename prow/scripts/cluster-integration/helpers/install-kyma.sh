@@ -52,7 +52,7 @@ function installKyma() {
     sed -e 's;image: eu.gcr.io/kyma-project/.*/installer:.*$;'"image: ${KYMA_INSTALLER_IMAGE};" "${INSTALLER_YAML}" \
     | kubectl apply -f-
 
-    read -r TLS_CERT TLS_KEY < <(utils::generate_letsencrypt_cert "${DOMAIN}")
+    utils::generate_letsencrypt_cert "${DOMAIN}"
 
     cat << EOF > "$PWD/kyma_istio_operator"
 apiVersion: install.istio.io/v1alpha1
