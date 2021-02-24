@@ -108,6 +108,18 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
 
+log::info "Preparing environment variables for the instance"
+envVars=(
+  COMPASS_TENANT
+  COMPASS_HOST
+  COMPASS_CLIENT_ID
+  COMPASS_CLIENT_SECRET
+  COMPASS_INTEGRATION_ENABLED
+)
+utils::save_env_file "${envVars[@]}"
+#shellcheck disable=SC2088
+utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
+
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
