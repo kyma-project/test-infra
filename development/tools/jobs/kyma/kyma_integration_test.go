@@ -3,59 +3,11 @@ package kyma_test
 import (
 	"testing"
 
-	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-func TestKymaIntegrationVMJobsReleases(t *testing.T) {
-	for _, currentRelease := range releases.GetAllKymaReleases() {
-		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-integration", currentRelease), currentRelease.Branch())
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.GCProjectEnv, preset.KymaGuardBotGithubToken, "preset-sa-vm-kyma-integration")
-			assert.False(t, actualPresubmit.AlwaysRun)
-			assert.Len(t, actualPresubmit.Spec.Containers, 1)
-			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
-			assert.Len(t, testContainer.Command, 1)
-			assert.Equal(t, "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh", testContainer.Command[0])
-			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-		})
-	}
-}
-
-func TestKymaIntegrationGKEJobsReleases(t *testing.T) {
-	for _, currentRelease := range releases.GetAllKymaReleases() {
-		t.Run(currentRelease.String(), func(t *testing.T) {
-			jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration.yaml")
-			// THEN
-			require.NoError(t, err)
-			actualPresubmit := tester.FindPresubmitJobByNameAndBranch(jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"}), tester.GetReleaseJobName("kyma-gke-integration", currentRelease), currentRelease.Branch())
-			require.NotNil(t, actualPresubmit)
-			assert.False(t, actualPresubmit.SkipReport)
-			assert.True(t, actualPresubmit.Decorate)
-			assert.Equal(t, "github.com/kyma-project/kyma", actualPresubmit.PathAlias)
-			tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, currentRelease.Branch())
-			tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.SaGKEKymaIntegration, preset.GCProjectEnv, preset.BuildPr, preset.DindEnabled, preset.KymaGuardBotGithubToken, "preset-sa-gke-kyma-integration", "preset-gc-compute-envs", "preset-docker-push-repository-gke-integration", "preset-kyma-artifacts-bucket")
-			assert.False(t, actualPresubmit.AlwaysRun)
-			assert.Len(t, actualPresubmit.Spec.Containers, 1)
-			testContainer := actualPresubmit.Spec.Containers[0]
-			assert.Equal(t, tester.ImageKymaIntegrationLatest, testContainer.Image)
-			assert.Len(t, testContainer.Command, 1)
-			tester.AssertThatSpecifiesResourceRequests(t, actualPresubmit.JobBase)
-		})
-	}
-}
 
 func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
