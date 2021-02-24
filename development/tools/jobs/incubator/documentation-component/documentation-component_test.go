@@ -32,8 +32,8 @@ func TestDocumentationComponentJobPresubmit(t *testing.T) {
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "add-ons/some_random_file.js"))
 
 	assert.Equal(t, "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20190724-d41df0f", actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/documentation-component"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/documentation-component", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestGovernanceJobPresubmit(t *testing.T) {
@@ -44,7 +44,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 		}, nil
 	}
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/documentation-component/documentation-component.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/documentation-component/documentation-component-governance.yaml")
 	// THEN
 	require.NoError(t, err)
 
@@ -73,7 +73,7 @@ func TestGovernanceJobPresubmit(t *testing.T) {
 
 func TestGovernanceJobPeriodic(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/documentation-component/documentation-component.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/documentation-component/documentation-component-governance.yaml")
 	// THEN
 	require.NoError(t, err)
 

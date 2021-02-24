@@ -38,7 +38,7 @@ func TestGcpServiceBrokerJobsPresubmit(t *testing.T) {
 
 func TestGcpServiceBrokerJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/gcp-service-broker/gcp-service-broker-old.yaml")
 	// THEN
 	require.NoError(t, err)
 

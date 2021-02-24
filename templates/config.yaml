@@ -17,6 +17,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:PR-2951"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14"
+  image_buildpack-golang-kubebuilder2:
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20200917-6588f400"
   # JobConfig sets
@@ -57,86 +59,6 @@ globalSets:
       preset-sa-gcr-push: "true"
       preset-docker-push-repository-kyma: "true"
 
-go_buildpack_v20181119: &go_buildpack_v20181119 eu.gcr.io/kyma-project/prow/test-infra/buildpack-golang:v20181119-afd3fbd
-go_buildpack_1_11: &go_buildpack_1_11 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.11
-go_buildpack_1_12: &go_buildpack_1_12 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.12
-go_buildpack_1_13: &go_buildpack_1_13 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.13
-go_buildpack_1_14: &go_buildpack_1_14 eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.14
-
-kubebuilder_buildpack_v20190208: &kubebuilder_buildpack_v20190208 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef
-kubebuilder2_buildpack_v20200124: &kubebuilder2_buildpack_v20200124 eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
-bootstrap_buildpack_v20181121: &bootstrap_buildpack_v20181121 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181121-f3ea5ce
-bootstrap_buildpack_v20181204: &bootstrap_buildpack_v20181204 eu.gcr.io/kyma-project/prow/test-infra/bootstrap:v20181204-a6e79be
-
-kyma_component: &kyma_component
-  repository: github.com/kyma-project/kyma
-  presets:
-    build: build
-    pushRepository: kyma
-
-compass_component: &compass_component
-  repository: github.com/kyma-incubator/compass
-  presets:
-    build: build
-    pushRepository: incubator
-
-control_plane_component: &control_plane_component
-  repository: github.com/kyma-project/control-plane
-  presets:
-    build: build
-    pushRepository: control-plane
-
-go_kyma_component_1_11: &go_kyma_component_1_11
-  <<: *kyma_component
-  buildpack: *go_buildpack_1_11
-
-go_kyma_component_1_12: &go_kyma_component_1_12
-  <<: *kyma_component
-  buildpack: *go_buildpack_1_12
-
-go_kyma_component_1_13: &go_kyma_component_1_13
-  <<: *kyma_component
-  buildpack: *go_buildpack_1_13
-
-go_kyma_component_1_14: &go_kyma_component_1_14
-  <<: *kyma_component
-  buildpack: *go_buildpack_1_14
-
-go_compass_component_1_11: &go_compass_component_1_11
-  <<: *compass_component
-  buildpack: *go_buildpack_1_11
-
-kubebuilder_kyma_component: &kubebuilder_kyma_component
-  <<: *kyma_component
-  buildpack: *kubebuilder_buildpack_v20190208
-  resources:
-    memory: 2.5Gi
-    cpu: 2
-
-go_modules_env: &go_modules_env
-  name: GO111MODULE
-  value: "on"
-
-kubebuilder2_kyma_component: &kubebuilder2_kyma_component
-  <<: *kyma_component
-  buildpack: *kubebuilder2_buildpack_v20200124
-  resources:
-    memory: 2.5Gi
-    cpu: 2
-  env:
-    - *go_modules_env
-
-bootstrap_kyma_component: &bootstrap_kyma_component
-  <<: *kyma_component
-  buildpack: *bootstrap_buildpack_v20181121
-
-bootstrap_compass_component: &bootstrap_compass_component
-  <<: *compass_component
-  buildpack: *bootstrap_buildpack_v20181204
-
-go_kyma_component_v20181119: &go_kyma_component_v20181119
-  <<: *kyma_component
-  buildpack: *go_buildpack_v20181119
 
 kyma_generic_component: &kyma_generic_component
   repository: github.com/kyma-project/kyma
@@ -188,16 +110,6 @@ console_generic_component: &console_generic_component
     - ^components/
     - ^shared/
     - ^package.json
-
-knative_kafka_component: &knative_kafka_component
-  repository: github.com/kyma-incubator/knative-kafka
-  presets:
-    build: build
-    pushRepository: incubator
-
-go_knative_kafka_component_1_12: &go_knative_kafka_component_1_12
-  <<: *knative_kafka_component
-  buildpack: *go_buildpack_1_12
 
 # Default definition of workload clusters
 cluster_default: &cluster_default
@@ -808,14 +720,6 @@ templates:
         values:
           <<: *cluster_default
           optional: true
-  - from: templates/knative-kafka-component.yaml
-    render:
-      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
-        values:
-          <<: *cluster_default
-          <<: *go_knative_kafka_component_1_12
-          path: .
-          optional: false
   - from: templates/branchprotector-config.yaml
     render:
       - to: ../prow/branchprotector-config.yaml

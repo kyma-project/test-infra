@@ -1,0 +1,461 @@
+commonJob: &commonJob
+  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+  labels:
+    preset-dind-enabled: "true"
+    preset-sa-gcr-push: "true"
+    preset-docker-push-repository-incubator: "true"
+
+templates:
+  - from: templates/generic.tmpl
+    render:
+      - to: ../prow/jobs/incubator/api-gateway/api-gateway.yaml
+        jobConfigs:
+          - repoName: "kyma-incubator/api-gateway"
+            jobs:
+              - jobConfig:
+                  name: pre-master-kyma-incubator-api-gateway
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-kubebuilder2
+              - jobConfig:
+                  name: post-master-kyma-incubator-api-gateway
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-kubebuilder2
+      - to: ../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/gcp-service-broker
+            jobs:
+              - jobConfig:
+                  name: pre-master-gcp-service-broker
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-gcp-service-broker
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - disable_testgrid
+      - to: ../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/github-slack-connectors
+            jobs:
+              - jobConfig:
+                  name: pre-master-github-connector
+                  run_if_changed: "^github-connector"
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-github-connector
+                  run_if_changed: "^github-connector"
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - disable_testgrid
+              - jobConfig:
+                  name: pre-master-slack-connector
+                  <<: *commonJob
+                  run_if_changed: "^slack-connector"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-slack-connector
+                  <<: *commonJob
+                  run_if_changed: "^slack-connector"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/slack-connector"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - disable_testgrid
+      - to: ../prow/jobs/incubator/hydroform/hydroform.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/hydroform
+            jobs:
+              - jobConfig:
+                  name: pre-master-hydroform
+                  <<: *commonJob
+                  always_run: true
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+                    - "ci-pr"
+                  env:
+                    GO111MODULE: "on"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-hydroform
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/hydroform"
+                    - "ci-master"
+                  env:
+                    GO111MODULE: "on"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+                    - disable_testgrid
+      - to: ../prow/jobs/incubator/milv/milv.yaml
+        localSets:
+          image_go115:
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
+          milv_jobConfig:
+            args:
+              - "/home/prow/go/src/github.com/kyma-incubator/milv"
+            env:
+              GO11MODULE: "on"
+            branches:
+              - ^main$
+        jobConfigs:
+          - repoName: kyma-incubator/milv
+            jobs:
+              - jobConfig:
+                  name: pre-master-kyma-incubator-milv
+                  <<: *commonJob
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                  local:
+                    - image_go115
+                    - milv_jobConfig
+              - jobConfig:
+                  name: post-master-kyma-incubator-milv
+                  <<: *commonJob
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                  local:
+                    - image_go115
+                    - milv_jobConfig
+      - to: ../prow/jobs/incubator/octopus/octopus.yaml
+        jobConfigs:
+          - repoName:
+            jobs:
+              - jobConfig:
+                  name: pre-master-kyma-incubator-octopus
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/octopus"
+                    - "ci-pr"
+                  env:
+                    GO111MODULE: "on"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-kubebuilder2
+              - jobConfig:
+                  name: post-master-kyma-incubator-octopus
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/octopus"
+                    - "ci-master"
+                  env:
+                    GO111MODULE: "on"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-kubebuilder2
+      - to: ../prow/jobs/incubator/podpreset-crd/podpreset-crd.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/podpreset-crd
+            jobs:
+              - jobConfig:
+                  name: pre-master-podpreset-crd
+                  path_alias: github.com/jpeeler/podpreset-crd
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang-kubebuilder2
+              - jobConfig:
+                  name: post-master-podpreset-crd
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/jpeeler/podpreset-crd"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang-kubebuilder2
+      - to: ../prow/jobs/incubator/service-catalog-tester/service-catalog-tester.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/service-catalog-tester
+            jobs:
+              - jobConfig:
+                  name: pre-master-service-catalog-tester
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-service-catalog-tester
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang
+      - to: ../prow/jobs/incubator/terraform-provider-gardener/terraform-provider-gardener.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/terraform-provider-gardener
+            jobs:
+              - jobConfig:
+                  name: pre-master-terraform-provider-gardener
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-terraform-provider-gardener
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang
+      - to: ../prow/jobs/incubator/varkes/varkes.yaml
+        localSets:
+          npm_bot_preset:
+            labels:
+              preset-bot-npm-token: "true"
+        jobConfigs:
+          - repoName: kyma-incubator/varkes
+            jobs:
+              - jobConfig:
+                  name: pre-varkes
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
+                    - "ci-pr"
+                  branches:
+                    - ^master$
+                    - release
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-node
+              - jobConfig:
+                  name: post-master-varkes
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-node
+              - jobConfig:
+                  name: post-release-varkes
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/varkes/"
+                    - "ci-release"
+                  branches:
+                    - release
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-node
+                  local:
+                    - npm_bot_preset
+      - to: ../prow/jobs/incubator/vstudio-extension/vstudio-extension.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/vstudio-extension
+            jobs:
+              - jobConfig:
+                  name: pre-master-vstudio-extension
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/vstudio-extension"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-node
+              - jobConfig:
+                  name: post-master-vstudio-extension
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/vstudio-extension"
+                    - "ci-master"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-node
+      - to: ../prow/jobs/incubator/documentation-component/documentation-component.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/documentation-component
+            jobs:
+              - jobConfig:
+                  name: pre-documentation-component
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-node
+      - to: ../prow/jobs/incubator/knative-kafka/knative-kafka.yaml
+        jobConfigs:
+          - repoName: kyma-incubator/knative-kafka
+            jobs:
+              - jobConfig:
+                  name: pre-master-knative-kafka
+                  always_run: true
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
+                    - "ci-pr"
+                  branches:
+                    - ^master$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-master-knative-kafka
+                  <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/knative-kafka"
+                    - "ci-master"
+                  branches:
+                    - ^master$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                    - disable_testgrid
+                    - image_buildpack-golang
