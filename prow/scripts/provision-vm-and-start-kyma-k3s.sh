@@ -121,6 +121,7 @@ utils::save_env_file "${envVars[@]}"
 utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Copying Kyma to the instance"
+rm -f /root/.ssh/google_compute_known_hosts
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
