@@ -4,8 +4,8 @@
 #
 function cli-alpha::deploy {
   if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-	  kyma alpha deploy --ci --profile evaluation
+	  kyma alpha deploy --ci --profile evaluation --verbose
 	else
-	  kyma alpha deploy --ci
+	  kyma alpha deploy --ci --verbose
 	fi
 }
