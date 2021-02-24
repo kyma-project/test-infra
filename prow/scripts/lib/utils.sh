@@ -261,3 +261,19 @@ function utils::save_psp_list() {
   PSP_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ pods: [ .items[] | .metadata.ownerReferences[0].name as $owner | .metadata.annotations."kubernetes.io\/psp" as $psp | { name: .metadata.name, namespace: .metadata.namespace, owner: $owner, psp: $psp} ] | group_by(.name) | map({ name: .[0].name, namespace: .[0].namespace, owner: .[0].owner, psp: .[0].psp }) | sort_by(.psp, .name)}' )
   echo "${PSP_LIST}" > "${output_path}"
 }
+
+# utils::save_env_file creates a .env file with all provided variables
+#
+# Arguments
+# $1 - list of variables
+function utils::save_env_file() {
+  touch .env
+  for var in "$@"; do
+    if [ -z "${!var}" ] ; then
+      echo "INFO: $var is not set"
+      continue
+    fi
+
+    echo "${var}"=\""$(printenv "${var}")"\" >> .env
+  done
+}

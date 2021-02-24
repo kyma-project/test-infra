@@ -579,9 +579,27 @@ presets:
         readOnly: true
   - lables:
       preset-kyma-integration-compass-dev: "true"
-    envFrom:
-      - secretRef:
-          name: compass-dev-credentials
+    env:
+      - name: COMPASS_TENANT
+        valueFrom:
+          secretKeyRef:
+            name: compass-dev-credentials
+            key: COMPASS_TENANT
+      - name: COMPASS_HOST
+        valueFrom:
+          secretKeyRef:
+            name: compass-dev-credentials
+            key: COMPASS_HOST
+      - name: COMPASS_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: compass-dev-credentials
+            key: COMPASS_CLIENT_ID
+      - name: COMPASS_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: compass-dev-credentials
+            key: COMPASS_CLIENT_SECRET
   - labels:
       preset-kyma-integration-compass-enabled: "true"
     env:
