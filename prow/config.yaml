@@ -579,7 +579,7 @@ presets:
       - name: sa-gke-kyma-integration
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
-  - lables:
+  - labels:
       preset-kyma-integration-compass-dev: "true"
     env:
       - name: COMPASS_TENANT
