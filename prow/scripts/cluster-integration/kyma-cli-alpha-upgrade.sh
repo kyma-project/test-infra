@@ -85,9 +85,7 @@ log::info "Deploying Kyma"
 
 cli-alpha::deploy
 
-log::info "Dump pods"
-
-kubectl get pods --all-namespaces
+log::info "Running fast integration test"
 
 gardener::test_fast_integration_kyma
 
