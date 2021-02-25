@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^components/event-publisher-proxy/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
         securityContext:
           privileged: true
         command:

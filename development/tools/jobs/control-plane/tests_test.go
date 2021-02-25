@@ -16,7 +16,7 @@ var tests = []struct {
 }{
 	{
 		name:  "provisioner-tests",
-		image: tester.ImageGolangToolboxLatest,
+		image: tester.ImageGolangKubebuilder2BuildpackLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("generic"),
@@ -25,7 +25,7 @@ var tests = []struct {
 	},
 	{
 		name:  "e2e/provisioning",
-		image: tester.ImageGolangToolboxLatest,
+		image: tester.ImageGolangKubebuilder2BuildpackLatest,
 		suite: tester.NewGenericComponentSuite,
 		additionalOptions: []jobsuite.Option{
 			jobsuite.JobFileSuffix("test-generic"),
