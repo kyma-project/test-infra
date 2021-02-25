@@ -1,6 +1,6 @@
 # Golang buildpack with kubebuilder
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20200423-1d9d6590
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e
 
 # Commit details
 
