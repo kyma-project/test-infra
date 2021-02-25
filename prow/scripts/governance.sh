@@ -9,7 +9,7 @@ source "${SCRIPT_DIR}/lib/docker.sh"
 source "${SCRIPT_DIR}/lib/log.sh"
 
 readonly ARGS=("$@")
-readonly MILV_IMAGE="eu.gcr.io/kyma-project/external/magicmatatjahu/milv:0.0.7-beta"
+readonly MILV_IMAGE="eu.gcr.io/kyma-project/incubator/milv:056a4dae"
 VOLUME_DIR=""
 OUTPUT=0
 
