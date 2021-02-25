@@ -119,7 +119,6 @@ envVars=(
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" ".env" "~/.env"
-# rm -f /root/.ssh/google_compute_known_hosts
 
 log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
