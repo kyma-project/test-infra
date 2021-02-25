@@ -303,6 +303,8 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
                     - "ci-pr"
+                  env:
+                    GO111MODULE: "on"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -315,6 +317,8 @@ templates:
                   args:
                     - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
                     - "ci-master"
+                  env:
+                    GO111MODULE: "on"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

@@ -30,6 +30,9 @@ presubmits: # runs on PRs
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
               - "ci-pr"
+            env:
+              - name: GO111MODULE
+                value: "on"
             resources:
               requests:
                 memory: 1.5Gi
@@ -65,6 +68,9 @@ postsubmits: # runs on master
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/terraform-provider-gardener"
               - "ci-master"
+            env:
+              - name: GO111MODULE
+                value: "on"
             resources:
               requests:
                 memory: 1.5Gi
