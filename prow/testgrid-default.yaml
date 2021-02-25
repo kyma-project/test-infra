@@ -9,6 +9,8 @@ dashboards:
   - name: kyma_release-1.20
   - name: kyma_release-1.19
   - name: kyma_release-1.18
+  # dashboard for experimental jobs
+  - name: kyma_experimental
 
   # kyma-incubator
   - name: kyma-incubator_compass
@@ -23,3 +25,4 @@ dashboard_groups:
       - kyma_release-1.19
       - kyma_release-1.18
       - kyma-incubator_compass
+      - kyma_experimental
