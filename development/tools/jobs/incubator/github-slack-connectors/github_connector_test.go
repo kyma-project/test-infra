@@ -11,55 +11,43 @@ import (
 
 func TestGithubConnectorJobPresubmit(t *testing.T) {
 	//WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/github-slack-connectors/github-connector/github-connector.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml")
 	// THEN
 	require.NoError(t, err)
 
 	assert.Len(t, jobConfig.PresubmitsStatic, 1)
 	kymaPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-incubator/github-slack-connectors"})
-	assert.Len(t, kymaPresubmits, 1)
 
-	actualPresubmit := kymaPresubmits[0]
-	expName := "pre-master-github-connector"
-	assert.Equal(t, expName, actualPresubmit.Name)
+	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(kymaPresubmits, "pre-master-github-connector", "master")
 	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
 	assert.Equal(t, "^github-connector", actualPresubmit.RunIfChanged)
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/github-slack-connectors", actualPresubmit.PathAlias)
-
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
-	assert.Equal(t, tester.ImageGolangBuildpack1_12, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"}, actualPresubmit.Spec.Containers[0].Args)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 
 }
 
 func TestGithubConnectorJobPostsubmit(t *testing.T) {
 	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/github-slack-connectors/github-connector/github-connector.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml")
 	// THEN
 	require.NoError(t, err)
-
-	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/github-slack-connectors"})
-	assert.Len(t, kymaPost, 1)
-
-	actualPost := kymaPost[0]
-	expName := "post-master-github-connector"
-	assert.Equal(t, expName, actualPost.Name)
+	actualPost := tester.FindPostsubmitJobByNameAndBranch(kymaPost, "post-master-github-connector", "master")
 	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
 	assert.Equal(t, "^github-connector", actualPost.RunIfChanged)
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/github-slack-connectors", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
-	assert.Equal(t, tester.ImageGolangBuildpack1_12, actualPost.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPost.Spec.Containers[0].Image)
 
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/github-slack-connectors/github-connector", "ci-master"}, actualPost.Spec.Containers[0].Args)
 
 }
