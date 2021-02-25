@@ -17,7 +17,7 @@ job_template: &job_template
   run_if_changed: "^tests/compass-runtime-agent/|^common/makefiles/"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:PR-2951
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
         securityContext:
           privileged: true
         command:

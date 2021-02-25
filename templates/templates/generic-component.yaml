@@ -5,7 +5,7 @@
      - repository - repository address (e.g. github.com/kyma-project/kyma
      - path - address of the component within the repository
      - pushRepository - the suffix of the preset-docker-push- label
-     - bootstrapTag - tag of the bootstrap image
+     - buildpackTag - tag of the buildpack image
      - ReleaseBranchPattern - pattern for release branch prefix (default: ^release-<supported-releases>-<component-dir-name>$)
      - runIfChanged - a list of regexps to watch in addition to path (default: [])
      - resources.memory - memory given to job container (default: 1.5Gi)
@@ -44,7 +44,7 @@ job_template: &job_template
   run_if_changed: "{{ $runIfChanged }}"
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/bootstrap:{{ .Values.bootstrapTag }}
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:{{ .Values.buildpackTag }}
         securityContext:
           privileged: true
         command:

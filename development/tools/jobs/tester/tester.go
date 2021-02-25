@@ -32,7 +32,7 @@ const (
 	// ImageGolangKubebuilderBuildpackLatest means Golang buildpack with Kubebuilder image
 	ImageGolangKubebuilderBuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder:v20190208-813daef"
 	// ImageGolangKubebuilder2BuildpackLatest means Golang buildpack with Kubebuilder2 image
-	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6"
+	ImageGolangKubebuilder2BuildpackLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
 	// ImageGolangKubebuilder2_20210216 contains the v20210216-1.14.0-rc1-535-gb45951c9 image
 	ImageGolangKubebuilder2_20210216 = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
 	// ImageNode10Buildpack means Node.js buildpack image (node v10)
@@ -64,7 +64,7 @@ const (
 	// ImageBootstrapHelm20191227 represents verion of bootstrap-helm image
 	ImageBootstrapHelm20191227 = "eu.gcr.io/kyma-project/test-infra/bootstrap-helm:v20191227-cca719e8"
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
-	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20200831-e46c648b"
+	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang-toolbox:v20210125-6234473e"
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
 	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20210122-26875a41"
 	// ImageProwToolsCurrent represents the latest version of the prow-tools image

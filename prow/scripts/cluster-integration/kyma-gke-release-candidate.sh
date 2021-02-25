@@ -187,7 +187,8 @@ kubectl create clusterrolebinding kyma-developers-group-binding --clusterrole="c
 
 log::info "Generate certificate"
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
-read -r TLS_CERT TLS_KEY < <(utils::generate_letsencrypt_cert "${DOMAIN}")
+
+utils::generate_letsencrypt_cert "${DOMAIN}"
 
 log::info "Apply Kyma config"
 

@@ -28,7 +28,7 @@ job_template: &job_template
       base_ref: master
   spec:
     containers:
-      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
+      - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
         command:
           - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
         resources:
@@ -109,6 +109,7 @@ periodics:
     labels:
       preset-gardener-gcp-kyma-integration: "true"
       preset-cluster-version: "true"
+      preset-gc-project-env: "true"
     extra_refs:
     - <<: *test_infra_ref
       base_ref: master
@@ -146,7 +147,13 @@ periodics:
         channel: 'kyma-prow-dev-null'
     cron: "00 */1 * * 1-5" # “At minute 0 past every hour on every day-of-week from Monday through Friday.”
     labels:
-      preset-gardener-gcp-kyma-integration: "true"
+      preset-gardener-azure-kyma-integration: "true"
+      preset-az-kyma-prow-credentials: "true"
+      preset-docker-push-repository-gke-integration: "true"
+      preset-dind-enabled: "true"
+      preset-gc-compute-envs: "true"
+      preset-gc-project-env: "true"
+      preset-sa-test-gcr-push: "true"
       preset-cluster-version: "true"
     extra_refs:
     - <<: *test_infra_ref
@@ -168,9 +175,15 @@ periodics:
           - name: KYMA_PROJECT_DIR
             value: "/home/prow/go/src/github.com/kyma-project"
           - name: GARDENER_REGION
-            value: "europe-west4"
+            value: "westeurope"
           - name: GARDENER_ZONES
-            value: "europe-west4-b"
+            value: "1"
+          - name: EXECUTION_PROFILE
+            value: "evaluation"
+          - name: RS_GROUP
+            value: "kyma-gardener-azure"
+          - name: REGION
+            value: "northeurope"
         resources:
           requests:
             memory: 1Gi

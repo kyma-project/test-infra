@@ -99,10 +99,9 @@ function utils::generate_letsencrypt_cert() {
       -d "*.${DOMAIN}"
 
   TLS_CERT=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/fullchain.pem | tr -d '\n')
-  # export TLS_CERT
+  export TLS_CERT
   TLS_KEY=$(base64 -i ./letsencrypt/live/"${DOMAIN}"/privkey.pem   | tr -d '\n')
-  # export TLS_KEY
-  echo "${TLS_CERT} ${TLS_KEY}"
+  export TLS_KEY
 }
 
 # utils::receive_from_vm receives file(s) from Google Compute Platform over scp
@@ -261,4 +260,20 @@ function utils::save_psp_list() {
   # shellcheck disable=SC2016
   PSP_LIST=$(kubectl get pods --all-namespaces -o json | jq '{ pods: [ .items[] | .metadata.ownerReferences[0].name as $owner | .metadata.annotations."kubernetes.io\/psp" as $psp | { name: .metadata.name, namespace: .metadata.namespace, owner: $owner, psp: $psp} ] | group_by(.name) | map({ name: .[0].name, namespace: .[0].namespace, owner: .[0].owner, psp: .[0].psp }) | sort_by(.psp, .name)}' )
   echo "${PSP_LIST}" > "${output_path}"
+}
+
+# utils::save_env_file creates a .env file with all provided variables
+#
+# Arguments
+# $1 - list of variables
+function utils::save_env_file() {
+  touch .env
+  for var in "$@"; do
+    if [ -z "${!var}" ] ; then
+      echo "INFO: $var is not set"
+      continue
+    fi
+
+    echo "${var}"=\""$(printenv "${var}")"\" >> .env
+  done
 }

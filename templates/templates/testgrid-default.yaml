@@ -3,7 +3,7 @@ dashboards:
   # kyma
   - name: kyma_integration
   - name: kyma_control-plane
-
+  - name: kyma_release-{{ .Global.nextRelease }}
   {{- range .Global.releases }}
   - name: kyma_release-{{ . }}
   {{- end }}
@@ -16,6 +16,7 @@ dashboard_groups:
     dashboard_names:
       - kyma_integration
       - kyma_control-plane
+      - kyma_release-{{ .Global.nextRelease }}
       {{- range .Global.releases }}
       - kyma_release-{{ . }}
       {{- end }}

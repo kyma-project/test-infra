@@ -14,6 +14,13 @@ prereq_test() {
     command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
 }
 
+load_env() {
+    ENV_FILE=".env"
+    if [ -f "${ENV_FILE}" ]; then
+        export $(xargs < "${ENV_FILE}")
+    fi
+}
+
 prepare_k3s() {
     pushd ${LOCAL_KYMA_DIR}
     ./create-cluster-k3s.sh
@@ -31,5 +38,6 @@ run_tests() {
 }
 
 prereq_test
+load_env
 prepare_k3s
 run_tests
