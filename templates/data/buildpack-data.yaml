@@ -64,28 +64,6 @@ templates:
                         - "default"
                         - "presubmit"
                     jobConfig:
-                      name: "pre-test-infra-bootstrap-helm"
-                      run_if_changed: "^prow/images/bootstrap-helm/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
-                  - inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                      local:
-                        - "default"
-                        - "postsubmit"
-                    jobConfig:
-                      name: "post-test-infra-bootstrap-helm"
-                      run_if_changed: "^prow/images/bootstrap-helm/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/bootstrap-helm"
-                  - inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                      local:
-                        - "default"
-                        - "presubmit"
-                    jobConfig:
                       name: "pre-test-infra-kyma-cluster-infra"
                       run_if_changed: "^prow/images/kyma-cluster-infra/"
                       args:
