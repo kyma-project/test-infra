@@ -162,57 +162,6 @@ func TestBuildpackGolangJobPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang"}, actualPost.Spec.Containers[0].Args)
 }
 
-func TestBuildpackGolangKubebuilderJobPresubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	assert.Len(t, jobConfig.PresubmitsStatic, 1)
-	infraPresubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/test-infra"})
-
-	expName := "pre-test-infra-buildpack-golang-kubebuilder"
-	actualPresubmit := tester.FindPresubmitJobByNameAndBranch(infraPresubmits, expName, "master")
-	require.NotNil(t, actualPresubmit)
-	assert.Equal(t, expName, actualPresubmit.Name)
-	assert.Equal(t, []string{"^master$"}, actualPresubmit.Branches)
-	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
-	assert.False(t, actualPresubmit.SkipReport)
-	assert.True(t, actualPresubmit.Decorate)
-	assert.False(t, actualPresubmit.Optional)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPresubmit.PathAlias)
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildPr)
-	assert.Equal(t, "^prow/images/buildpack-golang-kubebuilder/", actualPresubmit.RunIfChanged)
-	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(*actualPresubmit, true, "prow/images/buildpack-golang-kubebuilder/Dockerfile"))
-	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"}, actualPresubmit.Spec.Containers[0].Args)
-}
-
-func TestBuildpackGolangKubebuilderJobPostsubmit(t *testing.T) {
-	// WHEN
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")
-	// THEN
-	require.NoError(t, err)
-
-	assert.Len(t, jobConfig.PostsubmitsStatic, 1)
-	infraPost := jobConfig.AllStaticPostsubmits([]string{"kyma-project/test-infra"})
-
-	expName := "post-test-infra-buildpack-golang-kubebuilder"
-	actualPost := tester.FindPostsubmitJobByNameAndBranch(infraPost, expName, "master")
-	require.NotNil(t, actualPost)
-	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"^master$"}, actualPost.Branches)
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-project/test-infra", actualPost.PathAlias)
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoTestInfra, preset.GcrPush, preset.BuildRelease)
-	assert.Equal(t, "^prow/images/buildpack-golang-kubebuilder/", actualPost.RunIfChanged)
-	assert.Equal(t, tester.ImageBootstrapTestInfraLatest, actualPost.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/publish-buildpack.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"}, actualPost.Spec.Containers[0].Args)
-}
-
 func TestBuildpackGolangKubebuilder2JobPresubmit(t *testing.T) {
 	// WHEN
 	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/test-infra/buildpack.yaml")

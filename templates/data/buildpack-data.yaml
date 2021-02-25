@@ -174,28 +174,6 @@ templates:
                         - "default"
                         - "presubmit"
                     jobConfig:
-                      name: "pre-test-infra-buildpack-golang-kubebuilder"
-                      run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
-                  - inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                      local:
-                        - "default"
-                        - "postsubmit"
-                    jobConfig:
-                      name: "post-test-infra-buildpack-golang-kubebuilder"
-                      run_if_changed: "^prow/images/buildpack-golang-kubebuilder/"
-                      args:
-                        - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/buildpack-golang-kubebuilder"
-                  - inheritedConfigs:
-                      global:
-                        - "image_bootstrap"
-                      local:
-                        - "default"
-                        - "presubmit"
-                    jobConfig:
                       name: "pre-test-infra-buildpack-golang-kubebuilder2"
                       run_if_changed: "^prow/images/buildpack-golang-kubebuilder2/"
                       args:
