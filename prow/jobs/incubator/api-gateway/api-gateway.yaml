@@ -22,7 +22,7 @@ presubmits: # runs on PRs
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
             securityContext:
               privileged: true
             command:
@@ -57,7 +57,7 @@ postsubmits: # runs on master
           base_ref: master
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210216-1.14.0-rc1-535-gb45951c9"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9"
             securityContext:
               privileged: true
             command:

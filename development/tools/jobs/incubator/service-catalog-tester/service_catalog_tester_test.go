@@ -26,17 +26,16 @@ func TestServiceCatalogTesterJobsPresubmit(t *testing.T) {
 	assert.Equal(t, 10, actualPresubmit.MaxConcurrency)
 	assert.False(t, actualPresubmit.SkipReport)
 	assert.True(t, actualPresubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/service-catalog-tester", actualPresubmit.PathAlias)
 	assert.True(t, actualPresubmit.AlwaysRun)
 	assert.Empty(t, actualPresubmit.RunIfChanged)
 
 	assert.True(t, tester.IfPresubmitShouldRunAgainstChanges(actualPresubmit, true, "service-catalog-tester/runner_worker.go"))
 
 	tester.AssertThatHasExtraRefTestInfra(t, actualPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPresubmit.Spec.Containers[0].Args)
+	tester.AssertThatHasPresets(t, actualPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
@@ -56,11 +55,10 @@ func TestServiceCatalogTesterJobPostsubmit(t *testing.T) {
 
 	assert.Equal(t, 10, actualPost.MaxConcurrency)
 	assert.True(t, actualPost.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/service-catalog-tester", actualPost.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
-	assert.Equal(t, tester.ImageGolangBuildpackLatest, actualPost.Spec.Containers[0].Image)
+	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageGolangBuildpack1_14, actualPost.Spec.Containers[0].Image)
 	assert.Empty(t, actualPost.RunIfChanged)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/service-catalog-tester", "ci-master"}, actualPost.Spec.Containers[0].Args)
 }

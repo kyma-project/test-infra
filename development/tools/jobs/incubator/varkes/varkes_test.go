@@ -28,12 +28,11 @@ func TestVarkesJobPresubmit(t *testing.T) {
 	assert.False(t, masterPresubmit.SkipReport)
 	assert.True(t, masterPresubmit.Decorate)
 	assert.True(t, masterPresubmit.AlwaysRun)
-	assert.Equal(t, "github.com/kyma-incubator/varkes", masterPresubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPresubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, masterPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildPr)
-	assert.Equal(t, tester.ImageNode10Buildpack, masterPresubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, masterPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, masterPresubmit.Spec.Containers[0].Args)
+	tester.AssertThatHasPresets(t, masterPresubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageNodeBuildpackLatest, masterPresubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, masterPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/", "ci-pr"}, masterPresubmit.Spec.Containers[0].Args)
 }
 
 func TestVarkesJobMasterPostsubmit(t *testing.T) {
@@ -53,12 +52,11 @@ func TestVarkesJobMasterPostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"^master$"}, masterPostsubmit.Branches)
 	assert.Equal(t, 10, masterPostsubmit.MaxConcurrency)
 	assert.True(t, masterPostsubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/varkes", masterPostsubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, masterPostsubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, masterPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildMaster)
-	assert.Equal(t, tester.ImageNode10Buildpack, masterPostsubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, masterPostsubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, masterPostsubmit.Spec.Containers[0].Args)
+	tester.AssertThatHasPresets(t, masterPostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageNodeBuildpackLatest, masterPostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, masterPostsubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/", "ci-master"}, masterPostsubmit.Spec.Containers[0].Args)
 }
 
 func TestVarkesJobReleasePostsubmit(t *testing.T) {
@@ -78,10 +76,9 @@ func TestVarkesJobReleasePostsubmit(t *testing.T) {
 	assert.Equal(t, []string{"release"}, releasePostsubmit.Branches)
 	assert.Equal(t, 10, releasePostsubmit.MaxConcurrency)
 	assert.True(t, releasePostsubmit.Decorate)
-	assert.Equal(t, "github.com/kyma-incubator/varkes", releasePostsubmit.PathAlias)
 	tester.AssertThatHasExtraRefTestInfra(t, releasePostsubmit.JobBase.UtilityConfig, "master")
-	tester.AssertThatHasPresets(t, releasePostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush, preset.BuildRelease)
-	assert.Equal(t, tester.ImageNode10Buildpack, releasePostsubmit.Spec.Containers[0].Image)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build.sh"}, releasePostsubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/"}, releasePostsubmit.Spec.Containers[0].Args)
+	tester.AssertThatHasPresets(t, releasePostsubmit.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
+	assert.Equal(t, tester.ImageNodeBuildpackLatest, releasePostsubmit.Spec.Containers[0].Image)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, releasePostsubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/varkes/", "ci-release"}, releasePostsubmit.Spec.Containers[0].Args)
 }

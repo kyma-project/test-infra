@@ -199,7 +199,7 @@ templates:
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
-          - repoName:
+          - repoName: kyma-incubator/octopus
             jobs:
               - jobConfig:
                   name: pre-master-kyma-incubator-octopus
