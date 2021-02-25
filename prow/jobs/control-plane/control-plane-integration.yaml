@@ -9,7 +9,7 @@ vm_job_template: &vm_job_template
   max_concurrency: 10
   spec:
     containers:
-    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20200124-69faeef6
+    - image: eu.gcr.io/kyma-project/test-infra/buildpack-golang-kubebuilder2:v20210225-a8b55dc9
       command:
       - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-control-plane.sh"
       resources:
