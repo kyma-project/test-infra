@@ -3,12 +3,11 @@ dashboards:
   # kyma
   - name: kyma_integration
   - name: kyma_control-plane
+  - name: kyma_experimental
   - name: kyma_release-{{ .Global.nextRelease }}
   {{- range .Global.releases }}
   - name: kyma_release-{{ . }}
   {{- end }}
-  # dashboard for experimental jobs
-  - name: kyma_experimental
 
   # kyma-incubator
   - name: kyma-incubator_compass
@@ -18,9 +17,10 @@ dashboard_groups:
     dashboard_names:
       - kyma_integration
       - kyma_control-plane
+      - kyma_experimental
       - kyma_release-{{ .Global.nextRelease }}
       {{- range .Global.releases }}
       - kyma_release-{{ . }}
       {{- end }}
-      - kyma_experimental
+
       - kyma-incubator_compass
