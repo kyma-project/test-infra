@@ -33,6 +33,7 @@ postsubmits: # runs on master
   kyma-project/test-infra:
     - name: post-test-infra-upload-testgrid-config
       annotations:
+        description: "Job that uploads TestGrid config."
         testgrid-dashboards: "kyma_experimental"
       labels:
         preset-bot-github-token: "true"

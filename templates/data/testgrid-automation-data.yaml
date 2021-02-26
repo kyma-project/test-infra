@@ -37,6 +37,7 @@ templates:
                     - "kyma"
                   annotations:
                     testgrid-dashboards: kyma_experimental
+                    description: Job that uploads TestGrid config.
                   volumeMounts:
                     - name: "github-token"
                       mountPath: "/etc/github-token"
