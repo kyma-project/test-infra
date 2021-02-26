@@ -2,8 +2,9 @@
     - name: {{if .JobConfig.name}}{{.JobConfig.name}}{{else}}{{fail ".JobConfig.name is not defined"}}{{end}}
       {{- if .JobConfig.annotations}}
       annotations:
+        {{- $booleans := list "yes" "no" "true" "false" -}}
         {{- range $key, $value := .JobConfig.annotations}}
-        {{$key}}: {{quote $value}}
+        {{$key}}: {{ if has $value $booleans }}{{ quote $value }}{{else}}{{ $value }}{{end}}
         {{- end}}
       {{- end}}
       {{- if .JobConfig.labels}}
@@ -147,4 +148,4 @@ periodics: # runs on schedule
   {{- end}}
   {{- end}}
   {{end}}
-{{- end}}
+{{- end -}}

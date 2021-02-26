@@ -126,8 +126,8 @@ postsubmits: # runs on master
   kyma-project/kyma:
     - name: post-rel121-kyma-integration
       annotations:
-        description: "Kyma integration job for release 1.21 ."
-        testgrid-dashboards: "kyma_release-1.21"
+        description: Kyma integration job for release 1.21 .
+        testgrid-dashboards: kyma_release-1.21
       labels:
         preset-build-master: "true"
         preset-gc-project-env: "true"
@@ -157,9 +157,9 @@ postsubmits: # runs on master
                 cpu: 50m
     - name: post-rel121-kyma-gke-integration
       annotations:
-        description: "Kyma GKE integration job for release 1.21."
-        testgrid-dashboards: "kyma_release-1.21"
-        testgrid-days-of-results: "60"
+        description: Kyma GKE integration job for release 1.21.
+        testgrid-dashboards: kyma_release-1.21
+        testgrid-days-of-results: 60
       labels:
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
@@ -203,9 +203,9 @@ postsubmits: # runs on master
                 cpu: 80m
     - name: post-rel121-kyma-gke-upgrade
       annotations:
-        description: "Kyma GKE upgrade job for release 1.21."
-        testgrid-dashboards: "kyma_release-1.21"
-        testgrid-days-of-results: "60"
+        description: Kyma GKE upgrade job for release 1.21.
+        testgrid-dashboards: kyma_release-1.21
+        testgrid-days-of-results: 60
       labels:
         preset-build-release: "true"
         preset-cluster-use-ssd: "true"
@@ -256,9 +256,9 @@ postsubmits: # runs on master
                 cpu: 80m
     - name: post-rel121-kyma-release-candidate
       annotations:
-        description: "Release candidate job for Kyma 1.21."
-        testgrid-dashboards: "kyma_release-1.21"
-        testgrid-days-of-results: "60"
+        description: Release candidate job for Kyma 1.21.
+        testgrid-dashboards: kyma_release-1.21
+        testgrid-days-of-results: 60
       labels:
         preset-cluster-version: "true"
         preset-dind-enabled: "true"
@@ -294,8 +294,8 @@ postsubmits: # runs on master
                 cpu: 80m
     - name: post-rel121-kyma-gke-release-upgrade
       annotations:
-        testgrid-dashboards: "kyma_release-1.21"
-        testgrid-days-of-results: "90"
+        testgrid-dashboards: kyma_release-1.21
+        testgrid-days-of-results: 90
       skip_report: false
       decorate: true
       cluster: trusted-workload
