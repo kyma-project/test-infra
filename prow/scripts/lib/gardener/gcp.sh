@@ -85,14 +85,7 @@ gardener::install_kyma() {
 
     (
     set -x
-    if [ -z "$PARALLEL_INSTALL" ]; then
-    kyma install \
-        --ci \
-        --source "${KYMA_SOURCE}" \
-        --timeout 90m
-    else
     kyma alpha deploy --ci --source=local -w="${KYMA_PROJECT_DIR}/kyma"
-    fi
     )
 }
 
@@ -126,11 +119,7 @@ gardener::test_kyma() {
     )
 
     # collect logs from failed tests before deprovisioning
-    if [[ -n "$PARALLEL_INSTALL"  ]]; then
-        kyma::run_test_log_collector "kyma-integration-gardener-gcp-parallel"
-    else
-        kyma::run_test_log_collector "kyma-integration-gardener-gcp"
-    fi
+    kyma::run_test_log_collector "kyma-integration-gardener-gcp"
 
     if ! kyma::test_summary; then
       log::error "Tests have failed"
