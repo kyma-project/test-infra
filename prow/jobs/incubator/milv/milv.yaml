@@ -8,6 +8,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-sa-gcr-push: "true"
+      always_run: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -28,6 +29,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
+              - "ci-pr"
             env:
               - name: GO11MODULE
                 value: "on"
@@ -65,6 +67,7 @@ postsubmits: # runs on master
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/milv"
+              - "ci-master"
             env:
               - name: GO11MODULE
                 value: "on"

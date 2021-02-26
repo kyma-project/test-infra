@@ -162,11 +162,8 @@ templates:
                     - disable_testgrid
       - to: ../prow/jobs/incubator/milv/milv.yaml
         localSets:
-          image_go115:
-            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
           milv_jobConfig:
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/milv"
+            image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.15.7
             env:
               GO11MODULE: "on"
             branches:
@@ -176,18 +173,24 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-master-kyma-incubator-milv
+                  always_run: true
                   <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/milv"
+                    - "ci-pr"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - image_go115
                     - milv_jobConfig
               - jobConfig:
                   name: post-master-kyma-incubator-milv
                   <<: *commonJob
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-incubator/milv"
+                    - "ci-master"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -195,7 +198,6 @@ templates:
                     - extra_refs_test-infra
                     - disable_testgrid
                   local:
-                    - image_go115
                     - milv_jobConfig
       - to: ../prow/jobs/incubator/octopus/octopus.yaml
         jobConfigs:
