@@ -33,7 +33,7 @@ postsubmits: # runs on master
   kyma-project/test-infra:
     - name: post-test-infra-upload-testgrid-config
       annotations:
-        testgrid-dashboards: "kyma_experimental"
+        testgrid-create-test-group: "false"
       labels:
         preset-bot-github-token: "true"
       run_if_changed: '^(prow/jobs/.*\.yaml)|(prow/testgrid-default\.yaml)$'
