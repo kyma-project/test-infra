@@ -26,7 +26,7 @@ templates:
                   local:
                     - "jobConfig_default"
               - jobConfig:
-                  name: "post-test-infra-upload-testgrid-config"
+                  name: post-test-infra-upload-testgrid-config
                   labels:
                     preset-bot-github-token: "true"
                   args:
@@ -37,7 +37,6 @@ templates:
                     - "kyma"
                   annotations:
                     testgrid-dashboards: kyma_experimental
-                    description: Job that uploads TestGrid config.
                   volumeMounts:
                     - name: "github-token"
                       mountPath: "/etc/github-token"

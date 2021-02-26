@@ -22,5 +22,5 @@ dashboard_groups:
       {{- range .Global.releases }}
       - kyma_release-{{ . }}
       {{- end }}
-      - kyma-incubator_compass
       - kyma_experimental
+      - kyma-incubator_compass
